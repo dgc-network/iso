@@ -140,8 +140,8 @@ function init_webhook_events() {
 
         // Start the User Login/Registration process if got the one time password
         if ($event['message']['text']==get_option('_one_time_password')) {
-            $link_uri = '?_id='.$event['source']['userId'];
-/*
+            $link_uri = 'https://iso-2beaa9.ingress-haven.ewp.live/'.'?_id='.$event['source']['userId'];
+
             $line_bot_api->replyMessage([
                 'replyToken' => $event['replyToken'],
                 'messages' => [
@@ -151,7 +151,7 @@ function init_webhook_events() {
                     ]                                                                    
                 ]
             ]);
-*/
+
             $see_more = array();
             $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
             $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
