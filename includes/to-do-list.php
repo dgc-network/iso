@@ -131,61 +131,40 @@ function init_webhook_events() {
     $open_ai_api = new open_ai_api();
     //$curtain_agents = new curtain_agents();
 
-    if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
-        $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
-        $see_more = json_decode($see_more, true);
-    }
-
     foreach ((array)$line_bot_api->parseEvents() as $event) {
 
         // Start the User Login/Registration process if got the one time password
         if ($event['message']['text']==get_option('_one_time_password')) {
-            $link_uri = 'https://iso-2beaa9.ingress-haven.ewp.live/'.'?_id='.$event['source']['userId'];
+            $link_uri = home_url().'/?_id='.$event['source']['userId'];
 
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [
-                    [
-                        'type' => 'text',
-                        'text' => $link_uri
-                    ]                                                                    
-                ]
-            ]);
+            if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
+                $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
+                $see_more = json_decode($see_more, true);
+                $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
+                $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [
+                        [
+                            "type" => "flex",
+                            "altText" => 'Welcome message',
+                            'contents' => $see_more
+                        ]
+                    ]
+                ]);
+            } else {
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [
+                        [
+                            'type' => 'text',
+                            'text' => $link_uri
+                        ]                                                                    
+                    ]
+                ]);    
+            }
+        }
 
-            $see_more = array();
-            $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
-            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [
-                    [
-                        "type" => "flex",
-                        "altText" => 'Welcome message',
-                        'contents' => $see_more
-                    ]
-                ]
-            ]);
-        }
-/*
-        // Start the Agent Login/Registration process if got the correct agent number
-        $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}curtain_agents WHERE agent_number = %s", $event['message']['text'] ), OBJECT );            
-        if (is_null($row) || !empty($wpdb->last_error)) {
-        } else {
-            $link_uri = get_option('Service').'?_id='.$event['source']['userId'].'&_agent_no='.$event['message']['text'];
-            $see_more["body"]["contents"][0]["action"]["label"] = 'Agent Login/Registration';
-            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [
-                    [
-                        "type" => "flex",
-                        "altText" => 'Welcome message',
-                        'contents' => $see_more
-                    ]
-                ]
-            ]);
-        }
-*/
         switch ($event['type']) {
             case 'message':
                 $message = $event['message'];
