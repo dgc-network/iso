@@ -56,6 +56,8 @@ add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
  * 1. 時間到了會透過Line通知使用者填寫資料
  * 2. 有些客戶需要協助填寫資料, 完成驗證
  */
+require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
+require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-document.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
@@ -78,5 +80,5 @@ function isURL($str) {
     return preg_match($pattern, $str) === 1;
 }
 
-//init_webhook_events();
+init_webhook_events();
 
