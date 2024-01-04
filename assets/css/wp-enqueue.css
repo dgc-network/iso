@@ -1,0 +1,40 @@
+.page .entry-title {display: none;}
+.wp-block-post-title {display: none;}
+.wp-block-button__link {margin: 2px; display: inline-block;}
+
+ol {
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+  
+ol ol {
+    list-style-type: lower-alpha; /* Use lower-alpha for second-level list items (1.1, 1.2, etc.) */
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+  
+thead{background-color:#d6d8d9;}
+tbody{
+    list-style:none;
+    padding:0;
+    min-height:12em;
+}
+tr:nth-child(2n){
+    background-color:#d6d8d9;
+}
+
+.prev,
+.next {
+    position: absolute;
+    top: 50%;
+    font-size: 25px;
+    color: #fff;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.prev {
+    left: 15px;
+}
+
+.next {
+    right: 15px;
+}
