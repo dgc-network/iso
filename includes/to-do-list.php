@@ -91,21 +91,23 @@ function to_do_list_shortcode() {
         $todos = new WP_Query($args);
     
         if ($todos->have_posts()) :
+            echo '<h2>'.__( 'To-do list', 'your-text-domain' ).'</h2>';
             while ($todos->have_posts()) : $todos->the_post();
                 $due_date = get_post_meta(get_the_ID(), '_todo_due_date', true);
+                $todo_action = get_post_meta(get_the_ID(), '_todo_site_action', true);
+                $doc_title = get_post_meta(get_the_ID(), '_todo_doc_title', true);
                 ?>
-                <div class="todo-item">
-                    <h2><?php the_title(); ?></h2>
-                    <p>Due Date: <?php echo esc_html($due_date); ?></p>
-                    <div class="todo-content">
-                        <?php the_content(); ?>
-                    </div>
+                <div class="todo-item" style="display:flex;">
+                    <div><?php echo esc_html($due_date); ?></div>
+                    <div><?php echo esc_html($todo_action); ?></div>
+                    <div><?php echo esc_html($doc_title); ?></div>
+                    <div><?php the_title(); ?></div>
                 </div>
                 <?php
             endwhile;
             wp_reset_postdata();
         else :
-            echo 'No to-do items found.';
+            echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
         endif;
     } else {
         // Did not login system yet
