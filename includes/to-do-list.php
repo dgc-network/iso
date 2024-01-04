@@ -109,15 +109,15 @@ function to_do_list_shortcode() {
         endif;
     } else {
         // Display a message or redirect to the login/registration page
-        echo 'Please log in or register to view your to-do list.';
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
 
-        echo  '<div style="text-align:center;">';
-        echo  '感謝您使用我們的系統<br>';
-        echo  '請利用手機<i class="fa-solid fa-mobile-screen"></i>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
-        echo  '並請在聊天室中, 輸入六位數字:<h4>'.get_option('_one_time_password').'</h4>完成註冊/登入作業<br>';
-        echo  '</div>';
+        echo '<div style="text-align:center;">';
+        echo '感謝您使用我們的系統<br>';
+        echo 'Please log in or register to view your to-do list.';
+        echo '請利用手機<i class="fa-solid fa-mobile-screen"></i>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
+        echo '並請在聊天室中, 輸入六位數字:<h4>'.get_option('_one_time_password').'</h4>完成註冊/登入作業<br>';
+        echo '</div>';
 
     }
     
@@ -141,6 +141,17 @@ function init_webhook_events() {
         // Start the User Login/Registration process if got the one time password
         if ($event['message']['text']==get_option('_one_time_password')) {
             $link_uri = '/'.'?_id='.$event['source']['userId'];
+
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'],
+                'messages' => [
+                    [
+                        'type' => 'text',
+                        'text' => $link_uri
+                    ]                                                                    
+                ]
+            ]);
+
             $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
             $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
             $line_bot_api->replyMessage([

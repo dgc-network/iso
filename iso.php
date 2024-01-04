@@ -65,7 +65,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 //require_once plugin_dir_path( __FILE__ ) . 'redirect-line-login.php';
 
 add_option('_line_account', 'https://line.me/ti/p/@804poufw');
-add_option('_one_time_password', 123456);
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
