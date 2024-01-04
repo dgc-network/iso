@@ -66,6 +66,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
+add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 
 function register_session() {
     if ( ! session_id() ) {
@@ -79,6 +80,3 @@ function isURL($str) {
     $pattern = '/^(http|https):\/\/[^ "]+$/';
     return preg_match($pattern, $str) === 1;
 }
-
-//init_webhook_events();
-

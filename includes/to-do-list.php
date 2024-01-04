@@ -110,6 +110,15 @@ function to_do_list_shortcode() {
     } else {
         // Display a message or redirect to the login/registration page
         echo 'Please log in or register to view your to-do list.';
+        $one_time_password = random_int(100000, 999999);
+        update_option('_one_time_password', $one_time_password);
+
+        echo  '<div style="text-align:center;">';
+        echo  '感謝您使用我們的系統<br>';
+        echo  '請利用手機<i class="fa-solid fa-mobile-screen"></i>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
+        echo  '並請在聊天室中, 輸入六位數字:<h4>'.get_option('_one_time_password').'</h4>完成註冊/登入作業<br>';
+        echo  '</div>';
+
     }
     
     return ob_get_clean(); // Return the buffered content
@@ -128,10 +137,10 @@ function init_webhook_events() {
     }
 
     foreach ((array)$line_bot_api->parseEvents() as $event) {
-/*
+
         // Start the User Login/Registration process if got the one time password
         if ($event['message']['text']==get_option('_one_time_password')) {
-            $link_uri = get_option('Service').'?_id='.$event['source']['userId'];
+            $link_uri = '/'.'?_id='.$event['source']['userId'];
             $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
             $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
             $line_bot_api->replyMessage([
@@ -145,7 +154,7 @@ function init_webhook_events() {
                 ]
             ]);
         }
-
+/*
         // Start the Agent Login/Registration process if got the correct agent number
         $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}curtain_agents WHERE agent_number = %s", $event['message']['text'] ), OBJECT );            
         if (is_null($row) || !empty($wpdb->last_error)) {

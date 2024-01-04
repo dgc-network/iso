@@ -3,6 +3,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Register custom post type
+function register_document_post_type() {
+    $labels = array(
+        'name'               => _x( 'Documents', 'post type general name', 'your-text-domain' ),
+        'singular_name'      => _x( 'Document', 'post type singular name', 'your-text-domain' ),
+        'add_new'            => _x( 'Add New Document', 'book', 'your-text-domain' ),
+        'add_new_item'       => __( 'Add New Document', 'your-text-domain' ),
+        'edit_item'          => __( 'Edit Document', 'your-text-domain' ),
+        'new_item'           => __( 'New Document', 'your-text-domain' ),
+        'all_items'          => __( 'All Documents', 'your-text-domain' ),
+        'view_item'          => __( 'View Document', 'your-text-domain' ),
+        'search_items'       => __( 'Search Documents', 'your-text-domain' ),
+        'not_found'          => __( 'No documents found', 'your-text-domain' ),
+        'not_found_in_trash' => __( 'No documents found in the Trash', 'your-text-domain' ),
+        'parent_item_colon'  => '',
+        'menu_name'          => 'Documents'
+    );
+
+    $args = array(
+        'labels'        => $labels,
+        'public'        => true,
+        //'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'supports'      => array( 'title', 'custom-fields' ),
+        'taxonomies'    => array( 'category', 'post_tag' ),
+        'has_archive'   => true,
+        'rewrite'       => array('slug' => 'documents'),
+        'menu_icon'     => 'dashicons-media-document',
+    );
+    register_post_type( 'document', $args );
+}
+add_action('init', 'register_document_post_type');
+
 // Shortcode to display documents
 function display_documents_shortcode() {
     ob_start(); // Start output buffering
@@ -189,88 +221,3 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-
-// Shortcode to display
-function g01_01_shortcode() {
-    ob_start(); // Start output buffering
-
-    $args = array(
-        'post_type'      => 'record',
-        'posts_per_page' => -1,
-    );
-    $query = new WP_Query($args);
-
-    echo '';
-    if ($query->have_posts()) : ?>
-        <h2><?php echo __( '衛生管理日誌', 'your-text-domain' );?></h2>
-        <table class="g01-01-table" style="width:100%;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><?php echo __( '區域', 'your-text-domain' );?></th>
-                    <th><?php echo __( '檢查項目', 'your-text-domain' );?></th>
-                    <th><?php echo __( '檢查日期', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-        <?php
-        while ($query->have_posts()) : $query->the_post();
-            ?>
-                <tr>
-                    <td style="text-align:center;"><span id="btn-edit-g01-01-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td><?php the_ID();?></td>
-                    <td><?php the_title();?></td>
-                    <td><?php echo esc_html(get_post_meta(get_the_ID(), 'checked_date', true));?></td>
-                    <td style="text-align:center;"><span id="btn-del-g01-01-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
-                </tr>
-            <?php 
-        endwhile; ?>
-        </table>
-        <?php
-        wp_reset_postdata();
-        
-    else :
-        echo '<h2>'.__( 'No records found', 'your-text-domain' ).'</h2>';
-    endif;
-
-    return ob_get_clean(); // Return the buffered content
-}
-add_shortcode('g01-01', 'g01_01_shortcode');
-
-// Handle "Add to Cart" AJAX request
-function add_to_cart_ajax() {
-    //check_ajax_referer('add_to_cart_nonce', 'nonce');
-
-    $product_id = isset($_POST['formData']['product_id']) ? intval($_POST['formData']['product_id']) : 0;
-    $quantity = isset($_POST['formData']['quantity']) ? intval($_POST['formData']['quantity']) : 1;
-
-    // Perform server-side operations
-    // Add the product to the shopping cart
-    session_start();
-    if (!isset($_SESSION['cart'])) $_SESSION['cart']=array();
-    $cart_item_key = array_search($product_id, array_column($_SESSION['cart'], 'product_id'));
-
-    if ($cart_item_key !== false) {
-        // Update quantity if product is already in the cart
-        $_SESSION['cart'][$cart_item_key]['quantity'] += $quantity;
-    } else {
-        // Add the product to the cart
-        $cart_item = array(
-            'product_id' => $product_id,
-            'quantity' => $quantity,
-        );
-        $_SESSION['cart'][] = $cart_item;
-    }
-
-    // Return a JSON response
-    $response = array(
-        'success' => true,
-        'message' => 'Item added to the cart successfully!',
-        'cart_url' => '/cart/', // Replace with the actual URL
-    );
-
-    wp_send_json($response);
-}
-add_action('wp_ajax_add_to_cart_ajax', 'add_to_cart_ajax');
-add_action('wp_ajax_nopriv_add_to_cart_ajax', 'add_to_cart_ajax');

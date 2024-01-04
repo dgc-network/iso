@@ -3,38 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Register custom post type
-function register_document_post_type() {
-    $labels = array(
-        'name'               => _x( 'Documents', 'post type general name', 'your-text-domain' ),
-        'singular_name'      => _x( 'Document', 'post type singular name', 'your-text-domain' ),
-        'add_new'            => _x( 'Add New Document', 'book', 'your-text-domain' ),
-        'add_new_item'       => __( 'Add New Document', 'your-text-domain' ),
-        'edit_item'          => __( 'Edit Document', 'your-text-domain' ),
-        'new_item'           => __( 'New Document', 'your-text-domain' ),
-        'all_items'          => __( 'All Documents', 'your-text-domain' ),
-        'view_item'          => __( 'View Document', 'your-text-domain' ),
-        'search_items'       => __( 'Search Documents', 'your-text-domain' ),
-        'not_found'          => __( 'No documents found', 'your-text-domain' ),
-        'not_found_in_trash' => __( 'No documents found in the Trash', 'your-text-domain' ),
-        'parent_item_colon'  => '',
-        'menu_name'          => 'Documents'
-    );
-
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        //'supports'      => array( 'title', 'editor', 'custom-fields' ),
-        'supports'      => array( 'title', 'custom-fields' ),
-        'taxonomies'    => array( 'category', 'post_tag' ),
-        'has_archive'   => true,
-        'rewrite'       => array('slug' => 'documents'),
-        'menu_icon'     => 'dashicons-media-document',
-    );
-    register_post_type( 'document', $args );
-}
-add_action('init', 'register_document_post_type');
-
 // Custom columns
 function add_custom_document_field_column($columns) {
     // Insert the custom field column after the 'title' column
