@@ -78,3 +78,5 @@ function isURL($str) {
     return preg_match($pattern, $str) === 1;
 }
 
+init_webhook_events();
+
