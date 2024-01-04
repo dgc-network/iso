@@ -195,4 +195,5 @@ function init_webhook_events() {
         }
     }
 }
+add_action( 'init', 'init_webhook_events' );
 
