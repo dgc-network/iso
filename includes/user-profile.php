@@ -170,9 +170,6 @@ function user_profile_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
-        $user = get_userdata( $current_user_id );
-        $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
-
 
         if( isset($_POST['_user_submit']) ) {
             $user_data = wp_update_user( array( 
@@ -192,14 +189,17 @@ function user_profile_shortcode() {
             }
         }
 
+        $user_data = get_userdata( $current_user_id );
+        $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
+
         echo '<div style="text-align:center;">';
         echo '<h3>User profile</h3>';
         echo '<form method="post" style="display:inline-block; text-align:-webkit-center;">';
         echo '<fieldset>';
         echo '<label style="text-align:left;" for="_display_name">Name:</label>';
-        echo '<input type="text" name="_display_name" value="'.$user->display_name.'" class="text ui-widget-content ui-corner-all" />';
+        echo '<input type="text" name="_display_name" value="'.$user_data->display_name.'" class="text ui-widget-content ui-corner-all" />';
         echo '<label style="text-align:left;" for="_user_email">Email:</label>';
-        echo '<input type="text" name="_user_email" value="'.$user->user_email.'" class="text ui-widget-content ui-corner-all" />';
+        echo '<input type="text" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
 
         $args = array(
