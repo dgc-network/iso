@@ -104,6 +104,54 @@ function display_documents_shortcode() {
             </div>
             <label for="document-url">URL:</label>
             <textarea id="document-url" rows="3" style="width:99%;"></textarea>
+            <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Leadtime', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        <?php
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+            );
+            $query = new WP_Query($args);
+        
+        $x = 0;
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = (int) get_the_ID();
+            $doc_action_id = esc_html(get_post_meta($post_id, 'doc_action_id', true)); //get doc_action_id from site_action_id
+            $doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
+            $doc_action_content = esc_html(get_the_content($doc_action_id)); //get site_action_content from site_actions
+            $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
+            $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
+            $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
+            ?>
+                <tr id="doc-action-list-<?php echo $x;?>">
+                    <td style="text-align:center;"><span id="btn-edit-doc-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                    <td style="text-align:center;"><?php echo $doc_action_title;?></td>
+                    <td><?php echo $doc_action_content;?></td>
+                    <td style="text-align:center;"><?php echo $doc_next_action_title;?></td>
+                    <td style="text-align:center;"><?php echo $doc_next_action_leadtime;?></td>
+                    <td style="text-align:center;"><span id="btn-del-doc-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                </tr>
+            <?php 
+            $x += 1;
+        endwhile;
+        while ($x<50) {
+            echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
+            $x += 1;
+        }
+        ?>
+            </tbody>
+            <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+            </table>
         </fieldset>
         </div>
 

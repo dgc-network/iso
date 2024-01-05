@@ -158,7 +158,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#document-dialog").dialog({
-        width: 310,
+        width: 900,
         modal: true,
         autoOpen: false,
         buttons: {
