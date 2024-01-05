@@ -280,7 +280,7 @@ function del_site_action_data() {
 add_action( 'wp_ajax_del_site_action_data', 'del_site_action_data' );
 add_action( 'wp_ajax_nopriv_del_site_action_data', 'del_site_action_data' );
 
-function retrieve_sit_actions_data($_id=0) {
+function retrieve_site_actions_data($_id=0) {
     // Retrieve the value
     $args = array(
         'post_type'      => 'action',
