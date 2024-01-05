@@ -192,14 +192,14 @@ function user_profile_shortcode() {
         $user_data = get_userdata( $current_user_id );
         $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
 
-        echo '<div style="text-align:center;">';
-        echo '<h3>User profile</h3>';
-        echo '<form method="post" style="display:inline-block; text-align:-webkit-center;">';
+        echo '<div class="ui-widget">';
+        echo '<h4>User profile</h4>';
+        echo '<form method="post">';
         echo '<fieldset>';
-        echo '<label style="text-align:left;" for="_display_name">Name:</label>';
-        echo '<input type="text" name="_display_name" value="'.$user_data->display_name.'" class="text ui-widget-content ui-corner-all" />';
-        echo '<label style="text-align:left;" for="_user_email">Email:</label>';
-        echo '<input type="text" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
+        echo '<label for="display-name">Name : </label>';
+        echo '<input type="text" id="display-name" name="_display_name" value="'.$user_data->display_name.'" class="text ui-widget-content ui-corner-all" />';
+        echo '<label for="user-email">Email : </label>';
+        echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
 
         $args = array(
