@@ -24,8 +24,9 @@ error_reporting(E_ALL);
 // Function to enqueue scripts for the custom chat_gpt admin
 function admin_enqueue() {
     wp_enqueue_style( 'jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );
-    wp_enqueue_script( 'jquery-ui-datepicker' );
-    wp_enqueue_script( 'jquery-ui-dialog' );
+    wp_enqueue_script( 'jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
+    //wp_enqueue_script( 'jquery-ui-datepicker' );
+    //wp_enqueue_script( 'jquery-ui-dialog' );
     wp_enqueue_style( 'admin-enqueue-css', plugins_url( 'assets/css/admin-enqueue.css' , __FILE__ ), '', time() );
     wp_enqueue_script( 'admin-enqueue-js', plugins_url( 'assets/js/admin-enqueue.js' , __FILE__ ), array( 'jquery' ), time() );
     wp_localize_script( 'admin-enqueue-js', 'ajax_object', array( 
