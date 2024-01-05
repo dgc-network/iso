@@ -86,12 +86,14 @@ function to_do_list_shortcode() {
         $args = array(
             'post_type'      => 'todo',
             'posts_per_page' => -1,
+/*            
             'meta_query'     => array(
                 array(
                     'key'   => '_todo_assigned_user',
                     'value' => $current_user_id,
                 ),
             ),
+*/            
         );    
         $query = new WP_Query($args);
     
