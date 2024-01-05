@@ -180,12 +180,14 @@ function user_profile_shortcode() {
         $args = array(
             'post_type'      => 'action',
             'posts_per_page' => -1,
+/*            
             'meta_query'     => array(
                 array(
                     'key'   => 'site_id',
                     'value' => $site_id,
                 ),
             ),
+*/            
         );    
         $query = new WP_Query($args);
     
@@ -212,8 +214,8 @@ function user_profile_shortcode() {
             </table>
             <?php
             wp_reset_postdata();
-        else :
-            echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
+        //else :
+        //    echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
         endif;
 
     } else {
