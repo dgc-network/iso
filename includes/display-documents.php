@@ -96,7 +96,7 @@ function display_documents_shortcode() {
                 </div>
                 <div style="display:inline-block;">
                     <label for="document-revision">Revision:</label>
-                    <input type="text" id="document-revision" />
+                    <input type="text" id="document-revision" style="width:30px;" />
                 </div>
                 <div style="display:inline-block;">
                     <label for="document-date">Date:</label>
@@ -105,14 +105,15 @@ function display_documents_shortcode() {
             </div>
             <label for="document-url">URL:</label>
             <textarea id="document-url" rows="3" style="width:99%;"></textarea>
+
             <table style="width:100%;">
             <thead>
                 <tr>
                     <th></th>
                     <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Leadtime', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                     <th></th>
                 </tr>
             </thead>
@@ -133,13 +134,17 @@ function display_documents_shortcode() {
             $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
             $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
             $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
+            $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_submit_user_id', true));
+            $user = get_userdata($doc_submit_user_id);
+            $doc_action_submit_user = esc_html($user->display_name); //get site_next_action_title 
+            $doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_submit_time', true)); //get doc_next_action_id from site_next_action_id
             ?>
                 <tr id="doc-action-list-<?php echo $x;?>">
                     <td style="text-align:center;"><span id="btn-edit-doc-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                     <td style="text-align:center;"><?php echo $doc_action_title;?></td>
                     <td><?php echo $doc_action_content;?></td>
-                    <td style="text-align:center;"><?php echo $doc_next_action_title;?></td>
-                    <td style="text-align:center;"><?php echo $doc_next_action_leadtime;?></td>
+                    <td style="text-align:center;"><?php echo $doc_action_submit_user;?></td>
+                    <td style="text-align:center;"><?php echo $doc_action_submit_time;?></td>
                     <td style="text-align:center;"><span id="btn-del-doc-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                 </tr>
             <?php 
