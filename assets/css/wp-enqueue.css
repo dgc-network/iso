@@ -1,6 +1,7 @@
 .page .entry-title {display: none;}
 .wp-block-post-title {display: none;}
 .wp-block-button__link {margin: 2px; display: inline-block;}
+.ui-widget .ui-widget-content {width: -webkit-fill-available;}
 
 ol {
     margin-left: 20px; /* Adjust the margin as needed */
