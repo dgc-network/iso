@@ -189,7 +189,6 @@ function user_profile_shortcode() {
             } else {
                 // Success!
                 echo 'User profile updated.';
-                //?><script>window.location.replace("https://aihome.tw/support/after_service/");</script><?php
             }
         }
 
@@ -198,9 +197,9 @@ function user_profile_shortcode() {
         echo '<form method="post" style="display:inline-block; text-align:-webkit-center;">';
         echo '<fieldset>';
         echo '<label style="text-align:left;" for="_display_name">Name:</label>';
-        echo '<input type="text" name="_display_name" value="'.$user->display_name.'" />';
+        echo '<input type="text" name="_display_name" value="'.$user->display_name.'" class="text ui-widget-content ui-corner-all" />';
         echo '<label style="text-align:left;" for="_user_email">Email:</label>';
-        echo '<input type="text" name="_user_email" value="'.$user->user_email.'" />';
+        echo '<input type="text" name="_user_email" value="'.$user->user_email.'" class="text ui-widget-content ui-corner-all" />';
         echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
 
         $args = array(
