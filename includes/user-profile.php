@@ -193,7 +193,7 @@ function user_profile_shortcode() {
         $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
 
         echo '<div class="ui-widget">';
-        echo '<h4>User profile</h4>';
+        echo '<h2>User profile</h2>';
         echo '<form method="post">';
         echo '<fieldset>';
         echo '<label for="display-name">Name : </label>';
@@ -250,7 +250,7 @@ function user_profile_shortcode() {
 
 
     } else {
-        did_not_login();
+        user_did_not_login();
     }
     return ob_get_clean(); // Return the buffered content
 }

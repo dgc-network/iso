@@ -99,7 +99,7 @@ function to_do_list_shortcode() {
     
         if ($query->have_posts()) :?>
             <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
-            <table class="to-do-list" style="width:100%;">
+            <table class="ui-widget" style="width:100%;">
                 <tbody>
             <?php
             while ($query->have_posts()) : $query->the_post();
@@ -126,53 +126,7 @@ function to_do_list_shortcode() {
         endif;
 
     } else {
-        did_not_login();
-/*        
-        // Did not login system yet
-        if( isset($_GET['_id']) ) {
-            // Using Line User ID to register and login into the system
-            $array = get_users( array( 'meta_value' => $_GET['_id'] ));
-            if (empty($array)) {
-                $user_id = wp_insert_user( array(
-                    'user_login' => $_GET['_id'],
-                    'user_pass' => $_GET['_id'],
-                ));
-                $user = get_user_by( 'ID', $user_id );
-                add_user_meta( $user_id, 'line_user_id', $_GET['_id']);
-                // To-Do: add_user_meta( $user_id, 'wallet_address', $_GET['_wallet_address']);
-            }
-
-            $link_uri = home_url().'/?_id='.$_GET['_id'].'&_agent_no='.$_GET['_agent_no'];
-
-            echo '<div style="text-align:center;">';
-            echo '<p>This is an automated process that helps you register for the system. ';
-            echo 'Please click the Submit button below to complete your registration.</p>';
-            echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
-            echo '<fieldset>';
-            echo '<input type="hidden" name="log" value="'. $_GET['_id'] .'" />';
-            echo '<input type="hidden" name="pwd" value="'. $_GET['_id'] .'" />';
-            echo '<input type="hidden" name="rememberme" value="foreverchecked" />';
-            echo '<input type="hidden" name="redirect_to" value="'.esc_url( $link_uri ).'" />';
-            echo '<input type="submit" name="wp-submit" class="button button-primary" value="Submit" />';
-            echo '</fieldset>';
-            echo '</form>';
-            echo '</div>';
-
-        } else {
-            // Display a message or redirect to the login/registration page
-            $one_time_password = random_int(100000, 999999);
-            update_option('_one_time_password', $one_time_password);
-    
-            echo '<div style="text-align:center;">';
-            echo '感謝您使用我們的系統<br>';
-            echo 'Please log in or register to view your to-do list.<br>';
-            echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
-            echo '並請在聊天室中, 輸入六位數字:<h4>'.get_option('_one_time_password').'</h4>完成註冊/登入作業<br>';
-            echo '</div>';
-    
-        }
-*/
-
+        user_did_not_login();
     }
     
     return ob_get_clean(); // Return the buffered content

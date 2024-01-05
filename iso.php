@@ -153,7 +153,7 @@ function init_webhook_events() {
 }
 add_action( 'init', 'init_webhook_events' );
 
-function did_not_login() {
+function user_did_not_login() {
     // Did not login system yet
     if( isset($_GET['_id']) ) {
         // Using Line User ID to register and login into the system
@@ -170,7 +170,7 @@ function did_not_login() {
 
         $link_uri = home_url().'/?_id='.$_GET['_id'].'&_agent_no='.$_GET['_agent_no'];
 
-        echo '<div style="text-align:center;">';
+        echo '<div class="ui-widget" style="text-align:center;">';
         echo '<p>This is an automated process that helps you register for the system. ';
         echo 'Please click the Submit button below to complete your registration.</p>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
@@ -189,7 +189,7 @@ function did_not_login() {
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
 
-        echo '<div style="text-align:center;">';
+        echo '<div class="ui-widget" style="text-align:center;">';
         echo '感謝您使用我們的系統<br>';
         echo 'Please log in or register to view your to-do list.<br>';
         echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
