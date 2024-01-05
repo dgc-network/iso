@@ -59,7 +59,7 @@ add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
  */
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom-fields.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/user-profile.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-document.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';

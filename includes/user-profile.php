@@ -173,9 +173,35 @@ function user_profile_shortcode() {
         $user = get_userdata( $current_user_id );
         $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
 
-        ?>
-            <h2><?php echo __( 'User profile', 'your-text-domain' );?></h2>
-        <?php
+
+        if( isset($_POST['_user_submit']) ) {
+            $user_data = wp_update_user( array( 
+                'ID' => $current_user_id, 
+                'display_name' => $_POST['_display_name'], 
+                'user_email' => $_POST['_user_email'], 
+            ) );
+
+            //update_post_meta( $post_id, 'dgc_wallet_balance', $your_balance+$amount );
+
+            if ( is_wp_error( $user_data ) ) {
+                // There was an error; possibly this user doesn't exist.
+                echo 'Error.';
+            } else {
+                // Success!
+                echo 'User profile updated.';
+                //?><script>window.location.replace("https://aihome.tw/support/after_service/");</script><?php
+            }
+        }
+
+        echo '<div style="text-align:center;">';
+        echo '<h3>User profile</h3>';
+        echo '<form method="post" style="display:inline-block; text-align:-webkit-center;">';
+        echo '<fieldset>';
+        echo '<label style="text-align:left;" for="_display_name">Name:</label>';
+        echo '<input type="text" name="_display_name" value="'.$user->display_name.'" />';
+        echo '<label style="text-align:left;" for="_user_email">Email:</label>';
+        echo '<input type="text" name="_user_email" value="'.$user->user_email.'" />';
+        echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
 
         $args = array(
             'post_type'      => 'action',
@@ -200,23 +226,29 @@ function user_profile_shortcode() {
                 </thead>
                 <tbody>
             <?php
+            $x = 0;
             while ($query->have_posts()) : $query->the_post();
                 ?>
                     <tr class="user-action-item">
-                        <td style="text-align:center;"><input type="checkbox" id="user-action-" /></td>
+                        <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
                         <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
                         <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
                     </tr>
                 <?php 
+                $x += 1;
             endwhile;
             ?>
                 </tbody>
             </table>
             <?php
             wp_reset_postdata();
-        //else :
-        //    echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
         endif;
+
+        echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
+        echo '</fieldset>';
+        echo '</form>';
+        echo '</div>';
+
 
     } else {
         did_not_login();
