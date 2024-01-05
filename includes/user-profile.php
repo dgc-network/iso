@@ -221,14 +221,12 @@ function user_profile_shortcode() {
         $args = array(
             'post_type'      => 'action',
             'posts_per_page' => -1,
-/*            
             'meta_query'     => array(
                 array(
                     'key'   => 'site_id',
                     'value' => $site_id,
                 ),
             ),
-*/            
         );    
         $query = new WP_Query($args);
     
