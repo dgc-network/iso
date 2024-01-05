@@ -103,14 +103,16 @@ function to_do_list_shortcode() {
                 <tbody>
             <?php
             while ($query->have_posts()) : $query->the_post();
-                $due_date = get_post_meta(get_the_ID(), '_todo_due_date', true);
-                $todo_action = get_post_meta(get_the_ID(), '_todo_site_action', true);
-                $doc_title = get_post_meta(get_the_ID(), '_todo_doc_title', true);
+                $due_date = esc_html(get_post_meta(get_the_ID(), '_todo_due_date', true));
+                $todo_action_id = esc_html(get_post_meta(get_the_ID(), '_todo_site_action', true));
+                $todo_action_title = get_the_title($todo_action_id);
+                $todo_doc_id = esc_html(get_post_meta(get_the_ID(), '_todo_doc_title', true));
+                $todo_doc_title = get_the_title($todo_doc_id);
                 ?>
                     <tr class="todo-item">
-                        <td style="text-align:center;"><?php echo esc_html($due_date);?></td>
-                        <td style="text-align:center;"><?php echo esc_html($todo_action);?></td>
-                        <td><?php echo esc_html($doc_title);?></td>
+                        <td style="text-align:center;"><?php echo $due_date;?></td>
+                        <td style="text-align:center;"><?php echo $todo_action_title;?></td>
+                        <td><?php echo $todo_doc_title;?></td>
                     </tr>
                 <?php 
             endwhile;
@@ -122,7 +124,9 @@ function to_do_list_shortcode() {
         else :
             echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
         endif;
+
     } else {
+        
         // Did not login system yet
         if( isset($_GET['_id']) ) {
             // Using Line User ID to register and login into the system

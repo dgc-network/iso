@@ -181,8 +181,6 @@ function site_actions_content($post) {
     $x = 0;
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-        //while ($query->have_posts()) {
-            //$query->the_post();
             echo '<tr id="site-action-list-'.$x.'">';
             echo '<td style="text-align:center;"><span id="btn-edit-action-'.get_the_ID().'" class="dashicons dashicons-edit"></span></td>';
             echo '<td><a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a></td>';
@@ -192,7 +190,6 @@ function site_actions_content($post) {
             echo '<td style="text-align:center;"><span id="btn-del-action-'.get_the_ID().'" class="dashicons dashicons-trash"></span></td>';
             echo '</tr>';
             $x += 1;
-        //}    
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
@@ -246,23 +243,20 @@ function site_actions_content($post) {
 }
 
 function get_site_action_list() {
-    //calcuate_course_sessions_data($_POST['_course_id']);
     // Retrieve the value
     $query = retrieve_site_actions_data($_POST['_site_id']);
 
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-        //while ($query->have_posts()) {
-            //$query->the_post();
             $_list = array();
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
             $_list["action_description"] = get_the_content();
-            $_list["next_action_title"] = esc_html(get_post_meta(get_the_ID(), 'next_action', true));
+            $next_action_id = esc_html(get_post_meta(get_the_ID(), 'next_action', true));
+            $_list["next_action_title"] = get_the_title($next_action_id);
             $_list["next_action_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_action_leadtime', true));
             array_push($_array, $_list);
-        //}    
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }

@@ -118,7 +118,8 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align:center;"><span id="btn-edit-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_description+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.action_leadtime+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.next_action_title+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.next_action_leadtime+'</td>';
                     output = output+'<td style="text-align: center;"><span id="btn-del-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
                     $("#site-action-list-"+index).append(output);
                     $("#site-action-list-"+index).show();
