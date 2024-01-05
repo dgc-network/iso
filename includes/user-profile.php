@@ -198,11 +198,11 @@ function user_profile_shortcode() {
         echo '<label for="display-name">Name : </label>';
         echo '<input type="text" id="display-name" name="_display_name" value="'.$user_data->display_name.'" class="text ui-widget-content ui-corner-all" />';
         echo '<label for="user-email">Email : </label>';
-        echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" />';
+        echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
         ?>
         <label for="user-site"> Site: </label>
-        <select id="user-site" name="_user_site">
+        <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
             <?php
             $site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
             echo '<option value="">Select Site</option>';
