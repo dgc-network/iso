@@ -135,11 +135,41 @@ function save_site_settings_content($post_id) {
 }
 add_action('save_post', 'save_site_settings_content');
 
+// Register action post type
+function register_action_post_type() {
+    $labels = array(
+        'name'               => _x( 'Sites', 'post type general name', 'your-text-domain' ),
+        'singular_name'      => _x( 'Site', 'post type singular name', 'your-text-domain' ),
+        'add_new'            => _x( 'Add New Site', 'book', 'your-text-domain' ),
+        'add_new_item'       => __( 'Add New Site', 'your-text-domain' ),
+        'edit_item'          => __( 'Edit Site', 'your-text-domain' ),
+        'new_item'           => __( 'New Site', 'your-text-domain' ),
+        'all_items'          => __( 'All Sites', 'your-text-domain' ),
+        'view_item'          => __( 'View Site', 'your-text-domain' ),
+        'search_items'       => __( 'Search Sites', 'your-text-domain' ),
+        'not_found'          => __( 'No sites found', 'your-text-domain' ),
+        'not_found_in_trash' => __( 'No sites found in the Trash', 'your-text-domain' ),
+        'parent_item_colon'  => '',
+        'menu_name'          => 'Sites'
+    );
+
+    $args = array(
+        //'labels'        => $labels,
+        'public'        => true,
+        'rewrite'       => array('slug' => 'actions'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        'menu_icon'     => 'dashicons-admin-multisite',
+    );
+    register_post_type( 'action', $args );
+}
+add_action('init', 'register_action_post_type');
+
 // Add a custom metabox for course sessions
 function add_site_actions_metabox() {
     add_meta_box(
         'site_actions_metabox',
-        'Site actions',
+        'Site settings',
         'site_actions_content',
         'site',
         'normal',
@@ -149,9 +179,10 @@ function add_site_actions_metabox() {
 add_action('add_meta_boxes', 'add_site_actions_metabox');
 
 function site_actions_content($post) {
+    site_settings_content($post);
+
     // Retrieve the value
     $query = retrieve_site_actions_data($post->ID);
-
     // Action List inside Site actions metabox
     echo '<div class="ui-widget">';
     echo '<table class="ui-widget ui-widget-content" style="width:100%;">';
