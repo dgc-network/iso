@@ -193,8 +193,6 @@ function site_actions_content($post) {
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
-
-    //while ($x<(intval(get_post_meta( $this->courses_page_id, '_records_per_page', true ))-1)) {
     while ($x<50) {
         echo '<tr id="site-action-list-'.$x.'" style="display:none;"></tr>';
         $x += 1;
@@ -206,40 +204,8 @@ function site_actions_content($post) {
     echo '</tr>';
     echo '</table>';
     echo '</div>';
-
-    // Action Dialog
-    //echo '<div id="site-action-dialog" title="Action dialog" style="display:none;">';
-    //echo '<fieldset>';
+    // Embedded the $post->ID
     echo '<input type="hidden" id="site-id" value="'.$post->ID.'" />';
-/*    
-    echo '<input type="hidden" id="action-id" />';
-    echo '<label for="action-title">Action Title</label>';
-    echo '<input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />';
-
-    echo '<div>';
-    echo '<div style="display:inline-block; width:48%; margin-right:5px;">';
-    echo '<label for="session-price">Session Price</label>';
-    echo '<input type="text" id="session-price" class="text ui-widget-content ui-corner-all" />';
-    echo '</div>';
-    echo '<div style="display:inline-block; width:48%; ">';
-    echo '<label for="session-period">Time Period(minutes)</label>';
-    echo '<input type="text" id="session-period" class="text ui-widget-content ui-corner-all" />';
-    echo '</div>';
-    echo '</div>';
-
-    echo '<div>';
-    echo '<div style="display:inline-block; width:48%; margin-right:5px;">';
-    echo '<label for="session-visibility">Session Visibility</label>';
-    echo '<input type="checkbox" id="session-visibility" style="display:inline-block; width:5%; " /> hide from learners.';
-    echo '</div>';
-    echo '<div style="display:inline-block; width:48%; ">';
-    echo '<label for="is-exam-session">Exam Session</label>';
-    echo '<input type="checkbox" id="is-exam-session" style="display:inline-block; width:5%; " /> is exam session.';
-    echo '</div>';
-    echo '</div>';
-    echo '</fieldset>';
-    echo '</div>';
-*/    
 }
 
 function get_site_action_list() {
