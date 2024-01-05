@@ -35,7 +35,7 @@ function register_site_post_type() {
 add_action('init', 'register_site_post_type');
 
 // Custom columns
-function add_custom_site_field_column($columns) {
+function add_site_custom_field_column($columns) {
     // Insert the custom field column after the 'title' column
     $new_columns = array();
     foreach ($columns as $key => $value) {
@@ -47,20 +47,20 @@ function add_custom_site_field_column($columns) {
     }
     return $new_columns;
 }
-add_filter('manage_site_posts_columns', 'add_custom_site_field_column');
+add_filter('manage_site_posts_columns', 'add_site_custom_field_column');
 
-function add_sortable_custom_site_field_column($sortable_columns) {
+function add_sortable_site_custom_field_column($sortable_columns) {
     $sortable_columns['site_url_column'] = 'site_url';
     return $sortable_columns;
 }
-add_filter('manage_edit-site_sortable_columns', 'add_sortable_custom_site_field_column');
+add_filter('manage_edit-site_sortable_columns', 'add_sortable_site_custom_field_column');
 
-function display_custom_site_field_in_admin_list($column, $post_id) {
+function display_site_custom_field_in_admin_list($column, $post_id) {
     if ($column === 'site_url_column') {
         echo esc_html(get_post_meta($post_id, 'site_url', true));
     }
 }
-add_action('manage_site_posts_custom_column', 'display_custom_site_field_in_admin_list', 10, 2);
+add_action('manage_site_posts_custom_column', 'display_site_custom_field_in_admin_list', 10, 2);
 
 // Meta boxes
 function add_site_image_metabox() {
@@ -102,7 +102,7 @@ function save_site_image_content($post_id) {
     }
 }
 add_action('save_post', 'save_site_image_content');
-
+/*
 function add_site_settings_metabox() {
     add_meta_box(
         'site_settings_id',
@@ -114,7 +114,7 @@ function add_site_settings_metabox() {
     );
 }
 add_action('add_meta_boxes', 'add_site_settings_metabox');
-
+*/
 function site_settings_content($post) {
     wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
     $site_url = esc_attr(get_post_meta($post->ID, 'site_url', true));
@@ -148,7 +148,7 @@ function register_action_post_type() {
 }
 add_action('init', 'register_action_post_type');
 
-// Add a custom metabox for course sessions
+// Add a custom metabox
 function add_site_actions_metabox() {
     add_meta_box(
         'site_actions_metabox',
@@ -173,23 +173,27 @@ function site_actions_content($post) {
     echo '<th></th>';
     echo '<th>Action</th>';
     echo '<th>Description</th>';
+    echo '<th>Next</th>';
     echo '<th>Leadtime</th>';
     echo '<th></th>';
     echo '</tr></thead>';
     echo '<tbody>';
     $x = 0;
     if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
+        while ($query->have_posts()) : $query->the_post();
+        //while ($query->have_posts()) {
+            //$query->the_post();
             echo '<tr id="site-action-list-'.$x.'">';
             echo '<td style="text-align:center;"><span id="btn-edit-action-'.get_the_ID().'" class="dashicons dashicons-edit"></span></td>';
             echo '<td><a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a></td>';
             echo '<td>'.get_the_content().'</td>';
-            echo '<td style="text-align:center;">'.get_post_meta(get_the_ID(), 'action_leadtime', true).'</td>';
+            echo '<td style="text-align:center;">'.get_post_meta(get_the_ID(), 'next_action', true).'</td>';
+            echo '<td style="text-align:center;">'.get_post_meta(get_the_ID(), 'next_action_leadtime', true).'</td>';
             echo '<td style="text-align:center;"><span id="btn-del-action-'.get_the_ID().'" class="dashicons dashicons-trash"></span></td>';
             echo '</tr>';
             $x += 1;
-        }    
+        //}    
+        endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
 
@@ -201,15 +205,16 @@ function site_actions_content($post) {
     echo '</tbody>';
     // Button to add a new action
     echo '<tr>';
-    echo '<td colspan="5"><div id="btn-new-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td>';
+    echo '<td colspan="6"><div id="btn-new-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td>';
     echo '</tr>';
     echo '</table>';
     echo '</div>';
 
     // Action Dialog
-    echo '<div id="site-action-dialog" title="Action dialog" style="display:none;">';
-    echo '<fieldset>';
+    //echo '<div id="site-action-dialog" title="Action dialog" style="display:none;">';
+    //echo '<fieldset>';
     echo '<input type="hidden" id="site-id" value="'.$post->ID.'" />';
+/*    
     echo '<input type="hidden" id="action-id" />';
     echo '<label for="action-title">Action Title</label>';
     echo '<input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />';
@@ -237,6 +242,7 @@ function site_actions_content($post) {
     echo '</div>';
     echo '</fieldset>';
     echo '</div>';
+*/    
 }
 
 function get_site_action_list() {
@@ -246,15 +252,18 @@ function get_site_action_list() {
 
     $_array = array();
     if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
+        while ($query->have_posts()) : $query->the_post();
+        //while ($query->have_posts()) {
+            //$query->the_post();
             $_list = array();
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
             $_list["action_description"] = get_the_content();
-            $_list["action_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'action_leadtime', true));
+            $_list["next_action_title"] = esc_html(get_post_meta(get_the_ID(), 'next_action', true));
+            $_list["next_action_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_action_leadtime', true));
             array_push($_array, $_list);
-        }    
+        //}    
+        endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
     wp_send_json($_array);
@@ -279,7 +288,7 @@ function new_site_action_data() {
     if ($post_id) {
         // Add metadata to the post
         update_post_meta($post_id, 'site_id', $_POST['_site_id']);
-        update_post_meta($post_id, 'action_leadtime', 86400); // Assume the default is 1 day
+        update_post_meta($post_id, 'next_action_leadtime', 86400); // Assume the default is 1 day
     }
     wp_send_json($post_id);
 }

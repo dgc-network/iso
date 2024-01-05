@@ -63,9 +63,15 @@ function save_todo_custom_fields($post_id) {
     if (isset($_POST['todo_due_date'])) {
         update_post_meta($post_id, '_todo_due_date', sanitize_text_field($_POST['todo_due_date']));
     }
+    if (isset($_POST['todo_site_action'])) {
+        update_post_meta($post_id, '_todo_site_action', sanitize_text_field($_POST['todo_site_action']));
+    }
+    if (isset($_POST['todo_doc_title'])) {
+        update_post_meta($post_id, '_todo_doc_title', sanitize_text_field($_POST['todo_doc_title']));
+    }
 
     // Assign the to-do item to the current user
-    update_post_meta($post_id, '_todo_assigned_user', get_current_user_id());
+    //update_post_meta($post_id, '_todo_assigned_user', get_current_user_id());
 }
 add_action('save_post', 'save_todo_custom_fields');
 
@@ -86,25 +92,30 @@ function to_do_list_shortcode() {
                     'value' => $current_user_id,
                 ),
             ),
-        );
+        );    
+        $query = new WP_Query($args);
     
-        $todos = new WP_Query($args);
-    
-        if ($todos->have_posts()) :
-            echo '<h2>'.__( 'To-do list', 'your-text-domain' ).'</h2>';
-            while ($todos->have_posts()) : $todos->the_post();
+        if ($query->have_posts()) :?>
+            <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
+            <table class="to-do-list" style="width:100%;">
+                <tbody>
+            <?php
+            while ($query->have_posts()) : $query->the_post();
                 $due_date = get_post_meta(get_the_ID(), '_todo_due_date', true);
                 $todo_action = get_post_meta(get_the_ID(), '_todo_site_action', true);
                 $doc_title = get_post_meta(get_the_ID(), '_todo_doc_title', true);
                 ?>
-                <div class="todo-item" style="display:flex;">
-                    <div><?php echo esc_html($due_date); ?></div>
-                    <div><?php echo esc_html($todo_action); ?></div>
-                    <div><?php echo esc_html($doc_title); ?></div>
-                    <div><?php the_title(); ?></div>
-                </div>
-                <?php
+                    <tr class="todo-item">
+                        <td style="text-align:center;"><?php echo esc_html($due_date);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($todo_action);?></td>
+                        <td><?php echo esc_html($doc_title);?></td>
+                    </tr>
+                <?php 
             endwhile;
+            ?>
+                </tbody>
+            </table>
+            <?php
             wp_reset_postdata();
         else :
             echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
