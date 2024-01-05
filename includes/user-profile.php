@@ -200,7 +200,7 @@ function user_profile_shortcode() {
         echo '<input type="text" name="_display_name" value="'.$user->display_name.'" class="text ui-widget-content ui-corner-all" />';
         echo '<label style="text-align:left;" for="_user_email">Email:</label>';
         echo '<input type="text" name="_user_email" value="'.$user->user_email.'" class="text ui-widget-content ui-corner-all" />';
-        echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
+        //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
 
         $args = array(
             'post_type'      => 'action',

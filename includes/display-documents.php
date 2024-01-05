@@ -89,12 +89,19 @@ function display_documents_shortcode() {
             <input type="hidden" id="document-id" />
             <label for="document-title">Title:</label>
             <input type="text" id="document-title" />
-            <label for="document-number">Doc.#:</label>
-            <input type="text" id="document-number" />
-            <label for="document-revision">Revision:</label>
-            <input type="text" id="document-revision" />
-            <label for="document-date">Date:</label>
-            <input type="text" id="document-date" />
+            <div>
+            <div style="display:inline-block;">
+                <label for="document-number">Doc.#:</label>
+                <input type="text" id="document-number" />
+            </div>
+            <div style="display:inline-block;">
+                <label for="document-revision">Revision:</label>
+                <input type="text" id="document-revision" />
+            <div style="display:inline-block;">
+                <label for="document-date">Date:</label>
+                <input type="text" id="document-date" />
+            </div>
+            </div>
             <label for="document-url">URL:</label>
             <textarea id="document-url" rows="3" style="width:99%;"></textarea>
         </fieldset>
