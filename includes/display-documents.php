@@ -55,7 +55,7 @@ function display_documents_shortcode() {
 
     if ($query->have_posts()) :?>
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-        <table class="display-documents" style="width:100%;">
+        <table class="ui-widget" style="width:100%;">
             <thead>
                 <tr>
                     <th></th>

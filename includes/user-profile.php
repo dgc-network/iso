@@ -178,7 +178,7 @@ function user_profile_shortcode() {
                 'user_email' => $_POST['_user_email'], 
             ) );
 
-            //update_post_meta( $post_id, 'dgc_wallet_balance', $your_balance+$amount );
+            update_post_meta( $current_user_id, 'user_site', $_POST['_user_site'] );
 
             if ( is_wp_error( $user_data ) ) {
                 // There was an error; possibly this user doesn't exist.
@@ -190,7 +190,6 @@ function user_profile_shortcode() {
         }
 
         $user_data = get_userdata( $current_user_id );
-        $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
 
         echo '<div class="ui-widget">';
         echo '<h2>User profile</h2>';
@@ -201,7 +200,24 @@ function user_profile_shortcode() {
         echo '<label for="user-email">Email : </label>';
         echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
-
+        ?>
+        <label for="user-site"> Site: </label>
+        <select id="user-site" name="_user_site">
+            <?php
+            $site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
+            echo '<option value="">Select Site</option>';
+            $site_args = array(
+                'post_type'      => 'site',
+                'posts_per_page' => -1,
+            );
+            $sites = get_posts($site_args);    
+            foreach ($sites as $site) {
+                $selected = ($site_id == $site->ID) ? 'selected' : '';
+                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+            }
+            ?>
+        </select>
+        <?php
         $args = array(
             'post_type'      => 'action',
             'posts_per_page' => -1,
