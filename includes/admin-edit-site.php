@@ -245,8 +245,8 @@ function get_site_action_list() {
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_course_sessions_data', 'get_course_sessions_data' );
-add_action( 'wp_ajax_nopriv_get_course_sessions_data', 'get_course_sessions_data' );
+add_action( 'wp_ajax_get_site_action_list', 'get_site_action_list' );
+add_action( 'wp_ajax_nopriv_get_site_action_list', 'get_site_action_list' );
 
 function new_site_action_data() {
     $current_user = wp_get_current_user();
