@@ -163,4 +163,63 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     }
 }
 
+// Shortcode to display User profile on frontend
+function user_profile_shortcode() {
+    ob_start(); // Start output buffering
+
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
+        $current_user_id = get_current_user_id();
+        $user = get_userdata( $current_user_id );
+        $site_id = esc_html(get_post_meta($current_user_id, '_site_id', true));
+
+        ?>
+            <h2><?php echo __( 'User profile', 'your-text-domain' );?></h2>
+        <?php
+
+        $args = array(
+            'post_type'      => 'action',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                ),
+            ),
+        );    
+        $query = new WP_Query($args);
+    
+        if ($query->have_posts()) :?>
+            <table class="user-action-list" style="width:100%;">
+                <thead>
+                    <th></th>
+                    <th>Action</th>
+                    <th>Description</th>
+                </thead>
+                <tbody>
+            <?php
+            while ($query->have_posts()) : $query->the_post();
+                ?>
+                    <tr class="user-action-item">
+                        <td style="text-align:center;"><input type="checkbox" id="user-action-" /></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
+                        <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
+                    </tr>
+                <?php 
+            endwhile;
+            ?>
+                </tbody>
+            </table>
+            <?php
+            wp_reset_postdata();
+        else :
+            echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
+        endif;
+
+    } else {
+        did_not_login();
+    }
+    return ob_get_clean(); // Return the buffered content
+}
+add_shortcode('user-profile', 'user_profile_shortcode');
 
