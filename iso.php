@@ -16,11 +16,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+*/
 // Function to enqueue scripts for the custom chat_gpt admin
 function admin_enqueue() {
     wp_enqueue_style( 'jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );

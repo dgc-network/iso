@@ -37,3 +37,100 @@ jQuery(document).ready(function($) {
 
 });
 
+jQuery(document).ready(function($) {
+
+    activate_site_actions_data()
+
+    $("#btn-new-action").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'new_site_action_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_site_action_list($("#site-id").val());
+            },
+            error: function(error){
+                alert(error);
+            }
+        });    
+    });
+
+    function activate_site_actions_data(){
+        $('[id^="btn-"]').mouseover(function() {
+            $(this).css('cursor', 'pointer');
+            $(this).css('color', 'red');
+        });
+            
+        $('[id^="btn-"]').mouseout(function() {
+            $(this).css('cursor', 'default');
+            $(this).css('color', 'black');
+        });
+
+        $('[id^="btn-edit-action-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(16);
+            window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
+        });
+    
+        $('[id^="btn-del-action-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(15);
+            if (window.confirm("Are you sure you want to delete this site action?")) {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_site_action_data',
+                        '_action_id': id,
+                    },
+                    success: function (response) {
+                        get_site_action_list($("#site-id").val());
+                    },
+                    error: function(error){
+                        alert(error);
+                    }
+                });
+            }
+        });        
+    }
+
+    function get_site_action_list(id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_action_list',
+                '_site_id': id,
+            },
+            success: function (response) {
+                for(index=0;index<50;index++) {
+                    $("#site-action-list-"+index).hide();
+                    $("#site-action-list-"+index).empty();
+                }
+                $.each(response, function (index, value) {
+                    output = '';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td>'+value.action_title+'</td>';
+                    output = output+'<td>'+value.action_description+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.action_leadtime+'</td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#site-action-list-"+index).append(output);
+                    $("#site-action-list-"+index).show();
+                    //$("#site-action-id-"+index).val(value.action_id);
+                });
+
+                activate_site_actions_data();
+            },
+            error: function(error){
+                alert(error);
+            }
+        });
+    }
+});
+
