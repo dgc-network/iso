@@ -126,7 +126,8 @@ function to_do_list_shortcode() {
         endif;
 
     } else {
-        
+        did_not_login();
+/*        
         // Did not login system yet
         if( isset($_GET['_id']) ) {
             // Using Line User ID to register and login into the system
@@ -170,7 +171,7 @@ function to_do_list_shortcode() {
             echo '</div>';
     
         }
-
+*/
 
     }
     

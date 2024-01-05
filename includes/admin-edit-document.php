@@ -46,7 +46,7 @@ function display_custom_document_field_in_admin_list($column, $post_id) {
     }
 }
 add_action('manage_document_posts_custom_column', 'display_custom_document_field_in_admin_list', 10, 2);
-
+/*
 // Meta boxes
 function add_document_settings_metabox() {
     add_meta_box(
@@ -59,7 +59,7 @@ function add_document_settings_metabox() {
     );
 }
 add_action('add_meta_boxes', 'add_document_settings_metabox');
-
+*/
 // Callback function to display the content of the meta box
 function document_settings_content($post) {
     wp_nonce_field('document_settings_nonce', 'document_settings_nonce');
