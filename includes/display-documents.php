@@ -42,6 +42,14 @@ function display_documents_shortcode() {
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
+/*        
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $_id,
+            ),
+        ),
+*/        
     );
     $query = new WP_Query($args);
 
@@ -119,37 +127,7 @@ function display_documents_shortcode() {
             </thead>
             <tbody>
         <?php
-            $args = array(
-                'post_type'      => 'action',
-                'posts_per_page' => -1,
-            );
-            $query = new WP_Query($args);
-        
         $x = 0;
-        while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $doc_action_id = esc_html(get_post_meta($post_id, 'doc_action_id', true)); //get doc_action_id from site_action_id
-            $doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
-            $doc_action_content = esc_html(get_the_content($doc_action_id)); //get site_action_content from site_actions
-            $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
-            $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
-            $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
-            $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_submit_user_id', true));
-            $user = get_userdata($doc_submit_user_id);
-            $doc_action_submit_user = esc_html($user->display_name); //get site_next_action_title 
-            $doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_submit_time', true)); //get doc_next_action_id from site_next_action_id
-            ?>
-                <tr id="doc-action-list-<?php echo $x;?>">
-                    <td style="text-align:center;"><span id="btn-edit-doc-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td style="text-align:center;"><?php echo $doc_action_title;?></td>
-                    <td><?php echo $doc_action_content;?></td>
-                    <td style="text-align:center;"><?php echo $doc_action_submit_user;?></td>
-                    <td style="text-align:center;"><?php echo $doc_action_submit_time;?></td>
-                    <td style="text-align:center;"><span id="btn-del-doc-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
-                </tr>
-            <?php 
-            $x += 1;
-        endwhile;
         while ($x<50) {
             echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
             $x += 1;
@@ -208,9 +186,9 @@ function get_document_list_data() {
 
     $_array = array();
     if ($query->have_posts()) {
-        //while ($query->have_posts()) : $query->the_post();
-        while ($query->have_posts()) {
-            $query->the_post();
+        while ($query->have_posts()) : $query->the_post();
+        //while ($query->have_posts()) {
+            //$query->the_post();
             $post_id = (int) get_the_ID();
             $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
             $_list = array();
@@ -221,7 +199,8 @@ function get_document_list_data() {
             $_list["document_date"] = esc_html(get_post_meta($post_id, 'document_date', true));
             $_list["document_url"] = esc_html(get_post_meta($post_id, 'document_url', true));
             array_push($_array, $_list);
-        }    
+        //}    
+        endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
     wp_send_json($_array);
@@ -237,6 +216,48 @@ function get_document_dialog_data() {
         $response["document_revision"] = esc_html(get_post_meta($_POST['_document_id'], 'document_revision', true));
         $response["document_date"] = esc_html(get_post_meta($_POST['_document_id'], 'document_date', true));
         $response["document_url"] = esc_html(get_post_meta($_POST['_document_id'], 'document_url', true));
+
+        $args = array(
+            'post_type'      => 'action',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'   => 'doc_id',
+                    'value' => $_POST['_document_id'],
+                ),
+            ),
+        );
+        $query = new WP_Query($args);
+        $_array = array();
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+            //while ($query->have_posts()) {
+                //$query->the_post();
+                $post_id = (int) get_the_ID();
+                $doc_action_id = esc_html(get_post_meta($post_id, 'doc_action_id', true)); //get doc_action_id from site_action_id
+                //$doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
+                //$doc_action_content = esc_html(get_the_content($doc_action_id)); //get site_action_content from site_actions
+                $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
+                $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
+                $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
+                $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_action_submit_user', true));
+                $user = get_userdata($doc_submit_user_id);
+                //$doc_action_submit_user = esc_html($user->display_name);
+                //$doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true)); //get doc_next_action_id from site_next_action_id
+
+                $_list = array();
+                $_list["action_id"] = get_the_ID();
+                $_list["action_title"] = esc_html(get_the_title($doc_action_id));
+                $_list["action_content"] = esc_html(get_the_content($doc_action_id));
+                $_list["action_submit_user"] = esc_html($user->display_name);
+                $_list["action_submit_time"] = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true));
+                array_push($_array, $_list);
+            //}    
+            endwhile;
+            wp_reset_postdata(); // Reset post data to the main loop
+        }
+        $response["action_array"] = $_array;
+
     }
     wp_send_json($response);
 }

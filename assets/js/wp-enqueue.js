@@ -78,6 +78,21 @@ jQuery(document).ready(function($) {
                     $("#document-revision").val(response.document_revision);
                     $("#document-date").val(response.document_date);
                     $("#document-url").val(response.document_url);
+                    for(index=0;index<50;index++) {
+                        $("#doc-action-list-"+index).hide();
+                        $("#doc-action-list-"+index).empty();
+                    }
+                    $.each(response.action_array, function (index, value) {
+                        output = '';
+                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                        output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
+                        output = output+'<td>'+value.action_content+'</td>';
+                        output = output+'<td style="text-align:center;">'+value.action_submit_user+'</td>';
+                        output = output+'<td style="text-align:center;">'+value.action_submit_time+'</td>';
+                        output = output+'<td style="text-align:center;"><span id="btn-del-doc-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                        $("#doc-action-list-"+index).append(output);
+                        $("#doc-action-list-"+index).show();
+                    })    
                 },
                 error: function (error) {
                     // Log the error object to the console for debugging
