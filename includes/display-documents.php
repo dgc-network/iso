@@ -49,6 +49,8 @@ function display_documents_shortcode() {
 
             // Add/update user metadata
             update_user_meta($current_user_id, 'site_id', $custom_data);
+            
+            wp_redirect(home_url());
     
         }
         if ($site_id==''){
