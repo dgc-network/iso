@@ -16,11 +16,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
+/*
 if (!current_user_can('administrator')) {
     add_filter('show_admin_bar', '__return_false');
 }
-
+*/
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
