@@ -16,11 +16,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-/*
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-*/
+
 // Function to enqueue scripts for the custom chat_gpt admin
 function admin_enqueue() {
     wp_enqueue_style( 'jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );
@@ -170,14 +170,15 @@ function user_did_not_login() {
 
         //$link_uri = home_url().'/?_id='.$_GET['_id'].'&_otp='.$_GET['_one_time_password'];
 
-        echo '<div class="ui-widget" style="text-align:center;">';
+        //echo '<div class="ui-widget" style="text-align:center;">';
+        echo '<div class="ui-widget">';
         echo '<p>This is an automated process that helps you register for the system.</p>';
         echo '<p>Please click the Submit button below to complete your registration.</p>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
         echo '<fieldset>';
         ?>
         <label for="display-name">Name:</label>
-        <input type="text" id="display-name" name="display_name" value="<?php echo $_GET['_name'];?>" class="text ui-widget-content ui-corner-all" />';
+        <input type="text" id="display-name" name="display_name" value="<?php echo $_GET['_name'];?>" class="text ui-widget-content ui-corner-all" />
         <label for="user-site">Site:</label>
         <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
             <?php
