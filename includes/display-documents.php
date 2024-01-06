@@ -45,11 +45,11 @@ function display_documents_shortcode() {
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         if (isset($_POST['wp-submit'])) {
             // Get additional metadata or perform custom actions
-            $custom_data = isset($_REQUEST['_site_id']) ? sanitize_text_field($_REQUEST['_site_id']) : '';
+            $custom_data = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : '';
 
             // Add/update user metadata
             update_user_meta($current_user_id, 'site_id', $custom_data);
-            
+
             wp_redirect(home_url());
     
         }
