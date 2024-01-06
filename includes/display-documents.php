@@ -39,114 +39,156 @@ add_action('init', 'register_document_post_type');
 function display_documents_shortcode() {
     ob_start(); // Start output buffering
 
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-/*        
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $_id,
-            ),
-        ),
-*/        
-    );
-    $query = new WP_Query($args);
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
+        $current_user_id = get_current_user_id();
+        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        if (isset($_POST['wp-submit'])) {
+            // Get additional metadata or perform custom actions
+            $custom_data = isset($_REQUEST['_site_id']) ? sanitize_text_field($_REQUEST['_site_id']) : '';
 
-    if ($query->have_posts()) :?>
-        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-        <table class="ui-widget" style="width:100%;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                    <th><?php echo __( '編號', 'your-text-domain' );?></th>
-                    <th><?php echo __( '版本', 'your-text-domain' );?></th>
-                    <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-        <?php
-        $x = 0;
-        while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
+            // Add/update user metadata
+            update_user_meta($user->ID, 'site_id', $custom_data);
+    
+        }
+        if ($site_id==''){
             ?>
-                <tr id="document-list-<?php echo $x;?>">
-                    <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td><a href="<?php echo $document_url;?>"><?php the_title();?></a></td>
-                    <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_number', true));?></td>
-                    <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_revision', true));?></td>
-                    <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_date', true));?></td>
-                    <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
-                </tr>
-            <?php 
-            $x += 1;
-        endwhile;
-        while ($x<50) {
-            echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
-            $x += 1;
-        }
-        ?>
-            </tbody>
-            <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-        </table>
-        <div id="document-dialog" title="Document dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="document-id" />
-            <label for="document-title">Title:</label>
-            <input type="text" id="document-title" />
-            <div>
-                <div style="display:inline-block;">
-                    <label for="document-number">Doc.#:</label>
-                    <input type="text" id="document-number" />
-                </div>
-                <div style="display:inline-block;">
-                    <label for="document-revision">Revision:</label>
-                    <input type="text" id="document-revision" style="width:30px;" />
-                </div>
-                <div style="display:inline-block;">
-                    <label for="document-date">Date:</label>
-                    <input type="text" id="document-date" />
-                </div>
+            <div class="ui-widget">
+                <h2>User profile</h2>
+                <form method="post">
+                <fieldset>
+                    <label for="site-id">Site:</label>
+                    <select id="site-id" name="_site-id" class="text ui-widget-content ui-corner-all">
+                        <option value="">Select Site</option>
+                    <?php
+                        $site_args = array(
+                            'post_type'      => 'site',
+                            'posts_per_page' => -1,
+                        );
+                        $sites = get_posts($site_args);
+                        foreach ($sites as $site) {?>
+                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title);?></option><?php
+                        }
+                    ?>
+                    </select>
+                    <input type="submit" name="wp-submit" class="button button-primary" value="Submit" />
+                </fieldset>
+                </form>
             </div>
-            <label for="document-url">URL:</label>
-            <textarea id="document-url" rows="3" style="width:99%;"></textarea>
-
-            <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-        <?php
-        $x = 0;
-        while ($x<50) {
-            echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
-            $x += 1;
+            <?php        
+            return;
         }
-        ?>
-            </tbody>
-            <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'   => 'site_id',
+                    'value' => $_id,
+                ),
+            ),
+        );
+        $query = new WP_Query($args);
+    
+        if ($query->have_posts()) :?>
+            <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                        <th><?php echo __( '編號', 'your-text-domain' );?></th>
+                        <th><?php echo __( '版本', 'your-text-domain' );?></th>
+                        <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            <?php
+            $x = 0;
+            while ($query->have_posts()) : $query->the_post();
+                $post_id = (int) get_the_ID();
+                $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
+                ?>
+                    <tr id="document-list-<?php echo $x;?>">
+                        <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                        <td><a href="<?php echo $document_url;?>"><?php the_title();?></a></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_number', true));?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_revision', true));?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_date', true));?></td>
+                        <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                    </tr>
+                <?php 
+                $x += 1;
+            endwhile;
+            while ($x<50) {
+                echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
+                $x += 1;
+            }
+            ?>
+                </tbody>
+                <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
-        </fieldset>
-        </div>
-
-        <?php
-        wp_reset_postdata();
-        
-    else :
-        echo '<h2>'.__( 'No documents found', 'your-text-domain' ).'</h2>';
-    endif;
-
+            <div id="document-dialog" title="Document dialog" style="display:none;">
+            <fieldset>
+                <input type="hidden" id="document-id" />
+                <label for="document-title">Title:</label>
+                <input type="text" id="document-title" />
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="document-number">Doc.#:</label>
+                        <input type="text" id="document-number" />
+                    </div>
+                    <div style="display:inline-block;">
+                        <label for="document-revision">Revision:</label>
+                        <input type="text" id="document-revision" style="width:30px;" />
+                    </div>
+                    <div style="display:inline-block;">
+                        <label for="document-date">Date:</label>
+                        <input type="text" id="document-date" />
+                    </div>
+                </div>
+                <label for="document-url">URL:</label>
+                <textarea id="document-url" rows="3" style="width:99%;"></textarea>
+    
+                <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            <?php
+            $x = 0;
+            while ($x<50) {
+                echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
+                $x += 1;
+            }
+            ?>
+                </tbody>
+                <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+                </table>
+            </fieldset>
+            </div>
+    
+            <?php
+            wp_reset_postdata();
+            
+        else :
+            echo '<h2>'.__( 'No documents found', 'your-text-domain' ).'</h2>';
+        endif;
+    
+    } else {
+        user_did_not_login_yet();
+    }
     return ob_get_clean(); // Return the buffered content
+    
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 

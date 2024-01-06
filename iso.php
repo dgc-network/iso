@@ -117,6 +117,7 @@ function init_webhook_events() {
             }
         }
 
+        // Regular chating
         switch ($event['type']) {
             case 'message':
                 $message = $event['message'];
@@ -149,7 +150,7 @@ function init_webhook_events() {
 }
 add_action( 'init', 'init_webhook_events' );
 
-function user_did_not_login() {
+function user_did_not_login_yet() {
     // User did not login system yet
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system

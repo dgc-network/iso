@@ -126,7 +126,7 @@ function to_do_list_shortcode() {
         endif;
 
     } else {
-        user_did_not_login();
+        user_did_not_login_yet();
     }
     
     return ob_get_clean(); // Return the buffered content
