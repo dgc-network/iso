@@ -219,7 +219,7 @@ function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
         // Add/update user metadata
-        update_post_meta( $current_user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
 
     return $user;
