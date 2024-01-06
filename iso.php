@@ -264,15 +264,6 @@ function custom_login_process($user, $password) {
 
         // Add/update user metadata
         update_user_meta($user->ID, 'user_site', $custom_data);
-
-        // Log the information to the error log
-        error_log('Custom Data: ' . $custom_data);
-
-        // Output the information to the screen for debugging
-        echo '<pre>';
-        echo 'Custom Data: ' . $custom_data . '<br>';
-        echo '$_REQUEST array: ' . print_r($_REQUEST, true) . '<br>';
-        echo '</pre>';
     }
 
     return $user;
