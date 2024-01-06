@@ -155,7 +155,7 @@ add_action( 'init', 'init_webhook_events' );
 
 function user_did_not_login() {
     // User did not login system yet
-    if( isset($_GET['_id']) && isset($_GET['_opt']) && isset($_GET['_name']) ) {
+    if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
         $array = get_users( array( 'meta_value' => $_GET['_id'] ));
         if (empty($array)) {
@@ -168,15 +168,33 @@ function user_did_not_login() {
             // To-Do: add_user_meta( $user_id, 'wallet_address', $_GET['_wallet_address']);
         }
 
-        $link_uri = home_url().'/?_id='.$_GET['_id'].'&_otp='.$_GET['_one_time_password'];
+        //$link_uri = home_url().'/?_id='.$_GET['_id'].'&_otp='.$_GET['_one_time_password'];
 
         echo '<div class="ui-widget" style="text-align:center;">';
         echo '<p>This is an automated process that helps you register for the system.</p>';
         echo '<p>Please click the Submit button below to complete your registration.</p>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
         echo '<fieldset>';
-        echo '<label for="display-name">';
-        echo '<input type="text" id="display-name" name="display_name" value="'. $_GET['_name'] .'" class="text ui-widget-content ui-corner-all" />';
+        ?>
+        <label for="display-name">Name:</label>
+        <input type="text" id="display-name" name="display_name" value="<?php echo $_GET['_name'];?>" class="text ui-widget-content ui-corner-all" />';
+        <label for="user-site">Site:</label>
+        <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
+            <?php
+            $site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
+            echo '<option value="">Select Site</option>';
+            $site_args = array(
+                'post_type'      => 'site',
+                'posts_per_page' => -1,
+            );
+            $sites = get_posts($site_args);    
+            foreach ($sites as $site) {
+                $selected = ($site_id == $site->ID) ? 'selected' : '';
+                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+            }
+            ?>
+        </select>
+        <?php
         echo '<input type="hidden" name="log" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="pwd" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="rememberme" value="foreverchecked" />';
@@ -204,4 +222,19 @@ function user_did_not_login() {
     }
 }
 
+function custom_login_process($user, $username, $password) {
+    // Check if the login was successful
+    if (is_a($user, 'WP_User')) {
+        // Get additional metadata or perform custom actions
+        $custom_data = $_POST['_user_site']; // Adjust based on your form fields
+
+        // Add/update user metadata
+        update_user_meta($user->ID, 'user_site', $custom_data);
+
+        // You can add more metadata or perform other actions here
+    }
+
+    return $user;
+}
+add_filter('wp_authenticate_user', 'custom_login_process', 10, 3);
 
