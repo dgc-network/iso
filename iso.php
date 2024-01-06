@@ -91,7 +91,8 @@ function init_webhook_events() {
     foreach ((array)$line_bot_api->parseEvents() as $event) {
         // Start the User Login/Registration process if got the one time password
         if ($event['message']['text']==get_option('_one_time_password')) {
-            $link_uri = home_url().'/?_id='.$event['source']['userId'];
+            $profile = $line_bot_api->getProfile($event['source']['userId']);
+            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
 
             if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
                 $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
@@ -172,8 +173,8 @@ function user_did_not_login() {
 
         //echo '<div class="ui-widget" style="text-align:center;">';
         echo '<div class="ui-widget">';
-        echo '<p>This is an automated process that helps you register for the system.</p>';
-        echo '<p>Please click the Submit button below to complete your registration.</p>';
+        //echo '<p>This is an automated process that helps you register for the system.</p>';
+        //echo '<p>Please click the Submit button below to complete your registration.</p>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
         echo '<fieldset>';
         ?>
@@ -182,7 +183,7 @@ function user_did_not_login() {
         <label for="user-site">Site:</label>
         <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
             <?php
-            $site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
+            //$site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
             echo '<option value="">Select Site</option>';
             $site_args = array(
                 'post_type'      => 'site',
@@ -223,7 +224,7 @@ function user_did_not_login() {
     }
 }
 
-function custom_login_process($user, $password) {
+function custom_login_process($user, $username, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
         // Get additional metadata or perform custom actions
@@ -232,13 +233,16 @@ function custom_login_process($user, $password) {
         // Add/update user metadata
         update_user_meta($user->ID, 'user_site', $custom_data);
 
-        // You can add more metadata or perform other actions here
-    } else {
-        // Authentication failed, handle the error if needed
-        // For example, log an error message or perform other actions
+        // Log the information to the error log
+        error_log('Custom Data: ' . $custom_data);
+
+        // Output the information to the screen for debugging
+        echo '<pre>';
+        echo 'Custom Data: ' . $custom_data . '<br>';
+        echo '$_POST array: ' . print_r($_POST, true) . '<br>';
+        echo '</pre>';
     }
 
     return $user;
 }
-
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 3);

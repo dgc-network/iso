@@ -57,11 +57,21 @@ if (!class_exists('line_bot_api')) {
                 http_response_code(400);
                 error_log('Missing request body');
             }
-
+/*            
             $data = json_decode($entityBody, true);
 
             return $data['events'];
-       
+*/       
+            $data = json_decode($entityBody, true);
+
+            if ($data === null || !isset($data['events'])) {
+                // Handle the case where decoding fails or 'events' key is not present
+                http_response_code(400);
+                error_log('Failed to decode JSON or missing "events" key');
+                return []; // or any other default value or action you prefer
+            }
+            
+            return $data['events'];
         }
 
         /**
