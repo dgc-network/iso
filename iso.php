@@ -16,11 +16,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-/*
-if (!current_user_can('administrator')) {
-    add_filter('show_admin_bar', '__return_false');
-}
-*/
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -31,6 +27,13 @@ function register_session() {
     }
 }
 add_action( 'init', 'register_session' );
+
+add_action('after_setup_theme', 'remove_admin_bar');
+function remove_admin_bar() {
+  if (!current_user_can('administrator') && !is_admin()) {
+    show_admin_bar(false);
+  }
+}
 
 function admin_enqueue() {
     wp_enqueue_style( 'jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );

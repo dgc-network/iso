@@ -58,7 +58,7 @@ function display_documents_shortcode() {
                 <form method="post">
                 <fieldset>
                     <label for="site-id">Site:</label>
-                    <select id="site-id" name="_site-id" class="text ui-widget-content ui-corner-all">
+                    <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
                         <option value="">Select Site</option>
                     <?php
                         $site_args = array(
