@@ -173,7 +173,7 @@ function user_did_not_login_yet() {
             <form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post'));?>">
             <fieldset>
                 <label for="display-name">Name:</label>
-                <input type="text" id="display-name" name="display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
                 <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
                     <option value="">Select Site</option>
@@ -218,6 +218,11 @@ function user_did_not_login_yet() {
 function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
+        $user_data = wp_update_user( array( 
+            'ID' => $user->ID, 
+            'display_name' => $_POST['_display_name'], 
+        ) );
+
         // Add/update user metadata
         update_post_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
