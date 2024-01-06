@@ -49,7 +49,7 @@ function display_documents_shortcode() {
 
             // Add/update user metadata
             //update_user_meta($current_user_id, 'site_id', $custom_data);
-            update_user_meta($current_user_id, 'site_id', $_POST['_site_id']);
+            update_post_meta( $current_user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
 
             wp_redirect(home_url());
     
@@ -70,7 +70,7 @@ function display_documents_shortcode() {
                         );
                         $sites = get_posts($site_args);
                         foreach ($sites as $site) {?>
-                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title).esc_attr($site->ID);?></option><?php
+                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title);?></option><?php
                         }
                     ?>
                     </select>
