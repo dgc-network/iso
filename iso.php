@@ -223,19 +223,22 @@ function user_did_not_login() {
     }
 }
 
-function custom_login_process($user, $username, $password) {
+function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
         // Get additional metadata or perform custom actions
-        $custom_data = $_POST['_user_site']; // Adjust based on your form fields
+        $custom_data = isset($_POST['_user_site']) ? sanitize_text_field($_POST['_user_site']) : '';
 
         // Add/update user metadata
         update_user_meta($user->ID, 'user_site', $custom_data);
 
         // You can add more metadata or perform other actions here
+    } else {
+        // Authentication failed, handle the error if needed
+        // For example, log an error message or perform other actions
     }
 
     return $user;
 }
-add_filter('wp_authenticate_user', 'custom_login_process', 10, 3);
 
+add_filter('wp_authenticate_user', 'custom_login_process', 10, 3);
