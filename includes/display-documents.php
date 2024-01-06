@@ -70,7 +70,7 @@ function display_documents_shortcode() {
                         );
                         $sites = get_posts($site_args);
                         foreach ($sites as $site) {?>
-                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title);?></option><?php
+                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title).esc_attr($site->ID);?></option><?php
                         }
                     ?>
                     </select>
