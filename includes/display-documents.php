@@ -48,7 +48,8 @@ function display_documents_shortcode() {
             $custom_data = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : '';
 
             // Add/update user metadata
-            update_user_meta($current_user_id, 'site_id', $custom_data);
+            //update_user_meta($current_user_id, 'site_id', $custom_data);
+            update_user_meta($current_user_id, 'site_id', $_POST['_site_id']);
 
             wp_redirect(home_url());
     
