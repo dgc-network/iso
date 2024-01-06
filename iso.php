@@ -175,6 +175,7 @@ function user_did_not_login() {
         echo '<div class="ui-widget">';
         //echo '<p>This is an automated process that helps you register for the system.</p>';
         //echo '<p>Please click the Submit button below to complete your registration.</p>';
+        echo '<h2>User profile</h2>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
         echo '<fieldset>';
         ?>
@@ -245,4 +246,4 @@ function custom_login_process($user, $password) {
 
     return $user;
 }
-add_filter('wp_authenticate_user', 'custom_login_process', 10, 3);
+add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
