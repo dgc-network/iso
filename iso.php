@@ -154,8 +154,8 @@ function init_webhook_events() {
 add_action( 'init', 'init_webhook_events' );
 
 function user_did_not_login() {
-    // Did not login system yet
-    if( isset($_GET['_id']) ) {
+    // User did not login system yet
+    if( isset($_GET['_id']) && isset($_GET['_opt']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
         $array = get_users( array( 'meta_value' => $_GET['_id'] ));
         if (empty($array)) {
@@ -168,17 +168,20 @@ function user_did_not_login() {
             // To-Do: add_user_meta( $user_id, 'wallet_address', $_GET['_wallet_address']);
         }
 
-        $link_uri = home_url().'/?_id='.$_GET['_id'].'&_agent_no='.$_GET['_agent_no'];
+        $link_uri = home_url().'/?_id='.$_GET['_id'].'&_otp='.$_GET['_one_time_password'];
 
         echo '<div class="ui-widget" style="text-align:center;">';
-        echo '<p>This is an automated process that helps you register for the system. ';
-        echo 'Please click the Submit button below to complete your registration.</p>';
+        echo '<p>This is an automated process that helps you register for the system.</p>';
+        echo '<p>Please click the Submit button below to complete your registration.</p>';
         echo '<form action="'.esc_url( site_url( 'wp-login.php', 'login_post' ) ).'" method="post" style="display:inline-block;">';
         echo '<fieldset>';
+        echo '<label for="display-name">';
+        echo '<input type="text" id="display-name" name="display_name" value="'. $_GET['_name'] .'" class="text ui-widget-content ui-corner-all" />';
         echo '<input type="hidden" name="log" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="pwd" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="rememberme" value="foreverchecked" />';
-        echo '<input type="hidden" name="redirect_to" value="'.esc_url( $link_uri ).'" />';
+        //echo '<input type="hidden" name="redirect_to" value="'.esc_url( $link_uri ).'" />';
+        echo '<input type="hidden" name="redirect_to" value="'.home_url().'" />';
         echo '<input type="submit" name="wp-submit" class="button button-primary" value="Submit" />';
         echo '</fieldset>';
         echo '</form>';
@@ -191,9 +194,11 @@ function user_did_not_login() {
 
         echo '<div class="ui-widget" style="text-align:center;">';
         echo '感謝您使用我們的系統<br>';
-        echo 'Please log in or register to view your to-do list.<br>';
-        echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按'.'<a href="'.get_option('_line_account').'">這裡</a>, 加入我們的Line官方帳號,<br>';
-        echo '並請在聊天室中, 輸入六位數字:<h4>'.get_option('_one_time_password').'</h4>完成註冊/登入作業<br>';
+        echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按'.'<a href="'.get_option('_line_account').'">這裡</a><br>';
+        echo '加入我們的Line官方帳號,<br>';
+        echo '並請在聊天室中, 輸入六位數字:';
+        echo '<h4>'.get_option('_one_time_password').'</h4>';
+        echo '完成註冊/登入作業<br>';
         echo '</div>';
 
     }
