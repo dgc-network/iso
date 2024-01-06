@@ -178,7 +178,7 @@ function user_profile_shortcode() {
                 'user_email' => $_POST['_user_email'], 
             ) );
 
-            update_post_meta( $current_user_id, 'user_site', $_POST['_user_site'] );
+            update_post_meta( $current_user_id, 'site_id', $_POST['_site_id'] );
 
             if ( is_wp_error( $user_data ) ) {
                 // There was an error; possibly this user doesn't exist.
@@ -201,10 +201,10 @@ function user_profile_shortcode() {
         echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
         ?>
-        <label for="user-site"> Site: </label>
-        <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
+        <label for="site-id"> Site: </label>
+        <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
             <?php
-            $site_id = esc_html(get_post_meta($current_user_id, 'user_site', true));
+            $site_id = esc_html(get_post_meta($current_user_id, 'site_id', true));
             echo '<option value="">Select Site</option>';
             $site_args = array(
                 'post_type'      => 'site',

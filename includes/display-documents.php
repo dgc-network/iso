@@ -181,6 +181,7 @@ function display_documents_shortcode() {
             
         else :
             echo '<h2>'.__( 'No documents found', 'your-text-domain' ).'</h2>';
+            echo '<div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">New</div>';
         endif;
     
     } else {

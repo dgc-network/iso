@@ -81,8 +81,8 @@ function document_settings_content($post) {
         <input type="text" id="document-date" name="document_date" value="<?php echo esc_attr($document_date);?>" ><br>
         <label for="document-url"> URL: </label>
         <input type="text" id="document-url" name="document_url" value="<?php echo esc_url($document_url);?>" style="width:80%;"><br>
-        <label for="document-site"> Site: </label>
-        <select id="document-site" name="document_site">
+        <label for="site-id"> Site: </label>
+        <select id="site-id" name="document_site">
             <?php
             $site_id = esc_attr($document_site);
             echo '<option value="">Select Site</option>';
