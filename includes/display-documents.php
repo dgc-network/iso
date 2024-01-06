@@ -48,7 +48,7 @@ function display_documents_shortcode() {
             $custom_data = isset($_REQUEST['_site_id']) ? sanitize_text_field($_REQUEST['_site_id']) : '';
 
             // Add/update user metadata
-            update_user_meta($user->ID, 'site_id', $custom_data);
+            update_user_meta($current_user_id, 'site_id', $custom_data);
     
         }
         if ($site_id==''){
