@@ -202,7 +202,7 @@ function user_did_not_login() {
         echo '<input type="hidden" name="pwd" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="rememberme" value="foreverchecked" />';
         //echo '<input type="hidden" name="redirect_to" value="'.esc_url( $link_uri ).'" />';
-        //echo '<input type="hidden" name="redirect_to" value="'.home_url().'" />';
+        echo '<input type="hidden" name="redirect_to" value="'.home_url().'" />';
         echo '<input type="submit" name="wp-submit" class="button button-primary" value="Submit" />';
         echo '</fieldset>';
         echo '</form>';
@@ -229,7 +229,7 @@ function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
         // Get additional metadata or perform custom actions
-        $custom_data = isset($_POST['_user_site']) ? sanitize_text_field($_POST['_user_site']) : '';
+        $custom_data = isset($_REQUEST['_user_site']) ? sanitize_text_field($_REQUEST['_user_site']) : '';
 
         // Add/update user metadata
         update_user_meta($user->ID, 'user_site', $custom_data);
@@ -240,7 +240,7 @@ function custom_login_process($user, $password) {
         // Output the information to the screen for debugging
         echo '<pre>';
         echo 'Custom Data: ' . $custom_data . '<br>';
-        echo '$_POST array: ' . print_r($_POST, true) . '<br>';
+        echo '$_REQUEST array: ' . print_r($_REQUEST, true) . '<br>';
         echo '</pre>';
     }
 
