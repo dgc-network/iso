@@ -224,7 +224,7 @@ function user_did_not_login() {
     }
 }
 
-function custom_login_process($user, $username, $password) {
+function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
         // Get additional metadata or perform custom actions
