@@ -170,12 +170,13 @@ function user_profile_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
+        $site_id = esc_html(get_post_meta($current_user_id, 'site_id', true));
 
         if( isset($_POST['_user_submit']) ) {
             $user_data = wp_update_user( array( 
                 'ID' => $current_user_id, 
                 'display_name' => $_POST['_display_name'], 
-                'user_email' => $_POST['_user_email'], 
+                //'user_email' => $_POST['_user_email'], 
             ) );
 
             update_post_meta( $current_user_id, 'site_id', $_POST['_site_id'] );
@@ -195,16 +196,14 @@ function user_profile_shortcode() {
         echo '<h2>User profile</h2>';
         echo '<form method="post">';
         echo '<fieldset>';
-        echo '<label for="display-name">Name : </label>';
-        echo '<input type="text" id="display-name" name="_display_name" value="'.$user_data->display_name.'" class="text ui-widget-content ui-corner-all" />';
-        echo '<label for="user-email">Email : </label>';
-        echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
-        //echo '<input type="hidden" name="_line_user_id" value="'.$_GET['_id'].'" />';
+        //echo '<label for="user-email">Email : </label>';
+        //echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         ?>
+        <label for="display-name">Name : </label>
+        <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />';
         <label for="site-id"> Site: </label>
-        <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
+        <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" disabled>
             <?php
-            $site_id = esc_html(get_post_meta($current_user_id, 'site_id', true));
             echo '<option value="">Select Site</option>';
             $site_args = array(
                 'post_type'      => 'site',

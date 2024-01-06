@@ -43,40 +43,6 @@ function display_documents_shortcode() {
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
-        if (isset($_POST['wp-submit'])) {
-            //update_user_meta($current_user_id, 'site_id', $custom_data);
-            update_post_meta( $current_user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
-
-            wp_redirect(home_url());
-    
-        }
-        if ($site_id==''){
-            ?>
-            <div class="ui-widget">
-                <h2>User profile</h2>
-                <form method="post">
-                <fieldset>
-                    <label for="site-id">Site:</label>
-                    <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
-                        <option value="">Select Site</option>
-                    <?php
-                        $site_args = array(
-                            'post_type'      => 'site',
-                            'posts_per_page' => -1,
-                        );
-                        $sites = get_posts($site_args);
-                        foreach ($sites as $site) {?>
-                            <option value="<?php echo esc_attr($site->ID);?>"><?php echo esc_html($site->post_title);?></option><?php
-                        }
-                    ?>
-                    </select>
-                    <input type="submit" name="wp-submit" class="button button-primary" value="Submit" />
-                </fieldset>
-                </form>
-            </div>
-            <?php        
-            return;
-        }
 
         $args = array(
             'post_type'      => 'document',
@@ -181,7 +147,7 @@ function display_documents_shortcode() {
             
         else :
             echo '<h2>'.__( 'No documents found', 'your-text-domain' ).'</h2>';
-            echo '<div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">New</div>';
+            echo '<div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">New document</div>';
         endif;
     
     } else {
