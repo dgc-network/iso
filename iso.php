@@ -170,7 +170,7 @@ function user_did_not_login() {
         }
 
         //$link_uri = home_url().'/?_id='.$_GET['_id'].'&_otp='.$_GET['_one_time_password'];
-
+/*
         //echo '<div class="ui-widget" style="text-align:center;">';
         echo '<div class="ui-widget">';
         //echo '<p>This is an automated process that helps you register for the system.</p>';
@@ -207,6 +207,37 @@ function user_did_not_login() {
         echo '</fieldset>';
         echo '</form>';
         echo '</div>';
+*/
+        ?>
+        <div class="ui-widget">
+            <h2>User profile</h2>
+            <form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post'));?>">
+            <fieldset>
+                <label for="display-name">Name:</label>
+                <input type="text" id="display-name" name="display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
+                <label for="user-site">Site:</label>
+                <select id="user-site" name="_user_site" class="text ui-widget-content ui-corner-all">
+                    <option value="">Select Site</option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);
+                    foreach ($sites as $site) {?>
+                        <option value="<?php echo esc_attr($site->ID);?>" <?php echo selected($site_id, $site->ID, false);?>><?php echo esc_html($site->post_title);?></option><?php
+                    }
+                ?>
+                </select>
+                <input type="hidden" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
+                <input type="hidden" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
+                <input type="hidden" name="rememberme" value="foreverchecked" />
+                <input type="hidden" name="redirect_to" value="<?php echo esc_url(home_url());?>" />
+                <input type="submit" name="wp-submit" class="button button-primary" value="Submit" />
+            </fieldset>
+            </form>
+        </div>
+        <?php        
 
     } else {
         // Display a message or redirect to the login/registration page
