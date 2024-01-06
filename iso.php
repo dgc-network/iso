@@ -202,7 +202,7 @@ function user_did_not_login() {
         echo '<input type="hidden" name="pwd" value="'. $_GET['_id'] .'" />';
         echo '<input type="hidden" name="rememberme" value="foreverchecked" />';
         //echo '<input type="hidden" name="redirect_to" value="'.esc_url( $link_uri ).'" />';
-        echo '<input type="hidden" name="redirect_to" value="'.home_url().'" />';
+        //echo '<input type="hidden" name="redirect_to" value="'.home_url().'" />';
         echo '<input type="submit" name="wp-submit" class="button button-primary" value="Submit" />';
         echo '</fieldset>';
         echo '</form>';
