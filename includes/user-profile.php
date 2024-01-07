@@ -287,18 +287,18 @@ function site_action_list($site_id=0) {
         ),
     );    
     $query = new WP_Query($args);
-
-    if ($query->have_posts()) :?>
-        <table class="user-action-list" style="width:100%;">
-            <thead>
-                <th></th>
-                <th>Action</th>
-                <th>Description</th>
-                <th></th>
-                <th></th>
-            </thead>
-            <tbody>
-        <?php
+    ?>
+    <table class="user-action-list" style="width:100%;">
+        <thead>
+            <th></th>
+            <th>Action</th>
+            <th>Description</th>
+            <th></th>
+            <th></th>
+        </thead>
+        <tbody>
+    <?php
+    if ($query->have_posts()) :
         $x = 0;
         while ($query->have_posts()) : $query->the_post();
             ?>
@@ -312,11 +312,11 @@ function site_action_list($site_id=0) {
             <?php 
             $x += 1;
         endwhile;
-        ?>
-            </tbody>
-        </table>
-        <?php
         wp_reset_postdata();
     endif;
-    //return;
+    ?>
+        </tbody>
+        <tr><td colspan="5"><div id="btn-new-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+    </table>
+    <?php
 }
