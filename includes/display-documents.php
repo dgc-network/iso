@@ -44,17 +44,7 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
 
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
-                ),
-            ),
-        );
-        $query = new WP_Query($args);
+        $query = retrieve_documents_data($site_id);
     
         if ($query->have_posts()) :?>
             <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
@@ -178,25 +168,34 @@ function retrieve_documents_data($_id=0) {
         'orderby'        => 'meta_value', // Order by the second meta key value
         'meta_key'       => 'sorting_in_course', // Specify the second meta key for ordering
         'order'          => 'ASC', // Change to 'DESC' for descending order
-    );    
+    );
+    
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $_id,
+            ),
+        ),
+    );
+
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+    );
     $query = new WP_Query($args);
     return $query;
 }
 
 function get_document_list_data() {
     // Retrieve the documents data
-    //$query = retrieve_documents_data($_POST['_course_id']);
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-    );
-    $query = new WP_Query($args);
+    $query = retrieve_documents_data($_POST['_site_id']);
 
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-        //while ($query->have_posts()) {
-            //$query->the_post();
             $post_id = (int) get_the_ID();
             $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
             $_list = array();
@@ -207,7 +206,6 @@ function get_document_list_data() {
             $_list["document_date"] = esc_html(get_post_meta($post_id, 'document_date', true));
             $_list["document_url"] = esc_html(get_post_meta($post_id, 'document_url', true));
             array_push($_array, $_list);
-        //}    
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
@@ -239,8 +237,6 @@ function get_document_dialog_data() {
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
-            //while ($query->have_posts()) {
-                //$query->the_post();
                 $post_id = (int) get_the_ID();
                 $doc_action_id = esc_html(get_post_meta($post_id, 'doc_action_id', true)); //get doc_action_id from site_action_id
                 //$doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
@@ -260,7 +256,6 @@ function get_document_dialog_data() {
                 $_list["action_submit_user"] = esc_html($user->display_name);
                 $_list["action_submit_time"] = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true));
                 array_push($_array, $_list);
-            //}    
             endwhile;
             wp_reset_postdata(); // Reset post data to the main loop
         }
@@ -297,6 +292,7 @@ function set_document_dialog_data() {
         );    
         // Insert the post into the database
         $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
     wp_send_json($response);
 }

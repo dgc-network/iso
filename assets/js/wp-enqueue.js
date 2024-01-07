@@ -30,6 +30,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_document_dialog_data',
+                '_site_id': $("#site-id").val(),
             },
             success: function (response) {
                 get_document_list_data('');
@@ -144,6 +145,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_document_list_data',
+                '_site_id': $("#site-id").val(),
                 '_search': search,
             },
             success: function (response) {
