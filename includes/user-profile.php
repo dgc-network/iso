@@ -218,7 +218,7 @@ function user_profile_shortcode() {
                 </select>
                 <?php
         // Site action list by site_id
-        site_action_list();
+        site_action_list($site_id);
 /*                        
         $args = array(
             'post_type'      => 'action',
@@ -314,5 +314,5 @@ function site_action_list($site_id=0) {
         <?php
         wp_reset_postdata();
     endif;
-    return;
+    //return;
 }
