@@ -250,19 +250,19 @@ jQuery(document).ready(function($) {
 
 jQuery(document).ready(function($) {
 
-    activate_user_actions_data()
+    activate_my_job_list_data()
 
-    $("#btn-new-user-site-action").on("click", function() {
+    $("#btn-new-site-job").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'new_user_site_action_data',
+                'action': 'new_site_job_data',
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_user_site_action_list($("#site-id").val());
+                get_my_job_list_data($("#site-id").val());
             },
             error: function(error){
                 alert(error);
@@ -270,7 +270,7 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function activate_user_actions_data(){
+    function activate_my_job_list_data(){
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -281,26 +281,26 @@ jQuery(document).ready(function($) {
             $(this).css('color', 'black');
         });
 
-        $('[id^="btn-edit-user-action-"]').on( "click", function() {
+        $('[id^="btn-edit-site-job-"]').on( "click", function() {
             id = this.id;
-            id = id.substring(16);
+            id = id.substring(18);
             window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
         });
     
-        $('[id^="btn-del-user-action-"]').on( "click", function() {
+        $('[id^="btn-del-site-job-"]').on( "click", function() {
             id = this.id;
-            id = id.substring(15);
-            if (window.confirm("Are you sure you want to delete this site action?")) {
+            id = id.substring(17);
+            if (window.confirm("Are you sure you want to delete this site job?")) {
                 jQuery.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
                     dataType: "json",
                     data: {
-                        'action': 'del_site_action_data',
-                        '_action_id': id,
+                        'action': 'del_site_job_data',
+                        '_job_id': id,
                     },
                     success: function (response) {
-                        get_user_site_action_list($("#site-id").val());
+                        get_my_job_list_data($("#site-id").val());
                     },
                     error: function(error){
                         alert(error);
@@ -310,32 +310,32 @@ jQuery(document).ready(function($) {
         });        
     }
 
-    function get_user_site_action_list(id){
+    function get_my_job_list_data(id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_user_site_action_list',
+                'action': 'get_my_job_list_data',
                 '_site_id': id,
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#site-action-list-"+index).hide();
-                    $("#site-action-list-"+index).empty();
+                    $("#my-job-list-"+index).hide();
+                    $("#my-job-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align: center;"><input type="checkbox" id="user-action-'+value.user_action_id+'>" /></td>';
-                    output = output+'<td>'+value.action_title+'</td>';
-                    output = output+'<td>'+value.action_description+'</td>';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#site-action-list-"+index).append(output);
-                    $("#site-action-list-"+index).show();
+                    output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
+                    output = output+'<td>'+value.job_title+'</td>';
+                    output = output+'<td>'+value.job_description+'</td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-site-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-site-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#my-job-list-"+index).append(output);
+                    $("#my-job-list-"+index).show();
                 });
 
-                activate_user_actions_data();
+                activate_my_job_list_data();
             },
             error: function(error){
                 alert(error);

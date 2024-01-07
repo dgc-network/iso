@@ -164,7 +164,7 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
 }
 
 // Shortcode to display User profile on frontend
-function user_profile_shortcode() {
+function my_jobs_shortcode() {
     ob_start(); // Start output buffering
 
     // Check if the user is logged in
@@ -193,7 +193,7 @@ function user_profile_shortcode() {
 
         ?>
         <div class="ui-widget">
-            <h2>My profile</h2>
+            <h2>My jobs</h2>
             <form method="post">
             <fieldset>
                 <label for="display-name">Name : </label>
@@ -214,8 +214,8 @@ function user_profile_shortcode() {
                 ?>
                 </select>
                 <?php
-                // Site action list by site_id
-                user_site_action_list($site_id);
+                // My job list in site
+                my_job_list_table($site_id);
                 //echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
                 ?>
             </fieldset>
@@ -227,28 +227,16 @@ function user_profile_shortcode() {
     }
     return ob_get_clean(); // Return the buffered content
 }
-add_shortcode('user-profile', 'user_profile_shortcode');
+add_shortcode('user-profile', 'my_jobs_shortcode');
 
-function user_site_action_list($site_id=0) {
-    // Site action list by site_id                
-    $args = array(
-        'post_type'      => 'action',
-        'posts_per_page' => -1,
-/*        
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-*/        
-    );    
-    $query = new WP_Query($args);
+function my_job_list_table($site_id=0) {
+    // Retrieve the value
+    $query = retrieve_site_job_list($site_id);
     ?>
     <table class="ui-widget" style="width:100%;">
         <thead>
             <th></th>
-            <th>Action</th>
+            <th>Job</th>
             <th>Description</th>
             <th></th>
             <th></th>
@@ -259,38 +247,38 @@ function user_site_action_list($site_id=0) {
         $x = 0;
         while ($query->have_posts()) : $query->the_post();
             ?>
-                <tr id="user-action-list-<?php echo $x;?>">
-                    <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
+                <tr id="my-job-list-<?php echo $x;?>">
+                    <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
                     <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
                     <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
-                    <td style="text-align:center;"><span id="btn-edit-user-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td style="text-align:center;"><span id="btn-del-user-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                    <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                    <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                 </tr>
             <?php 
             $x += 1;
         endwhile;
         while ($x<50) {
-            echo '<tr id="user-action-list-'.$x.'" style="display:none;"></tr>';
+            echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
             $x += 1;
         }
     wp_reset_postdata();
     endif;
     ?>
         </tbody>
-        <tr><td colspan="5"><div id="btn-new-user-site-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+        <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
     </table>
     <?php
 }
 
-function new_user_site_action_data() {
+function new_site_job_data() {
     $current_user = wp_get_current_user();
     // Set up the post data
     $new_post = array(
-        'post_title'    => 'New action',
+        'post_title'    => 'New job',
         'post_content'  => 'Your post content goes here.',
         'post_status'   => 'publish', // Publish the post immediately
         'post_author'   => $current_user->ID, // Use the user ID of the author
-        'post_type'     => 'action', // Change to your custom post type if needed
+        'post_type'     => 'job', // Change to your custom post type if needed
     );    
     // Insert the post into the database
     $post_id = wp_insert_post($new_post);
@@ -303,33 +291,38 @@ function new_user_site_action_data() {
     }
     wp_send_json($post_id);
 }
-add_action( 'wp_ajax_new_user_site_action_data', 'new_user_site_action_data' );
-add_action( 'wp_ajax_nopriv_new_user_site_action_data', 'new_user_site_action_data' );
+add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
+add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
 
-function get_user_site_action_list() {
+function get_my_job_list_data() {
     // Retrieve the value
-    $query = retrieve_user_site_action_list_data($_POST['_site_id']);
+    $query = retrieve_site_job_list($_POST['_site_id']);
 
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
-            $_list["action_id"] = get_the_ID();
-            $_list["action_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
-            $_list["action_description"] = get_the_content();
-            $next_action_id = esc_html(get_post_meta(get_the_ID(), 'next_action', true));
-            $_list["next_action_title"] = get_the_title($next_action_id);
-            $_list["next_action_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_action_leadtime', true));
+            $_list["job_id"] = get_the_ID();
+            $_list["job_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
+            $_list["job_description"] = get_the_content();
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_user_site_action_list', 'get_user_site_action_list' );
-add_action( 'wp_ajax_nopriv_get_user_site_action_list', 'get_user_site_action_list' );
+add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
+add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
 
-function retrieve_user_site_action_list_data($_id=0) {
+function del_site_job_data() {
+    // Delete the post
+    $result = wp_delete_post($_POST['_job_id'], true); // Set the second parameter to true to force delete
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_site_job_data', 'del_site_job_data' );
+add_action( 'wp_ajax_nopriv_del_site_job_data', 'del_site_job_data' );
+
+function retrieve_site_job_list($_id=0) {
     // Retrieve the value
     $args = array(
         'post_type'      => 'action',

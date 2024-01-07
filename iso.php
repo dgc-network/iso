@@ -65,14 +65,13 @@ add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
  */
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/user-profile.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-document.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
 add_option('_line_account', 'https://line.me/ti/p/@804poufw');
-add_option('_one_time_password', 123456);
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
@@ -92,29 +91,7 @@ function init_webhook_events() {
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
-/*
-            $see_more = '{
-                "type": "bubble",
-                "body": {
-                  "type": "box",
-                  "layout": "vertical",
-                  "spacing": "sm",
-                  "contents": [
-                    {
-                      "type": "button",
-                      "flex": 1,
-                      "gravity": "center",
-                      "action": {
-                        "type": "uri",
-                        "label": "See more",
-                        "uri": ""
-                      }
-                    }
-                  ]
-                }
-              }';
-              $see_more = json_decode($see_more, true);
-*/            
+
             $see_more = array();
             $see_more["type"] = "bubble";
             $see_more["body"]["type"] = "box";
