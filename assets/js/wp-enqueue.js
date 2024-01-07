@@ -17,7 +17,15 @@ jQuery(document).ready(function($) {
                     '_document_array': document_array,
                 },
                 error: function(error){
-                    alert(error);
+                    // Log the error object to the console for debugging
+                    console.error(error);                    
+                    // Display the responseText if available
+                    if (error.responseText) {
+                        alert('Error: ' + error.responseText);
+                    } else {
+                        // Display a generic error message
+                        alert('An error occurred. Please check the console for details.');
+                    }
                 }
             });
         }
@@ -36,7 +44,15 @@ jQuery(document).ready(function($) {
                 get_document_list_data('');
             },
             error: function(error){
-                alert(error);
+                // Log the error object to the console for debugging
+                console.error(error);                    
+                // Display the responseText if available
+                if (error.responseText) {
+                    alert('Error: ' + error.responseText);
+                } else {
+                    // Display a generic error message
+                    alert('An error occurred. Please check the console for details.');
+                }
             }
         });    
     });
@@ -125,7 +141,15 @@ jQuery(document).ready(function($) {
                         get_document_list_data('');
                     },
                     error: function(error){
-                        alert(error);
+                        // Log the error object to the console for debugging
+                        console.error(error);                    
+                        // Display the responseText if available
+                        if (error.responseText) {
+                            alert('Error: ' + error.responseText);
+                        } else {
+                            // Display a generic error message
+                            alert('An error occurred. Please check the console for details.');
+                        }
                     }
                 });
             }
@@ -169,7 +193,15 @@ jQuery(document).ready(function($) {
                 activate_document_list_data();
             },
             error: function(error){
-                alert(error);
+                // Log the error object to the console for debugging
+                console.error(error);                    
+                // Display the responseText if available
+                if (error.responseText) {
+                    alert('Error: ' + error.responseText);
+                } else {
+                    // Display a generic error message
+                    alert('An error occurred. Please check the console for details.');
+                }
             }
         });
     }
@@ -208,8 +240,7 @@ jQuery(document).ready(function($) {
                             alert('An error occurred. Please check the console for details.');
                         }
                     }
-                });
-            
+                });            
             },
             "Cancel": function() {
                 $(this).dialog("close");

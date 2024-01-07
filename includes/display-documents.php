@@ -85,8 +85,10 @@ function display_documents_shortcode() {
                 </tbody>
                 <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
+
             <div id="document-dialog" title="Document dialog" style="display:none;">
             <fieldset>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <input type="hidden" id="document-id" />
                 <label for="document-title">Title:</label>
                 <input type="text" id="document-title" />
