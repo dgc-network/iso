@@ -192,31 +192,34 @@ function user_profile_shortcode() {
 
         $user_data = get_userdata( $current_user_id );
 
-        echo '<div class="ui-widget">';
-        echo '<h2>User profile</h2>';
-        echo '<form method="post">';
-        echo '<fieldset>';
         //echo '<label for="user-email">Email : </label>';
         //echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         ?>
-        <label for="display-name">Name : </label>
-        <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />';
-        <label for="site-id"> Site: </label>
-        <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" disabled>
-            <?php
-            echo '<option value="">Select Site</option>';
-            $site_args = array(
-                'post_type'      => 'site',
-                'posts_per_page' => -1,
-            );
-            $sites = get_posts($site_args);    
-            foreach ($sites as $site) {
-                $selected = ($site_id == $site->ID) ? 'selected' : '';
-                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-            }
-            ?>
-        </select>
-        <?php
+        <div class="ui-widget">
+            <h2>User profile</h2>
+            <form method="post">
+            <fieldset>
+                <label for="display-name">Name : </label>
+                <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="site-id"> Site: </label>
+                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" disabled>
+                    <option value="">Select Site</option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                    }
+                ?>
+                </select>
+                <?php
+        // Site action list by site_id
+        site_action_list();
+/*                        
         $args = array(
             'post_type'      => 'action',
             'posts_per_page' => -1,
@@ -255,11 +258,13 @@ function user_profile_shortcode() {
             <?php
             wp_reset_postdata();
         endif;
+*/        
+        ?>
 
-        echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
-        echo '</fieldset>';
-        echo '</form>';
-        echo '</div>';
+                <input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />
+            </fieldset>
+            </form>
+        </div><?php
 
 
     } else {
@@ -269,3 +274,44 @@ function user_profile_shortcode() {
 }
 add_shortcode('user-profile', 'user_profile_shortcode');
 
+function site_action_list($site_id=0) {
+    // Site action list by site_id                
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );    
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) :?>
+        <table class="user-action-list" style="width:100%;">
+            <thead>
+                <th></th>
+                <th>Action</th>
+                <th>Description</th>
+            </thead>
+            <tbody>
+        <?php
+        $x = 0;
+        while ($query->have_posts()) : $query->the_post();
+            ?>
+                <tr class="user-action-item">
+                    <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
+                    <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
+                    <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
+                </tr>
+            <?php 
+            $x += 1;
+        endwhile;
+        ?>
+            </tbody>
+        </table>
+        <?php
+        wp_reset_postdata();
+    endif;
+}

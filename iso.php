@@ -92,10 +92,10 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
 
-            //if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
-            if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
-                //$see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
-                $see_more = file_get_contents(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json');
+            if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
+            //if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
+                $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
+                //$see_more = file_get_contents(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json');
                 $see_more = json_decode($see_more, true);
                 $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
                 $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
