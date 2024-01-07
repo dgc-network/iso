@@ -193,7 +193,7 @@ function user_profile_shortcode() {
 
         ?>
         <div class="ui-widget">
-            <h2>User profile</h2>
+            <h2>My profile</h2>
             <form method="post">
             <fieldset>
                 <label for="display-name">Name : </label>
