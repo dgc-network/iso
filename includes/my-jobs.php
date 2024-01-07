@@ -163,7 +163,20 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     }
 }
 
-// Shortcode to display User profile on frontend
+// Register post type
+function register_job_post_type() {
+    $args = array(
+        'public'        => true,
+        'rewrite'       => array('slug' => 'jobs'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+    );
+    register_post_type( 'job', $args );
+}
+add_action('init', 'register_job_post_type');
+
+// Shortcode to display my jobs on frontend
 function my_jobs_shortcode() {
     ob_start(); // Start output buffering
 
@@ -227,7 +240,7 @@ function my_jobs_shortcode() {
     }
     return ob_get_clean(); // Return the buffered content
 }
-add_shortcode('user-profile', 'my_jobs_shortcode');
+add_shortcode('my-jobs', 'my_jobs_shortcode');
 
 function my_job_list_table($site_id=0) {
     // Retrieve the value
@@ -325,7 +338,7 @@ add_action( 'wp_ajax_nopriv_del_site_job_data', 'del_site_job_data' );
 function retrieve_site_job_list($_id=0) {
     // Retrieve the value
     $args = array(
-        'post_type'      => 'action',
+        'post_type'      => 'job',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
