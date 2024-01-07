@@ -243,7 +243,7 @@ function site_action_list($site_id=0) {
     );    
     $query = new WP_Query($args);
     ?>
-    <table class="user-action-list" style="width:100%;">
+    <table class="ui-widget" style="width:100%;">
         <thead>
             <th></th>
             <th>Action</th>
@@ -257,21 +257,25 @@ function site_action_list($site_id=0) {
         $x = 0;
         while ($query->have_posts()) : $query->the_post();
             ?>
-                <tr class="user-action-item">
+                <tr id="user-action-list-<?php echo $x;?>">
                     <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
                     <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
                     <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
-                    <td style="text-align:center;"><span id="btn-edit-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td style="text-align:center;"><span id="btn-del-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                    <td style="text-align:center;"><span id="btn-edit-user-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                    <td style="text-align:center;"><span id="btn-del-user-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                 </tr>
             <?php 
             $x += 1;
         endwhile;
-        wp_reset_postdata();
+        while ($x<50) {
+            echo '<tr id="user-action-list-'.$x.'" style="display:none;"></tr>';
+            $x += 1;
+        }
+    wp_reset_postdata();
     endif;
     ?>
         </tbody>
-        <tr><td colspan="5"><div id="btn-new-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+        <tr><td colspan="5"><div id="btn-new-user-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
     </table>
     <?php
 }

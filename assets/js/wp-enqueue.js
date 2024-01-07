@@ -220,7 +220,7 @@ jQuery(document).ready(function($) {
 
     activate_user_actions_data()
 
-    $("#btn-new-action").on("click", function() {
+    $("#btn-new-user-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -249,13 +249,13 @@ jQuery(document).ready(function($) {
             $(this).css('color', 'black');
         });
 
-        $('[id^="btn-edit-action-"]').on( "click", function() {
+        $('[id^="btn-edit-user-action-"]').on( "click", function() {
             id = this.id;
             id = id.substring(16);
             window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
         });
     
-        $('[id^="btn-del-action-"]').on( "click", function() {
+        $('[id^="btn-del-user-action-"]').on( "click", function() {
             id = this.id;
             id = id.substring(15);
             if (window.confirm("Are you sure you want to delete this site action?")) {
@@ -294,7 +294,7 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align: center;"><input type="checkbox" id="user-action-'+value.user_action+'>" /></td>';
+                    output = output+'<td style="text-align: center;"><input type="checkbox" id="user-action-'+value.user_action_id+'>" /></td>';
                     output = output+'<td>'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_description+'</td>';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
