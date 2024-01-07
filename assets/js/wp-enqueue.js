@@ -252,17 +252,17 @@ jQuery(document).ready(function($) {
 
     activate_user_actions_data()
 
-    $("#btn-new-user-action").on("click", function() {
+    $("#btn-new-user-site-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'new_site_action_data',
+                'action': 'new_user_site_action_data',
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_user_action_list($("#site-id").val());
+                get_user_site_action_list($("#site-id").val());
             },
             error: function(error){
                 alert(error);
@@ -300,7 +300,7 @@ jQuery(document).ready(function($) {
                         '_action_id': id,
                     },
                     success: function (response) {
-                        get_user_action_list($("#site-id").val());
+                        get_user_site_action_list($("#site-id").val());
                     },
                     error: function(error){
                         alert(error);
@@ -310,13 +310,13 @@ jQuery(document).ready(function($) {
         });        
     }
 
-    function get_user_action_list(id){
+    function get_user_site_action_list(id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_site_action_list',
+                'action': 'get_user_site_action_list',
                 '_site_id': id,
             },
             success: function (response) {

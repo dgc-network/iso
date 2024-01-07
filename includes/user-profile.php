@@ -277,7 +277,72 @@ function user_site_action_list($site_id=0) {
     endif;
     ?>
         </tbody>
-        <tr><td colspan="5"><div id="btn-new-user-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+        <tr><td colspan="5"><div id="btn-new-user-site-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
     </table>
     <?php
 }
+
+function new_user_site_action_data() {
+    $current_user = wp_get_current_user();
+    // Set up the post data
+    $new_post = array(
+        'post_title'    => 'New action',
+        'post_content'  => 'Your post content goes here.',
+        'post_status'   => 'publish', // Publish the post immediately
+        'post_author'   => $current_user->ID, // Use the user ID of the author
+        'post_type'     => 'action', // Change to your custom post type if needed
+    );    
+    // Insert the post into the database
+    $post_id = wp_insert_post($new_post);
+    
+    // Check if the post was successfully inserted
+    if ($post_id) {
+        // Add metadata to the post
+        update_post_meta($post_id, 'site_id', $_POST['_site_id']);
+        //update_post_meta($post_id, 'next_action_leadtime', 86400); // Assume the default is 1 day
+    }
+    wp_send_json($post_id);
+}
+add_action( 'wp_ajax_new_user_site_action_data', 'new_user_site_action_data' );
+add_action( 'wp_ajax_nopriv_new_user_site_action_data', 'new_user_site_action_data' );
+
+function get_user_site_action_list() {
+    // Retrieve the value
+    $query = retrieve_user_site_action_list_data($_POST['_site_id']);
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $_list = array();
+            $_list["action_id"] = get_the_ID();
+            $_list["action_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
+            $_list["action_description"] = get_the_content();
+            $next_action_id = esc_html(get_post_meta(get_the_ID(), 'next_action', true));
+            $_list["next_action_title"] = get_the_title($next_action_id);
+            $_list["next_action_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_action_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_user_site_action_list', 'get_user_site_action_list' );
+add_action( 'wp_ajax_nopriv_get_user_site_action_list', 'get_user_site_action_list' );
+
+function retrieve_user_site_action_list_data($_id=0) {
+    // Retrieve the value
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+
