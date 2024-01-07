@@ -314,4 +314,5 @@ function site_action_list($site_id=0) {
         <?php
         wp_reset_postdata();
     endif;
+    return;
 }
