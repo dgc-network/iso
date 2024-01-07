@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
 });
 
 jQuery(document).ready(function($) {
-    $('#site-url').focus();
+    //$('#site-url').focus();
 
     $('#document-date').datepicker({
         onSelect: function(dateText, inst) {
@@ -123,7 +123,6 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align: center;"><span id="btn-del-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
                     $("#site-action-list-"+index).append(output);
                     $("#site-action-list-"+index).show();
-                    //$("#site-action-id-"+index).val(value.action_id);
                 });
 
                 activate_site_actions_data();

@@ -24,7 +24,7 @@ function add_sortable_custom_document_field_column($sortable_columns) {
     // Add the custom field columns as sortable
     $sortable_columns['number_column'] = 'document_number';
     $sortable_columns['revision_column'] = 'document_revision';
-    $sortable_columns['site_column'] = 'document_site';
+    $sortable_columns['site_column'] = 'site_id';
     return $sortable_columns;
 }
 add_filter('manage_edit-document_sortable_columns', 'add_sortable_custom_document_field_column');
@@ -39,7 +39,7 @@ function display_custom_document_field_in_admin_list($column, $post_id) {
             echo esc_html(get_post_meta($post_id, 'document_revision', true));
             break;
         case 'site_column':
-            $site_id = get_post_meta($post_id, 'document_site', true);
+            $site_id = get_post_meta($post_id, 'site_id', true);
             $site_title = get_the_title($site_id);
             echo esc_html($site_title);
             break;
@@ -68,7 +68,7 @@ function document_settings_content($post) {
     $document_number = get_post_meta($post->ID, 'document_number', true);
     $document_revision = get_post_meta($post->ID, 'document_revision', true);
     $document_url = get_post_meta($post->ID, 'document_url', true);
-    $document_site = get_post_meta($post->ID, 'document_site', true);
+    $site_id = get_post_meta($post->ID, 'site_id', true);
     $in_charge_department = get_post_meta($post->ID, 'in_charge_department', true);
     
     // Output the HTML for the meta box
@@ -82,9 +82,9 @@ function document_settings_content($post) {
         <label for="document-url"> URL: </label>
         <input type="text" id="document-url" name="document_url" value="<?php echo esc_url($document_url);?>" style="width:80%;"><br>
         <label for="site-id"> Site: </label>
-        <select id="site-id" name="document_site">
+        <select id="site-id" name="site_id">
             <?php
-            $site_id = esc_attr($document_site);
+            $site_id = esc_attr($site_id);
             echo '<option value="">Select Site</option>';
             $site_args = array(
                 'post_type'      => 'site',
@@ -117,7 +117,7 @@ function save_document_settings_content($post_id) {
     }
 
     // Fields array for better maintenance
-    $fields = array('document_url', 'document_site', 'document_date', 'document_number', 'document_revision', 'in_charge_department');
+    $fields = array('document_url', 'site_id', 'document_date', 'document_number', 'document_revision', 'in_charge_department');
 
     // Save custom field data
     foreach ($fields as $field) {

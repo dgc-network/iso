@@ -260,7 +260,6 @@ function user_did_not_login_yet() {
         echo '<h4>'.$one_time_password.'</h4>';
         echo '完成註冊/登入作業<br>';
         echo '</div>';
-
     }
 }
 
@@ -271,7 +270,6 @@ function custom_login_process($user, $password) {
             'ID' => $user->ID, 
             'display_name' => $_POST['_display_name'], 
         ) );
-
         // Add/update user metadata
         update_post_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
