@@ -214,92 +214,101 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
-
-});
-/*
-jQuery(document).ready(function($) {
-    wp.domReady(() => {
-        const editorElement = document.getElementById('frontend-editor');
-    
-        if (editorElement) {
-            const editor = wp.element.createElement(wp.editor.Editor, {
-                onChange: (content) => {
-                    // Handle content changes
-                    console.log(content);
-                },
-                value: '<!-- Add your initial content here -->',
-                allowedBlocks: ['core/paragraph', 'core/image'], // Specify allowed block types
-            });
-    
-            wp.editor.render(editor, editorElement);
-        }
-    });
-    
-});
-*/
-jQuery(document).ready(function($) {
-    $('.remove-from-cart').on('click', function(e) {
-        e.preventDefault();
-        var productId = $(this).data('product-id');
-
-        // Use AJAX to remove the item from the cart on the server
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url, // Use WordPress AJAX URL
-            data: {
-                action: 'remove_from_cart',
-                product_id: productId,
-            },
-            success: function(response) {
-                // Update the cart display on the page
-                // (You might need to refresh the entire cart section or update individual elements)
-                // Reload the page after successful removal
-                location.reload();
-                console.log(response);
-            }
-        });
-    });
 });
 
 jQuery(document).ready(function($) {
-    $('.add-to-cart-form').submit(function(e) {
-        e.preventDefault();
 
-        var form = $(this);
-        var formDataArray = form.serializeArray();
-        
-        var formDataObject = {};
-        $.each(formDataArray, function(index, field){
-            formDataObject[field.name] = field.value;
-        });
-        
-        $.ajax({
+    activate_user_actions_data()
+
+    $("#btn-new-action").on("click", function() {
+        jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
+            dataType: "json",
             data: {
-                action: 'add_to_cart_ajax',
-                formData: formDataObject,
-                nonce: ajax_object.nonce, // Include nonce in the AJAX request
+                'action': 'new_site_action_data',
+                '_site_id': $("#site-id").val(),
             },
-            dataType: 'json',
-            success: function(response) {
-                // Handle the JSON response from the server
-                if (response.success) {
-                    // Display success message or perform other actions
-                    console.log(response.message);
-                    // Optionally, redirect to the shopping cart page
-                    window.location.href = response.cart_url;
-                } else {
-                    // Display error message or perform other actions
-                    console.error('Error adding item to cart:', response.message);
+            success: function (response) {
+                get_user_action_list($("#site-id").val());
+            },
+            error: function(error){
+                alert(error);
+            }
+        });    
+    });
+
+    function activate_user_actions_data(){
+        $('[id^="btn-"]').mouseover(function() {
+            $(this).css('cursor', 'pointer');
+            $(this).css('color', 'red');
+        });
+            
+        $('[id^="btn-"]').mouseout(function() {
+            $(this).css('cursor', 'default');
+            $(this).css('color', 'black');
+        });
+
+        $('[id^="btn-edit-action-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(16);
+            window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
+        });
+    
+        $('[id^="btn-del-action-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(15);
+            if (window.confirm("Are you sure you want to delete this site action?")) {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_site_action_data',
+                        '_action_id': id,
+                    },
+                    success: function (response) {
+                        get_user_action_list($("#site-id").val());
+                    },
+                    error: function(error){
+                        alert(error);
+                    }
+                });
+            }
+        });        
+    }
+
+    function get_user_action_list(id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_action_list',
+                '_site_id': id,
+            },
+            success: function (response) {
+                for(index=0;index<50;index++) {
+                    $("#site-action-list-"+index).hide();
+                    $("#site-action-list-"+index).empty();
                 }
+                $.each(response, function (index, value) {
+                    output = '';
+                    output = output+'<td style="text-align: center;"><input type="checkbox" id="user-action-'+value.user_action+'>" /></td>';
+                    output = output+'<td>'+value.action_title+'</td>';
+                    output = output+'<td>'+value.action_description+'</td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#site-action-list-"+index).append(output);
+                    $("#site-action-list-"+index).show();
+                });
+
+                activate_user_actions_data();
             },
-            error: function(xhr, status, error) {
-                // Handle AJAX errors
-                console.error('AJAX request failed:', status, error);
+            error: function(error){
+                alert(error);
             }
         });
-    });
+    }
 });
 

@@ -178,7 +178,6 @@ function user_profile_shortcode() {
                 'display_name' => $_POST['_display_name'], 
                 //'user_email' => $_POST['_user_email'], 
             ) );
-
             update_post_meta( $current_user_id, 'site_id', $_POST['_site_id'] );
 
             if ( is_wp_error( $user_data ) ) {
@@ -192,8 +191,6 @@ function user_profile_shortcode() {
 
         $user_data = get_userdata( $current_user_id );
 
-        //echo '<label for="user-email">Email : </label>';
-        //echo '<input type="text" id="user-email" name="_user_email" value="'.$user_data->user_email.'" class="text ui-widget-content ui-corner-all" />';
         ?>
         <div class="ui-widget">
             <h2>User profile</h2>
@@ -217,55 +214,13 @@ function user_profile_shortcode() {
                 ?>
                 </select>
                 <?php
-        // Site action list by site_id
-        site_action_list($site_id);
-/*                        
-        $args = array(
-            'post_type'      => 'action',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
-                ),
-            ),
-        );    
-        $query = new WP_Query($args);
-    
-        if ($query->have_posts()) :?>
-            <table class="user-action-list" style="width:100%;">
-                <thead>
-                    <th></th>
-                    <th>Action</th>
-                    <th>Description</th>
-                </thead>
-                <tbody>
-            <?php
-            $x = 0;
-            while ($query->have_posts()) : $query->the_post();
+                // Site action list by site_id
+                site_action_list($site_id);
                 ?>
-                    <tr class="user-action-item">
-                        <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
-                        <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
-                    </tr>
-                <?php 
-                $x += 1;
-            endwhile;
-            ?>
-                </tbody>
-            </table>
-            <?php
-            wp_reset_postdata();
-        endif;
-*/        
-        ?>
-
                 <input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />
             </fieldset>
             </form>
         </div><?php
-
 
     } else {
         user_did_not_login_yet();
