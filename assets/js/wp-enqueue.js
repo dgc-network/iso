@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
                     console.error(error);                    
                     // Display the responseText if available
                     if (error.responseText) {
-                        alert('Error: ' + error.responseText);
+                        alert('set_sorted_documents_data Error: ' + error.responseText);
                     } else {
                         // Display a generic error message
                         alert('An error occurred. Please check the console for details.');
@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
                 console.error(error);                    
                 // Display the responseText if available
                 if (error.responseText) {
-                    alert('Error: ' + error.responseText);
+                    alert('set_document_dialog_data Error: ' + error.responseText);
                 } else {
                     // Display a generic error message
                     alert('An error occurred. Please check the console for details.');
@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
                     console.error(error);                
                     // Display the responseText if available
                     if (error.responseText) {
-                        alert('Error: ' + error.responseText);
+                        alert('get_document_dialog_data Error: ' + error.responseText);
                     } else {
                         // Display a generic error message
                         alert('An error occurred. Please check the console for details.');
@@ -145,7 +145,7 @@ jQuery(document).ready(function($) {
                         console.error(error);                    
                         // Display the responseText if available
                         if (error.responseText) {
-                            alert('Error: ' + error.responseText);
+                            alert('del_document_dialog_data Error: ' + error.responseText);
                         } else {
                             // Display a generic error message
                             alert('An error occurred. Please check the console for details.');
@@ -187,7 +187,6 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
                     $("#document-list-"+index).append(output);
                     $("#document-list-"+index).show();
-                    //$("#document-id-"+index).val(value.document_id);
                 });
 
                 activate_document_list_data();
@@ -197,7 +196,7 @@ jQuery(document).ready(function($) {
                 console.error(error);                    
                 // Display the responseText if available
                 if (error.responseText) {
-                    alert('Error: ' + error.responseText);
+                    alert('get_document_list_data Error: ' + error.responseText);
                 } else {
                     // Display a generic error message
                     alert('An error occurred. Please check the console for details.');
@@ -234,7 +233,7 @@ jQuery(document).ready(function($) {
                         console.error(error);                    
                         // Display the responseText if available
                         if (error.responseText) {
-                            alert('Error: ' + error.responseText);
+                            alert('set_document_dialog_data Error: ' + error.responseText);
                         } else {
                             // Display a generic error message
                             alert('An error occurred. Please check the console for details.');
