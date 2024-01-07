@@ -294,6 +294,8 @@ function site_action_list($site_id=0) {
                 <th></th>
                 <th>Action</th>
                 <th>Description</th>
+                <th></th>
+                <th></th>
             </thead>
             <tbody>
         <?php
@@ -304,6 +306,8 @@ function site_action_list($site_id=0) {
                     <td style="text-align:center;"><input type="checkbox" id="user-action-<?php echo $x;?>" /></td>
                     <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
                     <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
+                    <td style="text-align:center;"><span id="btn-edit-action-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                    <td style="text-align:center;"><span id="btn-del-action-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                 </tr>
             <?php 
             $x += 1;
