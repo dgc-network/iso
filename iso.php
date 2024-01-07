@@ -72,6 +72,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
 add_option('_line_account', 'https://line.me/ti/p/@804poufw');
+add_option('_one_time_password', 123456);
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
@@ -88,10 +89,54 @@ function init_webhook_events() {
 
     foreach ((array)$line_bot_api->parseEvents() as $event) {
         // Start the User Login/Registration process if got the one time password
-        if ($event['message']['text']==get_option('_one_time_password')) {
+        if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
-
+/*
+            $see_more = '{
+                "type": "bubble",
+                "body": {
+                  "type": "box",
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "contents": [
+                    {
+                      "type": "button",
+                      "flex": 1,
+                      "gravity": "center",
+                      "action": {
+                        "type": "uri",
+                        "label": "See more",
+                        "uri": ""
+                      }
+                    }
+                  ]
+                }
+              }';
+              $see_more = json_decode($see_more, true);
+*/            
+            $see_more = array();
+            $see_more["type"] = "bubble";
+            $see_more["body"]["type"] = "box";
+            $see_more["body"]["layout"] = "vertical";
+            $see_more["body"]["spacing"] = "sm";
+            $see_more["body"]["contents"][0]["type"] = "button";
+            $see_more["body"]["contents"][0]["flex"] = 1;
+            $see_more["body"]["contents"][0]["gravity"] = "center";
+            $see_more["body"]["contents"][0]["action"]["type"] = "uri";
+            $see_more["body"]["contents"][0]["action"]["label"] = "User Login/Registration";
+            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'],
+                'messages' => [
+                    [
+                        "type" => "flex",
+                        "altText" => 'Welcome message',
+                        'contents' => $see_more
+                    ]
+                ]
+            ]);
+/*
             if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
             //if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
                 $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
@@ -120,6 +165,7 @@ function init_webhook_events() {
                     ]
                 ]);    
             }
+*/            
         }
 
         // Regular chating
@@ -211,6 +257,7 @@ function user_did_not_login_yet() {
         echo '加入我們的Line官方帳號,<br>';
         echo '並請在聊天室中, 輸入六位數字:';
         echo '<h4>'.get_option('_one_time_password').'</h4>';
+        echo '<h4>'.$one_time_password.'</h4>';
         echo '完成註冊/登入作業<br>';
         echo '</div>';
 
