@@ -199,7 +199,7 @@ function user_profile_shortcode() {
                 <label for="display-name">Name : </label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="site-id"> Site: </label>
-                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" >
+                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" disabled>
                     <option value="">Select Site</option>
                 <?php
                     $site_args = array(
@@ -215,9 +215,9 @@ function user_profile_shortcode() {
                 </select>
                 <?php
                 // Site action list by site_id
-                site_action_list($site_id);
+                user_site_action_list($site_id);
+                //echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
                 ?>
-                <input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />
             </fieldset>
             </form>
         </div><?php
@@ -229,17 +229,19 @@ function user_profile_shortcode() {
 }
 add_shortcode('user-profile', 'user_profile_shortcode');
 
-function site_action_list($site_id=0) {
+function user_site_action_list($site_id=0) {
     // Site action list by site_id                
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
+/*        
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
                 'value' => $site_id,
             ),
         ),
+*/        
     );    
     $query = new WP_Query($args);
     ?>
