@@ -189,12 +189,12 @@ function retrieve_documents_data($site_id=0) {
             ),
         ),
     );
-
+/*
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
     );
-
+*/
     $query = new WP_Query($args);
     return $query;
 }
