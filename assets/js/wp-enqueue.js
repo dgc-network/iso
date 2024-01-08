@@ -1,5 +1,31 @@
 jQuery(document).ready(function($) {
 
+    $("#btn-new-document").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_document_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                //get_document_list_data($("#site-id").val());
+                alert('Success!');
+            },
+            error: function(error){
+                console.error(error);
+                alert(error);
+
+            }
+        });    
+    });
+
+
+})
+/*
+jQuery(document).ready(function($) {
+
     activate_document_list_data()
 
     $('#sortable-documents').sortable({
@@ -249,7 +275,7 @@ jQuery(document).ready(function($) {
         }
     });
 });
-
+*/
 jQuery(document).ready(function($) {
 
     activate_my_job_list_data()
