@@ -229,8 +229,9 @@ function my_jobs_shortcode() {
                 <?php
                 // My job list in site
                 my_job_list_table($site_id);
-                if (is_admin())
-                echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
+                if (is_admin()) {
+                    echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
+                }
                 ?>
             </fieldset>
             </form>
