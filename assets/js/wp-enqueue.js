@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_document_list_data('');
+                get_document_list_data();
             },
             error: function(error){
                 // Log the error object to the console for debugging
@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
-        $('[id^="btn-document-edit-"]').on( "click", function() {
+        $('[id^="btn-edit-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
             jQuery.ajax({
@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
                         '_doc_id': id,
                     },
                     success: function (response) {
-                        get_document_list_data('');
+                        get_document_list_data();
                     },
                     error: function(error){
                         // Log the error object to the console for debugging
@@ -164,7 +164,7 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    function get_document_list_data(search){
+    function get_document_list_data(){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'get_document_list_data',
                 '_site_id': $("#site-id").val(),
-                '_search': search,
+                //'_search': search,
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
@@ -181,7 +181,7 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-document-edit-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
@@ -229,7 +229,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
-                        get_document_list_data('');
+                        get_document_list_data();
                     },
                     error: function (error) {
                         // Log the error object to the console for debugging
