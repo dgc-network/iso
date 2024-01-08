@@ -264,3 +264,6 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
+
+// Finally, send the output buffer
+ob_end_flush();
