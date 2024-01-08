@@ -28,7 +28,7 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'document', $args );
 }
@@ -227,11 +227,12 @@ add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 function get_document_dialog_data() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
-        $response["doc_title"] = get_the_title($_POST['_doc_id']);
-        $response["doc_number"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_revision', true));
-        $response["doc_date"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_date', true));
-        $response["doc_url"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_url', true));
+        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $response["doc_title"] = get_the_title($doc_id);
+        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
+        $response["doc_date"] = esc_html(get_post_meta($doc_id, 'doc_date', true));
+        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
 
         $args = array(
             'post_type'      => 'job',
@@ -239,7 +240,7 @@ function get_document_dialog_data() {
             'meta_query'     => array(
                 array(
                     'key'   => 'doc_id',
-                    'value' => $_POST['_doc_id'],
+                    'value' => $doc_id,
                 ),
             ),
         );
