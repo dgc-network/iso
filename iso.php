@@ -45,7 +45,7 @@ function admin_enqueue() {
         'nonce' => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ) );
 }
-//add_action('admin_enqueue_scripts', 'admin_enqueue');
+add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 function wp_enqueue() {
     wp_enqueue_style( 'jquery-ui-css', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );

@@ -60,6 +60,7 @@ function add_document_settings_metabox() {
 }
 add_action('add_meta_boxes', 'add_document_settings_metabox');
 */
+/*
 // Callback function to display the content of the meta box
 function document_settings_content($post) {
     wp_nonce_field('document_settings_nonce', 'document_settings_nonce');
@@ -258,3 +259,4 @@ function retrieve_doc_actions_data($_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
+*/
