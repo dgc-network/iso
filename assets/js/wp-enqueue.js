@@ -44,15 +44,8 @@ jQuery(document).ready(function($) {
                     '_document_array': document_array,
                 },
                 error: function(error){
-                    // Log the error object to the console for debugging
                     console.error(error);                    
-                    // Display the responseText if available
-                    if (error.responseText) {
-                        alert('set_sorted_documents_data Error: ' + error.responseText);
-                    } else {
-                        // Display a generic error message
-                        alert('An error occurred. Please check the console for details.');
-                    }
+                    alert(error);
                 }
             });
         }
@@ -71,15 +64,8 @@ jQuery(document).ready(function($) {
                 get_document_list_data($("#site-id").val());
             },
             error: function(error){
-                // Log the error object to the console for debugging
                 console.error(error);                    
-                // Display the responseText if available
-                if (error.responseText) {
-                    alert('set_document_dialog_data Error: ' + error.responseText);
-                } else {
-                    // Display a generic error message
-                    alert('An error occurred. Please check the console for details.');
-                }
+                alert(error);
             }
         });    
     });
@@ -141,15 +127,8 @@ jQuery(document).ready(function($) {
                     })    
                 },
                 error: function (error) {
-                    // Log the error object to the console for debugging
                     console.error(error);                
-                    // Display the responseText if available
-                    if (error.responseText) {
-                        alert('get_document_dialog_data Error: ' + error.responseText);
-                    } else {
-                        // Display a generic error message
-                        alert('An error occurred. Please check the console for details.');
-                    }
+                    alert(error);
                 }
             });
         });
@@ -170,15 +149,8 @@ jQuery(document).ready(function($) {
                         get_document_list_data($("#site-id").val());
                     },
                     error: function(error){
-                        // Log the error object to the console for debugging
                         console.error(error);                    
-                        // Display the responseText if available
-                        if (error.responseText) {
-                            alert('del_document_dialog_data Error: ' + error.responseText);
-                        } else {
-                            // Display a generic error message
-                            alert('An error occurred. Please check the console for details.');
-                        }
+                        alert(error);
                     }
                 });
             }
@@ -220,15 +192,8 @@ jQuery(document).ready(function($) {
                 activate_document_list_data();
             },
             error: function(error){
-                // Log the error object to the console for debugging
                 console.error(error);                    
-                // Display the responseText if available
-                if (error.responseText) {
-                    alert('get_document_list_data Error: ' + error.responseText);
-                } else {
-                    // Display a generic error message
-                    alert('An error occurred. Please check the console for details.');
-                }
+                alert(error);
             }
         });
     }
@@ -251,22 +216,14 @@ jQuery(document).ready(function($) {
                         '_doc_revision': $("#doc-revision").val(),
                         '_doc_date': $("#doc-date").val(),
                         '_doc_url': $("#doc-url").val(),
-                        //'_site_id': $("#site-id").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
                         get_document_list_data($("#site-id").val());
                     },
                     error: function (error) {
-                        // Log the error object to the console for debugging
                         console.error(error);                    
-                        // Display the responseText if available
-                        if (error.responseText) {
-                            alert('set_document_dialog_data Error: ' + error.responseText);
-                        } else {
-                            // Display a generic error message
-                            alert('An error occurred. Please check the console for details.');
-                        }
+                        alert(error);
                     }
                 });            
             },
@@ -325,7 +282,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_site-job_dialog_data',
+                    'action': 'get_site_job_dialog_data',
                     '_job_id': id,
                     '_site_id': $("#site-id").val(),
                 },
@@ -351,7 +308,7 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: "json",
                     data: {
-                        'action': 'del_site_job_data',
+                        'action': 'del_site_job_dialog_data',
                         '_job_id': id,
                     },
                     success: function (response) {

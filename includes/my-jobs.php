@@ -294,6 +294,18 @@ function my_job_list_table($site_id=0) {
     <?php
 }
 
+function get_site_job_dialog_data() {
+    $response = array();
+    if( isset($_POST['_job_id']) ) {
+        $job_id = (int)sanitize_text_field($_POST['_job_id']);
+        $response["job_title"] = get_the_title($job_id);
+        $response["job_content"] = get_the_content($job_id);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_site_job_dialog_data', 'get_site_job_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data' );
+
 function set_site_job_dialog_data() {
     if( isset($_POST['_job_id']) ) {
         $data = array(
@@ -365,13 +377,13 @@ function get_my_job_list_data() {
 add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
 
-function del_site_job_data() {
+function del_site_job_dialog_data() {
     // Delete the post
     $result = wp_delete_post($_POST['_job_id'], true); // Set the second parameter to true to force delete
     wp_send_json($result);
 }
-add_action( 'wp_ajax_del_site_job_data', 'del_site_job_data' );
-add_action( 'wp_ajax_nopriv_del_site_job_data', 'del_site_job_data' );
+add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 
 function retrieve_site_job_list($site_id=0) {
     // Retrieve the value
