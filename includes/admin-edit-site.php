@@ -134,7 +134,7 @@ function save_site_settings_content($post_id) {
     }
 }
 add_action('save_post', 'save_site_settings_content');
-
+/*
 // Register action post type
 function register_action_post_type() {
     $args = array(
@@ -278,3 +278,4 @@ function retrieve_site_actions_data($_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
+*/
