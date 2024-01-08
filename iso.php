@@ -269,3 +269,5 @@ add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
 ob_clean();
 // Finally, send the output buffer
 ob_end_flush();
+// Clean and end the buffer
+ob_end_clean();
