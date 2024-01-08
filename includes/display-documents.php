@@ -50,8 +50,8 @@ function display_documents_shortcode() {
         <div class="ui-widget">
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-id"> Site: </label>
-            <input type="text" id="site-id" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
         </div>
         <table class="ui-widget" style="width:100%;">
             <thead>
@@ -98,6 +98,7 @@ function display_documents_shortcode() {
 
         <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
             <input type="hidden" id="document-id" />
             <label for="document-title">Title:</label>
             <input type="text" id="document-title" />
@@ -188,12 +189,12 @@ function retrieve_documents_data($site_id=0) {
             ),
         ),
     );
-/*
+
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
     );
-*/
+
     $query = new WP_Query($args);
     return $query;
 }
