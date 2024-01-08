@@ -47,7 +47,6 @@ function display_documents_shortcode() {
         ?>
         <div class="ui-widget">
             <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-            <form method="post">
             <fieldset>
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -145,7 +144,6 @@ function display_documents_shortcode() {
             </fieldset>
             </div>
             </fieldset>
-            </form>
         </div>
 
         <?php
