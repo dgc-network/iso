@@ -45,7 +45,7 @@ function admin_enqueue() {
         'nonce' => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ) );
 }
-add_action('admin_enqueue_scripts', 'admin_enqueue');
+//add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 function wp_enqueue() {
     wp_enqueue_style( 'jquery-ui-css', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );
@@ -66,8 +66,8 @@ add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-site.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-document.php';
+//require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-site.php';
+//require_once plugin_dir_path( __FILE__ ) . 'includes/admin-edit-document.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
