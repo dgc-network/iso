@@ -280,8 +280,46 @@ function my_job_list_table($site_id=0) {
         </tbody>
         <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
     </table>
+
+    <div id="job-dialog" title="Job dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="job-id" />
+            <label for="job-title">Title:</label>
+            <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+            <label for="job-content">Content:</label>
+            <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+    </div>
+
     <?php
 }
+
+function set_site_job_dialog_data() {
+    if( isset($_POST['_job_id']) ) {
+        $data = array(
+            'ID'           => $_POST['_job_id'],
+            'post_title'   => $_POST['_job_title'],
+            'post_content' => $_POST['_job_content'],
+        );
+        wp_update_post( $data );
+    } else {
+        $current_user_id = get_current_user_id();
+        // Set up the post data
+        $new_post = array(
+            'post_title'    => 'New job',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'document', // Change to your custom post type if needed
+        );    
+        // Insert the post into the database
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_site_job_dialog_data', 'set_site_job_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data' );
 
 function new_site_job_data() {
     $current_user_id = get_current_user_id();

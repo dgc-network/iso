@@ -277,6 +277,7 @@ jQuery(document).ready(function($) {
     });
 });
 
+// my-jobs
 jQuery(document).ready(function($) {
 
     activate_my_job_list_data()
@@ -309,11 +310,36 @@ jQuery(document).ready(function($) {
             $(this).css('cursor', 'default');
             $(this).css('color', 'black');
         });
-
+/*
         $('[id^="btn-edit-site-job-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
             window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
+        });
+*/    
+        $('[id^="btn-edit-site-job-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(18);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site-job_dialog_data',
+                    '_job_id': id,
+                    '_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    $("#job-dialog").dialog('open');
+                    $("#job-id").val(id);
+                    $("#job-title").val(response.job_title);
+                    $("#job-content").val(response.job_content);
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
         });
     
         $('[id^="btn-del-site-job-"]').on( "click", function() {
@@ -371,5 +397,38 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    $("#job-dialog").dialog({
+        width: 300,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_site_job_dialog_data',
+                        '_job_id': $("#job-id").val(),
+                        '_job_title': $("#job-title").val(),
+                        '_job_content': $("#doc-content").val(),
+                    },
+                    success: function (response) {
+                        $("#job-dialog").dialog('close');
+                        get_my_job_list_data($("#site-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+
 });
 
