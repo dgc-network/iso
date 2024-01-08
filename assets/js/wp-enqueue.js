@@ -223,6 +223,7 @@ jQuery(document).ready(function($) {
                         '_document_revision': $("#document-revision").val(),
                         '_document_date': $("#document-date").val(),
                         '_document_url': $("#document-url").val(),
+                        '_site_id': $("#site-it").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
