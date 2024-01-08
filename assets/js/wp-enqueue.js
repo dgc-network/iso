@@ -76,8 +76,7 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
-        $('[id^="btn-edit-doc-"]').on( "click", function(e) {
-            e.preventDefault();
+        $('[id^="btn-edit-doc-"]').on( "click", function() {
             id = this.id;
             id = id.substring(13);
             jQuery.ajax({
@@ -96,7 +95,7 @@ jQuery(document).ready(function($) {
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-date").val(response.doc_date);
                     $("#doc-url").val(response.doc_url);
-                    
+
                     for(index=0;index<50;index++) {
                         $("#doc-job-list-"+index).hide();
                         $("#doc-job-list-"+index).empty();
