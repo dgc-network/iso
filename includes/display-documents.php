@@ -37,7 +37,7 @@ add_action('init', 'register_document_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    ob_start(); // Start output buffering
+    //ob_start(); // Start output buffering
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
@@ -145,7 +145,7 @@ function display_documents_shortcode() {
     } else {
         user_did_not_login_yet();
     }
-    return ob_get_clean(); // Return the buffered content
+    //return ob_get_clean(); // Return the buffered content
     
 }
 add_shortcode('display-documents', 'display_documents_shortcode');

@@ -261,7 +261,6 @@ function custom_login_process($user, $password) {
         // Add/update user metadata
         update_post_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
-
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);

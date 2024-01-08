@@ -77,7 +77,7 @@ add_action('save_post', 'save_todo_custom_fields');
 
 // Shortcode to display To-do list on frontend
 function to_do_list_shortcode() {
-    ob_start(); // Start output buffering
+    //ob_start(); // Start output buffering
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
@@ -129,7 +129,7 @@ function to_do_list_shortcode() {
         user_did_not_login_yet();
     }
     
-    return ob_get_clean(); // Return the buffered content
+    //return ob_get_clean(); // Return the buffered content
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
