@@ -1,3 +1,4 @@
+/*
 jQuery(document).ready(function($) {
 
     $("#btn-new-document").on("click", function() {
@@ -23,7 +24,7 @@ jQuery(document).ready(function($) {
 
 
 })
-/*
+*/
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
@@ -275,7 +276,7 @@ jQuery(document).ready(function($) {
         }
     });
 });
-*/
+
 jQuery(document).ready(function($) {
 
     activate_my_job_list_data()

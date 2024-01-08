@@ -212,7 +212,7 @@ function my_jobs_shortcode() {
                 <label for="display-name">Name : </label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="site-id"> Site: </label>
-                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" disabled>
+                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" >
                     <option value="">Select Site</option>
                 <?php
                     $site_args = array(
@@ -229,7 +229,8 @@ function my_jobs_shortcode() {
                 <?php
                 // My job list in site
                 my_job_list_table($site_id);
-                //echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
+                if (is_admin())
+                echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
                 ?>
             </fieldset>
             </form>
