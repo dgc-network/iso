@@ -98,7 +98,6 @@ function display_documents_shortcode() {
 
         <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
             <input type="hidden" id="document-id" />
             <label for="document-title">Title:</label>
             <input type="text" id="document-title" />
@@ -189,12 +188,12 @@ function retrieve_documents_data($site_id=0) {
             ),
         ),
     );
-/*
+
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
     );
-*/
+
     $query = new WP_Query($args);
     return $query;
 }
