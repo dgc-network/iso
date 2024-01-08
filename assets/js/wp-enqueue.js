@@ -86,6 +86,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_document_dialog_data',
                     '_doc_id': id,
+                    '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#document-dialog").dialog('open');

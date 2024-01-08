@@ -206,7 +206,7 @@ function my_jobs_shortcode() {
 
         ?>
         <div class="ui-widget">
-            <h2>My jobs</h2>
+            <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
             <form method="post">
             <fieldset>
                 <label for="display-name">Name : </label>

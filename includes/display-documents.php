@@ -45,9 +45,9 @@ function display_documents_shortcode() {
         $user_data = get_userdata( $current_user_id );
 
         ?>
+        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <div class="ui-widget">
-            <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-            <fieldset>
+        <fieldset>
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
             <label for="site-title"> Site: </label>
@@ -139,11 +139,11 @@ function display_documents_shortcode() {
                 }
                 ?>
                 </tbody>
-                <tr><td colspan="6"><div id="btn-new-doc-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
                 </table>
             </fieldset>
             </div>
-            </fieldset>
+
+        </fieldset>
         </div>
 
         <?php
@@ -241,8 +241,8 @@ function get_document_dialog_data() {
             'posts_per_page' => -1,
             'meta_query'     => array(
                 array(
-                    'key'   => 'doc_id',
-                    'value' => $doc_id,
+                    'key'   => 'site_id',
+                    'value' => sanitize_text_field($_POST['_site_id']),
                 ),
             ),
         );
@@ -251,22 +251,22 @@ function get_document_dialog_data() {
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $post_id = (int) get_the_ID();
-                $doc_action_id = esc_html(get_post_meta($post_id, 'doc_action_id', true)); //get doc_action_id from site_action_id
+                $doc_job_id = esc_attr(get_post_meta($post_id, 'doc_job_id', true)); //get doc_action_id from site_action_id
                 //$doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
                 //$doc_action_content = esc_html(get_the_content($doc_action_id)); //get site_action_content from site_actions
                 $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
                 $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
                 $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
-                $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_action_submit_user', true));
+                $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_job_submit_user', true));
                 $user = get_userdata($doc_submit_user_id);
                 //$doc_action_submit_user = esc_html($user->display_name);
                 //$doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true)); //get doc_next_action_id from site_next_action_id
 
                 $_list = array();
                 $_list["job_id"] = get_the_ID();
-                $_list["job_title"] = esc_html(get_the_title($doc_action_id));
-                $_list["job_content"] = esc_html(get_the_content($doc_action_id));
-                $_list["job_submit_user"] = esc_html($user->display_name);
+                $_list["job_title"] = get_the_title();
+                $_list["job_content"] = get_the_content();
+                $_list["job_submit_user"] = esc_html(get_post_meta($post_id, 'doc_job_submit_user', true));
                 $_list["job_submit_time"] = esc_html(get_post_meta($post_id, 'doc_job_submit_time', true));
                 array_push($_array, $_list);
             endwhile;
