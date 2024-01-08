@@ -83,25 +83,34 @@ function to_do_list_shortcode() {
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
     
-        $args = array(
-            'post_type'      => 'todo',
-            'posts_per_page' => -1,
-/*            
-            'meta_query'     => array(
-                array(
-                    'key'   => '_todo_assigned_user',
-                    'value' => $current_user_id,
-                ),
-            ),
-*/            
-        );    
-        $query = new WP_Query($args);
-    
-        if ($query->have_posts()) :?>
-            <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
-            <table class="ui-widget" style="width:100%;">
+        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        $user_data = get_userdata( $current_user_id );
+
+        ?>
+        <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
+        <div class="ui-widget">
+        <fieldset>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+        
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                        <th></th>
+                    </tr>
+                </thead>
                 <tbody>
             <?php
+
+        $query = retrieve_todos_data($site_id);
+
+        if ($query->have_posts()) :
             while ($query->have_posts()) : $query->the_post();
                 $due_date = esc_html(get_post_meta(get_the_ID(), '_todo_due_date', true));
                 $todo_action_id = esc_html(get_post_meta(get_the_ID(), '_todo_site_action', true));
@@ -116,14 +125,12 @@ function to_do_list_shortcode() {
                     </tr>
                 <?php 
             endwhile;
-            ?>
-                </tbody>
-            </table>
-            <?php
             wp_reset_postdata();
-        else :
-            echo '<h2>'.__( 'No to-do items found', 'your-text-domain' ).'</h2>';
         endif;
+        ?>
+            </tbody>
+        </table>
+        <?php
 
     } else {
         user_did_not_login_yet();
@@ -133,3 +140,19 @@ function to_do_list_shortcode() {
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
+function retrieve_todos_data($site_id=0){
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => -1,
+/*            
+        'meta_query'     => array(
+            array(
+                'key'   => '_todo_assigned_user',
+                'value' => $current_user_id,
+            ),
+        ),
+*/            
+    );    
+    $query = new WP_Query($args);
+    return $query;
+}

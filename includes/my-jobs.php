@@ -205,8 +205,8 @@ function my_jobs_shortcode() {
         $user_data = get_userdata( $current_user_id );
 
         ?>
+        <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
         <div class="ui-widget">
-            <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
             <form method="post">
             <fieldset>
                 <label for="display-name">Name : </label>
