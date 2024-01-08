@@ -76,9 +76,9 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
-        $('[id^="btn-edit-doc-"]').on( "click", function() {
+        $('[id^="btn-document-edit-"]').on( "click", function() {
             id = this.id;
-            id = id.substring(13);
+            id = id.substring(18);
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -181,7 +181,7 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-doc-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-document-edit-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';

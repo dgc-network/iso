@@ -75,7 +75,7 @@ function display_documents_shortcode() {
                 $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                 ?>
                     <tr id="document-list-<?php echo $x;?>">
-                        <td style="text-align:center;"><span id="btn-edit-doc-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                        <td style="text-align:center;"><span id="btn-document-edit-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                         <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true)).$post_id;?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?><?php the_ID();?></td>
@@ -109,7 +109,7 @@ function display_documents_shortcode() {
                     </div>
                     <div style="display:inline-block;">
                         <label for="doc-revision">Revision:</label>
-                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" style="width:30px;" />
+                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
                     </div>
                     <div style="display:inline-block;">
                         <label for="doc-date">Date:</label>
@@ -117,7 +117,7 @@ function display_documents_shortcode() {
                     </div>
                 </div>
                 <label for="doc-url">URL:</label>
-                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" style="width:99%;"></textarea>
+                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
 
                 <table style="width:100%;">
                 <thead>
