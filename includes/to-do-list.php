@@ -108,28 +108,31 @@ function to_do_list_shortcode() {
                 <tbody>
             <?php
 
-        $query = retrieve_todos_data($site_id);
+            $query = retrieve_todos_data($site_id);
 
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                $due_date = esc_html(get_post_meta(get_the_ID(), '_todo_due_date', true));
-                $todo_action_id = esc_html(get_post_meta(get_the_ID(), '_todo_site_action', true));
-                $todo_action_title = get_the_title($todo_action_id);
-                $todo_doc_id = esc_html(get_post_meta(get_the_ID(), '_todo_doc_title', true));
-                $todo_doc_title = get_the_title($todo_doc_id);
-                ?>
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $due_date = esc_html(get_post_meta(get_the_ID(), '_todo_due_date', true));
+                    $todo_action_id = esc_html(get_post_meta(get_the_ID(), '_todo_site_action', true));
+                    $todo_action_title = get_the_title($todo_action_id);
+                    $todo_doc_id = esc_html(get_post_meta(get_the_ID(), '_todo_doc_title', true));
+                    $todo_doc_title = get_the_title($todo_doc_id);
+                    ?>
                     <tr class="todo-item">
                         <td style="text-align:center;"><?php echo $due_date;?></td>
                         <td style="text-align:center;"><?php echo $todo_action_title;?></td>
                         <td><?php echo $todo_doc_title;?></td>
                     </tr>
-                <?php 
-            endwhile;
-            wp_reset_postdata();
-        endif;
-        ?>
-            </tbody>
-        </table>
+                    <?php 
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+                </tbody>
+            </table>
+        </fieldset>
+        </div>
+
         <?php
 
     } else {
