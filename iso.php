@@ -87,6 +87,7 @@ function init_webhook_events() {
     $open_ai_api = new open_ai_api();
 
     foreach ((array)$line_bot_api->parseEvents() as $event) {
+/*        
         // Start the User Login/Registration process if got the one time password
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
@@ -144,8 +145,8 @@ function init_webhook_events() {
             }
             
         }
-
-        // Regular chating
+*/
+        // Regular webhook response
         switch ($event['type']) {
             case 'message':
                 $message = $event['message'];
@@ -176,7 +177,7 @@ function init_webhook_events() {
         }
     }
 }
-//add_action( 'init', 'init_webhook_events' );
+add_action( 'init', 'init_webhook_events' );
 
 // User did not login system yet
 function user_did_not_login_yet() {
