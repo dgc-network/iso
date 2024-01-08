@@ -75,7 +75,7 @@ function display_documents_shortcode() {
                 ?>
                     <tr id="document-list-<?php echo $x;?>">
                         <td style="text-align:center;"><span id="btn-edit-document-<?php echo $post_id;?>" class="dashicons dashicons-edit"></span></td>
-                        <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
+                        <td><a href="<?php echo $doc_url;?>"><?php the_title().$post_id;?></a></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
