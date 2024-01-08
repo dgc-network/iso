@@ -355,7 +355,7 @@ jQuery(document).ready(function($) {
                 $.each(response, function (index, value) {
                     output = '';
                     output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
-                    output = output+'<td>'+value.job_title+'</td>';
+                    output = output+'<td style="text-align:center;>'+value.job_title+'</td>';
                     output = output+'<td>'+value.job_description+'</td>';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-site-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align: center;"><span id="btn-del-site-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
