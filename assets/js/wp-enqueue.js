@@ -85,12 +85,12 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_document_dialog_data',
-                    '_doc_id': id,
+                    '_document_id': id,
                     '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#document-dialog").dialog('open');
-                    $("#doc-id").val(id);
+                    $("#document-id").val(id);
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
@@ -137,7 +137,7 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'del_document_dialog_data',
-                        '_doc_id': id,
+                        '_document_id': id,
                     },
                     success: function (response) {
                         get_document_list_data($("#site-id").val());
@@ -180,12 +180,12 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.doc_id+'" class="dashicons dashicons-trash"></span></td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
                     $("#document-list-"+index).append(output);
                     $("#document-list-"+index).show();
                 });
@@ -218,7 +218,7 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'set_document_dialog_data',
-                        '_doc_id': $("#doc-id").val(),
+                        '_document_id': $("#document-id").val(),
                         '_doc_title': $("#doc-title").val(),
                         '_doc_number': $("#doc-number").val(),
                         '_doc_revision': $("#doc-revision").val(),

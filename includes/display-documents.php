@@ -97,7 +97,7 @@ function display_documents_shortcode() {
             <div id="document-dialog" title="Document dialog" style="display:none;">
             <fieldset>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-                <input type="hidden" id="doc-id" />
+                <input type="hidden" id="document-id" />
                 <label for="doc-title">Title:</label>
                 <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
                 <div>
@@ -205,7 +205,7 @@ function get_document_list_data() {
             $post_id = (int) get_the_ID();
             $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
             $_list = array();
-            $_list["doc_id"] = $post_id;
+            $_list["document_id"] = $post_id;
             $_list["doc_title"] = '<a href="'.$doc_url.'">'.get_the_title().'</a>';
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
@@ -222,13 +222,13 @@ add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function get_document_dialog_data() {
     $response = array();
-    if( isset($_POST['_doc_id']) ) {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        $response["doc_title"] = get_the_title($doc_id);
-        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
-        $response["doc_date"] = esc_html(get_post_meta($doc_id, 'doc_date', true));
-        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+    if( isset($_POST['_document_id']) ) {
+        $document_id = (int)sanitize_text_field($_POST['_document_id']);
+        $response["doc_title"] = get_the_title($document_id);
+        $response["doc_number"] = esc_html(get_post_meta($document_id, 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($document_id, 'doc_revision', true));
+        $response["doc_date"] = esc_html(get_post_meta($document_id, 'doc_date', true));
+        $response["doc_url"] = esc_html(get_post_meta($document_id, 'doc_url', true));
 
         $args = array(
             'post_type'      => 'job',
@@ -275,9 +275,9 @@ add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
 
 function set_document_dialog_data() {
-    if( isset($_POST['_doc_id']) ) {
+    if( isset($_POST['_document_id']) ) {
         $data = array(
-            'ID'         => $_POST['_doc_id'],
+            'ID'         => $_POST['_document_id'],
             'post_title' => $_POST['_doc_title'],
             'meta_input' => array(
                 'doc_number'   => $_POST['_doc_number'],
@@ -309,7 +309,7 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 
 function del_document_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_doc_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_document_id'], true); // Set the second parameter to true to force delete    
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
