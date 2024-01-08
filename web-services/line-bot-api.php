@@ -57,11 +57,11 @@ if (!class_exists('line_bot_api')) {
                 http_response_code(400);
                 error_log('Missing request body');
             }
-/*            
+
             $data = json_decode($entityBody, true);
 
             return $data['events'];
-*/       
+/*
             $data = json_decode($entityBody, true);
 
             if ($data === null || !isset($data['events'])) {
@@ -72,6 +72,7 @@ if (!class_exists('line_bot_api')) {
             }
             
             return $data['events'];
+*/            
         }
 
         /**
