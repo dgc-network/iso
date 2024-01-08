@@ -22,8 +22,8 @@ add_filter('manage_document_posts_columns', 'add_custom_document_field_column');
 
 function add_sortable_custom_document_field_column($sortable_columns) {
     // Add the custom field columns as sortable
-    $sortable_columns['number_column'] = 'document_number';
-    $sortable_columns['revision_column'] = 'document_revision';
+    $sortable_columns['number_column'] = 'doc_number';
+    $sortable_columns['revision_column'] = 'doc_revision';
     $sortable_columns['site_column'] = 'site_id';
     return $sortable_columns;
 }
@@ -33,10 +33,10 @@ add_filter('manage_edit-document_sortable_columns', 'add_sortable_custom_documen
 function display_custom_document_field_in_admin_list($column, $post_id) {
     switch ($column) {
         case 'number_column':
-            echo esc_html(get_post_meta($post_id, 'document_number', true));
+            echo esc_html(get_post_meta($post_id, 'doc_number', true));
             break;
         case 'revision_column':
-            echo esc_html(get_post_meta($post_id, 'document_revision', true));
+            echo esc_html(get_post_meta($post_id, 'doc_revision', true));
             break;
         case 'site_column':
             $site_id = get_post_meta($post_id, 'site_id', true);

@@ -24,7 +24,6 @@ function register_document_post_type() {
     $args = array(
         'labels'        => $labels,
         'public'        => true,
-        //'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'supports'      => array( 'title', 'custom-fields' ),
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
@@ -46,13 +45,12 @@ function display_documents_shortcode() {
         $user_data = get_userdata( $current_user_id );
 
         ?>
-        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <div class="ui-widget">
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-        </div>
+        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
+        <label for="display-name">Name : </label>
+        <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="site-title"> Site: </label>
+        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
         <table class="ui-widget" style="width:100%;">
             <thead>
                 <tr>
@@ -72,14 +70,14 @@ function display_documents_shortcode() {
             $x = 0;
             while ($query->have_posts()) : $query->the_post();
                 $post_id = (int) get_the_ID();
-                $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
+                $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                 ?>
                     <tr id="document-list-<?php echo $x;?>">
                         <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                        <td><a href="<?php echo $document_url;?>"><?php the_title();?></a></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_number', true));?></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_revision', true));?></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'document_date', true));?></td>
+                        <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
                         <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                     </tr>
                 <?php 
@@ -99,25 +97,25 @@ function display_documents_shortcode() {
         <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-            <input type="hidden" id="document-id" />
-            <label for="document-title">Title:</label>
-            <input type="text" id="document-title" />
+            <input type="hidden" id="doc-id" />
+            <label for="doc-title">Title:</label>
+            <input type="text" id="doc-title" />
             <div>
                 <div style="display:inline-block;">
-                    <label for="document-number">Doc.#:</label>
-                    <input type="text" id="document-number" />
+                    <label for="doc-number">Doc.#:</label>
+                    <input type="text" id="doc-number" />
                 </div>
                 <div style="display:inline-block;">
-                    <label for="document-revision">Revision:</label>
-                    <input type="text" id="document-revision" style="width:30px;" />
+                    <label for="doc-revision">Revision:</label>
+                    <input type="text" id="doc-revision" style="width:30px;" />
                 </div>
                 <div style="display:inline-block;">
-                    <label for="document-date">Date:</label>
-                    <input type="text" id="document-date" />
+                    <label for="doc-date">Date:</label>
+                    <input type="text" id="doc-date" />
                 </div>
             </div>
-            <label for="document-url">URL:</label>
-            <textarea id="document-url" rows="3" style="width:99%;"></textarea>
+            <label for="doc-url">URL:</label>
+            <textarea id="doc-url" rows="3" style="width:99%;"></textarea>
 
             <table style="width:100%;">
             <thead>
@@ -142,6 +140,7 @@ function display_documents_shortcode() {
             <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
         </fieldset>
+        </div>
         </div>
 
         <?php
@@ -207,14 +206,14 @@ function get_document_list_data() {
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $post_id = (int) get_the_ID();
-            $document_url = esc_html(get_post_meta($post_id, 'document_url', true));
+            $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
             $_list = array();
-            $_list["document_id"] = get_the_ID();
-            $_list["document_title"] = '<a href="'.$document_url.'">'.get_the_title().'</a>';
-            $_list["document_number"] = esc_html(get_post_meta($post_id, 'document_number', true));
-            $_list["document_revision"] = esc_html(get_post_meta($post_id, 'document_revision', true));
-            $_list["document_date"] = esc_html(get_post_meta($post_id, 'document_date', true));
-            $_list["document_url"] = esc_html(get_post_meta($post_id, 'document_url', true));
+            $_list["doc_id"] = get_the_ID();
+            $_list["doc_title"] = '<a href="'.$doc_url.'">'.get_the_title().'</a>';
+            $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
+            $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
+            $_list["doc_date"] = esc_html(get_post_meta($post_id, 'doc_date', true));
+            $_list["doc_url"] = esc_html(get_post_meta($post_id, 'doc_url', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
@@ -226,20 +225,20 @@ add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function get_document_dialog_data() {
     $response = array();
-    if( isset($_POST['_document_id']) ) {
-        $response["document_title"] = get_the_title($_POST['_document_id']);
-        $response["document_number"] = esc_html(get_post_meta($_POST['_document_id'], 'document_number', true));
-        $response["document_revision"] = esc_html(get_post_meta($_POST['_document_id'], 'document_revision', true));
-        $response["document_date"] = esc_html(get_post_meta($_POST['_document_id'], 'document_date', true));
-        $response["document_url"] = esc_html(get_post_meta($_POST['_document_id'], 'document_url', true));
+    if( isset($_POST['_doc_id']) ) {
+        $response["doc_title"] = get_the_title($_POST['_doc_id']);
+        $response["doc_number"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_revision', true));
+        $response["doc_date"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_date', true));
+        $response["doc_url"] = esc_html(get_post_meta($_POST['_doc_id'], 'doc_url', true));
 
         $args = array(
-            'post_type'      => 'action',
+            'post_type'      => 'job',
             'posts_per_page' => -1,
             'meta_query'     => array(
                 array(
                     'key'   => 'doc_id',
-                    'value' => $_POST['_document_id'],
+                    'value' => $_POST['_doc_id'],
                 ),
             ),
         );
@@ -278,15 +277,15 @@ add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
 
 function set_document_dialog_data() {
-    if( isset($_POST['_document_id']) ) {
+    if( isset($_POST['_doc_id']) ) {
         $data = array(
-            'ID'         => $_POST['_document_id'],
-            'post_title' => $_POST['_document_title'],
+            'ID'         => $_POST['_doc_id'],
+            'post_title' => $_POST['_doc_title'],
             'meta_input' => array(
-                'document_number'   => $_POST['_document_number'],
-                'document_revision' => $_POST['_document_revision'],
-                'document_date'     => $_POST['_document_date'],
-                'document_url'     => $_POST['_document_url'],
+                'doc_number'   => $_POST['_doc_number'],
+                'doc_revision' => $_POST['_doc_revision'],
+                'doc_date'     => $_POST['_doc_date'],
+                'doc_url'     => $_POST['_doc_url'],
                 'site_id'     => $_POST['_site_id'],
             )
         );
@@ -312,7 +311,7 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 
 function del_document_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_document_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_doc_id'], true); // Set the second parameter to true to force delete    
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );

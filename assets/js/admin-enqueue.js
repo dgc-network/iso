@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
     //$('#site-url').focus();
 
-    $('#document-date').datepicker({
+    $('#doc-date').datepicker({
         onSelect: function(dateText, inst) {
             $(this).val(dateText);
         }

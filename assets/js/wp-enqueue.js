@@ -85,30 +85,30 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_document_dialog_data',
-                    '_document_id': id,
+                    '_doc_id': id,
                 },
                 success: function (response) {
                     $("#document-dialog").dialog('open');
-                    $("#document-id").val(id);
-                    $("#document-title").val(response.document_title);
-                    $("#document-number").val(response.document_number);
-                    $("#document-revision").val(response.document_revision);
-                    $("#document-date").val(response.document_date);
-                    $("#document-url").val(response.document_url);
+                    $("#doc-id").val(id);
+                    $("#doc-title").val(response.doc_title);
+                    $("#doc-number").val(response.doc_number);
+                    $("#doc-revision").val(response.doc_revision);
+                    $("#doc-date").val(response.doc_date);
+                    $("#doc-url").val(response.doc_url);
                     for(index=0;index<50;index++) {
-                        $("#doc-action-list-"+index).hide();
-                        $("#doc-action-list-"+index).empty();
+                        $("#doc-job-list-"+index).hide();
+                        $("#doc-job-list-"+index).empty();
                     }
-                    $.each(response.action_array, function (index, value) {
+                    $.each(response.job_array, function (index, value) {
                         output = '';
-                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
-                        output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
-                        output = output+'<td>'+value.action_content+'</td>';
-                        output = output+'<td style="text-align:center;">'+value.action_submit_user+'</td>';
-                        output = output+'<td style="text-align:center;">'+value.action_submit_time+'</td>';
-                        output = output+'<td style="text-align:center;"><span id="btn-del-doc-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
-                        $("#doc-action-list-"+index).append(output);
-                        $("#doc-action-list-"+index).show();
+                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
+                        output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
+                        output = output+'<td>'+value.job_content+'</td>';
+                        output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
+                        output = output+'<td style="text-align:center;">'+value.job_submit_time+'</td>';
+                        output = output+'<td style="text-align:center;"><span id="btn-del-doc-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
+                        $("#doc-job-list-"+index).append(output);
+                        $("#doc-job-list-"+index).show();
                     })    
                 },
                 error: function (error) {
@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
             }
         });
         
-        $('#document-date').datepicker({
+        $('#doc-date').datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
             }
@@ -174,19 +174,19 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#document-list-"+index).hide();
-                    $("#document-list-"+index).empty();
+                    $("#doc-list-"+index).hide();
+                    $("#doc-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td>'+value.document_title+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.document_number+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.document_revision+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.document_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#document-list-"+index).append(output);
-                    $("#document-list-"+index).show();
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-doc-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td>'+value.doc_title+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-doc-'+value.doc_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#doc-list-"+index).append(output);
+                    $("#doc-list-"+index).show();
                 });
 
                 activate_document_list_data();
@@ -217,12 +217,12 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'set_document_dialog_data',
-                        '_document_id': $("#document-id").val(),
-                        '_document_title': $("#document-title").val(),
-                        '_document_number': $("#document-number").val(),
-                        '_document_revision': $("#document-revision").val(),
-                        '_document_date': $("#document-date").val(),
-                        '_document_url': $("#document-url").val(),
+                        '_doc_id': $("#doc-id").val(),
+                        '_doc_title': $("#doc-title").val(),
+                        '_doc_number': $("#doc-number").val(),
+                        '_doc_revision': $("#doc-revision").val(),
+                        '_doc_date': $("#doc-date").val(),
+                        '_doc_url': $("#doc-url").val(),
                         '_site_id': $("#site-id").val(),
                     },
                     success: function (response) {
