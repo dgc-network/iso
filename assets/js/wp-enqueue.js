@@ -412,7 +412,7 @@ jQuery(document).ready(function($) {
                         'action': 'set_site_job_dialog_data',
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
-                        '_job_content': $("#doc-content").val(),
+                        '_job_content': $("#job-content").val(),
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');
