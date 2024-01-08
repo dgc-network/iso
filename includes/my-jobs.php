@@ -335,7 +335,7 @@ function del_site_job_data() {
 add_action( 'wp_ajax_del_site_job_data', 'del_site_job_data' );
 add_action( 'wp_ajax_nopriv_del_site_job_data', 'del_site_job_data' );
 
-function retrieve_site_job_list($_id=0) {
+function retrieve_site_job_list($site_id=0) {
     // Retrieve the value
     $args = array(
         'post_type'      => 'job',
@@ -343,7 +343,7 @@ function retrieve_site_job_list($_id=0) {
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
-                'value' => $_id,
+                'value' => $site_id,
             ),
         ),
     );
