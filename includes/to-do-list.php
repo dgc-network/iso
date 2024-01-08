@@ -81,11 +81,9 @@ function to_do_list_shortcode() {
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        $current_user_id = get_current_user_id();
-    
+        $current_user_id = get_current_user_id();    
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
-
         ?>
         <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
         <div class="ui-widget">

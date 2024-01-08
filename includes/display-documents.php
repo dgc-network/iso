@@ -43,7 +43,6 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
-
         ?>
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -66,14 +65,13 @@ function display_documents_shortcode() {
                 </thead>
                 <tbody>
             <?php
-
-        $query = retrieve_documents_data($site_id);
-        if ($query->have_posts()) :
-            $x = 0;
-            while ($query->have_posts()) : $query->the_post();
-                $post_id = (int) get_the_ID();
-                $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-                ?>
+            $query = retrieve_documents_data($site_id);
+            if ($query->have_posts()) :
+                $x = 0;
+                while ($query->have_posts()) : $query->the_post();
+                    $post_id = (int) get_the_ID();
+                    $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+                    ?>
                     <tr id="document-list-<?php echo $x;?>">
                         <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                         <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
@@ -82,15 +80,15 @@ function display_documents_shortcode() {
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
                         <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                     </tr>
-                <?php 
-                $x += 1;
-            endwhile;
-            while ($x<50) {
-                echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
-                $x += 1;
-            }
-            wp_reset_postdata();
-        endif;
+                    <?php 
+                    $x += 1;
+                endwhile;
+                while ($x<50) {
+                    echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
+                    $x += 1;
+                }
+                wp_reset_postdata();
+            endif;
             ?>
                 </tbody>
                 <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
@@ -145,7 +143,6 @@ function display_documents_shortcode() {
 
         </fieldset>
         </div>
-
         <?php
 
     } else {
@@ -155,9 +152,6 @@ function display_documents_shortcode() {
     
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
-
-function site_documents_table($site_id=0) {
-}
 
 function retrieve_documents_data($site_id=0) {
     // Retrieve the documents value
@@ -290,7 +284,7 @@ function set_document_dialog_data() {
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_date'     => $_POST['_doc_date'],
                 'doc_url'     => $_POST['_doc_url'],
-                'site_id'     => $_POST['_site_id'],
+                //'site_id'     => $_POST['_site_id'],
             )
         );
         wp_update_post( $data );

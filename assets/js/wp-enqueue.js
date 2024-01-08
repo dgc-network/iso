@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_document_list_data();
+                get_document_list_data($("#site-id").val());
             },
             error: function(error){
                 // Log the error object to the console for debugging
@@ -127,8 +127,7 @@ jQuery(document).ready(function($) {
             });
         });
     
-        $('[id^="btn-del-document-"]').on( "click", function(e) {
-            e.preventDefault();
+        $('[id^="btn-del-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(17);
             if (window.confirm("Are you sure you want to delete this document?"+id)) {
@@ -141,7 +140,7 @@ jQuery(document).ready(function($) {
                         '_doc_id': id,
                     },
                     success: function (response) {
-                        get_document_list_data();
+                        get_document_list_data($("#site-id").val());
                     },
                     error: function(error){
                         // Log the error object to the console for debugging
@@ -165,15 +164,14 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    function get_document_list_data(){
+    function get_document_list_data(site_id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'get_document_list_data',
-                '_site_id': $("#site-id").val(),
-                //'_search': search,
+                '_site_id': site_id,
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
@@ -226,11 +224,11 @@ jQuery(document).ready(function($) {
                         '_doc_revision': $("#doc-revision").val(),
                         '_doc_date': $("#doc-date").val(),
                         '_doc_url': $("#doc-url").val(),
-                        '_site_id': $("#site-id").val(),
+                        //'_site_id': $("#site-id").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
-                        get_document_list_data();
+                        get_document_list_data($("#site-id").val());
                     },
                     error: function (error) {
                         // Log the error object to the console for debugging
