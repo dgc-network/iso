@@ -189,12 +189,12 @@ function retrieve_documents_data($site_id=0) {
             ),
         ),
     );
-/*
+
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
     );
-*/    
+
     $query = new WP_Query($args);
     return $query;
 }
@@ -287,6 +287,7 @@ function set_document_dialog_data() {
                 'document_revision' => $_POST['_document_revision'],
                 'document_date'     => $_POST['_document_date'],
                 'document_url'     => $_POST['_document_url'],
+                'site_id'     => $_POST['_site_id'],
             )
         );
         wp_update_post( $data );
