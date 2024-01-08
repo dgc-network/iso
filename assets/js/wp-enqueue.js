@@ -76,10 +76,10 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
-        $('[id^="btn-edit-document-"]').on( "click", function() {
+        $('[id^="btn-edit-document-"]').on( "click", function(e) {
+            e.preventDefault();
             id = this.id;
             id = id.substring(18);
-            alert(id);
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -126,7 +126,8 @@ jQuery(document).ready(function($) {
             });
         });
     
-        $('[id^="btn-del-document-"]').on( "click", function() {
+        $('[id^="btn-del-document-"]').on( "click", function(e) {
+            e.preventDefault();
             id = this.id;
             id = id.substring(17);
             if (window.confirm("Are you sure you want to delete this document?"+id)) {
