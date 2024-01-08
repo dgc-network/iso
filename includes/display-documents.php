@@ -242,7 +242,7 @@ function get_document_dialog_data() {
             'meta_query'     => array(
                 array(
                     'key'   => 'site_id',
-                    'value' => sanitize_text_field($_POST['_site_id']),
+                    'value' => (int)sanitize_text_field($_POST['_site_id']),
                 ),
             ),
         );
