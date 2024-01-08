@@ -43,24 +43,32 @@ function display_documents_shortcode() {
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        $user_data = get_userdata( $current_user_id );
+
+        ?>
+        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
+        <div class="ui-widget">
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-id"> Site: </label>
+            <input type="text" id="site-id" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+        </div>
+        <table class="ui-widget" style="width:100%;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                    <th><?php echo __( '編號', 'your-text-domain' );?></th>
+                    <th><?php echo __( '版本', 'your-text-domain' );?></th>
+                    <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        <?php
 
         $query = retrieve_documents_data($site_id);
-    
-        if ($query->have_posts()) :?>
-            <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                        <th><?php echo __( '編號', 'your-text-domain' );?></th>
-                        <th><?php echo __( '版本', 'your-text-domain' );?></th>
-                        <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-            <?php
+        if ($query->have_posts()) :
             $x = 0;
             while ($query->have_posts()) : $query->the_post();
                 $post_id = (int) get_the_ID();
@@ -81,67 +89,63 @@ function display_documents_shortcode() {
                 echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
                 $x += 1;
             }
-            ?>
-                </tbody>
-                <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-            </table>
-
-            <div id="document-dialog" title="Document dialog" style="display:none;">
-            <fieldset>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <input type="hidden" id="document-id" />
-                <label for="document-title">Title:</label>
-                <input type="text" id="document-title" />
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="document-number">Doc.#:</label>
-                        <input type="text" id="document-number" />
-                    </div>
-                    <div style="display:inline-block;">
-                        <label for="document-revision">Revision:</label>
-                        <input type="text" id="document-revision" style="width:30px;" />
-                    </div>
-                    <div style="display:inline-block;">
-                        <label for="document-date">Date:</label>
-                        <input type="text" id="document-date" />
-                    </div>
-                </div>
-                <label for="document-url">URL:</label>
-                <textarea id="document-url" rows="3" style="width:99%;"></textarea>
-    
-                <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-            <?php
-            $x = 0;
-            while ($x<50) {
-                echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
-                $x += 1;
-            }
-            ?>
-                </tbody>
-                <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-                </table>
-            </fieldset>
-            </div>
-    
-            <?php
             wp_reset_postdata();
-            
-        else :
-            echo '<h2>'.__( 'No documents found', 'your-text-domain' ).'</h2>';
-            echo '<div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">New document</div>';
         endif;
-    
+        ?>
+            </tbody>
+                <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+        </table>
+
+        <div id="document-dialog" title="Document dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <input type="hidden" id="document-id" />
+            <label for="document-title">Title:</label>
+            <input type="text" id="document-title" />
+            <div>
+                <div style="display:inline-block;">
+                    <label for="document-number">Doc.#:</label>
+                    <input type="text" id="document-number" />
+                </div>
+                <div style="display:inline-block;">
+                    <label for="document-revision">Revision:</label>
+                    <input type="text" id="document-revision" style="width:30px;" />
+                </div>
+                <div style="display:inline-block;">
+                    <label for="document-date">Date:</label>
+                    <input type="text" id="document-date" />
+                </div>
+            </div>
+            <label for="document-url">URL:</label>
+            <textarea id="document-url" rows="3" style="width:99%;"></textarea>
+
+            <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        <?php
+        $x = 0;
+        while ($x<50) {
+            echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
+            $x += 1;
+        }
+        ?>
+            </tbody>
+            <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+            </table>
+        </fieldset>
+        </div>
+
+        <?php
+
     } else {
         user_did_not_login_yet();
     }
@@ -150,7 +154,10 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function retrieve_documents_data($_id=0) {
+function site_documents_table($site_id=0) {
+}
+
+function retrieve_documents_data($site_id=0) {
     // Retrieve the documents value
     $args = array(
         'post_type'      => 'document', // Change to your custom post type if needed
@@ -178,15 +185,16 @@ function retrieve_documents_data($_id=0) {
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
-                'value' => $_id,
+                'value' => $site_id,
             ),
         ),
     );
-
+/*
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
     );
+*/    
     $query = new WP_Query($args);
     return $query;
 }

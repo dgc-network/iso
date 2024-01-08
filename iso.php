@@ -264,10 +264,11 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
-
+/*
 // Now, let's clean the buffer without sending its contents
 ob_clean();
 // Finally, send the output buffer
 ob_end_flush();
 // Clean and end the buffer
 ob_end_clean();
+*/
