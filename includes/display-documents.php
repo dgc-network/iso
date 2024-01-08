@@ -28,7 +28,7 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        'menu_icon'     => 'dashicons-media-document',
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'document', $args );
 }
@@ -46,24 +46,25 @@ function display_documents_shortcode() {
 
         ?>
         <div class="ui-widget">
-        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-        <label for="display-name">Name : </label>
-        <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-        <label for="site-title"> Site: </label>
-        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-        <table class="ui-widget" style="width:100%;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                    <th><?php echo __( '編號', 'your-text-domain' );?></th>
-                    <th><?php echo __( '版本', 'your-text-domain' );?></th>
-                    <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-        <?php
+            <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+        
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                        <th><?php echo __( '編號', 'your-text-domain' );?></th>
+                        <th><?php echo __( '版本', 'your-text-domain' );?></th>
+                        <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            <?php
 
         $query = retrieve_documents_data($site_id);
         if ($query->have_posts()) :
@@ -89,58 +90,58 @@ function display_documents_shortcode() {
             }
             wp_reset_postdata();
         endif;
-        ?>
-            </tbody>
+            ?>
+                </tbody>
                 <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-        </table>
-
-        <div id="document-dialog" title="Document dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-            <input type="hidden" id="doc-id" />
-            <label for="doc-title">Title:</label>
-            <input type="text" id="doc-title" />
-            <div>
-                <div style="display:inline-block;">
-                    <label for="doc-number">Doc.#:</label>
-                    <input type="text" id="doc-number" />
-                </div>
-                <div style="display:inline-block;">
-                    <label for="doc-revision">Revision:</label>
-                    <input type="text" id="doc-revision" style="width:30px;" />
-                </div>
-                <div style="display:inline-block;">
-                    <label for="doc-date">Date:</label>
-                    <input type="text" id="doc-date" />
-                </div>
-            </div>
-            <label for="doc-url">URL:</label>
-            <textarea id="doc-url" rows="3" style="width:99%;"></textarea>
-
-            <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-        <?php
-        $x = 0;
-        while ($x<50) {
-            echo '<tr id="doc-action-list-'.$x.'" style="display:none;"></tr>';
-            $x += 1;
-        }
-        ?>
-            </tbody>
-            <tr><td colspan="6"><div id="btn-new-doc-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
-        </fieldset>
-        </div>
+
+            <div id="document-dialog" title="Document dialog" style="display:none;">
+            <fieldset>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
+                <input type="hidden" id="doc-id" />
+                <label for="doc-title">Title:</label>
+                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="doc-number">Doc.#:</label>
+                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                    <div style="display:inline-block;">
+                        <label for="doc-revision">Revision:</label>
+                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" style="width:30px;" />
+                    </div>
+                    <div style="display:inline-block;">
+                        <label for="doc-date">Date:</label>
+                        <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>
+                <label for="doc-url">URL:</label>
+                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" style="width:99%;"></textarea>
+
+                <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $x = 0;
+                while ($x<50) {
+                    echo '<tr id="doc-job-list-'.$x.'" style="display:none;"></tr>';
+                    $x += 1;
+                }
+                ?>
+                </tbody>
+                <tr><td colspan="6"><div id="btn-new-doc-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+                </table>
+            </fieldset>
+            </div>
         </div>
 
         <?php
@@ -259,16 +260,16 @@ function get_document_dialog_data() {
                 //$doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true)); //get doc_next_action_id from site_next_action_id
 
                 $_list = array();
-                $_list["action_id"] = get_the_ID();
-                $_list["action_title"] = esc_html(get_the_title($doc_action_id));
-                $_list["action_content"] = esc_html(get_the_content($doc_action_id));
-                $_list["action_submit_user"] = esc_html($user->display_name);
-                $_list["action_submit_time"] = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true));
+                $_list["job_id"] = get_the_ID();
+                $_list["job_title"] = esc_html(get_the_title($doc_action_id));
+                $_list["job_content"] = esc_html(get_the_content($doc_action_id));
+                $_list["job_submit_user"] = esc_html($user->display_name);
+                $_list["job_submit_time"] = esc_html(get_post_meta($post_id, 'doc_job_submit_time', true));
                 array_push($_array, $_list);
             endwhile;
             wp_reset_postdata(); // Reset post data to the main loop
         }
-        $response["action_array"] = $_array;
+        $response["job_array"] = $_array;
 
     }
     wp_send_json($response);
@@ -291,13 +292,13 @@ function set_document_dialog_data() {
         );
         wp_update_post( $data );
     } else {
-        $current_user = wp_get_current_user();
+        $current_user_id = get_current_user_id();
         // Set up the post data
         $new_post = array(
             'post_title'    => 'New document',
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user->ID, // Use the user ID of the author
+            'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'document', // Change to your custom post type if needed
         );    
         // Insert the post into the database

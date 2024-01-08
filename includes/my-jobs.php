@@ -284,13 +284,13 @@ function my_job_list_table($site_id=0) {
 }
 
 function new_site_job_data() {
-    $current_user = wp_get_current_user();
+    $current_user_id = get_current_user_id();
     // Set up the post data
     $new_post = array(
         'post_title'    => 'New job',
         'post_content'  => 'Your post content goes here.',
         'post_status'   => 'publish', // Publish the post immediately
-        'post_author'   => $current_user->ID, // Use the user ID of the author
+        'post_author'   => $current_user_id, // Use the user ID of the author
         'post_type'     => 'job', // Change to your custom post type if needed
     );    
     // Insert the post into the database
