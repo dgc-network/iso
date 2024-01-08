@@ -174,19 +174,19 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#doc-list-"+index).hide();
-                    $("#doc-list-"+index).empty();
+                    $("#document-list-"+index).hide();
+                    $("#document-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-doc-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-doc-'+value.doc_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#doc-list-"+index).append(output);
-                    $("#doc-list-"+index).show();
+                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.doc_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#document-list-"+index).append(output);
+                    $("#document-list-"+index).show();
                 });
 
                 activate_document_list_data();
