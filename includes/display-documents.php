@@ -75,8 +75,8 @@ function display_documents_shortcode() {
                     <tr id="document-list-<?php echo $x;?>">
                         <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                         <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true)).$post_id;?></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?><?php the_ID();?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
+                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
                         <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                     </tr>
