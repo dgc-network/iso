@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'del_document_dialog_data',
-                        '_document_id': id,
+                        '_doc_id': id,
                     },
                     success: function (response) {
                         get_document_list_data('');
