@@ -51,7 +51,7 @@ function wp_enqueue() {
     wp_enqueue_style( 'jquery-ui-css', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );
     wp_enqueue_script( 'jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
     wp_enqueue_style( 'wp-enqueue-css', plugins_url( 'assets/css/wp-enqueue.css' , __FILE__ ), '', time() );
-    wp_enqueue_script( 'wp-enqueue-js', plugins_url( '/assets/js/wp-enqueue.js' , __FILE__ ), array( 'jquery' ), time() );
+    wp_enqueue_script( 'wp-enqueue-js', plugins_url( 'assets/js/wp-enqueue.js' , __FILE__ ), array( 'jquery' ), time() );
     wp_localize_script( 'wp-enqueue-js', 'ajax_object', array( 
         'ajax_url' => admin_url( 'admin-ajax.php' ), 
         'nonce' => wp_create_nonce('iso_documents_nonce'), // Generate nonce
