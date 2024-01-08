@@ -274,7 +274,7 @@ function my_job_list_table($site_id=0) {
             echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
             $x += 1;
         }
-    wp_reset_postdata();
+        wp_reset_postdata();
     endif;
     ?>
         </tbody>

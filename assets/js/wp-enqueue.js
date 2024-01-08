@@ -116,7 +116,8 @@ jQuery(document).ready(function($) {
                     }
                     $.each(response.job_array, function (index, value) {
                         output = '';
-                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
+                        output = output+'<td style="text-align:center;"><input type="checkbox" id="check-doc-job-'+value.job_id+'" /></td>';
+                        //output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
                         output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                         output = output+'<td>'+value.job_content+'</td>';
                         output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
