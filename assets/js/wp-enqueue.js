@@ -129,9 +129,7 @@ jQuery(document).ready(function($) {
         $('[id^="btn-del-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(17);
-            alert(id);
-
-            if (window.confirm("Are you sure you want to delete this document?")) {
+            if (window.confirm("Are you sure you want to delete this document?"+id)) {
                 jQuery.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
