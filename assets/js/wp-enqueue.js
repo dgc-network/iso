@@ -246,7 +246,8 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'new_site_job_data',
+                //'action': 'new_site_job_data',
+                'action': 'get_site_job_dialog_data',
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
@@ -357,7 +358,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#job-dialog").dialog({
-        width: 300,
+        width: 500,
         modal: true,
         autoOpen: false,
         buttons: {

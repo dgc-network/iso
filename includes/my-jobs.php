@@ -356,7 +356,7 @@ function get_my_job_list_data() {
             $_list = array();
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
-            $_list["job_description"] = get_the_content();
+            $_list["job_content"] = get_the_content();
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
