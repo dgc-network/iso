@@ -66,8 +66,8 @@ function wp_enqueue_scripts_and_styles() {
     wp_enqueue_script('jquery-ui-datepicker');
 
     // Enqueue your custom styles and scripts
-    wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __FILE__), '', time());
-    wp_enqueue_script('wp-enqueue-js', plugins_url('/assets/js/wp-enqueue.js', __FILE__), array('jquery'), time());
+    wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', time());
+    wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), time());
 
     // Localize script with custom data
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
