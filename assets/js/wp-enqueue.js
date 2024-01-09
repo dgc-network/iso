@@ -162,6 +162,16 @@ jQuery(document).ready(function($) {
                         $("#doc-job-list-"+index).show();
                     })
 
+                    $('[id^="btn-"]').mouseover(function() {
+                        $(this).css('cursor', 'pointer');
+                        $(this).css('color', 'red');
+                    });
+                        
+                    $('[id^="btn-"]').mouseout(function() {
+                        $(this).css('cursor', 'default');
+                        $(this).css('color', 'black');
+                    });
+            
                     $('[id^="btn-edit-doc-job-"]').on( "click", function() {
                         id = this.id;
                         id = id.substring(17);
