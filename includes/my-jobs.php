@@ -77,6 +77,26 @@ function user_custom_fields(WP_User $user) {
                     >
                 </td>
             </tr>
+            <tr>
+                <th><label for="site-id">Site</label></th>
+                <td>
+                    <select id="site-id" name="_site_id" class="regular-text" >
+                        <option value="">Select Site</option>
+                    <?php
+                        $site_id = esc_html(get_post_meta($user->ID, 'site_id', true));
+                        $site_args = array(
+                            'post_type'      => 'site',
+                            'posts_per_page' => -1,
+                        );
+                        $sites = get_posts($site_args);    
+                        foreach ($sites as $site) {
+                            $selected = ($site_id == $site->ID) ? 'selected' : '';
+                            echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                        }
+                    ?>
+                    </select>
+                </td>
+            </tr>
         </table>
     <?php
 }
@@ -87,6 +107,7 @@ function save_user_metadata($userId) {
     if (current_user_can('edit_user', $userId)) {
         update_user_meta($userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
         update_user_meta($userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
+        update_user_meta($userId, 'site_id', $_REQUEST['_site_id']);
     }    
 }
 add_action('personal_options_update', 'save_user_metadata');
