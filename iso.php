@@ -49,7 +49,7 @@ function admin_enqueue_scripts_and_styles() {
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
-    $version = '1.0.4'; // Update this version number when you make changes
+    $version = '1.0.4.1'; // Update this version number when you make changes
     // Enqueue jQuery UI from the WordPress package
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     //wp_enqueue_style('jquery-ui-css', includes_url('css/jquery/ui/themes/smoothness/jquery-ui.css'));

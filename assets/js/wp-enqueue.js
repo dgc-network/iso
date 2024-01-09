@@ -51,6 +51,41 @@ jQuery(document).ready(function($) {
         }
     });
 
+    function get_document_list_data(site_id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_document_list_data',
+                '_site_id': site_id,
+            },
+            success: function (response) {
+                for(index=0;index<50;index++) {
+                    $("#document-list-"+index).hide();
+                    $("#document-list-"+index).empty();
+                }
+                $.each(response, function (index, value) {
+                    output = '';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td>'+value.doc_title+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#document-list-"+index).append(output);
+                    $("#document-list-"+index).show();
+                });
+
+                activate_document_list_data();
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });
+    }
+
     $("#btn-new-document").on("click", function() {
         jQuery.ajax({
             type: 'POST',
@@ -89,12 +124,6 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
-        $('[id^="btn-edit-doc-job-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(17);
-            $("#doc-job-dialog").dialog('open');
-        });
-    
         $('[id^="btn-edit-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
@@ -131,7 +160,14 @@ jQuery(document).ready(function($) {
                         //output = output+'<td style="text-align:center;"><span id="btn-del-doc-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
                         $("#doc-job-list-"+index).append(output);
                         $("#doc-job-list-"+index).show();
-                    })    
+                    })
+
+                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
+                        id = this.id;
+                        id = id.substring(17);
+                        $("#doc-job-dialog").dialog('open');
+                    });                
+                
                 },
                 error: function (error) {
                     console.error(error);                
@@ -168,41 +204,6 @@ jQuery(document).ready(function($) {
                 $(this).val(dateText);
             }
         });            
-    }
-
-    function get_document_list_data(site_id){
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_document_list_data',
-                '_site_id': site_id,
-            },
-            success: function (response) {
-                for(index=0;index<50;index++) {
-                    $("#document-list-"+index).hide();
-                    $("#document-list-"+index).empty();
-                }
-                $.each(response, function (index, value) {
-                    output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#document-list-"+index).append(output);
-                    $("#document-list-"+index).show();
-                });
-
-                activate_document_list_data();
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });
     }
 
     $("#doc-job-dialog").dialog({
