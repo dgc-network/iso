@@ -40,11 +40,11 @@ add_action('user_new_form', 'user_custom_fields_on_new_user_form');
 // Save custom fields when a new user is registered
 function save_user_custom_fields_on_registration($user_id) {
     if (isset($_POST['dgc_wallet_balance'])) {
-        update_user_meta($user_id, 'dgc_wallet_balance', sanitize_text_field($_POST['dgc_wallet_balance']));
+        update_post_meta($user_id, 'dgc_wallet_balance', sanitize_text_field($_POST['dgc_wallet_balance']));
     }
 
     if (isset($_POST['dgc_wallet_address'])) {
-        update_user_meta($user_id, 'dgc_wallet_address', sanitize_text_field($_POST['dgc_wallet_address']));
+        update_post_meta($user_id, 'dgc_wallet_address', sanitize_text_field($_POST['dgc_wallet_address']));
     }
 }
 add_action('user_register', 'save_user_custom_fields_on_registration');
@@ -105,8 +105,8 @@ add_action('edit_user_profile', 'user_custom_fields'); // editing another user
 
 function save_user_metadata($userId) {
     if (current_user_can('edit_user', $userId)) {
-        update_user_meta($userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
-        update_user_meta($userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
+        update_post_meta($userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
+        update_post_meta($userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
         update_post_meta($userId, 'site_id', $_REQUEST['_site_id']);
     }    
 }
