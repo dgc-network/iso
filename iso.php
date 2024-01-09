@@ -34,7 +34,7 @@ function remove_admin_bar() {
   }
 }
 add_action('after_setup_theme', 'remove_admin_bar');
-
+/*
 function admin_enqueue() {
     wp_enqueue_style( 'jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css' );
     wp_enqueue_script( 'jquery-ui-js', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
@@ -58,6 +58,24 @@ function wp_enqueue() {
     ) );
 }
 add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
+*/
+function wp_enqueue_scripts_and_styles() {
+    // Enqueue jQuery UI from the WordPress package
+    wp_enqueue_style('jquery-ui-css', includes_url('css/jquery/ui/themes/smoothness/jquery-ui.css'));
+    wp_enqueue_script('jquery-ui-core');
+    wp_enqueue_script('jquery-ui-datepicker');
+
+    // Enqueue your custom styles and scripts
+    wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __FILE__), '', time());
+    wp_enqueue_script('wp-enqueue-js', plugins_url('/assets/js/wp-enqueue.js', __FILE__), array('jquery'), time());
+
+    // Localize script with custom data
+    wp_localize_script('wp-enqueue-js', 'ajax_object', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
+    ));
+}
+add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
 /**
  * 1. 時間到了會透過Line通知使用者填寫資料
