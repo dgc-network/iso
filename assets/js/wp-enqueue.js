@@ -206,7 +206,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#doc-job-dialog").dialog({
-        width: 900,
+        //width: 900,
         modal: true,
         autoOpen: false,
         buttons: {
