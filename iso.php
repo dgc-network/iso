@@ -111,7 +111,7 @@ function init_webhook_events() {
                     ]                                                                    
                 ]
             ]);    
-
+*/
             $see_more = array();
             $see_more["type"] = "bubble";
             $see_more["body"]["type"] = "box";
@@ -133,7 +133,7 @@ function init_webhook_events() {
                     ]
                 ]
             ]);
-*/
+/*
             if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
             //if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
                 $see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
@@ -162,7 +162,7 @@ function init_webhook_events() {
                     ]
                 ]);    
             }
-            
+*/            
         }
 
         // Regular webhook response
