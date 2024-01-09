@@ -205,26 +205,7 @@ function my_jobs_shortcode() {
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
         $site_id = esc_html(get_post_meta($current_user_id, 'site_id', true));
-
-        if( isset($_POST['_user_submit']) ) {
-            $user_data = wp_update_user( array( 
-                'ID' => $current_user_id, 
-                'display_name' => $_POST['_display_name'], 
-                //'user_email' => $_POST['_user_email'], 
-            ) );
-            update_post_meta( $current_user_id, 'site_id', $_POST['_site_id'] );
-
-            if ( is_wp_error( $user_data ) ) {
-                // There was an error; possibly this user doesn't exist.
-                echo 'Error.';
-            } else {
-                // Success!
-                echo 'User profile updated.';
-            }
-        }
-
         $user_data = get_userdata( $current_user_id );
-
         ?>
         <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -232,25 +213,11 @@ function my_jobs_shortcode() {
             <fieldset>
                 <label for="display-name">Name : </label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="site-id"> Site: </label>
-                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all" >
-                    <option value="">Select Site</option>
-                <?php
-                    $site_args = array(
-                        'post_type'      => 'site',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        $selected = ($site_id == $site->ID) ? 'selected' : '';
-                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-                    }
-                ?>
-                </select>
+                <label for="site-title"> Site: </label>
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <?php
                 // My job list in site
                 my_job_list_table($site_id);
-                //echo '<input type="submit" name="_user_submit" style="margin:3px;" value="Submit" />';
                 ?>
             </fieldset>
             </form>
@@ -305,6 +272,7 @@ function my_job_list_table($site_id=0) {
     <div id="job-dialog" title="Job dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="job-id" />
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
             <label for="job-title">Title:</label>
             <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
             <label for="job-content">Content:</label>
