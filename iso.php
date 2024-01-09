@@ -60,7 +60,7 @@ function wp_enqueue() {
 add_action( 'wp_enqueue_scripts', 'wp_enqueue' );
 */
 function wp_enqueue_scripts_and_styles() {
-    $version = '1.0'; // Update this version number when you make changes
+    $version = '1.0.1'; // Update this version number when you make changes
 
     // Enqueue jQuery UI from the WordPress package
     wp_enqueue_style('jquery-ui-css', includes_url('css/jquery/ui/themes/smoothness/jquery-ui.css'));
@@ -68,8 +68,8 @@ function wp_enqueue_scripts_and_styles() {
     wp_enqueue_script('jquery-ui-datepicker');
 
     // Enqueue your custom styles and scripts
-    wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __FILE__), '', $version);
-    wp_enqueue_script('wp-enqueue-js', plugins_url('/assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
+    wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $version);
+    wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
 
     // Localize script with custom data
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
