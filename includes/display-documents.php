@@ -153,6 +153,30 @@ function display_document_dialog($site_id=0){
                 ?>
                 </tbody>
             </table>
+
+            <div id="doc-job-dialog" title="Doc job dialog" style="display:none;">
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $x = 0;
+                    while ($x<50) {
+                        echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
         </fieldset>
     </div>
 <?php
