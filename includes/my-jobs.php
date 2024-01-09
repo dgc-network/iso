@@ -107,7 +107,7 @@ function save_user_metadata($userId) {
     if (current_user_can('edit_user', $userId)) {
         update_user_meta($userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
         update_user_meta($userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
-        update_user_meta($userId, 'site_id', $_REQUEST['_site_id']);
+        update_post_meta($userId, 'site_id', $_REQUEST['_site_id']);
     }    
 }
 add_action('personal_options_update', 'save_user_metadata');
