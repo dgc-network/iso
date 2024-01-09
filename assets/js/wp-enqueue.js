@@ -89,6 +89,12 @@ jQuery(document).ready(function($) {
             //get_collaboration_list_data($("#course-id").val());
         });
     
+        $('[id^="btn-edit-doc-job-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(17);
+            $("#doc-job-dialog").dialog('open');
+        });
+    
         $('[id^="btn-edit-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
@@ -117,12 +123,12 @@ jQuery(document).ready(function($) {
                     $.each(response.job_array, function (index, value) {
                         output = '';
                         output = output+'<td style="text-align:center;"><input type="checkbox" id="check-doc-job-'+value.job_id+'" /></td>';
-                        //output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
                         output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                         output = output+'<td>'+value.job_content+'</td>';
                         output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
                         output = output+'<td style="text-align:center;">'+value.job_submit_time+'</td>';
-                        output = output+'<td style="text-align:center;"><span id="btn-del-doc-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
+                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
+                        //output = output+'<td style="text-align:center;"><span id="btn-del-doc-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
                         $("#doc-job-list-"+index).append(output);
                         $("#doc-job-list-"+index).show();
                     })    
@@ -198,6 +204,19 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    $("#doc-job-dialog").dialog({
+        width: 900,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+            },
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
 
     $("#document-dialog").dialog({
         width: 900,

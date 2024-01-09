@@ -93,31 +93,46 @@ function display_documents_shortcode() {
                 </tbody>
                 <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
+            <?php display_document_dialog($site_id);?>
 
-            <div id="document-dialog" title="Document dialog" style="display:none;">
-            <fieldset>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-                <input type="hidden" id="document-id" />
-                <label for="doc-title">Title:</label>
-                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="doc-number">Doc.#:</label>
-                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
-                    </div>
-                    <div style="display:inline-block; width:25%">
-                        <label for="doc-revision">Revision:</label>
-                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
-                    </div>
-                    <div style="display:inline-block;">
-                        <label for="doc-date">Date:</label>
-                        <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
-                    </div>
+        </fieldset>
+        </div>
+        <?php
+
+    } else {
+        user_did_not_login_yet();
+    }
+    //return ob_get_clean(); // Return the buffered content
+    
+}
+add_shortcode('display-documents', 'display_documents_shortcode');
+
+function display_document_dialog($site_id=0){
+?>
+    <div id="document-dialog" title="Document dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
+            <input type="hidden" id="document-id" />
+            <label for="doc-title">Title:</label>
+            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
+            <div>
+                <div style="display:inline-block;">
+                    <label for="doc-number">Doc.#:</label>
+                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
                 </div>
-                <label for="doc-url">URL:</label>
-                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
+                <div style="display:inline-block; width:25%">
+                    <label for="doc-revision">Revision:</label>
+                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
+                </div>
+                <div style="display:inline-block;">
+                    <label for="doc-date">Date:</label>
+                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
+                </div>
+            </div>
+            <label for="doc-url">URL:</label>
+            <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
 
-                <table style="width:100%;">
+            <table style="width:100%;">
                 <thead>
                     <tr>
                         <th></th>
@@ -137,21 +152,11 @@ function display_documents_shortcode() {
                 }
                 ?>
                 </tbody>
-                </table>
-            </fieldset>
-            </div>
-
+            </table>
         </fieldset>
-        </div>
-        <?php
-
-    } else {
-        user_did_not_login_yet();
-    }
-    //return ob_get_clean(); // Return the buffered content
-    
+    </div>
+<?php
 }
-add_shortcode('display-documents', 'display_documents_shortcode');
 
 function retrieve_documents_data($site_id=0) {
     // Retrieve the documents value
@@ -185,12 +190,6 @@ function retrieve_documents_data($site_id=0) {
             ),
         ),
     );
-/*
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-    );
-*/
     $query = new WP_Query($args);
     return $query;
 }
