@@ -37,7 +37,6 @@ add_action('after_setup_theme', 'remove_admin_bar');
 
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0'; // Update this version number when you make changes
-
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui-js', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), '1.13.2', true);
     wp_enqueue_style('admin-enqueue-css', plugins_url('assets/css/admin-enqueue.css', __FILE__), '', $version);
@@ -51,9 +50,9 @@ add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
     $version = '1.0.3'; // Update this version number when you make changes
-
     // Enqueue jQuery UI from the WordPress package
-    wp_enqueue_style('jquery-ui-css', includes_url('css/jquery/ui/themes/smoothness/jquery-ui.css'));
+    wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
+    //wp_enqueue_style('jquery-ui-css', includes_url('css/jquery/ui/themes/smoothness/jquery-ui.css'));
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
     wp_enqueue_script('jquery-ui-core');
     wp_enqueue_script('jquery-ui-datepicker');
