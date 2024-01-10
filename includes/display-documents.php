@@ -34,6 +34,19 @@ function register_document_post_type() {
 }
 add_action('init', 'register_document_post_type');
 
+// Register action post type
+function register_action_post_type() {
+    $args = array(
+        'public'        => true,
+        'rewrite'       => array('slug' => 'actions'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+    );
+    register_post_type( 'action', $args );
+}
+add_action('init', 'register_action_post_type');
+
 // Shortcode to display documents
 function display_documents_shortcode() {
     //ob_start(); // Start output buffering
@@ -270,17 +283,6 @@ function get_document_dialog_data() {
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $post_id = (int) get_the_ID();
-                $doc_job_id = esc_attr(get_post_meta($post_id, 'doc_job_id', true)); //get doc_action_id from site_action_id
-                //$doc_action_title = esc_html(get_the_title($doc_action_id)); //get site_action_title
-                //$doc_action_content = esc_html(get_the_content($doc_action_id)); //get site_action_content from site_actions
-                $doc_next_action_id = esc_html(get_post_meta($post_id, 'doc_next_action_id', true)); //get doc_next_action_id from site_next_action_id
-                $doc_next_action_title = esc_html(get_the_title($doc_next_action_id)); //get site_next_action_title 
-                $doc_next_action_leadtime = esc_html(get_post_meta($post_id, 'doc_next_action_leadtime', true)); //get site_action_leadtime from site_next_action_leadtime
-                $doc_submit_user_id = esc_html(get_post_meta($post_id, 'doc_job_submit_user', true));
-                $user = get_userdata($doc_submit_user_id);
-                //$doc_action_submit_user = esc_html($user->display_name);
-                //$doc_action_submit_time = esc_html(get_post_meta($post_id, 'doc_action_submit_time', true)); //get doc_next_action_id from site_next_action_id
-
                 $_list = array();
                 $_list["job_id"] = get_the_ID();
                 $_list["job_title"] = get_the_title();
@@ -362,10 +364,9 @@ function get_job_action_list_data() {
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $next_job_id = esc_attr(get_post_meta($post_id, 'next_job', true));
+            $next_job_id = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
             $_list = array();
-            $_list["action_id"] = $post_id;
+            $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_the_content();
             $_list["next_job"] = get_the_title($next_job_id);

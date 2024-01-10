@@ -235,19 +235,19 @@ function my_jobs_shortcode() {
                         ?>
                             <tr id="my-job-list-<?php echo $x;?>">
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
-                                <td style="text-align:center;"><?php echo get_the_title(get_the_ID());?></td>
-                                <td><?php echo get_the_content(get_the_ID());?></td>
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td><?php the_content();?></td>
                                 <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                                 <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                             </tr>
                         <?php 
                         $x += 1;
                     endwhile;
+                    wp_reset_postdata();
                     while ($x<50) {
                         echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
                         $x += 1;
                     }
-                    wp_reset_postdata();
                 endif;
                 ?>
                     </tbody>
@@ -310,7 +310,7 @@ function get_my_job_list_data() {
 }
 add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
-
+/*
 function new_site_job_data() {
     $current_user_id = get_current_user_id();
     // Set up the post data
@@ -334,7 +334,7 @@ function new_site_job_data() {
 }
 add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
 add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
-
+*/
 function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
