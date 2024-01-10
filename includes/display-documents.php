@@ -65,7 +65,7 @@ function display_documents_shortcode() {
                 </thead>
                 <tbody>
             <?php
-            $query = retrieve_documents_data($site_id);
+            $query = retrieve_document_list_data($site_id);
             if ($query->have_posts()) :
                 $x = 0;
                 while ($query->have_posts()) : $query->the_post();
@@ -155,26 +155,28 @@ function display_document_dialog($site_id=0){
             </table>
 
             <div id="doc-job-dialog" title="Doc job dialog" style="display:none;">
+                <input type="hidden" id="job-id" />
                 <table style="width:100%;">
                     <thead>
                         <tr>
                             <th></th>
                             <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
                             <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    <?php
-                    $x = 0;
-                    while ($x<50) {
-                        echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
-                    ?>
+                        <?php
+                        $x = 0;
+                        while ($x<50) {
+                            echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
+                            $x += 1;
+                        }
+                        ?>
                     </tbody>
+                    <tr><td colspan="6"><div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
                 </table>
             </div>
         </fieldset>
@@ -182,7 +184,7 @@ function display_document_dialog($site_id=0){
 <?php
 }
 
-function retrieve_documents_data($site_id=0) {
+function retrieve_document_list_data($site_id=0) {
     // Retrieve the documents value
     $args = array(
         'post_type'      => 'document', // Change to your custom post type if needed
@@ -220,7 +222,7 @@ function retrieve_documents_data($site_id=0) {
 
 function get_document_list_data() {
     // Retrieve the documents data
-    $query = retrieve_documents_data($_POST['_site_id']);
+    $query = retrieve_document_list_data($_POST['_site_id']);
 
     $_array = array();
     if ($query->have_posts()) {
@@ -337,4 +339,97 @@ function del_document_dialog_data() {
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
+
+function retrieve_job_action_list_data($site_id=0) {
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'job_id',
+                'value' => $job_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function get_job_action_list_data() {
+    // Retrieve the documents data
+    $query = retrieve_job_action_list_data($_POST['_job_id']);
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = (int) get_the_ID();
+            $next_job_id = esc_attr(get_post_meta($post_id, 'next_job', true));
+            $_list = array();
+            $_list["action_id"] = $post_id;
+            $_list["action_title"] = get_the_title();
+            $_list["action_content"] = get_the_content();
+            $_list["next_job"] = get_the_title($next_job_id);
+            $_list["next_leadtime"] = esc_html(get_post_meta($next_job_id, 'next_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
+
+function get_job_action_dialog_data() {
+    $response = array();
+    if( isset($_POST['_action_id']) ) {
+        $action_id = (int)sanitize_text_field($_POST['_action_id']);
+        $next_job_id = esc_attr(get_post_meta($action_id, 'next_job', true));
+        $response["action_title"] = get_the_title($action_id);
+        $response["action_content"] = get_the_content($action_id);
+        $response["next_job"] = get_the_title($next_job_id);
+        $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_job_action_dialog_data', 'get_job_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_job_action_dialog_data', 'get_job_action_dialog_data' );
+
+function set_job_action_dialog_data() {
+    if( isset($_POST['_action_id']) ) {
+        $data = array(
+            'ID'         => $_POST['_action_id'],
+            'post_title' => $_POST['_action_title'],
+            'post_content' => $_POST['_action_content'],
+            'meta_input' => array(
+                'next_job'   => $_POST['_next_job'],
+                'next_leadtime' => $_POST['_next_leadtime'],
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        $current_user_id = get_current_user_id();
+        // Set up the post data
+        $new_post = array(
+            'post_title'    => 'New action',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'action', // Change to your custom post type if needed
+        );    
+        // Insert the post into the database
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_job_id']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_job_action_dialog_data', 'set_job_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_job_action_dialog_data', 'set_job_action_dialog_data' );
+
+function del_job_action_dialog_data() {
+    // Delete the post
+    $result = wp_delete_post($_POST['_action_id'], true); // Set the second parameter to true to force delete    
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 

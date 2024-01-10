@@ -217,8 +217,53 @@ function my_jobs_shortcode() {
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <?php
                 // My job list in site
-                my_job_list_table($site_id);
+                $query = retrieve_site_job_list_data($site_id);
                 ?>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th></th>
+                        <th>Job</th>
+                        <th>Description</th>
+                        <th></th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                <?php
+                if ($query->have_posts()) :
+                    $x = 0;
+                    while ($query->have_posts()) : $query->the_post();
+                        ?>
+                            <tr id="my-job-list-<?php echo $x;?>">
+                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
+                                <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
+                                <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
+                                <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
+                                <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                            </tr>
+                        <?php 
+                        $x += 1;
+                    endwhile;
+                    while ($x<50) {
+                        echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                    wp_reset_postdata();
+                endif;
+                ?>
+                    </tbody>
+                    <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+                </table>
+
+                <div id="job-dialog" title="Job dialog" style="display:none;">
+                    <fieldset>
+                        <input type="hidden" id="job-id" />
+                        <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                        <label for="job-title">Title:</label>
+                        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+                        <label for="job-content">Content:</label>
+                        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+                    </fieldset>
+                </div>
             </fieldset>
             </form>
         </div><?php
@@ -230,58 +275,41 @@ function my_jobs_shortcode() {
 }
 add_shortcode('my-jobs', 'my_jobs_shortcode');
 
-function my_job_list_table($site_id=0) {
+function retrieve_site_job_list_data($site_id=0) {
     // Retrieve the value
-    $query = retrieve_site_job_list($site_id);
-    ?>
-    <table class="ui-widget" style="width:100%;">
-        <thead>
-            <th></th>
-            <th>Job</th>
-            <th>Description</th>
-            <th></th>
-            <th></th>
-        </thead>
-        <tbody>
-    <?php
-    if ($query->have_posts()) :
-        $x = 0;
-        while ($query->have_posts()) : $query->the_post();
-            ?>
-                <tr id="my-job-list-<?php echo $x;?>">
-                    <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
-                    <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
-                    <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
-                    <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                    <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
-                </tr>
-            <?php 
-            $x += 1;
-        endwhile;
-        while ($x<50) {
-            echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
-            $x += 1;
-        }
-        wp_reset_postdata();
-    endif;
-    ?>
-        </tbody>
-        <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-    </table>
-
-    <div id="job-dialog" title="Job dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="job-id" />
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <label for="job-title">Title:</label>
-            <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
-            <label for="job-content">Content:</label>
-            <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-    </div>
-
-    <?php
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
 }
+
+function get_my_job_list_data() {
+    // Retrieve the value
+    $query = retrieve_site_job_list_data($_POST['_site_id']);
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $_list = array();
+            $_list["job_id"] = get_the_ID();
+            $_list["job_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
+            $_list["job_content"] = get_the_content();
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
+add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
 
 function get_site_job_dialog_data() {
     $response = array();
@@ -321,7 +349,7 @@ function set_site_job_dialog_data() {
 }
 add_action( 'wp_ajax_set_site_job_dialog_data', 'set_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data' );
-
+/*
 function new_site_job_data() {
     $current_user_id = get_current_user_id();
     // Set up the post data
@@ -345,27 +373,7 @@ function new_site_job_data() {
 }
 add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
 add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
-
-function get_my_job_list_data() {
-    // Retrieve the value
-    $query = retrieve_site_job_list($_POST['_site_id']);
-
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["job_id"] = get_the_ID();
-            $_list["job_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
-            $_list["job_content"] = get_the_content();
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
-add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
-
+*/
 function del_site_job_dialog_data() {
     // Delete the post
     $result = wp_delete_post($_POST['_job_id'], true); // Set the second parameter to true to force delete
@@ -373,21 +381,5 @@ function del_site_job_dialog_data() {
 }
 add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', 'del_site_job_dialog_data' );
-
-function retrieve_site_job_list($site_id=0) {
-    // Retrieve the value
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
 
 

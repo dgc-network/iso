@@ -116,14 +116,6 @@ jQuery(document).ready(function($) {
             $(this).css('color', 'black');
         });
 
-        $("#btn-document-preview").on( "click", function() {
-            //window.location.replace("/learnings/?_view_course=" + $("#course-id").val());
-        });
-    
-        $("#btn-document-setting").on( "click", function() {
-            //get_collaboration_list_data($("#course-id").val());
-        });
-    
         $('[id^="btn-edit-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
@@ -144,7 +136,7 @@ jQuery(document).ready(function($) {
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-date").val(response.doc_date);
                     $("#doc-url").val(response.doc_url);
-
+                    // Job list in document
                     for(index=0;index<50;index++) {
                         $("#doc-job-list-"+index).hide();
                         $("#doc-job-list-"+index).empty();
@@ -157,7 +149,6 @@ jQuery(document).ready(function($) {
                         output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
                         output = output+'<td style="text-align:center;">'+value.job_submit_time+'</td>';
                         output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
-                        //output = output+'<td style="text-align:center;"><span id="btn-del-doc-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
                         $("#doc-job-list-"+index).append(output);
                         $("#doc-job-list-"+index).show();
                     })
@@ -175,8 +166,9 @@ jQuery(document).ready(function($) {
                     $('[id^="btn-edit-doc-job-"]').on( "click", function() {
                         id = this.id;
                         id = id.substring(17);
-                        $("#doc-job-dialog").dialog('open');
-                    });                
+                        get_job_action_list_data(id);
+
+                    });
                 
                 },
                 error: function (error) {
@@ -216,19 +208,6 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    $("#doc-job-dialog").dialog({
-        //width: 900,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function() {
-            },
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
-        }
-    });
-
     $("#document-dialog").dialog({
         width: 900,
         modal: true,
@@ -251,6 +230,167 @@ jQuery(document).ready(function($) {
                     success: function (response) {
                         $("#document-dialog").dialog('close');
                         get_document_list_data($("#site-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $("#doc-job-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+    });
+
+    function get_job_action_list_data(id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_job_action_list_data',
+                '_job_id': id,
+            },
+            success: function (response) {            
+                $("#doc-job-dialog").dialog('open');
+                // Action list in job
+                for(index=0;index<50;index++) {
+                    $("#job-action-list-"+index).hide();
+                    $("#job-action-list-"+index).empty();
+                }
+                $.each(response.action_array, function (index, value) {
+                    output = '';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
+                    output = output+'<td>'+value.action_content+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $("#job-action-list-"+index).append(output);
+                    $("#job-action-list-"+index).show();
+                })
+
+                $('[id^="btn-"]').mouseover(function() {
+                    $(this).css('cursor', 'pointer');
+                    $(this).css('color', 'red');
+                });
+                    
+                $('[id^="btn-"]').mouseout(function() {
+                    $(this).css('cursor', 'default');
+                    $(this).css('color', 'black');
+                });
+                
+                $('[id^="btn-edit-job-action-"]').on( "click", function() {
+                    id = this.id;
+                    id = id.substring(20);
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'get_job_action_dialog_data',
+                            '_action_id': id,
+                            '_job_id': $("#job-id").val(),
+                        },
+                        success: function (response) {
+                            $("#action-dialog").dialog('open');
+                            $("#action-id").val(id);
+                            $("#action-title").val(response.action_title);
+                            $("#action-content").val(response.action_content);
+                        },
+                        error: function (error) {
+                            console.error(error);                
+                            alert(error);
+                        }
+                    });
+                });
+            
+                $('[id^="btn-del-job-action-"]').on( "click", function() {
+                    id = this.id;
+                    id = id.substring(19);
+                    if (window.confirm("Are you sure you want to delete this job action?")) {
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_job_action_dialog_data',
+                                '_job_id': id,
+                            },
+                            success: function (response) {
+                                get_job_action_list_data($("#job-id").val());
+                            },
+                            error: function(error){
+                                alert(error);
+                            }
+                        });
+                    }
+                });        
+        
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+
+        $('[id^="btn-"]').mouseover(function() {
+            $(this).css('cursor', 'pointer');
+            $(this).css('color', 'red');
+        });
+            
+        $('[id^="btn-"]').mouseout(function() {
+            $(this).css('cursor', 'default');
+            $(this).css('color', 'black');
+        });
+        
+        $("#btn-new-job-action").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_job_action_dialog_data',
+                    '_job_id': $("#job-id").val(),
+                },
+                success: function (response) {
+                    get_job_action_list_data($("#job-id").val());
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });    
+        });        
+
+    }
+
+    $("#action-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_job_action_dialog_data',
+                        '_action_id': $("#action-id").val(),
+                        '_action_title': $("#action-title").val(),
+                        '_action_content': $("#action-content").val(),
+                    },
+                    success: function (response) {
+                        $("#action-dialog").dialog('close');
+                        get_job_action_list_data($("#job-id").val());
                     },
                     error: function (error) {
                         console.error(error);                    
@@ -299,13 +439,7 @@ jQuery(document).ready(function($) {
             $(this).css('cursor', 'default');
             $(this).css('color', 'black');
         });
-/*
-        $('[id^="btn-edit-site-job-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(18);
-            window.location.replace('/wp-admin/post.php?post='+id+'&action=edit');
-        });
-*/    
+
         $('[id^="btn-edit-site-job-"]').on( "click", function() {
             id = this.id;
             id = id.substring(18);
