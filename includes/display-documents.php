@@ -41,7 +41,7 @@ function register_action_post_type() {
         'rewrite'       => array('slug' => 'actions'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'action', $args );
 }
