@@ -464,7 +464,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_job_action_dialog_data',
-                                '_job_id': id,
+                                '_action_id': id,
                             },
                             success: function (response) {
                                 get_job_action_list_data($("#job-id").val());
