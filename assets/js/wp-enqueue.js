@@ -308,8 +308,8 @@ jQuery(document).ready(function($) {
                     $('[id^="btn-edit-doc-job-"]').on( "click", function() {
                         id = this.id;
                         id = id.substring(17);
+                        $("#job-id").val(id);
                         get_job_action_list_data(id);
-
                     });
                 
                 },
@@ -393,6 +393,7 @@ jQuery(document).ready(function($) {
     });
 
     function get_job_action_list_data(job_id){
+
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
