@@ -133,7 +133,7 @@ function init_webhook_events() {
                                 'action' => [
                                     'type' => 'uri',
                                     'label' => 'Click me!',
-                                    'uri' => 'https://example.com', // Replace with your desired URI
+                                    'uri' => $link_uri, // Replace with your desired URI
                                 ],
                             ],
                         ],
