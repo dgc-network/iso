@@ -351,14 +351,12 @@ function retrieve_job_action_list_data($job_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
-/*
         'meta_query'     => array(
             array(
                 'key'   => 'job_id',
                 'value' => $job_id,
             ),
         ),
-*/
     );
     $query = new WP_Query($args);
     return $query;
