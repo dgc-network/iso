@@ -319,7 +319,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 function job_action_list_dialog() {
     ?>
-            <div id="job-action-list-dialog" title="Job action list dialog" style="display:none;">
+            <div id="job-action-list-dialog" title="Job action list" style="display:none;">
                 <input type="hidden" id="job-id" />
                 <table style="width:100%;">
                     <thead>

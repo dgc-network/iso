@@ -407,7 +407,7 @@ jQuery(document).ready(function($) {
                     $("#job-action-list-"+index).hide();
                     $("#job-action-list-"+index).empty();
                 }
-                $.each(response.action_array, function (index, value) {
+                $.each(response, function (index, value) {
                     output = '';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
