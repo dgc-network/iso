@@ -301,7 +301,7 @@ function get_site_job_list_data() {
             $_list = array();
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
-            $_list["job_content"] = get_the_content();
+            $_list["job_content"] = get_post_field('post_content', get_the_ID());
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
@@ -316,7 +316,7 @@ function get_site_job_dialog_data() {
     if( isset($_POST['_job_id']) ) {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
-        $response["job_content"] = get_the_content($job_id);
+        $response["job_content"] = get_post_field('post_content', $job_id);
     }
     wp_send_json($response);
 }

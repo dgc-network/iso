@@ -261,7 +261,7 @@ function get_document_dialog_data() {
                 $_list = array();
                 $_list["job_id"] = get_the_ID();
                 $_list["job_title"] = get_the_title();
-                $_list["job_content"] = get_the_content();
+                $_list["job_content"] = get_post_field('post_content', $post_id);
                 $_list["job_submit_user"] = esc_html(get_post_meta($post_id, 'doc_job_submit_user', true));
                 $_list["job_submit_time"] = esc_html(get_post_meta($post_id, 'doc_job_submit_time', true));
                 array_push($_array, $_list);
@@ -387,7 +387,7 @@ function get_job_action_list_data() {
             $_list = array();
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
-            $_list["action_content"] = get_the_content();
+            $_list["action_content"] = get_post_field('post_content', get_the_ID());
             $_list["next_job"] = get_the_title($next_job_id);
             $_list["next_leadtime"] = esc_html(get_post_meta($next_job_id, 'next_leadtime', true));
             array_push($_array, $_list);
@@ -405,7 +405,7 @@ function get_job_action_dialog_data() {
         $action_id = (int)sanitize_text_field($_POST['_action_id']);
         $next_job_id = esc_attr(get_post_meta($action_id, 'next_job', true));
         $response["action_title"] = get_the_title($action_id);
-        $response["action_content"] = get_the_content($action_id);
+        $response["action_content"] = get_post_field('post_content', $action_id);
         $response["next_job"] = get_the_title($next_job_id);
         $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
     }
