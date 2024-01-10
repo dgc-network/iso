@@ -417,7 +417,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 //'action': 'new_site_job_data',
-                'action': 'get_site_job_dialog_data',
+                'action': 'set_site_job_dialog_data',
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
