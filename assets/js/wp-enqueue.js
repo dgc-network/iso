@@ -309,7 +309,7 @@ jQuery(document).ready(function($) {
                         id = this.id;
                         id = id.substring(17);
                         get_job_action_list_data(id);
-                        
+
                         $("#btn-new-job-action").on("click", function() {
                             jQuery.ajax({
                                 type: 'POST',
@@ -404,6 +404,7 @@ jQuery(document).ready(function($) {
         }
     });
 
+    // Job action list
     $("#job-action-list-dialog").dialog({
         width: 500,
         modal: true,
@@ -458,7 +459,7 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': id,
-                            '_job_id': $("#job-id").val(),
+                            //'_job_id': $("#job-id").val(),
                         },
                         success: function (response) {
                             $("#action-dialog").dialog('open');
