@@ -100,6 +100,69 @@ function init_webhook_events() {
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
+
+            // Your LINE Channel Access Token
+            $channelAccessToken = 'YOUR_CHANNEL_ACCESS_TOKEN';
+
+            // Flex Message JSON structure
+            $flexMessage = [
+                'type' => 'flex',
+                'altText' => 'This is a Flex Message',
+                'contents' => [
+                    'type' => 'bubble',
+                    'body' => [
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'contents' => [
+                            [
+                                'type' => 'text',
+                                'text' => 'Hello, World!',
+                                'size' => 'lg',
+                                'weight' => 'bold',
+                            ],
+                            [
+                                'type' => 'text',
+                                'text' => 'This is a Flex Message sent from PHP',
+                                'wrap' => true,
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+            
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'],
+                'messages' => [$flexMessage],
+            ]);
+/*
+            // Send Flex Message to LINE
+            $lineApiUrl = 'https://api.line.me/v2/bot/message/push';
+            $userId = 'USER_ID_TO_RECEIVE_MESSAGE'; // Replace with the actual user ID
+            $messageData = [
+                'to' => $userId,
+                'messages' => [$flexMessage],
+            ];
+/*            
+            $ch = curl_init($lineApiUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messageData));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $channelAccessToken,
+            ]);
+            
+            $response = curl_exec($ch);
+            curl_close($ch);
+            
+            // Check the response
+            if ($response === false) {
+                echo 'Error sending Flex Message: ' . curl_error($ch);
+            } else {
+                echo 'Flex Message sent successfully!';
+            }
+
 /*
             $line_bot_api->replyMessage([
                 'replyToken' => $event['replyToken'],
@@ -133,6 +196,7 @@ function init_webhook_events() {
                 ]
             ]);
 */
+/*
             //if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
             if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
                 //$see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
@@ -161,8 +225,8 @@ function init_webhook_events() {
                     ]
                 ]);    
             }
+*/
         }
-
         // Regular webhook response
         switch ($event['type']) {
             case 'message':
