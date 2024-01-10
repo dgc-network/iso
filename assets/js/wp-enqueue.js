@@ -309,7 +309,26 @@ jQuery(document).ready(function($) {
                         id = this.id;
                         id = id.substring(17);
                         get_job_action_list_data(id);
-
+                        
+                        $("#btn-new-job-action").on("click", function() {
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_job_action_dialog_data',
+                                    '_job_id': id,
+                                },
+                                success: function (response) {
+                                    get_job_action_list_data(id);
+                                },
+                                error: function(error){
+                                    console.error(error);                    
+                                    alert(error);
+                                }
+                            });    
+                        });                        
+                
                     });
                 
                 },
@@ -493,25 +512,6 @@ jQuery(document).ready(function($) {
             $(this).css('color', 'black');
         });
         
-        $("#btn-new-job-action").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_job_action_dialog_data',
-                    '_job_id': id,
-                },
-                success: function (response) {
-                    get_job_action_list_data(id);
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });    
-        });        
-
     }
 
     $("#action-dialog").dialog({
