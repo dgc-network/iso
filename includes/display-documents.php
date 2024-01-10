@@ -413,7 +413,7 @@ function get_job_action_dialog_data() {
         );
         $jobs = get_posts($args);    
         foreach ($jobs as $job) {
-            $next_job .= '<option value="' . esc_attr($job->ID) . '" '.' />' . esc_html($job->post_title) . '</option>';
+            $next_job .= '<option value="' . esc_attr($job->ID) . '" '.selected(esc_attr($job->ID),$next_job_id).' />' . esc_html($job->post_title) . '</option>';
         }
         $response["next_job"] = $next_job;
 
