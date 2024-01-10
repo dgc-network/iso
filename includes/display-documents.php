@@ -145,27 +145,7 @@ function display_document_dialog($site_id=0){
             <label for="doc-url">URL:</label>
             <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
 
-            <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                $x = 0;
-                while ($x<50) {
-                    echo '<tr id="doc-job-list-'.$x.'" style="display:none;"></tr>';
-                    $x += 1;
-                }
-                ?>
-                </tbody>
-            </table>
+            <?php doc_job_list_dialog();?>
             <?php job_action_list_dialog();?>
         </fieldset>
     </div>
@@ -286,7 +266,6 @@ function set_document_dialog_data() {
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_date'     => $_POST['_doc_date'],
                 'doc_url'     => $_POST['_doc_url'],
-                //'site_id'     => $_POST['_site_id'],
             )
         );
         wp_update_post( $data );
@@ -316,6 +295,34 @@ function del_document_dialog_data() {
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
+
+function doc_job_list_dialog() {
+    ?>
+    <div id="doc-job-list-dialog" title="Doc job list" style="display:none;">
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+                $x = 0;
+                while ($x<50) {
+                    echo '<tr id="doc-job-list-'.$x.'" style="display:none;"></tr>';
+                    $x += 1;
+                }
+            ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
 
 function job_action_list_dialog() {
     ?>

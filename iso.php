@@ -49,7 +49,7 @@ function admin_enqueue_scripts_and_styles() {
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
-    $version = '1.0.5.0.0.3'; // Update this version number when you make changes
+    $version = '1.0.5.0.0.4'; // Update this version number when you make changes
     // Enqueue jQuery UI from the WordPress package
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
@@ -101,10 +101,10 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
 
-            // Create the Flex Message JSON structure
+            // Flex Message JSON structure with a button
             $flexMessage = [
                 'type' => 'flex',
-                'altText' => 'This is a Flex Message',
+                'altText' => 'This is a Flex Message with a Button',
                 'contents' => [
                     'type' => 'bubble',
                     'body' => [
@@ -112,13 +112,28 @@ function init_webhook_events() {
                         'layout' => 'vertical',
                         'contents' => [
                             [
+                                'type' => 'text',
+                                'text' => 'Hello, World!',
+                                'size' => 'lg',
+                                'weight' => 'bold',
+                            ],
+                            [
+                                'type' => 'text',
+                                'text' => 'This is a Flex Message with a Button',
+                                'wrap' => true,
+                            ],
+                        ],
+                    ],
+                    'footer' => [
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'contents' => [
+                            [
                                 'type' => 'button',
-                                'flex' => 1,
-                                'gravity' => 'center',
                                 'action' => [
                                     'type' => 'uri',
-                                    'label' => 'User Login/Registration',
-                                    'uri' => $link_uri,
+                                    'label' => 'Click me!',
+                                    'uri' => 'https://example.com', // Replace with your desired URI
                                 ],
                             ],
                         ],

@@ -278,6 +278,45 @@ jQuery(document).ready(function($) {
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-date").val(response.doc_date);
                     $("#doc-url").val(response.doc_url);
+
+                    $('[id^="btn-"]').mouseover(function() {
+                        $(this).css('cursor', 'pointer');
+                        $(this).css('color', 'red');
+                    });
+                        
+                    $('[id^="btn-"]').mouseout(function() {
+                        $(this).css('cursor', 'default');
+                        $(this).css('color', 'black');
+                    });
+            
+                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
+                        id = this.id;
+                        id = id.substring(17);
+                        $("#job-id").val(id);
+                        get_job_action_list_data($("#job-id").val());
+                    });
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+    
+        $('[id^="btn-document-job-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(17);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_doc_job_list_data',
+                    '_document_id': id,
+                    '_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    $("#doc-job-dialog").dialog('open');
                     // Job list in document
                     for(index=0;index<50;index++) {
                         $("#doc-job-list-"+index).hide();
@@ -310,36 +349,6 @@ jQuery(document).ready(function($) {
                         id = id.substring(17);
                         $("#job-id").val(id);
                         get_job_action_list_data($("#job-id").val());
-/*
-                        $('[id^="btn-"]').mouseover(function() {
-                            $(this).css('cursor', 'pointer');
-                            $(this).css('color', 'red');
-                        });
-                            
-                        $('[id^="btn-"]').mouseout(function() {
-                            $(this).css('cursor', 'default');
-                            $(this).css('color', 'black');
-                        });
-
-                        $("#btn-new-job-action").on("click", function() {
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_job_action_dialog_data',
-                                    '_job_id': $("#job-id").val(),
-                                },
-                                success: function (response) {
-                                    get_job_action_list_data($("#job-id").val());
-                                },
-                                error: function(error){
-                                    console.error(error);                    
-                                    alert(error);
-                                }
-                            });    
-                        });                        
-*/                                                
                     });
                 },
                 error: function (error) {
@@ -347,6 +356,10 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+
+
+
+            
         });
     
         $('[id^="btn-del-document-"]').on( "click", function() {
@@ -408,10 +421,39 @@ jQuery(document).ready(function($) {
                     }
                 });            
             },
-            "Cancel": function() {
-                $(this).dialog("close");
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this document?"+id)) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_document_dialog_data',
+                            '_document_id': $("#document-id").val(),
+                        },
+                        success: function (response) {
+                            $("#document-dialog").dialog('close');
+                            get_document_list_data($("#site-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });
+                }
+
             }
+            //"Cancel": function() {
+            //    $(this).dialog("close");
+            //}
         }
+    });
+
+    // Document job list
+    $("#doc-job-list-dialog").dialog({
+        //width: 500,
+        modal: true,
+        autoOpen: false,
     });
 
     // Job action list
