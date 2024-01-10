@@ -352,19 +352,7 @@ function job_action_list_dialog() {
             <label for="action-content">Content:</label>
             <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
             <label for="next-job">Next job:</label>
-            <select id="next-job" class="regular-text" >
-                <option value="">Select Job</option>
-                <?php
-                    $job_args = array(
-                        'post_type'      => 'job',
-                        'posts_per_page' => -1,
-                    );
-                    $jobs = get_posts($job_args);    
-                    foreach ($jobs as $job) {
-                        echo '<option value="' . esc_attr($job->ID) . '" />' . esc_html($job->post_title) . '</option>';
-                    }
-                ?>
-            </select>
+            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
             <label for="next-leadtime">Next leadtime:</label>
             <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
         </fieldset>
@@ -418,7 +406,17 @@ function get_job_action_dialog_data() {
         $next_job_id = esc_attr(get_post_meta($action_id, 'next_job', true));
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $response["next_job"] = get_the_title($next_job_id);
+        $next_job = '<option value="">Select Job</option>';
+        $args = array(
+            'post_type'      => 'job',
+            'posts_per_page' => -1,
+        );
+        $jobs = get_posts($args);    
+        foreach ($jobs as $job) {
+            $next_job .= '<option value="' . esc_attr($job->ID) . '"'.selected($job->ID,$next_job_id).' />' . esc_html($job->post_title) . '</option>';
+        }
+        $response["next_job"] = $next_job;
+
         $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
