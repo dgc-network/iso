@@ -471,13 +471,14 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': id,
-                            //'_job_id': $("#job-id").val(),
                         },
                         success: function (response) {
                             $("#action-dialog").dialog('open');
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
+                            $("#next-job").val(response.next_job);
+                            $("#next-leadtime").val(response.next_leadtime);
                         },
                         error: function (error) {
                             console.error(error);                
