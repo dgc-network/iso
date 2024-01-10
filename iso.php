@@ -100,7 +100,8 @@ function init_webhook_events() {
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
-            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name=';
+            $display_name = str_replace(' ', '', $profile['displayName']);
+            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$display_name;
 
             // Flex Message JSON structure with a button
             $flexMessage = [
