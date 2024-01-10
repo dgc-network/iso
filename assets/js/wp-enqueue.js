@@ -150,6 +150,7 @@ jQuery(document).ready(function($) {
                             '_job_id': $("#job-id").val(),
                         },
                         success: function (response) {
+                            $("#job-dialog").dialog('close');
                             get_site_job_list_data($("#site-id").val());
                         },
                         error: function(error){
