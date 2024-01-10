@@ -309,7 +309,37 @@ jQuery(document).ready(function($) {
                         id = this.id;
                         id = id.substring(17);
                         $("#job-id").val(id);
-                        get_job_action_list_data(id);
+
+                        $('[id^="btn-"]').mouseover(function() {
+                            $(this).css('cursor', 'pointer');
+                            $(this).css('color', 'red');
+                        });
+                            
+                        $('[id^="btn-"]').mouseout(function() {
+                            $(this).css('cursor', 'default');
+                            $(this).css('color', 'black');
+                        });
+                
+                        $("#btn-new-job-action").on("click", function() {
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_job_action_dialog_data',
+                                    '_job_id': $("#job-id").val(),
+                                },
+                                success: function (response) {
+                                    get_job_action_list_data($("#job-id").val());
+                                },
+                                error: function(error){
+                                    console.error(error);                    
+                                    alert(error);
+                                }
+                            });    
+                        });                        
+                                                
+                        get_job_action_list_data($("#job-id").val());
                     });
                 
                 },
@@ -484,36 +514,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
-        $('[id^="btn-"]').mouseover(function() {
-            $(this).css('cursor', 'pointer');
-            $(this).css('color', 'red');
-        });
-            
-        $('[id^="btn-"]').mouseout(function() {
-            $(this).css('cursor', 'default');
-            $(this).css('color', 'black');
-        });
-
-        $("#btn-new-job-action").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_job_action_dialog_data',
-                    '_job_id': job_id,
-                },
-                success: function (response) {
-                    get_job_action_list_data(job_id);
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });    
-        });                        
-
 
     }
 
