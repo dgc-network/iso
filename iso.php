@@ -100,6 +100,37 @@ function init_webhook_events() {
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
+
+            // Create the Flex Message JSON structure
+            $flexMessage = [
+                'type' => 'flex',
+                'altText' => 'This is a Flex Message',
+                'contents' => [
+                    'type' => 'bubble',
+                    'body' => [
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'contents' => [
+                            [
+                                'type' => 'button',
+                                'flex' => 1,
+                                'gravity' => 'center',
+                                'action' => [
+                                    'type' => 'uri',
+                                    'label' => 'User Login/Registration',
+                                    'uri' => $link_uri,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+            
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
+                'messages' => [$flexMessage],
+            ]);
+            
 /*
             // Your LINE Channel Access Token
             $channelAccessToken = 'YOUR_CHANNEL_ACCESS_TOKEN';
