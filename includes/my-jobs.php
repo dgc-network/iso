@@ -204,7 +204,7 @@ function my_jobs_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
-        $site_id = esc_html(get_post_meta($current_user_id, 'site_id', true));
+        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
@@ -235,8 +235,8 @@ function my_jobs_shortcode() {
                         ?>
                             <tr id="my-job-list-<?php echo $x;?>">
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
-                                <td style="text-align:center;"><?php echo esc_html(get_the_title(get_the_ID()));?></td>
-                                <td><?php echo esc_html(get_the_content(get_the_ID()));?></td>
+                                <td style="text-align:center;"><?php echo get_the_title(get_the_ID());?></td>
+                                <td><?php echo get_the_content(get_the_ID());?></td>
                                 <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                                 <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                             </tr>
@@ -300,7 +300,7 @@ function get_my_job_list_data() {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
             $_list["job_id"] = get_the_ID();
-            $_list["job_title"] = '<a href="'.get_permalink(get_the_ID()).'">'.get_the_title().'</a>';
+            $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_the_content();
             array_push($_array, $_list);
         endwhile;
@@ -310,6 +310,30 @@ function get_my_job_list_data() {
 }
 add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
+
+function new_site_job_data() {
+    $current_user_id = get_current_user_id();
+    // Set up the post data
+    $new_post = array(
+        'post_title'    => 'New job',
+        'post_content'  => 'Your post content goes here.',
+        'post_status'   => 'publish', // Publish the post immediately
+        'post_author'   => $current_user_id, // Use the user ID of the author
+        'post_type'     => 'job', // Change to your custom post type if needed
+    );    
+    // Insert the post into the database
+    $post_id = wp_insert_post($new_post);
+    
+    // Check if the post was successfully inserted
+    if ($post_id) {
+        // Add metadata to the post
+        update_post_meta($post_id, 'site_id', $_POST['_site_id']);
+        //update_post_meta($post_id, 'next_action_leadtime', 86400); // Assume the default is 1 day
+    }
+    wp_send_json($post_id);
+}
+add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
+add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
 
 function get_site_job_dialog_data() {
     $response = array();
@@ -339,7 +363,7 @@ function set_site_job_dialog_data() {
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'document', // Change to your custom post type if needed
+            'post_type'     => 'job', // Change to your custom post type if needed
         );    
         // Insert the post into the database
         $post_id = wp_insert_post($new_post);
@@ -349,31 +373,7 @@ function set_site_job_dialog_data() {
 }
 add_action( 'wp_ajax_set_site_job_dialog_data', 'set_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data' );
-/*
-function new_site_job_data() {
-    $current_user_id = get_current_user_id();
-    // Set up the post data
-    $new_post = array(
-        'post_title'    => 'New job',
-        'post_content'  => 'Your post content goes here.',
-        'post_status'   => 'publish', // Publish the post immediately
-        'post_author'   => $current_user_id, // Use the user ID of the author
-        'post_type'     => 'job', // Change to your custom post type if needed
-    );    
-    // Insert the post into the database
-    $post_id = wp_insert_post($new_post);
-    
-    // Check if the post was successfully inserted
-    if ($post_id) {
-        // Add metadata to the post
-        update_post_meta($post_id, 'site_id', $_POST['_site_id']);
-        //update_post_meta($post_id, 'next_action_leadtime', 86400); // Assume the default is 1 day
-    }
-    wp_send_json($post_id);
-}
-add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
-add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
-*/
+
 function del_site_job_dialog_data() {
     // Delete the post
     $result = wp_delete_post($_POST['_job_id'], true); // Set the second parameter to true to force delete
