@@ -352,7 +352,19 @@ function job_action_list_dialog() {
             <label for="action-content">Content:</label>
             <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
             <label for="next-job">Next job:</label>
-            <input type="text" id="next-job" class="text ui-widget-content ui-corner-all" />
+            <select id="next-job" class="regular-text" >
+                <option value="">Select Job</option>
+                <?php
+                    $job_args = array(
+                        'post_type'      => 'job',
+                        'posts_per_page' => -1,
+                    );
+                    $jobs = get_posts($job_args);    
+                    foreach ($jobs as $job) {
+                        echo '<option value="' . esc_attr($job->ID) . '" />' . esc_html($job->post_title) . '</option>';
+                    }
+                ?>
+            </select>
             <label for="next-leadtime">Next leadtime:</label>
             <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
         </fieldset>

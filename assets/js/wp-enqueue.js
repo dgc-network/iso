@@ -320,7 +320,7 @@ jQuery(document).ready(function($) {
                             $(this).css('cursor', 'default');
                             $(this).css('color', 'black');
                         });
-*/                
+
                         $("#btn-new-job-action").on("click", function() {
                             jQuery.ajax({
                                 type: 'POST',
@@ -339,9 +339,8 @@ jQuery(document).ready(function($) {
                                 }
                             });    
                         });                        
-                                                
+*/                                                
                     });
-                
                 },
                 error: function (error) {
                     console.error(error);                
@@ -422,8 +421,26 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    function get_job_action_list_data(job_id){
+    $("#btn-new-job-action").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_job_action_dialog_data',
+                '_job_id': $("#job-id").val(),
+            },
+            success: function (response) {
+                get_job_action_list_data($("#job-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                        
 
+    function get_job_action_list_data(job_id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -533,6 +550,8 @@ jQuery(document).ready(function($) {
                         '_action_id': $("#action-id").val(),
                         '_action_title': $("#action-title").val(),
                         '_action_content': $("#action-content").val(),
+                        '_next_job': $("#next-job").val(),
+                        '_next_leadtime': $("#next-leadtime").val(),
                     },
                     success: function (response) {
                         $("#action-dialog").dialog('close');
