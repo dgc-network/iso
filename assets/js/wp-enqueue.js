@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_site_job_dialog_data',
                     '_job_id': id,
-                    '_site_id': $("#site-id").val(),
+                    //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#job-dialog").dialog('open');
@@ -139,9 +139,28 @@ jQuery(document).ready(function($) {
                     }
                 });            
             },
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this site job?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_site_job_dialog_data',
+                            '_job_id': $("#job-id").val(),
+                        },
+                        success: function (response) {
+                            get_site_job_list_data($("#site-id").val());
+                        },
+                        error: function(error){
+                            alert(error);
+                        }
+                    });
+                }
+            },
+            //"Cancel": function() {
+            //    $(this).dialog("close");
+            //}
         }
     });
 });

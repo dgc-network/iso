@@ -310,31 +310,7 @@ function get_site_job_list_data() {
 }
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
-/*
-function new_site_job_data() {
-    $current_user_id = get_current_user_id();
-    // Set up the post data
-    $new_post = array(
-        'post_title'    => 'New job',
-        'post_content'  => 'Your post content goes here.',
-        'post_status'   => 'publish', // Publish the post immediately
-        'post_author'   => $current_user_id, // Use the user ID of the author
-        'post_type'     => 'job', // Change to your custom post type if needed
-    );    
-    // Insert the post into the database
-    $post_id = wp_insert_post($new_post);
-    
-    // Check if the post was successfully inserted
-    if ($post_id) {
-        // Add metadata to the post
-        update_post_meta($post_id, 'site_id', $_POST['_site_id']);
-        //update_post_meta($post_id, 'next_action_leadtime', 86400); // Assume the default is 1 day
-    }
-    wp_send_json($post_id);
-}
-add_action( 'wp_ajax_new_site_job_data', 'new_site_job_data' );
-add_action( 'wp_ajax_nopriv_new_site_job_data', 'new_site_job_data' );
-*/
+
 function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
