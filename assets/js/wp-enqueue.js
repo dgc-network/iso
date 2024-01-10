@@ -392,14 +392,14 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    function get_job_action_list_data(id){
+    function get_job_action_list_data(job_id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'get_job_action_list_data',
-                '_job_id': id,
+                '_job_id': job_id,
             },
             success: function (response) {            
                 $("#job-action-list-dialog").dialog('open');
@@ -494,18 +494,17 @@ jQuery(document).ready(function($) {
             $(this).css('color', 'black');
         });
 
-        $("#btn-new-job-action").on("click", function(e) {
-            e.preventDefault();
+        $("#btn-new-job-action").on("click", function() {
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'set_job_action_dialog_data',
-                    '_job_id': id,
+                    '_job_id': job_id,
                 },
                 success: function (response) {
-                    get_job_action_list_data(id);
+                    get_job_action_list_data(job_id);
                 },
                 error: function(error){
                     console.error(error);                    
