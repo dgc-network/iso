@@ -500,10 +500,10 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_job_action_dialog_data',
-                    '_job_id': $("#job-id").val(),
+                    '_job_id': id,
                 },
                 success: function (response) {
-                    get_job_action_list_data($("#job-id").val());
+                    get_job_action_list_data(id);
                 },
                 error: function(error){
                     console.error(error);                    
