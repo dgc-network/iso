@@ -309,7 +309,8 @@ jQuery(document).ready(function($) {
                         id = this.id;
                         id = id.substring(17);
                         $("#job-id").val(id);
-
+                        get_job_action_list_data($("#job-id").val());
+/*
                         $('[id^="btn-"]').mouseover(function() {
                             $(this).css('cursor', 'pointer');
                             $(this).css('color', 'red');
@@ -319,7 +320,7 @@ jQuery(document).ready(function($) {
                             $(this).css('cursor', 'default');
                             $(this).css('color', 'black');
                         });
-                
+*/                
                         $("#btn-new-job-action").on("click", function() {
                             jQuery.ajax({
                                 type: 'POST',
@@ -339,7 +340,6 @@ jQuery(document).ready(function($) {
                             });    
                         });                        
                                                 
-                        get_job_action_list_data($("#job-id").val());
                     });
                 
                 },
