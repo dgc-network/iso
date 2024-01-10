@@ -1,7 +1,7 @@
 // my-jobs
 jQuery(document).ready(function($) {
 
-    activate_my_job_list_data()
+    activate_site_job_list_data()
 
     $("#btn-new-site-job").on("click", function() {
         jQuery.ajax({
@@ -9,12 +9,11 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                //'action': 'new_site_job_data',
                 'action': 'set_site_job_dialog_data',
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_my_job_list_data($("#site-id").val());
+                get_site_job_list_data($("#site-id").val());
             },
             error: function(error){
                 alert(error);
@@ -22,7 +21,7 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function activate_my_job_list_data(){
+    function activate_site_job_list_data(){
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -71,7 +70,7 @@ jQuery(document).ready(function($) {
                         '_job_id': id,
                     },
                     success: function (response) {
-                        get_my_job_list_data($("#site-id").val());
+                        get_site_job_list_data($("#site-id").val());
                     },
                     error: function(error){
                         alert(error);
@@ -81,19 +80,19 @@ jQuery(document).ready(function($) {
         });        
     }
 
-    function get_my_job_list_data(id){
+    function get_site_job_list_data(id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_my_job_list_data',
+                'action': 'get_site_job_list_data',
                 '_site_id': id,
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#my-job-list-"+index).hide();
-                    $("#my-job-list-"+index).empty();
+                    $("#site-job-list-"+index).hide();
+                    $("#site-job-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
@@ -102,11 +101,11 @@ jQuery(document).ready(function($) {
                     output = output+'<td>'+value.job_content+'</td>';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-site-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align: center;"><span id="btn-del-site-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#my-job-list-"+index).append(output);
-                    $("#my-job-list-"+index).show();
+                    $("#site-job-list-"+index).append(output);
+                    $("#site-job-list-"+index).show();
                 });
 
-                activate_my_job_list_data();
+                activate_site_job_list_data();
             },
             error: function(error){
                 alert(error);
@@ -132,7 +131,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');
-                        get_my_job_list_data($("#site-id").val());
+                        get_site_job_list_data($("#site-id").val());
                     },
                     error: function (error) {
                         console.error(error);                    

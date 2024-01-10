@@ -233,7 +233,7 @@ function my_jobs_shortcode() {
                         $x = 0;
                         while ($query->have_posts()) : $query->the_post();
                         ?>
-                            <tr id="my-job-list-<?php echo $x;?>">
+                            <tr id="site-job-list-<?php echo $x;?>">
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
@@ -245,7 +245,7 @@ function my_jobs_shortcode() {
                         endwhile;
                         wp_reset_postdata();
                         while ($x<50) {
-                            echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
+                            echo '<tr id="site-job-list-'.$x.'" style="display:none;"></tr>';
                             $x += 1;
                         }
                     endif;
@@ -291,7 +291,7 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
-function get_my_job_list_data() {
+function get_site_job_list_data() {
     // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
 
@@ -300,16 +300,16 @@ function get_my_job_list_data() {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
             $_list["job_id"] = get_the_ID();
-            $_list["job_title"] = get_the_title(get_the_ID());
-            $_list["job_content"] = get_the_content(get_the_ID());
+            $_list["job_title"] = get_the_title();
+            $_list["job_content"] = get_the_content();
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_my_job_list_data', 'get_my_job_list_data' );
-add_action( 'wp_ajax_nopriv_get_my_job_list_data', 'get_my_job_list_data' );
+add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
+add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
 /*
 function new_site_job_data() {
     $current_user_id = get_current_user_id();
