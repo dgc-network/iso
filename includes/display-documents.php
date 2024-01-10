@@ -65,7 +65,7 @@ function display_documents_shortcode() {
             <label for="site-title"> Site: </label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
         
-            <table style="width:100%;">
+            <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>
                         <th></th>

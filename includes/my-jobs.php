@@ -228,10 +228,10 @@ function my_jobs_shortcode() {
                         <th></th>
                     </thead>
                     <tbody>
-                <?php
-                if ($query->have_posts()) :
-                    $x = 0;
-                    while ($query->have_posts()) : $query->the_post();
+                    <?php
+                    if ($query->have_posts()) :
+                        $x = 0;
+                        while ($query->have_posts()) : $query->the_post();
                         ?>
                             <tr id="my-job-list-<?php echo $x;?>">
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
@@ -241,23 +241,23 @@ function my_jobs_shortcode() {
                                 <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                             </tr>
                         <?php 
-                        $x += 1;
-                    endwhile;
-                    wp_reset_postdata();
-                    while ($x<50) {
-                        echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
-                endif;
-                ?>
+                            $x += 1;
+                        endwhile;
+                        wp_reset_postdata();
+                        while ($x<50) {
+                            echo '<tr id="my-job-list-'.$x.'" style="display:none;"></tr>';
+                            $x += 1;
+                        }
+                    endif;
+                    ?>
                     </tbody>
                     <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
                 </table>
 
                 <div id="job-dialog" title="Job dialog" style="display:none;">
                     <fieldset>
-                        <input type="hidden" id="job-id" />
                         <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                        <input type="hidden" id="job-id" />
                         <label for="job-title">Title:</label>
                         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
                         <label for="job-content">Content:</label>
@@ -300,8 +300,8 @@ function get_my_job_list_data() {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
             $_list["job_id"] = get_the_ID();
-            $_list["job_title"] = get_the_title();
-            $_list["job_content"] = get_the_content();
+            $_list["job_title"] = get_the_title(get_the_ID());
+            $_list["job_content"] = get_the_content(get_the_ID());
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
