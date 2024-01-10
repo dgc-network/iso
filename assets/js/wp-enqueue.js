@@ -494,7 +494,8 @@ jQuery(document).ready(function($) {
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
-                            $("#next-job").val(response.next_job);
+                            $("#next-job").empty();
+                            $("#next-job").append(response.next_job);
                             $("#next-leadtime").val(response.next_leadtime);
                         },
                         error: function (error) {
