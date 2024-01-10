@@ -385,7 +385,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $("#doc-job-dialog").dialog({
+    $("#job-action-list-dialog").dialog({
         width: 500,
         modal: true,
         autoOpen: false,
@@ -401,7 +401,7 @@ jQuery(document).ready(function($) {
                 '_job_id': id,
             },
             success: function (response) {            
-                $("#doc-job-dialog").dialog('open');
+                $("#job-action-list-dialog").dialog('open');
                 // Action list in job
                 for(index=0;index<50;index++) {
                     $("#job-action-list-"+index).hide();

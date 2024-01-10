@@ -166,32 +166,7 @@ function display_document_dialog($site_id=0){
                 ?>
                 </tbody>
             </table>
-
-            <div id="doc-job-dialog" title="Doc job dialog" style="display:none;">
-                <input type="hidden" id="job-id" />
-                <table style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $x = 0;
-                        while ($x<50) {
-                            echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
-                            $x += 1;
-                        }
-                        ?>
-                    </tbody>
-                    <tr><td colspan="6"><div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-                </table>
-            </div>
+            <?php job_action_list_dialog();?>
         </fieldset>
     </div>
 <?php
@@ -342,16 +317,48 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
+function job_action_list_dialog() {
+    ?>
+            <div id="job-action-list-dialog" title="Job action list dialog" style="display:none;">
+                <input type="hidden" id="job-id" />
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $x = 0;
+                        while ($x<50) {
+                            echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
+                            $x += 1;
+                        }
+                        ?>
+                    </tbody>
+                    <tr><td colspan="6"><div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
+                </table>
+            </div>
+    <?php
+}
+
 function retrieve_job_action_list_data($job_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
+/*
         'meta_query'     => array(
             array(
                 'key'   => 'job_id',
                 'value' => $job_id,
             ),
         ),
+*/
     );
     $query = new WP_Query($args);
     return $query;
