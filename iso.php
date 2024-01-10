@@ -100,10 +100,21 @@ function init_webhook_events() {
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
-
+/*
             // Your LINE Channel Access Token
             $channelAccessToken = 'YOUR_CHANNEL_ACCESS_TOKEN';
-
+            $see_more = array();
+            $see_more["type"] = "bubble";
+            $see_more["body"]["type"] = "box";
+            $see_more["body"]["layout"] = "vertical";
+            $see_more["body"]["spacing"] = "sm";
+            $see_more["body"]["contents"][0]["type"] = "button";
+            $see_more["body"]["contents"][0]["flex"] = 1;
+            $see_more["body"]["contents"][0]["gravity"] = "center";
+            $see_more["body"]["contents"][0]["action"]["type"] = "uri";
+            $see_more["body"]["contents"][0]["action"]["label"] = "User Login/Registration";
+            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
+*/
             // Flex Message JSON structure
             $flexMessage = [
                 'type' => 'flex',
@@ -115,15 +126,14 @@ function init_webhook_events() {
                         'layout' => 'vertical',
                         'contents' => [
                             [
-                                'type' => 'text',
-                                'text' => 'Hello, World!',
-                                'size' => 'lg',
-                                'weight' => 'bold',
-                            ],
-                            [
-                                'type' => 'text',
-                                'text' => 'This is a Flex Message sent from PHP',
-                                'wrap' => true,
+                                'type' => 'button',
+                                'flex' => 1,
+                                'gravity' => 'center',
+                                'action' => [
+                                    'type' => 'uri',
+                                    'label' => 'User Login/Registration',
+                                    'uri' => $link_uri,
+                                ],
                             ],
                         ],
                     ],
