@@ -112,7 +112,7 @@ if (!class_exists('line_bot_api')) {
                     'ignore_errors' => true,
                     'method' => 'POST',
                     'header' => implode("\r\n", $header),
-                    'content' => json_encode($message, JSON_UNESCAPED_UNICODE),
+                    'content' => json_encode($message),
                 ],
             ]);
     
