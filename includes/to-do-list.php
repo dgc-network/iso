@@ -195,8 +195,8 @@ function set_todo_action_dialog_data() {
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         // Insert the post into the database
         $new_post = array(
-            //'post_title'    => get_the_title($doc_id), // To-do title
-            //'post_content'  => 'Your post content goes here.',
+            'post_title'    => 'Your post title goes here.',
+            'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed
