@@ -145,6 +145,21 @@ function display_document_dialog($site_id=0){
             <label for="doc-url">URL:</label>
             <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
 
+            <div>
+                <div style="display:inline-block;">
+                    <label for="start-job">Start:</label>
+                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
+                </div>
+                <div style="display:inline-block; width:25%">
+                    <label for="start-leadtime">Leadtime:</label>
+                    <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
+                </div>
+                <div style="display:inline-block;">
+                    <label for="final-job">Date:</label>
+                    <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
+                </div>
+            </div>
+
             <?php doc_job_list_dialog();?>
             <?php job_action_list_dialog();?>
         </fieldset>
@@ -188,10 +203,24 @@ function retrieve_document_list_data($site_id=0) {
     return $query;
 }
 
+function retrieve_site_job_list_data($site_id) {
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function get_document_list_data() {
     // Retrieve the documents data
     $query = retrieve_document_list_data($_POST['_site_id']);
-
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
@@ -203,7 +232,6 @@ function get_document_list_data() {
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
             $_list["doc_date"] = esc_html(get_post_meta($post_id, 'doc_date', true));
-            //$_list["doc_url"] = esc_html(get_post_meta($post_id, 'doc_url', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
@@ -222,7 +250,12 @@ function get_document_dialog_data() {
         $response["doc_revision"] = esc_html(get_post_meta($document_id, 'doc_revision', true));
         $response["doc_date"] = esc_html(get_post_meta($document_id, 'doc_date', true));
         $response["doc_url"] = esc_html(get_post_meta($document_id, 'doc_url', true));
-
+        $start_job = esc_attr(get_post_meta($document_id, 'start_job', true));
+        $response["start_job"] = select_job_option_data($start_job);
+        $response["start_leadtime"] = esc_html(get_post_meta($document_id, 'start_leadtime', true));
+        $final_job = esc_attr(get_post_meta($document_id, 'final_job', true));
+        $response["final_job"] = select_job_option_data($final_job);
+/*
         $args = array(
             'post_type'      => 'job',
             'posts_per_page' => -1,
@@ -234,6 +267,8 @@ function get_document_dialog_data() {
             ),
         );
         $query = new WP_Query($args);
+*/
+        $query = retrieve_site_job_list_data($_POST['_site_id']);
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -265,7 +300,10 @@ function set_document_dialog_data() {
                 'doc_number'   => $_POST['_doc_number'],
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_date'     => $_POST['_doc_date'],
-                'doc_url'     => $_POST['_doc_url'],
+                'doc_url'      => $_POST['_doc_url'],
+                'start_job'    => $_POST['_start_job'],
+                'start_leadtime' => $_POST['_start_leadtime'],
+                'final_job'    => $_POST['_final_job'],
             )
         );
         wp_update_post( $data );
@@ -297,7 +335,7 @@ add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
 function doc_job_list_dialog() {
-    ?>
+?>
     <div id="doc-job-list-dialog" title="Doc job list" style="display:none;">
         <table style="width:100%;">
             <thead>
@@ -321,11 +359,11 @@ function doc_job_list_dialog() {
             </tbody>
         </table>
     </div>
-    <?php
+<?php
 }
 
 function job_action_list_dialog() {
-    ?>
+?>
     <div id="job-action-list-dialog" title="Job action list" style="display:none;">
         <table style="width:100%;">
             <thead>
@@ -365,7 +403,7 @@ function job_action_list_dialog() {
         </fieldset>
         </div>
     </div>
-    <?php
+<?php
 }
 
 function retrieve_job_action_list_data($job_id=0) {
@@ -405,6 +443,20 @@ function get_job_action_list_data() {
 }
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
+
+function select_job_option_data($selected_job=0) {
+    $select_job = '<option value="">Select Job</option>';
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+    );
+    $jobs = get_posts($args);    
+    foreach ($jobs as $job) {
+        $selected = ($selected_job == $job->ID) ? 'selected' : '';
+        $select_job .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
+    }
+    return $select_job;
+}
 
 function get_job_action_dialog_data() {
     $response = array();
