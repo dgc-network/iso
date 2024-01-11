@@ -446,17 +446,24 @@ add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_
 
 function select_job_option_data($selected_job=0, $site_id=0) {
     $option = '<option value="">Select Job</option>';
+/*    
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
     );
     $jobs = get_posts($args);    
-    $jobs = retrieve_site_job_list_data($site_id);
     foreach ($jobs as $job) {
         $selected = ($selected_job == $job->ID) ? 'selected' : '';
         $option .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
     }
-    return $option;
+*/    
+    $query = retrieve_site_job_list_data($site_id);
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $option .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata(); // Reset post data to the main loop
+return $option;
 }
 
 function get_job_action_dialog_data() {
