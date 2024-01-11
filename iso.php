@@ -101,7 +101,7 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
             $display_name = str_replace(' ', '', $profile['displayName']);
-            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$display_name;
+            //$link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$display_name;
 
             // Flex Message JSON structure with a button
             $flexMessage = [
@@ -115,7 +115,7 @@ function init_webhook_events() {
                         'contents' => [
                             [
                                 'type' => 'text',
-                                'text' => 'Hello, World!',
+                                'text' => 'Hello, '.$display_name,
                                 'size' => 'lg',
                                 'weight' => 'bold',
                             ],
