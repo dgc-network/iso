@@ -108,7 +108,8 @@ function to_do_list_shortcode() {
                 $query = retrieve_todo_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $due_date = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
+                        $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
+                        $due_date = wp_date( get_option('date_format'), $job_due );
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
                         <tr class="todo-item">
