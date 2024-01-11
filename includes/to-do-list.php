@@ -112,7 +112,7 @@ function to_do_list_shortcode() {
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
-                        <tr id="btn-todo-list-"<?php echo $job_id;?>>
+                        <tr id="btn-todo-list-<?php echo $job_id;?>">
                             <td></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
