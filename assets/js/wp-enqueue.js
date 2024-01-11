@@ -278,6 +278,11 @@ jQuery(document).ready(function($) {
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-date").val(response.doc_date);
                     $("#doc-url").val(response.doc_url);
+                    $("#start-job").empty();
+                    $("#start-job").append(response.start_job);
+                    $("#start-leadtime").val(response.start_leadtime);
+                    $("#final-job").empty();
+                    $("#final-job").append(response.final_job);
 
                     $('[id^="btn-"]').mouseover(function() {
                         $(this).css('cursor', 'pointer');
@@ -302,7 +307,9 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    
+
+        
+        
         $('[id^="btn-document-job-"]').on( "click", function() {
             id = this.id;
             id = id.substring(17);

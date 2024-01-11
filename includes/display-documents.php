@@ -155,7 +155,7 @@ function display_document_dialog($site_id=0){
                     <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
                 </div>
                 <div style="display:inline-block;">
-                    <label for="final-job">Date:</label>
+                    <label for="final-job">Final:</label>
                     <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
             </div>
@@ -445,7 +445,7 @@ add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
 
 function select_job_option_data($selected_job=0) {
-    $select_job = '<option value="">Select Job</option>';
+    $option = '<option value="">Select Job</option>';
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
@@ -453,9 +453,9 @@ function select_job_option_data($selected_job=0) {
     $jobs = get_posts($args);    
     foreach ($jobs as $job) {
         $selected = ($selected_job == $job->ID) ? 'selected' : '';
-        $select_job .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
+        $option .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
     }
-    return $select_job;
+    return $option;
 }
 
 function get_job_action_dialog_data() {

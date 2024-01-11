@@ -49,7 +49,7 @@ function admin_enqueue_scripts_and_styles() {
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
-    $version = '1.0.5.0.0.4'; // Update this version number when you make changes
+    $version = '1.0.5.0.0.5'; // Update this version number when you make changes
     // Enqueue jQuery UI from the WordPress package
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
@@ -101,8 +101,8 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
             $display_name = str_replace(' ', '', $profile['displayName']);
-            $_name = 'Rover';
-            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$_name;
+            // Encode the Chinese characters for inclusion in the URL
+            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
 
             // Flex Message JSON structure with a button
             $flexMessage = [
@@ -122,7 +122,7 @@ function init_webhook_events() {
                             ],
                             [
                                 'type' => 'text',
-                                'text' => 'This is a Flex Message with a Button',
+                                'text' => 'You did not login system yet. Please click button to Login/Registration system',
                                 'wrap' => true,
                             ],
                         ],
