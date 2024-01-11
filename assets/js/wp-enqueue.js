@@ -718,7 +718,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#job-action-list-dialog").dialog('close');
-                                get_todo_list_data();
+                                get_todo_list_data($("#job-id").val());
                             },
                             error: function(error){
                                 alert(error);
