@@ -626,10 +626,9 @@ jQuery(document).ready(function($) {
     $('[id^="btn-todo-list-"]').on( "click", function() {
         id = this.id;
         id = id.substring(14);
-        alert(id)
         get_job_action_list_data(id);
-        $("#job-action-list-dialog").dialog('open');
+        //$("#job-action-list-dialog").dialog('open');
     });
-    
+
 })
 
