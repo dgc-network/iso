@@ -366,7 +366,7 @@ function display_doc_job_list_dialog() {
 
 function display_job_action_list_dialog() {
 ?>
-    <div id="job-action-list-dialog" title="Job action list" style="display:none;">
+    <div id="job-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>

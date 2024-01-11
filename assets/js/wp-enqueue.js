@@ -625,7 +625,7 @@ jQuery(document).ready(function($) {
 
     $('[id^="btn-todo-list-"]').on( "click", function() {
         id = this.id;
-        id = id.substring(12);
+        id = id.substring(14);
         //$("#job-id").val(id);
         get_job_action_list_data(id);
 
