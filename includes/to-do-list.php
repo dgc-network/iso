@@ -104,27 +104,25 @@ function to_do_list_shortcode() {
                     </tr>
                 </thead>
                 <tbody>
-            <?php
-
-            $query = retrieve_todo_list_data($site_id);
-
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $due_date = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
-                    $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
-                    ?>
-                    <tr class="todo-item">
-                        <td></td>
-                        <td style="text-align:center;"><?php echo $due_date;?></td>
-                        <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
-                        <td><?php the_title();?></td>
-                        <td></td>
-                    </tr>
-                    <?php 
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            ?>
+                <?php
+                $query = retrieve_todo_list_data($site_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $due_date = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
+                        $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
+                        ?>
+                        <tr class="todo-item">
+                            <td></td>
+                            <td style="text-align:center;"><?php echo $due_date;?></td>
+                            <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
+                            <td><?php the_title();?></td>
+                            <td></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
                 </tbody>
             </table>
         </fieldset>
