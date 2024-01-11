@@ -251,10 +251,10 @@ function get_document_dialog_data() {
         $response["doc_date"] = esc_html(get_post_meta($document_id, 'doc_date', true));
         $response["doc_url"] = esc_html(get_post_meta($document_id, 'doc_url', true));
         $start_job = esc_attr(get_post_meta($document_id, 'start_job', true));
-        $response["start_job"] = select_job_option_data($start_job);
+        $response["start_job"] = select_job_option_data($start_job, $_POST['_site_id']);
         $response["start_leadtime"] = esc_html(get_post_meta($document_id, 'start_leadtime', true));
         $final_job = esc_attr(get_post_meta($document_id, 'final_job', true));
-        $response["final_job"] = select_job_option_data($final_job);
+        $response["final_job"] = select_job_option_data($final_job, $_POST['_site_id']);
 /*
         $args = array(
             'post_type'      => 'job',
@@ -444,13 +444,14 @@ function get_job_action_list_data() {
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
 
-function select_job_option_data($selected_job=0) {
+function select_job_option_data($selected_job=0, $site_id=0) {
     $option = '<option value="">Select Job</option>';
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
     );
     $jobs = get_posts($args);    
+    $jobs = retrieve_site_job_list_data($site_id);
     foreach ($jobs as $job) {
         $selected = ($selected_job == $job->ID) ? 'selected' : '';
         $option .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';

@@ -99,11 +99,9 @@ function init_webhook_events() {
         // Start the User Login/Registration process if got the one time password
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
-            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.$profile['displayName'];
             $display_name = str_replace(' ', '', $profile['displayName']);
             // Encode the Chinese characters for inclusion in the URL
             $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-
             // Flex Message JSON structure with a button
             $flexMessage = [
                 'type' => 'flex',
@@ -122,7 +120,7 @@ function init_webhook_events() {
                             ],
                             [
                                 'type' => 'text',
-                                'text' => 'You did not login system yet. Please click button to Login/Registration system',
+                                'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
                                 'wrap' => true,
                             ],
                         ],
@@ -147,144 +145,7 @@ function init_webhook_events() {
             $line_bot_api->replyMessage([
                 'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
                 'messages' => [$flexMessage],
-            ]);
-            
-/*
-            // Your LINE Channel Access Token
-            $channelAccessToken = 'YOUR_CHANNEL_ACCESS_TOKEN';
-            $see_more = array();
-            $see_more["type"] = "bubble";
-            $see_more["body"]["type"] = "box";
-            $see_more["body"]["layout"] = "vertical";
-            $see_more["body"]["spacing"] = "sm";
-            $see_more["body"]["contents"][0]["type"] = "button";
-            $see_more["body"]["contents"][0]["flex"] = 1;
-            $see_more["body"]["contents"][0]["gravity"] = "center";
-            $see_more["body"]["contents"][0]["action"]["type"] = "uri";
-            $see_more["body"]["contents"][0]["action"]["label"] = "User Login/Registration";
-            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
-*/
-            // Flex Message JSON structure
-            $flexMessage = [
-                'type' => 'flex',
-                'altText' => 'This is a Flex Message',
-                'contents' => [
-                    'type' => 'bubble',
-                    'body' => [
-                        'type' => 'box',
-                        'layout' => 'vertical',
-                        'contents' => [
-                            [
-                                'type' => 'button',
-                                'flex' => 1,
-                                'gravity' => 'center',
-                                'action' => [
-                                    'type' => 'uri',
-                                    'label' => 'User Login/Registration',
-                                    'uri' => $link_uri,
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-            
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [$flexMessage],
-            ]);
-/*
-            // Send Flex Message to LINE
-            $lineApiUrl = 'https://api.line.me/v2/bot/message/push';
-            $userId = 'USER_ID_TO_RECEIVE_MESSAGE'; // Replace with the actual user ID
-            $messageData = [
-                'to' => $userId,
-                'messages' => [$flexMessage],
-            ];
-/*            
-            $ch = curl_init($lineApiUrl);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messageData));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $channelAccessToken,
-            ]);
-            
-            $response = curl_exec($ch);
-            curl_close($ch);
-            
-            // Check the response
-            if ($response === false) {
-                echo 'Error sending Flex Message: ' . curl_error($ch);
-            } else {
-                echo 'Flex Message sent successfully!';
-            }
-
-/*
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [
-                    [
-                        'type' => 'text',
-                        'text' => $link_uri
-                    ]                                                                    
-                ]
-            ]);    
-
-            $see_more = array();
-            $see_more["type"] = "bubble";
-            $see_more["body"]["type"] = "box";
-            $see_more["body"]["layout"] = "vertical";
-            $see_more["body"]["spacing"] = "sm";
-            $see_more["body"]["contents"][0]["type"] = "button";
-            $see_more["body"]["contents"][0]["flex"] = 1;
-            $see_more["body"]["contents"][0]["gravity"] = "center";
-            $see_more["body"]["contents"][0]["action"]["type"] = "uri";
-            $see_more["body"]["contents"][0]["action"]["label"] = "User Login/Registration";
-            $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [
-                    [
-                        "type" => "flex",
-                        "altText" => 'Welcome message',
-                        'contents' => $see_more
-                    ]
-                ]
-            ]);
-*/
-/*
-            //if (file_exists(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json')) {
-            if (file_exists(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json')) {
-                //$see_more = file_get_contents(plugin_dir_path( __DIR__ ).'assets/templates/see_more.json');
-                $see_more = file_get_contents(plugin_dir_path( __FILE__ ).'assets/templates/see_more.json');
-                $see_more = json_decode($see_more, true);
-                $see_more["body"]["contents"][0]["action"]["label"] = 'User Login/Registration';
-                $see_more["body"]["contents"][0]["action"]["uri"] = $link_uri;
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [
-                        [
-                            "type" => "flex",
-                            "altText" => 'Welcome message',
-                            'contents' => $see_more
-                        ]
-                    ]
-                ]);
-            } else {
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [
-                        [
-                            'type' => 'text',
-                            'text' => $link_uri
-                        ]                                                                    
-                    ]
-                ]);    
-            }
-*/
+            ]);            
         }
         // Regular webhook response
         switch ($event['type']) {
