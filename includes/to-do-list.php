@@ -106,20 +106,19 @@ function to_do_list_shortcode() {
                 <tbody>
             <?php
 
-            $query = retrieve_todos_data($site_id);
+            $query = retrieve_todo_list_data($site_id);
 
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $due_date = esc_html(get_post_meta(get_the_ID(), '_todo_due_date', true));
-                    $todo_action_id = esc_html(get_post_meta(get_the_ID(), '_todo_site_action', true));
-                    $todo_action_title = get_the_title($todo_action_id);
-                    $todo_doc_id = esc_html(get_post_meta(get_the_ID(), '_todo_doc_title', true));
-                    $todo_doc_title = get_the_title($todo_doc_id);
+                    $due_date = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
+                    $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                     ?>
                     <tr class="todo-item">
+                        <td></td>
                         <td style="text-align:center;"><?php echo $due_date;?></td>
-                        <td style="text-align:center;"><?php echo $todo_action_title;?></td>
-                        <td><?php echo $todo_doc_title;?></td>
+                        <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
+                        <td><?php the_title();?></td>
+                        <td></td>
                     </tr>
                     <?php 
                 endwhile;
@@ -141,7 +140,7 @@ function to_do_list_shortcode() {
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
-function retrieve_todos_data($site_id=0){
+function retrieve_todo_list_data($site_id=0){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
