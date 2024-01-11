@@ -292,6 +292,7 @@ add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
 
 function set_document_dialog_data() {
+    $current_user_id = get_current_user_id();
     if( isset($_POST['_document_id']) ) {
         $data = array(
             'ID'         => $_POST['_document_id'],
@@ -307,8 +308,21 @@ function set_document_dialog_data() {
             )
         );
         wp_update_post( $data );
+        // Insert the To-do list
+        $new_post = array(
+            'post_title'    => $_POST['_doc_title'],
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'todo', // Change to your custom post type if needed
+        );    
+        // Insert the post into the database
+        $post_id = wp_insert_post($new_post);
+        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_start_job']));
+        update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
+
     } else {
-        $current_user_id = get_current_user_id();
         // Set up the post data
         $new_post = array(
             'post_title'    => 'New document',
