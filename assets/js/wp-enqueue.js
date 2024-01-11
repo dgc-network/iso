@@ -309,7 +309,7 @@ jQuery(document).ready(function($) {
         });
 
         
-        
+
         $('[id^="btn-document-job-"]').on( "click", function() {
             id = this.id;
             id = id.substring(17);
@@ -417,6 +417,9 @@ jQuery(document).ready(function($) {
                         '_doc_revision': $("#doc-revision").val(),
                         '_doc_date': $("#doc-date").val(),
                         '_doc_url': $("#doc-url").val(),
+                        '_start_job': $("#start-job").val(),
+                        '_start_leadtime': $("#start-leadtime").val(),
+                        '_final_job': $("#final-job").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
@@ -450,9 +453,6 @@ jQuery(document).ready(function($) {
                 }
 
             }
-            //"Cancel": function() {
-            //    $(this).dialog("close");
-            //}
         }
     });
 

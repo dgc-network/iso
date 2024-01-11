@@ -49,18 +49,11 @@ function admin_enqueue_scripts_and_styles() {
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
-    $version = '1.0.5.0.0.5'; // Update this version number when you make changes
-    // Enqueue jQuery UI from the WordPress package
+    $version = '1.0.5.0.0.6'; // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-    //wp_enqueue_script('jquery-ui-core');
-    //wp_enqueue_script('jquery-ui-datepicker');
-
-    // Enqueue your custom styles and scripts
     wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $version);
     wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
-
-    // Localize script with custom data
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
@@ -101,7 +94,7 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $display_name = str_replace(' ', '', $profile['displayName']);
             // Encode the Chinese characters for inclusion in the URL
-            $link_uri = home_url().'/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+            $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
             // Flex Message JSON structure with a button
             $flexMessage = [
                 'type' => 'flex',
