@@ -214,7 +214,7 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-document-'+value.document_id+'" class="dashicons dashicons-trash"></span></td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-document-flow-'+value.document_id+'" class="dashicons dashicons-networking"></span></td>';
                     $("#document-list-"+index).append(output);
                     $("#document-list-"+index).show();
                 });
@@ -310,9 +310,9 @@ jQuery(document).ready(function($) {
 
         
 
-        $('[id^="btn-document-job-"]').on( "click", function() {
+        $('[id^="btn-document-flow-"]').on( "click", function() {
             id = this.id;
-            id = id.substring(17);
+            id = id.substring(18);
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,

@@ -91,7 +91,7 @@ function display_documents_shortcode() {
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
-                        <td style="text-align:center;"><span id="btn-del-document-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
+                        <td style="text-align:center;"><span id="btn-document-flow-<?php the_ID();?>" class="dashicons dashicons-networking"></span></td>
                     </tr>
                     <?php 
                     $x += 1;
