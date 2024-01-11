@@ -298,8 +298,8 @@ function set_document_dialog_data() {
         wp_update_post( $data );
         // Insert the To-do list
         $new_post = array(
-            'post_title'    => $_POST['_doc_title'],
-            'post_content'  => 'Your post content goes here.',
+            //'post_title'    => $_POST['_doc_title'],
+            //'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed

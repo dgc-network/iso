@@ -110,13 +110,14 @@ function to_do_list_shortcode() {
                     while ($query->have_posts()) : $query->the_post();
                         $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
                         $due_date = wp_date( get_option('date_format'), $job_due );
+                        $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
                         <tr id="btn-todo-list-<?php the_ID();?>">
                             <td></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
-                            <td><?php the_title();?></td>
+                            <td><?php echo get_the_title($doc_id);?></td>
                             <td></td>
                         </tr>
                         <?php 
@@ -184,18 +185,18 @@ function set_todo_action_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         // Update To-do
         $todo_id = esc_attr($_POST['_todo_id']);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
         // Insert the To-do list
         $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
         $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
-        //$doc_id = get_post_meta($job_id, 'doc_id', true); // Documents->ID, Metadata: doc#, revision, etc..
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         // Insert the post into the database
         $new_post = array(
-            'post_title'    => get_the_title($job_id), // To-do title
-            'post_content'  => 'Your post content goes here.',
+            //'post_title'    => get_the_title($doc_id), // To-do title
+            //'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed
@@ -203,6 +204,7 @@ function set_todo_action_dialog_data() {
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'job_id', esc_attr($next_job));
         update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
+        update_post_meta( $post_id, 'doc_id', esc_attr($doc_id));
 
     }
     wp_send_json($response);
