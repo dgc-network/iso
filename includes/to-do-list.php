@@ -107,22 +107,28 @@ function to_do_list_shortcode() {
                 <?php
                 $query = retrieve_todo_list_data($site_id);
                 if ($query->have_posts()) :
+                    $x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
-                        <tr id="btn-todo-list-<?php the_ID();?>">
+                        <tr id="todo-list-<?php echo $x;?>">
                             <td></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
-                            <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
+                            <td style="text-align:center;" id="btn-todo-job-<?php the_ID();?>"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
                             <td></td>
                         </tr>
                         <?php 
+                        $x += 1;
                     endwhile;
                     wp_reset_postdata();
+                    while ($x<50) {
+                        echo '<tr id="todo-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }    
                 endif;
                 ?>
                 </tbody>
@@ -146,6 +152,23 @@ function retrieve_todo_list_data($job_id=0){
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
+            'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
+            ),
+            array(
+                'key'     => 'job_id',
+                'value'   => '', // You can set a specific value if needed
+                'compare' => '=', // Adjust the comparison based on your requirements
+            ),
+        ),
+    );
+    
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
             array(
                 'key'     => 'submit_user',
                 'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
@@ -155,6 +178,30 @@ function retrieve_todo_list_data($job_id=0){
     $query = new WP_Query($args);
     return $query;
 }
+
+function get_todo_list_data() {
+    // Retrieve the data
+    $query = retrieve_todo_list_data($_POST['_job_id']);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = (int) get_the_ID();
+            $job_id = esc_attr(get_post_meta($post_id, 'job_id', true));
+            $job_due = esc_attr(get_post_meta($post_id, 'job_due', true));
+            $doc_id = esc_attr(get_post_meta($post_id, 'doc_id', true));
+            $_list = array();
+            $_list["todo_id"] = $post_id;
+            $_list["due_date"] = wp_date( get_option('date_format'), $job_due );
+            $_list["job_title"] = get_the_title($job_id);
+            $_list["doc_title"] = get_the_title($doc_id);
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
+add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
 function get_todo_action_list_data() {
     // Retrieve the data

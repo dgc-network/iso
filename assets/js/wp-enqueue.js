@@ -631,6 +631,38 @@ jQuery(document).ready(function($) {
         get_todo_action_list_data(id);
     });
 
+    function get_todo_list_data(job_id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_list_data',
+                '_job_id': job_id,
+            },
+            success: function (response) {            
+                for(index=0;index<50;index++) {
+                    $("#btn-todo-list-"+index).hide();
+                    $("#btn-todo-list-"+index).empty();
+                }
+                $.each(response, function (index, value) {
+                    output = '';
+                    output = output+'<td></td>';
+                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
+                    output = output+'<td style="text-align:center;" id="btn-todo-job-'+value.todo_id+'">'+value.job_title+'</td>';
+                    output = output+'<td>'+value.doc_title+'</td>';
+                    output = output+'<td></td>';
+                    $("#btn-todo-list-"+index).append(output);
+                    $("#btn-todo-list-"+index).show();
+                })
+            },
+            error: function (error) {
+                console.error(error);                    
+                alert(error);
+            }
+        });            
+    }
+
     function get_todo_action_list_data(todo_id){
         jQuery.ajax({
             type: 'POST',
@@ -687,6 +719,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#job-action-list-dialog").dialog('close');
+                                get_todo_list_data();
                             },
                             error: function(error){
                                 alert(error);

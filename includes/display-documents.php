@@ -96,11 +96,11 @@ function display_documents_shortcode() {
                     <?php 
                     $x += 1;
                 endwhile;
+                wp_reset_postdata();
                 while ($x<50) {
                     echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
-                wp_reset_postdata();
             endif;
             ?>
                 </tbody>
@@ -170,26 +170,6 @@ function display_document_dialog($site_id=0){
 function retrieve_document_list_data($site_id=0) {
     // Retrieve the documents value
     $args = array(
-        'post_type'      => 'document', // Change to your custom post type if needed
-        'posts_per_page' => -1, // Retrieve all posts
-        'meta_query'     => array(
-            'relation' => 'AND', // Combine conditions with AND
-            array(
-                'key'     => 'course_id', // Replace with your first meta key
-                'value'   => $_id, // Replace with the desired value
-                'compare' => '=', // Change to your desired comparison (e.g., '=', '>', '<', etc.)
-            ),
-            array(
-                'key'     => 'sorting_in_course', // Replace with your second meta key
-                'compare' => 'EXISTS', // Check if the second meta key exists
-            ),
-        ),
-        'orderby'        => 'meta_value', // Order by the second meta key value
-        'meta_key'       => 'sorting_in_course', // Specify the second meta key for ordering
-        'order'          => 'ASC', // Change to 'DESC' for descending order
-    );
-    
-    $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
         'meta_query'     => array(
@@ -202,22 +182,7 @@ function retrieve_document_list_data($site_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_site_job_list_data($site_id) {
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
+
 function get_document_list_data() {
     // Retrieve the documents data
     $query = retrieve_document_list_data($_POST['_site_id']);
