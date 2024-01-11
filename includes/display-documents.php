@@ -392,6 +392,7 @@ function display_job_action_list_dialog() {
 
         <div id="action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
+            <input type="hidden" id="todo-id" />
             <input type="hidden" id="job-id" />
             <input type="hidden" id="action-id" />
             <label for="action-title">Title:</label>

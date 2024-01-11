@@ -203,7 +203,6 @@ function set_todo_action_dialog_data() {
         );    
         // Insert the post into the database
         $post_id = wp_insert_post($new_post);
-        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_next_job']));
         update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
 

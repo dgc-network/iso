@@ -626,7 +626,7 @@ jQuery(document).ready(function($) {
     $('[id^="btn-todo-list-"]').on( "click", function() {
         id = this.id;
         id = id.substring(14);
-        //$("#job-id").val(id);
+        $("#todo-id").val(id);
         //get_job_action_list_data($("#job-id").val());
         get_todo_action_list_data(id);
     });
@@ -648,9 +648,8 @@ jQuery(document).ready(function($) {
                     $("#job-action-list-"+index).hide();
                     $("#job-action-list-"+index).empty();
                 }
-                output = '<input type="hidden" id="todo-id" value="'+todo_id+'" />';
                 $.each(response, function (index, value) {
-                    //output = '';
+                    output = '';
                     output = output+'<td></td>';
                     //output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align:center;" id="btn-todo-action-'+value.action_id+'">'+value.action_title+'</td>';
