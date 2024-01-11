@@ -160,8 +160,8 @@ function display_document_dialog($site_id=0){
                 </div>
             </div>
 
-            <?php doc_job_list_dialog();?>
-            <?php job_action_list_dialog();?>
+            <?php display_doc_job_list_dialog();?>
+            <?php display_job_action_list_dialog();?>
         </fieldset>
     </div>
 <?php
@@ -255,19 +255,7 @@ function get_document_dialog_data() {
         $response["start_leadtime"] = esc_html(get_post_meta($document_id, 'start_leadtime', true));
         $final_job = esc_attr(get_post_meta($document_id, 'final_job', true));
         $response["final_job"] = select_job_option_data($final_job, $_POST['_site_id']);
-/*
-        $args = array(
-            'post_type'      => 'job',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array(
-                    'key'   => 'site_id',
-                    'value' => (int)sanitize_text_field($_POST['_site_id']),
-                ),
-            ),
-        );
-        $query = new WP_Query($args);
-*/
+
         $query = retrieve_site_job_list_data($_POST['_site_id']);
         $_array = array();
         if ($query->have_posts()) {
@@ -348,7 +336,7 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-function doc_job_list_dialog() {
+function display_doc_job_list_dialog() {
 ?>
     <div id="doc-job-list-dialog" title="Doc job list" style="display:none;">
         <table style="width:100%;">
@@ -376,7 +364,7 @@ function doc_job_list_dialog() {
 <?php
 }
 
-function job_action_list_dialog() {
+function display_job_action_list_dialog() {
 ?>
     <div id="job-action-list-dialog" title="Job action list" style="display:none;">
         <table style="width:100%;">
