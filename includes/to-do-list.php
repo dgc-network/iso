@@ -140,18 +140,16 @@ function to_do_list_shortcode() {
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
-function retrieve_todo_list_data($site_id=0){
+function retrieve_todo_list_data($job_id=0){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
-/*            
         'meta_query'     => array(
             array(
-                'key'   => '_todo_assigned_user',
-                'value' => $current_user_id,
+                'key'     => 'submit_user',
+                'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
             ),
         ),
-*/            
     );    
     $query = new WP_Query($args);
     return $query;
