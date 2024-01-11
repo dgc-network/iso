@@ -112,7 +112,7 @@ function to_do_list_shortcode() {
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
-                        <tr id="btn-todo-list-<?php echo $job_id;?>">
+                        <tr id="btn-todo-list-<?php the_ID();?>">
                             <td></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
@@ -156,3 +156,76 @@ function retrieve_todo_list_data($site_id=0){
     $query = new WP_Query($args);
     return $query;
 }
+
+function get_job_action_list_data() {
+    // Retrieve the data
+    $todo_id = esc_attr($_POST['_todo_id']);
+    $job_id = get_post_meta($todo_id, 'job_id', true);
+    $query = retrieve_job_action_list_data($job_id);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $next_job_id = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $_list = array();
+            $_list["action_id"] = get_the_ID();
+            $_list["action_title"] = get_the_title();
+            $_list["action_content"] = get_post_field('post_content', get_the_ID());
+            $_list["next_job"] = get_the_title($next_job_id);
+            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
+
+function set_todo_action_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_action_id']) ) {
+/*        
+        $data = array(
+            'ID'         => $_POST['_action_id'],
+            'post_title' => $_POST['_doc_title'],
+            'meta_input' => array(
+                'doc_number'   => $_POST['_doc_number'],
+                'doc_revision' => $_POST['_doc_revision'],
+                'doc_date'     => $_POST['_doc_date'],
+                'doc_url'      => $_POST['_doc_url'],
+                'start_job'    => $_POST['_start_job'],
+                'start_leadtime' => $_POST['_start_leadtime'],
+                'final_job'    => $_POST['_final_job'],
+            )
+        );
+        wp_update_post( $data );
+*/
+        $todo_id = esc_attr($_POST['_todo_id']);
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_time', time());
+
+        $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
+        $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
+        $doc_id = get_post_meta($job_id, 'doc_id', true); // Documents->ID, Metadata: doc#, revision, etc..
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        // Insert the To-do list
+        $new_post = array(
+            'post_title'    => get_the_title($doc_id),
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'todo', // Change to your custom post type if needed
+        );    
+        // Insert the post into the database
+        $post_id = wp_insert_post($new_post);
+        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_next_job']));
+        update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
+
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+

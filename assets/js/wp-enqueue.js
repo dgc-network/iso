@@ -626,34 +626,39 @@ jQuery(document).ready(function($) {
     $('[id^="btn-todo-list-"]').on( "click", function() {
         id = this.id;
         id = id.substring(14);
-        $("#job-id").val(id);
-        get_job_action_list_data($("#job-id").val());
+        //$("#job-id").val(id);
+        //get_job_action_list_data($("#job-id").val());
+        get_todo_action_list_data(id);
     });
 
-    function get_job_action_list_data(job_id){
+    function get_todo_action_list_data(todo_id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_job_action_list_data',
-                '_job_id': job_id,
+                'action': 'get_todo_action_list_data',
+                '_todo_id': todo_id,
             },
             success: function (response) {            
                 $("#job-action-list-dialog").dialog('open');
                 // Action list in job
+                $("#btn-new-job-action").hide();
                 for(index=0;index<50;index++) {
                     $("#job-action-list-"+index).hide();
                     $("#job-action-list-"+index).empty();
                 }
+                output = '<input type="hidden" id="todo-id" value="'+todo_id+'" />';
                 $.each(response, function (index, value) {
-                    output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
+                    //output = '';
+                    output = output+'<td></td>';
+                    //output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;" id="btn-todo-action-'+value.action_id+'">'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_content+'</td>';
                     output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
                     output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
-                    output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                    output = output+'<td></td>';
+                    //output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
                     $("#job-action-list-"+index).append(output);
                     $("#job-action-list-"+index).show();
                 })
@@ -668,47 +673,21 @@ jQuery(document).ready(function($) {
                     $(this).css('color', 'black');
                 });
                 
-                $('[id^="btn-edit-job-action-"]').on( "click", function() {
+                $('[id^="btn-todo-action-"]').on( "click", function() {
                     id = this.id;
-                    id = id.substring(20);
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_job_action_dialog_data',
-                            '_action_id': id,
-                        },
-                        success: function (response) {
-                            $("#action-dialog").dialog('open');
-                            $("#action-id").val(id);
-                            $("#action-title").val(response.action_title);
-                            $("#action-content").val(response.action_content);
-                            $("#next-job").empty();
-                            $("#next-job").append(response.next_job);
-                            $("#next-leadtime").val(response.next_leadtime);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
-                    });
-                });
-            
-                $('[id^="btn-del-job-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(19);
-                    if (window.confirm("Are you sure you want to delete this job action?")) {
+                    id = id.substring(16);
+                    if (window.confirm("Are you sure you want to do this job action?")) {
                         jQuery.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
                             dataType: "json",
                             data: {
-                                'action': 'del_job_action_dialog_data',
+                                'action': 'set_todo_action_dialog_data',
                                 '_action_id': id,
+                                '_todo_id': $("#todo-id").val()
                             },
                             success: function (response) {
-                                get_job_action_list_data($("#job-id").val());
+                                $("#job-action-list-dialog").dialog('close');
                             },
                             error: function(error){
                                 alert(error);

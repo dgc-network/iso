@@ -306,9 +306,9 @@ function set_document_dialog_data() {
         );    
         // Insert the post into the database
         $post_id = wp_insert_post($new_post);
-        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_start_job']));
         update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
+        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_document_id']));
 
     } else {
         // Set up the post data
@@ -423,6 +423,17 @@ function retrieve_job_action_list_data($job_id=0) {
     return $query;
 }
 
+function select_job_option_data($selected_job=0, $site_id=0) {
+    $option = '<option value="">Select Job</option>';
+    $query = retrieve_site_job_list_data($site_id);
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $option .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata(); // Reset post data to the main loop
+    return $option;
+}
+
 function get_job_action_list_data() {
     // Retrieve the documents data
     $query = retrieve_job_action_list_data($_POST['_job_id']);
@@ -445,28 +456,6 @@ function get_job_action_list_data() {
 }
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
-
-function select_job_option_data($selected_job=0, $site_id=0) {
-    $option = '<option value="">Select Job</option>';
-/*    
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-    );
-    $jobs = get_posts($args);    
-    foreach ($jobs as $job) {
-        $selected = ($selected_job == $job->ID) ? 'selected' : '';
-        $option .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
-    }
-*/    
-    $query = retrieve_site_job_list_data($site_id);
-    while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
-        $option .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-    endwhile;
-    wp_reset_postdata(); // Reset post data to the main loop
-return $option;
-}
 
 function get_job_action_dialog_data() {
     $response = array();
