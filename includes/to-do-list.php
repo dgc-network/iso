@@ -157,7 +157,7 @@ function retrieve_todo_list_data($site_id=0){
     return $query;
 }
 
-function get_job_action_list_data() {
+function get_todo_action_list_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
     $job_id = get_post_meta($todo_id, 'job_id', true);
@@ -178,40 +178,24 @@ function get_job_action_list_data() {
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
-add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
+add_action( 'wp_ajax_get_todo_action_list_data', 'get_todo_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_data' );
 
 function set_todo_action_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
-/*        
-        $data = array(
-            'ID'         => $_POST['_action_id'],
-            'post_title' => $_POST['_doc_title'],
-            'meta_input' => array(
-                'doc_number'   => $_POST['_doc_number'],
-                'doc_revision' => $_POST['_doc_revision'],
-                'doc_date'     => $_POST['_doc_date'],
-                'doc_url'      => $_POST['_doc_url'],
-                'start_job'    => $_POST['_start_job'],
-                'start_leadtime' => $_POST['_start_leadtime'],
-                'final_job'    => $_POST['_final_job'],
-            )
-        );
-        wp_update_post( $data );
-*/
+        // Update To-do
         $todo_id = esc_attr($_POST['_todo_id']);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
-
+        // Insert the To-do list
         $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
         $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
-        $doc_id = get_post_meta($job_id, 'doc_id', true); // Documents->ID, Metadata: doc#, revision, etc..
+        //$doc_id = get_post_meta($job_id, 'doc_id', true); // Documents->ID, Metadata: doc#, revision, etc..
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        // Insert the To-do list
         $new_post = array(
-            'post_title'    => get_the_title($doc_id),
+            'post_title'    => get_the_title($job_id), // To-do title
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author

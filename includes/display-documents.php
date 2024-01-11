@@ -455,7 +455,7 @@ function get_job_action_list_data() {
     wp_send_json($_array);
 }
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
-add_action( 'wp_ajax_nopriv_get_get_job_action_list_data', 'get_job_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_job_action_list_data', 'get_job_action_list_data' );
 
 function get_job_action_dialog_data() {
     $response = array();
