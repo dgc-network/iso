@@ -626,85 +626,10 @@ jQuery(document).ready(function($) {
     $('[id^="btn-todo-list-"]').on( "click", function() {
         id = this.id;
         id = id.substring(14);
-        //$("#job-id").val(id);
+        alert(id)
         get_job_action_list_data(id);
-
-        //$("#job-action-list-dialog").dialog('open');
-/*
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_job_list_data',
-                '_document_id': id,
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                $("#doc-job-dialog").dialog('open');
-                // Job list in document
-                for(index=0;index<50;index++) {
-                    $("#doc-job-list-"+index).hide();
-                    $("#doc-job-list-"+index).empty();
-                }
-                $.each(response.job_array, function (index, value) {
-                    output = '';
-                    output = output+'<td style="text-align:center;"><input type="checkbox" id="check-doc-job-'+value.job_id+'" /></td>';
-                    output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
-                    output = output+'<td>'+value.job_content+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.job_submit_time+'</td>';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
-                    $("#doc-job-list-"+index).append(output);
-                    $("#doc-job-list-"+index).show();
-                })
-
-                $('[id^="btn-"]').mouseover(function() {
-                    $(this).css('cursor', 'pointer');
-                    $(this).css('color', 'red');
-                });
-                    
-                $('[id^="btn-"]').mouseout(function() {
-                    $(this).css('cursor', 'default');
-                    $(this).css('color', 'black');
-                });
-        
-                $('[id^="btn-edit-doc-job-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(17);
-                    $("#job-id").val(id);
-                    get_job_action_list_data($("#job-id").val());
-                });
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-*/        
+        $("#job-action-list-dialog").dialog('open');
     });
-
-/*
-    $("#btn-new-document").on("click", function() {
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_document_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                //get_document_list_data($("#site-id").val());
-                alert('Success!');
-            },
-            error: function(error){
-                console.error(error);
-                alert(error);
-
-            }
-        });
-    });
-*/
+    
 })
 
