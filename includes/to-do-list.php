@@ -194,6 +194,7 @@ function set_todo_action_dialog_data() {
         //$doc_id = get_post_meta($job_id, 'doc_id', true); // Documents->ID, Metadata: doc#, revision, etc..
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        // Insert the post into the database
         $new_post = array(
             'post_title'    => get_the_title($job_id), // To-do title
             'post_content'  => 'Your post content goes here.',
@@ -201,10 +202,9 @@ function set_todo_action_dialog_data() {
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed
         );    
-        // Insert the post into the database
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_next_job']));
-        update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
+        update_post_meta( $post_id, 'job_id', esc_attr($next_job));
+        update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
 
     }
     wp_send_json($response);
