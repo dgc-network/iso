@@ -202,7 +202,7 @@ function retrieve_document_list_data($site_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
+/*
 function retrieve_site_job_list_data($site_id) {
     $args = array(
         'post_type'      => 'job',
@@ -217,7 +217,7 @@ function retrieve_site_job_list_data($site_id) {
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 function get_document_list_data() {
     // Retrieve the documents data
     $query = retrieve_document_list_data($_POST['_site_id']);
