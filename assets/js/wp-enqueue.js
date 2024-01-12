@@ -465,7 +465,7 @@ jQuery(document).ready(function($) {
 
     // Job action list
     $("#job-action-list-dialog").dialog({
-        width: 500,
+        width: "70%",
         modal: true,
         autoOpen: false,
     });
@@ -629,14 +629,14 @@ jQuery(document).ready(function($) {
         $("#todo-id").val(id);
         get_todo_action_list_data(id);
     });
-
+/*
     $('[id^="btn-todo-job-"]').on( "click", function() {
         id = this.id;
         id = id.substring(13);
         $("#todo-id").val(id);
         get_todo_action_list_data(id);
     });
-
+*/
     function get_todo_list_data(job_id){
         jQuery.ajax({
             type: 'POST',

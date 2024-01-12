@@ -116,7 +116,7 @@ function to_do_list_shortcode() {
                         ?>
                         <tr id="todo-job-<?php the_ID();?>" class="todo-list-<?php echo $x;?>">
                             <td></td>
-                            <td style="text-align:center;" id="btn-todo-job-<?php the_ID();?>"><?php echo get_the_title($job_id);?></td>
+                            <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td></td>
