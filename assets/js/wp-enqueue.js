@@ -623,6 +623,13 @@ jQuery(document).ready(function($) {
 // To-do list
 jQuery(document).ready(function($) {
 
+    $('[id^="todo-job-"]').on( "click", function() {
+        id = this.id;
+        id = id.substring(9);
+        $("#todo-id").val(id);
+        get_todo_action_list_data(id);
+    });
+
     $('[id^="btn-todo-job-"]').on( "click", function() {
         id = this.id;
         id = id.substring(13);

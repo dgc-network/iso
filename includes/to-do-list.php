@@ -97,9 +97,9 @@ function to_do_list_shortcode() {
                 <thead>
                     <tr>
                         <th></th>
-                        <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -109,16 +109,16 @@ function to_do_list_shortcode() {
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
-                        $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
-                        $due_date = wp_date( get_option('date_format'), $job_due );
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
+                        $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
+                        $due_date = wp_date( get_option('date_format'), $job_due );
                         ?>
-                        <tr  class="interactive-bar" id="todo-list-<?php echo $x;?>">
+                        <tr class="todo-job-<?php the_ID();?>" id="todo-list-<?php echo $x;?>">
                             <td></td>
-                            <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td style="text-align:center;" id="btn-todo-job-<?php the_ID();?>"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
+                            <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td></td>
                         </tr>
                         <?php 
