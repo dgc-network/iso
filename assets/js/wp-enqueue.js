@@ -773,7 +773,7 @@ jQuery(document).ready(function($) {
 
 })
 
-$(document).ready(function () {
+jQuery(document).ready(function($) {
 
     // Function to open the dialog
     function openDialog(buttons) {
