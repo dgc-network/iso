@@ -13,7 +13,7 @@ tr:nth-child(2n){
     background-color:#d6d8d9;
 }
 
-tr:hover {
+tbody tr:hover {
     background-color: #4CAF50;
     color: white;
 }
