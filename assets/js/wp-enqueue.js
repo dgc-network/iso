@@ -647,7 +647,8 @@ jQuery(document).ready(function($) {
                 let buttons = {};
                 $.each(response, function (index, value) {
                     buttons[value.action_title] = function () {
-                        //alert(`Button "${value.action_title}" clicked`);
+                        alert(`Button "${value.action_title}" clicked`);
+/*                        
                         if (window.confirm("Are you sure you want to do this job action?")) {
                             jQuery.ajax({
                                 type: 'POST',
@@ -667,7 +668,7 @@ jQuery(document).ready(function($) {
                                 }
                             });
                         }
-    
+*/    
                     };
                 })
 /*
