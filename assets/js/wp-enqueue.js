@@ -628,12 +628,6 @@ jQuery(document).ready(function($) {
         id = id.substring(9);
         $("#todo-id").val(id);
         //get_todo_action_list_data(id);
-        openTodoDialog(id);
-        $("#todo-dialog").dialog("open");
-
-    });
-
-    function openTodoDialog(todo_id) {
 
         jQuery.ajax({
             type: 'POST',
@@ -645,6 +639,31 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {    
                 let buttons = {};
+                let buttonData = [];
+                $.each(response, function (index, value) {
+                    // JSON data as a string
+                    var jsonDataString = '{"label": "'+value.action_title+'", "action": "'+value.action_title+'"}';
+                    // Parse JSON string to JavaScript object
+                    var jsonData = $.parseJSON(jsonDataString);            
+                    // Add JSON object to the array
+                    buttonData.push(jsonData);
+                })
+                openTodoDialog(buttonData);
+    
+
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+
+        //openTodoDialog(id);
+        $("#todo-dialog").dialog("open");
+
+    });
+
+    function openTodoDialog(buttonData) {
 /*                
                 // Sample button data
                 let buttonData = [
@@ -653,16 +672,20 @@ jQuery(document).ready(function($) {
                     // Add more buttons as needed
                 ];
 */                
-                let buttonData = [];
-                $.each(response, function (index, value) {
-                    // JSON data as a string
-                    var jsonDataString = '{"label": "'+value.action_title+'", "action": "'+value.action_title+'"}';
+for (let i = 0; i < buttonData.length; i++) {
+    let btn = buttonData[i];
+    buttons[btn.label] = function () {
+        alert(`Button "${btn.label}" clicked`);
+    };
+}
 
-                    // Parse JSON string to JavaScript object
-                    var jsonData = $.parseJSON(jsonDataString);
-            
-                    // Add JSON object to the array
-                    buttonData.push(jsonData);
+$("#todo-dialog").dialog({
+    autoOpen: false,
+    modal: true,
+    buttons: buttons
+});
+
+
 /*                        
                         if (window.confirm("Are you sure you want to do this job action?")) {
                             jQuery.ajax({
@@ -684,28 +707,6 @@ jQuery(document).ready(function($) {
                             });
                         }
 */    
-                })
-    
-                for (let i = 0; i < buttonData.length; i++) {
-                    let btn = buttonData[i];
-                    buttons[btn.label] = function () {
-                        alert(`Button "${btn.label}" clicked`);
-                    };
-                }
-
-                $("#todo-dialog").dialog({
-                    autoOpen: false,
-                    modal: true,
-                    buttons: buttons
-                });
-        
-
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
 
 
     }
