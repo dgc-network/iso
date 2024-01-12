@@ -96,11 +96,9 @@ function to_do_list_shortcode() {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th></th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,11 +113,9 @@ function to_do_list_shortcode() {
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         ?>
                         <tr id="todo-job-<?php the_ID();?>" class="todo-list-<?php echo $x;?>">
-                            <td></td>
                             <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
-                            <td></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -149,48 +145,23 @@ function to_do_list_shortcode() {
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_todo_dialog() {
-    ?>
-        <div id="todo-dialog" title="To-do dialog" style="display:none;">
-            <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $x = 0;
-                    while ($x<50) {
-                        echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
-                    ?>
-                </tbody>
-                <tr><td colspan="6"><div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
-            </table>
-    
-            <div id="action-dialog" title="Action dialog" style="display:none;">
-            <fieldset>
-                <input type="hidden" id="todo-id" />
-                <input type="hidden" id="job-id" />
-                <input type="hidden" id="action-id" />
-                <label for="action-title">Title:</label>
-                <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-                <label for="action-content">Content:</label>
-                <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-                <label for="next-job">Next job:</label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
-                <label for="next-leadtime">Next leadtime:</label>
-                <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            </div>
-        </div>
-    <?php
+?>
+    <div id="todo-dialog" title="To-do dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="todo-id" />
+            <input type="hidden" id="job-id" />
+            <input type="hidden" id="action-id" />
+            <label for="action-title">Title:</label>
+            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+            <label for="action-content">Content:</label>
+            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+            <label for="next-job">Next job:</label>
+            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
+            <label for="next-leadtime">Next leadtime:</label>
+            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+    </div>
+<?php
 }
     
 function retrieve_todo_list_data($job_id=0){

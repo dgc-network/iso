@@ -3,6 +3,16 @@ jQuery(document).ready(function($) {
 
     activate_site_job_list_data()
 
+    $('[id^="btn-"]').mouseover(function() {
+        $(this).css('cursor', 'pointer');
+        $(this).css('color', 'red');
+    });
+        
+    $('[id^="btn-"]').mouseout(function() {
+        $(this).css('cursor', 'default');
+        $(this).css('color', 'black');
+    });        
+
     $("#btn-new-site-job").on("click", function() {
         jQuery.ajax({
             type: 'POST',
@@ -45,65 +55,6 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    
-/*
-        $('[id^="btn-"]').mouseover(function() {
-            $(this).css('cursor', 'pointer');
-            $(this).css('color', 'red');
-        });
-            
-        $('[id^="btn-"]').mouseout(function() {
-            $(this).css('cursor', 'default');
-            $(this).css('color', 'black');
-        });
-
-        $('[id^="btn-edit-site-job-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(18);
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_site_job_dialog_data',
-                    '_job_id': id,
-                    //'_site_id': $("#site-id").val(),
-                },
-                success: function (response) {
-                    $("#job-dialog").dialog('open');
-                    $("#job-id").val(id);
-                    $("#job-title").val(response.job_title);
-                    $("#job-content").val(response.job_content);
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-        });
-    
-        $('[id^="btn-del-site-job-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(17);
-            if (window.confirm("Are you sure you want to delete this site job?")) {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_site_job_dialog_data',
-                        '_job_id': id,
-                    },
-                    success: function (response) {
-                        get_site_job_list_data($("#site-id").val());
-                    },
-                    error: function(error){
-                        alert(error);
-                    }
-                });
-            }
-        });
-*/                
     }
 
     function get_site_job_list_data(id){
@@ -125,8 +76,6 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
                     output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                     output = output+'<td>'+value.job_content+'</td>';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-site-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-del-site-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
                     $(".site-job-list-"+index).append(output);
                     $(".site-job-list-"+index).show();
                 });
@@ -140,7 +89,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#job-dialog").dialog({
-        //width: 500,
+        width: 500,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -193,29 +142,36 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
-/*
-    $('#sortable-documents').sortable({
-        update: function() {
-            const document_array = [];
-            $('.document-array').each(function(index) { 
-                document_array.push($(this).val());
-            });
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_sorted_documents_data',
-                    '_document_array': document_array,
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });
-        }
+
+    $('[id^="btn-"]').mouseover(function() {
+        $(this).css('cursor', 'pointer');
+        $(this).css('color', 'red');
     });
-*/
+        
+    $('[id^="btn-"]').mouseout(function() {
+        $(this).css('cursor', 'default');
+        $(this).css('color', 'black');
+    });
+
+    $("#btn-new-document").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_document_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_document_list_data($("#site-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });
+
     function get_document_list_data(site_id){
         jQuery.ajax({
             type: 'POST',
@@ -251,25 +207,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $("#btn-new-document").on("click", function() {
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_document_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_document_list_data($("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });
-
     function activate_document_list_data(){
 
         $('[id^="edit-document-"]').on( "click", function() {
@@ -297,177 +234,14 @@ jQuery(document).ready(function($) {
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#final-job").empty();
                     $("#final-job").append(response.final_job);
-/*
-                    $('[id^="btn-"]').mouseover(function() {
-                        $(this).css('cursor', 'pointer');
-                        $(this).css('color', 'red');
-                    });
-                        
-                    $('[id^="btn-"]').mouseout(function() {
-                        $(this).css('cursor', 'default');
-                        $(this).css('color', 'black');
-                    });
-            
-                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
-                        id = this.id;
-                        id = id.substring(17);
-                        $("#job-id").val(id);
-                        get_job_action_list_data($("#job-id").val());
-                    });
-*/                    
                 },
                 error: function (error) {
                     console.error(error);                
                     alert(error);
                 }
-            });
+            });            
         });
 
-/*
-        $('[id^="btn-"]').mouseover(function() {
-            $(this).css('cursor', 'pointer');
-            $(this).css('color', 'red');
-        });
-            
-        $('[id^="btn-"]').mouseout(function() {
-            $(this).css('cursor', 'default');
-            $(this).css('color', 'black');
-        });
-
-        $('[id^="btn-edit-document-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(18);
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_document_dialog_data',
-                    '_document_id': id,
-                    '_site_id': $("#site-id").val(),
-                },
-                success: function (response) {
-                    $("#document-dialog").dialog('open');
-                    $("#document-id").val(id);
-                    $("#doc-title").val(response.doc_title);
-                    $("#doc-number").val(response.doc_number);
-                    $("#doc-revision").val(response.doc_revision);
-                    $("#doc-date").val(response.doc_date);
-                    $("#doc-url").val(response.doc_url);
-                    $("#start-job").empty();
-                    $("#start-job").append(response.start_job);
-                    $("#start-leadtime").val(response.start_leadtime);
-                    $("#final-job").empty();
-                    $("#final-job").append(response.final_job);
-
-                    $('[id^="btn-"]').mouseover(function() {
-                        $(this).css('cursor', 'pointer');
-                        $(this).css('color', 'red');
-                    });
-                        
-                    $('[id^="btn-"]').mouseout(function() {
-                        $(this).css('cursor', 'default');
-                        $(this).css('color', 'black');
-                    });
-            
-                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
-                        id = this.id;
-                        id = id.substring(17);
-                        $("#job-id").val(id);
-                        get_job_action_list_data($("#job-id").val());
-                    });
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-        });
-
-        
-
-        $('[id^="btn-document-flow-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(18);
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_job_list_data',
-                    '_document_id': id,
-                    '_site_id': $("#site-id").val(),
-                },
-                success: function (response) {
-                    $("#doc-job-dialog").dialog('open');
-                    // Job list in document
-                    for(index=0;index<50;index++) {
-                        $("#doc-job-list-"+index).hide();
-                        $("#doc-job-list-"+index).empty();
-                    }
-                    $.each(response.job_array, function (index, value) {
-                        output = '';
-                        output = output+'<td style="text-align:center;"><input type="checkbox" id="check-doc-job-'+value.job_id+'" /></td>';
-                        output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
-                        output = output+'<td>'+value.job_content+'</td>';
-                        output = output+'<td style="text-align:center;">'+value.job_submit_user+'</td>';
-                        output = output+'<td style="text-align:center;">'+value.job_submit_time+'</td>';
-                        output = output+'<td style="text-align:center;"><span id="btn-edit-doc-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
-                        $("#doc-job-list-"+index).append(output);
-                        $("#doc-job-list-"+index).show();
-                    })
-
-                    $('[id^="btn-"]').mouseover(function() {
-                        $(this).css('cursor', 'pointer');
-                        $(this).css('color', 'red');
-                    });
-                        
-                    $('[id^="btn-"]').mouseout(function() {
-                        $(this).css('cursor', 'default');
-                        $(this).css('color', 'black');
-                    });
-            
-                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
-                        id = this.id;
-                        id = id.substring(17);
-                        $("#job-id").val(id);
-                        get_job_action_list_data($("#job-id").val());
-                    });
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-
-
-
-            
-        });
-    
-        $('[id^="btn-del-document-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(17);
-            if (window.confirm("Are you sure you want to delete this document?"+id)) {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_document_dialog_data',
-                        '_document_id': id,
-                    },
-                    success: function (response) {
-                        get_document_list_data($("#site-id").val());
-                    },
-                    error: function(error){
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });
-            }
-        });
-*/        
         $('#doc-date').datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
@@ -476,7 +250,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#document-dialog").dialog({
-        //width: 900,
+        width: 600,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -534,7 +308,7 @@ jQuery(document).ready(function($) {
 
     // Document job list
     $("#doc-job-list-dialog").dialog({
-        //width: 500,
+        width: 500,
         modal: true,
         autoOpen: false,
     });
@@ -716,7 +490,7 @@ jQuery(document).ready(function($) {
                 let buttonData = [];
                 $.each(response, function (index, value) {
                     // JSON data as a string
-                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_title + '"}';
+                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
                     // Parse JSON string to JavaScript object
                     var jsonData = $.parseJSON(jsonDataString);
                     // Add JSON object to the array
@@ -770,81 +544,6 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
     }
     
-/*
-    $('[id^="todo-job-"]').on( "click", function() {
-        id = this.id;
-        id = id.substring(9);
-        $("#todo-id").val(id);
-        //get_todo_action_list_data(id);
-
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_action_list_data',
-                '_todo_id': id,
-            },
-            success: function (response) {    
-                let buttonData = [];
-                $.each(response, function (index, value) {
-                    // JSON data as a string
-                    var jsonDataString = '{"label": "'+value.action_title+'", "action": "'+value.action_title+'"}';
-                    // Parse JSON string to JavaScript object
-                    var jsonData = $.parseJSON(jsonDataString);            
-                    // Add JSON object to the array
-                    buttonData.push(jsonData);
-                })
-                openTodoDialog(buttonData);
-    
-
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-
-        //openTodoDialog(id);
-        $("#todo-dialog").dialog("open");
-
-    });
-
-    function openTodoDialog(buttonData) {
-
-        // Sample button data
-                let buttonData = [
-                    { label: "Button 1", action: "action1" },
-                    { label: "Button 2", action: "action2" },
-                    // Add more buttons as needed
-                ];
-
-                let buttons = {};
-for (let i = 0; i < buttonData.length; i++) {
-    let btn = buttonData[i];
-    buttons[btn.label] = function () {
-        alert(`Button "${btn.label}" clicked`);
-    };
-}
-
-$("#todo-dialog").dialog({
-    autoOpen: false,
-    modal: true,
-    buttons: buttons
-});
-
-
-    }
-*/
-
-/*
-    $('[id^="btn-todo-job-"]').on( "click", function() {
-        id = this.id;
-        id = id.substring(13);
-        $("#todo-id").val(id);
-        get_todo_action_list_data(id);
-    });
-*/
     function get_todo_list_data(job_id){
         jQuery.ajax({
             type: 'POST',
@@ -861,11 +560,9 @@ $("#todo-dialog").dialog({
                 }
                 $.each(response, function (index, value) {
                     output = '';
-                    output = output+'<td></td>';
-                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
                     output = output+'<td style="text-align:center;" id="btn-todo-job-'+value.todo_id+'">'+value.job_title+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td></td>';
+                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
                     $(".todo-list-"+index).append(output);
                     $(".todo-list-"+index).show();
                 })
@@ -876,7 +573,7 @@ $("#todo-dialog").dialog({
             }
         });            
     }
-
+/*
     function get_todo_action_list_data(todo_id){
         jQuery.ajax({
             type: 'POST',
@@ -950,46 +647,6 @@ $("#todo-dialog").dialog({
         });
 
     }
-
+*/
 
 })
-
-jQuery(document).ready(function($) {
-
-    // Function to open the dialog
-    function openDialog(buttons) {
-        $("#custom-dialog").dialog({
-            autoOpen: false,
-            modal: true,
-            buttons: buttons
-        });
-    }
-
-    // Function to generate buttons dynamically
-    function generateButtons(buttonData) {
-        let buttons = {};
-        for (let i = 0; i < buttonData.length; i++) {
-            let btn = buttonData[i];
-            buttons[btn.label] = function () {
-                alert(`Button "${btn.label}" clicked`);
-            };
-        }
-        return buttons;
-    }
-
-    // Sample button data
-    let buttonData = [
-        { label: "Button 1", action: "action1" },
-        { label: "Button 2", action: "action2" },
-        // Add more buttons as needed
-    ];
-
-    // Generate buttons based on the data
-    let generatedButtons = generateButtons(buttonData);
-
-    // Open dialog with dynamic buttons
-    $("#open-dialog").click(function () {
-        openDialog(generatedButtons);
-        $("#custom-dialog").dialog("open");
-    });
-});
