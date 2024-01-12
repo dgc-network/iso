@@ -635,10 +635,9 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_todo_action_list_data',
-                '_todo_id': todo_id,
+                '_todo_id': id,
             },
             success: function (response) {    
-                let buttons = {};
                 let buttonData = [];
                 $.each(response, function (index, value) {
                     // JSON data as a string
@@ -672,6 +671,7 @@ jQuery(document).ready(function($) {
                     // Add more buttons as needed
                 ];
 */                
+let buttons = {};
 for (let i = 0; i < buttonData.length; i++) {
     let btn = buttonData[i];
     buttons[btn.label] = function () {
