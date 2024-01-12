@@ -22,6 +22,32 @@ jQuery(document).ready(function($) {
     });
 
     function activate_site_job_list_data(){
+        $('[id^="edit-site-job-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(14);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_job_dialog_data',
+                    '_job_id': id,
+                    //'_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    $("#job-dialog").dialog('open');
+                    $("#job-id").val(id);
+                    $("#job-title").val(response.job_title);
+                    $("#job-content").val(response.job_content);
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+    
+
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -91,8 +117,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#site-job-list-"+index).hide();
-                    $("#site-job-list-"+index).empty();
+                    $(".site-job-list-"+index).hide();
+                    $(".site-job-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
@@ -101,8 +127,8 @@ jQuery(document).ready(function($) {
                     output = output+'<td>'+value.job_content+'</td>';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-site-job-'+value.job_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align: center;"><span id="btn-del-site-job-'+value.job_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#site-job-list-"+index).append(output);
-                    $("#site-job-list-"+index).show();
+                    $(".site-job-list-"+index).append(output);
+                    $(".site-job-list-"+index).show();
                 });
 
                 activate_site_job_list_data();
@@ -623,6 +649,58 @@ jQuery(document).ready(function($) {
 // To-do list
 jQuery(document).ready(function($) {
 
+    $('[id^="todo-job-"]').on("click", function () {
+        id = this.id;
+        id = id.substring(9);
+        $("#todo-id").val(id);
+    
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_action_list_data',
+                '_todo_id': id,
+            },
+            success: function (response) {
+                let buttonData = [];
+                $.each(response, function (index, value) {
+                    // JSON data as a string
+                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_title + '"}';
+                    // Parse JSON string to JavaScript object
+                    var jsonData = $.parseJSON(jsonDataString);
+                    // Add JSON object to the array
+                    buttonData.push(jsonData);
+                })
+                openTodoDialog(buttonData);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    });
+    
+    function openTodoDialog(buttonData) {
+        let buttons = {};
+        for (let i = 0; i < buttonData.length; i++) {
+            let btn = buttonData[i];
+            buttons[btn.label] = function () {
+                alert(`Button "${btn.label}" clicked`);
+            };
+        }
+    
+        $("#todo-dialog").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: buttons
+        });
+    
+        // Open the dialog after it has been initialized
+        $("#todo-dialog").dialog("open");
+    }
+    
+/*
     $('[id^="todo-job-"]').on( "click", function() {
         id = this.id;
         id = id.substring(9);
@@ -663,15 +741,15 @@ jQuery(document).ready(function($) {
     });
 
     function openTodoDialog(buttonData) {
-/*                
-                // Sample button data
+
+        // Sample button data
                 let buttonData = [
                     { label: "Button 1", action: "action1" },
                     { label: "Button 2", action: "action2" },
                     // Add more buttons as needed
                 ];
-*/                
-let buttons = {};
+
+                let buttons = {};
 for (let i = 0; i < buttonData.length; i++) {
     let btn = buttonData[i];
     buttons[btn.label] = function () {
@@ -686,7 +764,6 @@ $("#todo-dialog").dialog({
 });
 
 
-/*                        
                         if (window.confirm("Are you sure you want to do this job action?")) {
                             jQuery.ajax({
                                 type: 'POST',
@@ -706,11 +783,8 @@ $("#todo-dialog").dialog({
                                 }
                             });
                         }
-*/    
-
-
     }
-
+*/
 
 /*
     $('[id^="btn-todo-job-"]').on( "click", function() {

@@ -233,7 +233,7 @@ function my_jobs_shortcode() {
                         $x = 0;
                         while ($query->have_posts()) : $query->the_post();
                         ?>
-                            <tr id="site-job-list-<?php echo $x;?>">
+                            <tr class="site-job-list-<?php echo $x;?>" id="edit-site-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
@@ -245,14 +245,14 @@ function my_jobs_shortcode() {
                         endwhile;
                         wp_reset_postdata();
                         while ($x<50) {
-                            echo '<tr id="site-job-list-'.$x.'" style="display:none;"></tr>';
+                            echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
                             $x += 1;
                         }
                     endif;
                     ?>
                     </tbody>
-                    <tr><td colspan="5"><div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
                 </table>
+                <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div>
 
                 <div id="job-dialog" title="Job dialog" style="display:none;">
                     <fieldset>
