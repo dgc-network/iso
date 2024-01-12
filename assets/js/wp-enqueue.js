@@ -32,7 +32,6 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_site_job_dialog_data',
                     '_job_id': id,
-                    //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#job-dialog").dialog('open');
@@ -47,7 +46,7 @@ jQuery(document).ready(function($) {
             });
         });
     
-
+/*
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -103,7 +102,8 @@ jQuery(document).ready(function($) {
                     }
                 });
             }
-        });        
+        });
+*/                
     }
 
     function get_site_job_list_data(id){
@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#job-dialog").dialog({
-        width: 500,
+        //width: 500,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -185,9 +185,6 @@ jQuery(document).ready(function($) {
                     });
                 }
             },
-            //"Cancel": function() {
-            //    $(this).dialog("close");
-            //}
         }
     });
 });
@@ -196,7 +193,7 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
-
+/*
     $('#sortable-documents').sortable({
         update: function() {
             const document_array = [];
@@ -218,7 +215,7 @@ jQuery(document).ready(function($) {
             });
         }
     });
-
+*/
     function get_document_list_data(site_id){
         jQuery.ajax({
             type: 'POST',
@@ -300,7 +297,7 @@ jQuery(document).ready(function($) {
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#final-job").empty();
                     $("#final-job").append(response.final_job);
-
+/*
                     $('[id^="btn-"]').mouseover(function() {
                         $(this).css('cursor', 'pointer');
                         $(this).css('color', 'red');
@@ -317,6 +314,7 @@ jQuery(document).ready(function($) {
                         $("#job-id").val(id);
                         get_job_action_list_data($("#job-id").val());
                     });
+*/                    
                 },
                 error: function (error) {
                     console.error(error);                
@@ -325,7 +323,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-
+/*
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -469,7 +467,7 @@ jQuery(document).ready(function($) {
                 });
             }
         });
-        
+*/        
         $('#doc-date').datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
@@ -478,7 +476,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#document-dialog").dialog({
-        width: 900,
+        //width: 900,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -746,7 +744,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_todo_action_dialog_data',
-                            '_action_id': value.action_id,
+                            '_action_id': btn.action,
                             '_todo_id': $("#todo-id").val()
                         },
                         success: function (response) {

@@ -21,15 +21,21 @@ tbody tr:hover {
 
 /* Styles for desktop browsers */
 @media (min-width: 768px) {
-    #your-dialog {
+    #job-dialog {
         width: 500px; /* Set the width for desktop */
+    }
+    #document-dialog {
+        width: 900px; /* Set the width for desktop */
     }
 }
 
 /* Styles for mobile browsers */
 @media (max-width: 767px) {
-    #your-dialog {
+    #job-dialog {
         width: 80%; /* Set the width as a percentage for mobile */
+    }
+    #document-dialog {
+        width: 90%; /* Set the width as a percentage for mobile */
     }
 }
 
