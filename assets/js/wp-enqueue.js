@@ -765,6 +765,9 @@ jQuery(document).ready(function($) {
             modal: true,
             buttons: buttons
         });
+
+        $("#todo-dialog").dialog("open");
+
     }
 
 
