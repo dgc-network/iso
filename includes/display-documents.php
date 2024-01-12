@@ -85,7 +85,7 @@ function display_documents_shortcode() {
                     $post_id = (int) get_the_ID();
                     $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                     ?>
-                    <tr id="document-list-<?php echo $x;?>">
+                    <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                         <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
                         <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                         <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
@@ -104,8 +104,8 @@ function display_documents_shortcode() {
             endif;
             ?>
                 </tbody>
-                <tr><td colspan="6"><div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
             </table>
+            <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div>
             <?php display_document_dialog($site_id);?>
 
         </fieldset>

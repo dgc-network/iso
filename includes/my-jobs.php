@@ -224,8 +224,6 @@ function my_jobs_shortcode() {
                         <th></th>
                         <th>Job</th>
                         <th>Description</th>
-                        <th></th>
-                        <th></th>
                     </thead>
                     <tbody>
                     <?php
@@ -237,8 +235,6 @@ function my_jobs_shortcode() {
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
-                                <td style="text-align:center;"><span id="btn-edit-site-job-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                                <td style="text-align:center;"><span id="btn-del-site-job-<?php the_ID();?>" class="dashicons dashicons-trash"></span></td>
                             </tr>
                         <?php 
                             $x += 1;

@@ -230,8 +230,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 for(index=0;index<50;index++) {
-                    $("#document-list-"+index).hide();
-                    $("#document-list-"+index).empty();
+                    $(".document-list-"+index).hide();
+                    $(".document-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
@@ -241,8 +241,8 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
                     output = output+'<td style="text-align: center;"><span id="btn-document-flow-'+value.document_id+'" class="dashicons dashicons-networking"></span></td>';
-                    $("#document-list-"+index).append(output);
-                    $("#document-list-"+index).show();
+                    $(".document-list-"+index).append(output);
+                    $(".document-list-"+index).show();
                 });
 
                 activate_document_list_data();
@@ -274,6 +274,58 @@ jQuery(document).ready(function($) {
     });
 
     function activate_document_list_data(){
+
+        $('[id^="edit-document-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(14);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_document_dialog_data',
+                    '_document_id': id,
+                    '_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    $("#document-dialog").dialog('open');
+                    $("#document-id").val(id);
+                    $("#doc-title").val(response.doc_title);
+                    $("#doc-number").val(response.doc_number);
+                    $("#doc-revision").val(response.doc_revision);
+                    $("#doc-date").val(response.doc_date);
+                    $("#doc-url").val(response.doc_url);
+                    $("#start-job").empty();
+                    $("#start-job").append(response.start_job);
+                    $("#start-leadtime").val(response.start_leadtime);
+                    $("#final-job").empty();
+                    $("#final-job").append(response.final_job);
+
+                    $('[id^="btn-"]').mouseover(function() {
+                        $(this).css('cursor', 'pointer');
+                        $(this).css('color', 'red');
+                    });
+                        
+                    $('[id^="btn-"]').mouseout(function() {
+                        $(this).css('cursor', 'default');
+                        $(this).css('color', 'black');
+                    });
+            
+                    $('[id^="btn-edit-doc-job-"]').on( "click", function() {
+                        id = this.id;
+                        id = id.substring(17);
+                        $("#job-id").val(id);
+                        get_job_action_list_data($("#job-id").val());
+                    });
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+
+
         $('[id^="btn-"]').mouseover(function() {
             $(this).css('cursor', 'pointer');
             $(this).css('color', 'red');
@@ -686,7 +738,27 @@ jQuery(document).ready(function($) {
         for (let i = 0; i < buttonData.length; i++) {
             let btn = buttonData[i];
             buttons[btn.label] = function () {
-                alert(`Button "${btn.label}" clicked`);
+                //alert(`Button "${btn.label}" clicked`);
+                if (window.confirm("Are you sure you want to do this job action?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_todo_action_dialog_data',
+                            '_action_id': value.action_id,
+                            '_todo_id': $("#todo-id").val()
+                        },
+                        success: function (response) {
+                            $("#todo-dialog").dialog('close');
+                            get_todo_list_data($("#job-id").val());
+                        },
+                        error: function(error){
+                            alert(error);
+                        }
+                    });
+                }
+
             };
         }
     
@@ -764,25 +836,6 @@ $("#todo-dialog").dialog({
 });
 
 
-                        if (window.confirm("Are you sure you want to do this job action?")) {
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_todo_action_dialog_data',
-                                    '_action_id': value.action_id,
-                                    '_todo_id': $("#todo-id").val()
-                                },
-                                success: function (response) {
-                                    $("#todo-dialog").dialog('close');
-                                    get_todo_list_data($("#job-id").val());
-                                },
-                                error: function(error){
-                                    alert(error);
-                                }
-                            });
-                        }
     }
 */
 
