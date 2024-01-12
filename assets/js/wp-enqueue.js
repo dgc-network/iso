@@ -648,8 +648,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {            
                 for(index=0;index<50;index++) {
-                    $("#todo-list-"+index).hide();
-                    $("#todo-list-"+index).empty();
+                    $(".todo-list-"+index).hide();
+                    $(".todo-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
@@ -658,8 +658,8 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align:center;" id="btn-todo-job-'+value.todo_id+'">'+value.job_title+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td></td>';
-                    $("#todo-list-"+index).append(output);
-                    $("#todo-list-"+index).show();
+                    $(".todo-list-"+index).append(output);
+                    $(".todo-list-"+index).show();
                 })
             },
             error: function (error) {

@@ -114,7 +114,7 @@ function to_do_list_shortcode() {
                         $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         ?>
-                        <tr class="todo-job-<?php the_ID();?>" id="todo-list-<?php echo $x;?>">
+                        <tr id="todo-job-<?php the_ID();?>" class="todo-list-<?php echo $x;?>">
                             <td></td>
                             <td style="text-align:center;" id="btn-todo-job-<?php the_ID();?>"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
@@ -126,7 +126,7 @@ function to_do_list_shortcode() {
                     endwhile;
                     wp_reset_postdata();
                     while ($x<50) {
-                        echo '<tr id="todo-list-'.$x.'" style="display:none;"></tr>';
+                        echo '<tr class="todo-list-'.$x.'" style="display:none;"></tr>';
                         $x += 1;
                     }    
                 endif;
