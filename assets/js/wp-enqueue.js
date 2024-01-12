@@ -656,7 +656,7 @@ jQuery(document).ready(function($) {
                 let buttonData = [];
                 $.each(response, function (index, value) {
                     // JSON data as a string
-                    var jsonDataString = '{"label": '+value.action_title+', "action": '+value.action_title+'}';
+                    var jsonDataString = '{"label": "'+value.action_title+'", "action": "'+value.action_title+'"}';
 
                     // Parse JSON string to JavaScript object
                     var jsonData = $.parseJSON(jsonDataString);
