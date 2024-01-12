@@ -628,7 +628,9 @@ jQuery(document).ready(function($) {
         id = id.substring(9);
         $("#todo-id").val(id);
         //get_todo_action_list_data(id);
-        openTodoDialog(id)
+        openTodoDialog(id);
+        $("#todo-dialog").dialog("open");
+
     });
 /*
     $('[id^="btn-todo-job-"]').on( "click", function() {
@@ -765,8 +767,6 @@ jQuery(document).ready(function($) {
             modal: true,
             buttons: buttons
         });
-
-        $("#todo-dialog").dialog("open");
 
     }
 
