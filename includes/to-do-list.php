@@ -150,7 +150,7 @@ add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_todo_dialog() {
     ?>
-        <div id="todo-dialog" title="Action list" style="display:none;">
+        <div id="todo-dialog" title="To-do dialog" style="display:none;">
             <table style="width:100%;">
                 <thead>
                     <tr>

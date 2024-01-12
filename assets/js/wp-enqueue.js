@@ -632,6 +632,77 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
 
     });
+
+    function openTodoDialog(todo_id) {
+
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_action_list_data',
+                '_todo_id': todo_id,
+            },
+            success: function (response) {    
+                let buttons = {};
+                $.each(response, function (index, value) {
+                    buttons[value.action_title] = function () {
+                        //alert(`Button "${value.action_title}" clicked`);
+                        if (window.confirm("Are you sure you want to do this job action?")) {
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_todo_action_dialog_data',
+                                    '_action_id': value.action_id,
+                                    '_todo_id': $("#todo-id").val()
+                                },
+                                success: function (response) {
+                                    $("#todo-dialog").dialog('close');
+                                    get_todo_list_data($("#job-id").val());
+                                },
+                                error: function(error){
+                                    alert(error);
+                                }
+                            });
+                        }
+    
+                    };
+                })
+/*
+                // Sample button data
+                let buttonData = [
+                    { label: "Button 1", action: "action1" },
+                    { label: "Button 2", action: "action2" },
+                    // Add more buttons as needed
+                ];
+    
+                for (let i = 0; i < buttonData.length; i++) {
+                    let btn = buttonData[i];
+                    buttons[btn.label] = function () {
+                        alert(`Button "${btn.label}" clicked`);
+                    };
+                }
+*/        
+                $("#todo-dialog").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    buttons: buttons
+                });
+        
+
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+
+
+    }
+
+
 /*
     $('[id^="btn-todo-job-"]').on( "click", function() {
         id = this.id;
@@ -742,30 +813,6 @@ jQuery(document).ready(function($) {
                 console.error(error);                
                 alert(error);
             }
-        });
-
-    }
-
-    function openTodoDialog(todo_id) {
-        // Sample button data
-        let buttonData = [
-            { label: "Button 1", action: "action1" },
-            { label: "Button 2", action: "action2" },
-            // Add more buttons as needed
-        ];
-    
-        let buttons = {};
-        for (let i = 0; i < buttonData.length; i++) {
-            let btn = buttonData[i];
-            buttons[btn.label] = function () {
-                alert(`Button "${btn.label}" clicked`);
-            };
-        }
-
-        $("#todo-dialog").dialog({
-            autoOpen: false,
-            modal: true,
-            buttons: buttons
         });
 
     }
