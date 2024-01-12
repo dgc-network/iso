@@ -645,9 +645,24 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {    
                 let buttons = {};
+/*                
+                // Sample button data
+                let buttonData = [
+                    { label: "Button 1", action: "action1" },
+                    { label: "Button 2", action: "action2" },
+                    // Add more buttons as needed
+                ];
+*/                
+                let buttonData = [];
                 $.each(response, function (index, value) {
-                    buttons[value.action_title] = function () {
-                        alert(`Button "${value.action_title}" clicked`);
+                    // JSON data as a string
+                    var jsonDataString = '{"label": '+value.action_title+', "action": '+value.action_title+'}';
+
+                    // Parse JSON string to JavaScript object
+                    var jsonData = $.parseJSON(jsonDataString);
+            
+                    // Add JSON object to the array
+                    buttonData.push(jsonData);
 /*                        
                         if (window.confirm("Are you sure you want to do this job action?")) {
                             jQuery.ajax({
@@ -669,15 +684,7 @@ jQuery(document).ready(function($) {
                             });
                         }
 */    
-                    };
                 })
-/*
-                // Sample button data
-                let buttonData = [
-                    { label: "Button 1", action: "action1" },
-                    { label: "Button 2", action: "action2" },
-                    // Add more buttons as needed
-                ];
     
                 for (let i = 0; i < buttonData.length; i++) {
                     let btn = buttonData[i];
@@ -685,7 +692,7 @@ jQuery(document).ready(function($) {
                         alert(`Button "${btn.label}" clicked`);
                     };
                 }
-*/        
+
                 $("#todo-dialog").dialog({
                     autoOpen: false,
                     modal: true,
