@@ -114,7 +114,7 @@ function to_do_list_shortcode() {
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         ?>
-                        <tr id="todo-list-<?php echo $x;?>">
+                        <tr  class="interactive-bar" id="todo-list-<?php echo $x;?>">
                             <td></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
                             <td style="text-align:center;" id="btn-todo-job-<?php the_ID();?>"><?php echo get_the_title($job_id);?></td>
@@ -258,7 +258,7 @@ function set_todo_action_dialog_data() {
 }
 add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
-
+/*
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -326,7 +326,8 @@ add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialo
 
 </body>
 </html>
-
+<?php
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -399,3 +400,5 @@ add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialo
 
 </body>
 </html>
+<?php
+*/

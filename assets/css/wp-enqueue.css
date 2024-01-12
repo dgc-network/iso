@@ -3,15 +3,6 @@
 .wp-block-button__link {margin: 2px; display: inline-block;}
 .ui-widget .ui-widget-content {width: -webkit-fill-available;}
 
-ol {
-    margin-left: 20px; /* Adjust the margin as needed */
-}
-  
-ol ol {
-    list-style-type: lower-alpha; /* Use lower-alpha for second-level list items (1.1, 1.2, etc.) */
-    margin-left: 20px; /* Adjust the margin as needed */
-}
-  
 thead{background-color:#d6d8d9;}
 tbody{
     list-style:none;
@@ -22,6 +13,20 @@ tr:nth-child(2n){
     background-color:#d6d8d9;
 }
 
+tr:hover .interactive-bar {
+    background-color: #4CAF50;
+    color: white;
+}
+
+ol {
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+  
+ol ol {
+    list-style-type: lower-alpha; /* Use lower-alpha for second-level list items (1.1, 1.2, etc.) */
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+  
 .prev,
 .next {
     position: absolute;
