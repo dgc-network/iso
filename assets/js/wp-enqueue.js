@@ -627,7 +627,8 @@ jQuery(document).ready(function($) {
         id = this.id;
         id = id.substring(9);
         $("#todo-id").val(id);
-        get_todo_action_list_data(id);
+        //get_todo_action_list_data(id);
+        openTodoDialog(id)
     });
 /*
     $('[id^="btn-todo-job-"]').on( "click", function() {
@@ -743,6 +744,68 @@ jQuery(document).ready(function($) {
 
     }
 
+    function openTodoDialog(todo_id) {
+        // Sample button data
+        let buttonData = [
+            { label: "Button 1", action: "action1" },
+            { label: "Button 2", action: "action2" },
+            // Add more buttons as needed
+        ];
+    
+        let buttons = {};
+        for (let i = 0; i < buttonData.length; i++) {
+            let btn = buttonData[i];
+            buttons[btn.label] = function () {
+                alert(`Button "${btn.label}" clicked`);
+            };
+        }
+
+        $("#todo-dialog").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: buttons
+        });
+    }
+
 
 })
 
+$(document).ready(function () {
+
+    // Function to open the dialog
+    function openDialog(buttons) {
+        $("#custom-dialog").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: buttons
+        });
+    }
+
+    // Function to generate buttons dynamically
+    function generateButtons(buttonData) {
+        let buttons = {};
+        for (let i = 0; i < buttonData.length; i++) {
+            let btn = buttonData[i];
+            buttons[btn.label] = function () {
+                alert(`Button "${btn.label}" clicked`);
+            };
+        }
+        return buttons;
+    }
+
+    // Sample button data
+    let buttonData = [
+        { label: "Button 1", action: "action1" },
+        { label: "Button 2", action: "action2" },
+        // Add more buttons as needed
+    ];
+
+    // Generate buttons based on the data
+    let generatedButtons = generateButtons(buttonData);
+
+    // Open dialog with dynamic buttons
+    $("#open-dialog").click(function () {
+        openDialog(generatedButtons);
+        $("#custom-dialog").dialog("open");
+    });
+});
