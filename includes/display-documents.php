@@ -331,7 +331,7 @@ function display_doc_job_list_dialog() {
 
 function display_todo_job_action_list_dialog() {
 ?>
-    <div id="job-action-list-dialog" title="Action list" style="display:none;">
+    <div id="todo-job-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -347,13 +347,13 @@ function display_todo_job_action_list_dialog() {
                 <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr id="todo-job-action-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
                 ?>
             </tbody>
-            <tr><td colspan="6"><div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div></td></tr>
         </table>
+        <div id="btn-new-todo-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div>
 
         <div id="action-dialog" title="Action dialog" style="display:none;">
         <fieldset>

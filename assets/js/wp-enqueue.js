@@ -71,10 +71,6 @@ jQuery(document).ready(function($) {
                     $(".site-job-list-"+index).hide();
                     $(".site-job-list-"+index).empty();
                 }
-
-
-
-
                 $.each(response, function (index, value) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".site-job-list-" + index).first();
@@ -145,6 +141,189 @@ jQuery(document).ready(function($) {
             },
         }
     });
+
+    // Site job template actions
+    $("#btn-new-site-job-action").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_job_action_dialog_data',
+                '_job_id': $("#job-id").val(),
+            },
+            success: function (response) {
+                get_job_action_list_data($("#job-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                        
+
+    function get_job_action_list_data(job_id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_job_action_list_data',
+                '_job_id': job_id,
+            },
+            success: function (response) {            
+                //$("#site-job-action-list-dialog").dialog('open');
+                // Action list in job
+                for(index=0;index<50;index++) {
+                    $(".site-job-action-list-"+index).hide();
+                    $(".site-job-action-list-"+index).empty();
+                }
+                $.each(response, function (index, value) {
+                    // Find the first <tr> with the specified class
+                    let targetTr = $(".site-job-action-list-" + index).first();
+                    // Add an id attribute
+                    targetTr.attr("id", "edit-site-job-action-" + value.action_id);
+                
+                    output = '';
+                    //output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
+                    output = output+'<td>'+value.action_content+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
+                    //output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
+                    $(".site-job-action-list-"+index).append(output);
+                    $(".site-job-action-list-"+index).show();
+                })
+
+                $('[id^="edit-site-job-action-"]').on( "click", function() {
+                    id = this.id;
+                    id = id.substring(21);
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'get_job_action_dialog_data',
+                            '_action_id': id,
+                        },
+                        success: function (response) {
+                            $("#action-dialog").dialog('open');
+                            $("#action-id").val(id);
+                            $("#action-title").val(response.action_title);
+                            $("#action-content").val(response.action_content);
+                            $("#next-job").empty();
+                            $("#next-job").append(response.next_job);
+                            $("#next-leadtime").val(response.next_leadtime);
+                        },
+                        error: function (error) {
+                            console.error(error);                
+                            alert(error);
+                        }
+                    });
+                });
+/*            
+                $('[id^="btn-"]').mouseover(function() {
+                    $(this).css('cursor', 'pointer');
+                    $(this).css('color', 'red');
+                });
+                    
+                $('[id^="btn-"]').mouseout(function() {
+                    $(this).css('cursor', 'default');
+                    $(this).css('color', 'black');
+                });
+                
+                $('[id^="btn-edit-job-action-"]').on( "click", function() {
+                    id = this.id;
+                    id = id.substring(20);
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'get_job_action_dialog_data',
+                            '_action_id': id,
+                        },
+                        success: function (response) {
+                            $("#action-dialog").dialog('open');
+                            $("#action-id").val(id);
+                            $("#action-title").val(response.action_title);
+                            $("#action-content").val(response.action_content);
+                            $("#next-job").empty();
+                            $("#next-job").append(response.next_job);
+                            $("#next-leadtime").val(response.next_leadtime);
+                        },
+                        error: function (error) {
+                            console.error(error);                
+                            alert(error);
+                        }
+                    });
+                });
+            
+                $('[id^="btn-del-job-action-"]').on( "click", function() {
+                    id = this.id;
+                    id = id.substring(19);
+                    if (window.confirm("Are you sure you want to delete this job action?")) {
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_job_action_dialog_data',
+                                '_action_id': id,
+                            },
+                            success: function (response) {
+                                get_job_action_list_data($("#job-id").val());
+                            },
+                            error: function(error){
+                                alert(error);
+                            }
+                        });
+                    }
+                });        
+*/        
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+
+    }
+
+    $("#action-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_job_action_dialog_data',
+                        '_action_id': $("#action-id").val(),
+                        '_action_title': $("#action-title").val(),
+                        '_action_content': $("#action-content").val(),
+                        '_next_job': $("#next-job").val(),
+                        '_next_leadtime': $("#next-leadtime").val(),
+                    },
+                    success: function (response) {
+                        $("#action-dialog").dialog('close');
+                        get_job_action_list_data($("#job-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+
 });
 
 // display documents
@@ -328,160 +507,12 @@ jQuery(document).ready(function($) {
     });
 
     // Job action list
-    $("#job-action-list-dialog").dialog({
-        width: "70%",
-        modal: true,
-        autoOpen: false,
-    });
-
-    $("#btn-new-job-action").on("click", function() {
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_job_action_dialog_data',
-                '_job_id': $("#job-id").val(),
-            },
-            success: function (response) {
-                get_job_action_list_data($("#job-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });                        
-
-    function get_job_action_list_data(job_id){
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_job_action_list_data',
-                '_job_id': job_id,
-            },
-            success: function (response) {            
-                $("#job-action-list-dialog").dialog('open');
-                // Action list in job
-                for(index=0;index<50;index++) {
-                    $("#job-action-list-"+index).hide();
-                    $("#job-action-list-"+index).empty();
-                }
-                $.each(response, function (index, value) {
-                    output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
-                    output = output+'<td>'+value.action_content+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
-                    output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#job-action-list-"+index).append(output);
-                    $("#job-action-list-"+index).show();
-                })
-
-                $('[id^="btn-"]').mouseover(function() {
-                    $(this).css('cursor', 'pointer');
-                    $(this).css('color', 'red');
-                });
-                    
-                $('[id^="btn-"]').mouseout(function() {
-                    $(this).css('cursor', 'default');
-                    $(this).css('color', 'black');
-                });
-                
-                $('[id^="btn-edit-job-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(20);
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_job_action_dialog_data',
-                            '_action_id': id,
-                        },
-                        success: function (response) {
-                            $("#action-dialog").dialog('open');
-                            $("#action-id").val(id);
-                            $("#action-title").val(response.action_title);
-                            $("#action-content").val(response.action_content);
-                            $("#next-job").empty();
-                            $("#next-job").append(response.next_job);
-                            $("#next-leadtime").val(response.next_leadtime);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
-                    });
-                });
-            
-                $('[id^="btn-del-job-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(19);
-                    if (window.confirm("Are you sure you want to delete this job action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_job_action_dialog_data',
-                                '_action_id': id,
-                            },
-                            success: function (response) {
-                                get_job_action_list_data($("#job-id").val());
-                            },
-                            error: function(error){
-                                alert(error);
-                            }
-                        });
-                    }
-                });        
-        
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-
-    }
-
-    $("#action-dialog").dialog({
+    $("#site-todo-job-action-list-dialog").dialog({
         width: 500,
         modal: true,
         autoOpen: false,
-        buttons: {
-            "Save": function() {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_job_action_dialog_data',
-                        '_action_id': $("#action-id").val(),
-                        '_action_title': $("#action-title").val(),
-                        '_action_content': $("#action-content").val(),
-                        '_next_job': $("#next-job").val(),
-                        '_next_leadtime': $("#next-leadtime").val(),
-                    },
-                    success: function (response) {
-                        $("#action-dialog").dialog('close');
-                        get_job_action_list_data($("#job-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
-            },
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
-        }
     });
+
 });
 
 // To-do list
@@ -603,12 +634,12 @@ jQuery(document).ready(function($) {
                 '_todo_id': todo_id,
             },
             success: function (response) {            
-                $("#job-action-list-dialog").dialog('open');
+                $("#site-job-action-list-dialog").dialog('open');
                 // Action list in job
-                $("#btn-new-job-action").hide();
+                $("#btn-new-site-job-action").hide();
                 for(index=0;index<50;index++) {
-                    $("#job-action-list-"+index).hide();
-                    $("#job-action-list-"+index).empty();
+                    $("#site-job-action-list-"+index).hide();
+                    $("#site-job-action-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
                     output = '';
@@ -620,8 +651,8 @@ jQuery(document).ready(function($) {
                     output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
                     output = output+'<td></td>';
                     //output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#job-action-list-"+index).append(output);
-                    $("#job-action-list-"+index).show();
+                    $("#site-job-action-list-"+index).append(output);
+                    $("#site-job-action-list-"+index).show();
                 })
 
                 $('[id^="btn-"]').mouseover(function() {
@@ -648,7 +679,7 @@ jQuery(document).ready(function($) {
                                 '_todo_id': $("#todo-id").val()
                             },
                             success: function (response) {
-                                $("#job-action-list-dialog").dialog('close');
+                                $("#site-job-action-list-dialog").dialog('close');
                                 get_todo_list_data($("#job-id").val());
                             },
                             error: function(error){

@@ -254,14 +254,13 @@ function my_jobs_shortcode() {
                     <fieldset>
                         <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                         <input type="hidden" id="job-id" />
-                        <label for="check-my-job">My job:</label>
-                        <input type="checkbox" id="check-my-job" />
                         <label for="job-title">Title:</label>
                         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
                         <label for="job-content">Content:</label>
                         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
                         <?php display_site_job_action_list();?>
-                        <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                        <label for="check-my-job">My job:</label>
+                        <input type="checkbox" id="check-my-job" />
                     </fieldset>
                 </div>
             </fieldset>
@@ -363,25 +362,23 @@ function display_site_job_action_list() {
     <table style="width:100%;">
         <thead>
             <tr>
-                <th></th>
                 <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                 <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                 <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
                 <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
         <?php
         $x = 0;
         while ($x<50) {
-            echo '<tr id="job-action-list-'.$x.'" style="display:none;"></tr>';
+            echo '<tr class="site-job-action-list-'.$x.'" style="display:none;"></tr>';
             $x += 1;
         }
         ?>
         </tbody>
     </table>
-    <div id="btn-new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    <div id="btn-new-site-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
 
     <div id="action-dialog" title="Action templates dialog" style="display:none;">
         <fieldset>
