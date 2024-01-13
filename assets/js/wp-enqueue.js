@@ -78,15 +78,8 @@ jQuery(document).ready(function($) {
                 $.each(response, function (index, value) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".site-job-list-" + index).first();
-
                     // Add an id attribute
-                    //let postId = targetTr.data("post-id"); // Replace with the actual data attribute or method to get the post ID
-                    //targetTr.attr("id", "edit-site-job-" + postId);
                     targetTr.attr("id", "edit-site-job-" + value.job_id);
-                
-                    // Optionally, you can also change the class
-                    //targetTr.removeClass("site-job-list-" + index);
-                    //targetTr.addClass("new-class-name"); // Replace "new-class-name" with the desired new class
                 
                     output = '';
                     output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
@@ -203,6 +196,11 @@ jQuery(document).ready(function($) {
                     $(".document-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
+                    // Find the first <tr> with the specified class
+                    let targetTr = $(".document-list-" + index).first();
+                    // Add an id attribute
+                    targetTr.attr("id", "edit-document-" + value.document_id);
+                
                     output = '';
                     output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
@@ -489,7 +487,7 @@ jQuery(document).ready(function($) {
 // To-do list
 jQuery(document).ready(function($) {
 
-    $('[id^="todo-job-"]').on("click", function () {
+    $('[id^="edit-todo-"]').on("click", function () {
         id = this.id;
         id = id.substring(9);
         $("#todo-id").val(id);
@@ -575,8 +573,13 @@ jQuery(document).ready(function($) {
                     $(".todo-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
+                    // Find the first <tr> with the specified class
+                    let targetTr = $(".todo-list-" + index).first();
+                    // Add an id attribute
+                    targetTr.attr("id", "edit-todo-" + value.todo_id);
+                
                     output = '';
-                    output = output+'<td style="text-align:center;" id="btn-todo-job-'+value.todo_id+'">'+value.job_title+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
                     $(".todo-list-"+index).append(output);
