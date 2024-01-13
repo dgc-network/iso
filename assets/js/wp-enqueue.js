@@ -71,7 +71,23 @@ jQuery(document).ready(function($) {
                     $(".site-job-list-"+index).hide();
                     $(".site-job-list-"+index).empty();
                 }
+
+
+
+
                 $.each(response, function (index, value) {
+                    // Find the first <tr> with the specified class
+                    let targetTr = $(".site-job-list-" + index).first();
+
+                    // Add an id attribute
+                    //let postId = targetTr.data("post-id"); // Replace with the actual data attribute or method to get the post ID
+                    //targetTr.attr("id", "edit-site-job-" + postId);
+                    targetTr.attr("id", "edit-site-job-" + value.job_id);
+                
+                    // Optionally, you can also change the class
+                    //targetTr.removeClass("site-job-list-" + index);
+                    //targetTr.addClass("new-class-name"); // Replace "new-class-name" with the desired new class
+                
                     output = '';
                     output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
                     output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
