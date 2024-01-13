@@ -161,7 +161,7 @@ function display_document_dialog($site_id=0){
             </div>
 
             <?php display_doc_job_list_dialog();?>
-            <?php display_job_action_list_dialog();?>
+            <?php display_todo_job_action_list_dialog();?>
         </fieldset>
     </div>
 <?php
@@ -329,7 +329,7 @@ function display_doc_job_list_dialog() {
 <?php
 }
 
-function display_job_action_list_dialog() {
+function display_todo_job_action_list_dialog() {
 ?>
     <div id="job-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
@@ -374,7 +374,7 @@ function display_job_action_list_dialog() {
 <?php
 }
 
-function retrieve_job_action_list_data($job_id=0) {
+function retrieve_todo_job_action_list_data($job_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
@@ -402,7 +402,7 @@ function select_job_option_data($selected_job=0, $site_id=0) {
 
 function get_job_action_list_data() {
     // Retrieve the documents data
-    $query = retrieve_job_action_list_data($_POST['_job_id']);
+    $query = retrieve_todo_job_action_list_data($_POST['_job_id']);
 
     $_array = array();
     if ($query->have_posts()) {

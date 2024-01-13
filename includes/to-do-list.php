@@ -130,7 +130,7 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
             <?php display_todo_dialog();?>
-            <?php display_job_action_list_dialog();?>
+            <?php display_todo_job_action_list_dialog();?>
         </fieldset>
         </div>
 
@@ -224,7 +224,7 @@ function get_todo_action_list_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
     $job_id = get_post_meta($todo_id, 'job_id', true);
-    $query = retrieve_job_action_list_data($job_id);
+    $query = retrieve_todo_job_action_list_data($job_id);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
