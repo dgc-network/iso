@@ -205,7 +205,7 @@ jQuery(document).ready(function($) {
                             '_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
-                            $("#action-dialog").dialog('open');
+                            $("#site-job-action-dialog").dialog('open');
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
@@ -227,7 +227,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $("#action-dialog").dialog({
+    $("#site-job-action-dialog").dialog({
         width: 500,
         modal: true,
         autoOpen: false,
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
                         '_next_leadtime': $("#next-leadtime").val(),
                     },
                     success: function (response) {
-                        $("#action-dialog").dialog('close');
+                        $("#site-job-action-dialog").dialog('close');
                         get_site_job_action_list_data($("#job-id").val());
                     },
                     error: function (error) {
@@ -266,7 +266,7 @@ jQuery(document).ready(function($) {
                             '_action_id': id,
                         },
                         success: function (response) {
-                            $("#action-dialog").dialog('close');
+                            $("#site-job-action-dialog").dialog('close');
                             get_site_job_action_list_data($("#job-id").val());
                         },
                         error: function(error){
@@ -574,7 +574,7 @@ jQuery(document).ready(function($) {
                             //'_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
-                            $("#todo-job-action-list-dialog").dialog('open');
+                            $("#todo-job-action-dialog").dialog('open');
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);

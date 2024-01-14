@@ -391,7 +391,7 @@ function display_site_job_action_list() {
     </table>
     <div id="btn-new-site-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
 
-    <div id="action-dialog" title="Action templates dialog" style="display:none;">
+    <div id="site-job-action-dialog" title="Action templates dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="job-id" />
             <input type="hidden" id="action-id" />
