@@ -356,6 +356,7 @@ jQuery(document).ready(function($) {
         $('[id^="edit-workflow-"]').on( "click", function() {
             id = this.id;
             id = id.substring(14);
+            $("#job-id").val(id);
             get_todo_job_action_list_data(id)
         })    
     }
@@ -497,7 +498,7 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
+/*
     $("#btn-new-workflow-todo").on("click", function() {
         jQuery.ajax({
             type: 'POST',
@@ -515,7 +516,7 @@ jQuery(document).ready(function($) {
             }
         });    
     });
-
+*/
 
     // Document todo/job list
     $("#workflow-todo-list-dialog").dialog({
@@ -591,7 +592,6 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': id,
-                            //'_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
                             $("#todo-job-action-dialog").dialog('open');
