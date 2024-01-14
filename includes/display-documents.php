@@ -245,8 +245,8 @@ function set_document_dialog_data() {
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $new_post = array(
-                    'post_title'    => 'No title',
-                    'post_content'  => 'Your post content goes here.',
+                    'post_title'    => get_the_title(),
+                    'post_content'  => get_post_field('post_content', get_the_ID()),
                     'post_status'   => 'publish', // Publish the post immediately
                     'post_author'   => $current_user_id, // Use the user ID of the author
                     'post_type'     => 'action', // Change to your custom post type if needed
