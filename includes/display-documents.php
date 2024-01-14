@@ -241,7 +241,7 @@ function set_document_dialog_data() {
         update_post_meta( $start_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
         update_post_meta( $start_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         // Insert the Action list for start_job
-        $query = retrieve_job_action_list_data($_POST['_start_job']);
+        $query = retrieve_action_list_data($_POST['_start_job']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $new_post = array(
