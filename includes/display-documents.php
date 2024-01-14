@@ -336,7 +336,7 @@ function display_workflow_job_list() {
             </tbody>
         </table>
     </div>
-    <?php display_todo_job_action_list_dialog();?>
+    <?php display_todo_job_action_list();?>
 <?php
 }
 
@@ -378,7 +378,7 @@ function get_workflow_todo_list_data() {
 add_action( 'wp_ajax_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
 
-function display_todo_job_action_list_dialog() {
+function display_todo_job_action_list() {
 ?>
     <div id="todo-job-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
