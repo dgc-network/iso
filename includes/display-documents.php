@@ -302,12 +302,10 @@ function display_workflow_todo_list_dialog() {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th></th>
                     <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -325,10 +323,25 @@ function display_workflow_todo_list_dialog() {
 <?php
 }
 
+function retrieve_workflow_todo_list_data($doc_id=0){
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'     => 'doc_id',
+                'value'   => $doc_id, // You can set a specific value if needed
+                'compare' => '=', // Adjust the comparison based on your requirements
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function get_workflow_todo_list_data() {
     // Retrieve the documents data
-    $query = retrieve_todo_list_data($_POST['_doc_id']);
-
+    $query = retrieve_workflow_todo_list_data($_POST['_doc_id']);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
