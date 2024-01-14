@@ -48,6 +48,7 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
+                    get_job_action_list_data(id);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -318,8 +319,24 @@ jQuery(document).ready(function($) {
                     }
                 });            
             },
-            "Cancel": function() {
-                $(this).dialog("close");
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this job action?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_job_action_dialog_data',
+                            '_action_id': id,
+                        },
+                        success: function (response) {
+                            get_job_action_list_data($("#job-id").val());
+                        },
+                        error: function(error){
+                            alert(error);
+                        }
+                    });
+                }
             }
         }
     });
