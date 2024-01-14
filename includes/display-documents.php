@@ -216,11 +216,11 @@ function get_document_dialog_data() {
         $response["doc_date"] = esc_html(get_post_meta($document_id, 'doc_date', true));
         $response["doc_url"] = esc_html(get_post_meta($document_id, 'doc_url', true));
         $start_job = esc_attr(get_post_meta($document_id, 'start_job', true));
-        $response["start_job"] = select_job_option_data($start_job, $_POST['_site_id']);
+        $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
         $response["start_leadtime"] = esc_html(get_post_meta($document_id, 'start_leadtime', true));
         $final_job = esc_attr(get_post_meta($document_id, 'final_job', true));
-        $response["final_job"] = select_job_option_data($final_job, $_POST['_site_id']);
-
+        $response["final_job"] = select_site_job_option_data($final_job, $_POST['_site_id']);
+/*
         $query = retrieve_site_job_list_data($_POST['_site_id']);
         $_array = array();
         if ($query->have_posts()) {
@@ -237,7 +237,7 @@ function get_document_dialog_data() {
             wp_reset_postdata(); // Reset post data to the main loop
         }
         $response["job_array"] = $_array;
-
+*/
     }
     wp_send_json($response);
 }
@@ -389,17 +389,7 @@ function retrieve_todo_job_action_list_data($job_id=0) {
     return $query;
 }
 
-function select_job_option_data($selected_job=0, $site_id=0) {
-    $option = '<option value="">Select Job</option>';
-    $query = retrieve_site_job_list_data($site_id);
-    while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
-        $option .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-    endwhile;
-    wp_reset_postdata(); // Reset post data to the main loop
-    return $option;
-}
-
+/*
 function get_job_action_list_data() {
     // Retrieve the documents data
     $query = retrieve_todo_job_action_list_data($_POST['_job_id']);
@@ -487,4 +477,4 @@ function del_job_action_dialog_data() {
 }
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_data' );
-
+*/

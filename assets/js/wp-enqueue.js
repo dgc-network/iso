@@ -186,12 +186,10 @@ jQuery(document).ready(function($) {
                     targetTr.attr("id", "edit-site-job-action-" + value.action_id);
                 
                     output = '';
-                    //output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_content+'</td>';
                     output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
                     output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
-                    //output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
                     $(".site-job-action-list-"+index).append(output);
                     $(".site-job-action-list-"+index).show();
                 })
@@ -228,7 +226,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
     }
 
     $("#action-dialog").dialog({
@@ -281,7 +278,6 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
 });
 
 // display documents
