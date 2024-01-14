@@ -333,15 +333,15 @@ jQuery(document).ready(function($) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".document-list-" + index).first();
                     // Add an id attribute
-                    targetTr.attr("id", "edit-document-" + value.document_id);
+                    targetTr.attr("id", "edit-document-" + value.doc_id);
                 
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.document_id+'" class="dashicons dashicons-edit"></span></td>';
+                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
                     output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-document-flow-'+value.document_id+'" class="dashicons dashicons-networking"></span></td>';
+                    output = output+'<td style="text-align: center;"><span id="btn-document-flow-'+value.doc_id+'" class="dashicons dashicons-networking"></span></td>';
                     $(".document-list-"+index).append(output);
                     $(".document-list-"+index).show();
                 });
@@ -366,12 +366,12 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_document_dialog_data',
-                    '_document_id': id,
+                    '_doc_id': id,
                     '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#document-dialog").dialog('open');
-                    $("#document-id").val(id);
+                    $("#doc-id").val(id);
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
@@ -409,7 +409,7 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'set_document_dialog_data',
-                        '_document_id': $("#document-id").val(),
+                        '_doc_id': $("#doc-id").val(),
                         '_doc_title': $("#doc-title").val(),
                         '_doc_number': $("#doc-number").val(),
                         '_doc_revision': $("#doc-revision").val(),
@@ -437,7 +437,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'del_document_dialog_data',
-                            '_document_id': $("#document-id").val(),
+                            '_doc_id': $("#doc-id").val(),
                         },
                         success: function (response) {
                             $("#document-dialog").dialog('close');

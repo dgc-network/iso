@@ -68,44 +68,40 @@ function display_documents_shortcode() {
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>
-                        <th></th>
                         <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
                         <th><?php echo __( '編號', 'your-text-domain' );?></th>
                         <th><?php echo __( '版本', 'your-text-domain' );?></th>
                         <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-            <?php
-            $query = retrieve_document_list_data($site_id);
-            if ($query->have_posts()) :
-                $x = 0;
-                while ($query->have_posts()) : $query->the_post();
-                    $post_id = (int) get_the_ID();
-                    $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-                    ?>
-                    <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
-                        <td style="text-align:center;"><span id="btn-edit-document-<?php the_ID();?>" class="dashicons dashicons-edit"></span></td>
-                        <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
-                        <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
-                        <td style="text-align:center;"><span id="btn-document-flow-<?php the_ID();?>" class="dashicons dashicons-networking"></span></td>
-                    </tr>
-                    <?php 
-                    $x += 1;
-                endwhile;
-                wp_reset_postdata();
-                while ($x<50) {
-                    echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
-                    $x += 1;
-                }
-            endif;
-            ?>
+                <?php
+                $query = retrieve_document_list_data($site_id);
+                if ($query->have_posts()) :
+                    $x = 0;
+                    while ($query->have_posts()) : $query->the_post();
+                        $post_id = (int) get_the_ID();
+                        $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+                        ?>
+                        <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
+                            <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
+                        </tr>
+                        <?php 
+                        $x += 1;
+                    endwhile;
+                    wp_reset_postdata();
+                    while ($x<50) {
+                        echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                endif;
+                ?>
                 </tbody>
             </table>
-            <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px">+</div>
+            <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php display_document_dialog($site_id);?>
 
         </fieldset>
@@ -125,7 +121,7 @@ function display_document_dialog($site_id=0){
     <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-            <input type="hidden" id="document-id" />
+            <input type="hidden" id="doc-id" />
             <label for="doc-title">Title:</label>
             <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
             <div>
@@ -136,10 +132,6 @@ function display_document_dialog($site_id=0){
                 <div style="display:inline-block; width:25%">
                     <label for="doc-revision">Revision:</label>
                     <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
-                </div>
-                <div style="display:inline-block;">
-                    <label for="doc-date">Date:</label>
-                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
                 </div>
             </div>
             <label for="doc-url">URL:</label>
@@ -154,9 +146,15 @@ function display_document_dialog($site_id=0){
                     <label for="start-leadtime">Leadtime:</label>
                     <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
                 </div>
+            </div>
+            <div>
                 <div style="display:inline-block;">
                     <label for="final-job">Final:</label>
                     <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
+                </div>
+                <div style="display:inline-block;">
+                    <label for="doc-date">Published Date:</label>
+                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
                 </div>
             </div>
 
@@ -192,7 +190,7 @@ function get_document_list_data() {
             $post_id = (int) get_the_ID();
             $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
             $_list = array();
-            $_list["document_id"] = $post_id;
+            $_list["doc_id"] = $post_id;
             $_list["doc_title"] = '<a href="'.$doc_url.'">'.get_the_title().'</a>';
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
@@ -208,36 +206,20 @@ add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function get_document_dialog_data() {
     $response = array();
-    if( isset($_POST['_document_id']) ) {
-        $document_id = (int)sanitize_text_field($_POST['_document_id']);
-        $response["doc_title"] = get_the_title($document_id);
-        $response["doc_number"] = esc_html(get_post_meta($document_id, 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($document_id, 'doc_revision', true));
-        $response["doc_date"] = esc_html(get_post_meta($document_id, 'doc_date', true));
-        $response["doc_url"] = esc_html(get_post_meta($document_id, 'doc_url', true));
-        $start_job = esc_attr(get_post_meta($document_id, 'start_job', true));
+    if( isset($_POST['_doc_id']) ) {
+        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $response["doc_title"] = get_the_title($doc_id);
+        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
+        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+        $start_job_todo_id = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $start_job = esc_attr(get_post_meta($start_job_todo_id, 'job_id', true));
         $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
-        $response["start_leadtime"] = esc_html(get_post_meta($document_id, 'start_leadtime', true));
-        $final_job = esc_attr(get_post_meta($document_id, 'final_job', true));
+        $response["start_leadtime"] = esc_html(get_post_meta($doc_id, 'start_leadtime', true));
+        $final_job_todo_id = esc_attr(get_post_meta($doc_id, 'final_job', true));
+        $final_job = esc_attr(get_post_meta($final_job_todo_id, 'job_id', true));
         $response["final_job"] = select_site_job_option_data($final_job, $_POST['_site_id']);
-/*
-        $query = retrieve_site_job_list_data($_POST['_site_id']);
-        $_array = array();
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $post_id = (int) get_the_ID();
-                $_list = array();
-                $_list["job_id"] = get_the_ID();
-                $_list["job_title"] = get_the_title();
-                $_list["job_content"] = get_post_field('post_content', $post_id);
-                $_list["job_submit_user"] = esc_html(get_post_meta($post_id, 'doc_job_submit_user', true));
-                $_list["job_submit_time"] = esc_html(get_post_meta($post_id, 'doc_job_submit_time', true));
-                array_push($_array, $_list);
-            endwhile;
-            wp_reset_postdata(); // Reset post data to the main loop
-        }
-        $response["job_array"] = $_array;
-*/
+        $response["doc_date"] = esc_html(get_post_meta($doc_id, 'doc_date', true));
     }
     wp_send_json($response);
 }
@@ -246,35 +228,48 @@ add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data
 
 function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
-    if( isset($_POST['_document_id']) ) {
-        $data = array(
-            'ID'         => $_POST['_document_id'],
-            'post_title' => $_POST['_doc_title'],
-            'meta_input' => array(
-                'doc_number'   => $_POST['_doc_number'],
-                'doc_revision' => $_POST['_doc_revision'],
-                'doc_date'     => $_POST['_doc_date'],
-                'doc_url'      => $_POST['_doc_url'],
-                'start_job'    => $_POST['_start_job'],
-                'start_leadtime' => $_POST['_start_leadtime'],
-                'final_job'    => $_POST['_final_job'],
-            )
-        );
-        wp_update_post( $data );
-        // Insert the To-do list
+    if( isset($_POST['_doc_id']) ) {
+        // Insert the To-do list for start_job
         $new_post = array(
-            'post_title'    => 'Your post title goes here.',
+            'post_title'    => 'No title',
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed
         );    
-        // Insert the post into the database
-        $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_start_job']));
-        update_post_meta( $post_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
-        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_document_id']));
+        $start_job_todo_id = wp_insert_post($new_post);
+        update_post_meta( $start_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
+        update_post_meta( $start_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
+        update_post_meta( $start_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
 
+        // Insert the To-do list for final_job
+        $new_post = array(
+            'post_title'    => 'No title',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'todo', // Change to your custom post type if needed
+        );    
+        $final_job_todo_id = wp_insert_post($new_post);
+        update_post_meta( $final_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
+        //update_post_meta( $final_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
+        update_post_meta( $final_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+
+        // Update the Document data
+        $data = array(
+            'ID'         => $_POST['_doc_id'],
+            'post_title' => $_POST['_doc_title'],
+            'meta_input' => array(
+                'doc_number'   => $_POST['_doc_number'],
+                'doc_revision' => $_POST['_doc_revision'],
+                'doc_url'      => $_POST['_doc_url'],
+                'start_job'    => $start_job_todo_id,
+                'start_leadtime' => $_POST['_start_leadtime'],
+                'final_job'    => $final_job_todo_id,
+                'doc_date'     => $_POST['_doc_date'],
+            )
+        );
+        wp_update_post( $data );
     } else {
         // Set up the post data
         $new_post = array(
@@ -295,7 +290,7 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 
 function del_document_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_document_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_doc_id'], true); // Set the second parameter to true to force delete    
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
