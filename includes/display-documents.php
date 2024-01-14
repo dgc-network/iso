@@ -86,7 +86,7 @@ function display_documents_shortcode() {
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                             <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
+                            <td style="text-align:center;" id="todo-workflow-list-<?php the_ID();?>"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
                         </tr>
                         <?php 
@@ -115,55 +115,6 @@ function display_documents_shortcode() {
     
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
-
-function display_document_dialog($site_id=0){
-?>
-    <div id="document-dialog" title="Document dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-            <input type="hidden" id="doc-id" />
-            <label for="doc-title">Title:</label>
-            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
-            <div>
-                <div style="display:inline-block;">
-                    <label for="doc-number">Doc.#:</label>
-                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
-                </div>
-                <div style="display:inline-block; width:25%;">
-                    <label for="doc-revision">Revision:</label>
-                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </div>
-            <label for="doc-url">URL:</label>
-            <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
-
-            <div>
-                <div style="display:inline-block;">
-                    <label for="start-job">Start:</label>
-                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
-                </div>
-                <div style="display:inline-block; width:25%;">
-                    <label for="start-leadtime">Leadtime:</label>
-                    <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </div>
-            <div>
-                <div style="display:inline-block;">
-                    <label for="final-job">Final:</label>
-                    <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
-                </div>
-                <div style="display:inline-block; width:35%;">
-                    <label for="doc-date">Published Date:</label>
-                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </div>
-
-            <?php display_doc_job_list_dialog();?>
-            <?php display_todo_job_action_list_dialog();?>
-        </fieldset>
-    </div>
-<?php
-}
 
 function retrieve_document_list_data($site_id=0) {
     // Retrieve the documents value
@@ -204,6 +155,55 @@ function get_document_list_data() {
 add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
 add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
+function display_document_dialog($site_id=0){
+    ?>
+        <div id="document-dialog" title="Document dialog" style="display:none;">
+            <fieldset>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
+                <input type="hidden" id="doc-id" />
+                <label for="doc-title">Title:</label>
+                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="doc-number">Doc.#:</label>
+                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                    <div style="display:inline-block; width:25%;">
+                        <label for="doc-revision">Revision:</label>
+                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>
+                <label for="doc-url">URL:</label>
+                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
+    
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="start-job">Start:</label>
+                        <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
+                    </div>
+                    <div style="display:inline-block; width:25%;">
+                        <label for="start-leadtime">Leadtime:</label>
+                        <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="final-job">Final:</label>
+                        <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
+                    </div>
+                    <div style="display:inline-block; width:35%;">
+                        <label for="doc-date">Published Date:</label>
+                        <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>
+    
+                <?php display_workflow_todo_list_dialog();?>
+                <?php display_todo_job_action_list_dialog();?>
+            </fieldset>
+        </div>
+    <?php
+}
+    
 function get_document_dialog_data() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
@@ -296,9 +296,9 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-function display_doc_job_list_dialog() {
+function display_workflow_todo_list_dialog() {
 ?>
-    <div id="doc-job-list-dialog" title="Doc job list" style="display:none;">
+    <div id="workflow-todo-list-dialog" title="Workflow list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -314,15 +314,40 @@ function display_doc_job_list_dialog() {
             <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr id="doc-job-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr class="workflow-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
             ?>
             </tbody>
         </table>
+        <div id="btn-new-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </div>
 <?php
 }
+
+function get_workflow_todo_list_data() {
+    // Retrieve the documents data
+    $query = retrieve_todo_list_data($_POST['_doc_id']);
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
+            $_list = array();
+            $_list["todo_id"] = get_the_ID();
+            $_list["job_title"] = get_the_title($job_id);
+            $_list["job_content"] = get_post_field('post_content', $job_id);
+            $_list["submit_user"] = esc_html(get_post_meta(get_the_ID(), 'submit_user', true));
+            $_list["submit_time"] = esc_html(get_post_meta(get_the_ID(), 'submit_time', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
+add_action( 'wp_ajax_nopriv_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
+
 
 function display_todo_job_action_list_dialog() {
 ?>

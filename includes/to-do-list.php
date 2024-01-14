@@ -103,7 +103,7 @@ function to_do_list_shortcode() {
                 </thead>
                 <tbody>
                 <?php
-                $query = retrieve_todo_list_data($site_id);
+                $query = retrieve_todo_list_data($my_job_id);
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();

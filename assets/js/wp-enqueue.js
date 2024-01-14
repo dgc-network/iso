@@ -338,7 +338,7 @@ jQuery(document).ready(function($) {
                     output = '';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
+                    output = output+'<td style="text-align: center;" id="todo-workflow-list-'+value.doc_id+'">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
                     $(".document-list-"+index).append(output);
                     $(".document-list-"+index).show();
@@ -380,6 +380,45 @@ jQuery(document).ready(function($) {
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#final-job").empty();
                     $("#final-job").append(response.final_job);
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });            
+        });
+
+        $('[id^="todo-workflow-list-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(14);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_workflow_todo_list_data',
+                    '_doc_id': id,
+                },
+                success: function (response) {
+                    $("#doc-id").val(id);
+                    $("#workflow-todo-list-dialog").dialog('open');
+                    for(index=0;index<50;index++) {
+                        $(".workflow-list-"+index).hide();
+                        $(".workflow-list-"+index).empty();
+                    }
+                    $.each(response, function (index, value) {
+                        // Find the first <tr> with the specified class
+                        let targetTr = $(".workflow-list-" + index).first();
+                        // Add an id attribute
+                        targetTr.attr("id", "edit-workflow-" + value.doc_id);                    
+                        output = '';
+                        output = output+'<td style="text-align: center;">'+value.job_title+'</td>';
+                        output = output+'<td>'+value.job_content+'</td>';
+                        output = output+'<td style="text-align: center;">'+value.submit_user+'</td>';
+                        output = output+'<td style="text-align: center;">'+value.submit_time+'</td>';
+                        $(".workflow-list-"+index).append(output);
+                        $(".workflow-list-"+index).show();
+                    });
                 },
                 error: function (error) {
                     console.error(error);                
@@ -453,7 +492,7 @@ jQuery(document).ready(function($) {
     });
 
     // Document job list
-    $("#doc-job-list-dialog").dialog({
+    $("#workflow-todo-list-dialog").dialog({
         width: 500,
         modal: true,
         autoOpen: false,
