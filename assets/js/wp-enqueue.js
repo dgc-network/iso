@@ -222,66 +222,6 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-/*            
-                $('[id^="btn-"]').mouseover(function() {
-                    $(this).css('cursor', 'pointer');
-                    $(this).css('color', 'red');
-                });
-                    
-                $('[id^="btn-"]').mouseout(function() {
-                    $(this).css('cursor', 'default');
-                    $(this).css('color', 'black');
-                });
-                
-                $('[id^="btn-edit-job-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(20);
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_job_action_dialog_data',
-                            '_action_id': id,
-                        },
-                        success: function (response) {
-                            $("#action-dialog").dialog('open');
-                            $("#action-id").val(id);
-                            $("#action-title").val(response.action_title);
-                            $("#action-content").val(response.action_content);
-                            $("#next-job").empty();
-                            $("#next-job").append(response.next_job);
-                            $("#next-leadtime").val(response.next_leadtime);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
-                    });
-                });
-            
-                $('[id^="btn-del-job-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(19);
-                    if (window.confirm("Are you sure you want to delete this job action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_job_action_dialog_data',
-                                '_action_id': id,
-                            },
-                            success: function (response) {
-                                get_job_action_list_data($("#job-id").val());
-                            },
-                            error: function(error){
-                                alert(error);
-                            }
-                        });
-                    }
-                });        
-*/        
             },
             error: function (error) {
                 console.error(error);                
@@ -330,6 +270,7 @@ jQuery(document).ready(function($) {
                             '_action_id': id,
                         },
                         success: function (response) {
+                            $("#action-dialog").dialog('close');
                             get_job_action_list_data($("#job-id").val());
                         },
                         error: function(error){
