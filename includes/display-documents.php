@@ -89,7 +89,7 @@ function display_documents_shortcode() {
                             <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
-                            <td style="text-align:center;" id="btn-workflow-todo-list-<?php the_ID();?>"><span class="dashicons dashicons-networking"></span></td>
+                            <td style="text-align:center;" id="btn-workflow-todo-list-<?php the_ID();?>"><span class="dashicons dashicons-networking">Flow</span></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -105,7 +105,7 @@ function display_documents_shortcode() {
             </table>
             <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php display_document_dialog($site_id);?>
-
+            <?php display_workflow_job_list();?>
         </fieldset>
         </div>
         <?php
@@ -197,10 +197,7 @@ function display_document_dialog($site_id=0){
                         <label for="doc-date">Published Date:</label>
                         <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
                     </div>
-                </div>
-    
-                <?php display_workflow_dialog();?>
-                <?php display_todo_job_action_list_dialog();?>
+                </div>    
             </fieldset>
         </div>
     <?php
@@ -299,9 +296,9 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-function display_workflow_dialog() {
+function display_workflow_job_list() {
 ?>
-    <div id="workflow-dialog" title="Workflow list" style="display:none;">
+    <div id="workflow-todo-list-dialog" title="Workflow list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -315,14 +312,14 @@ function display_workflow_dialog() {
             <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr class="workflow-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr class="workflow-job-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
             ?>
             </tbody>
         </table>
-        <div id="btn-new-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </div>
+    <?php display_todo_job_action_list_dialog();?>
 <?php
 }
 
@@ -388,7 +385,7 @@ function display_todo_job_action_list_dialog() {
                 ?>
             </tbody>
         </table>
-        <div id="btn-new-todo-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <div id="btn-new-workflow-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
 
         <div id="todo-job-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>

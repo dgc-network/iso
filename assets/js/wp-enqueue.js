@@ -283,6 +283,7 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
+    activate_workflow_list_data()
 
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
@@ -331,13 +332,13 @@ jQuery(document).ready(function($) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".document-list-" + index).first();
                     // Add an id attribute
-                    targetTr.attr("id", "edit-document-" + value.doc_id);
-                
+                    targetTr.attr("id", "edit-document-" + value.doc_id);                
                     output = '';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align: center;" id="btn-workflow-todo-list-'+value.doc_id+'">'+value.doc_revision+'</td>';
+                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
+                    output = output+'<td style="text-align: center;" id="btn-workflow-todo-list-'+value.doc_id+'"><span class="dashicons dashicons-networking">Flow</span></td>';
                     $(".document-list-"+index).append(output);
                     $(".document-list-"+index).show();
                 });
@@ -406,14 +407,14 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#doc-id").val(id);
-                    $("#workflow-dialog").dialog('open');
+                    $("#workflow-todo-list-dialog").dialog('open');
                     for(index=0;index<50;index++) {
-                        $(".workflow-list-"+index).hide();
-                        $(".workflow-list-"+index).empty();
+                        $(".workflow-job-list-"+index).hide();
+                        $(".workflow-job-list-"+index).empty();
                     }
                     $.each(response, function (index, value) {
                         // Find the first <tr> with the specified class
-                        let targetTr = $(".workflow-list-" + index).first();
+                        let targetTr = $(".workflow-job-list-" + index).first();
                         // Add an id attribute
                         targetTr.attr("id", "edit-workflow-" + value.todo_id);                    
                         output = '';
@@ -421,8 +422,8 @@ jQuery(document).ready(function($) {
                         output = output+'<td>'+value.job_content+'</td>';
                         output = output+'<td style="text-align: center;">'+value.submit_user+'</td>';
                         output = output+'<td style="text-align: center;">'+value.submit_time+'</td>';
-                        $(".workflow-list-"+index).append(output);
-                        $(".workflow-list-"+index).show();
+                        $(".workflow-job-list-"+index).append(output);
+                        $(".workflow-job-list-"+index).show();
                     });
                     activate_workflow_list_data();
                 },
@@ -497,8 +498,27 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Document job list
-    $("#workflow-dialog").dialog({
+    $("#btn-new-workflow-todo").on("click", function() {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_site_job_dialog_data',
+                '_doc_id': $("#doc-id").val(),
+            },
+            success: function (response) {
+                get_workflow_todo_list_data($("#doc-id").val());
+            },
+            error: function(error){
+                alert(error);
+            }
+        });    
+    });
+
+
+    // Document todo/job list
+    $("#workflow-todo-list-dialog").dialog({
         width: 500,
         modal: true,
         autoOpen: false,
@@ -512,7 +532,7 @@ jQuery(document).ready(function($) {
     });
 
     // Todo job actions settings
-    $("#btn-new-todo-job-action").on("click", function() {
+    $("#btn-new-workflow-todo-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -783,80 +803,4 @@ jQuery(document).ready(function($) {
             }
         });            
     }
-/*
-    function get_todo_action_list_data(todo_id){
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_action_list_data',
-                '_todo_id': todo_id,
-            },
-            success: function (response) {            
-                $("#site-job-action-list-dialog").dialog('open');
-                // Action list in job
-                $("#btn-new-site-job-action").hide();
-                for(index=0;index<50;index++) {
-                    $("#site-job-action-list-"+index).hide();
-                    $("#site-job-action-list-"+index).empty();
-                }
-                $.each(response, function (index, value) {
-                    output = '';
-                    output = output+'<td></td>';
-                    //output = output+'<td style="text-align:center;"><span id="btn-edit-job-action-'+value.action_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td style="text-align:center;" id="btn-todo-action-'+value.action_id+'">'+value.action_title+'</td>';
-                    output = output+'<td>'+value.action_content+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
-                    output = output+'<td></td>';
-                    //output = output+'<td style="text-align:center;"><span id="btn-del-job-action-'+value.action_id+'" class="dashicons dashicons-trash"></span></td>';
-                    $("#site-job-action-list-"+index).append(output);
-                    $("#site-job-action-list-"+index).show();
-                })
-
-                $('[id^="btn-"]').mouseover(function() {
-                    $(this).css('cursor', 'pointer');
-                    $(this).css('color', 'red');
-                });
-                    
-                $('[id^="btn-"]').mouseout(function() {
-                    $(this).css('cursor', 'default');
-                    $(this).css('color', 'black');
-                });
-                
-                $('[id^="btn-todo-action-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(16);
-                    if (window.confirm("Are you sure you want to do this job action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_todo_action_dialog_data',
-                                '_action_id': id,
-                                '_todo_id': $("#todo-id").val()
-                            },
-                            success: function (response) {
-                                $("#site-job-action-list-dialog").dialog('close');
-                                get_todo_list_data($("#job-id").val());
-                            },
-                            error: function(error){
-                                alert(error);
-                            }
-                        });
-                    }
-                });        
-        
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-
-    }
-*/
-
 })
