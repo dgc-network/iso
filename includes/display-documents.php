@@ -241,7 +241,7 @@ function set_document_dialog_data() {
         update_post_meta( $start_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
         update_post_meta( $start_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
         update_post_meta( $start_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-
+/*
         // Insert the To-do list for final_job
         $new_post = array(
             'post_title'    => 'No title',
@@ -254,7 +254,7 @@ function set_document_dialog_data() {
         update_post_meta( $final_job_todo_id, 'job_id', sanitize_text_field($_POST['_final_job']));
         //update_post_meta( $final_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
         update_post_meta( $final_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-
+*/
         // Update the Document data
         $data = array(
             'ID'         => $_POST['_doc_id'],
@@ -265,7 +265,8 @@ function set_document_dialog_data() {
                 'doc_url'      => $_POST['_doc_url'],
                 'start_job'    => $start_job_todo_id,
                 'start_leadtime' => $_POST['_start_leadtime'],
-                'final_job'    => $final_job_todo_id,
+                //'final_job'    => $final_job_todo_id,
+                'final_job'    => $_POST['_final_job'],
                 'doc_date'     => $_POST['_doc_date'],
             )
         );
@@ -360,7 +361,6 @@ function get_workflow_todo_list_data() {
 }
 add_action( 'wp_ajax_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
-
 
 function display_todo_job_action_list_dialog() {
 ?>
