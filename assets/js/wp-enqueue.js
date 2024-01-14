@@ -338,7 +338,7 @@ jQuery(document).ready(function($) {
                     output = '';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
                     output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align: center;" id="todo-workflow-list-'+value.doc_id+'">'+value.doc_revision+'</td>';
+                    output = output+'<td style="text-align: center;" id="btn-workflow-todo-list-'+value.doc_id+'">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
                     $(".document-list-"+index).append(output);
                     $(".document-list-"+index).show();
@@ -388,9 +388,9 @@ jQuery(document).ready(function($) {
             });            
         });
 
-        $('[id^="todo-workflow-list-"]').on( "click", function() {
+        $('[id^="btn-workflow-todo-list-"]').on( "click", function() {
             id = this.id;
-            id = id.substring(14);
+            id = id.substring(23);
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
