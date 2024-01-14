@@ -144,32 +144,16 @@ function to_do_list_shortcode() {
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
-function display_todo_dialog() {
-?>
-    <div id="todo-dialog" title="To-do dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="todo-id" />
-            <input type="hidden" id="job-id" />
-            <input type="hidden" id="action-id" />
-            <label for="action-title">Title:</label>
-            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-            <label for="action-content">Content:</label>
-            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-            <label for="next-job">Next job:</label>
-            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
-            <label for="next-leadtime">Next leadtime:</label>
-            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-    </div>
-<?php
-}
-    
 function retrieve_todo_list_data($job_id=0){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
             'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
+            array(
+                'key'     => 'job_due',
+                'compare' => 'EXISTS', // Include posts where job_due meta key exists
+            ),
             array(
                 'key'     => 'submit_user',
                 'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
@@ -186,6 +170,10 @@ function retrieve_todo_list_data($job_id=0){
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
+            array(
+                'key'     => 'job_due',
+                'compare' => 'EXISTS', // Include posts where job_due meta key exists
+            ),
             array(
                 'key'     => 'submit_user',
                 'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
@@ -208,9 +196,9 @@ function get_todo_list_data() {
             $doc_id = esc_attr(get_post_meta($post_id, 'doc_id', true));
             $_list = array();
             $_list["todo_id"] = $post_id;
-            $_list["due_date"] = wp_date( get_option('date_format'), $job_due );
             $_list["job_title"] = get_the_title($job_id);
             $_list["doc_title"] = get_the_title($doc_id);
+            $_list["due_date"] = wp_date( get_option('date_format'), $job_due );
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
@@ -219,6 +207,47 @@ function get_todo_list_data() {
 }
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
+
+function display_todo_dialog() {
+    ?>
+        <div id="todo-dialog" title="To-do dialog" style="display:none;">
+            <fieldset>
+                <input type="hidden" id="todo-id" />
+                <input type="hidden" id="job-id" />
+                <input type="hidden" id="doc-id" />
+                <label for="doc-title">Title:</label>
+                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
+                <div>
+                    <div style="display:inline-block;">
+                        <label for="doc-number">Doc.#:</label>
+                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
+                    </div>
+                    <div style="display:inline-block; width:25%;">
+                        <label for="doc-revision">Revision:</label>
+                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
+                    </div>
+                </div>
+                <label for="doc-url">URL:</label>
+                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
+            </fieldset>
+        </div>
+    <?php
+}
+        
+function get_todo_dialog_data() {
+    $response = array();
+    if( isset($_POST['_todo_id']) ) {
+        $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        $response["doc_title"] = get_the_title($doc_id);
+        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
+        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 
 function get_todo_action_list_data() {
     // Retrieve the data

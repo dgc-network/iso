@@ -476,6 +476,32 @@ jQuery(document).ready(function($) {
         id = id.substring(9);
         $("#todo-id").val(id);
     
+        // Dialog content
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_dialog_data',
+                '_todo_id': id,
+            },
+            success: function (response) {
+                $("#todo-dialog").dialog('open');
+                $("#todo-id").val(id);
+                $("#doc-id").val(response.doc_title);
+                $("#doc-title").val(response.doc_title);
+                $("#doc-number").val(response.doc_number);
+                $("#doc-revision").val(response.doc_revision);
+                $("#doc-date").val(response.doc_date);
+                $("#doc-url").val(response.doc_url);
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });            
+
+        // Dialog buttons
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -533,6 +559,7 @@ jQuery(document).ready(function($) {
         }
     
         $("#todo-dialog").dialog({
+            width: 600,
             autoOpen: false,
             modal: true,
             buttons: buttons
