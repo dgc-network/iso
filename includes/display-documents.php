@@ -94,7 +94,7 @@ function display_documents_shortcode() {
                     endwhile;
                     wp_reset_postdata();
                     while ($x<50) {
-                        echo '<tr id="document-list-'.$x.'" style="display:none;"></tr>';
+                        echo '<tr class="document-list-'.$x.'" style="display:none;"></tr>';
                         $x += 1;
                     }
                 endif;
@@ -152,7 +152,7 @@ function display_document_dialog($site_id=0){
                     <label for="final-job">Final:</label>
                     <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
-                <div style="display:inline-block; width:25%;">
+                <div style="display:inline-block; width:35%;">
                     <label for="doc-date">Published Date:</label>
                     <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
                 </div>
