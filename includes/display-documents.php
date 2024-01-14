@@ -368,8 +368,8 @@ function display_todo_job_action_list_dialog() {
     </div>
 <?php
 }
-
-function retrieve_todo_job_action_list_data($job_id=0) {
+/*
+function retrieve_job_action_list_data($job_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
@@ -383,11 +383,11 @@ function retrieve_todo_job_action_list_data($job_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 /*
 function get_job_action_list_data() {
     // Retrieve the documents data
-    $query = retrieve_todo_job_action_list_data($_POST['_job_id']);
+    $query = retrieve_job_action_list_data($_POST['_job_id']);
 
     $_array = array();
     if ($query->have_posts()) {
