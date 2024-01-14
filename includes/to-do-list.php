@@ -130,7 +130,6 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
             <?php display_todo_dialog();?>
-            <?php display_todo_job_action_list_dialog();?>
         </fieldset>
         </div>
 
