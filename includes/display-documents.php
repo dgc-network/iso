@@ -240,6 +240,23 @@ function set_document_dialog_data() {
         update_post_meta( $start_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
         update_post_meta( $start_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
         update_post_meta( $start_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        // Insert the Action list for start_job
+        $query = retrieve_job_action_list_data($_POST['_start_job']);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $new_post = array(
+                    'post_title'    => 'No title',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish', // Publish the post immediately
+                    'post_author'   => $current_user_id, // Use the user ID of the author
+                    'post_type'     => 'action', // Change to your custom post type if needed
+                );    
+                $start_job_action_id = wp_insert_post($new_post);
+                update_post_meta( $start_job_action_id, 'job_id', $start_job_todo_id);
+            endwhile;
+            wp_reset_postdata(); // Reset post data to the main loop
+        }
+    
 /*
         // Insert the To-do list for final_job
         $new_post = array(
@@ -367,7 +384,6 @@ function display_todo_job_action_list_dialog() {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th></th>
                     <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
