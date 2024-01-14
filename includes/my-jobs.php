@@ -453,6 +453,9 @@ function get_job_action_dialog_data() {
         $next_job_id = esc_attr(get_post_meta($action_id, 'next_job', true));
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
+        $next_job = esc_attr(get_post_meta($next_job_id, 'next_job', true));
+        $response["next_job"] = select_site_job_option_data($next_job, $_POST['_site_id']);
+/*        
         $next_job = '<option value="">Select Job</option>';
         $args = array(
             'post_type'      => 'job',
@@ -464,7 +467,7 @@ function get_job_action_dialog_data() {
             $next_job .= '<option value="' . esc_attr($job->ID) . '" '.$selected.' />' . esc_html($job->post_title) . '</option>';
         }
         $response["next_job"] = $next_job;
-
+*/
         $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
