@@ -68,8 +68,8 @@ function display_documents_shortcode() {
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                        <th><?php echo __( '編號', 'your-text-domain' );?></th>
+                        <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
+                        <th><?php echo __( '名稱', 'your-text-domain' );?></th>
                         <th><?php echo __( '版本', 'your-text-domain' );?></th>
                         <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
                     </tr>
@@ -84,8 +84,8 @@ function display_documents_shortcode() {
                         $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                         ?>
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
-                            <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
+                            <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
                         </tr>
@@ -129,7 +129,7 @@ function display_document_dialog($site_id=0){
                     <label for="doc-number">Doc.#:</label>
                     <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
                 </div>
-                <div style="display:inline-block; width:25%">
+                <div style="display:inline-block; width:25%;">
                     <label for="doc-revision">Revision:</label>
                     <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
                 </div>
@@ -142,7 +142,7 @@ function display_document_dialog($site_id=0){
                     <label for="start-job">Start:</label>
                     <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
-                <div style="display:inline-block; width:25%">
+                <div style="display:inline-block; width:25%;">
                     <label for="start-leadtime">Leadtime:</label>
                     <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
                 </div>
@@ -152,7 +152,7 @@ function display_document_dialog($site_id=0){
                     <label for="final-job">Final:</label>
                     <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
-                <div style="display:inline-block;">
+                <div style="display:inline-block; width:25%;">
                     <label for="doc-date">Published Date:</label>
                     <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
                 </div>
@@ -251,7 +251,7 @@ function set_document_dialog_data() {
             'post_type'     => 'todo', // Change to your custom post type if needed
         );    
         $final_job_todo_id = wp_insert_post($new_post);
-        update_post_meta( $final_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
+        update_post_meta( $final_job_todo_id, 'job_id', sanitize_text_field($_POST['_final_job']));
         //update_post_meta( $final_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
         update_post_meta( $final_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
 

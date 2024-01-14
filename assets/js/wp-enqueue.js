@@ -336,12 +336,10 @@ jQuery(document).ready(function($) {
                     targetTr.attr("id", "edit-document-" + value.doc_id);
                 
                     output = '';
-                    output = output+'<td style="text-align:center;"><span id="btn-edit-document-'+value.doc_id+'" class="dashicons dashicons-edit"></span></td>';
-                    output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
+                    output = output+'<td>'+value.doc_title+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
                     output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;"><span id="btn-document-flow-'+value.doc_id+'" class="dashicons dashicons-networking"></span></td>';
                     $(".document-list-"+index).append(output);
                     $(".document-list-"+index).show();
                 });
