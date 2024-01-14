@@ -72,6 +72,7 @@ function display_documents_shortcode() {
                         <th><?php echo __( '名稱', 'your-text-domain' );?></th>
                         <th><?php echo __( '版本', 'your-text-domain' );?></th>
                         <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,8 +87,9 @@ function display_documents_shortcode() {
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                             <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
-                            <td style="text-align:center;" id="btn-workflow-todo-list-<?php the_ID();?>"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
+                            <td style="text-align:center;" id="btn-workflow-todo-list-<?php the_ID();?>"><span class="dashicons dashicons-networking"></span></td>
                         </tr>
                         <?php 
                         $x += 1;
