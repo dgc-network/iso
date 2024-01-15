@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".site-job-action-list-" + index).first();
                     // Add an id attribute
-                    targetTr.attr("id", "edit-site-job-action-" + value.action_id);                
+                    targetTr.attr("id", "edit-job-action-site-" + value.action_id);                
                     output = '';
                     output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_content+'</td>';
@@ -192,7 +192,7 @@ jQuery(document).ready(function($) {
                     $(".site-job-action-list-"+index).show();
                 })
 
-                $('[id^="edit-site-job-action-"]').on( "click", function() {
+                $('[id^="edit-job-action-site-"]').on( "click", function() {
                     id = this.id;
                     id = id.substring(21);
                     jQuery.ajax({
@@ -462,7 +462,7 @@ jQuery(document).ready(function($) {
                         '_doc_url': $("#doc-url").val(),
                         '_start_job': $("#start-job").val(),
                         '_start_leadtime': $("#start-leadtime").val(),
-                        '_final_job': $("#final-job").val(),
+                        //'_final_job': $("#final-job").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
@@ -498,25 +498,6 @@ jQuery(document).ready(function($) {
             }
         }
     });
-/*
-    $("#btn-new-workflow-todo").on("click", function() {
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_site_job_dialog_data',
-                '_doc_id': $("#doc-id").val(),
-            },
-            success: function (response) {
-                get_workflow_todo_list_data($("#doc-id").val());
-            },
-            error: function(error){
-                alert(error);
-            }
-        });    
-    });
-*/
 
     // Document todo/job list
     $("#workflow-todo-list-dialog").dialog({
@@ -533,7 +514,7 @@ jQuery(document).ready(function($) {
     });
 
     // Todo job actions settings
-    $("#btn-new-workflow-todo-action").on("click", function() {
+    $("#btn-new-todo-job-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -572,7 +553,7 @@ jQuery(document).ready(function($) {
                     // Find the first <tr> with the specified class
                     let targetTr = $(".todo-job-action-list-" + index).first();
                     // Add an id attribute
-                    targetTr.attr("id", "edit-todo-job-action-" + value.action_id);                
+                    targetTr.attr("id", "edit-job-action-todo-" + value.action_id);                
                     output = '';
                     output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
                     output = output+'<td>'+value.action_content+'</td>';
@@ -582,7 +563,7 @@ jQuery(document).ready(function($) {
                     $(".todo-job-action-list-"+index).show();
                 })
 
-                $('[id^="edit-todo-job-action-"]').on( "click", function() {
+                $('[id^="edit-job-action-todo-"]').on( "click", function() {
                     id = this.id;
                     id = id.substring(21);
                     jQuery.ajax({

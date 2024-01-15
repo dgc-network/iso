@@ -112,7 +112,7 @@ function to_do_list_shortcode() {
                         $job_due = esc_attr(get_post_meta(get_the_ID(), 'job_due', true));
                         $due_date = wp_date( get_option('date_format'), $job_due );
                         ?>
-                        <tr id="edit-todo-<?php the_ID();?>" class="todo-list-<?php echo $x;?>">
+                        <tr class="todo-list-<?php echo $x;?>" id="edit-todo-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo get_the_title($job_id);?></td>
                             <td><?php echo get_the_title($doc_id);?></td>
                             <td style="text-align:center;"><?php echo $due_date;?></td>
@@ -249,8 +249,8 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 function get_todo_action_list_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
-    //$job_id = get_post_meta($todo_id, 'job_id', true);
-    $query = retrieve_action_list_data($todo_id);
+    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $query = retrieve_action_list_data($job_id);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();

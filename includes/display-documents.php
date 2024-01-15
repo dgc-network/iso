@@ -158,49 +158,45 @@ add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
 add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function display_document_dialog($site_id=0){
-    ?>
-        <div id="document-dialog" title="Document dialog" style="display:none;">
-            <fieldset>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-                <input type="hidden" id="doc-id" />
-                <label for="doc-title">Title:</label>
-                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="doc-number">Doc.#:</label>
-                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
-                    </div>
-                    <div style="display:inline-block; width:25%;">
-                        <label for="doc-revision">Revision:</label>
-                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
-                    </div>
+?>
+    <div id="document-dialog" title="Document dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
+            <input type="hidden" id="doc-id" />
+            <label for="doc-title">Title:</label>
+            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
+            <div>
+                <div style="display:inline-block;">
+                    <label for="doc-number">Doc.#:</label>
+                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
                 </div>
-                <label for="doc-url">URL:</label>
-                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
+                <div style="display:inline-block; width:25%;">
+                    <label for="doc-revision">Revision:</label>
+                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
+                </div>
+            </div>
+            <label for="doc-url">URL:</label>
+            <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
     
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="start-job">Start:</label>
-                        <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
-                    </div>
-                    <div style="display:inline-block; width:25%;">
-                        <label for="start-leadtime">Leadtime:</label>
-                        <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
-                    </div>
+            <div>
+                <div style="display:inline-block;">
+                    <label for="start-job">Start:</label>
+                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="final-job">Final:</label>
-                        <select id="final-job" class="text ui-widget-content ui-corner-all" ></select>
-                    </div>
-                    <div style="display:inline-block; width:35%;">
-                        <label for="doc-date">Published Date:</label>
-                        <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" />
-                    </div>
-                </div>    
-            </fieldset>
-        </div>
-    <?php
+                <div style="display:inline-block; width:25%;">
+                    <label for="start-leadtime">Leadtime:</label>
+                    <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
+                </div>
+            </div>
+            <div>
+                <div style="display:inline-block; width:35%;">
+                    <label for="doc-date">Published Date:</label>
+                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+            </div>    
+        </fieldset>
+    </div>
+<?php
 }
     
 function get_document_dialog_data() {
@@ -215,9 +211,9 @@ function get_document_dialog_data() {
         $start_job = esc_attr(get_post_meta($start_job_todo_id, 'job_id', true));
         $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
         $response["start_leadtime"] = esc_html(get_post_meta($doc_id, 'start_leadtime', true));
-        $final_job_todo_id = esc_attr(get_post_meta($doc_id, 'final_job', true));
-        $final_job = esc_attr(get_post_meta($final_job_todo_id, 'job_id', true));
-        $response["final_job"] = select_site_job_option_data($final_job, $_POST['_site_id']);
+        //$final_job_todo_id = esc_attr(get_post_meta($doc_id, 'final_job', true));
+        //$final_job = esc_attr(get_post_meta($final_job_todo_id, 'job_id', true));
+        //$response["final_job"] = select_site_job_option_data($final_job, $_POST['_site_id']);
         $response["doc_date"] = esc_html(get_post_meta($doc_id, 'doc_date', true));
     }
     wp_send_json($response);
@@ -260,21 +256,7 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata(); // Reset post data to the main loop
         }
-    
-/*
-        // Insert the To-do list for final_job
-        $new_post = array(
-            'post_title'    => 'No title',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'todo', // Change to your custom post type if needed
-        );    
-        $final_job_todo_id = wp_insert_post($new_post);
-        update_post_meta( $final_job_todo_id, 'job_id', sanitize_text_field($_POST['_final_job']));
-        //update_post_meta( $final_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
-        update_post_meta( $final_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-*/
+
         // Update the Document data
         $data = array(
             'ID'         => $_POST['_doc_id'],
@@ -286,8 +268,8 @@ function set_document_dialog_data() {
                 'start_job'    => $start_job_todo_id,
                 'start_leadtime' => $_POST['_start_leadtime'],
                 //'final_job'    => $final_job_todo_id,
-                'final_job'    => $_POST['_final_job'],
-                'doc_date'     => $_POST['_doc_date'],
+                //'final_job'    => $_POST['_final_job'],
+                //'doc_date'     => $_POST['_doc_date'],
             )
         );
         wp_update_post( $data );
@@ -323,7 +305,7 @@ function display_workflow_job_list() {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'To-do', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
@@ -405,7 +387,7 @@ function display_todo_job_action_list() {
                 ?>
             </tbody>
         </table>
-        <div id="btn-new-workflow-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <div id="btn-new-todo-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
 
         <div id="todo-job-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
