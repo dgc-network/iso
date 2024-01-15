@@ -121,16 +121,41 @@ function site_settings_content($post) {
     $country = esc_attr(get_post_meta($post->ID, 'country', true));
     $site_url = esc_attr(get_post_meta($post->ID, 'site_url', true));
     ?>
-    <label for="cust-no"> Site URL: </label>
-    <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no; ?>" class="text ui-widget-content ui-corner-all" >
-    <label for="country"> Site URL: </label>
-    <input type="text" id="country" name="country" value="<?php echo $country; ?>" class="text ui-widget-content ui-corner-all" >
+    <label for="cust-no"> Cust No: </label>
+    <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no;?>" style="width:100%" >
+    <label for="country"> Country: </label>
+    <input type="text" id="country" name="country" value="<?php echo $country;?>" style="width:100%" >
     <label for="site-url"> Site URL: </label>
-    <input type="text" id="site-url" name="site_url" value="<?php echo $site_url; ?>" class="text ui-widget-content ui-corner-all" >
+    <input type="text" id="site-url" name="site_url" value="<?php echo $site_url;?>" style="width:100%" >
     <?php
     // Call the function with the CSV file name
-    processCsvFromMediaLibrary('customer.csv');
+    //processCsvFromMediaLibrary('customer.csv');
 
+    $file_url = 'https://encona.tw/wp-content/uploads/2024/01/customer.csv';
+
+    // Download the CSV file
+    $csv_data = file_get_contents($file_url);
+
+    // Process the CSV data
+    if ($csv_data !== false) {
+        $lines = explode("\n", $csv_data);
+    
+        // Iterate through each CSV row
+        foreach ($lines as $line) {
+            $data = str_getcsv($line);
+    
+            // Process each column data
+            foreach ($data as $column) {
+                // Your processing logic here
+                echo $column . ' ';
+            }
+    
+            echo "<br>";
+        }
+    } else {
+        echo 'Error downloading CSV file.';
+    }
+    
 }
 
 function save_site_settings_content($post_id) {
