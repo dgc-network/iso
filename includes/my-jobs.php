@@ -291,7 +291,7 @@ function retrieve_site_job_list_data($site_id=0) {
 }
 
 function select_site_job_option_data($selected_job=0, $site_id=0) {
-    $options = '';
+    $options = '<option value=""></option>';
     $query = retrieve_site_job_list_data($site_id);
     while ($query->have_posts()) : $query->the_post();
         $selected = ($selected_job == get_the_ID()) ? 'selected' : '';

@@ -592,6 +592,7 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': id,
+                            '_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
                             $("#todo-job-action-dialog").dialog('open');
