@@ -290,7 +290,7 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
-function select_site_job_option_data($selected_job='', $site_id=0) {
+function select_site_job_option_data($selected_job=0, $site_id=0) {
     $options = '<option value=""></option>';
     $query = retrieve_site_job_list_data($site_id);
     while ($query->have_posts()) : $query->the_post();
@@ -299,9 +299,9 @@ function select_site_job_option_data($selected_job='', $site_id=0) {
     endwhile;
     wp_reset_postdata(); // Reset post data to the main loop
     if ($selected_job==0){
-        $options .= '<option value="0" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
     } else {
-        $options .= '<option value="0">'.__( '發行', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
     }
     return $options;
 }
