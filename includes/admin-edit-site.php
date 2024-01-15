@@ -129,7 +129,7 @@ function site_settings_content($post) {
     <input type="text" id="site-url" name="site_url" value="<?php echo $site_url; ?>" class="text ui-widget-content ui-corner-all" >
     <?php
     // Call the function with the CSV file name
-    //processCsvFromMediaLibrary('customer.csv');
+    processCsvFromMediaLibrary('customer.csv');
 
 }
 
