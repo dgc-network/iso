@@ -221,7 +221,7 @@ function my_jobs_shortcode() {
                 ?>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th></th>
+                        <th>My</th>
                         <th>Job</th>
                         <th>Description</th>
                     </thead>
@@ -230,9 +230,10 @@ function my_jobs_shortcode() {
                     if ($query->have_posts()) :
                         $x = 0;
                         while ($query->have_posts()) : $query->the_post();
+                        $checked = (is_my_job(get_the_ID())) ? 'checked' : '';
                         ?>
                             <tr class="site-job-list-<?php echo $x;?>" id="edit-site-job-<?php the_ID();?>">
-                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" /></td>
+                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" <?php echo $checked;?> /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
                             </tr>
@@ -249,20 +250,7 @@ function my_jobs_shortcode() {
                     </tbody>
                 </table>
                 <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-
-                <div id="job-dialog" title="Job dialog" style="display:none;">
-                    <fieldset>
-                        <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                        <input type="hidden" id="job-id" />
-                        <label for="job-title">Title:</label>
-                        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-content">Content:</label>
-                        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
-                        <?php display_site_job_action_list();?>
-                        <label for="check-my-job">My job:</label>
-                        <input type="checkbox" id="check-my-job" />
-                    </fieldset>
-                </div>
+                <?php display_job_dialog();?>
             </fieldset>
             </form>
         </div><?php
@@ -290,22 +278,6 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
-function select_site_job_option_data($selected_job=0, $site_id=0) {
-    $options = '<option value="">Select job</option>';
-    $query = retrieve_site_job_list_data($site_id);
-    while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
-        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-    endwhile;
-    wp_reset_postdata(); // Reset post data to the main loop
-    if ($selected_job==0){
-        $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
-    } else {
-        $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
-    }
-    return $options;
-}
-
 function get_site_job_list_data() {
     // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
@@ -314,6 +286,11 @@ function get_site_job_list_data() {
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
+            if (is_my_job(get_the_ID())){
+                $_list["is_my_job"] = 1;
+            } else {
+                $_list["is_my_job"] = 0;
+            }
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
@@ -326,19 +303,63 @@ function get_site_job_list_data() {
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
 
+function is_my_job($job_id) {
+    // Get the current user ID
+    $current_user_id = get_current_user_id();
+    // Check if the current user has the specified job ID in their metadata
+    $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
+    return in_array($job_id, $user_jobs);
+}
+
+function display_job_dialog() {
+?>
+    <div id="job-dialog" title="Job dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <input type="hidden" id="job-id" />
+            <label for="job-title">Title:</label>
+            <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+            <label for="job-content">Content:</label>
+            <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+            <?php display_site_job_action_list();?>
+            <label for="check-my-job">My job:</label>
+            <input type="checkbox" id="check-my-job" />
+            <input type="hidden" id="my-job-ids" />
+        </fieldset>
+    </div>
+<?php
+}
+
 function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
+        $response["is_my_job"] = is_my_job($job_id);
+        $response["my_job_ids"] = get_user_meta($current_user_id, 'my_job_ids', true);
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data' );
+/*
+function handle_job_update() {
+    if (isset($_POST['update_jobs'])) {
+        $current_user_id = get_current_user_id();
+        $my_job_ids = sanitize_text_field($_POST['my_job_ids']);
 
+        // Convert the comma-separated string to an array
+        $my_job_ids_array = explode(',', $my_job_ids);
+
+        // Update user meta with the new job IDs
+        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
+    }
+}
+add_action('init', 'handle_job_update');
+*/
 function set_site_job_dialog_data() {
+    $current_user_id = get_current_user_id();
     if( isset($_POST['_job_id']) ) {
         $data = array(
             'ID'           => $_POST['_job_id'],
@@ -346,8 +367,13 @@ function set_site_job_dialog_data() {
             'post_content' => $_POST['_job_content'],
         );
         wp_update_post( $data );
+        $my_job_ids = sanitize_text_field($_POST['my_job_ids']);
+        // Convert the comma-separated string to an array
+        $my_job_ids_array = explode(',', $my_job_ids);
+        // Update user meta with the new job IDs
+        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
+
     } else {
-        $current_user_id = get_current_user_id();
         // Set up the post data
         $new_post = array(
             'post_title'    => 'New job',
@@ -395,21 +421,7 @@ function display_site_job_action_list() {
         </tbody>
     </table>
     <div id="btn-new-site-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-
-    <div id="site-job-action-dialog" title="Action templates dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="job-id" />
-            <input type="hidden" id="action-id" />
-            <label for="action-title">Title:</label>
-            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-            <label for="action-content">Content:</label>
-            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-            <label for="next-job">Next job:</label>
-            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
-            <label for="next-leadtime">Next leadtime:</label>
-            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-    </div>
+    <?php display_site_job_action_dialog();?>
 <?php
 }
     
@@ -454,6 +466,41 @@ function get_job_action_list_data() {
 }
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_job_action_list_data', 'get_job_action_list_data' );
+
+function display_site_job_action_dialog(){
+?>
+    <div id="site-job-action-dialog" title="Action templates dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="job-id" />
+            <input type="hidden" id="action-id" />
+            <label for="action-title">Title:</label>
+            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+            <label for="action-content">Content:</label>
+            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+            <label for="next-job">Next job:</label>
+            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
+            <label for="next-leadtime">Next leadtime:</label>
+            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+    </div>
+<?php
+}
+
+function select_site_job_option_data($selected_job=0, $site_id=0) {
+    $options = '<option value="">Select job</option>';
+    $query = retrieve_site_job_list_data($site_id);
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata(); // Reset post data to the main loop
+    if ($selected_job==0){
+        $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+    } else {
+        $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+    }
+    return $options;
+}
 
 function get_job_action_dialog_data() {
     $response = array();
@@ -508,5 +555,4 @@ function del_job_action_dialog_data() {
 }
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_data' );
-
 

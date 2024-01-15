@@ -129,6 +129,7 @@ function site_settings_content($post) {
     wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
     $cust_no = esc_attr(get_post_meta($post->ID, 'cust_no', true));
     $contact = esc_attr(get_post_meta($post->ID, 'contact', true));
+    $email = esc_attr(get_post_meta($post->ID, 'email', true));
     $phone = esc_attr(get_post_meta($post->ID, 'phone', true));
     $address = esc_attr(get_post_meta($post->ID, 'address', true));
     $country = esc_attr(get_post_meta($post->ID, 'country', true));
@@ -138,6 +139,8 @@ function site_settings_content($post) {
     <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no;?>" style="width:100%" >
     <label for="contact"> Contact: </label>
     <input type="text" id="contact" name="contact" value="<?php echo $contact;?>" style="width:100%" >
+    <label for="email"> Email: </label>
+    <input type="text" id="email" name="email" value="<?php echo $email;?>" style="width:100%" >
     <label for="phone"> Phone: </label>
     <input type="text" id="phone" name="phone" value="<?php echo $phone;?>" style="width:100%" >
     <label for="address"> Address: </label>
@@ -161,6 +164,18 @@ function save_site_settings_content($post_id) {
     if (isset($_POST['cust_no'])) {
         update_post_meta($post_id, 'cust_no', sanitize_text_field($_POST['cust_no']));
     }
+    if (isset($_POST['contact'])) {
+        update_post_meta($post_id, 'contact', sanitize_text_field($_POST['contact']));
+    }
+    if (isset($_POST['email'])) {
+        update_post_meta($post_id, 'email', sanitize_text_field($_POST['email']));
+    }
+    if (isset($_POST['phone'])) {
+        update_post_meta($post_id, 'phone', sanitize_text_field($_POST['phone']));
+    }
+    if (isset($_POST['address'])) {
+        update_post_meta($post_id, 'address', sanitize_text_field($_POST['address']));
+    }
     if (isset($_POST['country'])) {
         update_post_meta($post_id, 'country', sanitize_text_field($_POST['country']));
     }
@@ -169,43 +184,6 @@ function save_site_settings_content($post_id) {
     }
 }
 add_action('save_post', 'save_site_settings_content');
-
-// Include WordPress functions
-//require_once('wp-load.php');
-
-// Function to download and process CSV
-function processCsvFromMediaLibrary($filename) {
-    // Get the file URL from the Media Library
-    $file_url = wp_get_attachment_url(get_page_by_title($filename, OBJECT, 'attachment')->ID);
-
-    // Check if the file URL is valid
-    if ($file_url) {
-        // Download the CSV file
-        $csv_data = file_get_contents($file_url);
-
-        // Process the CSV data
-        if ($csv_data !== false) {
-            $lines = explode("\n", $csv_data);
-
-            // Iterate through each CSV row
-            foreach ($lines as $line) {
-                $data = str_getcsv($line);
-
-                // Process each column data
-                foreach ($data as $column) {
-                    // Your processing logic here
-                    echo $column . ' ';
-                }
-
-                echo "<br>";
-            }
-        } else {
-            echo 'Error downloading CSV file.';
-        }
-    } else {
-        echo 'File not found in the Media Library.';
-    }
-}
 
 function display_customer_csv() {
 
