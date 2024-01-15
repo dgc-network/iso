@@ -42,7 +42,9 @@ function add_site_custom_field_column($columns) {
         $new_columns[$key] = $value;
         if ($key === 'title') {
             // Add the custom field column after the 'title' column
-            $new_columns['site_url_column'] = __('Site URL', 'your-text-domain');
+            $new_columns['cust_no_column'] = __('Cust.#', 'your-text-domain');
+            $new_columns['contact_column'] = __('Contact', 'your-text-domain');
+            $new_columns['phone_column'] = __('Phone', 'your-text-domain');
         }
     }
     return $new_columns;
@@ -50,14 +52,22 @@ function add_site_custom_field_column($columns) {
 add_filter('manage_site_posts_columns', 'add_site_custom_field_column');
 
 function add_sortable_site_custom_field_column($sortable_columns) {
-    $sortable_columns['site_url_column'] = 'site_url';
+    $sortable_columns['cust_no_column'] = 'cust_no';
+    $sortable_columns['contact_column'] = 'contact';
+    $sortable_columns['phone_column'] = 'phone';
     return $sortable_columns;
 }
 add_filter('manage_edit-site_sortable_columns', 'add_sortable_site_custom_field_column');
 
 function display_site_custom_field_in_admin_list($column, $post_id) {
-    if ($column === 'site_url_column') {
-        echo esc_html(get_post_meta($post_id, 'site_url', true));
+    if ($column === 'cust_no_column') {
+        echo esc_html(get_post_meta($post_id, 'cust_no', true));
+    }
+    if ($column === 'contact_column') {
+        echo esc_html(get_post_meta($post_id, 'contact', true));
+    }
+    if ($column === 'phone_column') {
+        echo esc_html(get_post_meta($post_id, 'phone', true));
     }
 }
 add_action('manage_site_posts_custom_column', 'display_site_custom_field_in_admin_list', 10, 2);
@@ -130,37 +140,7 @@ function site_settings_content($post) {
     <?php
     // Run the import function when this script is executed
     //import_sites_from_csv();
-    import_sites_from_encona_csv();
-
-    // Call the function with the CSV file name
-    //processCsvFromMediaLibrary('customer.csv');
-
-    $file_url = 'https://encona.tw/wp-content/uploads/2024/01/customer.csv';
-    $encona_file_url = 'https://encona.tw/wp-content/uploads/2024/01/encona.csv';
-    
-
-    // Download the CSV file
-    $csv_data = file_get_contents($file_url);
-
-    // Process the CSV data
-    if ($csv_data !== false) {
-        $lines = explode("\n", $csv_data);
-    
-        // Iterate through each CSV row
-        foreach ($lines as $line) {
-            $data = str_getcsv($line);
-    
-            // Process each column data
-            foreach ($data as $column) {
-                // Your processing logic here
-                echo $column . ' ';
-            }
-    
-            echo "<br>";
-        }
-    } else {
-        echo 'Error downloading CSV file.';
-    }
+    //import_sites_from_encona_csv();
     
 }
 
@@ -216,6 +196,40 @@ function processCsvFromMediaLibrary($filename) {
     } else {
         echo 'File not found in the Media Library.';
     }
+}
+
+function display_customer_csv() {
+
+    // Call the function with the CSV file name
+    //processCsvFromMediaLibrary('customer.csv');
+
+    $file_url = 'https://encona.tw/wp-content/uploads/2024/01/customer.csv';
+    $encona_file_url = 'https://encona.tw/wp-content/uploads/2024/01/encona.csv';
+    
+
+    // Download the CSV file
+    $csv_data = file_get_contents($file_url);
+
+    // Process the CSV data
+    if ($csv_data !== false) {
+        $lines = explode("\n", $csv_data);
+    
+        // Iterate through each CSV row
+        foreach ($lines as $line) {
+            $data = str_getcsv($line);
+    
+            // Process each column data
+            foreach ($data as $column) {
+                // Your processing logic here
+                echo $column . ' ';
+            }
+    
+            echo "<br>";
+        }
+    } else {
+        echo 'Error downloading CSV file.';
+    }
+
 }
 
 function import_sites_from_encona_csv() {
