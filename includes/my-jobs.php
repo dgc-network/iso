@@ -184,6 +184,24 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     }
 }
 
+// Add a custom column for display_name
+function custom_users_columns($columns) {
+    unset($columns['username']);
+    $columns['display_name'] = 'Display Name';
+    return $columns;
+}
+add_filter('manage_users_columns', 'custom_users_columns');
+
+// Populate the custom column with display_name data
+function custom_users_custom_column($value, $column_name, $user_id) {
+    if ($column_name === 'display_name') {
+        $user = get_userdata($user_id);
+        return $user->display_name;
+    }
+    return $value;
+}
+add_filter('manage_users_custom_column', 'custom_users_custom_column', 10, 3);
+
 // Register post type
 function register_job_post_type() {
     $args = array(
