@@ -552,7 +552,7 @@ jQuery(document).ready(function($) {
         });    
     });                        
 
-    function get_todo_job_action_list_data(job_id){
+    function get_todo_job_action_list_data(id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -689,12 +689,12 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $("#todo-dialog").dialog('open');
                 $("#todo-id").val(id);
-                $("#doc-id").val(response.doc_title);
+                //$("#doc-id").val(response.doc_id);
                 $("#doc-title").val(response.doc_title);
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
-                $("#doc-date").val(response.doc_date);
-                $("#doc-url").val(response.doc_url);
+                //$("#doc-date").val(response.doc_date);
+                //$("#doc-url").val(response.doc_url);
             },
             error: function (error) {
                 console.error(error);                

@@ -208,29 +208,27 @@ add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
 function display_todo_dialog() {
-    ?>
-        <div id="todo-dialog" title="To-do dialog" style="display:none;">
-            <fieldset>
-                <input type="hidden" id="todo-id" />
-                <input type="hidden" id="job-id" />
-                <input type="hidden" id="doc-id" />
-                <label for="doc-title">Title:</label>
-                <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
-                <div>
-                    <div style="display:inline-block;">
-                        <label for="doc-number">Doc.#:</label>
-                        <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
-                    </div>
-                    <div style="display:inline-block; width:25%;">
-                        <label for="doc-revision">Revision:</label>
-                        <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
-                    </div>
+?>
+    <div id="todo-dialog" title="To-do dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="todo-id" />
+            <label for="doc-title">Title:</label>
+            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
+            <div>
+                <div style="display:inline-block;">
+                    <label for="doc-number">Doc.#:</label>
+                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
-                <label for="doc-url">URL:</label>
-                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
-            </fieldset>
-        </div>
-    <?php
+                <div style="display:inline-block; width:25%;">
+                    <label for="doc-revision">Revision:</label>
+                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+            </div>
+            <label for="doc-url">URL:</label>
+            <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
+        </fieldset>
+    </div>
+<?php
 }
         
 function get_todo_dialog_data() {
@@ -262,7 +260,7 @@ function get_todo_action_list_data() {
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
             $_list["next_job"] = get_the_title($next_job_id);
-            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            $_list["next_leadtime"] = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
