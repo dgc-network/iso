@@ -128,11 +128,20 @@ add_action('add_meta_boxes', 'add_site_settings_metabox');
 function site_settings_content($post) {
     wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
     $cust_no = esc_attr(get_post_meta($post->ID, 'cust_no', true));
+    $contact = esc_attr(get_post_meta($post->ID, 'contact', true));
+    $phone = esc_attr(get_post_meta($post->ID, 'phone', true));
+    $address = esc_attr(get_post_meta($post->ID, 'address', true));
     $country = esc_attr(get_post_meta($post->ID, 'country', true));
     $site_url = esc_attr(get_post_meta($post->ID, 'site_url', true));
     ?>
     <label for="cust-no"> Cust No: </label>
     <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no;?>" style="width:100%" >
+    <label for="contact"> Contact: </label>
+    <input type="text" id="contact" name="contact" value="<?php echo $contact;?>" style="width:100%" >
+    <label for="phone"> Phone: </label>
+    <input type="text" id="phone" name="phone" value="<?php echo $phone;?>" style="width:100%" >
+    <label for="address"> Address: </label>
+    <input type="text" id="address" name="address" value="<?php echo $address;?>" style="width:100%" >
     <label for="country"> Country: </label>
     <input type="text" id="country" name="country" value="<?php echo $country;?>" style="width:100%" >
     <label for="site-url"> Site URL: </label>
