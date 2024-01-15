@@ -249,17 +249,17 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 function get_todo_action_list_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
-    $job_id = get_post_meta($todo_id, 'job_id', true);
+    //$job_id = get_post_meta($todo_id, 'job_id', true);
     $query = retrieve_action_list_data($todo_id);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $next_job_id = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
             $_list = array();
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            $_list["next_job"] = get_the_title($next_job_id);
+            $_list["next_job"] = get_the_title($next_job);
             $_list["next_leadtime"] = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
