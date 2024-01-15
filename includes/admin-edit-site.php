@@ -151,7 +151,7 @@ function save_site_settings_content($post_id) {
 add_action('save_post', 'save_site_settings_content');
 
 // Include WordPress functions
-require_once('wp-load.php');
+//require_once('wp-load.php');
 
 // Function to download and process CSV
 function processCsvFromMediaLibrary($filename) {
