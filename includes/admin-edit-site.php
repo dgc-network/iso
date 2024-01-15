@@ -129,7 +129,8 @@ function site_settings_content($post) {
     <input type="text" id="site-url" name="site_url" value="<?php echo $site_url;?>" style="width:100%" >
     <?php
     // Run the import function when this script is executed
-    import_sites_from_csv();
+    //import_sites_from_csv();
+    import_sites_from_encona_csv();
 
     // Call the function with the CSV file name
     //processCsvFromMediaLibrary('customer.csv');
@@ -214,6 +215,64 @@ function processCsvFromMediaLibrary($filename) {
         }
     } else {
         echo 'File not found in the Media Library.';
+    }
+}
+
+function import_sites_from_encona_csv() {
+    // Specify the path to your CSV file
+    $csv_file = 'https://encona.tw/wp-content/uploads/2024/01/encona.csv';
+
+    // Fetch CSV content
+    $csv_content = file_get_contents($csv_file);
+
+    // Convert CSV to an array of rows
+    $csv_rows = str_getcsv($csv_content, "\n");
+
+    foreach ($csv_rows as $csv_row) {
+        $data = str_getcsv($csv_row);
+
+        // Extract data from the CSV columns
+        $cust_no = isset($data[0]) ? $data[0] : '';
+        $title = isset($data[1]) ? $data[1] : '';
+        $item1 = isset($data[2]) ? $data[2] : '';
+        $item2 = isset($data[3]) ? $data[3] : '';
+        $contact = isset($data[4]) ? $data[4] : '';
+        $email = isset($data[5]) ? $data[5] : '';
+        $phone = isset($data[6]) ? $data[6] : '';
+        $address = isset($data[7]) ? $data[7] : '';
+
+        // Create post data
+        $post_data = array(
+            'post_title' => $title,
+            'post_type' => 'site',
+            // Add any additional post data here
+        );
+
+        // Insert the post
+        $post_id = wp_insert_post($post_data);
+
+        // Add custom fields (metadata)
+        if ($post_id && $cust_no) {
+            update_post_meta($post_id, 'cust_no', $cust_no);
+        }
+        if ($post_id && $item1) {
+            update_post_meta($post_id, 'item1', $item1);
+        }
+        if ($post_id && $item2) {
+            update_post_meta($post_id, 'item2', $item2);
+        }
+        if ($post_id && $contact) {
+            update_post_meta($post_id, 'contact', $contact);
+        }
+        if ($post_id && $email) {
+            update_post_meta($post_id, 'email', $email);
+        }
+        if ($post_id && $phone) {
+            update_post_meta($post_id, 'phone', $phone);
+        }
+        if ($post_id && $address) {
+            update_post_meta($post_id, 'address', $address);
+        }
     }
 }
 
