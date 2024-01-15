@@ -253,6 +253,10 @@ function set_document_dialog_data() {
                 );    
                 $start_job_action_id = wp_insert_post($new_post);
                 update_post_meta( $start_job_action_id, 'job_id', $start_job_todo_id);
+                $start_job_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+                update_post_meta( $start_job_action_id, 'next_job', $start_job_next_job);
+                $start_job_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
+                update_post_meta( $start_job_action_id, 'next_leadtime', $start_job_next_leadtime);
             endwhile;
             wp_reset_postdata(); // Reset post data to the main loop
         }
