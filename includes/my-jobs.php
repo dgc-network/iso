@@ -299,9 +299,9 @@ function select_site_job_option_data($selected_job=0, $site_id=0) {
     endwhile;
     wp_reset_postdata(); // Reset post data to the main loop
     if ($selected_job==0){
-        $options .= '<option value="0" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
     } else {
-        $options .= '<option value="0">'.__( '發行', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
     }
     return $options;
 }
@@ -435,12 +435,16 @@ function get_job_action_list_data() {
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $next_job_id = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
             $_list = array();
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            $_list["next_job"] = get_the_title($next_job_id);
+            if ($next_job==-1){
+                $_list["next_job"] = __( '發行', 'your-text-domain' );
+            } else {
+                $_list["next_job"] = get_the_title($next_job);
+            }
             $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
