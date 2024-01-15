@@ -37,7 +37,7 @@ function register_todo_post_type() {
     register_post_type('todo', $args);
 }
 add_action('init', 'register_todo_post_type');
-
+/*
 // Add Custom Fields for To-Do Details
 function add_todo_custom_fields() {
     add_meta_box(
@@ -74,7 +74,7 @@ function save_todo_custom_fields($post_id) {
     //update_post_meta($post_id, '_todo_assigned_user', get_current_user_id());
 }
 add_action('save_post', 'save_todo_custom_fields');
-
+*/
 // Shortcode to display To-do list on frontend
 function to_do_list_shortcode() {
     //ob_start(); // Start output buffering

@@ -117,11 +117,20 @@ add_action('add_meta_boxes', 'add_site_settings_metabox');
 
 function site_settings_content($post) {
     wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
+    $cust_no = esc_attr(get_post_meta($post->ID, 'cust_no', true));
+    $country = esc_attr(get_post_meta($post->ID, 'country', true));
     $site_url = esc_attr(get_post_meta($post->ID, 'site_url', true));
     ?>
+    <label for="cust-no"> Site URL: </label>
+    <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no; ?>" class="text ui-widget-content ui-corner-all" >
+    <label for="country"> Site URL: </label>
+    <input type="text" id="country" name="country" value="<?php echo $country; ?>" class="text ui-widget-content ui-corner-all" >
     <label for="site-url"> Site URL: </label>
-    <input type="text" id="site-url" name="site_url" value="<?php echo $site_url; ?>" style="width:100%;">
+    <input type="text" id="site-url" name="site_url" value="<?php echo $site_url; ?>" class="text ui-widget-content ui-corner-all" >
     <?php
+    // Call the function with the CSV file name
+    processCsvFromMediaLibrary('customer.csv');
+
 }
 
 function save_site_settings_content($post_id) {
@@ -129,8 +138,52 @@ function save_site_settings_content($post_id) {
         return $post_id;
     }
 
+    if (isset($_POST['cust_no'])) {
+        update_post_meta($post_id, 'cust_no', sanitize_text_field($_POST['cust_no']));
+    }
+    if (isset($_POST['country'])) {
+        update_post_meta($post_id, 'country', sanitize_text_field($_POST['country']));
+    }
     if (isset($_POST['site_url'])) {
         update_post_meta($post_id, 'site_url', sanitize_text_field($_POST['site_url']));
     }
 }
 add_action('save_post', 'save_site_settings_content');
+
+// Include WordPress functions
+require_once('wp-load.php');
+
+// Function to download and process CSV
+function processCsvFromMediaLibrary($filename) {
+    // Get the file URL from the Media Library
+    $file_url = wp_get_attachment_url(get_page_by_title($filename, OBJECT, 'attachment')->ID);
+
+    // Check if the file URL is valid
+    if ($file_url) {
+        // Download the CSV file
+        $csv_data = file_get_contents($file_url);
+
+        // Process the CSV data
+        if ($csv_data !== false) {
+            $lines = explode("\n", $csv_data);
+
+            // Iterate through each CSV row
+            foreach ($lines as $line) {
+                $data = str_getcsv($line);
+
+                // Process each column data
+                foreach ($data as $column) {
+                    // Your processing logic here
+                    echo $column . ' ';
+                }
+
+                echo "<br>";
+            }
+        } else {
+            echo 'Error downloading CSV file.';
+        }
+    } else {
+        echo 'File not found in the Media Library.';
+    }
+}
+
