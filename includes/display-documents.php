@@ -305,7 +305,7 @@ function display_workflow_job_list() {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th><?php echo __( 'To-do', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>

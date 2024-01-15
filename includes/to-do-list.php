@@ -96,7 +96,7 @@ function to_do_list_shortcode() {
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
                     </tr>
