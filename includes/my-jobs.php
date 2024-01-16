@@ -201,8 +201,8 @@ function custom_users_column_order($columns) {
     // Define the desired order of columns
     $new_order = array(
         'cb' => $columns['cb'],
-        'username' => $columns['username'],
         'display_name' => $columns['display_name'],
+        'username' => $columns['username'],
         //'name' => $columns['name'],
         'email' => $columns['email'],
         'role' => $columns['role'],
