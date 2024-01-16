@@ -278,11 +278,6 @@ function my_jobs_shortcode() {
                             //$checked = (is_my_job(get_the_ID())) ? 'checked' : '';
                             ?>
                             <tr class="site-job-list-<?php echo $x;?>" id="edit-site-job-<?php the_ID();?>">
-                                <?php/* if (is_my_job(get_the_ID())) {
-                                    ?><td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" checked disabled /></td><?php
-                                } else {
-                                    ?><td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" disabled /></td><?php
-                                }*/?>
                                 <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
