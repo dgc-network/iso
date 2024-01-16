@@ -283,7 +283,7 @@ function my_jobs_shortcode() {
                                 } else {
                                     ?><td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" disabled /></td><?php
                                 }*/?>
-                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" disabled /></td>
+                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
                             </tr>
