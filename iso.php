@@ -16,11 +16,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -52,9 +52,28 @@ function wp_enqueue_scripts_and_styles() {
     $version = '1.0.5.0.6.2'; // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
+    //wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
+    //wp_localize_script('wp-enqueue-js', 'ajax_object', array(
+    //    'ajax_url' => admin_url('admin-ajax.php'),
+    //    'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
+    //));
+    $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $version);
-    wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('wp-enqueue-js', 'ajax_object', array(
+    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    wp_enqueue_script('my-jobs-js', plugins_url('assets/js/my-jobs.js', __FILE__), array('jquery'), $version);
+    wp_localize_script('my-jobs-js', 'ajax_object', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
+    ));
+    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    wp_enqueue_script('display-documents-js', plugins_url('assets/js/display-documents.js', __FILE__), array('jquery'), $version);
+    wp_localize_script('display-documents-js', 'ajax_object', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
+    ));
+    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    wp_enqueue_script('to-do-list-js', plugins_url('assets/js/to-do-list.js', __FILE__), array('jquery'), $version);
+    wp_localize_script('to-do-list-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
@@ -248,11 +267,3 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
-/*
-// Now, let's clean the buffer without sending its contents
-ob_clean();
-// Finally, send the output buffer
-ob_end_flush();
-// Clean and end the buffer
-ob_end_clean();
-*/
