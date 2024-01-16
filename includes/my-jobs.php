@@ -275,14 +275,14 @@ function my_jobs_shortcode() {
                     if ($query->have_posts()) :
                         $x = 0;
                         while ($query->have_posts()) : $query->the_post();
-                        $checked = (is_my_job(get_the_ID())) ? 'checked' : '';
-                        ?>
+                            $checked = (is_my_job(get_the_ID())) ? 'checked' : '';
+                            ?>
                             <tr class="site-job-list-<?php echo $x;?>" id="edit-site-job-<?php the_ID();?>">
-                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo $x;?>" <?php echo $checked;?> /></td>
+                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $checked;?> disabled /></td>
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php the_content();?></td>
                             </tr>
-                        <?php 
+                            <?php 
                             $x += 1;
                         endwhile;
                         wp_reset_postdata();
@@ -387,27 +387,15 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         $response["is_my_job"] = is_my_job($job_id);
-        $response["my_job_ids"] = get_user_meta($current_user_id, 'my_job_ids', true);
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
+        $my_job_ids = implode(',', $my_job_ids_array);
+        $response["my_job_ids"] = $my_job_ids;
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data' );
-/*
-function handle_job_update() {
-    if (isset($_POST['update_jobs'])) {
-        $current_user_id = get_current_user_id();
-        $my_job_ids = sanitize_text_field($_POST['my_job_ids']);
 
-        // Convert the comma-separated string to an array
-        $my_job_ids_array = explode(',', $my_job_ids);
-
-        // Update user meta with the new job IDs
-        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-    }
-}
-add_action('init', 'handle_job_update');
-*/
 function set_site_job_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_job_id']) ) {
@@ -417,12 +405,43 @@ function set_site_job_dialog_data() {
             'post_content' => $_POST['_job_content'],
         );
         wp_update_post( $data );
+/*
+        $job_id = sanitize_text_field($_POST['_job_id']);
+        $is_my_job = sanitize_text_field($_POST['_is_my_job']);
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
+        if ($is_my_job==1){
+
+        }
         $my_job_ids = sanitize_text_field($_POST['my_job_ids']);
         // Convert the comma-separated string to an array
         $my_job_ids_array = explode(',', $my_job_ids);
         // Update user meta with the new job IDs
+        update_post_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
+*/
+        $job_id = sanitize_text_field($_POST['_job_id']);
+        $is_my_job = sanitize_text_field($_POST['_is_my_job']);
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
+        
+        // Convert the current 'my_job_ids' value to an array if not already an array
+        if (!is_array($my_job_ids_array)) {
+            $my_job_ids_array = array();
+        }
+        
+        // Check if $job_id is in 'my_job_ids'
+        $job_exists = in_array($job_id, $my_job_ids_array);
+        
+        // Check the condition and update 'my_job_ids' accordingly
+        if ($is_my_job == 1 && !$job_exists) {
+            // Add $job_id to 'my_job_ids'
+            $my_job_ids_array[] = $job_id;
+        } elseif ($is_my_job != 1 && $job_exists) {
+            // Remove $job_id from 'my_job_ids'
+            $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
+        }
+        
+        // Update 'my_job_ids' meta value
         update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-
+        
     } else {
         // Set up the post data
         $new_post = array(
