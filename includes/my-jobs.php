@@ -347,33 +347,22 @@ function get_site_job_list_data() {
 }
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
-/*
+
 function is_my_job($job_id) {
     // Get the current user ID
-    $current_user_id = get_current_user_id();
-    // Check if the current user has the specified job ID in their metadata
-    $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
-    return in_array($job_id, $user_jobs);
-}
-*/
-function is_my_job($job_id) {
-    // Get the current user ID
-    $current_user_id = get_current_user_id();
-    
+    $current_user_id = get_current_user_id();    
     // Get the user's job IDs as an array
     $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
-
     // If $user_jobs is not an array, convert it to an array
     if (!is_array($user_jobs)) {
         $user_jobs = array();
     }
-
     // Check if the current user has the specified job ID in their metadata
     return in_array($job_id, $user_jobs);
 }
 
 function display_job_dialog($site_id=0) {
-?>
+    ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
@@ -383,12 +372,12 @@ function display_job_dialog($site_id=0) {
             <label for="job-content">Content:</label>
             <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
             <?php display_site_job_action_list();?>
-            <label for="check-my-job">My job:</label>
-            <input type="checkbox" id="check-my-job" />
+            <label for="is-my-job">My job:</label>
+            <input type="checkbox" id="is-my-job" />
             <input type="hidden" id="my-job-ids" />
         </fieldset>
     </div>
-<?php
+    <?php
 }
 
 function get_site_job_dialog_data() {

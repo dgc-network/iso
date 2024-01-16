@@ -317,6 +317,7 @@ function display_workflow_todo_list() {
         </table>
     </div>
     <?php display_todo_action_list();?>
+    <?php display_todo_action_dialog();?>
     <?php
 }
 
@@ -382,7 +383,6 @@ function display_todo_action_list() {
             </tbody>
         </table>
         <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-        <?php display_todo_action_dialog();?>
     </div>
     <?php
 }

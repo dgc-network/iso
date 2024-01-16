@@ -219,7 +219,7 @@ jQuery(document).ready(function($) {
             id = this.id;
             id = id.substring(14);
             $("#job-id").val(id);
-            get_workflow_todo_action_list_data(id)
+            get_workflow_todo_action_list_data(id)            
         })    
     }
 

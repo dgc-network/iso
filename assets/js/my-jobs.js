@@ -32,33 +32,6 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function activate_site_job_list_data(){
-        $('[id^="edit-site-job-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(14);
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_site_job_dialog_data',
-                    '_job_id': id,
-                },
-                success: function (response) {
-                    $("#job-dialog").dialog('open');
-                    $("#job-id").val(id);
-                    $("#job-title").val(response.job_title);
-                    $("#job-content").val(response.job_content);
-                    get_site_job_action_list_data(id);
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-    }
-
     function get_site_job_list_data(id){
         jQuery.ajax({
             type: 'POST',
@@ -79,7 +52,11 @@ jQuery(document).ready(function($) {
                     // Add an id attribute
                     targetTr.attr("id", "edit-site-job-" + value.job_id);                
                     output = '';
-                    output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'>" /></td>';
+                    if (value.is_my_job==1){
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" checked /></td>';
+                    } else {
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" /></td>';
+                    }
                     output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                     output = output+'<td>'+value.job_content+'</td>';
                     $(".site-job-list-"+index).append(output);
@@ -91,6 +68,35 @@ jQuery(document).ready(function($) {
                 console.error(error);
                 alert(error);
             }
+        });
+    }
+
+    function activate_site_job_list_data(){
+        $('[id^="edit-site-job-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(14);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_job_dialog_data',
+                    '_job_id': id,
+                },
+                success: function (response) {
+                    $("#job-dialog").dialog('open');
+                    $("#job-id").val(id);
+                    $("#job-title").val(response.job_title);
+                    $("#job-content").val(response.job_content);
+                    $("#is-my-job").val(response.is_my_job);
+                    $("#my-job-ids").val(response.my_job_ids);
+                    get_site_job_action_list_data(id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
         });
     }
 
@@ -109,6 +115,8 @@ jQuery(document).ready(function($) {
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
+                        '_is_my_job': $("#is-my-job").val(),
+                        '_my_job_ids': $("#my-job-ids").val(),
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');
@@ -174,7 +182,6 @@ jQuery(document).ready(function($) {
                 '_job_id': job_id,
             },
             success: function (response) {            
-                //$("#site-job-action-list-dialog").dialog('open');
                 // Action list in job
                 for(index=0;index<50;index++) {
                     $(".site-job-action-list-"+index).hide();
@@ -230,7 +237,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#site-job-action-dialog").dialog({
-        width: 500,
+        width: 400,
         modal: true,
         autoOpen: false,
         buttons: {
