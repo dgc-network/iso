@@ -53,9 +53,9 @@ jQuery(document).ready(function($) {
                     targetTr.attr("id", "edit-site-job-" + value.job_id);                
                     output = '';
                     if (value.is_my_job==1){
-                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" checked /></td>';
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" checked disabled /></td>';
                     } else {
-                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" /></td>';
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" disabled /></td>';
                     }
                     output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                     output = output+'<td>'+value.job_content+'</td>';
