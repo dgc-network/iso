@@ -184,10 +184,10 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     }
 }
 
-// Add a custom column for display_name
+// Modify the user table columns
 function custom_users_columns($columns) {
     unset($columns['username']);
-    $columns['display_name'] = 'Display Name';
+    $columns = array('display_name' => 'Display Name') + $columns;
     return $columns;
 }
 add_filter('manage_users_columns', 'custom_users_columns');
