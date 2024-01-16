@@ -347,12 +347,28 @@ function get_site_job_list_data() {
 }
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
-
+/*
 function is_my_job($job_id) {
     // Get the current user ID
     $current_user_id = get_current_user_id();
     // Check if the current user has the specified job ID in their metadata
     $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
+    return in_array($job_id, $user_jobs);
+}
+*/
+function is_my_job($job_id) {
+    // Get the current user ID
+    $current_user_id = get_current_user_id();
+    
+    // Get the user's job IDs as an array
+    $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
+
+    // If $user_jobs is not an array, convert it to an array
+    if (!is_array($user_jobs)) {
+        $user_jobs = array();
+    }
+
+    // Check if the current user has the specified job ID in their metadata
     return in_array($job_id, $user_jobs);
 }
 
