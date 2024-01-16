@@ -71,15 +71,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function activate_workflow_list_data(){
-        $('[id^="edit-workflow-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(14);
-            $("#job-id").val(id);
-            get_todo_job_action_list_data(id)
-        })    
-    }
-
     function activate_document_list_data(){
         $('[id^="edit-document-"]').on( "click", function() {
             id = this.id;
@@ -127,14 +118,14 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#doc-id").val(id);
-                    $("#workflow-todo-list-dialog").dialog('open');
+                    $("#workflow-list-dialog").dialog('open');
                     for(index=0;index<50;index++) {
-                        $(".workflow-job-list-"+index).hide();
-                        $(".workflow-job-list-"+index).empty();
+                        $(".workflow-todo-list-"+index).hide();
+                        $(".workflow-todo-list-"+index).empty();
                     }
                     $.each(response, function (index, value) {
                         // Find the first <tr> with the specified class
-                        let targetTr = $(".workflow-job-list-" + index).first();
+                        let targetTr = $(".workflow-todo-list-" + index).first();
                         // Add an id attribute
                         targetTr.attr("id", "edit-workflow-" + value.todo_id);                    
                         output = '';
@@ -142,8 +133,8 @@ jQuery(document).ready(function($) {
                         output = output+'<td>'+value.job_content+'</td>';
                         output = output+'<td style="text-align: center;">'+value.submit_user+'</td>';
                         output = output+'<td style="text-align: center;">'+value.submit_time+'</td>';
-                        $(".workflow-job-list-"+index).append(output);
-                        $(".workflow-job-list-"+index).show();
+                        $(".workflow-todo-list-"+index).append(output);
+                        $(".workflow-todo-list-"+index).show();
                     });
                     activate_workflow_list_data();
                 },
@@ -181,7 +172,6 @@ jQuery(document).ready(function($) {
                         '_doc_url': $("#doc-url").val(),
                         '_start_job': $("#start-job").val(),
                         '_start_leadtime': $("#start-leadtime").val(),
-                        //'_final_job': $("#final-job").val(),
                     },
                     success: function (response) {
                         $("#document-dialog").dialog('close');
@@ -213,27 +203,35 @@ jQuery(document).ready(function($) {
                         }
                     });
                 }
-
             }
         }
     });
 
     // Document todo/job list
-    $("#workflow-todo-list-dialog").dialog({
-        width: 500,
-        modal: true,
-        autoOpen: false,
-    });
-
-    // Job action list
-    $("#todo-job-action-list-dialog").dialog({
+    $("#workflow-list-dialog").dialog({
         width: 600,
         modal: true,
         autoOpen: false,
     });
 
+    function activate_workflow_list_data(){
+        $('[id^="edit-workflow-"]').on( "click", function() {
+            id = this.id;
+            id = id.substring(14);
+            $("#job-id").val(id);
+            get_workflow_todo_action_list_data(id)
+        })    
+    }
+
+    // Job action list
+    $("#workflow-todo-action-list-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+    });
+
     // Todo job actions settings
-    $("#btn-new-todo-job-action").on("click", function() {
+    $("#btn-new-todo-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -243,7 +241,7 @@ jQuery(document).ready(function($) {
                 '_job_id': $("#job-id").val(),
             },
             success: function (response) {
-                get_todo_job_action_list_data($("#job-id").val());
+                get_workflow_todo_action_list_data($("#job-id").val());
             },
             error: function(error){
                 console.error(error);                    
@@ -252,7 +250,7 @@ jQuery(document).ready(function($) {
         });    
     });                        
 
-    function get_todo_job_action_list_data(id){
+    function get_workflow_todo_action_list_data(id){
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -262,7 +260,7 @@ jQuery(document).ready(function($) {
                 '_job_id': id,
             },
             success: function (response) {            
-                $("#todo-job-action-list-dialog").dialog('open');
+                $("#workflow-todo-action-list-dialog").dialog('open');
                 // Action list in job
                 for(index=0;index<50;index++) {
                     $(".todo-job-action-list-"+index).hide();
@@ -295,7 +293,7 @@ jQuery(document).ready(function($) {
                             '_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
-                            $("#todo-job-action-dialog").dialog('open');
+                            $("#workflow-todo-action-dialog").dialog('open');
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
@@ -317,8 +315,8 @@ jQuery(document).ready(function($) {
         });
     }
     
-    $("#todo-job-action-dialog").dialog({
-        width: 500,
+    $("#workflow-todo-action-dialog").dialog({
+        width: 400,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -336,8 +334,8 @@ jQuery(document).ready(function($) {
                         '_next_leadtime': $("#next-leadtime").val(),
                     },
                     success: function (response) {
-                        $("#todo-job-action-dialog").dialog('close');
-                        get_todo_job_action_list_data($("#job-id").val());
+                        $("#workflow-todo-action-dialog").dialog('close');
+                        get_workflow_todo_action_list_data($("#job-id").val());
                     },
                     error: function (error) {
                         console.error(error);                    
@@ -356,8 +354,8 @@ jQuery(document).ready(function($) {
                             '_action_id': id,
                         },
                         success: function (response) {
-                            $("#todo-job-action-dialog").dialog('close');
-                            get_todo_job_action_list_data($("#job-id").val());
+                            $("#workflow-todo-action-dialog").dialog('close');
+                            get_workflow_todo_action_list_data($("#job-id").val());
                         },
                         error: function(error){
                             console.error(error);

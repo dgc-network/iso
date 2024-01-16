@@ -295,7 +295,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 function display_workflow_todo_list() {
     ?>
-    <div id="workflow-todo-list-dialog" title="Workflow list" style="display:none;">
+    <div id="workflow-list-dialog" title="Workflow list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -309,7 +309,7 @@ function display_workflow_todo_list() {
             <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr class="workflow-job-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr class="workflow-todo-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
             ?>
@@ -360,7 +360,7 @@ add_action( 'wp_ajax_nopriv_get_workflow_todo_list_data', 'get_workflow_todo_lis
 
 function display_todo_action_list() {
     ?>
-    <div id="todo-job-action-list-dialog" title="Action list" style="display:none;">
+    <div id="workflow-todo-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -381,7 +381,7 @@ function display_todo_action_list() {
                 ?>
             </tbody>
         </table>
-        <div id="btn-new-todo-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
         <?php display_todo_action_dialog();?>
     </div>
     <?php
@@ -413,7 +413,7 @@ add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_da
 
 function display_todo_action_dialog(){
     ?>
-    <div id="todo-job-action-dialog" title="Action dialog" style="display:none;">
+    <div id="workflow-todo-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="todo-id" />
             <input type="hidden" id="job-id" />
