@@ -184,14 +184,6 @@ function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     }
 }
 
-// Modify the user table columns
-function custom_users_columns($columns) {
-    unset($columns['username']);
-    $columns = array('display_name' => 'Display Name') + $columns;
-    return $columns;
-}
-add_filter('manage_users_columns', 'custom_users_columns');
-
 // Populate the custom column with display_name data
 function custom_users_custom_column($value, $column_name, $user_id) {
     if ($column_name === 'display_name') {
@@ -201,6 +193,25 @@ function custom_users_custom_column($value, $column_name, $user_id) {
     return $value;
 }
 add_filter('manage_users_custom_column', 'custom_users_custom_column', 10, 3);
+
+// Modify the user table columns order
+function custom_users_column_order($columns) {
+    unset($columns['username']);
+    unset($columns['name']);
+    // Define the desired order of columns
+    $new_order = array(
+        'cb' => $columns['cb'],
+        //'username' => $columns['username'],
+        'display_name' => $columns['display_name'],
+        //'name' => $columns['name'],
+        'email' => $columns['email'],
+        'role' => $columns['role'],
+        'posts' => $columns['posts'],
+    );
+
+    return $new_order;
+}
+add_filter('manage_users_columns', 'custom_users_column_order');
 
 // Register post type
 function register_job_post_type() {
