@@ -196,24 +196,40 @@ add_filter('manage_users_custom_column', 'custom_users_custom_column', 10, 3);
 
 // Modify the user table columns order
 function custom_users_column_order($columns) {
-    unset($columns['username']);
+    //unset($columns['username']);
     unset($columns['name']);
     // Define the desired order of columns
     $new_order = array(
         'cb' => $columns['cb'],
-        //'username' => $columns['username'],
+        'username' => $columns['username'],
         'display_name' => $columns['display_name'],
         //'name' => $columns['name'],
         'email' => $columns['email'],
         'role' => $columns['role'],
         'posts' => $columns['posts'],
     );
+    $new_order['display_name'] = __('Diplay name', 'your-text-domain');
 
     return $new_order;
 }
 add_filter('manage_users_columns', 'custom_users_column_order');
 
-// Register post type
+// Make 'display_name' field sortable
+function custom_users_sortable_columns($columns) {
+    $columns['display_name'] = 'display_name';
+    return $columns;
+}
+add_filter('manage_users_sortable_columns', 'custom_users_sortable_columns');
+
+// Handle sorting for 'display_name' field
+function custom_users_orderby($query) {
+    if (isset($query->query['orderby']) && $query->query['orderby'] === 'display_name') {
+        $query->set('orderby', 'display_name');
+    }
+}
+add_action('pre_get_users', 'custom_users_orderby');
+
+// Register job post type
 function register_job_post_type() {
     $args = array(
         'public'        => true,
@@ -279,7 +295,7 @@ function my_jobs_shortcode() {
                     </tbody>
                 </table>
                 <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php display_job_dialog();?>
+                <?php display_job_dialog($site_id);?>
             </fieldset>
             </form>
         </div><?php
@@ -340,7 +356,7 @@ function is_my_job($job_id) {
     return in_array($job_id, $user_jobs);
 }
 
-function display_job_dialog() {
+function display_job_dialog($site_id=0) {
 ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
         <fieldset>

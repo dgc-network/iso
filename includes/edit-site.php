@@ -25,11 +25,11 @@ function register_site_post_type() {
         'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'sites'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        //'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'supports'      => array( 'title', 'custom-fields' ),
         'has_archive'   => true,
         'menu_icon'     => 'dashicons-admin-multisite',
     );
-
     register_post_type( 'site', $args );
 }
 add_action('init', 'register_site_post_type');
