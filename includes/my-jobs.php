@@ -275,7 +275,7 @@ function my_jobs_shortcode() {
                     if ($query->have_posts()) :
                         $x = 0;
                         while ($query->have_posts()) : $query->the_post();
-                            $checked = (is_my_job(get_the_ID())) ? 'checked' : '';
+                            //$checked = (is_my_job(get_the_ID())) ? 'checked' : '';
                             ?>
                             <tr class="site-job-list-<?php echo $x;?>" id="edit-site-job-<?php the_ID();?>">
                                 <?php/* if (is_my_job(get_the_ID())) {
