@@ -332,11 +332,14 @@ function get_site_job_list_data() {
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
+/*            
             if (is_my_job(get_the_ID())){
                 $_list["is_my_job"] = 1;
             } else {
                 $_list["is_my_job"] = 0;
             }
+*/            
+            $_list["is_my_job"] = is_my_job($job_id) ? 1 : 0;
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
@@ -375,7 +378,6 @@ function display_job_dialog($site_id=0) {
             <?php display_site_job_action_list();?>
             <label for="is-my-job">My job:</label>
             <input type="checkbox" id="is-my-job" />
-            <input type="hidden" id="my-job-ids" />
         </fieldset>
     </div>
     <?php
@@ -387,10 +389,13 @@ function get_site_job_dialog_data() {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        $response["is_my_job"] = is_my_job($job_id);
+        $response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
+/*
+        $response["is_my_job"] = is_my_job($job_id);        
         $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
         $my_job_ids = implode(',', $my_job_ids_array);
         $response["my_job_ids"] = $my_job_ids;
+*/        
     }
     wp_send_json($response);
 }
