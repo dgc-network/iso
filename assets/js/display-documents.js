@@ -321,27 +321,30 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function() {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_job_action_dialog_data',
-                        '_action_id': $("#action-id").val(),
-                        '_action_title': $("#action-title").val(),
-                        '_action_content': $("#action-content").val(),
-                        '_next_job': $("#next-job").val(),
-                        '_next_leadtime': $("#next-leadtime").val(),
-                    },
-                    success: function (response) {
-                        $("#workflow-todo-action-dialog").dialog('close');
-                        get_workflow_todo_action_list_data($("#job-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
+                if (window.confirm("Are you sure you want to confirm this job action?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_next_job_action_data',
+                            '_action_id': $("#action-id").val(),
+                            //'_action_title': $("#action-title").val(),
+                            //'_action_content': $("#action-content").val(),
+                            '_next_job': $("#next-job").val(),
+                            '_next_leadtime': $("#next-leadtime").val(),
+                            '_doc_id': $("#doc-id").val(),
+                        },
+                        success: function (response) {
+                            $("#workflow-todo-action-dialog").dialog('close');
+                            get_workflow_todo_action_list_data($("#job-id").val());
+                        },
+                        error: function (error) {
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });            
+                }
             },
             "Delete": function() {
                 if (window.confirm("Are you sure you want to delete this job action?")) {

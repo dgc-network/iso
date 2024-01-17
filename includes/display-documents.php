@@ -431,34 +431,44 @@ function display_todo_action_dialog(){
     <?php    
 }
 
-function set_todo_action_dialog_data() {
-    $current_user_id = get_current_user_id();
+function set_next_job_action_data() {
     if( isset($_POST['_action_id']) ) {
-        // Update To-do
-        $todo_id = esc_attr($_POST['_todo_id']);
-        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        update_post_meta( $todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $todo_id, 'submit_time', time());
-        // Insert the To-do list
-        $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
-        $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
-        $next_job = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        // Insert the post into the database
+        $current_user_id = get_current_user_id();
+        // Insert the To-do list for next_job
         $new_post = array(
-            'post_title'    => 'Your post title goes here.',
+            'post_title'    => 'No title',
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish', // Publish the post immediately
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'todo', // Change to your custom post type if needed
         );    
-        $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', esc_attr($next_job));
-        update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
-        update_post_meta( $post_id, 'doc_id', esc_attr($doc_id));
-
+        $next_job_todo_id = wp_insert_post($new_post);
+        update_post_meta( $next_job_todo_id, 'job_id', sanitize_text_field($_POST['_next_job']));
+        update_post_meta( $next_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
+        update_post_meta( $next_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        // Insert the Action list for start_job
+        $query = retrieve_action_list_data($_POST['_next_job']);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $new_post = array(
+                    'post_title'    => get_the_title(),
+                    'post_content'  => get_post_field('post_content', get_the_ID()),
+                    'post_status'   => 'publish', // Publish the post immediately
+                    'post_author'   => $current_user_id, // Use the user ID of the author
+                    'post_type'     => 'action', // Change to your custom post type if needed
+                );    
+                $next_job_action_id = wp_insert_post($new_post);
+                update_post_meta( $next_job_action_id, 'job_id', $next_job_todo_id);
+                $next_job_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+                update_post_meta( $next_job_action_id, 'next_job', $next_job_next_job);
+                $next_job_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
+                update_post_meta( $next_job_action_id, 'next_leadtime', $next_job_next_leadtime);
+            endwhile;
+            wp_reset_postdata(); // Reset post data to the main loop
+        }
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_set_next_job_action_data', 'set_next_job_action_data' );
+add_action( 'wp_ajax_nopriv_set_next_job_action_data', 'set_next_job_action_data' );
+

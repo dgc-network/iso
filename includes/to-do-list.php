@@ -207,3 +207,34 @@ function get_todo_dialog_data() {
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 
+function set_todo_action_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_action_id']) ) {
+        // Update To-do
+        $todo_id = esc_attr($_POST['_todo_id']);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_time', time());
+        // Insert the To-do list
+        $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
+        $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        // Insert the post into the database
+        $new_post = array(
+            'post_title'    => 'Your post title goes here.',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish', // Publish the post immediately
+            'post_author'   => $current_user_id, // Use the user ID of the author
+            'post_type'     => 'todo', // Change to your custom post type if needed
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'job_id', esc_attr($next_job));
+        update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
+        update_post_meta( $post_id, 'doc_id', esc_attr($doc_id));
+
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
