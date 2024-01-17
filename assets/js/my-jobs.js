@@ -49,19 +49,18 @@ jQuery(document).ready(function($) {
                     targetTr.attr("id", "edit-site-job-" + value.job_id);
         
                     const isChecked = value.is_my_job == 1 ? 'checked' : '';
-/*
                     const output = `
                         <td style="text-align: center;"><input type="checkbox" id="check-my-job-${value.job_id}" ${isChecked} /></td>
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.job_content}</td>
                     `;
-*/                    
+/*
                     const output = `
                         <td style="text-align: center;"><input type="checkbox" id="check-my-job-"  /></td>
                         <td style="text-align:center;"></td>
                         <td></td>
                     `;
-        
+*/        
                     targetTr.append(output).show();
                 });
         
