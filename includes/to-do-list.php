@@ -153,7 +153,7 @@ function retrieve_todo_list_data($job_id=0){
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
-*/
+
     $new_query = array();
     $args = array(
         'post_type'      => 'todo',
@@ -181,6 +181,36 @@ function retrieve_todo_list_data($job_id=0){
             }
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
+    }
+*/    
+    $new_query = array();
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'job_due',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'NOT EXISTS',
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = get_the_ID();
+            $job_id = esc_attr(get_post_meta($post_id, 'job_id', true));
+            if (is_my_job($job_id)) {
+                $new_query[] = $post_id;
+            }
+        endwhile;
+        wp_reset_postdata();
     }
     
     return $new_query;
