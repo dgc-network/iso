@@ -53,9 +53,9 @@ jQuery(document).ready(function($) {
                     targetTr.attr("id", "edit-site-job-" + value.job_id);                
                     output = '';
                     if (value.is_my_job==1){
-                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" checked disabled /></td>';
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" checked /></td>';
                     } else {
-                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" disabled /></td>';
+                        output = output+'<td style="text-align: center;"><input type="checkbox" id="check-my-job-'+value.job_id+'" /></td>';
                     }
                     output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
                     output = output+'<td>'+value.job_content+'</td>';
@@ -72,6 +72,32 @@ jQuery(document).ready(function($) {
     }
 
     function activate_site_job_list_data(){
+        $('[id^="edit-site-job-"]').on("click", function () {
+            const id = this.id.substring(14);        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_job_dialog_data',
+                    '_job_id': id,
+                },
+                success: function (response) {
+                    $("#job-dialog").dialog('open');
+                    $("#job-id").val(id);
+                    $("#job-title").val(response.job_title);
+                    $("#job-content").val(response.job_content);
+                    $('#is-my-job').prop('checked', response.is_my_job == 1);
+                    //$("#my-job-ids").val(response.my_job_ids);
+                    get_site_job_action_list_data(id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+/*        
         $('[id^="edit-site-job-"]').on( "click", function() {
             id = this.id;
             id = id.substring(14);
@@ -102,6 +128,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
+*/        
     }
 
     $("#job-dialog").dialog({

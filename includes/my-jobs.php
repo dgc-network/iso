@@ -339,7 +339,7 @@ function get_site_job_list_data() {
                 $_list["is_my_job"] = 0;
             }
 */            
-            $_list["is_my_job"] = is_my_job($job_id) ? 1 : 0;
+            $_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
