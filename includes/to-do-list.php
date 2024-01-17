@@ -126,22 +126,30 @@ function retrieve_todo_list_data($job_id=0){
         ),
     );
     
+    $new_query = array();
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
-                'key'     => 'job_due',
-                'compare' => 'EXISTS', // Include posts where job_due meta key exists
-            ),
-            array(
                 'key'     => 'submit_user',
                 'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
             ),
         ),
-    );    
+    );
     $query = new WP_Query($args);
-    return $query;
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = (int) get_the_ID();
+            $job_id = esc_attr(get_post_meta($post_id, 'job_id', true));
+            if (is_my_job($job_id)){
+                array_push($new_query, $query->the_post());
+            }
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+
+    return $new_query;
 }
 
 function get_todo_list_data() {
@@ -212,9 +220,16 @@ function set_todo_action_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         // Update To-do
         $todo_id = esc_attr($_POST['_todo_id']);
-        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        //$doc_id = get_post_meta($todo_id, 'doc_id', true);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
+
+        $action_id = esc_attr($_POST['_action_id']);
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        update_post_meta( $next_job, 'job_due', time()+$next_leadtime);
+
+/*        
         // Insert the To-do list
         $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
         $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
@@ -232,7 +247,7 @@ function set_todo_action_dialog_data() {
         update_post_meta( $post_id, 'job_id', esc_attr($next_job));
         update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
         update_post_meta( $post_id, 'doc_id', esc_attr($doc_id));
-
+*/
     }
     wp_send_json($response);
 }
