@@ -33,6 +33,39 @@ jQuery(document).ready(function($) {
     });
 
     function get_site_job_list_data(id){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_job_list_data',
+                '_site_id': id,
+            },
+            success: function (response) {
+                $("[class^='site-job-list-']").hide().empty();
+        
+                $.each(response, function (index, value) {
+                    let targetTr = $(".site-job-list-" + index).first();
+                    targetTr.attr("id", "edit-site-job-" + value.job_id);
+        
+                    const isChecked = value.is_my_job == 1 ? 'checked' : '';
+                    const output = `
+                        <td style="text-align: center;"><input type="checkbox" id="check-my-job-${value.job_id}" ${isChecked} /></td>
+                        <td style="text-align:center;">${value.job_title}</td>
+                        <td>${value.job_content}</td>
+                    `;
+        
+                    targetTr.append(output).show();
+                });
+        
+                activate_site_job_list_data();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+/*        
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -69,6 +102,7 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
+*/        
     }
 
     function activate_site_job_list_data(){
