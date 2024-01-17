@@ -390,12 +390,6 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         $response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
-/*
-        $response["is_my_job"] = is_my_job($job_id);        
-        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
-        $my_job_ids = implode(',', $my_job_ids_array);
-        $response["my_job_ids"] = $my_job_ids;
-*/        
     }
     wp_send_json($response);
 }
