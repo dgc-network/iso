@@ -131,6 +131,11 @@ function retrieve_todo_list_data($job_id=0){
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
+            'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
+            array(
+                'key'     => 'job_due',
+                'compare' => 'EXISTS', // Include posts where job_due meta key exists
+            ),
             array(
                 'key'     => 'submit_user',
                 'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
