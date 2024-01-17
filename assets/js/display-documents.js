@@ -351,7 +351,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'del_job_action_dialog_data',
-                            '_action_id': id,
+                            '_action_id': $("#action-id").val(),
                         },
                         success: function (response) {
                             $("#workflow-todo-action-dialog").dialog('close');
