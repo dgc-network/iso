@@ -444,7 +444,7 @@ function set_next_job_action_data() {
         );    
         $next_job_todo_id = wp_insert_post($new_post);
         update_post_meta( $next_job_todo_id, 'job_id', sanitize_text_field($_POST['_next_job']));
-        update_post_meta( $next_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
+        //update_post_meta( $next_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_next_leadtime']));
         update_post_meta( $next_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         // Insert the Action list for start_job
         $query = retrieve_action_list_data($_POST['_next_job']);
