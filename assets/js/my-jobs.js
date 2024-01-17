@@ -84,7 +84,6 @@ jQuery(document).ready(function($) {
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
                     $('#is-my-job').prop('checked', response.is_my_job == 1);
-                    //$("#my-job-ids").val(response.my_job_ids);
                     get_site_job_action_list_data(id);
                 },
                 error: function (error) {
@@ -101,7 +100,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function () {
-                const isMyJob = $('#is-my-job').is(":checked") ? 1 : 0;
+                //const isMyJob = $('#is-my-job').is(":checked") ? 1 : 0;
     
                 $.ajax({
                     type: 'POST',
@@ -112,7 +111,8 @@ jQuery(document).ready(function($) {
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
-                        '_is_my_job': isMyJob,
+                        //'_is_my_job': isMyJob,
+                        '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');
