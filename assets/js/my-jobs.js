@@ -54,13 +54,6 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.job_content}</td>
                     `;
-/*
-                    const output = `
-                        <td style="text-align: center;"><input type="checkbox" id="check-my-job-"  /></td>
-                        <td style="text-align:center;"></td>
-                        <td></td>
-                    `;
-*/        
                     targetTr.append(output).show();
                 });
         
@@ -106,8 +99,6 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function () {
-                //const isMyJob = $('#is-my-job').is(":checked") ? 1 : 0;
-    
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
@@ -117,7 +108,6 @@ jQuery(document).ready(function($) {
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
-                        //'_is_my_job': isMyJob,
                         '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
                     },
                     success: function (response) {
@@ -184,15 +174,11 @@ jQuery(document).ready(function($) {
                 '_job_id': job_id,
             },
             success: function (response) {
-                // Action list in job
                 for (let index = 0; index < 50; index++) {
                     $(`.site-job-action-list-${index}`).hide().empty();
-                }
-    
+                }    
                 $.each(response, function (index, value) {
-                    // Find the first <tr> with the specified class
                     let targetTr = $(`.site-job-action-list-${index}`).first();
-                    // Add an id attribute
                     targetTr.attr("id", `edit-job-action-site-${value.action_id}`);
                     let output = `<td style="text-align:center;">${value.action_title}</td>`;
                     output += `<td>${value.action_content}</td>`;

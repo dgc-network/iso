@@ -332,17 +332,10 @@ function get_site_job_list_data() {
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
-/*            
-            if (is_my_job(get_the_ID())){
-                $_list["is_my_job"] = 1;
-            } else {
-                $_list["is_my_job"] = 0;
-            }
-*/            
-            $_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
+            $_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
@@ -405,19 +398,7 @@ function set_site_job_dialog_data() {
             'post_content' => $_POST['_job_content'],
         );
         wp_update_post( $data );
-/*
-        $job_id = sanitize_text_field($_POST['_job_id']);
-        $is_my_job = sanitize_text_field($_POST['_is_my_job']);
-        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
-        if ($is_my_job==1){
 
-        }
-        $my_job_ids = sanitize_text_field($_POST['my_job_ids']);
-        // Convert the comma-separated string to an array
-        $my_job_ids_array = explode(',', $my_job_ids);
-        // Update user meta with the new job IDs
-        update_post_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-*/
         $job_id = sanitize_text_field($_POST['_job_id']);
         $is_my_job = sanitize_text_field($_POST['_is_my_job']);
         $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);

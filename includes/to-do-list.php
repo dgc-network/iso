@@ -32,7 +32,7 @@ function register_todo_post_type() {
         'hierarchical'       => false,
         'menu_position'      => null,
         'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
 }
@@ -196,7 +196,6 @@ function set_todo_action_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         // Update To-do
         $todo_id = esc_attr($_POST['_todo_id']);
-        //$doc_id = get_post_meta($todo_id, 'doc_id', true);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
 
@@ -204,26 +203,6 @@ function set_todo_action_dialog_data() {
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         update_post_meta( $next_job, 'job_due', time()+$next_leadtime);
-
-/*        
-        // Insert the To-do list
-        $action_id = esc_attr($_POST['_action_id']); // Doc-Actions->ID, Metadata: job_id, action_id
-        $job_id = get_post_meta($action_id, 'job_id', true); // Doc-jobs->ID, Metadata: doc_id, job_id
-        $next_job = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        // Insert the post into the database
-        $new_post = array(
-            'post_title'    => 'Your post title goes here.',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'todo', // Change to your custom post type if needed
-        );    
-        $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', esc_attr($next_job));
-        update_post_meta( $post_id, 'job_due', time()+esc_attr($next_leadtime));
-        update_post_meta( $post_id, 'doc_id', esc_attr($doc_id));
-*/
     }
     wp_send_json($response);
 }

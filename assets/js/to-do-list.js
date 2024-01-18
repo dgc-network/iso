@@ -61,8 +61,7 @@ jQuery(document).ready(function($) {
         for (let i = 0; i < buttonData.length; i++) {
             let btn = buttonData[i];
             buttons[btn.label] = function () {
-                //alert(`Button "${btn.label}" clicked`);
-                if (window.confirm("Are you sure you want to do this job action?")) {
+                if (window.confirm("Are you sure you want to proceed this job action?")) {
                     jQuery.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,

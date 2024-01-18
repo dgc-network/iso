@@ -321,7 +321,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function() {
-                if (window.confirm("Are you sure you want to confirm this job action?")) {
+                if (window.confirm("Are you sure you want to proceed this job action?")) {
                     jQuery.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -329,8 +329,6 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_next_job_action_data',
                             '_action_id': $("#action-id").val(),
-                            //'_action_title': $("#action-title").val(),
-                            //'_action_content': $("#action-content").val(),
                             '_next_job': $("#next-job").val(),
                             '_next_leadtime': $("#next-leadtime").val(),
                             '_doc_id': $("#doc-id").val(),
