@@ -22,8 +22,18 @@ jQuery(document).ready(function($) {
                 $("#doc-revision").val(response.doc_revision);
                 //$("#doc-url").val(response.doc_url);
                 $("#doc-url").attr("href", response.doc_url).empty().append(response.doc_url);
-                const targetTr = $(`.btn-workflow`);
-                targetTr.attr("id", `btn-workflow-todo-list-${id}`);
+                $(`.btn-workflow`).attr("id", `btn-workflow-todo-list-${id}`);
+                $('[id^="btn-"]').mouseover(function() {
+                    $(this).css('cursor', 'pointer');
+                    $(this).css('color', 'red');
+                });
+                    
+                $('[id^="btn-"]').mouseout(function() {
+                    $(this).css('cursor', 'default');
+                    $(this).css('color', 'black');
+                });
+            
+            
             },
             error: function (error) {
                 console.error(error);                
