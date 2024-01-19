@@ -1,6 +1,49 @@
 // To-do list
 jQuery(document).ready(function($) {
 
+    function get_todo_list_data(job_id){
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_list_data',
+                '_job_id': job_id,
+            },
+            success: function (response) {            
+                for(index=0;index<50;index++) {
+                    $(".todo-list-"+index).hide().empty();
+                    //$(".todo-list-"+index).hide();
+                    //$(".todo-list-"+index).empty();
+                }
+                $.each(response, function (index, value) {
+                    // Find the first <tr> with the specified class
+                    //let targetTr = $(".todo-list-" + index).first();
+                    // Add an id attribute
+                    //targetTr.attr("id", "edit-todo-" + value.todo_id);                
+                    $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
+                    output = '';
+                    output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
+                    output = output+'<td>'+value.doc_title+'</td>';
+                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
+                    const output = `
+                        <td style="text-align:center;">${value.job_title}</td>
+                        <td>${value.doc_title}</td>
+                        <td style="text-align:center;">${value.due_date}</td>
+                    `;
+
+                    $(".todo-list-"+index).append(output).show();
+                    //$(".todo-list-"+index).append(output);
+                    //$(".todo-list-"+index).show();
+                })
+            },
+            error: function (error) {
+                console.error(error);                    
+                alert(error);
+            }
+        });            
+    }
+
     $('[id^="edit-todo-"]').on("click", function () {
         id = this.id;
         id = id.substring(9);
@@ -21,8 +64,6 @@ jQuery(document).ready(function($) {
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
                 $("#btn-doc-url").val(response.doc_url);
-                //$("#doc-url-href").attr("href", response.doc_url);
-                //$(`.btn-workflow`).attr("id", `btn-edit-workflow-${id}`);
 
                 $('[id^="btn-"]').mouseover(function() {
                     $(this).css('cursor', 'pointer');
@@ -124,40 +165,6 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
     }
     
-    function get_todo_list_data(job_id){
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_list_data',
-                '_job_id': job_id,
-            },
-            success: function (response) {            
-                for(index=0;index<50;index++) {
-                    $(".todo-list-"+index).hide();
-                    $(".todo-list-"+index).empty();
-                }
-                $.each(response, function (index, value) {
-                    // Find the first <tr> with the specified class
-                    let targetTr = $(".todo-list-" + index).first();
-                    // Add an id attribute
-                    targetTr.attr("id", "edit-todo-" + value.todo_id);                
-                    output = '';
-                    output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
-                    output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
-                    $(".todo-list-"+index).append(output);
-                    $(".todo-list-"+index).show();
-                })
-            },
-            error: function (error) {
-                console.error(error);                    
-                alert(error);
-            }
-        });            
-    }
-
     // Job action list
     $("#workflow-todo-action-list-dialog").dialog({
         width: 500,
