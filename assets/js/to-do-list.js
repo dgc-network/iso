@@ -20,9 +20,9 @@ jQuery(document).ready(function($) {
                 $("#doc-title").val(response.doc_title);
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
-                $("#doc-url").val(response.doc_url);
-                $("#doc-url-href").attr("href", response.doc_url);
-                $(`.btn-workflow`).attr("id", `btn-edit-workflow-${id}`);
+                $("#btn-doc-url").val(response.doc_url);
+                //$("#doc-url-href").attr("href", response.doc_url);
+                //$(`.btn-workflow`).attr("id", `btn-edit-workflow-${id}`);
 
                 $('[id^="btn-"]').mouseover(function() {
                     $(this).css('cursor', 'pointer');
@@ -34,13 +34,22 @@ jQuery(document).ready(function($) {
                     $(this).css('color', 'black');
                 });
                 
+                $("#btn-doc-url").on( "click", function() {
+                    window.location.replace(response.doc_url);
+                })
+
+                $("#btn-workflow").on( "click", function() {
+                    $("#job-id").val(id);
+                    get_workflow_todo_action_list_data(id)            
+                })
+/*
                 $('[id^="btn-edit-workflow-"]').on( "click", function() {
                     id = this.id;
                     id = id.substring(18);
                     $("#job-id").val(id);
                     get_workflow_todo_action_list_data(id)            
                 })            
-            
+*/            
             },
             error: function (error) {
                 console.error(error);                
