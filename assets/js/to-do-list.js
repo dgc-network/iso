@@ -20,7 +20,8 @@ jQuery(document).ready(function($) {
                 $("#doc-title").val(response.doc_title);
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
-                $("#doc-url").val(response.doc_url);
+                //$("#doc-url").val(response.doc_url);
+                $("#doc-url").attr("href", response.doc_url).empty().append(response.doc_url);
                 const targetTr = $(`.btn-workflow`);
                 targetTr.attr("id", `btn-workflow-todo-list-${id}`);
             },
