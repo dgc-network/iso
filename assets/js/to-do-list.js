@@ -21,6 +21,8 @@ jQuery(document).ready(function($) {
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
                 $("#doc-url").val(response.doc_url);
+                const targetTr = $(`.btn-workflow`);
+                targetTr.attr("id", `btn-workflow-todo-list-${id}`);
             },
             error: function (error) {
                 console.error(error);                

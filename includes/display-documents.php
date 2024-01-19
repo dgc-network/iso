@@ -72,7 +72,6 @@ function display_documents_shortcode() {
                         <th><?php echo __( '名稱', 'your-text-domain' );?></th>
                         <th><?php echo __( '版本', 'your-text-domain' );?></th>
                         <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,7 +88,6 @@ function display_documents_shortcode() {
                             <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
-                            <td style="text-align:center;" id="btn-workflow-todo-list-<?php the_ID();?>"><span class="dashicons dashicons-networking">Flow</span></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -193,7 +191,7 @@ function display_document_dialog($site_id=0){
                     <label for="doc-date">Published Date:</label>
                     <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
-            </div>    
+            </div>
         </fieldset>
     </div>
     <?php

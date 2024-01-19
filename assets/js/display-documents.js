@@ -33,6 +33,42 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    function get_document_list_data(siteId) {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_document_list_data',
+                '_site_id': siteId,
+            },
+            success: function (response) {
+                for (let index = 0; index < 50; index++) {
+                    const targetTr = $(`.document-list-${index}`).hide().empty();
+                    $.each(response, function (i, value) {
+                        targetTr.attr("id", `edit-document-${value.doc_id}`);
+                        const output = `
+                            <td style="text-align: center;">${value.doc_number}</td>
+                            <td>${value.doc_title}</td>
+                            <td style="text-align: center;">${value.doc_revision}</td>
+                            <td style="text-align: center;">${value.doc_date}</td>`;
+                        targetTr.append(output).show();
+                    });    
+                    activate_document_list_data();
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+/*    
+    // Assuming activateDocumentListData is a function that needs to be called after displaying the document list
+    function activateDocumentListData() {
+        // Your activation code here
+    }
+
     function get_document_list_data(site_id){
         jQuery.ajax({
             type: 'POST',
@@ -70,7 +106,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     function activate_document_list_data(){
         $('[id^="edit-document-"]').on( "click", function() {
             id = this.id;

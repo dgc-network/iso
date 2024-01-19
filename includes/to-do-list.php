@@ -171,6 +171,8 @@ function display_todo_dialog() {
             </div>
             <label for="doc-url">URL:</label>
             <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
+            <div class="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking">Workflow</span></div>
+
         </fieldset>
     </div>
     <?php
