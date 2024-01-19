@@ -2,7 +2,7 @@
 jQuery(document).ready(function($) {
 
     function get_todo_list_data(job_id){
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -13,28 +13,15 @@ jQuery(document).ready(function($) {
             success: function (response) {            
                 for(index=0;index<50;index++) {
                     $(".todo-list-"+index).hide().empty();
-                    //$(".todo-list-"+index).hide();
-                    //$(".todo-list-"+index).empty();
                 }
                 $.each(response, function (index, value) {
-                    // Find the first <tr> with the specified class
-                    //let targetTr = $(".todo-list-" + index).first();
-                    // Add an id attribute
-                    //targetTr.attr("id", "edit-todo-" + value.todo_id);                
                     $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
-                    output = '';
-                    output = output+'<td style="text-align:center;">'+value.job_title+'</td>';
-                    output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.due_date+'</td>';
                     const output = `
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.doc_title}</td>
                         <td style="text-align:center;">${value.due_date}</td>
                     `;
-
                     $(".todo-list-"+index).append(output).show();
-                    //$(".todo-list-"+index).append(output);
-                    //$(".todo-list-"+index).show();
                 })
             },
             error: function (error) {
@@ -50,7 +37,7 @@ jQuery(document).ready(function($) {
         $("#todo-id").val(id);
     
         // Dialog content
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -76,6 +63,7 @@ jQuery(document).ready(function($) {
                 });
                 
                 $("#btn-doc-url").on( "click", function() {
+                    alert('Hi')
                     window.location.replace(response.doc_url);
                 })
 
