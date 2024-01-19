@@ -170,7 +170,9 @@ function display_todo_dialog() {
                 </div>
             </div>
             <label for="doc-url">URL:</label>
-            <a id="doc-url"  class="text ui-widget-content ui-corner-all"></a>
+            <a id="doc-url-href">
+                <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
+            </a>
             <label for="doc-url">Workflow:</label>
             <div class="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span>Workflow</div>
 
