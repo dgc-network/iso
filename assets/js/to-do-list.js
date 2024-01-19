@@ -62,32 +62,25 @@ jQuery(document).ready(function($) {
                     $(this).css('color', 'black');
                 });
                 
-                $("#btn-doc-url").on( "click", function() {
-                    alert('Hi')
-                    window.location.replace(response.doc_url);
+                $(document).ready(function () {
+                    $("#btn-doc-url").on( "click", function() {
+                        window.location.replace(response.doc_url);
+                    })
+    
+                    $("#btn-workflow").on( "click", function() {
+                        $("#job-id").val(id);
+                        get_workflow_todo_action_list_data(id)            
+                    })
                 })
-
-                $("#btn-workflow").on( "click", function() {
-                    $("#job-id").val(id);
-                    get_workflow_todo_action_list_data(id)            
-                })
-/*
-                $('[id^="btn-edit-workflow-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(18);
-                    $("#job-id").val(id);
-                    get_workflow_todo_action_list_data(id)            
-                })            
-*/            
             },
             error: function (error) {
                 console.error(error);                
                 alert(error);
             }
-        });            
+        });
 
         // Dialog buttons
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -98,9 +91,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 let buttonData = [];
                 $.each(response, function (index, value) {
-                    // JSON data as a string
                     var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
-                    // Parse JSON string to JavaScript object
                     var jsonData = $.parseJSON(jsonDataString);
                     // Add JSON object to the array
                     buttonData.push(jsonData);
@@ -120,7 +111,7 @@ jQuery(document).ready(function($) {
             let btn = buttonData[i];
             buttons[btn.label] = function () {
                 if (window.confirm("Are you sure you want to proceed this job action?")) {
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
