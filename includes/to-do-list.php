@@ -158,6 +158,7 @@ function display_todo_dialog() {
         <fieldset>
             <input type="hidden" id="todo-id" />
             <input type="hidden" id="job-id" />
+            <input type="hidden" id="site-id" />
             <label for="doc-title">Title:</label>
             <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
             <div>
@@ -173,7 +174,7 @@ function display_todo_dialog() {
             <label for="doc-url">URL:</label>
             <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
             <label for="btn-workflow">Workflow:</label>
-            <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span>Action list</div>
+            <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Action list</div>
         </fieldset>
     </div>
     <?php display_todo_action_list();?>
@@ -189,34 +190,42 @@ function get_todo_dialog_data() {
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+        $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
         $response["job_id"] = esc_attr(get_post_meta($todo_id, 'job_id', true));
+        $response["site_id"] = esc_attr(get_post_meta($job_id, 'site_id', true));
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 
-function set_todo_action_dialog_data() {
-    $current_user_id = get_current_user_id();
-    if( isset($_POST['_action_id']) ) {
-        // Update To-do
-        $todo_id = esc_attr($_POST['_todo_id']);
-        update_post_meta( $todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $todo_id, 'submit_time', time());
-
-        $action_id = esc_attr($_POST['_action_id']);
-        $next_job = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        update_post_meta( $next_job, 'job_due', time()+$next_leadtime);
+function get_todo_button_list_data() {
+    // Retrieve the data
+    $todo_id = esc_attr($_POST['_todo_id']);
+    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $query = retrieve_action_list_data($job_id);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $_list = array();
+            $_list["action_id"] = get_the_ID();
+            $_list["action_title"] = get_the_title();
+            $_list["action_content"] = get_post_field('post_content', get_the_ID());
+            $_list["next_job"] = get_the_title($next_job);
+            $_list["next_leadtime"] = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
     }
-    wp_send_json($response);
+    wp_send_json($_array);
 }
-add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_get_todo_button_list_data', 'get_todo_button_list_data' );
+add_action( 'wp_ajax_nopriv_get_todo_button_list_data', 'get_todo_button_list_data' );
 
 function display_todo_action_list() {
     ?>
-    <div id="workflow-todo-action-list-dialog" title="Action list" style="display:none;">
+    <div id="todo-action-list-dialog" title="Action list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -243,33 +252,9 @@ function display_todo_action_list() {
     <?php
 }
 
-function get_todo_action_list_data() {
-    // Retrieve the data
-    $todo_id = esc_attr($_POST['_todo_id']);
-    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-    $query = retrieve_action_list_data($job_id);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-            $_list = array();
-            $_list["action_id"] = get_the_ID();
-            $_list["action_title"] = get_the_title();
-            $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            $_list["next_job"] = get_the_title($next_job);
-            $_list["next_leadtime"] = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_todo_action_list_data', 'get_todo_action_list_data' );
-add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_data' );
-
 function display_todo_action_dialog(){
     ?>
-    <div id="workflow-todo-action-dialog" title="Action dialog" style="display:none;">
+    <div id="todo-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="todo-id" />
             <input type="hidden" id="job-id" />
@@ -286,6 +271,24 @@ function display_todo_action_dialog(){
     </div>
     <?php    
 }
+
+function set_todo_action_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_action_id']) ) {
+        // Update To-do
+        $todo_id = esc_attr($_POST['_todo_id']);
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_time', time());
+
+        $action_id = esc_attr($_POST['_action_id']);
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        update_post_meta( $next_job, 'job_due', time()+$next_leadtime);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 
 function set_next_job_action_data() {
     if( isset($_POST['_action_id']) ) {
