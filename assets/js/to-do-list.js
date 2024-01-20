@@ -169,8 +169,8 @@ jQuery(document).ready(function($) {
                 '_job_id': $("#job-id").val(),
             },
             success: function (response) {
+                //get_todo_dialog_buttons_data($("#todo-id").val());
                 get_todo_action_list_data($("#job-id").val());
-                get_todo_dialog_buttons_data($("#todo-id").val());
             },
             error: function(error){
                 console.error(error);                    
@@ -259,8 +259,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('close');
-                            get_todo_action_list_data($("#job-id").val());
                             get_todo_dialog_buttons_data($("#todo-id").val());
+                            get_todo_action_list_data($("#job-id").val());
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -281,8 +281,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('close');
-                            get_todo_action_list_data($("#job-id").val());
                             get_todo_dialog_buttons_data($("#todo-id").val());
+                            get_todo_action_list_data($("#job-id").val());
                         },
                         error: function(error){
                             console.error(error);
