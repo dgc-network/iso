@@ -2,7 +2,7 @@
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
-    activate_workflow_list_data()
+    //activate_workflow_list_data()
 
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#btn-new-document").on("click", function() {
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -63,55 +63,12 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*    
-    // Assuming activateDocumentListData is a function that needs to be called after displaying the document list
-    function activateDocumentListData() {
-        // Your activation code here
-    }
 
-    function get_document_list_data(site_id){
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_document_list_data',
-                '_site_id': site_id,
-            },
-            success: function (response) {
-                for(index=0;index<50;index++) {
-                    $(".document-list-"+index).hide();
-                    $(".document-list-"+index).empty();
-                }
-                $.each(response, function (index, value) {
-                    // Find the first <tr> with the specified class
-                    let targetTr = $(".document-list-" + index).first();
-                    // Add an id attribute
-                    targetTr.attr("id", "edit-document-" + value.doc_id);                
-                    output = '';
-                    output = output+'<td style="text-align: center;">'+value.doc_number+'</td>';
-                    output = output+'<td>'+value.doc_title+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_revision+'</td>';
-                    output = output+'<td style="text-align: center;">'+value.doc_date+'</td>';
-                    output = output+'<td style="text-align: center;" id="btn-workflow-todo-list-'+value.doc_id+'"><span class="dashicons dashicons-networking">Flow</span></td>';
-                    $(".document-list-"+index).append(output);
-                    $(".document-list-"+index).show();
-                });
-
-                activate_document_list_data();
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });
-    }
-*/
     function activate_document_list_data(){
         $('[id^="edit-document-"]').on( "click", function() {
             id = this.id;
             id = id.substring(14);
-            jQuery.ajax({
+            $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
@@ -131,8 +88,8 @@ jQuery(document).ready(function($) {
                     $("#start-job").empty();
                     $("#start-job").append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
-                    $("#final-job").empty();
-                    $("#final-job").append(response.final_job);
+                    //$("#final-job").empty();
+                    //$("#final-job").append(response.final_job);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -140,7 +97,7 @@ jQuery(document).ready(function($) {
                 }
             });            
         });
-
+/*
         $('[id^="btn-workflow-todo-list-"]').on( "click", function() {
             id = this.id;
             id = id.substring(23);
@@ -185,7 +142,8 @@ jQuery(document).ready(function($) {
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
             }
-        });            
+        });
+*/                    
     }
 
     $("#document-dialog").dialog({
@@ -194,7 +152,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function() {
-                jQuery.ajax({
+                $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
                     dataType: "json",
@@ -221,7 +179,7 @@ jQuery(document).ready(function($) {
             },
             "Delete": function() {
                 if (window.confirm("Are you sure you want to delete this document?"+id)) {
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
@@ -242,7 +200,7 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
+/*
     // Document todo/job list
     $("#workflow-list-dialog").dialog({
         width: 600,
@@ -258,5 +216,5 @@ jQuery(document).ready(function($) {
             get_workflow_todo_action_list_data(id)            
         })    
     }
-
+*/
 });

@@ -12,7 +12,6 @@ jQuery(document).ready(function($) {
     });
     
     $("#btn-doc-url").on( "click", function() {
-        alert('Hi');
         window.location.replace($("#btn-doc-url").val());
     })
 
@@ -152,7 +151,7 @@ jQuery(document).ready(function($) {
 
     // Todo job actions settings
     $("#btn-new-todo-action").on("click", function() {
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -171,7 +170,7 @@ jQuery(document).ready(function($) {
     });                        
 
     function get_workflow_todo_action_list_data(id){
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -183,27 +182,33 @@ jQuery(document).ready(function($) {
                 $("#workflow-todo-action-list-dialog").dialog('open');
                 // Action list in job
                 for(index=0;index<50;index++) {
-                    $(".todo-job-action-list-"+index).hide();
-                    $(".todo-job-action-list-"+index).empty();
+                    $(".todo-job-action-list-"+index).hide().empty();
                 }
                 $.each(response, function (index, value) {
                     // Find the first <tr> with the specified class
-                    let targetTr = $(".todo-job-action-list-" + index).first();
+                    //let targetTr = $(".todo-job-action-list-" + index).first();
                     // Add an id attribute
-                    targetTr.attr("id", "edit-job-action-todo-" + value.action_id);                
-                    output = '';
-                    output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
-                    output = output+'<td>'+value.action_content+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
-                    output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
-                    $(".todo-job-action-list-"+index).append(output);
-                    $(".todo-job-action-list-"+index).show();
+                    //targetTr.attr("id", "edit-job-action-todo-" + value.action_id);                
+                    $(".todo-job-action-list-" + index).attr("id", "edit-job-action-todo-" + value.action_id);
+                    //output = '';
+                    //output = output+'<td style="text-align:center;">'+value.action_title+'</td>';
+                    //output = output+'<td>'+value.action_content+'</td>';
+                    //output = output+'<td style="text-align:center;">'+value.next_job+'</td>';
+                    //output = output+'<td style="text-align:center;">'+value.next_leadtime+'</td>';
+                    const output = `
+                        <td style="text-align:center;">${value.action_title}</td>
+                        <td>${value.action_content}</td>
+                        <td style="text-align:center;">${value.next_job}</td>
+                        <td style="text-align:center;">${value.next_leadtime}</td>
+                    `;
+
+                    $(".todo-job-action-list-"+index).append(output).show();
                 })
 
                 $('[id^="edit-job-action-todo-"]').on( "click", function() {
                     id = this.id;
                     id = id.substring(21);
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
@@ -242,7 +247,7 @@ jQuery(document).ready(function($) {
         buttons: {
             "Save": function() {
                 if (window.confirm("Are you sure you want to proceed this job action?")) {
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
@@ -266,7 +271,7 @@ jQuery(document).ready(function($) {
             },
             "Delete": function() {
                 if (window.confirm("Are you sure you want to delete this job action?")) {
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
@@ -287,5 +292,4 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
 })
