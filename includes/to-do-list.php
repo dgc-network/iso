@@ -184,12 +184,12 @@ function get_todo_dialog_data() {
     $response = array();
     if( isset($_POST['_todo_id']) ) {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
-        $doc_id = esc_att(get_post_meta($todo_id, 'doc_id', true));
+        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $response["doc_title"] = get_the_title($doc_id);
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $response["job_id"] = esc_att(get_post_meta($todo_id, 'job_id', true));
+        $response["job_id"] = esc_attr(get_post_meta($todo_id, 'job_id', true));
     }
     wp_send_json($response);
 }
