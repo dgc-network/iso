@@ -1,6 +1,24 @@
 // To-do list
 jQuery(document).ready(function($) {
 
+    $('[id^="btn-"]').mouseover(function() {
+        $(this).css('cursor', 'pointer');
+        $(this).css('color', 'red');
+    });
+        
+    $('[id^="btn-"]').mouseout(function() {
+        $(this).css('cursor', 'default');
+        $(this).css('color', 'black');
+    });
+    
+    $("#btn-doc-url").on( "click", function() {
+        window.location.replace($("#btn-doc-url").val());
+    })
+
+    $("#btn-workflow").on( "click", function() {
+        get_workflow_todo_action_list_data($("#job-id").val());
+    })
+
     function get_todo_list_data(job_id){
         $.ajax({
             type: 'POST',
@@ -51,27 +69,7 @@ jQuery(document).ready(function($) {
                 $("#doc-number").val(response.doc_number);
                 $("#doc-revision").val(response.doc_revision);
                 $("#btn-doc-url").val(response.doc_url);
-
-                $('[id^="btn-"]').mouseover(function() {
-                    $(this).css('cursor', 'pointer');
-                    $(this).css('color', 'red');
-                });
-                    
-                $('[id^="btn-"]').mouseout(function() {
-                    $(this).css('cursor', 'default');
-                    $(this).css('color', 'black');
-                });
-                
-                $(document).ready(function () {
-                    $("#btn-doc-url").on( "click", function() {
-                        window.location.replace(response.doc_url);
-                    })
-    
-                    $("#btn-workflow").on( "click", function() {
-                        $("#job-id").val(id);
-                        get_workflow_todo_action_list_data(id)            
-                    })
-                })
+                $("#job-id").val(response.job_id);
             },
             error: function (error) {
                 console.error(error);                
