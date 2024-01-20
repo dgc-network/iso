@@ -2,7 +2,6 @@
 jQuery(document).ready(function($) {
 
     activate_document_list_data()
-    //activate_workflow_list_data()
 
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
@@ -88,8 +87,6 @@ jQuery(document).ready(function($) {
                     $("#start-job").empty();
                     $("#start-job").append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
-                    //$("#final-job").empty();
-                    //$("#final-job").append(response.final_job);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -97,53 +94,6 @@ jQuery(document).ready(function($) {
                 }
             });            
         });
-/*
-        $('[id^="btn-workflow-todo-list-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(23);
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_workflow_todo_list_data',
-                    '_doc_id': id,
-                },
-                success: function (response) {
-                    $("#doc-id").val(id);
-                    $("#workflow-list-dialog").dialog('open');
-                    for(index=0;index<50;index++) {
-                        $(".workflow-todo-list-"+index).hide();
-                        $(".workflow-todo-list-"+index).empty();
-                    }
-                    $.each(response, function (index, value) {
-                        // Find the first <tr> with the specified class
-                        let targetTr = $(".workflow-todo-list-" + index).first();
-                        // Add an id attribute
-                        targetTr.attr("id", "edit-workflow-" + value.todo_id);                    
-                        output = '';
-                        output = output+'<td style="text-align: center;">'+value.job_title+'</td>';
-                        output = output+'<td>'+value.job_content+'</td>';
-                        output = output+'<td style="text-align: center;">'+value.submit_user+'</td>';
-                        output = output+'<td style="text-align: center;">'+value.submit_time+'</td>';
-                        $(".workflow-todo-list-"+index).append(output);
-                        $(".workflow-todo-list-"+index).show();
-                    });
-                    activate_workflow_list_data();
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });            
-        });
-
-        $('#doc-date').datepicker({
-            onSelect: function(dateText, inst) {
-                $(this).val(dateText);
-            }
-        });
-*/                    
     }
 
     $("#document-dialog").dialog({
@@ -200,21 +150,4 @@ jQuery(document).ready(function($) {
             }
         }
     });
-/*
-    // Document todo/job list
-    $("#workflow-list-dialog").dialog({
-        width: 600,
-        modal: true,
-        autoOpen: false,
-    });
-
-    function activate_workflow_list_data(){
-        $('[id^="edit-workflow-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(14);
-            $("#job-id").val(id);
-            get_todo_action_list_data(id)            
-        })    
-    }
-*/
 });
