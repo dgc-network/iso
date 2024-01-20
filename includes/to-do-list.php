@@ -171,9 +171,9 @@ function display_todo_dialog() {
                 </div>
             </div>
             <label for="doc-url">URL:</label>
-            <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" disabled ></textarea>
+            <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
             <label for="btn-workflow">Workflow:</label>
-            <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span>Workflow</div>
+            <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span>Action list</div>
         </fieldset>
     </div>
     <?php display_todo_action_list();?>
