@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
     });
     
     $("#btn-doc-url").on( "click", function() {
+        alert('Hi');
         window.location.replace($("#btn-doc-url").val());
     })
 
