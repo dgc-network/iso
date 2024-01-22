@@ -518,7 +518,7 @@ add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_job_action_list_data', 'get_job_action_list_data' );
 
 function display_site_job_action_dialog(){
-?>
+    ?>
     <div id="site-job-action-dialog" title="Action templates dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="job-id" />
@@ -533,7 +533,7 @@ function display_site_job_action_dialog(){
             <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
         </fieldset>
     </div>
-<?php
+    <?php
 }
 
 function select_site_job_option_data($selected_job=0, $site_id=0) {

@@ -178,8 +178,9 @@ jQuery(document).ready(function($) {
                     $(`.site-job-action-list-${index}`).hide().empty();
                 }    
                 $.each(response, function (index, value) {
-                    let targetTr = $(`.site-job-action-list-${index}`).first();
-                    targetTr.attr("id", `edit-job-action-site-${value.action_id}`);
+                    //let targetTr = $(`.site-job-action-list-${index}`).first();
+                    //targetTr.attr("id", `edit-job-action-site-${value.action_id}`);
+                    $(`.site-job-action-list-${index}`).attr("id", `edit-job-action-site-${value.action_id}`)
                     let output = `<td style="text-align:center;">${value.action_title}</td>`;
                     output += `<td>${value.action_content}</td>`;
                     output += `<td style="text-align:center;">${value.next_job}</td>`;

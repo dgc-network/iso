@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
     })
 
     $("#btn-workflow").on( "click", function() {
-        get_todo_action_list_data($("#job-id").val());
+        get_todo_action_list_data($("#todo-id").val());
     })
 
     function get_todo_list_data(job_id){
@@ -83,6 +83,32 @@ jQuery(document).ready(function($) {
         get_todo_dialog_buttons_data($("#todo-id").val());
     });
     
+    function get_todo_dialog_buttons_data(id) {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_dialog_buttons_data',
+                '_todo_id': id,
+            },
+            success: function (response) {
+                let buttonData = [];
+                $.each(response, function (index, value) {
+                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
+                    var jsonData = $.parseJSON(jsonDataString);
+                    // Add JSON object to the array
+                    buttonData.push(jsonData);
+                })
+                openTodoDialog(buttonData);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
     function openTodoDialog(buttonData) {
         let buttons = {};
         for (let i = 0; i < buttonData.length; i++) {
@@ -122,35 +148,6 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
     }
     
-    function get_todo_dialog_data(id){
-    }
-
-    function get_todo_dialog_buttons_data(id) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_dialog_buttons_data',
-                '_todo_id': id,
-            },
-            success: function (response) {
-                let buttonData = [];
-                $.each(response, function (index, value) {
-                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
-                    var jsonData = $.parseJSON(jsonDataString);
-                    // Add JSON object to the array
-                    buttonData.push(jsonData);
-                })
-                openTodoDialog(buttonData);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-
     // Job action list
     $("#todo-action-list-dialog").dialog({
         width: 500,
@@ -165,12 +162,12 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_job_action_dialog_data',
-                '_job_id': $("#job-id").val(),
+                'action': 'set_todo_action_dialog_data',
+                '_todo_id': $("#todo-id").val(),
             },
             success: function (response) {
                 //get_todo_dialog_buttons_data($("#todo-id").val());
-                get_todo_action_list_data($("#job-id").val());
+                get_todo_action_list_data($("#todo-id").val());
             },
             error: function(error){
                 console.error(error);                    
@@ -191,17 +188,17 @@ jQuery(document).ready(function($) {
             success: function (response) {            
                 $("#todo-action-list-dialog").dialog('open');
                 for(index=0;index<50;index++) {
-                    $(".todo-job-action-list-"+index).hide().empty();
+                    $(".todo-action-list-"+index).hide().empty();
                 }
                 $.each(response, function (index, value) {
-                    $(".todo-job-action-list-" + index).attr("id", "edit-job-action-todo-" + value.action_id);
+                    $(".todo-action-list-" + index).attr("id", "edit-job-action-todo-" + value.action_id);
                     const output = `
                         <td style="text-align:center;">${value.action_title}</td>
                         <td>${value.action_content}</td>
                         <td style="text-align:center;">${value.next_job}</td>
                         <td style="text-align:center;">${value.next_leadtime}</td>
                     `;
-                    $(".todo-job-action-list-"+index).append(output).show();
+                    $(".todo-action-list-"+index).append(output).show();
                 })
 
                 $('[id^="edit-job-action-todo-"]').on( "click", function() {
@@ -221,8 +218,8 @@ jQuery(document).ready(function($) {
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
-                            $("#next-job").empty();
-                            $("#next-job").append(response.next_job);
+                            $("#next-job").empty().append(response.next_job);
+                            //$("#next-job").append(response.next_job);
                             $("#next-leadtime").val(response.next_leadtime);
                         },
                         error: function (error) {
@@ -245,44 +242,42 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function() {
-                if (window.confirm("Are you sure you want to proceed this job action?")) {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_next_job_action_data',
-                            '_action_id': $("#action-id").val(),
-                            '_next_job': $("#next-job").val(),
-                            '_next_leadtime': $("#next-leadtime").val(),
-                            '_doc_id': $("#doc-id").val(),
-                        },
-                        success: function (response) {
-                            $("#todo-action-dialog").dialog('close');
-                            get_todo_dialog_buttons_data($("#todo-id").val());
-                            get_todo_action_list_data($("#job-id").val());
-                        },
-                        error: function (error) {
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });            
-                }
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_todo_action_dialog_data',
+                        '_action_id': $("#action-id").val(),
+                        '_next_job': $("#next-job").val(),
+                        '_next_leadtime': $("#next-leadtime").val(),
+                        '_doc_id': $("#doc-id").val(),
+                    },
+                    success: function (response) {
+                        $("#todo-action-dialog").dialog('close');
+                        get_todo_dialog_buttons_data($("#todo-id").val());
+                        get_todo_action_list_data($("#todo-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
             },
             "Delete": function() {
-                if (window.confirm("Are you sure you want to delete this job action?")) {
+                if (window.confirm("Are you sure you want to delete this todo action?")) {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'del_job_action_dialog_data',
+                            'action': 'del_todo_action_dialog_data',
                             '_action_id': $("#action-id").val(),
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('close');
                             get_todo_dialog_buttons_data($("#todo-id").val());
-                            get_todo_action_list_data($("#job-id").val());
+                            get_todo_action_list_data($("#todo-id").val());
                         },
                         error: function(error){
                             console.error(error);
