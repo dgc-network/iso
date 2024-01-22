@@ -82,12 +82,13 @@ function display_documents_shortcode() {
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
                         $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+                        $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
                         ?>
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                             <td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_date', true));?></td>
+                            <td style="text-align:center;"><?php echo wp_date( get_option('date_format'), $doc_date );?></td>
                         </tr>
                         <?php 
                         $x += 1;
