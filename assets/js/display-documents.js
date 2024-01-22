@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
                     $(`.document-list-${index}`).hide().empty();
                 }    
                 $.each(response, function (index, value) {
-                    $(`.document-list-${index}`).attr("id", `edit-document-${value.action_id}`)
+                    $(`.document-list-${index}`).attr("id", `edit-document-${value.doc_id}`)
                     const output = `
                         <td style="text-align: center;">${value.doc_number}</td>
                         <td>${value.doc_title}</td>
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
                 });            
             },
             "Delete": function() {
-                if (window.confirm("Are you sure you want to delete this document?"+id)) {
+                if (window.confirm("Are you sure you want to delete this document?")) {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
