@@ -361,7 +361,7 @@ function set_next_todo_and_actions($start_todo=0, $action_id=0, $doc_id=0, $star
             );    
             $new_action_id = wp_insert_post($new_post);
             update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-            $new_next_todo = esc_attr(get_post_meta(get_the_ID(), 'next_todo', true));
+            $new_next_todo = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
             update_post_meta( $new_action_id, 'next_todo', $new_next_todo);
             $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
             update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
