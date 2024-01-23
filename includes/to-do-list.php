@@ -325,63 +325,60 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         $job_title = get_the_title($start_job);
         $doc_title = get_the_title($doc_id);
         $next_job = $start_job;
+        $next_leadtime = $start_leadtime;
     } else {
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
         $job_title = get_the_title($job_id);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_title = get_the_title($doc_id);
-        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));    
+        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
+        $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
-    // Insert the To-do list for next_job
-    $current_user_id = get_current_user_id();
-    $new_post = array(
-        'post_title'    => $job_title,
-        'post_content'  => $doc_title,
-        'post_status'   => 'publish',
-        'post_author'   => $current_user_id,
-        'post_type'     => 'todo',
-    );    
-    $new_todo_id = wp_insert_post($new_post);
-    update_post_meta( $new_todo_id, 'job_id', $next_job);
-    update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-    if ($action_id==0){
-        update_post_meta( $new_todo_id, 'todo_due', time()+$start_leadtime);
-    }
-    // Insert the Action list for next_job
-    $query = retrieve_action_list_data($next_job);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $new_post = array(
-                'post_title'    => get_the_title(),
-                'post_content'  => get_post_field('post_content', get_the_ID()),
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'action',
-            );    
-            $new_action_id = wp_insert_post($new_post);
-            update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-            $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-            update_post_meta( $new_action_id, 'next_job', $new_next_job);
-            $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
-            update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-            if ($new_next_job>0) {
-                if ($new_next_job!=$start_job) {
-                    $start_job = $next_job;
-                    set_next_job_and_actions($start_job, $new_action_id);
-                }
-            }
-            if ($new_next_job==-1) {
-                $data = array(
-                    'ID'         => $doc_id,
-                    'meta_input' => array(
-                        'doc_date'   => time()+$new_next_leadtime,
-                    )
-                );
-                wp_update_post( $data );            
-            }        
-        endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+    if ($next_job==-1) {
+        $data = array(
+            'ID'         => $doc_id,
+            'meta_input' => array(
+                'doc_date'   => time()+$next_leadtime,
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        // Insert the To-do list for next_job
+        $current_user_id = get_current_user_id();
+        $new_post = array(
+            'post_title'    => $job_title,
+            'post_content'  => $doc_title,
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'todo',
+        );    
+        $new_todo_id = wp_insert_post($new_post);
+        update_post_meta( $new_todo_id, 'job_id', $next_job);
+        update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+        if ($action_id==0){
+            update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+        }
+        // Insert the Action list for next_job
+        $query = retrieve_action_list_data($next_job);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $new_post = array(
+                    'post_title'    => get_the_title(),
+                    'post_content'  => get_post_field('post_content', get_the_ID()),
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'action',
+                );    
+                $new_action_id = wp_insert_post($new_post);
+                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
+                $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+                update_post_meta( $new_action_id, 'next_job', $new_next_job);
+                $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
+                update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
+            endwhile;
+            wp_reset_postdata(); // Reset post data to the main loop
+        }
     }
 }
 

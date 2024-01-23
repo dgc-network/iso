@@ -83,7 +83,6 @@ jQuery(document).ready(function($) {
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-url").val(response.doc_url);
                     $("#start-job").empty().append(response.start_job);
-                    //$("#start-job").append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#doc-date").val(response.doc_date);
                 },
