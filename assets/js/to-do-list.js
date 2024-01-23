@@ -55,7 +55,6 @@ jQuery(document).ready(function($) {
         $("#todo-id").val(id);
     
         // Dialog content
-        //get_todo_dialog_data($("#todo-id").val());
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -166,7 +165,6 @@ jQuery(document).ready(function($) {
                 '_todo_id': $("#todo-id").val(),
             },
             success: function (response) {
-                //get_todo_dialog_buttons_data($("#todo-id").val());
                 get_todo_action_list_data($("#todo-id").val());
             },
             error: function(error){

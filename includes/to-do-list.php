@@ -202,8 +202,6 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
-    //$job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-    //$query = retrieve_action_list_data($job_id);
     $query = retrieve_action_list_data($todo_id);
     $_array = array();
     if ($query->have_posts()) {
@@ -244,91 +242,11 @@ function set_todo_dialog_data() {
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         set_next_job_and_actions($start_job, $action_id);
-
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
-
-function display_todo_action_list() {
-    ?>
-    <div id="todo-action-list-dialog" title="Action list" style="display:none;">
-        <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $x = 0;
-                while ($x<50) {
-                    echo '<tr class="todo-action-list-'.$x.'" style="display:none;"></tr>';
-                    $x += 1;
-                }
-                ?>
-            </tbody>
-        </table>
-        <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-    </div>
-    <?php display_todo_action_dialog();?>
-    <?php
-}
-
-function display_todo_action_dialog(){
-    ?>
-    <div id="todo-action-dialog" title="Action dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="todo-id" />
-            <input type="hidden" id="action-id" />
-            <label for="action-title">Title:</label>
-            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-            <label for="action-content">Content:</label>
-            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-            <label for="next-job">Next job:</label>
-            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
-            <label for="next-leadtime">Next leadtime:</label>
-            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-    </div>
-    <?php    
-}
-
-function set_todo_action_dialog_data() {
-    $current_user_id = get_current_user_id();
-    if( isset($_POST['_action_id']) ) {
-        // Update the post into the database
-        $data = array(
-            'ID'         => $_POST['_action_id'],
-            'meta_input' => array(
-                'action_title'   => $_POST['_action_title'],
-                'action_content' => $_POST['_action_content'],
-                'next_job'       => $_POST['_next_job'],
-                'next_leadtime'  => $_POST['_next_leadtime'],
-            )
-        );
-        wp_update_post( $data );
-    } else {
-        // Insert the post into the database
-        $new_post = array(
-            'post_title'    => 'New action',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'action',
-        );    
-        $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 
 function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
     if ($start_job==0) return;
@@ -382,7 +300,7 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
                     'post_type'     => 'action',
                 );    
                 $new_action_id = wp_insert_post($new_post);
-                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
+                update_post_meta( $new_action_id, 'job_id', $new_todo_id);
                 $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
                 update_post_meta( $new_action_id, 'next_job', $new_next_job);
                 $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
@@ -392,6 +310,84 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         }
     }
 }
+
+function display_todo_action_list() {
+    ?>
+    <div id="todo-action-list-dialog" title="Action list" style="display:none;">
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $x = 0;
+                while ($x<50) {
+                    echo '<tr class="todo-action-list-'.$x.'" style="display:none;"></tr>';
+                    $x += 1;
+                }
+                ?>
+            </tbody>
+        </table>
+        <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </div>
+    <?php display_todo_action_dialog();?>
+    <?php
+}
+
+function display_todo_action_dialog(){
+    ?>
+    <div id="todo-action-dialog" title="Action dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="action-id" />
+            <label for="action-title">Title:</label>
+            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+            <label for="action-content">Content:</label>
+            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+            <label for="next-job">Next job:</label>
+            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
+            <label for="next-leadtime">Next leadtime:</label>
+            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+    </div>
+    <?php    
+}
+
+function set_todo_action_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_action_id']) ) {
+        // Update the post into the database
+        $data = array(
+            'ID'         => $_POST['_action_id'],
+            'meta_input' => array(
+                'action_title'   => $_POST['_action_title'],
+                'action_content' => $_POST['_action_content'],
+                'next_job'       => $_POST['_next_job'],
+                'next_leadtime'  => $_POST['_next_leadtime'],
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        // Insert the post into the database
+        $new_post = array(
+            'post_title'    => 'New action',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_todo_id']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 
 function del_todo_action_dialog_data() {
     // Delete the post

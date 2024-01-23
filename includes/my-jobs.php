@@ -493,7 +493,6 @@ function retrieve_action_list_data($job_id=0) {
 function get_job_action_list_data() {
     // Retrieve the documents data
     $query = retrieve_action_list_data($_POST['_job_id']);
-
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
