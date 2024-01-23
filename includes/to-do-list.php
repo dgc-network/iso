@@ -202,7 +202,7 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
-    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    //$job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     //$query = retrieve_action_list_data($job_id);
     $query = retrieve_action_list_data($todo_id);
     $_array = array();
@@ -238,6 +238,13 @@ function set_todo_dialog_data() {
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
+
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
+        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        set_next_job_and_actions($start_job, $action_id);
+
     }
     wp_send_json($response);
 }
@@ -278,7 +285,6 @@ function display_todo_action_dialog(){
     <div id="todo-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
             <input type="hidden" id="todo-id" />
-            <input type="hidden" id="job-id" />
             <input type="hidden" id="action-id" />
             <label for="action-title">Title:</label>
             <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
@@ -296,21 +302,26 @@ function display_todo_action_dialog(){
 function set_todo_action_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
-        $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
-        set_next_job_and_actions($start_job, $action_id);
+        // Update the post into the database
+        $data = array(
+            'ID'         => $_POST['_action_id'],
+            'meta_input' => array(
+                'action_title'   => $_POST['_action_title'],
+                'action_content' => $_POST['_action_content'],
+                'next_job'       => $_POST['_next_job'],
+                'next_leadtime'  => $_POST['_next_leadtime'],
+            )
+        );
+        wp_update_post( $data );
     } else {
-        // Set up the post data
+        // Insert the post into the database
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'action', // Change to your custom post type if needed
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
         );    
-        // Insert the post into the database
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
     }
