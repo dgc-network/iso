@@ -180,8 +180,8 @@ function display_document_dialog($site_id=0){
     
             <div>
                 <div style="display:inline-block;">
-                    <label for="start-job">Start:</label>
-                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
+                    <label for="start-todo">Start:</label>
+                    <select id="start-todo" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
                 <div style="display:inline-block; width:25%;">
                     <label for="start-leadtime">Leadtime:</label>
@@ -207,9 +207,9 @@ function get_document_dialog_data() {
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $start_job_todo_id = esc_attr(get_post_meta($doc_id, 'start_job', true));
-        $start_job = esc_attr(get_post_meta($start_job_todo_id, 'job_id', true));
-        $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
+        $start_todo_todo_id = esc_attr(get_post_meta($doc_id, 'start_todo', true));
+        $start_todo_job_id = esc_attr(get_post_meta($start_todo_todo_id, 'job_id', true));
+        $response["start_todo"] = select_site_job_option_data($start_todo_job_id, $_POST['_site_id']);
         $response["start_leadtime"] = esc_html(get_post_meta($doc_id, 'start_leadtime', true));
         $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
@@ -222,48 +222,11 @@ add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data
 function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
-        // Insert the To-do list for start_job
-/*        
-        $new_post = array(
-            'post_title'    => 'No title',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'todo', // Change to your custom post type if needed
-        );    
-        $start_job_todo_id = wp_insert_post($new_post);
-        update_post_meta( $start_job_todo_id, 'job_id', sanitize_text_field($_POST['_start_job']));
-        update_post_meta( $start_job_todo_id, 'job_due', time()+sanitize_text_field($_POST['_start_leadtime']));
-        update_post_meta( $start_job_todo_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-*/        
-        // Insert the Action list for start_job
-        $start_job = sanitize_text_field($_POST['_start_job']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $start_todo = sanitize_text_field($_POST['_start_todo']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        $query = retrieve_action_list_data($start_job);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                if ($start_job>0) set_next_todo_action(get_the_ID(),$start_job);
-
-/*
-                $new_post = array(
-                    'post_title'    => get_the_title(),
-                    'post_content'  => get_post_field('post_content', get_the_ID()),
-                    'post_status'   => 'publish', // Publish the post immediately
-                    'post_author'   => $current_user_id, // Use the user ID of the author
-                    'post_type'     => 'action', // Change to your custom post type if needed
-                );    
-                $start_job_action_id = wp_insert_post($new_post);
-                update_post_meta( $start_job_action_id, 'job_id', $start_job_todo_id);
-                $start_job_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-                update_post_meta( $start_job_action_id, 'next_job', $start_job_next_job);
-                $start_job_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
-                update_post_meta( $start_job_action_id, 'next_leadtime', $start_job_next_leadtime);
-*/                
-            endwhile;
-            wp_reset_postdata(); // Reset post data to the main loop
-        }
-
-        if ($start_job==-1) {
+        if ($start_todo>0) set_next_todo_and_actions($start_todo, 0, $doc_id, $start_leadtime);
+        if ($start_todo==-1) {
             $data = array(
                 'ID'         => $_POST['_doc_id'],
                 'meta_input' => array(
@@ -271,7 +234,7 @@ function set_document_dialog_data() {
                 )
             );
             wp_update_post( $data );            
-        }
+        }        
 
         // Update the Document data
         $data = array(
@@ -281,7 +244,7 @@ function set_document_dialog_data() {
                 'doc_number'   => $_POST['_doc_number'],
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_url'      => $_POST['_doc_url'],
-                'start_job'    => $start_job,
+                'start_todo'    => $start_todo,
                 'start_leadtime' => $start_leadtime,
             )
         );

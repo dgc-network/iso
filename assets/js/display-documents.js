@@ -81,11 +81,11 @@ jQuery(document).ready(function($) {
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
-                    $("#doc-date").val(response.doc_date);
                     $("#doc-url").val(response.doc_url);
-                    $("#start-job").empty();
-                    $("#start-job").append(response.start_job);
+                    $("#start-todo").empty().append(response.start_todo);
+                    //$("#start-todo").append(response.start_todo);
                     $("#start-leadtime").val(response.start_leadtime);
+                    $("#doc-date").val(response.doc_date);
                 },
                 error: function (error) {
                     console.error(error);
@@ -101,30 +101,32 @@ jQuery(document).ready(function($) {
         autoOpen: false,
         buttons: {
             "Save": function() {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_document_dialog_data',
-                        '_doc_id': $("#doc-id").val(),
-                        '_doc_title': $("#doc-title").val(),
-                        '_doc_number': $("#doc-number").val(),
-                        '_doc_revision': $("#doc-revision").val(),
-                        '_doc_date': $("#doc-date").val(),
-                        '_doc_url': $("#doc-url").val(),
-                        '_start_job': $("#start-job").val(),
-                        '_start_leadtime': $("#start-leadtime").val(),
-                    },
-                    success: function (response) {
-                        $("#document-dialog").dialog('close');
-                        get_document_list_data($("#site-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
+                if (window.confirm("Are you sure you want to proceed this action?")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_document_dialog_data',
+                            '_doc_id': $("#doc-id").val(),
+                            '_doc_title': $("#doc-title").val(),
+                            '_doc_number': $("#doc-number").val(),
+                            '_doc_revision': $("#doc-revision").val(),
+                            '_doc_url': $("#doc-url").val(),
+                            '_start_todo': $("#start-todo").val(),
+                            '_start_leadtime': $("#start-leadtime").val(),
+                            '_doc_date': $("#doc-date").val(),
+                        },
+                        success: function (response) {
+                            $("#document-dialog").dialog('close');
+                            get_document_list_data($("#site-id").val());
+                        },
+                        error: function (error) {
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });            
+                }
             },
             "Delete": function() {
                 if (window.confirm("Are you sure you want to delete this document?")) {

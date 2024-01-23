@@ -195,7 +195,7 @@ jQuery(document).ready(function($) {
                     const output = `
                         <td style="text-align:center;">${value.action_title}</td>
                         <td>${value.action_content}</td>
-                        <td style="text-align:center;">${value.next_job}</td>
+                        <td style="text-align:center;">${value.next_todo}</td>
                         <td style="text-align:center;">${value.next_leadtime}</td>
                     `;
                     $(".todo-action-list-"+index).append(output).show();
@@ -218,8 +218,8 @@ jQuery(document).ready(function($) {
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
-                            $("#next-job").empty().append(response.next_job);
-                            //$("#next-job").append(response.next_job);
+                            $("#next-todo").empty().append(response.next_todo);
+                            //$("#next-todo").append(response.next_todo);
                             $("#next-leadtime").val(response.next_leadtime);
                         },
                         error: function (error) {
@@ -249,7 +249,7 @@ jQuery(document).ready(function($) {
                     data: {
                         'action': 'set_todo_action_dialog_data',
                         '_action_id': $("#action-id").val(),
-                        '_next_job': $("#next-job").val(),
+                        '_next_todo': $("#next-todo").val(),
                         '_next_leadtime': $("#next-leadtime").val(),
                         '_doc_id': $("#doc-id").val(),
                     },
