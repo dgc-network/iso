@@ -367,6 +367,7 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
             update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
             if ($new_next_job>0) {
                 if ($new_next_job!=$start_job) {
+                    $start_job = $next_job;
                     set_next_job_and_actions($start_job, $new_action_id);
                 }
             }
