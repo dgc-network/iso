@@ -82,8 +82,8 @@ jQuery(document).ready(function($) {
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
                     $("#doc-url").val(response.doc_url);
-                    $("#start-todo").empty().append(response.start_todo);
-                    //$("#start-todo").append(response.start_todo);
+                    $("#start-job").empty().append(response.start_job);
+                    //$("#start-job").append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#doc-date").val(response.doc_date);
                 },
@@ -113,7 +113,7 @@ jQuery(document).ready(function($) {
                             '_doc_number': $("#doc-number").val(),
                             '_doc_revision': $("#doc-revision").val(),
                             '_doc_url': $("#doc-url").val(),
-                            '_start_todo': $("#start-todo").val(),
+                            '_start_job': $("#start-job").val(),
                             '_start_leadtime': $("#start-leadtime").val(),
                             '_doc_date': $("#doc-date").val(),
                         },

@@ -208,13 +208,13 @@ function get_todo_dialog_buttons_data() {
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $next_todo = esc_attr(get_post_meta(get_the_ID(), 'next_todo', true));
-            if (($next_todo!=0)||($next_todo!='')){
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            if (($next_job!=0)||($next_job!='')){
                 $_list = array();
                 $_list["action_id"] = get_the_ID();
                 $_list["action_title"] = get_the_title();
                 $_list["action_content"] = get_post_field('post_content', get_the_ID());
-                $_list["next_todo"] = get_the_title($next_todo);
+                $_list["next_job"] = get_the_title($next_job);
                 $_list["next_leadtime"] = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
                 array_push($_array, $_list);    
             }
@@ -235,9 +235,9 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_time', time());
 
         $action_id = esc_attr($_POST['_action_id']);
-        $next_todo = get_post_meta($action_id, 'next_todo', true);
+        $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        update_post_meta( $next_todo, 'todo_due', time()+$next_leadtime);
+        update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
     }
     wp_send_json($response);
 }
@@ -284,8 +284,8 @@ function display_todo_action_dialog(){
             <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
             <label for="action-content">Content:</label>
             <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-            <label for="next-todo">Next job:</label>
-            <select id="next-todo" class="text ui-widget-content ui-corner-all" ></select>
+            <label for="next-job">Next job:</label>
+            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
             <label for="next-leadtime">Next leadtime:</label>
             <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
         </fieldset>
@@ -299,8 +299,8 @@ function set_todo_action_dialog_data() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $start_todo = esc_attr(get_post_meta($doc_id, 'start_todo', true));
-        set_next_todo_and_actions($action_id, $start_todo);
+        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        set_next_job_and_actions($start_job, $action_id);
     } else {
         // Set up the post data
         $new_post = array(
@@ -312,29 +312,29 @@ function set_todo_action_dialog_data() {
         );    
         // Insert the post into the database
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_todo_id']));
+        update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialog_data' );
 
-function set_next_todo_and_actions($start_todo=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
-    if ($start_todo==0) return;
-    $current_user_id = get_current_user_id();
+function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
+    if ($start_job==0) return;
     if ($action_id==0){
-        $job_title = get_the_title($start_todo);
+        $job_title = get_the_title($start_job);
         $doc_title = get_the_title($doc_id);
-        $next_todo = $start_todo;
+        $next_job = $start_job;
     } else {
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $job_id = esc_attr(get_post_meta($action_id, 'job_id', true));
+        $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
         $job_title = get_the_title($job_id);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_title = get_the_title($doc_id);
-        $next_todo = esc_attr(get_post_meta($action_id, 'next_todo', true));    
+        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));    
     }
-    // Insert the To-do list for next_todo
+    // Insert the To-do list for next_job
+    $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $job_title,
         'post_content'  => $doc_title,
@@ -343,13 +343,13 @@ function set_next_todo_and_actions($start_todo=0, $action_id=0, $doc_id=0, $star
         'post_type'     => 'todo',
     );    
     $new_todo_id = wp_insert_post($new_post);
-    update_post_meta( $new_todo_id, 'job_id', $next_todo);
+    update_post_meta( $new_todo_id, 'job_id', $next_job);
     update_post_meta( $new_todo_id, 'doc_id', $doc_id);
     if ($action_id==0){
         update_post_meta( $new_todo_id, 'todo_due', time()+$start_leadtime);
     }
-    // Insert the Action list for next_todo
-    $query = retrieve_action_list_data($next_todo);
+    // Insert the Action list for next_job
+    $query = retrieve_action_list_data($next_job);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $new_post = array(
@@ -361,16 +361,16 @@ function set_next_todo_and_actions($start_todo=0, $action_id=0, $doc_id=0, $star
             );    
             $new_action_id = wp_insert_post($new_post);
             update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-            $new_next_todo = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-            update_post_meta( $new_action_id, 'next_todo', $new_next_todo);
+            $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            update_post_meta( $new_action_id, 'next_job', $new_next_job);
             $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
             update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-            if ($new_next_todo>0) {
-                if ($new_next_todo!=$start_todo) {
-                    set_next_todo_and_actions($start_todo, $new_action_id);
+            if ($new_next_job>0) {
+                if ($new_next_job!=$start_job) {
+                    set_next_job_and_actions($start_job, $new_action_id);
                 }
             }
-            if ($new_next_todo==-1) {
+            if ($new_next_job==-1) {
                 $data = array(
                     'ID'         => $doc_id,
                     'meta_input' => array(

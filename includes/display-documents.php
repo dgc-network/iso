@@ -180,8 +180,8 @@ function display_document_dialog($site_id=0){
     
             <div>
                 <div style="display:inline-block;">
-                    <label for="start-todo">Start:</label>
-                    <select id="start-todo" class="text ui-widget-content ui-corner-all" ></select>
+                    <label for="start-job">Start:</label>
+                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
                 </div>
                 <div style="display:inline-block; width:25%;">
                     <label for="start-leadtime">Leadtime:</label>
@@ -207,9 +207,8 @@ function get_document_dialog_data() {
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $start_todo_todo_id = esc_attr(get_post_meta($doc_id, 'start_todo', true));
-        $start_todo_job_id = esc_attr(get_post_meta($start_todo_todo_id, 'job_id', true));
-        $response["start_todo"] = select_site_job_option_data($start_todo_job_id, $_POST['_site_id']);
+        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
         $response["start_leadtime"] = esc_html(get_post_meta($doc_id, 'start_leadtime', true));
         $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
@@ -223,18 +222,25 @@ function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
-        $start_todo = sanitize_text_field($_POST['_start_todo']);
+        $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        if ($start_todo>0) set_next_todo_and_actions($start_todo, 0, $doc_id, $start_leadtime);
-        if ($start_todo==-1) {
+        if ($start_job>0) set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
+        if ($start_job==-1) {
             $data = array(
                 'ID'         => $_POST['_doc_id'],
                 'meta_input' => array(
                     'doc_date'   => time()+$start_leadtime,
                 )
             );
-            wp_update_post( $data );            
-        }        
+        } else {
+            $data = array(
+                'ID'         => $_POST['_doc_id'],
+                'meta_input' => array(
+                    'doc_date'   => '',
+                )
+            );
+        }
+        wp_update_post( $data );            
 
         // Update the Document data
         $data = array(
@@ -244,7 +250,7 @@ function set_document_dialog_data() {
                 'doc_number'   => $_POST['_doc_number'],
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_url'      => $_POST['_doc_url'],
-                'start_todo'    => $start_todo,
+                'start_job'    => $start_job,
                 'start_leadtime' => $start_leadtime,
             )
         );
