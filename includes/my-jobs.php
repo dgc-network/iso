@@ -78,6 +78,18 @@ function user_custom_fields(WP_User $user) {
                 </td>
             </tr>
             <tr>
+                <th><label for="line_user_id">Line User ID</label></th>
+                <td>
+                    <input
+                        type="text"
+                        value="<?php echo esc_attr(get_user_meta($user->ID, 'line_user_id', true)); ?>"
+                        name="line_user_id"
+                        id="line_user_id"
+                        class="regular-text"
+                    >
+                </td>
+            </tr>
+            <tr>
                 <th><label for="site-id">Site</label></th>
                 <td>
                     <select id="site-id" name="_site_id" class="regular-text" >
