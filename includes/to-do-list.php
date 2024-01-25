@@ -265,6 +265,7 @@ function notice_the_persons_in_charge($todo_id=0) {
     // Notice the persons in charge the job
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
+    $users = get_users();
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     foreach ($users as $user) {
         echo '<p>'.$user->display_name.'</p>';
