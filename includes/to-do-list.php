@@ -223,12 +223,12 @@ function set_todo_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         // Update To-do
         $todo_id = sanitize_text_field($_POST['_todo_id']);
-        update_post_meta( $todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $todo_id, 'submit_time', time());
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         $action_id = sanitize_text_field($_POST['_action_id']);
         set_next_job_and_actions($start_job, $action_id);
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_time', time());
     }
     wp_send_json($response);
 }

@@ -543,7 +543,7 @@ function select_site_job_option_data($selected_job=0, $site_id=0) {
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata(); // Reset post data to the main loop
-    if ($selected_job==0){
+    if ($selected_job==-1){
         $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
     } else {
         $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
