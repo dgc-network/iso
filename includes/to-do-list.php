@@ -68,6 +68,7 @@ function to_do_list_shortcode() {
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
+                        $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
                         $due_date = wp_date( get_option('date_format'), $todo_due );
@@ -128,8 +129,9 @@ function get_todo_list_data() {
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $todo_id = (int) get_the_ID();
-            $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
+            $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
             $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+            $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
             if (is_my_job($job_id)) { // Another condition to grab the data
                 $_list = array();
                 $_list["todo_id"] = $todo_id;
