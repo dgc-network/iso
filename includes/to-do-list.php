@@ -250,20 +250,20 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
     if ($start_job==0) return;
     if ($action_id==0){
-        $todo_title = get_the_title($start_job);
-        $doc_title = get_the_title($doc_id);
         $next_job = $start_job;
         $next_leadtime = $start_leadtime;
     } else {
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $todo_title = get_the_title($todo_id);
+        //$todo_title = get_the_title($todo_id);
         //$job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
         //$job_title = get_the_title($job_id);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $doc_title = get_the_title($doc_id);
+        //$doc_title = get_the_title($doc_id);
         $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
         $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
+    $todo_title = get_the_title($next_job);
+    $doc_title = get_the_title($doc_id);
     if ($next_job==-1) {
         $data = array(
             'ID'         => $doc_id,
@@ -276,14 +276,14 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         // Insert the To-do list for next_job
         $current_user_id = get_current_user_id();
         $new_post = array(
-            'post_title'    => $job_title,
+            'post_title'    => $todo_title,
             'post_content'  => $doc_title,
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'todo',
         );    
         $new_todo_id = wp_insert_post($new_post);
-        update_post_meta( $new_todo_id, 'todo_id', $next_job);
+        //update_post_meta( $new_todo_id, 'todo_id', $next_job);
         //update_post_meta( $new_todo_id, 'job_id', $next_job);
         update_post_meta( $new_todo_id, 'doc_id', $doc_id);
         if ($action_id==0){
