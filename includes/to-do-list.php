@@ -40,8 +40,6 @@ add_action('init', 'register_todo_post_type');
 
 // Shortcode to display To-do list on frontend
 function to_do_list_shortcode() {
-    //ob_start(); // Start output buffering
-
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();    
@@ -71,7 +69,6 @@ function to_do_list_shortcode() {
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
-                        $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
                         $due_date = wp_date( get_option('date_format'), $todo_due );
                         if (is_my_job($job_id)) {
@@ -101,8 +98,6 @@ function to_do_list_shortcode() {
     } else {
         user_did_not_login_yet();
     }
-    
-    //return ob_get_clean(); // Return the buffered content
 }
 add_shortcode('to-do-list', 'to_do_list_shortcode');
 
@@ -132,13 +127,12 @@ function get_todo_list_data() {
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $job_id = esc_attr(get_post_meta($post_id, 'job_id', true));
-            $todo_due = esc_attr(get_post_meta($post_id, 'todo_due', true));
-            $doc_id = esc_attr(get_post_meta($post_id, 'doc_id', true));
-            if (is_my_job($job_id)) {
+            $todo_id = (int) get_the_ID();
+            $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
+            $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+            if (is_my_job($job_id)) { // Another condition to grab the data
                 $_list = array();
-                $_list["todo_id"] = $post_id;
+                $_list["todo_id"] = $todo_id;
                 $_list["todo_title"] = get_the_title();
                 $_list["doc_title"] = get_the_title($doc_id);
                 $_list["due_date"] = wp_date( get_option('date_format'), $todo_due );
@@ -158,7 +152,6 @@ function display_todo_dialog() {
         <fieldset>
             <input type="hidden" id="todo-id" />
             <input type="hidden" id="job-id" />
-            <input type="hidden" id="site-id" />
             <label for="doc-title">Title:</label>
             <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
             <div>
@@ -253,11 +246,7 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         $next_leadtime = $start_leadtime;
     } else {
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        //$todo_title = get_the_title($todo_id);
-        //$job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-        //$job_title = get_the_title($job_id);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        //$doc_title = get_the_title($doc_id);
         $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
         $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
@@ -282,8 +271,7 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
             'post_type'     => 'todo',
         );    
         $new_todo_id = wp_insert_post($new_post);
-        //update_post_meta( $new_todo_id, 'todo_id', $next_job);
-        //update_post_meta( $new_todo_id, 'job_id', $next_job);
+        update_post_meta( $new_todo_id, 'job_id', $next_job);
         update_post_meta( $new_todo_id, 'doc_id', $doc_id);
         if ($action_id==0){
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
@@ -300,14 +288,13 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
                     'post_type'     => 'action',
                 );    
                 $new_action_id = wp_insert_post($new_post);
-                //update_post_meta( $new_action_id, 'job_id', $new_todo_id);
                 update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
                 $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
                 update_post_meta( $new_action_id, 'next_job', $new_next_job);
                 $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
                 update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
             endwhile;
-            wp_reset_postdata(); // Reset post data to the main loop
+            wp_reset_postdata();
         }
     }
 }
@@ -386,6 +373,7 @@ function display_todo_action_dialog(){
     ?>
     <div id="todo-action-dialog" title="Action dialog" style="display:none;">
         <fieldset>
+            <input type="hidden" id="site-id" />
             <input type="hidden" id="action-id" />
             <label for="action-title">Title:</label>
             <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
@@ -424,7 +412,6 @@ function set_todo_action_dialog_data() {
             'post_type'     => 'action',
         );    
         $post_id = wp_insert_post($new_post);
-        //update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_todo_id']));
         update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
     }
     wp_send_json($response);
@@ -434,7 +421,7 @@ add_action( 'wp_ajax_nopriv_set_todo_action_dialog_data', 'set_todo_action_dialo
 
 function del_todo_action_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_action_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_action_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_todo_action_dialog_data', 'del_todo_action_dialog_data' );
