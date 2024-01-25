@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_todo_action_list_data',
-                '_job_id': id,
+                '_todo_id': id,
             },
             success: function (response) {            
                 $("#todo-action-list-dialog").dialog('open');
