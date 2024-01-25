@@ -35,7 +35,7 @@ jQuery(document).ready(function($) {
                 $.each(response, function (index, value) {
                     $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
                     const output = `
-                        <td style="text-align:center;">${value.job_title}</td>
+                        <td style="text-align:center;">${value.todo_title}</td>
                         <td>${value.doc_title}</td>
                         <td style="text-align:center;">${value.due_date}</td>
                     `;
