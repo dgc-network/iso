@@ -139,14 +139,13 @@ function get_todo_list_data() {
             if (is_my_job($job_id)) {
                 $_list = array();
                 $_list["todo_id"] = $post_id;
-                //$_list["job_title"] = get_the_title($job_id);
                 $_list["todo_title"] = get_the_title();
                 $_list["doc_title"] = get_the_title($doc_id);
                 $_list["due_date"] = wp_date( get_option('date_format'), $todo_due );
                 array_push($_array, $_list);
             }
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }

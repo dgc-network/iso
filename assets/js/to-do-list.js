@@ -19,14 +19,14 @@ jQuery(document).ready(function($) {
         get_todo_action_list_data($("#todo-id").val());
     })
 
-    function get_todo_list_data(job_id){
+    function get_todo_list_data(){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'get_todo_list_data',
-                '_job_id': job_id,
+                //'_job_id': job_id,
             },
             success: function (response) {            
                 for(index=0;index<50;index++) {
@@ -125,7 +125,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-dialog").dialog('close');
-                            get_todo_list_data($("#job-id").val());
+                            //get_todo_list_data($("#job-id").val());
+                            get_todo_list_data();
                         },
                         error: function(error){
                             console.error(error);
