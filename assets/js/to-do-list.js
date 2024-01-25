@@ -125,7 +125,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-dialog").dialog('close');
-                            //get_todo_list_data($("#job-id").val());
                             get_todo_list_data();
                         },
                         error: function(error){

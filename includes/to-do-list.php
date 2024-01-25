@@ -225,14 +225,9 @@ function set_todo_dialog_data() {
         $todo_id = sanitize_text_field($_POST['_todo_id']);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
-
-        $action_id = sanitize_text_field($_POST['_action_id']);
-        //$next_job = get_post_meta($action_id, 'next_job', true);
-        //$next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        //update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
-
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $action_id = sanitize_text_field($_POST['_action_id']);
         set_next_job_and_actions($start_job, $action_id);
     }
     wp_send_json($response);
@@ -240,19 +235,19 @@ function set_todo_dialog_data() {
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
-function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
+//function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
+function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_leadtime=0) {
     if ($start_job==0) return;
-    if ($action_id==0){
-        $next_job = $start_job;
-        $next_leadtime = $start_leadtime;
-    } else {
+    //if ($action_id==0){
+    //    $next_job = $start_job;
+    //    $next_leadtime = $start_leadtime;
+    //} else {
+    if ($action_id>0){
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
         $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
-    $todo_title = get_the_title($next_job);
-    $doc_title = get_the_title($doc_id);
     if ($next_job==-1) {
         $data = array(
             'ID'         => $doc_id,
@@ -262,6 +257,8 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         );
         wp_update_post( $data );
     } else {
+        $todo_title = get_the_title($next_job);
+        $doc_title = get_the_title($doc_id);
         // Insert the To-do list for next_job
         $current_user_id = get_current_user_id();
         $new_post = array(
