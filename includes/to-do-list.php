@@ -235,14 +235,87 @@ function set_todo_dialog_data() {
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
-//function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
+function get_users_by_job_id($job_id) {
+    // Define the meta query
+    $meta_query = array(
+        array(
+            'key'     => 'my_job_ids',
+            'value'   => $job_id,
+            'compare' => 'IN', // Check if $job_id exists in the array
+        ),
+    );
+
+    // Set up the user query arguments
+    $args = array(
+        'meta_query' => $meta_query,
+    );
+
+    // Create a new WP_User_Query
+    $user_query = new WP_User_Query($args);
+
+    // Get the results
+    $users = $user_query->get_results();
+
+    // Return the list of users
+    return $users;
+}
+
+function notice_the_persons_in_charge($todo_id=0) {
+    $line_bot_api = new line_bot_api();
+    // Notice the persons in charge the job
+    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $users = get_users_by_job_id($job_id);
+    $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+    foreach ($users as $user) {
+        // Flex Message JSON structure with a button
+        $flexMessage = [
+            'type' => 'flex',
+            'altText' => 'This is a Flex Message with a Button',
+            'contents' => [
+                'type' => 'bubble',
+                'body' => [
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => 'Hello, '.$user->display_name,
+                            'size' => 'lg',
+                            'weight' => 'bold',
+                        ],
+                        [
+                            'type' => 'text',
+                            'text' => 'You have a new todo. Please click the button below to go to the Todo-list system.',
+                            'wrap' => true,
+                        ],
+                    ],
+                ],
+                'footer' => [
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => [
+                        [
+                            'type' => 'button',
+                            'action' => [
+                                'type' => 'uri',
+                                'label' => 'Click me!',
+                                'uri' => $link_uri, // Replace with your desired URI
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        
+        $line_bot_api->pushMessage([
+            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+            'messages' => [$flexMessage],
+        ]);            
+    }    
+}
+
 function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_leadtime=0) {
     if ($next_job==0) return;
-    //if ($start_job==0) return;
-    //if ($action_id==0){
-    //    $next_job = $start_job;
-    //    $next_leadtime = $start_leadtime;
-    //} else {
     if ($action_id>0){
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
@@ -272,9 +345,11 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
         $new_todo_id = wp_insert_post($new_post);
         update_post_meta( $new_todo_id, 'job_id', $next_job);
         update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-        //if ($action_id==0){
-            update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-        //}
+        update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+
+        // Notice the persons in charge the job
+        notice_the_persons_in_charge($new_todo_id);
+
         // Insert the Action list for next_job
         $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
