@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         id = this.id;
-        id = id.substring(9);
+        id = id.substring(10);
         $("#todo-id").val(id);
     
         // Dialog content
