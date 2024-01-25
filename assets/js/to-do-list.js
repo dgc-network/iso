@@ -180,7 +180,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_job_action_list_data',
+                'action': 'get_todo_action_list_data',
                 '_job_id': id,
             },
             success: function (response) {            

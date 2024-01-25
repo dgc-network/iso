@@ -202,7 +202,7 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
-    $query = retrieve_action_list_data($todo_id);
+    $query = retrieve_todo_action_list_data($todo_id);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
@@ -228,17 +228,15 @@ function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
         // Update To-do
-        $todo_id = esc_attr($_POST['_todo_id']);
+        $todo_id = sanitize_text_field($_POST['_todo_id']);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_time', time());
 
-        $action_id = esc_attr($_POST['_action_id']);
+        $action_id = sanitize_text_field($_POST['_action_id']);
         $next_job = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
 
-        $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         set_next_job_and_actions($start_job, $action_id);
@@ -251,14 +249,15 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
     if ($start_job==0) return;
     if ($action_id==0){
-        $job_title = get_the_title($start_job);
+        $todo_title = get_the_title($start_job);
         $doc_title = get_the_title($doc_id);
         $next_job = $start_job;
         $next_leadtime = $start_leadtime;
     } else {
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-        $job_title = get_the_title($job_id);
+        $todo_title = get_the_title($todo_id);
+        //$job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+        //$job_title = get_the_title($job_id);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_title = get_the_title($doc_id);
         $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
@@ -283,13 +282,14 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
             'post_type'     => 'todo',
         );    
         $new_todo_id = wp_insert_post($new_post);
-        update_post_meta( $new_todo_id, 'job_id', $next_job);
+        update_post_meta( $new_todo_id, 'todo_id', $next_job);
+        //update_post_meta( $new_todo_id, 'job_id', $next_job);
         update_post_meta( $new_todo_id, 'doc_id', $doc_id);
         if ($action_id==0){
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
         }
         // Insert the Action list for next_job
-        $query = retrieve_action_list_data($next_job);
+        $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $new_post = array(
@@ -300,7 +300,8 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
                     'post_type'     => 'action',
                 );    
                 $new_action_id = wp_insert_post($new_post);
-                update_post_meta( $new_action_id, 'job_id', $new_todo_id);
+                //update_post_meta( $new_action_id, 'job_id', $new_todo_id);
+                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
                 $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
                 update_post_meta( $new_action_id, 'next_job', $new_next_job);
                 $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
@@ -339,6 +340,47 @@ function display_todo_action_list() {
     <?php display_todo_action_dialog();?>
     <?php
 }
+
+function retrieve_todo_action_list_data($_id=0) {
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'todo_id',
+                'value' => $_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function get_todo_action_list_data() {
+    // Retrieve the documents data
+    $query = retrieve_todo_action_list_data($_POST['_todo_id']);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $_list = array();
+            $_list["action_id"] = get_the_ID();
+            $_list["action_title"] = get_the_title();
+            $_list["action_content"] = get_post_field('post_content', get_the_ID());
+            if ($next_job==-1){
+                $_list["next_job"] = __( '發行', 'your-text-domain' );
+            } else {
+                $_list["next_job"] = get_the_title($next_job);
+            }
+            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_todo_action_list_data', 'get_todo_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_data' );
 
 function display_todo_action_dialog(){
     ?>
@@ -382,7 +424,8 @@ function set_todo_action_dialog_data() {
             'post_type'     => 'action',
         );    
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_todo_id']));
+        //update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_todo_id']));
+        update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
     }
     wp_send_json($response);
 }

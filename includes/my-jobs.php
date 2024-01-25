@@ -475,14 +475,14 @@ function display_site_job_action_list() {
 <?php
 }
     
-function retrieve_action_list_data($job_id=0) {
+function retrieve_job_action_list_data($_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
                 'key'   => 'job_id',
-                'value' => $job_id,
+                'value' => $_id,
             ),
         ),
     );
@@ -492,7 +492,7 @@ function retrieve_action_list_data($job_id=0) {
 
 function get_job_action_list_data() {
     // Retrieve the documents data
-    $query = retrieve_action_list_data($_POST['_job_id']);
+    $query = retrieve_job_action_list_data($_POST['_job_id']);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
