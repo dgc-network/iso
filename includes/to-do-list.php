@@ -225,9 +225,9 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_time', time());
 
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $next_job = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
+        //$next_job = get_post_meta($action_id, 'next_job', true);
+        //$next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        //update_post_meta( $next_job, 'todo_due', time()+$next_leadtime);
 
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
@@ -272,9 +272,9 @@ function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_
         $new_todo_id = wp_insert_post($new_post);
         update_post_meta( $new_todo_id, 'job_id', $next_job);
         update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-        if ($action_id==0){
+        //if ($action_id==0){
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-        }
+        //}
         // Insert the Action list for next_job
         $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
