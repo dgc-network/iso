@@ -183,9 +183,8 @@ function get_todo_dialog_data() {
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
         $response["job_id"] = esc_attr(get_post_meta($todo_id, 'job_id', true));
-        $response["site_id"] = esc_attr(get_post_meta($job_id, 'site_id', true));
+        $response["site_id"] = esc_attr(get_post_meta($doc_id, 'site_id', true));
     }
     wp_send_json($response);
 }
