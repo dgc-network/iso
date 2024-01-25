@@ -237,7 +237,8 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 //function set_next_job_and_actions($start_job=0, $action_id=0, $doc_id=0, $start_leadtime=0) {
 function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_leadtime=0) {
-    if ($start_job==0) return;
+    if ($next_job==0) return;
+    //if ($start_job==0) return;
     //if ($action_id==0){
     //    $next_job = $start_job;
     //    $next_leadtime = $start_leadtime;
