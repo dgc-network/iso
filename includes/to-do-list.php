@@ -32,7 +32,7 @@ function register_todo_post_type() {
         'hierarchical'       => false,
         'menu_position'      => null,
         'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
-        //'show_in_menu'       => false, // Set this to false to hide from the admin menu
+        'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
 }
@@ -240,7 +240,6 @@ function send_flex_message_with_button($user, $message_text='', $link_uri='') {
     $line_bot_api = new line_bot_api();
     $flexMessage = [
         'type' => 'flex',
-        //'altText' => 'This is a Flex Message with a Button',
         'altText' => $message_text,
         'contents' => [
             'type' => 'bubble',
@@ -285,16 +284,6 @@ function send_flex_message_with_button($user, $message_text='', $link_uri='') {
 }
 
 function get_users_by_job_id($job_id=0) {
-    // Define the meta query
-    $meta_query = array(
-        'relation' => 'AND', // Ensure both conditions are met
-        array(
-            'key'     => 'my_job_ids',
-            'value'   => $job_id,
-            'compare' => 'LIKE', // Check if $job_id exists in the array
-        ),
-    );
-
     // Set up the user query arguments
     $args = array(
         //'meta_query' => $meta_query,
@@ -307,13 +296,10 @@ function get_users_by_job_id($job_id=0) {
             ),
         ),
     );
-
     // Create a new WP_User_Query
     $user_query = new WP_User_Query($args);
-
     // Get the results
     $users = $user_query->get_results();
-
     // Return the list of users
     return $users;
 }
@@ -327,7 +313,6 @@ function notice_the_persons_in_charge($todo_id=0) {
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        // Flex Message JSON structure with a button
         send_flex_message_with_button($user, $message_text, $link_uri);
     }    
 }
@@ -361,8 +346,8 @@ function notice_the_persons_in_site($doc_id=0) {
     //$link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        // Flex Message JSON structure with a button
-        send_flex_message_with_button($user, $message_text, $doc_url);
+        //send_flex_message_with_button($user, $message_text, $doc_url);
+        send_flex_message_with_button($user, $message_text);
     }    
 }
 
