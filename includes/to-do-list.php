@@ -238,13 +238,6 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 function get_users_by_job_id($job_id) {
     // Define the meta query
     $meta_query = array(
-        array(
-            'key'     => 'my_job_ids',
-            'value'   => $job_id,
-            'compare' => 'IN', // Check if $job_id exists in the array
-        ),
-    );
-    $meta_query = array(
         'relation' => 'AND', // Ensure both conditions are met
         array(
             'key'     => 'my_job_ids',
@@ -266,27 +259,13 @@ function get_users_by_job_id($job_id) {
 
     // Return the list of users
     return $users;
-
-        // Retrieve the value
-        $args = array(
-            'post_type'      => 'user',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array(
-                    'key'     => 'my_job_ids',
-                    'value'   => $job_id,
-                    'compare' => 'IN', // Check if $job_id exists in the array
-                ),
-            ),
-        );
-        $query = new WP_Query($args);
-        return $query;
-    
 }
 
 function notice_the_persons_in_charge($todo_id=0) {
     $line_bot_api = new line_bot_api();
     // Notice the persons in charge the job
+    $job_title = get_the_title($todo_id);
+    $doc_title = get_post_field('post_content', $todo_id);
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
     //$users = get_users();
@@ -295,7 +274,8 @@ function notice_the_persons_in_charge($todo_id=0) {
         // Flex Message JSON structure with a button
         $flexMessage = [
             'type' => 'flex',
-            'altText' => 'This is a Flex Message with a Button',
+            //'altText' => 'This is a Flex Message with a Button',
+            'altText' => $job_title.':'.$doc_title,
             'contents' => [
                 'type' => 'bubble',
                 'body' => [
