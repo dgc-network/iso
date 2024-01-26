@@ -314,13 +314,27 @@ function notice_the_persons_in_charge($todo_id=0) {
     // Notice the persons in charge the job
     $job_title = get_the_title($todo_id);
     $doc_title = get_post_field('post_content', $todo_id);
-    $message_text='You have a new todo: '.$job_title.':'.$doc_title.'.';
+    $message_text='You have a new todo. '.$job_title.':'.$doc_title.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         // Flex Message JSON structure with a button
         send_flex_message_with_button($user, $message_text, $link_uri);
+    }    
+}
+
+function notice_the_persons_in_site($doc_id=0) {
+    // Notice the persons in site
+    $doc_title = get_the_title($doc_id);
+    $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
+    $doc_url = esc_html(get_post_meta($doc_id, 'doc_url', true));
+    $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $doc_date ).'.';
+    //$link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+    $users = get_users_in_site($site_id);
+    foreach ($users as $user) {
+        // Flex Message JSON structure with a button
+        send_flex_message_with_button($user, $message_text, $doc_url);
     }    
 }
 
@@ -340,6 +354,10 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
             )
         );
         wp_update_post( $data );
+        
+        // Notice the persons in charge the job
+        notice_the_persons_in_site($doc_id);
+
     } else {
         $todo_title = get_the_title($next_job);
         $doc_title = get_the_title($doc_id);
