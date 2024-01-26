@@ -235,32 +235,6 @@ function set_todo_dialog_data() {
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
-function get_users_by_job_id($job_id) {
-    // Define the meta query
-    $meta_query = array(
-        'relation' => 'AND', // Ensure both conditions are met
-        array(
-            'key'     => 'my_job_ids',
-            'value'   => $job_id,
-            'compare' => 'LIKE', // Check if $job_id exists in the array
-        ),
-    );
-
-    // Set up the user query arguments
-    $args = array(
-        'meta_query' => $meta_query,
-    );
-
-    // Create a new WP_User_Query
-    $user_query = new WP_User_Query($args);
-
-    // Get the results
-    $users = $user_query->get_results();
-
-    // Return the list of users
-    return $users;
-}
-
 function send_flex_message_with_button($user, $message_text='', $link_uri='') {
     // Flex Message JSON structure with a button
     $line_bot_api = new line_bot_api();
@@ -310,21 +284,7 @@ function send_flex_message_with_button($user, $message_text='', $link_uri='') {
     ]);
 }
 
-function notice_the_persons_in_charge($todo_id=0) {
-    // Notice the persons in charge the job
-    $job_title = get_the_title($todo_id);
-    $doc_title = get_post_field('post_content', $todo_id);
-    $message_text='You have a new todo. '.$job_title.':'.$doc_title.'.';
-    $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-    $users = get_users_by_job_id($job_id);
-    foreach ($users as $user) {
-        // Flex Message JSON structure with a button
-        send_flex_message_with_button($user, $message_text, $link_uri);
-    }    
-}
-
-function get_users_in_site($site_id) {
+function get_users_by_job_id($job_id=0) {
     // Define the meta query
     $meta_query = array(
         'relation' => 'AND', // Ensure both conditions are met
@@ -339,12 +299,13 @@ function get_users_in_site($site_id) {
     $args = array(
         //'meta_query' => $meta_query,
         'meta_query'     => array(
+            'relation' => 'AND', // Ensure both conditions are met
             array(
-                'key'   => 'site_id',
-                'value' => $site_id,
+                'key'     => 'my_job_ids',
+                'value'   => $job_id,
+                'compare' => 'LIKE', // Check if $job_id exists in the array
             ),
         ),
-
     );
 
     // Create a new WP_User_Query
@@ -353,6 +314,39 @@ function get_users_in_site($site_id) {
     // Get the results
     $users = $user_query->get_results();
 
+    // Return the list of users
+    return $users;
+}
+
+function notice_the_persons_in_charge($todo_id=0) {
+    // Notice the persons in charge the job
+    $job_title = get_the_title($todo_id);
+    $doc_title = get_post_field('post_content', $todo_id);
+    $message_text='You have a new todo to '.$job_title.':'.$doc_title.'.';
+    $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $users = get_users_by_job_id($job_id);
+    foreach ($users as $user) {
+        // Flex Message JSON structure with a button
+        send_flex_message_with_button($user, $message_text, $link_uri);
+    }    
+}
+
+function get_users_in_site($site_id=0) {
+    // Set up the user query arguments
+    $args = array(
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+                'compare' => '=',
+            ),
+        ),
+    );
+    // Create a new WP_User_Query
+    $user_query = new WP_User_Query($args);
+    // Get the results
+    $users = $user_query->get_results();
     // Return the list of users
     return $users;
 }
