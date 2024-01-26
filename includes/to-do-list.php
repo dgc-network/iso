@@ -326,7 +326,8 @@ function get_users_in_site($site_id=0) {
             array(
                 'key'   => 'site_id',
                 'value' => $site_id,
-                'compare' => '=',
+                'compare' => 'LIKE', // Check if $job_id exists in the array
+                //'compare' => '=',
             ),
         ),
     );
