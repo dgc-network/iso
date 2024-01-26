@@ -261,61 +261,67 @@ function get_users_by_job_id($job_id) {
     return $users;
 }
 
-function notice_the_persons_in_charge($todo_id=0) {
+function send_flex_message_with_button($user, $message_text='', $link_uri='') {
+    // Flex Message JSON structure with a button
     $line_bot_api = new line_bot_api();
+    $flexMessage = [
+        'type' => 'flex',
+        //'altText' => 'This is a Flex Message with a Button',
+        'altText' => $message_text,
+        'contents' => [
+            'type' => 'bubble',
+            'body' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'Hello, '.$user->display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => $message_text.' Please click the button below to proceed the process.',
+                        'wrap' => true,
+                    ],
+                ],
+            ],
+            'footer' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Replace with your desired URI
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+    
+    $line_bot_api->pushMessage([
+        'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+        'messages' => [$flexMessage],
+    ]);
+}
+
+function notice_the_persons_in_charge($todo_id=0) {
     // Notice the persons in charge the job
     $job_title = get_the_title($todo_id);
     $doc_title = get_post_field('post_content', $todo_id);
+    $message_text='You have a new todo: '.$job_title.':'.$doc_title.'.';
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
     //$users = get_users();
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     foreach ($users as $user) {
         // Flex Message JSON structure with a button
-        $flexMessage = [
-            'type' => 'flex',
-            //'altText' => 'This is a Flex Message with a Button',
-            'altText' => $job_title.':'.$doc_title,
-            'contents' => [
-                'type' => 'bubble',
-                'body' => [
-                    'type' => 'box',
-                    'layout' => 'vertical',
-                    'contents' => [
-                        [
-                            'type' => 'text',
-                            'text' => 'Hello, '.$user->display_name,
-                            'size' => 'lg',
-                            'weight' => 'bold',
-                        ],
-                        [
-                            'type' => 'text',
-                            'text' => 'You have a new todo: '.$job_title.':'.$doc_title.'. Please click the button below to go to the Todo-list system.',
-                            'wrap' => true,
-                        ],
-                    ],
-                ],
-                'footer' => [
-                    'type' => 'box',
-                    'layout' => 'vertical',
-                    'contents' => [
-                        [
-                            'type' => 'button',
-                            'action' => [
-                                'type' => 'uri',
-                                'label' => 'Click me!',
-                                'uri' => $link_uri, // Replace with your desired URI
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        
-        $line_bot_api->pushMessage([
-            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-            'messages' => [$flexMessage],
-        ]);            
+        send_flex_message_with_button($user, $message_text, $link_uri);
     }    
 }
 
