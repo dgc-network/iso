@@ -257,7 +257,23 @@ function get_users_by_job_id($job_id) {
     $users = $user_query->get_results();
 
     // Return the list of users
-    return $users;
+    //return $users;
+
+    // Retrieve the value
+        $args = array(
+            'post_type'      => 'user',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'     => 'my_job_ids',
+                    'value'   => $job_id,
+                    'compare' => 'IN', // Check if $job_id exists in the array
+                ),
+            ),
+        );
+        $query = new WP_Query($args);
+        return $query;
+    
 }
 
 function notice_the_persons_in_charge($todo_id=0) {
@@ -268,7 +284,6 @@ function notice_the_persons_in_charge($todo_id=0) {
     $users = get_users();
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     foreach ($users as $user) {
-        echo '<p>'.$user->display_name.'</p>';
         // Flex Message JSON structure with a button
         $flexMessage = [
             'type' => 'flex',
