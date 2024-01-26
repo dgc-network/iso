@@ -244,19 +244,18 @@ function get_users_by_job_id($job_id) {
             'compare' => 'IN', // Check if $job_id exists in the array
         ),
     );
+    $meta_query = array(
+        'relation' => 'AND', // Ensure both conditions are met
+        array(
+            'key'     => 'my_job_ids',
+            'value'   => $job_id,
+            'compare' => 'LIKE', // Check if $job_id exists in the array
+        ),
+    );
 
     // Set up the user query arguments
     $args = array(
         'meta_query' => $meta_query,
-    );
-    $args = array(
-        'meta_query'     => array(
-            array(
-                'key'     => 'my_job_ids',
-                'value'   => $job_id,
-                'compare' => 'IN', // Check if $job_id exists in the array
-            ),
-        ),
     );
 
     // Create a new WP_User_Query
@@ -266,7 +265,6 @@ function get_users_by_job_id($job_id) {
     $users = $user_query->get_results();
 
     // Return the list of users
-    //return $user_query;
     return $users;
 
         // Retrieve the value
