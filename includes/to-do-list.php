@@ -249,6 +249,15 @@ function get_users_by_job_id($job_id) {
     $args = array(
         'meta_query' => $meta_query,
     );
+    $args = array(
+        'meta_query'     => array(
+            array(
+                'key'     => 'my_job_ids',
+                'value'   => $job_id,
+                'compare' => 'IN', // Check if $job_id exists in the array
+            ),
+        ),
+    );
 
     // Create a new WP_User_Query
     $user_query = new WP_User_Query($args);
@@ -257,7 +266,7 @@ function get_users_by_job_id($job_id) {
     $users = $user_query->get_results();
 
     // Return the list of users
-    return $user_query;
+    //return $user_query;
     return $users;
 
         // Retrieve the value
