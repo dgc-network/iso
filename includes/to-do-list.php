@@ -315,10 +315,9 @@ function notice_the_persons_in_charge($todo_id=0) {
     $job_title = get_the_title($todo_id);
     $doc_title = get_post_field('post_content', $todo_id);
     $message_text='You have a new todo: '.$job_title.':'.$doc_title.'.';
+    $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
-    //$users = get_users();
-    $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     foreach ($users as $user) {
         // Flex Message JSON structure with a button
         send_flex_message_with_button($user, $message_text, $link_uri);
