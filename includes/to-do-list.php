@@ -347,7 +347,7 @@ function notice_the_persons_in_site($doc_id=0) {
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
         //send_flex_message_with_button($user, $message_text, $doc_url);
-        send_flex_message_with_button($user, $message_text);
+        send_flex_message_with_button($user);
     }    
 }
 
