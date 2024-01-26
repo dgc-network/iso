@@ -308,7 +308,9 @@ function notice_the_persons_in_charge($todo_id=0) {
     // Notice the persons in charge the job
     $job_title = get_the_title($todo_id);
     $doc_title = get_post_field('post_content', $todo_id);
-    $message_text='You have a new todo to '.$job_title.':'.$doc_title.'.';
+    $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
+    $due_date = wp_date( get_option('date_format'), $todo_due );
+    $message_text='You have a new todo to '.$job_title.':'.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
