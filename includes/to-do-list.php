@@ -290,7 +290,7 @@ function notice_the_persons_in_charge($todo_id=0) {
                         ],
                         [
                             'type' => 'text',
-                            'text' => 'You have a new todo. Please click the button below to go to the Todo-list system.',
+                            'text' => 'You have a new todo:'.$job_title.':'.$doc_title.' Please click the button below to go to the Todo-list system.',
                             'wrap' => true,
                         ],
                     ],
