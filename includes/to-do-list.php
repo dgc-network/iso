@@ -288,7 +288,7 @@ function get_users_by_job_id($job_id=0) {
     $args = array(
         //'meta_query' => $meta_query,
         'meta_query'     => array(
-            'relation' => 'AND', // Ensure both conditions are met
+            //'relation' => 'AND', // Ensure both conditions are met
             array(
                 'key'     => 'my_job_ids',
                 'value'   => $job_id,
@@ -297,9 +297,9 @@ function get_users_by_job_id($job_id=0) {
         ),
     );
     // Create a new WP_User_Query
-    $user_query = new WP_User_Query($args);
+    $query = new WP_User_Query($args);
     // Get the results
-    $users = $user_query->get_results();
+    $users = $query->get_results();
     // Return the list of users
     return $users;
 }
@@ -320,21 +320,31 @@ function notice_the_persons_in_charge($todo_id=0) {
 }
 
 function get_users_in_site($site_id=0) {
+    global $wpdb;
+    $users_with_site_id = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'site_id' AND meta_value = %s",
+            $site_id
+        )
+    );
+    
+    return $users_with_site_id;    
+
     // Set up the user query arguments
     $args = array(
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
                 'value' => $site_id,
-                'compare' => 'LIKE', // Check if $job_id exists in the array
+                'compare' => 'LIKE',
                 //'compare' => '=',
             ),
         ),
     );
     // Create a new WP_User_Query
-    $user_query = new WP_User_Query($args);
+    $query = new WP_User_Query($args);
     // Get the results
-    $users = $user_query->get_results();
+    $users = $query->get_results();
     // Return the list of users
     return $users;
 }
