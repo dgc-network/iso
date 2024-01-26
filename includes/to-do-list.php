@@ -324,11 +324,45 @@ function notice_the_persons_in_charge($todo_id=0) {
     }    
 }
 
+function get_users_in_site($site_id) {
+    // Define the meta query
+    $meta_query = array(
+        'relation' => 'AND', // Ensure both conditions are met
+        array(
+            'key'     => 'my_job_ids',
+            'value'   => $job_id,
+            'compare' => 'LIKE', // Check if $job_id exists in the array
+        ),
+    );
+
+    // Set up the user query arguments
+    $args = array(
+        //'meta_query' => $meta_query,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+
+    );
+
+    // Create a new WP_User_Query
+    $user_query = new WP_User_Query($args);
+
+    // Get the results
+    $users = $user_query->get_results();
+
+    // Return the list of users
+    return $users;
+}
+
 function notice_the_persons_in_site($doc_id=0) {
     // Notice the persons in site
     $doc_title = get_the_title($doc_id);
     $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
     $doc_url = esc_html(get_post_meta($doc_id, 'doc_url', true));
+    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $doc_date ).'.';
     //$link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $users = get_users_in_site($site_id);
