@@ -272,8 +272,30 @@ function get_users_by_job_id($job_id) {
             ),
         );
         $query = new WP_Query($args);
-        return $query;
+        //return $query;
     
+    // Define the meta query
+    $meta_query = array(
+        array(
+            'key'     => 'my_job_ids',
+            'value'   => $job_id,
+            'compare' => 'IN', // Check if $job_id exists in the array
+        ),
+    );
+
+    // Set up the user query arguments
+    $args = array(
+        'meta_query' => $meta_query,
+    );
+
+    // Create a new WP_User_Query
+    $user_query = new WP_User_Query($args);
+
+    // Get the results
+    $users = $user_query->get_results();
+
+    // Return the list of users
+    return $users;
 }
 
 function notice_the_persons_in_charge($todo_id=0) {
