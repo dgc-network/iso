@@ -259,7 +259,7 @@ function get_users_by_job_id($job_id) {
     // Return the list of users
     //return $users;
 
-    // Retrieve the value
+        // Retrieve the value
         $args = array(
             'post_type'      => 'user',
             'posts_per_page' => -1,
@@ -272,30 +272,8 @@ function get_users_by_job_id($job_id) {
             ),
         );
         $query = new WP_Query($args);
-        //return $query;
+        return $query;
     
-    // Define the meta query
-    $meta_query = array(
-        array(
-            'key'     => 'my_job_ids',
-            'value'   => $job_id,
-            'compare' => 'IN', // Check if $job_id exists in the array
-        ),
-    );
-
-    // Set up the user query arguments
-    $args = array(
-        'meta_query' => $meta_query,
-    );
-
-    // Create a new WP_User_Query
-    $user_query = new WP_User_Query($args);
-
-    // Get the results
-    $users = $user_query->get_results();
-
-    // Return the list of users
-    return $users;
 }
 
 function notice_the_persons_in_charge($todo_id=0) {
@@ -303,7 +281,7 @@ function notice_the_persons_in_charge($todo_id=0) {
     // Notice the persons in charge the job
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
-    $users = get_users();
+    //$users = get_users();
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     foreach ($users as $user) {
         // Flex Message JSON structure with a button
