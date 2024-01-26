@@ -323,7 +323,7 @@ function get_users_in_site($site_id=0) {
     global $wpdb;
     $users_with_site_id = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'site_id' AND meta_value = %s",
+            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'site_id' AND meta_value = %d",
             $site_id
         )
     );
