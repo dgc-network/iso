@@ -257,6 +257,7 @@ function get_users_by_job_id($job_id) {
     $users = $user_query->get_results();
 
     // Return the list of users
+    return $user_query;
     return $users;
 
         // Retrieve the value
