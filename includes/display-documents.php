@@ -148,39 +148,6 @@ function retrieve_document_list_data($site_id=0) {
     );
     
     $query = new WP_Query( $args );
-/*    
-    $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => 20,
-        'paged'          => $paged,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-        'orderby'        => 'meta_value',
-        'meta_key'       => 'doc_number',
-        'order'          => 'ASC',
-        's'              => sanitize_text_field( $_GET['search'] ),
-    );
-    
-    $query = new WP_Query( $args );
-/*    
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-*/    
     return $query;
 }
 
@@ -304,6 +271,7 @@ function set_document_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta( $post_id, 'doc_number', '-');
     }
     wp_send_json($response);
 }
