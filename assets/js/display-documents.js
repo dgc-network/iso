@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align: center;">${value.doc_number}</td>
                         <td>${value.doc_title}</td>
                         <td style="text-align: center;">${value.doc_revision}</td>
-                        <td style="text-align: center;">${value.doc_date}</td>`;
+                        <td style="text-align: center;">${value.doc_date ? value.doc_date : ''}</td>`;
                     $(`.document-list-${index}`).append(output).show();
                 });
             },
@@ -88,8 +88,6 @@ jQuery(document).ready(function($) {
                     $("#doc-url").val(response.doc_url);
                     $("#start-job").empty().append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
-                    //response.doc_date ? response.doc_date : '',
-                    //$("#doc-date").val(response.doc_date);
                     $("#doc-date").val(response.doc_date ? response.doc_date : '');
                     $("#doc-category").empty().append(response.doc_category);
                 },
