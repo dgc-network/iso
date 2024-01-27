@@ -32,6 +32,10 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    $("#btn-doc-workflow").on( "click", function() {
+        get_doc_workflow_list_data($("#doc-id").val());
+    })
+
     function get_document_list_data(siteId) {
         $.ajax({
             type: 'POST',
@@ -150,4 +154,36 @@ jQuery(document).ready(function($) {
             }
         }
     });
+
+    function get_doc_workflow_list_data(id){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_doc_workflow_list_data',
+                '_doc_id': id,
+            },
+            success: function (response) {            
+                $("#doc-workflow-list-dialog").dialog('open');
+                for(index=0;index<50;index++) {
+                    $(".doc-workflow-list-"+index).hide().empty();
+                }
+                $.each(response, function (index, value) {
+                    $(".doc-workflow-list-" + index).attr("id", "edit-doc-workflow-" + value.todo_id);
+                    const output = `
+                        <td style="text-align:center;">${value.todo_title}</td>
+                        <td>${value.todo_content}</td>
+                        <td style="text-align:center;">${value.submit_user}</td>
+                        <td style="text-align:center;">${value.submit_time}</td>
+                    `;
+                    $(".doc-workflow-list-"+index).append(output).show();
+                })
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+    }    
 });

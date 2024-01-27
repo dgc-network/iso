@@ -41,7 +41,7 @@ function register_action_post_type() {
         'rewrite'       => array('slug' => 'actions'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'action', $args );
 }
@@ -49,8 +49,6 @@ add_action('init', 'register_action_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    //ob_start(); // Start output buffering
-
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
@@ -104,7 +102,6 @@ function display_documents_shortcode() {
             </table>
             <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php display_document_dialog($site_id);?>
-            <?php display_workflow_todo_list();?>
         </fieldset>
         </div>
         <?php
@@ -112,13 +109,10 @@ function display_documents_shortcode() {
     } else {
         user_did_not_login_yet();
     }
-    //return ob_get_clean(); // Return the buffered content
-    
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function retrieve_document_list_data($site_id=0) {
-    // Retrieve the documents value
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
@@ -150,7 +144,7 @@ function get_document_list_data() {
             $_list["doc_date"] = wp_date( get_option('date_format'), $doc_date );
             array_push($_array, $_list);
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }
@@ -194,6 +188,10 @@ function display_document_dialog($site_id=0){
                     <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
             </div>
+            <label for="btn-doc-workflow">Workflow:</label>
+            <div id="btn-doc-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Workflow list</div>
+            <?php display_doc_workflow_list();?>
+
         </fieldset>
     </div>
     <?php
@@ -239,15 +237,14 @@ function set_document_dialog_data() {
         );
         wp_update_post( $data );
     } else {
-        // Set up the post data
+        // Insert the post into the database
         $new_post = array(
             'post_title'    => 'New document',
             'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'document', // Change to your custom post type if needed
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'document',
         );    
-        // Insert the post into the database
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
@@ -264,9 +261,9 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-function display_workflow_todo_list() {
+function display_doc_workflow_list() {
     ?>
-    <div id="workflow-list-dialog" title="Workflow list" style="display:none;">
+    <div id="doc-workflow-list-dialog" title="Workflow list" style="display:none;">
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -280,7 +277,7 @@ function display_workflow_todo_list() {
             <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr class="workflow-todo-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr class="doc-workflow-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
             ?>
@@ -290,15 +287,15 @@ function display_workflow_todo_list() {
     <?php
 }
 
-function retrieve_workflow_todo_list_data($doc_id=0){
+function retrieve_doc_workflow_list_data($doc_id=0){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
                 'key'     => 'doc_id',
-                'value'   => $doc_id, // You can set a specific value if needed
-                'compare' => '=', // Adjust the comparison based on your requirements
+                'value'   => $doc_id,
+                'compare' => '=',
             ),
         ),
     );
@@ -306,25 +303,25 @@ function retrieve_workflow_todo_list_data($doc_id=0){
     return $query;
 }
 
-function get_workflow_todo_list_data() {
-    // Retrieve the documents data
-    $query = retrieve_workflow_todo_list_data($_POST['_doc_id']);
+function get_doc_workflow_list_data() {
+    // Retrieve the document workflows data
+    $query = retrieve_doc_workflow_list_data($_POST['_doc_id']);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
             $_list = array();
             $_list["todo_id"] = get_the_ID();
-            $_list["job_title"] = get_the_title($job_id);
-            $_list["job_content"] = get_post_field('post_content', $job_id);
+            $_list["todo_title"] = get_the_title();
+            $_list["todo_content"] = get_post_field('post_content', get_the_ID());
             $_list["submit_user"] = esc_html(get_post_meta(get_the_ID(), 'submit_user', true));
-            $_list["submit_time"] = esc_html(get_post_meta(get_the_ID(), 'submit_time', true));
+            $submit_time = esc_html(get_post_meta(get_the_ID(), 'submit_time', true));            
+            $_list["submit_time"] = wp_date( get_option('date_format'), $submit_time );
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
-add_action( 'wp_ajax_nopriv_get_workflow_todo_list_data', 'get_workflow_todo_list_data' );
+add_action( 'wp_ajax_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
 
