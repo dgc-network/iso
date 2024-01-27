@@ -228,6 +228,7 @@ function set_todo_dialog_data() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         set_next_job_and_actions($start_job, $action_id);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
     }
     wp_send_json($response);
@@ -235,8 +236,8 @@ function set_todo_dialog_data() {
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
+// Flex Message JSON structure with a button
 function send_flex_message_with_button($user, $message_text='', $link_uri='') {
-    // Flex Message JSON structure with a button
     $line_bot_api = new line_bot_api();
     $flexMessage = [
         'type' => 'flex',
@@ -269,7 +270,7 @@ function send_flex_message_with_button($user, $message_text='', $link_uri='') {
                         'action' => [
                             'type' => 'uri',
                             'label' => 'Click me!',
-                            'uri' => $link_uri, // Replace with your desired URI
+                            'uri' => $link_uri,
                         ],
                     ],
                 ],
@@ -286,9 +287,7 @@ function send_flex_message_with_button($user, $message_text='', $link_uri='') {
 function get_users_by_job_id($job_id=0) {
     // Set up the user query arguments
     $args = array(
-        //'meta_query' => $meta_query,
         'meta_query'     => array(
-            //'relation' => 'AND', // Ensure both conditions are met
             array(
                 'key'     => 'my_job_ids',
                 'value'   => $job_id,
@@ -298,14 +297,12 @@ function get_users_by_job_id($job_id=0) {
     );
     // Create a new WP_User_Query
     $query = new WP_User_Query($args);
-    // Get the results
     $users = $query->get_results();
-    // Return the list of users
     return $users;
 }
 
+// Notice the persons in charge the job
 function notice_the_persons_in_charge($todo_id=0) {
-    // Notice the persons in charge the job
     $job_title = get_the_title($todo_id);
     $doc_title = get_post_field('post_content', $todo_id);
     $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
@@ -349,8 +346,8 @@ function get_users_in_site($site_id=0) {
     return $users;
 }
 
+// Notice the persons in site
 function notice_the_persons_in_site($doc_id=0) {
-    // Notice the persons in site
     $doc_title = get_the_title($doc_id);
     $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
     $doc_url = esc_html(get_post_meta($doc_id, 'doc_url', true));
@@ -372,6 +369,9 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
         $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
         $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
+    $todo_title = get_the_title($next_job);
+    $doc_title = get_the_title($doc_id);
+
     if ($next_job==-1) {
         $data = array(
             'ID'         => $doc_id,
@@ -383,24 +383,29 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
         
         // Notice the persons in charge the job
         notice_the_persons_in_site($doc_id);
+        $todo_title = __( '發行', 'your-text-domain' );
+    }
 
-    } else {
-        $todo_title = get_the_title($next_job);
-        $doc_title = get_the_title($doc_id);
-        // Insert the To-do list for next_job
-        $current_user_id = get_current_user_id();
-        $new_post = array(
-            'post_title'    => $todo_title,
-            'post_content'  => $doc_title,
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'todo',
-        );    
-        $new_todo_id = wp_insert_post($new_post);
-        update_post_meta( $new_todo_id, 'job_id', $next_job);
-        update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-        update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+    // Insert the To-do list for next_job
+    $current_user_id = get_current_user_id();
+    $new_post = array(
+        'post_title'    => $todo_title,
+        'post_content'  => $doc_title,
+        'post_status'   => 'publish',
+        'post_author'   => $current_user_id,
+        'post_type'     => 'todo',
+    );    
+    $new_todo_id = wp_insert_post($new_post);
+    update_post_meta( $new_todo_id, 'job_id', $next_job);
+    update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+    update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
 
+    if ($next_job==-1) {
+        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $new_todo_id, 'submit_time', time());
+    }
+
+    if ($next_job>0) {
         // Notice the persons in charge the job
         notice_the_persons_in_charge($new_todo_id);
 

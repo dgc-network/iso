@@ -170,11 +170,12 @@ jQuery(document).ready(function($) {
                     $(".doc-workflow-list-"+index).hide().empty();
                 }
                 $.each(response, function (index, value) {
-                    $(".doc-workflow-list-" + index).attr("id", "edit-doc-workflow-" + value.todo_id);
+                    //$(".doc-workflow-list-" + index).attr("id", "edit-doc-workflow-" + value.todo_id);
                     const output = `
                         <td style="text-align:center;">${value.todo_title}</td>
                         <td>${value.todo_content}</td>
                         <td style="text-align:center;">${value.submit_user}</td>
+                        <td style="text-align:center;">${value.submit_action}</td>
                         <td style="text-align:center;">${value.submit_time}</td>
                     `;
                     $(".doc-workflow-list-"+index).append(output).show();
@@ -188,7 +189,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#doc-workflow-list-dialog").dialog({
-        width: 500,
+        width: 600,
         modal: true,
         autoOpen: false,
     });    

@@ -270,6 +270,7 @@ function display_doc_workflow_list() {
                     <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                 </tr>
             </thead>
@@ -316,6 +317,8 @@ function get_doc_workflow_list_data() {
             $submit_user = esc_attr(get_post_meta(get_the_ID(), 'submit_user', true));
             $user_data = get_userdata( $submit_user );
             $_list["submit_user"] = $user_data->display_name;
+            $submit_action = esc_attr(get_post_meta(get_the_ID(), 'submit_action', true));            
+            $_list["submit_action"] = get_the_title($submit_action);
             $submit_time = esc_attr(get_post_meta(get_the_ID(), 'submit_time', true));            
             $_list["submit_time"] = wp_date( get_option('date_format'), $submit_time );
             array_push($_array, $_list);
