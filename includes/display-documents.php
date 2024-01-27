@@ -130,6 +130,11 @@ function retrieve_document_list_data($site_id=0) {
             array(
                 'relation' => 'OR',
                 array(
+                    'key'     => 'doc_category',
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                ),
+                array(
                     'key'     => 'doc_number',
                     'value'   => $search_query,
                     'compare' => 'LIKE',
