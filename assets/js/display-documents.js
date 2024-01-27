@@ -185,5 +185,11 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-    }    
+    }
+
+    $("#doc-workflow-list-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+    });    
 });
