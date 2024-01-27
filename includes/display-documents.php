@@ -293,6 +293,11 @@ function retrieve_doc_workflow_list_data($doc_id=0){
         'post_type'      => 'todo',
         'posts_per_page' => -1,
         'meta_query'     => array(
+            'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'EXISTS',
+            ),
             array(
                 'key'     => 'doc_id',
                 'value'   => $doc_id,
