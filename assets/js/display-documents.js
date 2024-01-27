@@ -89,6 +89,7 @@ jQuery(document).ready(function($) {
                     $("#start-job").empty().append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
                     $("#doc-date").val(response.doc_date);
+                    $("#doc-category").empty().append(response.doc_category);
                 },
                 error: function (error) {
                     console.error(error);
@@ -119,6 +120,7 @@ jQuery(document).ready(function($) {
                             '_start_job': $("#start-job").val(),
                             '_start_leadtime': $("#start-leadtime").val(),
                             '_doc_date': $("#doc-date").val(),
+                            '_doc_category': $("#doc-category").val(),
                         },
                         success: function (response) {
                             $("#document-dialog").dialog('close');

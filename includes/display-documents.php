@@ -211,6 +211,10 @@ function display_document_dialog($site_id=0){
                     <label for="doc-date">Published Date:</label>
                     <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
+                <div style="display:inline-block;">
+                    <label for="doc-category">Category:</label>
+                    <select id="doc-category" class="text ui-widget-content ui-corner-all" ></select>
+                </div>
             </div>
             <label for="btn-doc-workflow">Workflow:</label>
             <div id="btn-doc-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Workflow list</div>
@@ -221,6 +225,23 @@ function display_document_dialog($site_id=0){
     <?php
 }
     
+function select_doc_category_option_data($selected_category=0) {
+    // Retrieve the value
+    $args = array(
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,
+    );
+    $query = new WP_Query($args);
+
+    $options = '<option value="">Select category</option>';
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_category == get_the_ID()) ? 'selected' : '';
+        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata();
+    return $options;
+}
+
 function get_document_dialog_data() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
@@ -231,9 +252,11 @@ function get_document_dialog_data() {
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
-        $response["start_leadtime"] = esc_html(get_post_meta($doc_id, 'start_leadtime', true));
+        $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
         $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
+        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
+        $response["doc_category"] = select_doc_category_option_data($doc_category);
     }
     wp_send_json($response);
 }
@@ -257,6 +280,7 @@ function set_document_dialog_data() {
                 'doc_url'      => $_POST['_doc_url'],
                 'start_job'    => $start_job,
                 'start_leadtime' => $start_leadtime,
+                'doc_category'  => $_POST['_doc_category'],
             )
         );
         wp_update_post( $data );
