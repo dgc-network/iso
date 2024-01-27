@@ -113,6 +113,42 @@ function display_documents_shortcode() {
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function retrieve_document_list_data($site_id=0) {
+
+    $search_query = sanitize_text_field( $_GET['search'] );
+
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => 20,
+        'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'relation' => 'OR',
+                array(
+                    'key'     => 'doc_number',
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                ),
+                array(
+                    'key'     => 'title',
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                ),
+                // Add more fields as needed
+            ),
+        ),
+        'orderby'        => 'meta_value',
+        'meta_key'       => 'doc_number',
+        'order'          => 'ASC',
+    );
+    
+    $query = new WP_Query( $args );
+/*    
     $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
     $args = array(
