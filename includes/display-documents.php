@@ -118,7 +118,7 @@ function retrieve_document_list_data($site_id=0) {
 
     $args = array(
         'post_type'      => 'document',
-        'posts_per_page' => 20,
+        'posts_per_page' => 50,
         'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
         'meta_query'     => array(
             'relation' => 'AND',
