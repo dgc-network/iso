@@ -313,8 +313,10 @@ function get_doc_workflow_list_data() {
             $_list["todo_id"] = get_the_ID();
             $_list["todo_title"] = get_the_title();
             $_list["todo_content"] = get_post_field('post_content', get_the_ID());
-            $_list["submit_user"] = esc_html(get_post_meta(get_the_ID(), 'submit_user', true));
-            $submit_time = esc_html(get_post_meta(get_the_ID(), 'submit_time', true));            
+            $submit_user = esc_attr(get_post_meta(get_the_ID(), 'submit_user', true));
+            $user_data = get_userdata( $submit_user );
+            $_list["submit_user"] = $user_data->display_name;
+            $submit_time = esc_attr(get_post_meta(get_the_ID(), 'submit_time', true));            
             $_list["submit_time"] = wp_date( get_option('date_format'), $submit_time );
             array_push($_array, $_list);
         endwhile;
