@@ -88,7 +88,9 @@ jQuery(document).ready(function($) {
                     $("#doc-url").val(response.doc_url);
                     $("#start-job").empty().append(response.start_job);
                     $("#start-leadtime").val(response.start_leadtime);
-                    $("#doc-date").val(response.doc_date);
+                    //response.doc_date ? response.doc_date : '',
+                    //$("#doc-date").val(response.doc_date);
+                    $("#doc-date").val(response.doc_date ? response.doc_date : '');
                     $("#doc-category").empty().append(response.doc_category);
                 },
                 error: function (error) {
