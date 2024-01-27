@@ -34,18 +34,18 @@ function register_document_post_type() {
 }
 add_action('init', 'register_document_post_type');
 
-// Register action post type
-function register_action_post_type() {
+// Register doc category post type
+function register_category_post_type() {
     $args = array(
         'public'        => true,
-        'rewrite'       => array('slug' => 'actions'),
+        'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
-    register_post_type( 'action', $args );
+    register_post_type( 'doc-category', $args );
 }
-add_action('init', 'register_action_post_type');
+add_action('init', 'register_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {

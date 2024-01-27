@@ -38,6 +38,19 @@ function register_todo_post_type() {
 }
 add_action('init', 'register_todo_post_type');
 
+// Register action post type
+function register_action_post_type() {
+    $args = array(
+        'public'        => true,
+        'rewrite'       => array('slug' => 'actions'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+    );
+    register_post_type( 'action', $args );
+}
+add_action('init', 'register_action_post_type');
+
 // Shortcode to display To-do list on frontend
 function to_do_list_shortcode() {
     // Check if the user is logged in
