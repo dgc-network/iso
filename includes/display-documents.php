@@ -133,6 +133,62 @@ function display_documents_shortcode() {
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function retrieve_document_list_data($site_id=0) {
+    global $wpdb;
+
+    $search_query = sanitize_text_field( $_GET['search'] );
+
+    // Custom SQL query
+    $sql = $wpdb->prepare( "
+        SELECT SQL_CALC_FOUND_ROWS {$wpdb->posts}.*
+        FROM {$wpdb->posts}
+        LEFT JOIN {$wpdb->postmeta} ON ({$wpdb->posts}.ID = {$wpdb->postmeta}.post_id)
+        WHERE 1=1
+        AND {$wpdb->posts}.post_type = 'document'
+        AND (
+            ({$wpdb->posts}.post_title LIKE %s)
+            OR
+            ({$wpdb->postmeta}.meta_key = 'doc_number' AND {$wpdb->postmeta}.meta_value LIKE %s)
+        )
+        AND {$wpdb->postmeta}.meta_key = 'site_id'
+        AND {$wpdb->postmeta}.meta_value = %s
+        GROUP BY {$wpdb->posts}.ID
+        ORDER BY {$wpdb->posts}.post_date DESC
+    ", "%{$search_query}%", "%{$search_query}%", $site_id );
+    
+    // Pagination
+    $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+    $offset = ( $paged - 1 ) * 30;
+    $sql .= $wpdb->prepare( " LIMIT %d, %d", $offset, 30 );
+    
+    // Execute the SQL query
+    $results = $wpdb->get_results( $sql );
+    
+    // Get total number of found rows for pagination
+    $total_rows = $wpdb->get_var( "SELECT FOUND_ROWS()" );
+    
+    // Calculate total pages
+    $total_pages = ceil( $total_rows / 20 );
+    
+    // Loop through the results
+    foreach ( $results as $result ) {
+        // Process each result
+    }
+    
+    return $results;
+    
+    // Pagination links
+    $paginate_args = array(
+        'base'    => add_query_arg( 'paged', '%#%' ),
+        'format'  => '?paged=%#%',
+        'current' => max( 1, get_query_var( 'paged' ) ),
+        'total'   => $total_pages,
+    );
+    
+    echo paginate_links( $paginate_args );
+    
+}
+
+function b_retrieve_document_list_data($site_id=0) {
 
     $search_query = sanitize_text_field( $_GET['search'] );
 
@@ -171,58 +227,8 @@ function retrieve_document_list_data($site_id=0) {
         'order'          => 'ASC',
     );
     
-    //$query = new WP_Query( $args );
-
-    // Add a filter to modify the entire WHERE clause
-    add_filter( 'posts_clauses', 'custom_posts_clauses', 10, 2 );
-
-    // Run the query
     $query = new WP_Query( $args );
-    
-    // Remove the filter to avoid affecting other queries
-    remove_filter( 'posts_clauses', 'custom_posts_clauses', 10 );
-    
-
-/*
-    // Add a filter to modify the where clause
-    add_filter( 'posts_where', 'custom_posts_where' );
-
-    // Run the query
-    $query = new WP_Query( $args );
-    
-    // Remove the filter to avoid affecting other queries
-    remove_filter( 'posts_where', 'custom_posts_where' );
-*/    
-
     return $query;
-}
-
-
-
-    
-function custom_posts_clauses( $clauses, $query ) {
-    global $wpdb, $search_query;
-
-    if ( ! empty( $search_query ) ) {
-        $clauses['where'] .= " AND (
-            {$wpdb->posts}.post_title LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%' OR
-            {$wpdb->postmeta}.meta_key = 'doc_number' AND {$wpdb->postmeta}.meta_value LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%'
-        )";
-    }
-
-    return $clauses;
-}
-
-function custom_posts_where( $where ) {
-    global $wpdb, $search_query;
-
-    if ( ! empty( $search_query ) ) {
-        $where .= " OR (
-            {$wpdb->posts}.post_title LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%'
-        )";
-    }
-
-    return $where;
 }
 
 function get_document_list_data() {
