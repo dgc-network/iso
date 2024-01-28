@@ -149,21 +149,22 @@ function retrieve_document_list_data($site_id=0) {
             ),
         ),
         //'s'              => $search_query,
-        'meta_query'     => array(
+
 /*            
+        'meta_query'     => array(
             'relation' => 'OR',
             array(
                 'key'     => 'doc_category',
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             ),
-*/            
             array(
                 'key'     => 'doc_number',
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             ),
         ),
+*/            
 
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
@@ -172,17 +173,44 @@ function retrieve_document_list_data($site_id=0) {
     
     //$query = new WP_Query( $args );
 
-// Add a filter to modify the where clause
-add_filter( 'posts_where', 'custom_posts_where' );
+    // Add a filter to modify the entire WHERE clause
+    add_filter( 'posts_clauses', 'custom_posts_clauses', 10, 2 );
 
-// Run the query
-$query = new WP_Query( $args );
+    // Run the query
+    $query = new WP_Query( $args );
+    
+    // Remove the filter to avoid affecting other queries
+    remove_filter( 'posts_clauses', 'custom_posts_clauses', 10 );
+    
 
-// Remove the filter to avoid affecting other queries
-remove_filter( 'posts_where', 'custom_posts_where' );
+/*
+    // Add a filter to modify the where clause
+    add_filter( 'posts_where', 'custom_posts_where' );
 
+    // Run the query
+    $query = new WP_Query( $args );
+    
+    // Remove the filter to avoid affecting other queries
+    remove_filter( 'posts_where', 'custom_posts_where' );
+*/    
 
     return $query;
+}
+
+
+
+    
+function custom_posts_clauses( $clauses, $query ) {
+    global $wpdb, $search_query;
+
+    if ( ! empty( $search_query ) ) {
+        $clauses['where'] .= " AND (
+            {$wpdb->posts}.post_title LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%' OR
+            {$wpdb->postmeta}.meta_key = 'doc_number' AND {$wpdb->postmeta}.meta_value LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%'
+        )";
+    }
+
+    return $clauses;
 }
 
 function custom_posts_where( $where ) {
