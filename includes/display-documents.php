@@ -148,7 +148,7 @@ function retrieve_document_list_data($site_id=0) {
                 'compare' => '=',
             ),
         ),
-        's'              => $search_query, // Search term for post content
+        //'s'              => $search_query, // Search term for post content
         'meta_query'     => array(
             'relation' => 'OR',
             array(
