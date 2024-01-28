@@ -188,6 +188,18 @@ function backup_retrieve_document_list_data($site_id=0) {
     
 }
 
+// Add a filter to modify the search query
+function custom_search_filter($search, $query) {
+    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+        $search .= " OR (
+            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value LIKE '%" . esc_sql($query->get('search')) . "%')
+            AND
+            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%" . esc_sql($query->get('search')) . "%')
+        )";
+    }
+    return $search;
+}
+
 function retrieve_document_list_data($site_id=0) {
 
     $search_query = sanitize_text_field( $_GET['search'] );
@@ -204,7 +216,8 @@ function retrieve_document_list_data($site_id=0) {
                 'compare' => '=',
             ),
         ),
-        //'s'              => $search_query,    
+        's'              => $search_query,
+/*        
         'meta_query'     => array(
             'relation' => 'OR',
             array(
@@ -223,13 +236,14 @@ function retrieve_document_list_data($site_id=0) {
                 'compare' => 'LIKE',
             ),
         ),
-
+*/
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
     );
-    
+    add_filter('posts_search', 'custom_search_filter', 10, 2);
     $query = new WP_Query( $args );
+    remove_filter('posts_search', 'custom_search_filter', 10, 2);
     return $query;
 }
 
