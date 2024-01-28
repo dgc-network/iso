@@ -187,7 +187,7 @@ function backup_retrieve_document_list_data($site_id=0) {
     echo paginate_links( $paginate_args );
     
 }
-
+/*
 // Add a filter to modify the search query
 function custom_search_filter($search, $query) {
     if (!is_admin() && $query->is_main_query() && $query->is_search()) {
@@ -234,7 +234,7 @@ function custom_search_filter($search, $query) {
     return $search;
 }
 */
-function retrieve_document_list_data($site_id=0) {
+function back_retrieve_document_list_data($site_id=0) {
 
     $search_query = sanitize_text_field( $_GET['search'] );
 
@@ -242,7 +242,6 @@ function retrieve_document_list_data($site_id=0) {
         'post_type'      => 'document',
         'posts_per_page' => 30,
         'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
-/*        
         'meta_query'     => array(
             //'relation' => 'AND',
             array(
@@ -281,6 +280,59 @@ function retrieve_document_list_data($site_id=0) {
     remove_filter('posts_search', 'custom_search_filter', 10, 2);
     return $query;
 }
+
+function retrieve_document_list_data($site_id = 0) {
+    $search_query = sanitize_text_field($_GET['search']);
+
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+        ),
+        's'              => $search_query,
+        'orderby'        => 'meta_value',
+        'meta_key'       => 'doc_number',
+        'order'          => 'ASC',
+    );
+
+    // Use pre_get_posts action to modify the main query
+    add_action('pre_get_posts', 'custom_search_filter', 10, 1);
+    $query = new WP_Query($args);
+    remove_action('pre_get_posts', 'custom_search_filter', 10, 1);
+
+    return $query;
+}
+
+// Function to modify the search query
+function custom_search_filter($query) {
+    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+        $search_term = esc_sql(get_search_query());
+        $site_id = esc_sql($query->get('site_id'));
+
+        $meta_query = array(
+            'relation' => 'OR',
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'doc_number',
+                'value'   => $search_term,
+                'compare' => 'LIKE',
+            ),
+        );
+
+        $query->set('meta_query', $meta_query);
+    }
+}
+
 
 function get_document_list_data() {
     // Retrieve the documents data
