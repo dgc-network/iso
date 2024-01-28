@@ -212,13 +212,13 @@ function display_document_dialog($site_id=0){
                 </div>
             </div>
             <div>
-                <div style="display:inline-block; width:35%;">
-                    <label for="doc-date">Published Date:</label>
-                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
-                </div>
                 <div style="display:inline-block;">
                     <label for="doc-category">Category:</label>
                     <select id="doc-category" class="text ui-widget-content ui-corner-all" ></select>
+                </div>
+                <div style="display:inline-block; width:35%;">
+                    <label for="doc-date">Published Date:</label>
+                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
             </div>
             <label for="btn-doc-workflow">Workflow:</label>
