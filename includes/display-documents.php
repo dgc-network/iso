@@ -191,6 +191,35 @@ function backup_retrieve_document_list_data($site_id=0) {
 // Add a filter to modify the search query
 function custom_search_filter($search, $query) {
     if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+        $search_term = esc_sql($query->get('search'));
+        $site_id = esc_sql($query->get('site_id')); // Assuming 'site_id' is set in the query parameters
+
+        $search .= " OR (
+            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value = '$site_id')
+            AND
+            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%$search_term%')
+        )";
+    }
+    return $search;
+}
+/*
+function custom_search_filter($search, $query) {
+    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+        $search_term = esc_sql($query->get('search'));
+        
+        $search .= " OR (
+            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value LIKE '%$search_term%')
+            OR
+            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%$search_term%')
+            OR
+            (wp_posts.post_title LIKE '%$search_term%')
+        )";
+    }
+    return $search;
+}
+/*
+function custom_search_filter($search, $query) {
+    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
         $search .= " OR (
             (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value LIKE '%" . esc_sql($query->get('search')) . "%')
             AND
@@ -199,7 +228,7 @@ function custom_search_filter($search, $query) {
     }
     return $search;
 }
-
+*/
 function retrieve_document_list_data($site_id=0) {
 
     $search_query = sanitize_text_field( $_GET['search'] );
