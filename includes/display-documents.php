@@ -54,6 +54,18 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
+        $output  = '<h2>My Products</h2>';
+        $output .= '<div style="display: flex; justify-content: space-between; margin: 5px;">';
+        $output .= '<div></div>';
+        $output .= '<div style="text-align: right">';
+        $output .= '<input type="text" id="search-product" style="display:inline" placeholder="Search...">';
+        if($current_user->has_cap('manage_options')){
+            $output .= '<span id="btn-products-page-setting" style="margin-left:5px;"><i class="fa-solid fa-gear"></i></span>';
+        }
+        $output .= '</div>';
+        $output .= '</div>';
+
+
         ?>
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -63,6 +75,13 @@ function display_documents_shortcode() {
             <label for="site-title"> Site: </label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
         
+            <div style="display: flex; justify-content: space-between; margin: 5px;">
+                <div></div>
+                <div style="text-align: right">
+                    <input type="text" id="search-document" style="display:inline" placeholder="Search...">
+                </div>
+            </div>
+
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>

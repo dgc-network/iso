@@ -1,5 +1,10 @@
 // display documents
 jQuery(document).ready(function($) {
+    var search_course;
+    $("#search-document").on( "change", function() {
+        window.location.replace("?search="+$(this).val());
+        $(this).val('');
+    });
 
     activate_document_list_data()
 
