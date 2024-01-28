@@ -148,7 +148,8 @@ function retrieve_document_list_data($site_id=0) {
                 'compare' => '=',
             ),
         ),
-        //'s'              => $search_query, // Search term for post content
+        's'              => $search_query,
+/*
         'meta_query'     => array(
             'relation' => 'OR',
             array(
@@ -162,6 +163,7 @@ function retrieve_document_list_data($site_id=0) {
                 'compare' => 'LIKE',
             ),
         ),
+*/
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
