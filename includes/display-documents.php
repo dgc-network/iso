@@ -147,27 +147,21 @@ function retrieve_document_list_data($site_id=0) {
                 'value'   => $site_id,
                 'compare' => '=',
             ),
-            array(
-                'relation' => 'OR',
-                array(
-                    'key'     => 'doc_category',
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                ),
-                array(
-                    'key'     => 'doc_number',
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                ),
-                array(
-                    'key'     => 'title',
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                ),
-                // Add more fields as needed
-            ),
         ),
         's'              => $search_query, // Search term for post content
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array(
+                'key'     => 'doc_category',
+                'value'   => $search_query,
+                'compare' => 'LIKE',
+            ),
+            array(
+                'key'     => 'doc_number',
+                'value'   => $search_query,
+                'compare' => 'LIKE',
+            ),
+        ),
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
