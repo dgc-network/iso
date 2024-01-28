@@ -141,18 +141,17 @@ function retrieve_document_list_data($site_id=0) {
         'posts_per_page' => 30,
         'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
         'meta_query'     => array(
-            'relation' => 'AND',
+            //'relation' => 'AND',
             array(
                 'key'     => 'site_id',
                 'value'   => $site_id,
                 'compare' => '=',
             ),
         ),
-        's'              => $search_query,
-
+        //'s'              => $search_query,
         'meta_query'     => array(
-            'relation' => 'OR',
 /*            
+            'relation' => 'OR',
             array(
                 'key'     => 'doc_category',
                 'value'   => $search_query,
@@ -171,8 +170,31 @@ function retrieve_document_list_data($site_id=0) {
         'order'          => 'ASC',
     );
     
-    $query = new WP_Query( $args );
+    //$query = new WP_Query( $args );
+
+// Add a filter to modify the where clause
+add_filter( 'posts_where', 'custom_posts_where' );
+
+// Run the query
+$query = new WP_Query( $args );
+
+// Remove the filter to avoid affecting other queries
+remove_filter( 'posts_where', 'custom_posts_where' );
+
+
     return $query;
+}
+
+function custom_posts_where( $where ) {
+    global $wpdb, $search_query;
+
+    if ( ! empty( $search_query ) ) {
+        $where .= " OR (
+            {$wpdb->posts}.post_title LIKE '%" . esc_sql( $wpdb->esc_like( $search_query ) ) . "%'
+        )";
+    }
+
+    return $where;
 }
 
 function get_document_list_data() {
