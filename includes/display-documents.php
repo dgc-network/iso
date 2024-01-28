@@ -167,6 +167,7 @@ function retrieve_document_list_data($site_id=0) {
                 // Add more fields as needed
             ),
         ),
+        's'              => $search_query, // Search term for post content
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
