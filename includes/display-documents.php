@@ -77,7 +77,9 @@ function display_documents_shortcode() {
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
         
             <div style="display: flex; justify-content: space-between; margin: 5px;">
-                <div></div>
+                <div>
+                    <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+                </div>
                 <div style="text-align: right">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search...">
                 </div>
@@ -132,125 +134,6 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function backup_retrieve_document_list_data($site_id=0) {
-    global $wpdb;
-
-    $search_query = sanitize_text_field( $_GET['search'] );
-
-    // Custom SQL query
-    $sql = $wpdb->prepare( "
-        SELECT SQL_CALC_FOUND_ROWS {$wpdb->posts}.*
-        FROM {$wpdb->posts}
-        LEFT JOIN {$wpdb->postmeta} ON ({$wpdb->posts}.ID = {$wpdb->postmeta}.post_id)
-        WHERE 1=1
-        AND {$wpdb->posts}.post_type = 'document'
-        AND (
-            ({$wpdb->posts}.post_title LIKE %s)
-            OR
-            ({$wpdb->postmeta}.meta_key = 'doc_number' AND {$wpdb->postmeta}.meta_value LIKE %s)
-        )
-        AND {$wpdb->postmeta}.meta_key = 'site_id'
-        AND {$wpdb->postmeta}.meta_value = %s
-        GROUP BY {$wpdb->posts}.ID
-        ORDER BY {$wpdb->posts}.post_date DESC
-    ", "%{$search_query}%", "%{$search_query}%", $site_id );
-    
-    // Pagination
-    $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-    $offset = ( $paged - 1 ) * 30;
-    $sql .= $wpdb->prepare( " LIMIT %d, %d", $offset, 30 );
-    
-    // Execute the SQL query
-    $results = $wpdb->get_results( $sql );
-    
-    // Get total number of found rows for pagination
-    $total_rows = $wpdb->get_var( "SELECT FOUND_ROWS()" );
-    
-    // Calculate total pages
-    $total_pages = ceil( $total_rows / 20 );
-    
-    // Loop through the results
-    foreach ( $results as $result ) {
-        // Process each result
-    }
-    
-    return $results;
-
-    // Pagination links
-    $paginate_args = array(
-        'base'    => add_query_arg( 'paged', '%#%' ),
-        'format'  => '?paged=%#%',
-        'current' => max( 1, get_query_var( 'paged' ) ),
-        'total'   => $total_pages,
-    );
-    
-    echo paginate_links( $paginate_args );
-    
-}
-/*
-// Add a filter to modify the search query
-function custom_search_filter($search, $query) {
-    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
-        $search_term = esc_sql($query->get('search'));
-        $site_id = esc_sql($query->get('site_id')); // Assuming 'site_id' is set in the query parameters
-
-        $search .= " (
-            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value = '$site_id')
-            AND
-            (wp_posts.post_title LIKE '%$search_term%')
-        )";
-        $search .= " OR (
-            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value = '$site_id')
-            AND
-            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%$search_term%')
-        )";
-    }
-    return $search;
-}
-/*
-function custom_search_filter($search, $query) {
-    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
-        $search_term = esc_sql($query->get('search'));
-        
-        $search .= " OR (
-            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value LIKE '%$search_term%')
-            OR
-            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%$search_term%')
-            OR
-            (wp_posts.post_title LIKE '%$search_term%')
-        )";
-    }
-    return $search;
-}
-/*
-function custom_search_filter($search, $query) {
-    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
-        $search .= " OR (
-            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value LIKE '%" . esc_sql($query->get('search')) . "%')
-            AND
-            (wp_postmeta.meta_key = 'doc_number' AND wp_postmeta.meta_value LIKE '%" . esc_sql($query->get('search')) . "%')
-        )";
-    }
-    return $search;
-}
-*/
-function back_retrieve_document_list_data($site_id=0) {
-
-    $search_query = sanitize_text_field( $_GET['search'] );
-
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => 30,
-        'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
-        'meta_query'     => array(
-            //'relation' => 'AND',
-            array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            ),
-        ),
-        's'              => $search_query,
 /*        
         'meta_query'     => array(
             'relation' => 'OR',
@@ -271,29 +154,28 @@ function back_retrieve_document_list_data($site_id=0) {
             ),
         ),
 */
-        'orderby'        => 'meta_value',
-        'meta_key'       => 'doc_number',
-        'order'          => 'ASC',
-    );
-    add_filter('posts_search', 'custom_search_filter', 10, 2);
-    $query = new WP_Query( $args );
-    remove_filter('posts_search', 'custom_search_filter', 10, 2);
-    return $query;
-}
 
 function retrieve_document_list_data($site_id = 0) {
-    $search_query = sanitize_text_field($_GET['search']);
+    $select_category = sanitize_text_field($_GET['_category']);
+    $category_filter = array(
+        'key'     => 'doc_category',
+        'value'   => $select_category,
+        'compare' => '=',
+    );
+    $search_query = sanitize_text_field($_GET['_search']);
 
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
+            'relation' => 'AND',
             array(
                 'key'     => 'site_id',
                 'value'   => $site_id,
                 'compare' => '=',
             ),
+            ($select_category) ? $category_filter : '',
         ),
         's'              => $search_query,
         'orderby'        => 'meta_value',

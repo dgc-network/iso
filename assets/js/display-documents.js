@@ -1,8 +1,12 @@
 // display documents
 jQuery(document).ready(function($) {
-    var search_course;
+    $("#select-category").on( "change", function() {
+        window.location.replace("?_category="+$(this).val());
+        $(this).val('');
+    });
+
     $("#search-document").on( "change", function() {
-        window.location.replace("?search="+$(this).val());
+        window.location.replace("?_search="+$(this).val());
         $(this).val('');
     });
 
