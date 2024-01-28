@@ -194,6 +194,11 @@ function custom_search_filter($search, $query) {
         $search_term = esc_sql($query->get('search'));
         $site_id = esc_sql($query->get('site_id')); // Assuming 'site_id' is set in the query parameters
 
+        $search .= " (
+            (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value = '$site_id')
+            AND
+            (wp_posts.post_title LIKE '%$search_term%')
+        )";
         $search .= " OR (
             (wp_postmeta.meta_key = 'site_id' AND wp_postmeta.meta_value = '$site_id')
             AND
@@ -237,6 +242,7 @@ function retrieve_document_list_data($site_id=0) {
         'post_type'      => 'document',
         'posts_per_page' => 30,
         'paged'          => ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1,
+/*        
         'meta_query'     => array(
             //'relation' => 'AND',
             array(
