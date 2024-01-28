@@ -54,6 +54,7 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
+/*        
         $output  = '<h2>My Products</h2>';
         $output .= '<div style="display: flex; justify-content: space-between; margin: 5px;">';
         $output .= '<div></div>';
@@ -64,7 +65,7 @@ function display_documents_shortcode() {
         }
         $output .= '</div>';
         $output .= '</div>';
-
+*/
 
         ?>
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
