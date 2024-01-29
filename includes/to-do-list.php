@@ -414,6 +414,20 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
         $todo_title = __( '發行', 'your-text-domain' );
     }
 
+    if ($next_job==-2) {
+        $data = array(
+            'ID'         => $doc_id,
+            'meta_input' => array(
+                'doc_date'   => time()+$next_leadtime,
+            )
+        );
+        wp_update_post( $data );
+        
+        // Notice the persons in charge the job
+        notice_the_persons_in_site($doc_id);
+        $todo_title = __( '廢止', 'your-text-domain' );
+    }
+
     // Insert the To-do list for next_job
     $current_user_id = get_current_user_id();
     $new_post = array(

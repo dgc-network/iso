@@ -237,7 +237,6 @@ function user_did_not_login_yet() {
         echo '加入我們的Line官方帳號,<br>';
         echo '並請在聊天室中, 輸入六位數字:';
         echo '<h4>'.get_option('_one_time_password').'</h4>';
-        //echo '<h4>'.$one_time_password.'</h4>';
         echo '完成註冊/登入作業<br>';
         echo '</div>';
     }

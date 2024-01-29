@@ -513,11 +513,9 @@ function get_job_action_list_data() {
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            if ($next_job==-1){
-                $_list["next_job"] = __( '發行', 'your-text-domain' );
-            } else {
-                $_list["next_job"] = get_the_title($next_job);
-            }
+            $_list["next_job"] = get_the_title($next_job);
+            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
+            if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
             $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
@@ -559,6 +557,11 @@ function select_site_job_option_data($selected_job=0, $site_id=0) {
         $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
     } else {
         $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+    }
+    if ($selected_job==-2){
+        $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
+    } else {
+        $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
     }
     return $options;
 }
