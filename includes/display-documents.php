@@ -71,7 +71,7 @@ function display_documents_shortcode() {
                 </div>
                 <div style="text-align: right">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search...">
-                    <span id="btn-document-setting"  style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                    <span id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
                 </div>
             </div>
 
@@ -146,37 +146,60 @@ add_shortcode('display-documents', 'display_documents_shortcode');
 */
 
 function retrieve_document_list_data($site_id = 0) {
+    $site_filter = array(
+        'key'     => 'site_id',
+        'value'   => $site_id,
+        'compare' => '=',
+    );
+
     $select_category = sanitize_text_field($_GET['_category']);
     $category_filter = array(
         'key'     => 'doc_category',
         'value'   => $select_category,
         'compare' => '=',
     );
+
     $search_query = sanitize_text_field($_GET['_search']);
+    $number_filter = array(
+        'key'     => 'doc_number',
+        'value'   => $search_query,
+        'compare' => 'LIKE',
+    );
+    $title_filter = array(
+        'key'     => 'doc_title',
+        'value'   => $search_query,
+        'compare' => 'LIKE',
+    );
 
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
-            'relation' => 'AND',
+            'relation' => 'OR',
             array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
+                'relation' => 'AND',
+                ($site_id) ? $site_filter : '',
+                ($select_category) ? $category_filter : '',
+                ($search_query) ? $number_filter : '',
             ),
-            ($select_category) ? $category_filter : '',
+            array(
+                'relation' => 'AND',
+                ($site_id) ? $site_filter : '',
+                ($select_category) ? $category_filter : '',
+                ($search_query) ? $title_filter : '',
+            )
         ),
-        's'              => $search_query,
+        //'s'              => $search_query,
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
     );
 
     // Use pre_get_posts action to modify the main query
-    add_action('pre_get_posts', 'custom_search_filter', 10, 1);
+    //add_action('pre_get_posts', 'custom_search_filter', 10, 1);
     $query = new WP_Query($args);
-    remove_action('pre_get_posts', 'custom_search_filter', 10, 1);
+    //remove_action('pre_get_posts', 'custom_search_filter', 10, 1);
 
     return $query;
 }
