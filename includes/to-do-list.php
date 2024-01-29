@@ -71,7 +71,7 @@ function to_do_list_shortcode() {
         
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job']);?></select>
+                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job'],$site_id);?></select>
                 </div>
                 <div style="text-align: right">
                     <input type="text" id="search-todo" style="display:inline" placeholder="Search...">

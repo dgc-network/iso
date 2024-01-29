@@ -188,12 +188,12 @@ function get_document_list_data() {
         while ($query->have_posts()) : $query->the_post();
             $post_id = (int) get_the_ID();
             $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+            $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
             $_list = array();
             $_list["doc_id"] = $post_id;
-            $_list["doc_title"] = '<a href="'.$doc_url.'">'.get_the_title().'</a>';
+            $_list["doc_title"] = ($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title();
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
-            $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
             $_list["doc_date"] = wp_date( get_option('date_format'), $doc_date );
             array_push($_array, $_list);
         endwhile;
