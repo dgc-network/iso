@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
     });        
 
     $("#btn-new-site-job").on("click", function() {
-        jQuery.ajax({
+        $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
 
     function activate_site_job_list_data(){
         $('[id^="edit-site-job-"]').on("click", function () {
-            const id = this.id.substring(14);        
+            const id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -188,7 +188,7 @@ jQuery(document).ready(function($) {
                 });
     
                 $('[id^="edit-job-action-site-"]').on("click", function () {
-                    let id = this.id.substring(21);
+                    const id = this.id.substring(21);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,

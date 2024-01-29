@@ -213,19 +213,8 @@ function user_did_not_login_yet() {
                 <label for="display-name">Name:</label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
-                <select id="site-id" name="_site_id" class="text ui-widget-content ui-corner-all">
-                    <option value="">Select Site</option>
-                <?php
-                    $site_args = array(
-                        'post_type'      => 'site',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);
-                    foreach ($sites as $site) {?>
-                        <option value="<?php echo esc_attr($site->ID);?>" ><?php echo esc_html($site->post_title);?></option><?php
-                    }
-                ?>
-                </select>
+                <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" placeholder="" />
+                <input type="hidden" id="site-id" name="_site_id" />
                 <input type="hidden" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" name="rememberme" value="foreverchecked" />

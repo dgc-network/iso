@@ -40,7 +40,6 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_todo_list_data',
-                //'_job_id': job_id,
             },
             success: function (response) {            
                 for(index=0;index<50;index++) {
@@ -64,8 +63,7 @@ jQuery(document).ready(function($) {
     }
 
     $('[id^="edit-todo-"]').on("click", function () {
-        id = this.id;
-        id = id.substring(10);
+        const id = this.id.substring(10);
         $("#todo-id").val(id);
     
         // Dialog content
@@ -214,8 +212,7 @@ jQuery(document).ready(function($) {
                 })
 
                 $('[id^="edit-job-action-todo-"]').on( "click", function() {
-                    id = this.id;
-                    id = id.substring(21);
+                    const id = this.id.substring(21);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,

@@ -74,7 +74,7 @@ function to_do_list_shortcode() {
                     <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job'],$site_id);?></select>
                 </div>
                 <div style="text-align: right">
-                    <input type="text" id="search-todo" style="display:inline" placeholder="Search...">
+                    <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     <span id="btn-todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
                 </div>
             </div>

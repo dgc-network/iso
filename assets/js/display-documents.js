@@ -81,8 +81,7 @@ jQuery(document).ready(function($) {
 
     function activate_document_list_data(){
         $('[id^="edit-document-"]').on( "click", function() {
-            id = this.id;
-            id = id.substring(14);
+            const id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -204,7 +203,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#doc-workflow-list-dialog").dialog({
-        width: 600,
+        width: 500,
         modal: true,
         autoOpen: false,
     });    

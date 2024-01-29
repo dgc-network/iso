@@ -70,7 +70,7 @@ function display_documents_shortcode() {
                     <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
                 </div>
                 <div style="text-align: right">
-                    <input type="text" id="search-document" style="display:inline" placeholder="Search...">
+                    <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
                     <span id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
                 </div>
             </div>
@@ -382,6 +382,9 @@ function retrieve_doc_workflow_list_data($doc_id=0){
                 'compare' => '=',
             ),
         ),
+        'orderby'        => 'meta_value',
+        'meta_key'       => 'submit_time',
+        'order'          => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
