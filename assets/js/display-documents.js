@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
-    $("#btn-document-setting").on("change", function () {
+    $("#btn-document-setting").on("click", function () {
         $("#document-setting-div").toggle();
     });
 
