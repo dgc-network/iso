@@ -102,7 +102,9 @@ function to_do_list_shortcode() {
                             <tr class="todo-list-<?php echo $x;?>" id="edit-todo-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php echo get_the_title($doc_id);?></td>
-                                <td style="text-align:center;"><?php echo $due_date;?></td>
+                                <?php if ($todo_due<time()){?><td style="text-align:center; color:red;">
+                                <?php }else{?><td style="text-align:center;"><?php }?>
+                                    <?php echo $due_date;?></td>
                             </tr>
                             <?php 
                             $x += 1;
