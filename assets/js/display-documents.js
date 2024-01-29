@@ -10,6 +10,10 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
+    $("#btn-document-setting").on("change", function () {
+        $("#document-setting-div").toggle();
+    });
+
     activate_document_list_data()
 
     $('[id^="btn-"]').mouseover(function() {
