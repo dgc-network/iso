@@ -17,16 +17,37 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#hint').empty();
-                let output = '<table>'
-        
+                let output = '<table>'        
                 $.each(response, function (index, value) {
                     output += '<tr><td id="select-site-id-'+value.site_id+'">'
                     output += value.site_title
                     output += '</td></tr>'
                 });
-
                 output += '</table>'
                 $('#hint').append(output).show();
+
+                $('[id^="select-site-id-"]').on("click", function () {
+                    const id = this.id.substring(15);
+                    $('#site-id').val(id);
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'get_site_dialog_data',
+                            '_site_id': $("#site-id").val(),
+                        },
+                        success: function (response) {
+                            $('#site-title').val(response.site_title);
+                            $("#hint").hide();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });            
+                });
+            
             },
             error: function (error) {
                 console.error(error);
@@ -36,28 +57,6 @@ jQuery(document).ready(function($) {
 
     });
 
-    $('[id^="select-site-id-"]').on("click", function () {
-        const id = this.id.substring(15);
-        $('#site-id').val(id);
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_site_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                $('#site-title').val(response.site_title);
-                $("#hint").hide();
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-
-    });
 
 
     activate_site_job_list_data()
