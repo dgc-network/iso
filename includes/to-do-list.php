@@ -62,11 +62,23 @@ function to_do_list_shortcode() {
         <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <div id="todo-setting-div" style="display:none">
+                <label for="display-name">Name : </label>
+                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="site-title"> Site: </label>
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            </div>
         
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job']);?></select>
+                </div>
+                <div style="text-align: right">
+                    <input type="text" id="search-todo" style="display:inline" placeholder="Search...">
+                    <span id="btn-todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                </div>
+            </div>
+
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <tr>
@@ -118,7 +130,8 @@ add_shortcode('to-do-list', 'to_do_list_shortcode');
 function retrieve_todo_list_data(){
     $args = array(
         'post_type'      => 'todo',
-        'posts_per_page' => -1,
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
             'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
             array(

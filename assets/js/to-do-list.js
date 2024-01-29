@@ -1,6 +1,20 @@
 // To-do list
 jQuery(document).ready(function($) {
 
+    $("#select-site-job").on( "change", function() {
+        window.location.replace("?_job="+$(this).val());
+        $(this).val('');
+    });
+
+    $("#search-todo").on( "change", function() {
+        window.location.replace("?_search="+$(this).val());
+        $(this).val('');
+    });
+
+    $("#btn-todo-setting").on("click", function () {
+        $("#todo-setting-div").toggle();
+    });
+
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
         $(this).css('color', 'red');
