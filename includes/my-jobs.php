@@ -256,29 +256,38 @@ add_action('init', 'register_job_post_type');
 
 // Shortcode to display my jobs on frontend
 function my_jobs_shortcode() {
-    //ob_start(); // Start output buffering
-
     // Check if the user is logged in
     if (is_user_logged_in()) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['my_profile'])) {
+            // This code will be executed when the button is clicked
+            echo "Button clicked!";
+            // Add your PHP logic here
+        }
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
         <div class="ui-widget">
-            <form method="post">
-            <fieldset>
-                <label for="display-name">Name : </label>
-                <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="site-title"> Site: </label>
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <div id="profile-setting-div" style="display:none">
+                <form method="post">
+                <fieldset>
+                    <label for="display-name">Name : </label>
+                    <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="site-title"> Site: </label>
+                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                    <button type="submit" name="my_profile">Submit</button>
+                </fieldset>
+                </form>
+            </div>
+
                 <?php
                 // My job list in site
                 $query = retrieve_site_job_list_data($site_id);
                 ?>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th>My</th>
+                        <th id="btn-profile-setting">My</th>
                         <th>Job</th>
                         <th>Description</th>
                     </thead>
@@ -309,8 +318,6 @@ function my_jobs_shortcode() {
                 </table>
                 <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php display_job_dialog($site_id);?>
-            </fieldset>
-            </form>
         </div><?php
 
     } else {
