@@ -276,6 +276,7 @@ function my_jobs_shortcode() {
                     <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="site-title"> Site: </label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                    <div id="hint" style="display:none; color:#999;"></div>
                     <button type="submit" name="my_profile">Submit</button>
                 </fieldset>
                 </form>
@@ -342,6 +343,31 @@ function retrieve_site_job_list_data($site_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
+
+function get_site_list_data() {
+    // Retrieve the value
+    $search_query = sanitize_text_field($_POST['_site_title']);
+    $args = array(
+        'post_type'      => 'site',
+        'posts_per_page' => -1,
+        's'              => $search_query,
+    );
+    $query = new WP_Query($args);
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $_list = array();
+            $_list["site_id"] = get_the_ID();
+            $_list["site_title"] = get_the_title();
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata(); // Reset post data to the main loop
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_site_list_data', 'get_site_list_data' );
+add_action( 'wp_ajax_nopriv_get_site_list_data', 'get_site_list_data' );
 
 function get_site_job_list_data() {
     // Retrieve the value

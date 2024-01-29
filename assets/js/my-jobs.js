@@ -5,9 +5,35 @@ jQuery(document).ready(function($) {
         $("#profile-setting-div").toggle();
     });
 
-    $("#site-title").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
-        $(this).val('');
+    $('#site-title').on('input', function() {
+        // Show the hint when the user starts typing
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_list_data',
+                '_site_title': $(this).val(),
+            },
+            success: function (response) {
+                $('#hint').empty();
+                let output = '<table>'
+        
+                $.each(response, function (index, value) {
+                    output += '<tr><td id="'+value.site_id+'">'
+                    output += value.site_title
+                    output += '</td></tr>'
+                });
+
+                output += '</table>'
+                $('#hint').append(output).show();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+
     });
 
     activate_site_job_list_data()
