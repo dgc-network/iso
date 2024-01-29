@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
                 let output = '<table>'
         
                 $.each(response, function (index, value) {
-                    output += '<tr><td id="'+value.site_id+'">'
+                    output += '<tr><td id="select-site-id-'+value.site_id+'">'
                     output += value.site_title
                     output += '</td></tr>'
                 });
@@ -35,6 +35,30 @@ jQuery(document).ready(function($) {
         });
 
     });
+
+    $('[id^="select-site-id-"]').on("click", function () {
+        const id = this.id.substring(15);
+        $('#site-id').val(id);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                $('#site-title').val(response.site_title);
+                $("#hint").hide();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+
+    });
+
 
     activate_site_job_list_data()
 
@@ -80,8 +104,9 @@ jQuery(document).ready(function($) {
                 $("[class^='site-job-list-']").hide().empty();
         
                 $.each(response, function (index, value) {
-                    let targetTr = $(".site-job-list-" + index).first();
-                    targetTr.attr("id", "edit-site-job-" + value.job_id);
+                    //let targetTr = $(".site-job-list-" + index).first();
+                    //targetTr.attr("id", "edit-site-job-" + value.job_id);
+                    $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);
         
                     const isChecked = value.is_my_job == 1 ? 'checked' : '';
                     const output = `
@@ -89,7 +114,8 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.job_content}</td>
                     `;
-                    targetTr.append(output).show();
+                    //targetTr.append(output).show();
+                    $(".site-job-list-" + index).append(output).show();
                 });
         
                 activate_site_job_list_data();

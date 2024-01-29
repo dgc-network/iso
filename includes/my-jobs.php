@@ -369,6 +369,17 @@ function get_site_list_data() {
 add_action( 'wp_ajax_get_site_list_data', 'get_site_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_list_data', 'get_site_list_data' );
 
+function get_site_dialog_data() {
+    $response = array();
+    if( isset($_POST['_site_id']) ) {
+        $site_id = (int)sanitize_text_field($_POST['_site_id']);
+        $response["site_title"] = get_the_title($site_id);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
+
 function get_site_job_list_data() {
     // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
