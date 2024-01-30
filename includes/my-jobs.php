@@ -38,10 +38,16 @@ function my_jobs_shortcode() {
             </fieldset>
             </div>
 
-            <?php
-            // Job list in site
-            $query = retrieve_site_job_list_data($site_id);
-            ?>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job'],$site_id);?></select>
+                </div>
+                <div style="text-align: right">
+                    <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
+                    <span id="btn-job-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                </div>
+            </div>
+
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
@@ -50,6 +56,7 @@ function my_jobs_shortcode() {
                 </thead>
                 <tbody>
                 <?php
+                $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
