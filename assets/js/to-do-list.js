@@ -49,13 +49,16 @@ jQuery(document).ready(function($) {
                     $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
                     const output = `
                         <td style="text-align:center;">${value.todo_title}</td>
-                        <td>${value.doc_title}</td>                        
+                        <td>${value.doc_title}</td>
+                        <td style="text-align:center;">${value.due_date}</td>
                     `;
+/*                    
                     if (value.due_color==1){
                         output += `<td style="text-align:center; color:red;">${value.due_date}</td>`;
                     } else {
                         output += `<td style="text-align:center;">${value.due_date}</td>`;
                     }                    
+*/                    
                     $(".todo-list-"+index).append(output).show();
                 })
             },
