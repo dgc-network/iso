@@ -115,7 +115,8 @@ jQuery(document).ready(function($) {
                     // Add JSON object to the array
                     buttonData.push(jsonData);
                 })
-                //openTodoDialog(buttonData);
+                openTodoDialog(buttonData);
+/*
                 let buttons = {};
                 for (let i = 0; i < buttonData.length; i++) {
                     let btn = buttonData[i];
@@ -152,7 +153,7 @@ jQuery(document).ready(function($) {
             
                 // Open the dialog after it has been initialized
                 $("#todo-dialog").dialog("open");
-        
+*/        
             },
             error: function (error) {
                 console.error(error);
