@@ -1,4 +1,52 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class CustomToDoList
+{
+    public function __construct()
+    {
+        add_action('init', array($this, 'registerTodoPostType'));
+        add_action('init', array($this, 'registerActionPostType'));
+        add_shortcode('to-do-list', array($this, 'toDoListShortcode'));
+        add_action('wp_ajax_get_todo_list_data', array($this, 'getToDoListData'));
+        add_action('wp_ajax_nopriv_get_todo_list_data', array($this, 'getToDoListData'));
+        // Add other actions and hooks here...
+    }
+
+    public function registerTodoPostType()
+    {
+        // Todo post type registration code...
+    }
+
+    public function registerActionPostType()
+    {
+        // Action post type registration code...
+    }
+
+    public function toDoListShortcode()
+    {
+        // Shortcode implementation code...
+    }
+
+    public function retrieveToDoListData()
+    {
+        // Retrieve Todo list data...
+    }
+
+    public function getToDoListData()
+    {
+        // Get Todo list data...
+    }
+
+    // Add other methods and functions as needed...
+}
+
+// Instantiate the class
+$customToDoList = new CustomToDoList();
+?>
+<?php
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

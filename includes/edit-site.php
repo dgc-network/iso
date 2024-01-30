@@ -85,6 +85,12 @@ function add_site_image_metabox() {
 }
 add_action('add_meta_boxes', 'add_site_image_metabox');
 
+// Function to check if the string is a valid URL
+function isURL($str) {
+    $pattern = '/^(http|https):\/\/[^ "]+$/';
+    return preg_match($pattern, $str) === 1;
+}
+
 function site_image_content($post) {
     wp_nonce_field('site_image_nonce', 'site_image_nonce');
     $image_url = esc_attr(get_post_meta($post->ID, 'image_url', true));
