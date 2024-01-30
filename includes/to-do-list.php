@@ -216,7 +216,7 @@ function get_todo_list_data() {
                 $_list["todo_title"] = get_the_title();
                 $_list["doc_title"] = get_the_title($doc_id);
                 $_list["due_date"] = wp_date( get_option('date_format'), $todo_due );
-                $_list["due_color"] = ($todo_due<time()) ? 1 : 0;
+                //$_list["due_color"] = ($todo_due<time()) ? 1 : 0;
                 array_push($_array, $_list);
             }
         endwhile;
