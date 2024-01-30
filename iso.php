@@ -273,92 +273,99 @@ add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
 function init_webhook_events() {
-    global $wpdb;
-    $line_bot_api = new line_bot_api();
-    $open_ai_api = new open_ai_api();
-
-    foreach ((array)$line_bot_api->parseEvents() as $event) {
-        // Start the User Login/Registration process if got the one time password
-        if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
-            $profile = $line_bot_api->getProfile($event['source']['userId']);
-            $display_name = str_replace(' ', '', $profile['displayName']);
-            // Encode the Chinese characters for inclusion in the URL
-            $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-            // Flex Message JSON structure with a button
-            $flexMessage = [
-                'type' => 'flex',
-                'altText' => 'This is a Flex Message with a Button',
-                'contents' => [
-                    'type' => 'bubble',
-                    'body' => [
-                        'type' => 'box',
-                        'layout' => 'vertical',
-                        'contents' => [
-                            [
-                                'type' => 'text',
-                                'text' => 'Hello, '.$display_name,
-                                'size' => 'lg',
-                                'weight' => 'bold',
-                            ],
-                            [
-                                'type' => 'text',
-                                'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
-                                'wrap' => true,
+    try {
+        // Your existing code here
+        global $wpdb;
+        $line_bot_api = new line_bot_api();
+        $open_ai_api = new open_ai_api();
+    
+        foreach ((array)$line_bot_api->parseEvents() as $event) {
+            // Start the User Login/Registration process if got the one time password
+            if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
+                $profile = $line_bot_api->getProfile($event['source']['userId']);
+                $display_name = str_replace(' ', '', $profile['displayName']);
+                // Encode the Chinese characters for inclusion in the URL
+                $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+                // Flex Message JSON structure with a button
+                $flexMessage = [
+                    'type' => 'flex',
+                    'altText' => 'This is a Flex Message with a Button',
+                    'contents' => [
+                        'type' => 'bubble',
+                        'body' => [
+                            'type' => 'box',
+                            'layout' => 'vertical',
+                            'contents' => [
+                                [
+                                    'type' => 'text',
+                                    'text' => 'Hello, '.$display_name,
+                                    'size' => 'lg',
+                                    'weight' => 'bold',
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
+                                    'wrap' => true,
+                                ],
                             ],
                         ],
-                    ],
-                    'footer' => [
-                        'type' => 'box',
-                        'layout' => 'vertical',
-                        'contents' => [
-                            [
-                                'type' => 'button',
-                                'action' => [
-                                    'type' => 'uri',
-                                    'label' => 'Click me!',
-                                    'uri' => $link_uri, // Replace with your desired URI
+                        'footer' => [
+                            'type' => 'box',
+                            'layout' => 'vertical',
+                            'contents' => [
+                                [
+                                    'type' => 'button',
+                                    'action' => [
+                                        'type' => 'uri',
+                                        'label' => 'Click me!',
+                                        'uri' => $link_uri, // Replace with your desired URI
+                                    ],
                                 ],
                             ],
                         ],
                     ],
-                ],
-            ];
-            
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
-                'messages' => [$flexMessage],
-            ]);            
+                ];
+                
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
+                    'messages' => [$flexMessage],
+                ]);            
+            }
+            // Regular webhook response
+            switch ($event['type']) {
+                case 'message':
+                    $message = $event['message'];
+                    switch ($message['type']) {
+                        case 'text':
+                            // Open-AI auto reply
+                            $param=array();
+                            $param["messages"][0]["content"]=$message['text'];
+                            $response = $open_ai_api->createChatCompletion($param);
+                            $line_bot_api->replyMessage([
+                                'replyToken' => $event['replyToken'],
+                                'messages' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => $response
+                                    ]                                                                    
+                                ]
+                            ]);
+                            break;
+                        default:
+                            error_log('Unsupported message type: ' . $message['type']);
+                            break;
+                    }
+                    break;
+                default:
+                    error_log('Unsupported event type: ' . $event['type']);
+                    break;
+            }
         }
-        // Regular webhook response
-        switch ($event['type']) {
-            case 'message':
-                $message = $event['message'];
-                switch ($message['type']) {
-                    case 'text':
-                        // Open-AI auto reply
-                        $param=array();
-                        $param["messages"][0]["content"]=$message['text'];
-                        $response = $open_ai_api->createChatCompletion($param);
-                        $line_bot_api->replyMessage([
-                            'replyToken' => $event['replyToken'],
-                            'messages' => [
-                                [
-                                    'type' => 'text',
-                                    'text' => $response
-                                ]                                                                    
-                            ]
-                        ]);
-                        break;
-                    default:
-                        error_log('Unsupported message type: ' . $message['type']);
-                        break;
-                }
-                break;
-            default:
-                error_log('Unsupported event type: ' . $event['type']);
-                break;
-        }
+
+    } catch (Exception $e) {
+        error_log('Exception: ' . $e->getMessage());
     }
+    
 }
 add_action( 'init', 'init_webhook_events' );
 
