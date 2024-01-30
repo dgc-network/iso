@@ -43,7 +43,7 @@ if (!class_exists('line_bot_api')) {
         /**
          * @return array
          */
-        public function parseEvents() {
+        public function backup_parseEvents() {
  
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 http_response_code(405);
@@ -94,7 +94,7 @@ if (!class_exists('line_bot_api')) {
         /**
          * @return mixed
          */
-        public function backup_parseEvents() {
+        public function parseEvents() {
          
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 http_response_code(405);
