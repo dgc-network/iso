@@ -16,7 +16,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+/*
 class iso_plugin{
     const JQUERY_UI_VERSION = '1.13.2';
     private $asset_version;
@@ -73,12 +73,6 @@ class iso_plugin{
     private function enqueue_common_scripts_and_styles(){
         wp_enqueue_style('jquery-ui-style', "https://code.jquery.com/ui/".self::JQUERY_UI_VERSION."/themes/smoothness/jquery-ui.css", '', self::JQUERY_UI_VERSION);
         wp_enqueue_script('jquery-ui-js', "https://code.jquery.com/ui/".self::JQUERY_UI_VERSION."/jquery-ui.js", array('jquery'), self::JQUERY_UI_VERSION, true);
-/*
-        wp_localize_script('wp-enqueue-js', 'ajax_object', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('iso_documents_nonce'),
-        ));
-*/        
     }
 
     private function enqueue_additional_scripts($script_name, $file_name){
@@ -200,14 +194,14 @@ class iso_plugin{
 
 // Instantiate the class
 new iso_plugin();
-
+*/
 ?><?php
 /*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
-/*
+
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -367,7 +361,7 @@ function init_webhook_events() {
     }
 }
 add_action( 'init', 'init_webhook_events' );
-*/
+
 // User did not login system yet
 function user_did_not_login_yet() {
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
@@ -419,7 +413,7 @@ function user_did_not_login_yet() {
         echo '</div>';
     }
 }
-/*
+
 function custom_login_process($user, $password) {
     // Check if the login was successful
     if (is_a($user, 'WP_User')) {
@@ -433,4 +427,3 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
-*/
