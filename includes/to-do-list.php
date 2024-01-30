@@ -169,9 +169,9 @@ function to_do_list_shortcode() {
                 ?>
                 </tbody>
             </table>
-            <?php display_todo_dialog();?>
         </fieldset>
         </div>
+        <?php display_todo_dialog();?>
         <?php
     } else {
         user_did_not_login_yet();
@@ -229,26 +229,26 @@ add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 function display_todo_dialog() {
     ?>
     <div id="todo-dialog" title="To-do dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="todo-id" />
-            <input type="hidden" id="job-id" />
-            <label for="doc-title">Title:</label>
-            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
-            <div>
-                <div style="display:inline-block;">
-                    <label for="doc-number">Doc.#:</label>
-                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
-                </div>
-                <div style="display:inline-block; width:25%;">
-                    <label for="doc-revision">Revision:</label>
-                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
-                </div>
+    <fieldset>
+        <input type="hidden" id="todo-id" />
+        <input type="hidden" id="job-id" />
+        <label for="doc-title">Title:</label>
+        <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
+        <div>
+            <div style="display:inline-block;">
+                <label for="doc-number">Doc.#:</label>
+                <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
             </div>
-            <label for="doc-url">URL:</label>
-            <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
-            <label for="btn-workflow">Workflow:</label>
-            <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Action list</div>
-        </fieldset>
+            <div style="display:inline-block; width:25%;">
+                <label for="doc-revision">Revision:</label>
+                <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
+            </div>
+        </div>
+        <label for="doc-url">URL:</label>
+        <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
+        <label for="btn-workflow">Workflow:</label>
+        <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Action list</div>
+    </fieldset>
     </div>
     <?php display_todo_action_list();?>
     <?php
@@ -289,7 +289,7 @@ function get_todo_dialog_buttons_data() {
                 array_push($_array, $_list);    
             }
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }

@@ -111,7 +111,44 @@ jQuery(document).ready(function($) {
                     // Add JSON object to the array
                     buttonData.push(jsonData);
                 })
-                openTodoDialog(buttonData);
+                //openTodoDialog(buttonData);
+                let buttons = {};
+                for (let i = 0; i < buttonData.length; i++) {
+                    let btn = buttonData[i];
+                    buttons[btn.label] = function () {
+                        if (window.confirm("Are you sure you want to proceed this action?")) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_todo_dialog_data',
+                                    '_action_id': btn.action,
+                                    '_todo_id': $("#todo-id").val()
+                                },
+                                success: function (response) {
+                                    $("#todo-dialog").dialog('close');
+                                    get_todo_list_data();
+                                },
+                                error: function(error){
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    };
+                }
+            
+                $("#todo-dialog").dialog({
+                    width: 600,
+                    autoOpen: false,
+                    modal: true,
+                    buttons: buttons
+                });
+            
+                // Open the dialog after it has been initialized
+                $("#todo-dialog").dialog("open");
+        
             },
             error: function (error) {
                 console.error(error);
@@ -125,7 +162,7 @@ jQuery(document).ready(function($) {
         for (let i = 0; i < buttonData.length; i++) {
             let btn = buttonData[i];
             buttons[btn.label] = function () {
-                if (window.confirm("Are you sure you want to proceed this job action?")) {
+                if (window.confirm("Are you sure you want to proceed this action?")) {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
