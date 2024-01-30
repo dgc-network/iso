@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.todo_title}</td>
                         <td>${value.doc_title}</td>                        
                     `;
-                    if (value.due_date==1){
+                    if (value.due_color==1){
                         output += `<td style="text-align:center; color:red;">${value.due_date}</td>`;
                     } else {
                         output += `<td style="text-align:center;">${value.due_date}</td>`;
