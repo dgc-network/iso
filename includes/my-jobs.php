@@ -319,7 +319,6 @@ function my_jobs_shortcode() {
     } else {
         user_did_not_login_yet();
     }
-    //return ob_get_clean(); // Return the buffered content
 }
 add_shortcode('my-jobs', 'my_jobs_shortcode');
 
@@ -368,6 +367,7 @@ function get_site_dialog_data() {
     $response = array();
     if( isset($_POST['_site_id']) ) {
         $site_id = (int)sanitize_text_field($_POST['_site_id']);
+        //$response["site_id"] = $site_id;
         $response["site_title"] = get_the_title($site_id);
     }
     wp_send_json($response);
@@ -386,7 +386,8 @@ function set_site_dialog_data() {
     );
     $query = new WP_Query($args);
 
-    if( $query ) {
+    if( $query->have_posts() ) {
+        // Update the post data
         $site_id = sanitize_text_field($_POST['_site_id']);
         update_post_meta( $current_user_id, 'site_id', $site_id );
     } else {
