@@ -360,7 +360,7 @@ function init_webhook_events() {
         }
     }
 }
-//add_action( 'init', 'init_webhook_events' );
+add_action( 'init', 'init_webhook_events' );
 
 // User did not login system yet
 function user_did_not_login_yet() {
