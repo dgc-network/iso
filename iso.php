@@ -276,9 +276,7 @@ function init_webhook_events() {
 
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
-    foreach ((array)$line_bot_api->parseEvents() as $event) {
-    }
-/*
+
     foreach ((array)$line_bot_api->parseEvents() as $event) {
 
         // Start the User Login/Registration process if got the one time password
@@ -363,7 +361,7 @@ function init_webhook_events() {
                 break;
         }
     }
-*/
+
 }
 add_action( 'init', 'init_webhook_events' );
 
