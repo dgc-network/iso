@@ -264,6 +264,7 @@ function my_jobs_shortcode() {
         ?>
         <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
         <div class="ui-widget">
+        <fieldset>
             <div id="profile-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
@@ -312,6 +313,7 @@ function my_jobs_shortcode() {
             </table>
             <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php display_job_dialog($site_id);?>
+        <fieldset>
         </div>
         <?php
     } else {
