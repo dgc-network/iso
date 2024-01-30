@@ -41,57 +41,6 @@ if (!class_exists('line_bot_api')) {
         }
 
         /**
-         * @return array
-         */
-        public function backup_parseEvents() {
- 
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                http_response_code(405);
-                error_log('Method not allowed');
-            }
-        
-            $entityBody = file_get_contents('php://input');
-        
-            if ($entityBody === false || strlen($entityBody) === 0) {
-                http_response_code(400);
-                error_log('Missing request body');
-            }
-        
-            $data = json_decode($entityBody, true);
-
-            if ($data === null) {
-                $jsonError = json_last_error_msg();
-                error_log('Failed to decode JSON. Error: ' . $jsonError);
-                http_response_code(400);
-                return [];
-            }
-            
-            if ($data === null) {
-                // Handle JSON decoding error
-                http_response_code(400);
-                error_log('Failed to decode JSON');
-                return [];
-            }
-        
-            if (!isset($data['events']) || !is_array($data['events'])) {
-                // Handle the case where 'events' key is not present or is not an array
-                http_response_code(400);
-                error_log('Missing "events" key or it is not an array');
-                return [];
-            }
-
-            $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-
-            if ($contentType !== 'application/json') {
-                http_response_code(400);
-                error_log('Invalid Content-Type. Expected application/json.');
-                return [];
-            }
-                    
-            return $data['events'];
-        }
-
-        /**
          * @return mixed
          */
         public function parseEvents() {
@@ -101,8 +50,7 @@ if (!class_exists('line_bot_api')) {
                 error_log('Method not allowed');
             }
     
-            $entityBody = file_get_contents('php://input');
-            
+            $entityBody = file_get_contents('php://input');            
     
             if ($entityBody === false || strlen($entityBody) === 0) {
                 http_response_code(400);
@@ -110,14 +58,7 @@ if (!class_exists('line_bot_api')) {
             }
 
             $data = json_decode($entityBody, true);
-/*
-            if ($data === null || !isset($data['events'])) {
-                // Handle the case where decoding fails or 'events' key is not present
-                http_response_code(400);
-                error_log('Failed to decode JSON or missing "events" key');
-                return []; // or any other default value or action you prefer
-            }
-*/            
+
             return $data['events'];
         }
 

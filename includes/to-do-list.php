@@ -396,23 +396,12 @@ function notice_the_persons_in_charge($todo_id=0) {
 }
 
 function get_users_in_site($site_id=0) {
-    global $wpdb;
-    $users_with_site_id = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'site_id' AND meta_value = %d",
-            $site_id
-        )
-    );
-    
-    return $users_with_site_id;    
-
     // Set up the user query arguments
     $args = array(
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
                 'value' => $site_id,
-                'compare' => 'LIKE',
                 //'compare' => '=',
             ),
         ),
@@ -528,6 +517,7 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
 function display_todo_action_list() {
     ?>
     <div id="todo-action-list-dialog" title="Action list" style="display:none;">
+    <fieldset>
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -549,6 +539,7 @@ function display_todo_action_list() {
             </tbody>
         </table>
         <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
     </div>
     <?php display_todo_action_dialog();?>
     <?php
@@ -596,18 +587,18 @@ add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_da
 function display_todo_action_dialog(){
     ?>
     <div id="todo-action-dialog" title="Action dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="site-id" />
-            <input type="hidden" id="action-id" />
-            <label for="action-title">Title:</label>
-            <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-            <label for="action-content">Content:</label>
-            <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-            <label for="next-job">Next job:</label>
-            <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
-            <label for="next-leadtime">Next leadtime:</label>
-            <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
+    <fieldset>
+        <input type="hidden" id="site-id" />
+        <input type="hidden" id="action-id" />
+        <label for="action-title">Title:</label>
+        <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+        <label for="action-content">Content:</label>
+        <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+        <label for="next-job">Next job:</label>
+        <select id="next-job" class="text ui-widget-content ui-corner-all" ></select>
+        <label for="next-leadtime">Next leadtime:</label>
+        <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+    </fieldset>
     </div>
     <?php    
 }
