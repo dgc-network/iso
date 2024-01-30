@@ -58,7 +58,14 @@ if (!class_exists('line_bot_api')) {
             }
         
             $data = json_decode($entityBody, true);
-        
+
+            if ($data === null) {
+                $jsonError = json_last_error_msg();
+                error_log('Failed to decode JSON. Error: ' . $jsonError);
+                http_response_code(400);
+                return [];
+            }
+            
             if ($data === null) {
                 // Handle JSON decoding error
                 http_response_code(400);
@@ -72,7 +79,15 @@ if (!class_exists('line_bot_api')) {
                 error_log('Missing "events" key or it is not an array');
                 return [];
             }
-        
+
+            $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+
+            if ($contentType !== 'application/json') {
+                http_response_code(400);
+                error_log('Invalid Content-Type. Expected application/json.');
+                return [];
+            }
+                    
             return $data['events'];
         }
 
