@@ -531,15 +531,13 @@ function get_todo_action_list_data() {
             $_list["action_id"] = get_the_ID();
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            if ($next_job==-1){
-                $_list["next_job"] = __( '發行', 'your-text-domain' );
-            } else {
-                $_list["next_job"] = get_the_title($next_job);
-            }
+            $_list["next_job"] = get_the_title($next_job);
+            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
+            if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
             $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }
