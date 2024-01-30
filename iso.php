@@ -246,13 +246,13 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    $version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('display-documents-js', plugins_url('assets/js/display-documents.js', __FILE__), array('jquery'), $version);
     wp_localize_script('display-documents-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    $version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('to-do-list-js', plugins_url('assets/js/to-do-list.js', __FILE__), array('jquery'), $version);
     wp_localize_script('to-do-list-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
