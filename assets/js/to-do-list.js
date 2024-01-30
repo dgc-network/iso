@@ -98,16 +98,16 @@ jQuery(document).ready(function($) {
         });
 
         // Dialog buttons
-        get_dialog_action_buttons_data($("#todo-id").val());
+        get_todo_dialog_buttons_data($("#todo-id").val());
     });
     
-    function get_dialog_action_buttons_data(id) {
+    function get_todo_dialog_buttons_data(id) {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_dialog_action_buttons_data',
+                'action': 'get_todo_dialog_buttons_data',
                 '_todo_id': id,
             },
             success: function (response) {
@@ -318,7 +318,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#todo-action-dialog").dialog('close');
-                        get_dialog_action_buttons_data($("#todo-id").val());
+                        get_todo_dialog_buttons_data($("#todo-id").val());
                         get_todo_action_list_data($("#todo-id").val());
                     },
                     error: function (error) {
@@ -339,7 +339,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('close');
-                            get_dialog_action_buttons_data($("#todo-id").val());
+                            get_todo_dialog_buttons_data($("#todo-id").val());
                             get_todo_action_list_data($("#todo-id").val());
                         },
                         error: function(error){

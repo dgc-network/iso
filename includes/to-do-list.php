@@ -272,7 +272,7 @@ function get_todo_dialog_data() {
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
 
-function get_dialog_action_buttons_data() {
+function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
     $query = retrieve_todo_action_list_data($todo_id);
@@ -294,8 +294,8 @@ function get_dialog_action_buttons_data() {
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_dialog_action_buttons_data', 'get_dialog_action_buttons_data' );
-add_action( 'wp_ajax_nopriv_get_dialog_action_buttons_data', 'get_dialog_action_buttons_data' );
+add_action( 'wp_ajax_get_todo_dialog_buttons_data', 'get_todo_dialog_buttons_data' );
+add_action( 'wp_ajax_nopriv_get_todo_dialog_buttons_data', 'get_todo_dialog_buttons_data' );
 
 function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
