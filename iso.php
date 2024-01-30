@@ -240,7 +240,7 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    $version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('my-jobs-js', plugins_url('assets/js/my-jobs.js', __FILE__), array('jquery'), $version);
     wp_localize_script('my-jobs-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
