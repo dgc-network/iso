@@ -114,7 +114,17 @@ jQuery(document).ready(function($) {
                 let buttonData = [];
                 $.each(response, function (index, value) {
                     var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
-                    var jsonData = $.parseJSON(jsonDataString);
+                    //var jsonData = $.parseJSON(jsonDataString);
+                    var jsonData;
+
+                    try {
+                        jsonData = JSON.parse(jsonDataString);
+                        // Continue with your code using the parsed JSON data
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        // Handle the error as needed
+                    }
+                    
                     // Add JSON object to the array
                     buttonData.push(jsonData);
                 })
