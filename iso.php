@@ -276,6 +276,8 @@ function init_webhook_events() {
 
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
+    foreach ((array)$line_bot_api->parseEvents() as $event) {
+    }
 /*
     foreach ((array)$line_bot_api->parseEvents() as $event) {
 
