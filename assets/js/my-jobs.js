@@ -6,7 +6,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#site-title').on('input', function() {
-        // Show the hint when the user starts typing
+        // Show the site-hint when the user starts typing
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
                 '_site_title': $(this).val(),
             },
             success: function (response) {
-                $('#hint').empty();
+                $('#site-hint').empty();
                 let output = '<table>'        
                 $.each(response, function (index, value) {
                     output += '<tr><td id="select-site-id-'+value.site_id+'">'
@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
                     output += '</td></tr>'
                 });
                 output += '</table>'
-                $('#hint').append(output).show();
+                $('#site-hint').append(output).show();
 
                 $('[id^="select-site-id-"]').on("click", function () {
                     const id = this.id.substring(15);
@@ -39,24 +39,43 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $('#site-title').val(response.site_title);
-                            $("#hint").hide();
+                            $("#site-hint").hide();
                         },
                         error: function (error) {
                             console.error(error);
                             alert(error);
                         }
                     });            
-                });
-            
+                });            
             },
             error: function (error) {
                 console.error(error);
                 alert(error);
             }
         });
-
     });
 
+    $("#btn-submit-profile").on("click", function () {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_site_dialog_data',
+                '_site_id': $("#site-id").val(),
+                '_site_title': $("#site-title").val(),
+            },
+            success: function (response) {
+                $("#profile-setting-div").toggle();
+                //$('#site-title').val(response.site_title);
+                //$("#site-hint").hide();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });            
 
 
     activate_site_job_list_data()

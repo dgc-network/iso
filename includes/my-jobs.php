@@ -258,11 +258,6 @@ add_action('init', 'register_job_post_type');
 function my_jobs_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['my_profile'])) {
-            // This code will be executed when the button is clicked
-            echo "Button clicked!";
-            // Add your PHP logic here
-        }
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
@@ -276,8 +271,8 @@ function my_jobs_shortcode() {
                     <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="site-title"> Site: </label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-                    <div id="hint" style="display:none; color:#999;"></div>
-                    <button type="submit" name="my_profile">Submit</button>
+                    <div id="site-hint" style="display:none; color:#999;"></div>
+                    <button type="submit" id="btn-submit-profile">Submit</button>
                 </fieldset>
                 </form>
             </div>
