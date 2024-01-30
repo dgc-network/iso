@@ -265,7 +265,6 @@ function my_jobs_shortcode() {
         <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
         <div class="ui-widget">
             <div id="profile-setting-div" style="display:none">
-                <form method="post">
                 <fieldset>
                     <label for="display-name">Name : </label>
                     <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
@@ -274,48 +273,47 @@ function my_jobs_shortcode() {
                     <div id="site-hint" style="display:none; color:#999;"></div>
                     <button type="submit" id="btn-submit-profile">Submit</button>
                 </fieldset>
-                </form>
             </div>
 
+            <?php
+            // My job list in site
+            $query = retrieve_site_job_list_data($site_id);
+            ?>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
+                    <th>Job</th>
+                    <th>Description</th>
+                </thead>
+                <tbody>
                 <?php
-                // My job list in site
-                $query = retrieve_site_job_list_data($site_id);
-                ?>
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <th id="btn-profile-setting">My<span style="margin-left:5px;"></span></th>
-                        <th>Job</th>
-                        <th>Description</th>
-                    </thead>
-                    <tbody>
-                    <?php
-                    if ($query->have_posts()) :
-                        $x = 0;
-                        while ($query->have_posts()) : $query->the_post();
-                            $job_id = get_the_ID();
-                            $checked = is_my_job($job_id) ? 'checked' : '';
-                            ?>
-                            <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php echo esc_attr($job_id);?>">
-                                <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo esc_attr($checked);?>/></td>
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php the_content();?></td>
-                            </tr>
-                            <?php 
-                            $x += 1;
-                        endwhile;
-                        wp_reset_postdata();
-                        while ($x<50) {
-                            echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
-                            $x += 1;
-                        }
-                    endif;
+                if ($query->have_posts()) :
+                    $x = 0;
+                    while ($query->have_posts()) : $query->the_post();
+                    $job_id = get_the_ID();
+                    $checked = is_my_job($job_id) ? 'checked' : '';
                     ?>
-                    </tbody>
-                </table>
-                <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php display_job_dialog($site_id);?>
-        </div><?php
-
+                    <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php echo esc_attr($job_id);?>">
+                        <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo esc_attr($checked);?>/></td>
+                        <td style="text-align:center;"><?php the_title();?></td>
+                        <td><?php the_content();?></td>
+                    </tr>
+                    <?php 
+                    $x += 1;
+                    endwhile;
+                    wp_reset_postdata();
+                    while ($x<50) {
+                        echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php display_job_dialog($site_id);?>
+        </div>
+        <?php
     } else {
         user_did_not_login_yet();
     }

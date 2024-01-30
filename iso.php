@@ -213,7 +213,7 @@ function user_did_not_login_yet() {
                 <label for="display-name">Name:</label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
-                <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" placeholder="" />
+                <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" name="_site_id" />
                 <input type="hidden" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
