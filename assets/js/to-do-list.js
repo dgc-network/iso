@@ -49,9 +49,13 @@ jQuery(document).ready(function($) {
                     $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
                     const output = `
                         <td style="text-align:center;">${value.todo_title}</td>
-                        <td>${value.doc_title}</td>
-                        <td style="text-align:center;">${value.due_date}</td>
+                        <td>${value.doc_title}</td>                        
                     `;
+                    if (value.due_date==1){
+                        output += `<td style="text-align:center; color:red;">${value.due_date}</td>`;
+                    } else {
+                        output += `<td style="text-align:center;">${value.due_date}</td>`;
+                    }                    
                     $(".todo-list-"+index).append(output).show();
                 })
             },
@@ -91,16 +95,16 @@ jQuery(document).ready(function($) {
         });
 
         // Dialog buttons
-        get_todo_dialog_buttons_data($("#todo-id").val());
+        get_dialog_action_buttons_data($("#todo-id").val());
     });
     
-    function get_todo_dialog_buttons_data(id) {
+    function get_dialog_action_buttons_data(id) {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_todo_dialog_buttons_data',
+                'action': 'get_dialog_action_buttons_data',
                 '_todo_id': id,
             },
             success: function (response) {
@@ -300,7 +304,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#todo-action-dialog").dialog('close');
-                        get_todo_dialog_buttons_data($("#todo-id").val());
+                        get_dialog_action_buttons_data($("#todo-id").val());
                         get_todo_action_list_data($("#todo-id").val());
                     },
                     error: function (error) {
@@ -321,7 +325,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('close');
-                            get_todo_dialog_buttons_data($("#todo-id").val());
+                            get_dialog_action_buttons_data($("#todo-id").val());
                             get_todo_action_list_data($("#todo-id").val());
                         },
                         error: function(error){
