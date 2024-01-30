@@ -41,9 +41,45 @@ if (!class_exists('line_bot_api')) {
         }
 
         /**
-         * @return mixed
+         * @return array
          */
         public function parseEvents() {
+ 
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                http_response_code(405);
+                error_log('Method not allowed');
+            }
+        
+            $entityBody = file_get_contents('php://input');
+        
+            if ($entityBody === false || strlen($entityBody) === 0) {
+                http_response_code(400);
+                error_log('Missing request body');
+            }
+        
+            $data = json_decode($entityBody, true);
+        
+            if ($data === null) {
+                // Handle JSON decoding error
+                http_response_code(400);
+                error_log('Failed to decode JSON');
+                return [];
+            }
+        
+            if (!isset($data['events']) || !is_array($data['events'])) {
+                // Handle the case where 'events' key is not present or is not an array
+                http_response_code(400);
+                error_log('Missing "events" key or it is not an array');
+                return [];
+            }
+        
+            return $data['events'];
+        }
+
+        /**
+         * @return mixed
+         */
+        public function backup_parseEvents() {
          
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 http_response_code(405);
