@@ -380,6 +380,37 @@ function get_site_dialog_data() {
 add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
 
+function set_site_dialog_data() {
+    // Retrieve the value
+    $current_user_id = get_current_user_id();
+    $site_title = sanitize_text_field($_POST['_site_title']);
+    $args = array(
+        'post_type'      => 'site',
+        'posts_per_page' => -1,
+        's'              => $site_title,
+    );
+    $query = new WP_Query($args);
+
+    if( $query ) {
+        $site_id = sanitize_text_field($_POST['_site_id']);
+        update_post_meta( $current_user_id, 'site_id', $site_id );
+    } else {
+        // Set up the new post data
+        $new_post = array(
+            'post_title'    => $site_title,
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'site',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $current_user_id, 'site_id', $post_id );
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_site_dialog_data', 'set_site_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_site_dialog_data', 'set_site_dialog_data' );
+
 function get_site_job_list_data() {
     // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
