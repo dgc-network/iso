@@ -83,7 +83,7 @@ function display_documents_shortcode() {
                         <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
                         <th><?php echo __( '名稱', 'your-text-domain' );?></th>
                         <th><?php echo __( '版本', 'your-text-domain' );?></th>
-                        <th><?php echo __( '發行日期', 'your-text-domain' );?></th>
+                        <th><?php echo __( '狀態', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,6 +95,8 @@ function display_documents_shortcode() {
                         $post_id = (int) get_the_ID();
                         $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                         $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
+                        $doc_status = esc_attr(get_post_meta($post_id, 'doc_status', true));
+                        $deleting = esc_attr(get_post_meta($post_id, 'deleting', true));
                         ?>
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
@@ -210,6 +212,7 @@ function display_document_dialog($site_id=0){
     ?>
     <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
+            <input type="text" id="doc-status" class="text ui-widget-content ui-corner-all" disabled />
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
             <input type="hidden" id="doc-id" />
             <label for="doc-title">Title:</label>
@@ -249,10 +252,9 @@ function display_document_dialog($site_id=0){
             </div>
             <label for="btn-doc-workflow">Workflow:</label>
             <div id="btn-doc-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Workflow list</div>
-            <?php display_doc_workflow_list();?>
-
         </fieldset>
     </div>
+    <?php display_doc_workflow_list();?>
     <?php
 }
     
@@ -277,16 +279,19 @@ function get_document_dialog_data() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
+        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
+        $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
+        $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
+        $response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
         $response["doc_title"] = get_the_title($doc_id);
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
         $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
-        $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
-        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
         $response["doc_category"] = select_doc_category_option_data($doc_category);
     }
     wp_send_json($response);

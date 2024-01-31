@@ -94,6 +94,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#document-dialog").dialog('open');
                     $("#doc-id").val(id);
+                    $("#doc-status").val(response.doc_status);
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
