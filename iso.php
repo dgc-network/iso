@@ -196,12 +196,11 @@ class iso_plugin{
 new iso_plugin();
 */
 ?><?php
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -279,7 +278,25 @@ function init_webhook_events() {
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
 
-    foreach ((array)$line_bot_api->parseEvents() as $event) {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        error_log('Method not allowed');
+    }
+
+    $entityBody = file_get_contents('php://input');            
+
+    if ($entityBody === false || strlen($entityBody) === 0) {
+        http_response_code(400);
+        error_log('Missing request body');
+    }
+
+    $data = json_decode($entityBody, true);
+
+    //return $data['events'];
+
+    //foreach ((array)$line_bot_api->parseEvents() as $event) {
+
+    foreach ((array)$data['events'] as $event) {
 
         // Start the User Login/Registration process if got the one time password
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
