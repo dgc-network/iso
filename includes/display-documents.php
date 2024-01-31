@@ -285,7 +285,7 @@ function get_document_dialog_data() {
         $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
         $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
         //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
-        $response["doc_status"] = 'Hello,'.$start_job.($deleting>0)?'<span style="color:red;">Deleting</span>':'';
+        $response["doc_status"] = 'Hello,'.$start_job.(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
         $response["doc_title"] = get_the_title($doc_id);
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
