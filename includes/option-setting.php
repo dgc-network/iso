@@ -41,20 +41,16 @@ function my_plugin_register_settings() {
 
     // Register a field
     add_settings_field(
-        'open_ai_token_api_key',
+        'open_ai_api_key',
         'API_KEY',
-        'open_ai_token_api_key_callback',
+        'open_ai_api_key_callback',
         'general',
         'open_ai_settings_section'
     );
-    register_setting('general', 'open_ai_token_api_key');
+    register_setting('general', 'open_ai_api_key');
     
 }
 add_action('admin_init', 'my_plugin_register_settings');
-
-function line_bot_settings_section_callback() {
-    echo '<p>Settings for Line bot.</p>';
-}
 
 function iso_plugin_menu() {
     add_options_page(
@@ -82,6 +78,10 @@ function iso_plugin_settings_page() {
     <?php
 }
 
+function line_bot_settings_section_callback() {
+    echo '<p>Settings for Line bot.</p>';
+}
+
 function line_bot_token_option_callback() {
     $value = get_option('line_bot_token_option');
     echo '<input type="text" id="line_bot_token_option" name="line_bot_token_option" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
@@ -92,8 +92,12 @@ function line_official_account_callback() {
     echo '<input type="text" id="line_official_account" name="line_official_account" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
 }
 
-function open_ai_token_api_key_callback() {
-    $value = get_option('open_ai_token_api_key');
-    echo '<input type="text" id="open_ai_token_api_key" name="open_ai_token_api_key" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
+function open_ai_settings_section_callback() {
+    echo '<p>Settings for Open AI.</p>';
+}
+
+function open_ai_api_key_callback() {
+    $value = get_option('open_ai_api_key');
+    echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
 }
 
