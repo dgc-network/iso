@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response);
                 },
             });
-/*
+
             // Dialog content
             $.ajax({
                 type: 'POST',
@@ -114,7 +114,6 @@ jQuery(document).ready(function($) {
     
             // Open the Dialog with dynamic buttons
             get_todo_dialog_buttons_data($("#todo-id").val());
-*/            
         });            
     }
 
