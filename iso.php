@@ -263,6 +263,7 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/option-setting.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
