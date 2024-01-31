@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function my_plugin_register_settings() {
+function web_service_register_settings() {
     // Register a section
     add_settings_section(
         'line_bot_settings_section',
@@ -50,23 +50,23 @@ function my_plugin_register_settings() {
     register_setting('general', 'open_ai_api_key');
     
 }
-add_action('admin_init', 'my_plugin_register_settings');
+add_action('admin_init', 'web_service_register_settings');
 
-function iso_plugin_menu() {
+function web_service_menu() {
     add_options_page(
-        'iso Plugin Settings',
-        'iso Plugin',
+        'Web Service Settings',
+        'Web Service',
         'manage_options',
-        'iso-plugin-settings',
-        'iso_plugin_settings_page'
+        'web-service-settings',
+        'web_service_settings_page'
     );
 }
-add_action('admin_menu', 'iso_plugin_menu');
+add_action('admin_menu', 'web_service_menu');
 
-function iso_plugin_settings_page() {
+function web_service_settings_page() {
     ?>
     <div class="wrap">
-        <h2>iso Plugin Settings</h2>
+        <h2>Web Service Settings</h2>
         <form method="post" action="options.php">
             <?php
             settings_fields('general');

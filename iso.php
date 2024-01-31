@@ -263,7 +263,7 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/option-setting.php';
+require_once plugin_dir_path( __FILE__ ) . 'web-services/option-setting.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
@@ -410,7 +410,8 @@ function user_did_not_login_yet() {
         echo '<div class="ui-widget" style="text-align:center;">';
         echo '感謝您使用我們的系統<br>';
         echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按';
-        echo '<h4><a href="'.get_option('_line_account').'">這裡</a><br></h4>';
+        //echo '<h4><a href="'.get_option('_line_account').'">這裡</a><br></h4>';
+        echo '<h4><a href="'.get_option('line_official_account').'">這裡</a><br></h4>';
         echo '加入我們的Line官方帳號,<br>';
         echo '並請在聊天室中, 輸入六位數字:';
         echo '<h4>'.get_option('_one_time_password').'</h4>';
