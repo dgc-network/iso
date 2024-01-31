@@ -262,8 +262,8 @@ function get_shortcode_data() {
     //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
     //$doc_shortcode = 'display-documents';
     //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
-    $shortcode_output = do_shortcode('[display-documents]');
-    $shortcode_output .= 'Hello, World!';
+    //$shortcode_output = do_shortcode('[display-documents]');
+    $shortcode_output = 'Hello, World!';
     wp_send_json($shortcode_output);
     //echo $shortcode_output;
     //echo 'Hello';
