@@ -74,6 +74,18 @@ jQuery(document).ready(function($) {
             const id = this.id.substring(10);
             $("#todo-id").val(id);
         
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_shortcode_data',
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+            });
+
             // Dialog content
             $.ajax({
                 type: 'POST',

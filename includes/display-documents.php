@@ -195,10 +195,10 @@ function get_document_list_data() {
             $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
             $_list = array();
             $_list["doc_id"] = $post_id;
-            $_list["doc_title"] = ($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title();
+            $_list["doc_title"] = (($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title());
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
-            $_list["doc_date"] = wp_date( get_option('date_format'), $doc_date );
+            $_list["doc_date"] = esc_html(wp_date( get_option('date_format'), $doc_date ));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
