@@ -258,9 +258,10 @@ function display_todo_dialog() {
 }
         
 function get_todo_dialog_data() {
-    $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
-    $doc_shortcode = 'display-documents';
-    $shortcode_output = do_shortcode('['.$doc_shortcode.']');
+    //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+    //$doc_shortcode = 'display-documents';
+    //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
+    $shortcode_output = do_shortcode('[display-documents]');
     echo $shortcode_output;
 
     $response = array();
