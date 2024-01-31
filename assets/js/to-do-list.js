@@ -83,6 +83,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response);
+                    $('#result-container').empty();
                     $('#result-container').html(response);
                 },
             });
