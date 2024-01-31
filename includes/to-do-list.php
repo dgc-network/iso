@@ -153,12 +153,11 @@ function to_do_list_shortcode() {
                         <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
                             <td style="text-align:center;"><?php the_title(); ?></td>
                             <td><?php echo get_the_title($doc_id); ?></td>
-                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
                                 <td style="text-align:center;"><?php } ?>
-                            <?php echo $due_date;?></td>
+                            <?php echo $todo_due;?></td>
                         </tr>
                         <?php
                         $x += 1;
@@ -259,27 +258,28 @@ function display_todo_dialog() {
     <?php
 }
         
-function get_todo_dialog_data() {
+function get_shortcode_data() {
     //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
     //$doc_shortcode = 'display-documents';
     //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
     $shortcode_output = do_shortcode('[display-documents]');
     echo $shortcode_output;
     wp_die();
-/*    
+}
+add_action( 'wp_ajax_get_shortcode_data', 'get_shortcode_data' );
+add_action( 'wp_ajax_nopriv_get_shortcode_data', 'get_shortcode_data' );
+
+function get_todo_dialog_data() {
     $response = array();
-    if( isset($_POST['_todo_id']) ) {
-        $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $response["doc_title"] = get_the_title($doc_id);
-        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
-        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $response["job_id"] = esc_attr(get_post_meta($todo_id, 'job_id', true));
-        $response["site_id"] = esc_attr(get_post_meta($doc_id, 'site_id', true));
-    }
+    $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
+    $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+    $response["doc_title"] = esc_html(get_the_title($doc_id));
+    $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
+    $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
+    $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+    $response["job_id"] = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $response["site_id"] = esc_attr(get_post_meta($doc_id, 'site_id', true));
     wp_send_json($response);
-*/    
 }
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
