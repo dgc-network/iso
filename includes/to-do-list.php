@@ -108,7 +108,7 @@ function to_do_list_shortcode() {
         $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
-        <div class="ui-widget">
+        <div class="ui-widget" id="result-container">
         <fieldset>
             <div id="todo-setting-div" style="display:none">
             <fieldset>
@@ -263,9 +263,10 @@ function get_shortcode_data() {
     //$doc_shortcode = 'display-documents';
     //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
     $shortcode_output = do_shortcode('[display-documents]');
-    echo $shortcode_output;
-    echo 'Hello';
-    wp_die();
+    wp_send_json($shortcode_output);
+    //echo $shortcode_output;
+    //echo 'Hello';
+    //wp_die();
 }
 add_action( 'wp_ajax_get_shortcode_data', 'get_shortcode_data' );
 add_action( 'wp_ajax_nopriv_get_shortcode_data', 'get_shortcode_data' );

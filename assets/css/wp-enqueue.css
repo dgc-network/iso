@@ -19,6 +19,12 @@ tbody tr:hover {
     cursor: pointer;
 }
 
+button:hover {
+    background-color: #af4c53;
+    color: white;
+    cursor: pointer;
+}
+
 /* Styles for desktop browsers */
 @media (min-width: 768px) {
     #job-dialog {
