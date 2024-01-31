@@ -146,7 +146,8 @@ function to_do_list_shortcode() {
                     $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                     $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                     $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
-                
+                    $due_date = wp_date(get_option('date_format'), $todo_due);
+
                     if (is_my_job($job_id)) { // Another condition to filter the data
                         ?>
                         <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
@@ -156,7 +157,7 @@ function to_do_list_shortcode() {
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
                                 <td style="text-align:center;"><?php } ?>
-                            <?php echo wp_date(get_option('date_format'), $todo_due); ?>No show?</td>
+                            <?php echo $due_date;?></td>
                         </tr>
                         <?php
                         $x += 1;
@@ -263,7 +264,8 @@ function get_todo_dialog_data() {
     //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
     $shortcode_output = do_shortcode('[display-documents]');
     echo $shortcode_output;
-
+    wp_die();
+/*    
     $response = array();
     if( isset($_POST['_todo_id']) ) {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
@@ -276,6 +278,7 @@ function get_todo_dialog_data() {
         $response["site_id"] = esc_attr(get_post_meta($doc_id, 'site_id', true));
     }
     wp_send_json($response);
+*/    
 }
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
