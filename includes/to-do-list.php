@@ -139,26 +139,28 @@ function to_do_list_shortcode() {
                 </thead>
                 <tbody>
                 <?php
-                $query = retrieve_todo_list_data();                
+                $query = retrieve_todo_list_data();
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
-                        $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
-                        $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
-                        $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
-                        //$due_date = wp_date( get_option('date_format'), $todo_due );
-                        if (is_my_job($job_id)) { // Another condition to filter the data
-                            ?>
-                            <tr class="todo-list-<?php echo $x;?>" id="edit-todo-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php echo get_the_title($doc_id);?></td>
-                                <?php if ($todo_due<time()){?><td style="text-align:center; color:red;">
-                                <?php }else{?><td style="text-align:center;"><?php }?>
-                                    <?php echo wp_date( get_option('date_format'), $todo_due );?></td>
-                            </tr>
-                            <?php 
-                            $x += 1;
-                        }
+                    $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
+                    $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
+                    $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
+                
+                    if (is_my_job($job_id)) { // Another condition to filter the data
+                        ?>
+                        <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
+                            <td style="text-align:center;"><?php the_title(); ?></td>
+                            <td><?php echo get_the_title($doc_id); ?></td>
+                            <?php if ($todo_due < time()) { ?>
+                                <td style="text-align:center; color:red;">
+                            <?php } else { ?>
+                                <td style="text-align:center;"><?php } ?>
+                                <?php echo wp_date(get_option('date_format'), $todo_due); ?></td>
+                        </tr>
+                        <?php
+                        $x += 1;
+                    }
                     endwhile;
                     wp_reset_postdata();
                     while ($x<50) {
