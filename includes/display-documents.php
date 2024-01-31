@@ -212,7 +212,7 @@ function display_document_dialog($site_id=0){
     ?>
     <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
-            <input type="text" id="doc-status" style="text-align:center; background:antiquewhite; color:blue;" disabled />
+            <input type="text" id="doc-status"  class="text ui-widget-content ui-corner-all" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" disabled />
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
             <input type="hidden" id="doc-id" />
             <label for="doc-title">Title:</label>

@@ -158,7 +158,7 @@ function display_job_dialog($site_id=0) {
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
         <?php display_site_job_action_list();?>
         <div>
-            <div style="display:inline-block;">
+            <div style="display:inline-block; width:50%;">
                 <label for="is-my-job">My job:</label>
                 <input type="checkbox" id="is-my-job" />
             </div>
