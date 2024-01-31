@@ -146,7 +146,7 @@ function to_do_list_shortcode() {
                     $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                     $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                     $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
-                    $due_date = wp_date(get_option('date_format'), (int)$todo_due);
+                    $due_date = wp_date(get_option('date_format'), strtotime($todo_due));
 
                     if (is_my_job($job_id)) { // Another condition to filter the data
                         ?>
