@@ -153,6 +153,7 @@ function to_do_list_shortcode() {
                         <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
                             <td style="text-align:center;"><?php the_title(); ?></td>
                             <td><?php echo get_the_title($doc_id); ?></td>
+                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>

@@ -85,12 +85,14 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     //$("#todo-dialog").dialog('open');
+/*                    
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
                     $("#btn-doc-url").val(response.doc_url);
                     $("#job-id").val(response.job_id);
                     $("#site-id").val(response.site_id);
+*/                    
                 },
                 error: function (error) {
                     console.error(error);                
