@@ -156,7 +156,7 @@ function to_do_list_shortcode() {
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
                                 <td style="text-align:center;"><?php } ?>
-                                <?php echo wp_date(get_option('date_format'), $todo_due); ?></td>
+                            <?php echo wp_date(get_option('date_format'), $todo_due); ?>No show?</td>
                         </tr>
                         <?php
                         $x += 1;
@@ -258,6 +258,11 @@ function display_todo_dialog() {
 }
         
 function get_todo_dialog_data() {
+    $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+    $doc_shortcode = 'display-documents';
+    $shortcode_output = do_shortcode('['.$doc_shortcode.']');
+    echo $shortcode_output;
+
     $response = array();
     if( isset($_POST['_todo_id']) ) {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
@@ -547,14 +552,14 @@ function display_todo_action_list() {
     <?php
 }
 
-function retrieve_todo_action_list_data($_id=0) {
+function retrieve_todo_action_list_data($todo_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
                 'key'   => 'todo_id',
-                'value' => $_id,
+                'value' => $todo_id,
             ),
         ),
     );
