@@ -45,6 +45,11 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    $("#start-job").on( "change", function() {
+        // Open the Dialog with dynamic buttons
+        get_doc_dialog_buttons_data($("#start-job").val());
+    });
+
     $("#btn-doc-workflow").on( "click", function() {
         get_doc_workflow_list_data($("#doc-id").val());
     })
@@ -99,7 +104,7 @@ jQuery(document).ready(function($) {
                     //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
-                    $("#document-dialog").dialog('open');
+                    //$("#document-dialog").dialog('open');
                     $("#doc-id").val(id);
                     $("#btn-doc-status").val(response.doc_status);
                     $("#doc-title").val(response.doc_title);
@@ -118,14 +123,105 @@ jQuery(document).ready(function($) {
             });
             
             // Open the Dialog with dynamic buttons
-            get_doc_dialog_buttons_data($("#todo-id").val());
+            get_doc_dialog_buttons_data($("#start-job").val());
             
         });
     }
 
     function get_doc_dialog_buttons_data(id) {
-    }
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_dialog_buttons_data',
+                '_todo_id': id,
+            },
+            success: function (response) {
+                let buttonData = [];
+                $.each(response, function (index, value) {
+                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
+                    var jsonData;
+                    try {
+                        jsonData = JSON.parse(jsonDataString);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                    buttonData.push(jsonData);
+                })
 
+                let buttons = {};
+                for (let i = 0; i < buttonData.length; i++) {
+                    let btn = buttonData[i];
+                    buttons[btn.label] = function () {
+                        if (window.confirm("Are you sure you want to proceed this action?")) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_document_dialog_data',
+                                    '_doc_id': $("#doc-id").val(),
+                                    '_doc_title': $("#doc-title").val(),
+                                    '_doc_number': $("#doc-number").val(),
+                                    '_doc_revision': $("#doc-revision").val(),
+                                    '_doc_url': $("#doc-url").val(),
+                                    '_start_job': $("#start-job").val(),
+                                    '_start_leadtime': $("#start-leadtime").val(),
+                                    '_doc_date': $("#doc-date").val(),
+                                    '_doc_category': $("#doc-category").val(),
+                                },
+                                success: function (response) {
+                                    $("#document-dialog").dialog('close');
+                                    get_document_list_data($("#site-id").val());
+                                },
+                                error: function (error) {
+                                    console.error(error);                    
+                                    alert(error);
+                                }
+                            });            
+/*        
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_todo_dialog_data',
+                                    '_action_id': btn.action,
+                                    '_todo_id': $("#todo-id").val()
+                                },
+                                success: function (response) {
+                                    $("#todo-dialog").dialog('close');
+                                    get_todo_list_data();
+                                },
+                                error: function(error){
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+*/                            
+                        }
+                    };
+                }
+            
+                $("#document-dialog").dialog({
+                    width: 600,
+                    autoOpen: false,
+                    modal: true,
+                    buttons: buttons
+                });
+            
+                // Open the dialog after it has been initialized
+                $("#document-dialog").dialog("open");
+
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+/*
     $("#document-dialog").dialog({
         width: 600,
         modal: true,
@@ -183,7 +279,7 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
+*/
     function get_doc_workflow_list_data(id){
         $.ajax({
             type: 'POST',

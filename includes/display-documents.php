@@ -285,8 +285,6 @@ function get_document_dialog_data() {
         $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
         $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
         $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
-        //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
-        $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
         $response["doc_title"] = get_the_title($doc_id);
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
@@ -295,6 +293,8 @@ function get_document_dialog_data() {
         $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
         $response["doc_category"] = select_doc_category_option_data($doc_category);
+        //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
+        $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
     }
     wp_send_json($response);
 }

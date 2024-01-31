@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
         
     $('[id^="btn-"]').mouseout(function() {
         $(this).css('cursor', 'default');
-        $(this).css('color', 'black');
+        $(this).css('color', '');
     });
     
     $("#btn-doc-url").on( "click", function() {
@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
                     '_todo_id': id,
                 },
                 success: function (response) {
-                    $("#todo-dialog").dialog('open');
+                    //$("#todo-dialog").dialog('open');
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);

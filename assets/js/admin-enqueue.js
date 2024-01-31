@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
             
         $('[id^="btn-"]').mouseout(function() {
             $(this).css('cursor', 'default');
-            $(this).css('color', 'black');
+            $(this).css('color', '');
         });
 
         $('[id^="btn-edit-action-"]').on( "click", function() {
