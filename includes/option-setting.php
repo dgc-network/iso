@@ -15,7 +15,7 @@ function my_plugin_register_settings() {
     // Register a field
     add_settings_field(
         'line_bot_token_option',
-        'Token',
+        'Line bot Token',
         'line_bot_token_option_callback',
         'general',
         'line_bot_settings_section'
