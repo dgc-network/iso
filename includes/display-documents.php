@@ -212,7 +212,6 @@ function display_document_dialog($site_id=0){
     ?>
     <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
-            <input type="text" id="doc-status"  class="text ui-widget-content ui-corner-all" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" disabled />
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
             <input type="hidden" id="doc-id" />
             <label for="doc-title">Title:</label>
@@ -252,6 +251,7 @@ function display_document_dialog($site_id=0){
             </div>
             <label for="btn-doc-workflow">Workflow:</label>
             <div id="btn-doc-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Workflow list</div>
+            <input type="text" id="btn-doc-status" class="text ui-widget-content ui-corner-all" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" disabled />
         </fieldset>
     </div>
     <?php display_doc_workflow_list();?>

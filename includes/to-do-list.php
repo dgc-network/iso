@@ -146,15 +146,15 @@ function to_do_list_shortcode() {
                         $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                         $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                         $todo_due = esc_attr(get_post_meta(get_the_ID(), 'todo_due', true));
-                        $due_date = wp_date( get_option('date_format'), $todo_due );
-                        if (is_my_job($job_id)) {
+                        //$due_date = wp_date( get_option('date_format'), $todo_due );
+                        if (is_my_job($job_id)) { // Another condition to filter the data
                             ?>
                             <tr class="todo-list-<?php echo $x;?>" id="edit-todo-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td><?php echo get_the_title($doc_id);?></td>
                                 <?php if ($todo_due<time()){?><td style="text-align:center; color:red;">
                                 <?php }else{?><td style="text-align:center;"><?php }?>
-                                    <?php echo $due_date;?></td>
+                                    <?php echo wp_date( get_option('date_format'), $todo_due );?></td>
                             </tr>
                             <?php 
                             $x += 1;
@@ -210,13 +210,13 @@ function get_todo_list_data() {
             $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
             $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
             $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
-            if (is_my_job($job_id)) { // Another condition to grab the data
+            if (is_my_job($job_id)) { // Another condition to filter the data
                 $_list = array();
                 $_list["todo_id"] = $todo_id;
                 $_list["todo_title"] = get_the_title();
                 $_list["doc_title"] = get_the_title($doc_id);
                 $_list["due_date"] = wp_date( get_option('date_format'), $todo_due );
-                $_list["due_color"] = ($todo_due<time()) ? 1 : 0;
+                $_list["due_color"] = (($todo_due<time()) ? 1 : 0);
                 array_push($_array, $_list);
             }
         endwhile;

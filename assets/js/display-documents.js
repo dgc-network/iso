@@ -49,6 +49,10 @@ jQuery(document).ready(function($) {
         get_doc_workflow_list_data($("#doc-id").val());
     })
 
+    $("#btn-doc-status").on( "click", function() {
+        get_doc_workflow_list_data($("#doc-id").val());
+    })
+
     function get_document_list_data(siteId) {
         $.ajax({
             type: 'POST',
@@ -94,7 +98,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#document-dialog").dialog('open');
                     $("#doc-id").val(id);
-                    $("#doc-status").val(response.doc_status);
+                    $("#btn-doc-status").val(response.doc_status);
                     $("#doc-title").val(response.doc_title);
                     $("#doc-number").val(response.doc_number);
                     $("#doc-revision").val(response.doc_revision);
