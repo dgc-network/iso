@@ -279,6 +279,7 @@ function get_document_dialog_data() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
         $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
         $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
@@ -290,7 +291,7 @@ function get_document_dialog_data() {
         $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
         $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $response["start_job"] = select_site_job_option_data($start_job, $_POST['_site_id']);
+        $response["start_job"] = select_site_job_option_data($start_job, $site_id);
         $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
         $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
         $response["doc_category"] = select_doc_category_option_data($doc_category);

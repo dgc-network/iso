@@ -75,6 +75,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align: center;">${value.doc_date ? value.doc_date : ''}</td>`;
                     $(`.document-list-${index}`).append(output).show();
                 });
+                activate_document_list_data()
             },
             error: function (error) {
                 console.error(error);
@@ -86,6 +87,8 @@ jQuery(document).ready(function($) {
     function activate_document_list_data(){
         $('[id^="edit-document-"]').on( "click", function() {
             const id = this.id.substring(14);
+        
+            // Dialog content
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -93,7 +96,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_document_dialog_data',
                     '_doc_id': id,
-                    '_site_id': $("#site-id").val(),
+                    //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     $("#document-dialog").dialog('open');
@@ -112,8 +115,15 @@ jQuery(document).ready(function($) {
                     console.error(error);
                     alert(error);
                 }
-            });            
+            });
+            
+            // Open the Dialog with dynamic buttons
+            get_doc_dialog_buttons_data($("#todo-id").val());
+            
         });
+    }
+
+    function get_doc_dialog_buttons_data(id) {
     }
 
     $("#document-dialog").dialog({

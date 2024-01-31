@@ -15,6 +15,8 @@ jQuery(document).ready(function($) {
         $("#todo-setting-div").toggle();
     });
 
+    activate_to_do_list_data();
+
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
         $(this).css('color', 'red');
@@ -58,6 +60,7 @@ jQuery(document).ready(function($) {
                     }                    
                     $(".todo-list-"+index).append(output).show();
                 })
+                activate_to_do_list_data()
             },
             error: function (error) {
                 console.error(error);                    
@@ -66,38 +69,40 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    $('[id^="edit-todo-"]').on("click", function () {
-        const id = this.id.substring(10);
-        $("#todo-id").val(id);
+    function activate_to_do_list_data(){
+        $('[id^="edit-todo-"]').on("click", function () {
+            const id = this.id.substring(10);
+            $("#todo-id").val(id);
+        
+            // Dialog content
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_todo_dialog_data',
+                    '_todo_id': id,
+                },
+                success: function (response) {
+                    $("#todo-dialog").dialog('open');
+                    $("#doc-title").val(response.doc_title);
+                    $("#doc-number").val(response.doc_number);
+                    $("#doc-revision").val(response.doc_revision);
+                    $("#btn-doc-url").val(response.doc_url);
+                    $("#job-id").val(response.job_id);
+                    $("#site-id").val(response.site_id);
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
     
-        // Dialog content
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_dialog_data',
-                '_todo_id': id,
-            },
-            success: function (response) {
-                $("#todo-dialog").dialog('open');
-                $("#doc-title").val(response.doc_title);
-                $("#doc-number").val(response.doc_number);
-                $("#doc-revision").val(response.doc_revision);
-                $("#btn-doc-url").val(response.doc_url);
-                $("#job-id").val(response.job_id);
-                $("#site-id").val(response.site_id);
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
+            // Open the Dialog with dynamic buttons
+            get_todo_dialog_buttons_data($("#todo-id").val());
+        });            
+    }
 
-        // Dialog buttons
-        get_todo_dialog_buttons_data($("#todo-id").val());
-    });
-    
     function get_todo_dialog_buttons_data(id) {
         $.ajax({
             type: 'POST',
@@ -111,22 +116,16 @@ jQuery(document).ready(function($) {
                 let buttonData = [];
                 $.each(response, function (index, value) {
                     var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
-                    //var jsonData = $.parseJSON(jsonDataString);
                     var jsonData;
-
                     try {
                         jsonData = JSON.parse(jsonDataString);
-                        // Continue with your code using the parsed JSON data
                     } catch (error) {
                         console.error('Error parsing JSON:', error);
-                        // Handle the error as needed
                     }
-                    
-                    // Add JSON object to the array
                     buttonData.push(jsonData);
                 })
-                openTodoDialog(buttonData);
-/*
+                //openTodoDialog(buttonData);
+
                 let buttons = {};
                 for (let i = 0; i < buttonData.length; i++) {
                     let btn = buttonData[i];
@@ -163,7 +162,7 @@ jQuery(document).ready(function($) {
             
                 // Open the dialog after it has been initialized
                 $("#todo-dialog").dialog("open");
-*/        
+
             },
             error: function (error) {
                 console.error(error);
