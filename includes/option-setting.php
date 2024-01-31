@@ -84,12 +84,12 @@ function line_bot_settings_section_callback() {
 
 function line_bot_token_option_callback() {
     $value = get_option('line_bot_token_option');
-    echo '<input type="text" id="line_bot_token_option" name="line_bot_token_option" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
+    echo '<input type="text" id="line_bot_token_option" name="line_bot_token_option" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
 function line_official_account_callback() {
     $value = get_option('line_official_account');
-    echo '<input type="text" id="line_official_account" name="line_official_account" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
+    echo '<input type="text" id="line_official_account" name="line_official_account" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
 function open_ai_settings_section_callback() {
@@ -98,6 +98,6 @@ function open_ai_settings_section_callback() {
 
 function open_ai_api_key_callback() {
     $value = get_option('open_ai_api_key');
-    echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" class="text ui-widget-content ui-corner-all" value="' . esc_attr($value) . '" />';
+    echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
