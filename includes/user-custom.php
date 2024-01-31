@@ -292,10 +292,10 @@ function my_jobs_shortcode() {
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
                     $job_id = get_the_ID();
-                    $checked = is_my_job($job_id) ? 'checked' : '';
+                    $my_job_checked = is_my_job($job_id) ? 'checked' : '';
                     ?>
                     <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php echo esc_attr($job_id);?>">
-                        <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo esc_attr($checked);?>/></td>
+                        <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo esc_attr($my_job_checked);?>/></td>
                         <td style="text-align:center;"><?php the_title();?></td>
                         <td><?php the_content();?></td>
                     </tr>

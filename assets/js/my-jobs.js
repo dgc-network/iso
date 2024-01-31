@@ -67,8 +67,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#profile-setting-div").toggle();
-                //$('#site-title').val(response.site_title);
-                //$("#site-hint").hide();
             },
             error: function (error) {
                 console.error(error);
@@ -76,7 +74,6 @@ jQuery(document).ready(function($) {
             }
         });            
     });            
-
 
     activate_site_job_list_data()
 
@@ -122,17 +119,15 @@ jQuery(document).ready(function($) {
                 $("[class^='site-job-list-']").hide().empty();
         
                 $.each(response, function (index, value) {
-                    //let targetTr = $(".site-job-list-" + index).first();
-                    //targetTr.attr("id", "edit-site-job-" + value.job_id);
-                    $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);
-        
-                    const isChecked = value.is_my_job == 1 ? 'checked' : '';
+                    $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);        
+                    const isMyJobChecked = value.is_my_job == 1 ? 'checked' : '';
+                    const isStartJobChecked = value.is_start_job == 1 ? 'checked' : '';
                     const output = `
-                        <td style="text-align: center;"><input type="checkbox" id="check-my-job-${value.job_id}" ${isChecked} /></td>
+                        <td style="text-align: center;"><input type="checkbox" id="check-my-job-${value.job_id}" ${isMyJobChecked} /></td>
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.job_content}</td>
+                        <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
                     `;
-                    //targetTr.append(output).show();
                     $(".site-job-list-" + index).append(output).show();
                 });
         
@@ -162,6 +157,7 @@ jQuery(document).ready(function($) {
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
                     $('#is-my-job').prop('checked', response.is_my_job == 1);
+                    $('#is-start-job').prop('checked', response.is_start_job == 1);
                     get_site_job_action_list_data(id);
                 },
                 error: function (error) {
@@ -188,6 +184,7 @@ jQuery(document).ready(function($) {
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
                         '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
+                        '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');

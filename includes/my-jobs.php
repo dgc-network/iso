@@ -53,6 +53,7 @@ function my_jobs_shortcode() {
                     <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
                     <th>Job</th>
                     <th>Description</th>
+                    <th>Start</th>
                 </thead>
                 <tbody>
                 <?php
@@ -60,16 +61,19 @@ function my_jobs_shortcode() {
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
-                    $job_id = get_the_ID();
-                    $checked = is_my_job($job_id) ? 'checked' : '';
-                    ?>
-                    <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php echo esc_attr($job_id);?>">
-                        <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo esc_attr($checked);?>/></td>
-                        <td style="text-align:center;"><?php the_title();?></td>
-                        <td><?php the_content();?></td>
-                    </tr>
-                    <?php 
-                    $x += 1;
+                        $job_id = get_the_ID();
+                        $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
+                        $is_start_job = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
+                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        ?>
+                        <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?>/></td>
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
+                        </tr>
+                        <?php 
+                        $x += 1;
                     endwhile;
                     wp_reset_postdata();
                     while ($x<50) {
@@ -119,6 +123,7 @@ function get_site_job_list_data() {
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
             $_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
+            $_list["is_start_job"] = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -152,8 +157,16 @@ function display_job_dialog($site_id=0) {
         <label for="job-content">Content:</label>
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
         <?php display_site_job_action_list();?>
-        <label for="is-my-job">My job:</label>
-        <input type="checkbox" id="is-my-job" />
+        <div>
+            <div style="display:inline-block;">
+                <label for="is-my-job">My job:</label>
+                <input type="checkbox" id="is-my-job" />
+            </div>
+            <div style="display:inline-block;">
+                <label for="is-start-job">Start job:</label>
+                <input type="checkbox" id="is-start-job" />
+            </div>
+        </div>
     </fieldset>
     </div>
     <?php
@@ -166,6 +179,7 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         $response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
+        $response["is_start_job"] = esc_attr(get_post_meta($job_id, 'is_start_job', true));
     }
     wp_send_json($response);
 }
@@ -175,25 +189,23 @@ add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data
 function set_site_job_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_job_id']) ) {
+        $job_id = sanitize_text_field($_POST['_job_id']);
         $data = array(
-            'ID'           => $_POST['_job_id'],
-            'post_title'   => $_POST['_job_title'],
-            'post_content' => $_POST['_job_content'],
+            'ID'           => $job_id,
+            'post_title'   => sanitize_text_field($_POST['_job_title']),
+            'post_content' => sanitize_text_field($_POST['_job_content']),
         );
         wp_update_post( $data );
+        update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
 
-        $job_id = sanitize_text_field($_POST['_job_id']);
         $is_my_job = sanitize_text_field($_POST['_is_my_job']);
-        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);
-        
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
         // Convert the current 'my_job_ids' value to an array if not already an array
         if (!is_array($my_job_ids_array)) {
             $my_job_ids_array = array();
-        }
-        
+        }        
         // Check if $job_id is in 'my_job_ids'
-        $job_exists = in_array($job_id, $my_job_ids_array);
-        
+        $job_exists = in_array($job_id, $my_job_ids_array);        
         // Check the condition and update 'my_job_ids' accordingly
         if ($is_my_job == 1 && !$job_exists) {
             // Add $job_id to 'my_job_ids'
@@ -201,8 +213,7 @@ function set_site_job_dialog_data() {
         } elseif ($is_my_job != 1 && $job_exists) {
             // Remove $job_id from 'my_job_ids'
             $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
-        }
-        
+        }        
         // Update 'my_job_ids' meta value
         update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
         
@@ -233,7 +244,7 @@ add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 
 function display_site_job_action_list() {
-?>
+    ?>
     <table style="width:100%;">
         <thead>
             <tr>
@@ -255,7 +266,7 @@ function display_site_job_action_list() {
     </table>
     <div id="btn-new-site-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     <?php display_site_job_action_dialog();?>
-<?php
+    <?php
 }
     
 function retrieve_job_action_list_data($_id=0) {
@@ -274,7 +285,6 @@ function retrieve_job_action_list_data($_id=0) {
 }
 
 function get_job_action_list_data() {
-    // Retrieve the documents data
     $query = retrieve_job_action_list_data($_POST['_job_id']);
     $_array = array();
     if ($query->have_posts()) {
@@ -290,7 +300,7 @@ function get_job_action_list_data() {
             $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }
@@ -323,7 +333,7 @@ function select_site_job_option_data($selected_job=0, $site_id=0) {
         $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
-    wp_reset_postdata(); // Reset post data to the main loop
+    wp_reset_postdata();
     if ($selected_job==-1){
         $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
     } else {
@@ -366,7 +376,7 @@ function set_job_action_dialog_data() {
         wp_update_post( $data );
     } else {
         $current_user_id = get_current_user_id();
-        // Set up the post data
+        // Insert the post into the database
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',
@@ -374,7 +384,6 @@ function set_job_action_dialog_data() {
             'post_author'   => $current_user_id, // Use the user ID of the author
             'post_type'     => 'action', // Change to your custom post type if needed
         );    
-        // Insert the post into the database
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_job_id']));
     }
