@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
             });
     
             // Open the Dialog with dynamic buttons
-            get_todo_dialog_buttons_data($("#todo-id").val());
+            //get_todo_dialog_buttons_data($("#todo-id").val());
         });            
     }
 

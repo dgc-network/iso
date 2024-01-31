@@ -157,7 +157,7 @@ function to_do_list_shortcode() {
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
                                 <td style="text-align:center;"><?php } ?>
-                            <?php echo esc_html(wp_date(get_option('date_format'), $todo_due));?></td>
+                            <?php echo $due_date;?></td>
                         </tr>
                         <?php
                         $x += 1;
