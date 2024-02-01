@@ -96,8 +96,9 @@ jQuery(document).ready(function($) {
                                     //'_todo_id': $("#todo-id").val()
                                 },
                                 success: function (response) {
+                                    window.location.replace("/to-do-list/");
                                     //$("#todo-dialog").dialog('close');
-                                    get_todo_list_data();
+                                    //get_todo_list_data();
                                 },
                                 error: function(error){
                                     console.error(error);

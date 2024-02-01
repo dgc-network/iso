@@ -260,6 +260,8 @@ add_action('wp_ajax_nopriv_dialog_with_action_buttons', 'dialog_with_action_butt
 function translate_custom_strings($original_string) {
     // Define translations for specific strings
     $translations = array(
+        'doc-status' => '文件狀態',
+        'doc-title' => '文件名稱',
         'doc_number' => '文件編號',
         'doc_revison' => '文件版本',
         'doc_url' => '文件網址',
@@ -286,7 +288,11 @@ function display_doc_todo_dialog($todo_id, $post_id) {
     // Output or manipulate the meta data as needed
     echo '<h2>To-do</h2>';
     echo '<fieldset>';
+    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
+    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" disabled />';
+
     foreach ($all_meta as $key => $values) {
+        if ($key!='site_id') 
         if ($key!='start_job') 
         if ($key!='start_leadtime') 
         foreach ($values as $value) {
@@ -294,6 +300,8 @@ function display_doc_todo_dialog($todo_id, $post_id) {
             echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
         }
     }
+    echo '<label for="doc-status">'.translate_custom_strings("doc-status").'</label>';
+    echo '<input type="text" id="btn-doc-status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" disabled />';
     echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
