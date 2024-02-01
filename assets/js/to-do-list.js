@@ -87,6 +87,9 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response);
                     $("#document-dialog").dialog('open');
                 },
+                error: function (error) {
+                    console.error(error);                
+                }
             });
 /*
             // Dialog content
