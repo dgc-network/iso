@@ -263,7 +263,7 @@ function translate_custom_strings($original_string) {
         'doc-status' => '文件狀態',
         'doc-title' => '文件名稱',
         'doc_number' => '文件編號',
-        'doc_revison' => '文件版本',
+        'doc_revision' => '文件版本',
         'doc_url' => '文件網址',
         'start_job' => '起始職務',
         'start_leadtime' => '前置時間',
@@ -300,8 +300,9 @@ function display_doc_todo_dialog($todo_id, $post_id) {
             echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
         }
     }
-    echo '<label for="doc-status">'.translate_custom_strings("doc-status").'</label>';
-    echo '<input type="text" id="btn-doc-status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" disabled />';
+    echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
+    echo '<input type="text" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" disabled />';
+
     echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {

@@ -83,6 +83,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     // Display the result
                     $('#result-container').html(response);
+
                     $('[id^="todo-action-"]').on("click", function () {
                         const action_id = this.id.substring(12);
                         if (window.confirm("Are you sure you want to proceed this action?")) {
@@ -93,12 +94,9 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_todo_dialog_data',
                                     '_action_id': action_id,
-                                    //'_todo_id': $("#todo-id").val()
                                 },
                                 success: function (response) {
                                     window.location.replace("/to-do-list/");
-                                    //$("#todo-dialog").dialog('close');
-                                    //get_todo_list_data();
                                 },
                                 error: function(error){
                                     console.error(error);
@@ -106,9 +104,11 @@ jQuery(document).ready(function($) {
                                 }
                             });
                         }
+                    });
 
-                    });            
-                                
+                    $("#btn-action-list").on( "click", function() {
+                        get_todo_action_list_data(todo_id);
+                    })                                 
                 },
                 error: function (error) {
                     console.log(error);

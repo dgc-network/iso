@@ -24,17 +24,6 @@ tbody tr:hover {
     cursor: pointer;
 }
 
-/* Allow text wrapping visually */
-input {
-    white-space: normal;
-}
-
-input button:hover {
-    background-color: #af4c53;
-    color: white;
-    cursor: pointer;
-}
-
 /* Styles for desktop browsers */
 @media (min-width: 768px) {
     #job-dialog {
