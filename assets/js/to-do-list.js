@@ -279,14 +279,15 @@ jQuery(document).ready(function($) {
         });    
     });                        
 
-    function get_todo_action_list_data(id){
+    function get_todo_action_list_data(todo_id){
+        alert('Hi, '.todo_id)
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'get_todo_action_list_data',
-                '_todo_id': id,
+                '_todo_id': todo_id,
             },
             success: function (response) {            
                 $("#todo-action-list-dialog").dialog('open');
@@ -305,14 +306,14 @@ jQuery(document).ready(function($) {
                 })
 
                 $('[id^="edit-job-action-todo-"]').on( "click", function() {
-                    const id = this.id.substring(21);
+                    const action_id = this.id.substring(21);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
                             'action': 'get_job_action_dialog_data',
-                            '_action_id': id,
+                            '_action_id': action_id,
                             '_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
