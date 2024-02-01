@@ -24,7 +24,12 @@ tbody tr:hover {
     cursor: pointer;
 }
 
-button:hover {
+/* Allow text wrapping visually */
+input {
+    white-space: normal;
+}
+
+input button:hover {
     background-color: #af4c53;
     color: white;
     cursor: pointer;
