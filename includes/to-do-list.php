@@ -265,7 +265,7 @@ function display_doc_todo_dialog($post_id) {
     echo '<fieldset>';
     foreach ($all_meta as $key => $values) {
         foreach ($values as $value) {
-            //echo '<label for="'.$key.'">'.$key.'</label>';
+            echo '<label for="'.$key.'">'.$key.'</label>';
             //echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
 
             echo $key . ': ' . $value . '<br>';
