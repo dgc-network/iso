@@ -135,7 +135,61 @@ jQuery(document).ready(function($) {
 
                     $("#btn-action-list").on( "click", function() {
                         get_todo_action_list_data(todo_id);
-                    })                                 
+                    })
+
+                    $("#todo-action-dialog").dialog({
+                        width: 400,
+                        modal: true,
+                        autoOpen: false,
+                        buttons: {
+                            "Save": function() {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_todo_action_dialog_data',
+                                        '_action_id': $("#action-id").val(),
+                                        '_next_job': $("#next-job").val(),
+                                        '_next_leadtime': $("#next-leadtime").val(),
+                                        '_doc_id': $("#doc-id").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#todo-action-dialog").dialog('close');
+                                        get_todo_dialog_buttons_data($("#todo-id").val());
+                                        get_todo_action_list_data($("#todo-id").val());
+                                    },
+                                    error: function (error) {
+                                        console.error(error);                    
+                                        alert(error);
+                                    }
+                                });            
+                            },
+                            "Delete": function() {
+                                if (window.confirm("Are you sure you want to delete this todo action?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_todo_action_dialog_data',
+                                            '_action_id': $("#action-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#todo-action-dialog").dialog('close');
+                                            get_todo_dialog_buttons_data($("#todo-id").val());
+                                            get_todo_action_list_data($("#todo-id").val());
+                                        },
+                                        error: function(error){
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
+                
                 },
                 error: function (error) {
                     console.log(error);
@@ -338,56 +392,4 @@ jQuery(document).ready(function($) {
         });
     }
     
-    $("#todo-action-dialog").dialog({
-        width: 400,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function() {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_todo_action_dialog_data',
-                        '_action_id': $("#action-id").val(),
-                        '_next_job': $("#next-job").val(),
-                        '_next_leadtime': $("#next-leadtime").val(),
-                        '_doc_id': $("#doc-id").val(),
-                    },
-                    success: function (response) {
-                        $("#todo-action-dialog").dialog('close');
-                        get_todo_dialog_buttons_data($("#todo-id").val());
-                        get_todo_action_list_data($("#todo-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
-            },
-            "Delete": function() {
-                if (window.confirm("Are you sure you want to delete this todo action?")) {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'del_todo_action_dialog_data',
-                            '_action_id': $("#action-id").val(),
-                        },
-                        success: function (response) {
-                            $("#todo-action-dialog").dialog('close');
-                            get_todo_dialog_buttons_data($("#todo-id").val());
-                            get_todo_action_list_data($("#todo-id").val());
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                }
-            }
-        }
-    });
 })
