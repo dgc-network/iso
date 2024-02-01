@@ -24,6 +24,12 @@ tbody tr:hover {
     cursor: pointer;
 }
 
+/* Apply styles to the button when hovering */
+input[type="button"]:hover {
+    color: red;
+    cursor: pointer;
+}
+
 /* Styles for desktop browsers */
 @media (min-width: 768px) {
     #job-dialog {
