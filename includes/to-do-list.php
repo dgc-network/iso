@@ -689,6 +689,24 @@ function display_todo_action_dialog(){
     <?php    
 }
 
+function get_todo_action_dialog_data() {
+    $response = array();
+    if( isset($_POST['_action_id']) ) {
+        $action_id = (int)sanitize_text_field($_POST['_action_id']);
+        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
+        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
+        $response["action_title"] = get_the_title($action_id);
+        $response["action_content"] = get_post_field('post_content', $action_id);
+        $response["next_job"] = select_site_job_option_data($next_job, $site_id);
+        $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_todo_action_dialog_data', 'get_todo_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_todo_action_dialog_data', 'get_todo_action_dialog_data' );
+
 function set_todo_action_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {

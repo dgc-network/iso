@@ -55,6 +55,30 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
 
+                $('[id^="todo-action-"]').on("click", function () {
+                    const action_id = this.id.substring(12);
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_todo_dialog_data',
+                            '_action_id': action_id,
+                        },
+                        success: function (response) {
+                            window.location.replace("/to-do-list/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                });
+
+                $("#btn-action-list").on( "click", function() {
+                    get_todo_action_list_data(todo_id);
+                })
+
                 // Job action list
                 $("#todo-action-list-dialog").dialog({
                     width: 500,
@@ -82,32 +106,6 @@ jQuery(document).ready(function($) {
                     });    
                 });                                        
                 
-                $('[id^="todo-action-"]').on("click", function () {
-                    const action_id = this.id.substring(12);
-                    //if (window.confirm("Are you sure you want to proceed this action?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_todo_dialog_data',
-                                '_action_id': action_id,
-                            },
-                            success: function (response) {
-                                window.location.replace("/to-do-list/");
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    //}
-                });
-
-                $("#btn-action-list").on( "click", function() {
-                    get_todo_action_list_data(todo_id);
-                })
-
                 $("#todo-action-dialog").dialog({
                     width: 400,
                     modal: true,
@@ -202,9 +200,9 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'get_job_action_dialog_data',
+                            'action': 'get_todo_action_dialog_data',
                             '_action_id': action_id,
-                            '_site_id': $("#site-id").val(),
+                            //'_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('open');
