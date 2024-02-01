@@ -95,7 +95,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     // Display the result
-                    $('#result-container').append(response);
+                    //$('#result-container').append(response);
+                    $('#result-container').html(response);
                     $("#document-dialog").dialog('open');
                 },
                 error: function (error) {

@@ -232,7 +232,7 @@ add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
 function display_doc_todo_dialog() {
     ?>
-    <div id="todo-dialog" title="To-do dialog" style="display:none;">
+    <div id="todo-edit-dialog" title="To-do dialog">
     <fieldset>
         <input type="hidden" id="todo-id" />
         <input type="hidden" id="job-id" />
