@@ -69,11 +69,17 @@ jQuery(document).ready(function($) {
         });            
     }
 
+    // Initialize a variable to store the original HTML content
+    var originalHtml = $('#result-container').html();
+
     function activate_to_do_list_data(){
         $('[id^="edit-todo-"]').on("click", function () {
             const id = this.id.substring(10);
             $("#todo-id").val(id);
         
+            // Reset the content of the result container to the original HTML
+            $('#result-container').html(originalHtml);
+
             // Prepare the parameters
             //var params = [2, 3]; // Adjust the parameters as needed
             var params = [2]; // Adjust the parameters as needed
@@ -89,7 +95,6 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     // Display the result
-                    //$('#result-container').html(response);
                     $('#result-container').append(response);
                     $("#document-dialog").dialog('open');
                 },
@@ -105,7 +110,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_todo_dialog_data',
-                    '_todo_id': id,
+                    '_todo_id': $("#todo-id").val(),
                 },
                 success: function (response) {
                     //$("#todo-dialog").dialog('open');

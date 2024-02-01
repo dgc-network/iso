@@ -282,23 +282,6 @@ function your_ajax_function() {
 add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
 add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
 
-function get_shortcode_data() {
-    //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
-    //$doc_shortcode = 'display-documents';
-
-    // Assign the function name to a variable
-    $my_function = "display_document_dialog";
-
-    // Define the parameters
-    $params = [10, 20];
-    
-    // Call the function using the variable and parameters
-    $result = call_user_func_array($my_function, $params);
-    wp_send_json($result);
-}
-add_action( 'wp_ajax_get_shortcode_data', 'get_shortcode_data' );
-add_action( 'wp_ajax_nopriv_get_shortcode_data', 'get_shortcode_data' );
-
 function get_todo_dialog_data() {
     $response = array();
     $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
