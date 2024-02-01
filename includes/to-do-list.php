@@ -258,6 +258,30 @@ function display_todo_dialog() {
     <?php
 }
         
+function sum($a, $b) {
+    return $a + $b;
+}
+
+function your_ajax_function() {
+    // Check if the action has been set
+    if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
+        // Your server-side logic goes here
+        $result = call_user_func_array('sum', $_POST['params']);
+
+        // Return the result
+        echo $result;
+
+        // It's essential to exit after processing the AJAX request
+        wp_die();
+    } else {
+        // Handle invalid AJAX request
+        echo 'Invalid AJAX request!';
+        wp_die();
+    }
+}
+add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
+add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
+
 function get_shortcode_data() {
     //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
     //$doc_shortcode = 'display-documents';

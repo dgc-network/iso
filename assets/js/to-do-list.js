@@ -74,6 +74,27 @@ jQuery(document).ready(function($) {
             const id = this.id.substring(10);
             $("#todo-id").val(id);
         
+            // Prepare the parameters
+            var params = [2, 3]; // Adjust the parameters as needed
+
+            // AJAX request
+            $.ajax({
+                url: ajax_object.ajax_url,
+                type: 'post',
+                data: {
+                    action: 'your_ajax_action',
+                    params: params,
+                    // additional data if needed
+                },
+                success: function (response) {
+                    // Display the result
+                    $('#result-container').html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+/*                        
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
