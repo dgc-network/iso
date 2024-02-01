@@ -230,9 +230,9 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function your_ajax_function() {
+function dialog_with_action_buttons() {
     // Check if the action has been set
-    if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
+    if (isset($_POST['action']) && $_POST['action'] === 'dialog_with_action_buttons') {
         // Your server-side logic goes here
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
@@ -254,8 +254,8 @@ function your_ajax_function() {
         wp_die();
     }
 }
-add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
-add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
+add_action('wp_ajax_dialog_with_action_buttons', 'dialog_with_action_buttons');
+add_action('wp_ajax_nopriv_dialog_with_action_buttons', 'dialog_with_action_buttons');
 
 function translate_custom_strings($original_string) {
     // Define translations for specific strings
@@ -377,10 +377,11 @@ function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
         // Update To-do
-        $todo_id = sanitize_text_field($_POST['_todo_id']);
+        //$todo_id = sanitize_text_field($_POST['_todo_id']);
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
-        $action_id = sanitize_text_field($_POST['_action_id']);
         set_next_job_and_actions($start_job, $action_id);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);

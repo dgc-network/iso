@@ -77,7 +77,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 type: 'post',
                 data: {
-                    action: 'your_ajax_action',
+                    action: 'dialog_with_action_buttons',
                     _todo_id: todo_id,
                 },
                 success: function (response) {
@@ -85,7 +85,27 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response);
                     $('[id^="todo-action-"]').on("click", function () {
                         const action_id = this.id.substring(12);
-                        alert('Hi, '+action_id)
+                        if (window.confirm("Are you sure you want to proceed this action?")) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_todo_dialog_data',
+                                    '_action_id': action_id,
+                                    //'_todo_id': $("#todo-id").val()
+                                },
+                                success: function (response) {
+                                    //$("#todo-dialog").dialog('close');
+                                    get_todo_list_data();
+                                },
+                                error: function(error){
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+
                     });            
                                 
                 },
