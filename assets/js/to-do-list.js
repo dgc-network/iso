@@ -16,6 +16,13 @@ jQuery(document).ready(function($) {
     });
 
     activate_to_do_list_data();
+    function activate_to_do_list_data(){
+    }
+
+    $('[id^="edit-todo-"]').on("click", function () {
+        const todo_id = this.id.substring(10);
+        dialog_with_action_buttons(todo_id)
+    });            
 
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
@@ -34,41 +41,6 @@ jQuery(document).ready(function($) {
     $("#btn-workflow").on( "click", function() {
         get_todo_action_list_data($("#todo-id").val());
     })
-
-    function get_todo_list_data(){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_list_data',
-            },
-            success: function (response) {            
-                for(index=0;index<50;index++) {
-                    $(".todo-list-"+index).hide().empty();
-                }
-                $.each(response, function (index, value) {
-                    $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
-                    const output = `
-                        <td style="text-align:center;">${value.todo_title}</td>
-                        <td>${value.doc_title}</td>
-                    `;
-                    if (value.due_color==1){
-                        output += `<td style="text-align:center; color:red;">${value.due_date}</td>`;
-                    } else {
-                        output += `<td style="text-align:center;">${value.due_date}</td>`;
-                    }                    
-                    $(".todo-list-"+index).append(output).show();
-                })
-                activate_to_do_list_data()
-        
-            },
-            error: function (error) {
-                console.error(error);                    
-                alert(error);
-            }
-        });            
-    }
 
     function dialog_with_action_buttons(todo_id){
         // AJAX request
@@ -198,120 +170,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function activate_to_do_list_data(){
-        $('[id^="edit-todo-"]').on("click", function () {
-            const todo_id = this.id.substring(10);
-            dialog_with_action_buttons(todo_id)
-        });            
-    }
-
-    function get_todo_dialog_buttons_data(id) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_dialog_buttons_data',
-                '_todo_id': id,
-            },
-            success: function (response) {
-                let buttonData = [];
-                $.each(response, function (index, value) {
-                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
-                    var jsonData;
-                    try {
-                        jsonData = JSON.parse(jsonDataString);
-                    } catch (error) {
-                        console.error('Error parsing JSON:', error);
-                    }
-                    buttonData.push(jsonData);
-                })
-                //openTodoDialog(buttonData);
-
-                let buttons = {};
-                for (let i = 0; i < buttonData.length; i++) {
-                    let btn = buttonData[i];
-                    buttons[btn.label] = function () {
-                        if (window.confirm("Are you sure you want to proceed this action?")) {
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_todo_dialog_data',
-                                    '_action_id': btn.action,
-                                    '_todo_id': $("#todo-id").val()
-                                },
-                                success: function (response) {
-                                    $("#todo-dialog").dialog('close');
-                                    get_todo_list_data();
-                                },
-                                error: function(error){
-                                    console.error(error);
-                                    alert(error);
-                                }
-                            });
-                        }
-                    };
-                }
-            
-                $("#todo-dialog").dialog({
-                    width: 600,
-                    autoOpen: false,
-                    modal: true,
-                    buttons: buttons
-                });
-            
-                // Open the dialog after it has been initialized
-                $("#todo-dialog").dialog("open");
-
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-
-    function openTodoDialog(buttonData) {
-        let buttons = {};
-        for (let i = 0; i < buttonData.length; i++) {
-            let btn = buttonData[i];
-            buttons[btn.label] = function () {
-                if (window.confirm("Are you sure you want to proceed this action?")) {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_todo_dialog_data',
-                            '_action_id': btn.action,
-                            '_todo_id': $("#todo-id").val()
-                        },
-                        success: function (response) {
-                            $("#todo-dialog").dialog('close');
-                            get_todo_list_data();
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                }
-            };
-        }
-    
-        $("#todo-dialog").dialog({
-            width: 600,
-            autoOpen: false,
-            modal: true,
-            buttons: buttons
-        });
-    
-        // Open the dialog after it has been initialized
-        $("#todo-dialog").dialog("open");
-    }
-    
     function get_todo_action_list_data(todo_id){
         $.ajax({
             type: 'POST',
@@ -370,4 +228,147 @@ jQuery(document).ready(function($) {
         });
     }
     
+    function get_todo_list_data(){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_list_data',
+            },
+            success: function (response) {            
+                for(index=0;index<50;index++) {
+                    $(".todo-list-"+index).hide().empty();
+                }
+                $.each(response, function (index, value) {
+                    $(".todo-list-" + index).attr("id", "edit-todo-" + value.todo_id);
+                    const output = `
+                        <td style="text-align:center;">${value.todo_title}</td>
+                        <td>${value.doc_title}</td>
+                    `;
+                    if (value.due_color==1){
+                        output += `<td style="text-align:center; color:red;">${value.due_date}</td>`;
+                    } else {
+                        output += `<td style="text-align:center;">${value.due_date}</td>`;
+                    }                    
+                    $(".todo-list-"+index).append(output).show();
+                })
+                activate_to_do_list_data()
+        
+            },
+            error: function (error) {
+                console.error(error);                    
+                alert(error);
+            }
+        });            
+    }
+
+    function get_todo_dialog_buttons_data(id) {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_todo_dialog_buttons_data',
+                '_todo_id': id,
+            },
+            success: function (response) {
+                let buttonData = [];
+                $.each(response, function (index, value) {
+                    var jsonDataString = '{"label": "' + value.action_title + '", "action": "' + value.action_id + '"}';
+                    var jsonData;
+                    try {
+                        jsonData = JSON.parse(jsonDataString);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                    buttonData.push(jsonData);
+                })
+                //openTodoDialog(buttonData);
+
+                let buttons = {};
+                for (let i = 0; i < buttonData.length; i++) {
+                    let btn = buttonData[i];
+                    buttons[btn.label] = function () {
+                        if (window.confirm("Are you sure you want to proceed this action?")) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_todo_dialog_data',
+                                    '_action_id': btn.action,
+                                    '_todo_id': $("#todo-id").val()
+                                },
+                                success: function (response) {
+                                    $("#todo-dialog").dialog('close');
+                                    //get_todo_list_data();
+                                },
+                                error: function(error){
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    };
+                }
+            
+                $("#todo-dialog").dialog({
+                    width: 600,
+                    autoOpen: false,
+                    modal: true,
+                    buttons: buttons
+                });
+            
+                // Open the dialog after it has been initialized
+                $("#todo-dialog").dialog("open");
+
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
+    function openTodoDialog(buttonData) {
+        let buttons = {};
+        for (let i = 0; i < buttonData.length; i++) {
+            let btn = buttonData[i];
+            buttons[btn.label] = function () {
+                if (window.confirm("Are you sure you want to proceed this action?")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_todo_dialog_data',
+                            '_action_id': btn.action,
+                            '_todo_id': $("#todo-id").val()
+                        },
+                        success: function (response) {
+                            $("#todo-dialog").dialog('close');
+                            //get_todo_list_data();
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                }
+            };
+        }
+    
+        $("#todo-dialog").dialog({
+            width: 600,
+            autoOpen: false,
+            modal: true,
+            buttons: buttons
+        });
+    
+        // Open the dialog after it has been initialized
+        $("#todo-dialog").dialog("open");
+    }
+    
+
 })
