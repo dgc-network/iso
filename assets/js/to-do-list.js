@@ -69,11 +69,6 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    $('[id^="todo-action-"]').on("click", function () {
-        const id = this.id.substring(12);
-        alert('Hi, '+id)
-    });            
-
     function activate_to_do_list_data(){
         $('[id^="edit-todo-"]').on("click", function () {
             const id = this.id.substring(10);
@@ -88,6 +83,11 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     // Display the result
                     $('#result-container').html(response);
+                    $('[id^="todo-action-"]').on("click", function () {
+                        const id = this.id.substring(12);
+                        alert('Hi, '+id)
+                    });            
+                                
                 },
                 error: function (error) {
                     console.log(error);
