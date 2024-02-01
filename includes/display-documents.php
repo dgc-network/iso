@@ -210,7 +210,7 @@ add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function display_document_dialog($site_id=0){
     ?>
-    <div id="document-dialog" title="Document dialog" style="display:none;">
+    <div id="document-dialog" title="Document dialog" >
         <fieldset>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
             <input type="hidden" id="doc-id" />
