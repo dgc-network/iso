@@ -230,11 +230,48 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function display_doc_todo_dialog() {
+function your_ajax_function() {
+    // Check if the action has been set
+    if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
+        // Your server-side logic goes here
+        $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
+        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+        $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+        $params = array();
+        if ($doc_shortcode) {
+            $result = call_user_func_array($doc_shortcode, $params);
+        } else {
+            array_push($params,$doc_id);
+            $result = call_user_func_array('display_doc_todo_dialog', $params);
+        }
+        // Return the result
+        echo $result;
+        // It's essential to exit after processing the AJAX request
+        wp_die();
+    } else {
+        // Handle invalid AJAX request
+        echo 'Invalid AJAX request!';
+        wp_die();
+    }
+}
+add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
+add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
+
+function display_doc_todo_dialog($post_id) {
+    // Get all existing meta data for the specified post ID
+    $all_meta = get_post_meta($post_id);
+
+    // Output or manipulate the meta data as needed
+    foreach ($all_meta as $key => $values) {
+        foreach ($values as $value) {
+            echo $key . ': ' . $value . '<br>';
+        }
+    }
+
     ?>
     <div id="todo-edit-dialog" title="To-do dialog">
     <fieldset>
-        <input type="hidden" id="todo-id" />
+        <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
         <input type="hidden" id="job-id" />
         <label for="doc-title">Title:</label>
         <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
@@ -258,30 +295,6 @@ function display_doc_todo_dialog() {
     <?php
 }
         
-function sum($a, $b) {
-    return $a + $b;
-}
-
-function your_ajax_function() {
-    // Check if the action has been set
-    if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
-        // Your server-side logic goes here
-        $result = call_user_func_array('display_doc_todo_dialog', $_POST['params']);
-
-        // Return the result
-        echo $result;
-
-        // It's essential to exit after processing the AJAX request
-        wp_die();
-    } else {
-        // Handle invalid AJAX request
-        echo 'Invalid AJAX request!';
-        wp_die();
-    }
-}
-add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
-add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
-
 function get_todo_dialog_data() {
     $response = array();
     $todo_id = (int)sanitize_text_field($_POST['_todo_id']);

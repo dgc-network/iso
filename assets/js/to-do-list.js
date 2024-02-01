@@ -75,7 +75,7 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-todo-"]').on("click", function () {
             const id = this.id.substring(10);
-            $("#todo-id").val(id);
+            //$("#todo-id").val(id);
         
             // Reset the content of the result container to the original HTML
             $('#result-container').html(originalHtml);
@@ -90,7 +90,8 @@ jQuery(document).ready(function($) {
                 type: 'post',
                 data: {
                     action: 'your_ajax_action',
-                    params: params,
+                    //params: params,
+                    _todo_id: id,
                     // additional data if needed
                 },
                 success: function (response) {
