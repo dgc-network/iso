@@ -257,18 +257,41 @@ function your_ajax_function() {
 add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
 add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
 
+function translate_custom_strings($original_string) {
+    // Define translations for specific strings
+    $translations = array(
+        'doc_number' => '文件編號',
+        'doc_version' => '文件版本',
+        'doc_url' => '文件網址',
+        'start_job' => '起始職務',
+        'start_leadtime' => '前置時間',
+        'doc_category' => '文件類別',
+        'site_id' => '單位',
+        // Add more translations as needed
+    );
+
+    // Check if there's a translation for the given string
+    if (isset($translations[$original_string])) {
+        return $translations[$original_string];
+    }
+
+    // If no translation is found, return the original string
+    return $original_string;
+}
+
 function display_doc_todo_dialog($todo_id, $post_id) {
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
 
     // Output or manipulate the meta data as needed
+    echo '<h2>To-do</h2>';
     echo '<fieldset>';
     foreach ($all_meta as $key => $values) {
+        if ($key!='start_job') 
+        if ($key!='start_leadtime') 
         foreach ($values as $value) {
-            echo '<label for="'.$key.'">'.$key.'</label>';
+            echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
-
-            //echo $key . ': ' . $value . '<br>';
         }
     }
 
