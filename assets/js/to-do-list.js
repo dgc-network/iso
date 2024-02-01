@@ -113,7 +113,7 @@ jQuery(document).ready(function($) {
                     
                     $('[id^="todo-action-"]').on("click", function () {
                         const action_id = this.id.substring(12);
-                        if (window.confirm("Are you sure you want to proceed this action?")) {
+                        //if (window.confirm("Are you sure you want to proceed this action?")) {
                             $.ajax({
                                 type: 'POST',
                                 url: ajax_object.ajax_url,
@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
                                     alert(error);
                                 }
                             });
-                        }
+                        //}
                     });
 
                     $("#btn-action-list").on( "click", function() {
