@@ -280,7 +280,7 @@ jQuery(document).ready(function($) {
     });                        
 
     function get_todo_action_list_data(todo_id){
-        alert('Hi, '.todo_id)
+        //alert('Hi, '+todo_id)
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
