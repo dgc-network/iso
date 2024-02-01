@@ -75,7 +75,8 @@ jQuery(document).ready(function($) {
             $("#todo-id").val(id);
         
             // Prepare the parameters
-            var params = [2, 3]; // Adjust the parameters as needed
+            //var params = [2, 3]; // Adjust the parameters as needed
+            var params = [2]; // Adjust the parameters as needed
 
             // AJAX request
             $.ajax({
@@ -89,6 +90,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     // Display the result
                     $('#result-container').html(response);
+                    $("#document-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.log(error);

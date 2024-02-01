@@ -266,7 +266,7 @@ function your_ajax_function() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
         // Your server-side logic goes here
-        $result = call_user_func_array('sum', $_POST['params']);
+        $result = call_user_func_array('display_document_dialog', $_POST['params']);
 
         // Return the result
         echo $result;
