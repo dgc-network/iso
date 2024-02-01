@@ -107,6 +107,7 @@ jQuery(document).ready(function($) {
                     });
 
                     $("#btn-action-list").on( "click", function() {
+                        alert('Hi')
                         get_todo_action_list_data(todo_id);
                     })                                 
                 },
