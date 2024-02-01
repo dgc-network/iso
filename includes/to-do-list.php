@@ -257,21 +257,21 @@ function your_ajax_function() {
 add_action('wp_ajax_your_ajax_action', 'your_ajax_function');
 add_action('wp_ajax_nopriv_your_ajax_action', 'your_ajax_function');
 
-function display_doc_todo_dialog($post_id) {
+function display_doc_todo_dialog($todo_id, $post_id) {
     // Get all existing meta data for the specified post ID
-    $all_meta = get_post_meta($todo_id, $post_id);
+    $all_meta = get_post_meta($post_id);
 
     // Output or manipulate the meta data as needed
     echo '<fieldset>';
     foreach ($all_meta as $key => $values) {
         foreach ($values as $value) {
-            //echo '<label for="'.$key.'">'.$key.'</label>';
-            //echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
+            echo '<label for="'.$key.'">'.$key.'</label>';
+            echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
 
-            echo $key . ': ' . $value . '<br>';
+            //echo $key . ': ' . $value . '<br>';
         }
     }
-/*
+
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
@@ -279,7 +279,7 @@ function display_doc_todo_dialog($post_id) {
         endwhile;
         wp_reset_postdata();
     }
-*/
+
     echo '</fieldset>';
 
     ?>
