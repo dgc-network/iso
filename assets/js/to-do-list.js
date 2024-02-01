@@ -84,6 +84,33 @@ jQuery(document).ready(function($) {
                     // Display the result
                     $('#result-container').html(response);
 
+                    // Job action list
+                    $("#todo-action-list-dialog").dialog({
+                        width: 500,
+                        modal: true,
+                        autoOpen: false,
+                    });
+                
+                    // Todo job actions settings
+                    $("#btn-new-todo-action").on("click", function() {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_todo_action_dialog_data',
+                                '_todo_id': $("#todo-id").val(),
+                            },
+                            success: function (response) {
+                                get_todo_action_list_data($("#todo-id").val());
+                            },
+                            error: function(error){
+                                console.error(error);                    
+                                alert(error);
+                            }
+                        });    
+                    });                                        
+                    
                     $('[id^="todo-action-"]').on("click", function () {
                         const action_id = this.id.substring(12);
                         if (window.confirm("Are you sure you want to proceed this action?")) {
@@ -252,33 +279,6 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
     }
     
-    // Job action list
-    $("#todo-action-list-dialog").dialog({
-        width: 500,
-        modal: true,
-        autoOpen: false,
-    });
-
-    // Todo job actions settings
-    $("#btn-new-todo-action").on("click", function() {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_todo_action_dialog_data',
-                '_todo_id': $("#todo-id").val(),
-            },
-            success: function (response) {
-                get_todo_action_list_data($("#todo-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });                        
-
     function get_todo_action_list_data(todo_id){
         //alert('Hi, '+todo_id)
         $.ajax({
