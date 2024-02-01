@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
             });
             
             // Open the Dialog with dynamic buttons
-            get_doc_dialog_buttons_data($("#start-job").val());
+            //get_doc_dialog_buttons_data($("#start-job").val());
             
         });
     }
@@ -221,7 +221,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*
+
     $("#document-dialog").dialog({
         width: 600,
         modal: true,
@@ -279,7 +279,7 @@ jQuery(document).ready(function($) {
             }
         }
     });
-*/
+
     function get_doc_workflow_list_data(id){
         $.ajax({
             type: 'POST',

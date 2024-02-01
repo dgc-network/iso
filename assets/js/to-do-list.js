@@ -89,7 +89,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     // Display the result
-                    $('#result-container').html(response);
+                    //$('#result-container').html(response);
+                    $('#result-container').append(response);
                     $("#document-dialog").dialog('open');
                 },
                 error: function (error) {
