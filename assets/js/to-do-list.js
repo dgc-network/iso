@@ -60,11 +60,7 @@ jQuery(document).ready(function($) {
                     }                    
                     $(".todo-list-"+index).append(output).show();
                 })
-                //activate_to_do_list_data()
-                $('[id^="edit-todo-"]').on("click", function () {
-                    const todo_id = this.id.substring(10);
-                    dialog_with_action_buttons(todo_id)
-                });            
+                activate_to_do_list_data()
         
             },
             error: function (error) {
@@ -203,6 +199,10 @@ jQuery(document).ready(function($) {
     }
 
     function activate_to_do_list_data(){
+        $('[id^="edit-todo-"]').on("click", function () {
+            const todo_id = this.id.substring(10);
+            dialog_with_action_buttons(todo_id)
+        });            
     }
 
     function get_todo_dialog_buttons_data(id) {
