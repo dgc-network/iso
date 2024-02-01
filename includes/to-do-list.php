@@ -173,7 +173,7 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
         </fieldset>
-        <?php display_todo_dialog();?>
+        <?php //display_doc_todo_dialog();?>
         </div>
         <?php
     } else {
@@ -230,7 +230,7 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function display_todo_dialog() {
+function display_doc_todo_dialog() {
     ?>
     <div id="todo-dialog" title="To-do dialog" style="display:none;">
     <fieldset>
@@ -266,7 +266,7 @@ function your_ajax_function() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'your_ajax_action') {
         // Your server-side logic goes here
-        $result = call_user_func_array('display_document_dialog', $_POST['params']);
+        $result = call_user_func_array('display_doc_todo_dialog', $_POST['params']);
 
         // Return the result
         echo $result;

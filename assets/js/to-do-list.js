@@ -97,25 +97,7 @@ jQuery(document).ready(function($) {
                     console.log(error);
                 }
             });
-/*                        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_shortcode_data',
-                },
-                success: function (response) {
-                    console.log(response);
-                    //$('#result-container').empty();
-                    $('#result-container').html(response);
-                    $("#document-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);                
-                }
-            });
-/*
+
             // Dialog content
             $.ajax({
                 type: 'POST',
@@ -142,7 +124,7 @@ jQuery(document).ready(function($) {
     
             // Open the Dialog with dynamic buttons
             get_todo_dialog_buttons_data($("#todo-id").val());
-*/
+
         });            
     }
 
