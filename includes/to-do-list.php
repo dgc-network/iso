@@ -107,8 +107,8 @@ function to_do_list_shortcode() {
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
         ?>
-        <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
         <div class="ui-widget" id="result-container">
+        <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
         <fieldset>
             <div id="todo-setting-div" style="display:none">
             <fieldset>
@@ -173,8 +173,8 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
         </fieldset>
-        </div>
         <?php display_todo_dialog();?>
+        </div>
         <?php
     } else {
         user_did_not_login_yet();
@@ -261,13 +261,16 @@ function display_todo_dialog() {
 function get_shortcode_data() {
     //$doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
     //$doc_shortcode = 'display-documents';
-    //$shortcode_output = do_shortcode('['.$doc_shortcode.']');
-    //$shortcode_output = do_shortcode('[display-documents]');
-    $shortcode_output = 'Hello, World!';
-    wp_send_json($shortcode_output);
-    //echo $shortcode_output;
-    //echo 'Hello';
-    //wp_die();
+
+    // Assign the function name to a variable
+    $my_function = "display_document_dialog";
+
+    // Define the parameters
+    $params = [10, 20];
+    
+    // Call the function using the variable and parameters
+    $result = call_user_func_array($my_function, $params);
+    wp_send_json($result);
 }
 add_action( 'wp_ajax_get_shortcode_data', 'get_shortcode_data' );
 add_action( 'wp_ajax_nopriv_get_shortcode_data', 'get_shortcode_data' );

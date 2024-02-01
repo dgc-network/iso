@@ -85,9 +85,10 @@ jQuery(document).ready(function($) {
                     console.log(response);
                     //$('#result-container').empty();
                     $('#result-container').html(response);
+                    $("#document-dialog").dialog('open');
                 },
             });
-
+/*
             // Dialog content
             $.ajax({
                 type: 'POST',
@@ -114,6 +115,7 @@ jQuery(document).ready(function($) {
     
             // Open the Dialog with dynamic buttons
             get_todo_dialog_buttons_data($("#todo-id").val());
+*/
         });            
     }
 
