@@ -290,7 +290,6 @@ jQuery(document).ready(function($) {
                 '_todo_id': todo_id,
             },
             success: function (response) {            
-                $("#todo-action-list-dialog").dialog('open');
                 for(index=0;index<50;index++) {
                     $(".todo-action-list-"+index).hide().empty();
                 }
@@ -304,6 +303,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".todo-action-list-"+index).append(output).show();
                 })
+                $("#todo-action-list-dialog").dialog('open');
 
                 $('[id^="edit-job-action-todo-"]').on( "click", function() {
                     const action_id = this.id.substring(21);
