@@ -71,21 +71,21 @@ jQuery(document).ready(function($) {
 
     function activate_to_do_list_data(){
         $('[id^="edit-todo-"]').on("click", function () {
-            const id = this.id.substring(10);
+            const todo_id = this.id.substring(10);
             // AJAX request
             $.ajax({
                 url: ajax_object.ajax_url,
                 type: 'post',
                 data: {
                     action: 'your_ajax_action',
-                    _todo_id: id,
+                    _todo_id: todo_id,
                 },
                 success: function (response) {
                     // Display the result
                     $('#result-container').html(response);
                     $('[id^="todo-action-"]').on("click", function () {
-                        const id = this.id.substring(12);
-                        alert('Hi, '+id)
+                        const action_id = this.id.substring(12);
+                        alert('Hi, '+action_id)
                     });            
                                 
                 },
