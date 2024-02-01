@@ -301,7 +301,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
         }
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
-    echo '<input type="text" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" disabled />';
+    echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
 
     echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
