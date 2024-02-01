@@ -69,42 +69,31 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    function activate_to_do_list_data(){
-        // Initialize a variable to store the original HTML content
-        var originalHtml = $('#result-container').html();
+    $('[id^="todo-action-"]').on("click", function () {
+        const id = this.id.substring(12);
+        alert('Hi, '+id)
+    });            
 
+    function activate_to_do_list_data(){
         $('[id^="edit-todo-"]').on("click", function () {
             const id = this.id.substring(10);
-            //$("#todo-id").val(id);
-        
-            // Reset the content of the result container to the original HTML
-            $('#result-container').html(originalHtml);
-
-            // Prepare the parameters
-            //var params = [2, 3]; // Adjust the parameters as needed
-            var params = [2]; // Adjust the parameters as needed
-
             // AJAX request
             $.ajax({
                 url: ajax_object.ajax_url,
                 type: 'post',
                 data: {
                     action: 'your_ajax_action',
-                    //params: params,
                     _todo_id: id,
-                    // additional data if needed
                 },
                 success: function (response) {
                     // Display the result
-                    //$('#result-container').append(response);
                     $('#result-container').html(response);
-                    $("#document-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.log(error);
                 }
             });
-
+/*
             // Dialog content
             $.ajax({
                 type: 'POST',
@@ -131,7 +120,7 @@ jQuery(document).ready(function($) {
     
             // Open the Dialog with dynamic buttons
             get_todo_dialog_buttons_data($("#todo-id").val());
-
+*/
         });            
     }
 

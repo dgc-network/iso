@@ -261,7 +261,7 @@ function translate_custom_strings($original_string) {
     // Define translations for specific strings
     $translations = array(
         'doc_number' => '文件編號',
-        'doc_version' => '文件版本',
+        'doc_revison' => '文件版本',
         'doc_url' => '文件網址',
         'start_job' => '起始職務',
         'start_leadtime' => '前置時間',
@@ -294,17 +294,17 @@ function display_doc_todo_dialog($todo_id, $post_id) {
             echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
         }
     }
-
+    echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            echo '<input type="button" id="'.get_the_ID().'" value="'.get_the_title().'" />';
+            echo '<input type="button" id="todo-action-'.get_the_ID().'" value="'.get_the_title().'" />';
         endwhile;
         wp_reset_postdata();
     }
-
     echo '</fieldset>';
-
+    display_todo_action_list();
+/*
     ?>
     <div id="todo-edit-dialog" title="To-do dialog">
     <fieldset>
@@ -330,6 +330,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
     </div>
     <?php display_todo_action_list();?>
     <?php
+*/    
 }
         
 function get_todo_dialog_data() {
