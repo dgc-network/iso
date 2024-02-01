@@ -69,10 +69,10 @@ jQuery(document).ready(function($) {
         });            
     }
 
-    // Initialize a variable to store the original HTML content
-    var originalHtml = $('#result-container').html();
-
     function activate_to_do_list_data(){
+        // Initialize a variable to store the original HTML content
+        var originalHtml = $('#result-container').html();
+
         $('[id^="edit-todo-"]').on("click", function () {
             const id = this.id.substring(10);
             $("#todo-id").val(id);
