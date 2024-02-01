@@ -99,10 +99,10 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'set_todo_action_dialog_data',
-                                '_todo_id': $("#todo-id").val(),
+                                '_todo_id': todo_id,
                             },
                             success: function (response) {
-                                get_todo_action_list_data($("#todo-id").val());
+                                get_todo_action_list_data(todo_id);
                             },
                             error: function(error){
                                 console.error(error);                    
