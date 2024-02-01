@@ -15,13 +15,13 @@ jQuery(document).ready(function($) {
         $("#todo-setting-div").toggle();
     });
 
-    activate_to_do_list_data();
+    //activate_to_do_list_data();
     function activate_to_do_list_data(){
     }
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
-        dialog_with_action_buttons(todo_id)
+        open_dialog_and_buttons(todo_id)
     });            
 
     $('[id^="btn-"]').mouseover(function() {
@@ -42,21 +42,21 @@ jQuery(document).ready(function($) {
         get_todo_action_list_data($("#todo-id").val());
     })
 
-    function dialog_with_action_buttons(todo_id){
+    function open_dialog_and_buttons(todo_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
-                action: 'dialog_with_action_buttons',
+                action: 'open_dialog_and_buttons',
                 _todo_id: todo_id,
             },
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response);
 
-                $('[id^="todo-action-"]').on("click", function () {
-                    const action_id = this.id.substring(12);
+                $('[id^="todo-dialog-button-"]').on("click", function () {
+                    const action_id = this.id.substring(19);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -125,8 +125,7 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');
-                                    dialog_with_action_buttons(todo_id)
-                                    //get_todo_dialog_buttons_data($("#todo-id").val());
+                                    //open_dialog_and_buttons(todo_id)
                                     get_todo_action_list_data(todo_id);
                                 },
                                 error: function (error) {
@@ -147,8 +146,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#todo-action-dialog").dialog('close');
-                                        dialog_with_action_buttons(todo_id)
-                                        //get_todo_dialog_buttons_data($("#todo-id").val());
+                                        //open_dialog_and_buttons(todo_id)
                                         get_todo_action_list_data(todo_id);
                                     },
                                     error: function(error){
@@ -182,7 +180,7 @@ jQuery(document).ready(function($) {
                     $(".todo-action-list-"+index).hide().empty();
                 }
                 $.each(response, function (index, value) {
-                    $(".todo-action-list-" + index).attr("id", "edit-job-action-todo-" + value.action_id);
+                    $(".todo-action-list-" + index).attr("id", "edit-action-todo-" + value.action_id);
                     const output = `
                         <td style="text-align:center;">${value.action_title}</td>
                         <td>${value.action_content}</td>
@@ -193,8 +191,8 @@ jQuery(document).ready(function($) {
                 })
                 $("#todo-action-list-dialog").dialog('open');
 
-                $('[id^="edit-job-action-todo-"]').on( "click", function() {
-                    const action_id = this.id.substring(21);
+                $('[id^="edit-action-todo-"]').on( "click", function() {
+                    const action_id = this.id.substring(17);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,

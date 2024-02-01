@@ -230,9 +230,9 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function dialog_with_action_buttons() {
+function open_dialog_and_buttons() {
     // Check if the action has been set
-    if (isset($_POST['action']) && $_POST['action'] === 'dialog_with_action_buttons') {
+    if (isset($_POST['action']) && $_POST['action'] === 'open_dialog_and_buttons') {
         // Your server-side logic goes here
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
@@ -254,8 +254,8 @@ function dialog_with_action_buttons() {
         wp_die();
     }
 }
-add_action('wp_ajax_dialog_with_action_buttons', 'dialog_with_action_buttons');
-add_action('wp_ajax_nopriv_dialog_with_action_buttons', 'dialog_with_action_buttons');
+add_action('wp_ajax_open_dialog_and_buttons', 'open_dialog_and_buttons');
+add_action('wp_ajax_nopriv_open_dialog_and_buttons', 'open_dialog_and_buttons');
 
 function translate_custom_strings($original_string) {
     // Define translations for specific strings
@@ -307,7 +307,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            echo '<input type="button" id="todo-action-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
         endwhile;
         wp_reset_postdata();
     }
