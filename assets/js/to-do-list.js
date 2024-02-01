@@ -318,7 +318,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#todo-action-dialog").dialog('open');
-                            $("#action-id").val(id);
+                            $("#action-id").val(action_id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
                             $("#next-job").empty().append(response.next_job);
