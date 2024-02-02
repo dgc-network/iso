@@ -252,8 +252,8 @@ function display_document_dialog($todo_id, $post_id) {
                     echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
                     break;
         
-                case strpos($key, 'category'):
-                    echo '<select id="' . $key . '">' . select_doc_category_option_data($value) . '</select>';
+                case strpos($key, 'doc_category'):
+                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                     break;
         
                 default:

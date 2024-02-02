@@ -291,7 +291,19 @@ function display_doc_todo_dialog($todo_id, $post_id) {
         if ($key!='start_leadtime') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
-            echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
+            switch (true) {
+                case strpos($key, 'url'):
+                    echo '<a href="' . $value . '"><textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea></a>';
+                    break;
+        
+                case strpos($key, 'doc_category'):
+                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all" disabled>' . select_doc_category_option_data($value) . '</select>';
+                    break;
+        
+                default:
+                    echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" disabled />';
+                    break;
+            }
         }
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
