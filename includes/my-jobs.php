@@ -34,6 +34,8 @@ function my_jobs_shortcode() {
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <hr>
                 <button type="submit" id="btn-submit-profile">Submit</button>
             </fieldset>
             </div>
@@ -87,7 +89,7 @@ function my_jobs_shortcode() {
             <div id="btn-new-site-job" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
         </fieldset>
         </div>
-        <?php display_job_dialog($site_id);?>
+        <?php display_job_dialog();?>
         <?php
     } else {
         user_did_not_login_yet();
@@ -146,11 +148,10 @@ function is_my_job($job_id) {
     return in_array($job_id, $user_jobs);
 }
 
-function display_job_dialog($site_id=0) {
+function display_job_dialog() {
     ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
     <fieldset>
-        <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
         <input type="hidden" id="job-id" />
         <label for="job-title">Title:</label>
         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />

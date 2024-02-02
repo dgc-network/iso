@@ -64,6 +64,7 @@ function display_documents_shortcode() {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
             </fieldset>
             </div>
         

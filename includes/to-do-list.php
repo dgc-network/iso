@@ -80,7 +80,7 @@ function register_todo_post_type() {
         'hierarchical'       => false,
         'menu_position'      => null,
         'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
-        //'show_in_menu'       => false, // Set this to false to hide from the admin menu
+        'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
 }
@@ -116,6 +116,7 @@ function to_do_list_shortcode() {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
             </fieldset>
             </div>
         
@@ -703,7 +704,6 @@ function display_todo_action_dialog(){
     ?>
     <div id="todo-action-dialog" title="Action dialog" style="display:none;">
     <fieldset>
-        <input type="hidden" id="site-id" />
         <input type="hidden" id="action-id" />
         <label for="action-title">Title:</label>
         <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
