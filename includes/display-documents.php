@@ -233,6 +233,8 @@ add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons')
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
 function display_document_dialog($todo_id, $post_id) {
+    $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
+
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
@@ -253,7 +255,7 @@ function display_document_dialog($todo_id, $post_id) {
                     break;
         
                     case strpos($key, '_job'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_site_job_option_data($value) . '</select>';
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_site_job_option_data($value, $site_id) . '</select>';
                         break;
             
                     case strpos($key, '_category'):
