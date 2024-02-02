@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 
                 $("#start_job").on( "change", function(e) {
                     e.preventDefault();
-                    if ($("#todo_status").val()=='') {
+                    if (($("#todo_status").length==0)||($("#todo_status").val()=='')) {
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
