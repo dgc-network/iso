@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                                 '_doc_id': doc_id,
                             },
                             success: function (response) {
-                                alert('Hi,insert'+response)
+                                //alert('Hi,insert'+response)
                                 $("#todo-status").val(response);
                             },
                             error: function(error){
@@ -99,7 +99,7 @@ jQuery(document).ready(function($) {
                                 '_todo_id': $("#todo-status").val(),
                             },
                             success: function (response) {
-                                alert('Hi,update'+response)
+                                //alert('Hi,update'+response)
                                 $("#todo-status").val(response);
                             },
                             error: function(error){

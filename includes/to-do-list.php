@@ -384,6 +384,7 @@ function set_todo_dialog_data() {
         if( isset($_POST['_todo_id']) ) {
             $todo_id = sanitize_text_field($_POST['_todo_id']);        
             update_post_meta( $todo_id, 'job_id', $job_id);
+            update_post_meta( $doc_id, 'start_job', $job_id);
             $response = $todo_id;
         } else {
             // Insert the To-do
@@ -397,6 +398,7 @@ function set_todo_dialog_data() {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta( $new_todo_id, 'job_id', $job_id);
             update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+            update_post_meta( $doc_id, 'start_job', $job_id);
             update_post_meta( $doc_id, 'todo_status', $new_todo_id);
             $response = $new_todo_id;
         }
