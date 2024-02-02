@@ -103,7 +103,7 @@ function display_documents_shortcode() {
                             <?php if ($doc_date){?><td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td><?php }?>
                             <?php if (!$doc_date){?><td><?php the_title();?></td><?php }?>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
-                            <td style="text-align:center;"><?php echo wp_date( get_option('date_format'), $doc_date );?></td>
+                            <td style="text-align:center;"><?php echo date_i18n( get_option('date_format'), $doc_date );?></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -198,7 +198,7 @@ function get_document_list_data() {
             $_list["doc_title"] = (($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title());
             $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
             $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
-            $_list["doc_date"] = esc_html(wp_date( get_option('date_format'), $doc_date ));
+            $_list["doc_date"] = esc_html(date_i18n( get_option('date_format'), $doc_date ));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -247,7 +247,7 @@ function display_document_dialog($todo_id, $post_id) {
         if ($key!='site_id') 
         //if ($key!='start_job')
         //if ($key!='start_leadtime') 
-        //if ($key!='todo_status') 
+        if ($key!='todo_status') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             switch (true) {
@@ -394,7 +394,7 @@ function get_document_dialog_data() {
         $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
         $response["start_job"] = select_site_job_option_data($start_job, $site_id);
         $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
-        $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
+        $response["doc_date"] = date_i18n( get_option('date_format'), $doc_date );
         $response["doc_category"] = select_doc_category_option_data($doc_category);
         //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
         $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
@@ -437,6 +437,12 @@ function set_document_dialog_data() {
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         update_post_meta( $post_id, 'doc_number', '-');
+        update_post_meta( $post_id, 'doc_revision', '-');
+        update_post_meta( $post_id, 'doc_url', '-');
+        update_post_meta( $post_id, 'doc_shortcode', '-');
+        update_post_meta( $post_id, 'start_job', 0);
+        update_post_meta( $post_id, 'start_leadtime', 86400);
+        update_post_meta( $post_id, 'doc_category', 0);
     }
     wp_send_json($response);
 }
@@ -518,7 +524,7 @@ function get_doc_workflow_list_data() {
             $submit_action = esc_attr(get_post_meta(get_the_ID(), 'submit_action', true));            
             $_list["submit_action"] = get_the_title($submit_action);
             $submit_time = esc_attr(get_post_meta(get_the_ID(), 'submit_time', true));            
-            $_list["submit_time"] = wp_date( get_option('date_format'), $submit_time );
+            $_list["submit_time"] = date_i18n( get_option('date_format'), $submit_time );
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata(); // Reset post data to the main loop
