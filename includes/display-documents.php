@@ -28,7 +28,7 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'document', $args );
 }
