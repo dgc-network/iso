@@ -247,7 +247,8 @@ function display_document_dialog($todo_id, $post_id) {
         if ($key!='start_leadtime') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
-            echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
+            if (strpos($key, 'url')) echo '<text id="'.$key.'">.$value.</text>';
+            echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" />';
         }
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
