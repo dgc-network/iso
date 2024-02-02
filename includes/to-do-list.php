@@ -678,9 +678,9 @@ function set_todo_action_dialog_data() {
         // Update the post into the database
         $data = array(
             'ID'         => $_POST['_action_id'],
+            'post_title' => $_POST['_action_title'],
+            'post_content' => $_POST['_action_content'],
             'meta_input' => array(
-                'action_title'   => $_POST['_action_title'],
-                'action_content' => $_POST['_action_content'],
                 'next_job'       => $_POST['_next_job'],
                 'next_leadtime'  => $_POST['_next_leadtime'],
             )
