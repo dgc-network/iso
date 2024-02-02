@@ -66,7 +66,7 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $("#start-job").on( "change", function(e) {
+                $("#start_job").on( "change", function(e) {
                     e.preventDefault();
                     if ($("#todo-status").val()=='') {
                         $.ajax({
@@ -75,7 +75,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'set_todo_dialog_data',
-                                '_job_id': $("#start-job").val(),
+                                '_job_id': this.val(),
                                 '_doc_id': doc_id,
                             },
                             success: function (response) {
@@ -93,7 +93,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'set_todo_dialog_data',
-                                '_job_id': $("#start-job").val(),
+                                '_job_id': this.val(),
                                 '_doc_id': doc_id,
                                 '_todo_id': $("#todo-status").val(),
                             },
