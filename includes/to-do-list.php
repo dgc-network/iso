@@ -296,7 +296,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
                     echo '<a href="' . $value . '"><textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea></a>';
                     break;
         
-                case strpos($key, 'doc_category'):
+                case strpos($key, 'category'):
                     echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all" disabled>' . select_doc_category_option_data($value) . '</select>';
                     break;
         
