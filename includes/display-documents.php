@@ -252,12 +252,14 @@ function display_document_dialog($todo_id, $post_id) {
                     echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
                     break;
         
+                case strpos($key, 'category'):
+                    echo '<select id="' . $key . '">' . select_doc_category_option_data($value) . '</select>';
+                    break;
+        
                 default:
                     echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
                     break;
             }
-            //if (strpos($key, 'url')) echo '<textarea id="'.$key.'">'.$value.'</textarea>';
-            //echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" />';
         }
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
