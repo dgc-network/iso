@@ -375,6 +375,31 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
+    } else {
+        $job_id = sanitize_text_field($_POST['_job_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $todo_title = get_the_title($job_id);
+        $todo_content = get_the_title($doc_id);
+
+        if( isset($_POST['_todo_id']) ) {
+            $todo_id = sanitize_text_field($_POST['_todo_id']);        
+            update_post_meta( $todo_id, 'job_id', $job_id);
+            $response = $todo_id;
+        } else {
+            // Insert the To-do
+            $new_post = array(
+                'post_title'    => $todo_title,
+                'post_content'  => $todo_content,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'todo',
+            );    
+            $new_todo_id = wp_insert_post($new_post);
+            update_post_meta( $new_todo_id, 'job_id', $job_id);
+            update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+            update_post_meta( $doc_id, 'todo_status', $new_todo_id);
+            $response = $new_todo_id;
+        }
     }
     wp_send_json($response);
 }

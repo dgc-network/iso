@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response);
-                todo_id = $("#start_job").val(),
+                //todo_id = $("#start_job").val(),
 
                 $('[id^="doc-dialog-button-"]').on("click", function (e) {
                     e.preventDefault();
@@ -66,9 +66,51 @@ jQuery(document).ready(function($) {
                     });
                 });
 
+                $("#start-job").on( "change", function(e) {
+                    e.preventDefault();
+                    if ($("#todo-status").val()=='') {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_todo_dialog_data',
+                                '_job_id': $("#start-job").val(),
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                $("#todo-status").val(response);
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });    
+                    } else {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_todo_dialog_data',
+                                '_job_id': $("#start-job").val(),
+                                '_doc_id': doc_id,
+                                '_todo_id': $("#todo-status").val(),
+                            },
+                            success: function (response) {
+                                $("#todo-status").val(response);
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });    
+                    }
+                });
+            
                 $("#btn-action-list").on( "click", function(e) {
                     e.preventDefault();
-                    get_doc_action_list_data(todo_id);
+                    get_doc_action_list_data($("#todo-status").val());
                 })
 
                 // Job action list
@@ -236,11 +278,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });    
-    });
-
-    $("#start-job").on( "change", function() {
-        // Open the Dialog with dynamic buttons
-        get_doc_dialog_buttons_data($("#start-job").val());
     });
 
     $("#btn-doc-workflow").on( "click", function() {
