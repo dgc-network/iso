@@ -96,7 +96,7 @@ jQuery(document).ready(function($) {
                             '_todo_id': todo_id,
                         },
                         success: function (response) {
-                            open_dialog_and_buttons(todo_id)
+                            //open_dialog_and_buttons(todo_id)
                             get_todo_action_list_data(todo_id);
                         },
                         error: function(error){
