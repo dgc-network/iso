@@ -212,7 +212,7 @@ function open_doc_dialog_and_buttons() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'open_doc_dialog_and_buttons') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        $todo_id = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
         if ($doc_shortcode) {
