@@ -43,7 +43,6 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response);
-                //todo_id = $("#start_job").val(),
 
                 $('[id^="doc-dialog-button-"]').on("click", function (e) {
                     e.preventDefault();
@@ -68,7 +67,7 @@ jQuery(document).ready(function($) {
 
                 $("#start_job").on( "change", function(e) {
                     e.preventDefault();
-                    if ($("#todo-status").val()=='') {
+                    if ($("#todo_status").val()=='') {
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
@@ -117,7 +116,7 @@ jQuery(document).ready(function($) {
 
                 // Job action list
                 $("#todo-action-list-dialog").dialog({
-                    width: 500,
+                    width: 400,
                     modal: true,
                     autoOpen: false,
                 });
