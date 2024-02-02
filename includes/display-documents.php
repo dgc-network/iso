@@ -295,7 +295,7 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
                 'value' => $site_id,
             ),
             array(
-                'key'   => 'start_job',
+                'key'   => 'is_start_job',
                 'value' => 1,
             ),
         ),
