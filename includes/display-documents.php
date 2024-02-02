@@ -215,12 +215,31 @@ function open_doc_dialog_and_buttons() {
         $todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
+        if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
+            $param_count = count($params);
+            $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
+        
+            if ($param_count === $expected_param_count) {
+                // The function is valid, and the parameter count matches
+                call_user_func_array($doc_shortcode, $params);
+            } else {
+                // Invalid parameter count
+                echo "Invalid parameter count for $doc_shortcode";
+            }
+        } else {
+            // The function is not defined or not callable
+            //echo "Invalid function or not callable: $doc_shortcode";
+            array_push($params,$todo_id,$doc_id);
+            $result = call_user_func_array('display_document_dialog', $params);
+        }
+/*        
         if ($doc_shortcode) {
             $result = call_user_func_array($doc_shortcode, $params);
         } else {
             array_push($params,$todo_id,$doc_id);
             $result = call_user_func_array('display_document_dialog', $params);
         }
+*/
         echo $result;
         wp_die();
     } else {
@@ -439,7 +458,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', '-');
         update_post_meta( $post_id, 'doc_url', '-');
-        update_post_meta( $post_id, 'doc_shortcode', '-');
+        //update_post_meta( $post_id, 'doc_shortcode', '-');
         update_post_meta( $post_id, 'start_job', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);
         update_post_meta( $post_id, 'doc_category', 0);
