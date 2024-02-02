@@ -15,10 +15,6 @@ jQuery(document).ready(function($) {
         $("#todo-setting-div").toggle();
     });
 
-    //activate_to_do_list_data();
-    function activate_to_do_list_data(){
-    }
-
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
         open_dialog_and_buttons(todo_id)
@@ -55,7 +51,8 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
 
-                $('[id^="todo-dialog-button-"]').on("click", function () {
+                $('[id^="todo-dialog-button-"]').on("click", function (e) {
+                    e.preventDefault();
                     const action_id = this.id.substring(19);
                     $.ajax({
                         type: 'POST',
@@ -75,7 +72,8 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $("#btn-action-list").on( "click", function() {
+                $("#btn-action-list").on( "click", function(e) {
+                    e.preventDefault();
                     get_todo_action_list_data(todo_id);
                 })
 
@@ -87,7 +85,8 @@ jQuery(document).ready(function($) {
                 });
             
                 // Todo job actions settings
-                $("#btn-new-todo-action").on("click", function() {
+                $("#btn-new-todo-action").on("click", function(e) {
+                    e.preventDefault();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -97,6 +96,7 @@ jQuery(document).ready(function($) {
                             '_todo_id': todo_id,
                         },
                         success: function (response) {
+                            open_dialog_and_buttons(todo_id)
                             get_todo_action_list_data(todo_id);
                         },
                         error: function(error){
@@ -119,13 +119,15 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_todo_action_dialog_data',
                                     '_action_id': $("#action-id").val(),
+                                    '_action_title': $("#action-title").val(),
+                                    '_action_content': $("#action-content").val(),
                                     '_next_job': $("#next-job").val(),
                                     '_next_leadtime': $("#next-leadtime").val(),
                                     '_doc_id': $("#doc-id").val(),
                                 },
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');
-                                    //open_dialog_and_buttons(todo_id)
+                                    open_dialog_and_buttons(todo_id)
                                     get_todo_action_list_data(todo_id);
                                 },
                                 error: function (error) {
@@ -146,7 +148,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#todo-action-dialog").dialog('close');
-                                        //open_dialog_and_buttons(todo_id)
+                                        open_dialog_and_buttons(todo_id)
                                         get_todo_action_list_data(todo_id);
                                     },
                                     error: function(error){

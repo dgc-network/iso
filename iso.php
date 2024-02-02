@@ -413,6 +413,7 @@ function user_did_not_login_yet() {
                 <input type="hidden" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" name="rememberme" value="foreverchecked" />
                 <input type="hidden" name="redirect_to" value="<?php echo esc_url(home_url());?>" />
+                <hr>
                 <input type="submit" name="wp-submit" class="button button-primary" value="Submit" />
             </fieldset>
             </form>
@@ -427,7 +428,6 @@ function user_did_not_login_yet() {
         echo '<div class="ui-widget" style="text-align:center;">';
         echo '感謝您使用我們的系統<br>';
         echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按';
-        //echo '<h4><a href="'.get_option('_line_account').'">這裡</a><br></h4>';
         echo '<h4><a href="'.get_option('line_official_account').'">這裡</a><br></h4>';
         echo '加入我們的Line官方帳號,<br>';
         echo '並請在聊天室中, 輸入六位數字:';

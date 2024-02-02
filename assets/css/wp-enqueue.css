@@ -26,7 +26,6 @@ tbody tr:hover {
 
 /* Apply styles to the button when hovering */
 input[type="button"]:hover {
-    color: red;
     cursor: pointer;
 }
 

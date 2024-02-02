@@ -271,12 +271,10 @@ function translate_custom_strings($original_string) {
         'site_id' => '單位',
         // Add more translations as needed
     );
-
     // Check if there's a translation for the given string
     if (isset($translations[$original_string])) {
         return $translations[$original_string];
     }
-
     // If no translation is found, return the original string
     return $original_string;
 }
@@ -284,7 +282,6 @@ function translate_custom_strings($original_string) {
 function display_doc_todo_dialog($todo_id, $post_id) {
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
-
     // Output or manipulate the meta data as needed
     echo '<h2>To-do</h2>';
     echo '<fieldset>';
@@ -302,7 +299,12 @@ function display_doc_todo_dialog($todo_id, $post_id) {
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
     echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-
+    display_todo_action_buttons($todo_id);
+    echo '</fieldset>';
+    display_todo_action_list();
+}
+        
+function display_todo_action_buttons($todo_id) {
     echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
@@ -311,37 +313,8 @@ function display_doc_todo_dialog($todo_id, $post_id) {
         endwhile;
         wp_reset_postdata();
     }
-    echo '</fieldset>';
-    display_todo_action_list();
-/*
-    ?>
-    <div id="todo-edit-dialog" title="To-do dialog">
-    <fieldset>
-        <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
-        <input type="hidden" id="job-id" />
-        <label for="doc-title">Title:</label>
-        <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" disabled />
-        <div>
-            <div style="display:inline-block;">
-                <label for="doc-number">Doc.#:</label>
-                <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" disabled />
-            </div>
-            <div style="display:inline-block; width:25%;">
-                <label for="doc-revision">Revision:</label>
-                <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" disabled />
-            </div>
-        </div>
-        <label for="doc-url">URL:</label>
-        <textarea id="btn-doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
-        <label for="btn-workflow">Workflow:</label>
-        <div id="btn-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Action list</div>
-    </fieldset>
-    </div>
-    <?php display_todo_action_list();?>
-    <?php
-*/    
 }
-        
+
 function get_todo_dialog_data() {
     $response = array();
     $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
@@ -385,8 +358,6 @@ add_action( 'wp_ajax_nopriv_get_todo_dialog_buttons_data', 'get_todo_dialog_butt
 function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
-        // Update To-do
-        //$todo_id = sanitize_text_field($_POST['_todo_id']);
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
@@ -402,7 +373,7 @@ add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 // Flex Message JSON structure with a button
-function send_flex_message_with_button($user, $message_text='', $link_uri='') {
+function send_flex_message_with_button_link($user, $message_text='', $link_uri='') {
     $line_bot_api = new line_bot_api();
     $flexMessage = [
         'type' => 'flex',
@@ -460,7 +431,6 @@ function get_users_by_job_id($job_id=0) {
             ),
         ),
     );
-    // Create a new WP_User_Query
     $query = new WP_User_Query($args);
     $users = $query->get_results();
     return $users;
@@ -477,7 +447,7 @@ function notice_the_persons_in_charge($todo_id=0) {
     $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        send_flex_message_with_button($user, $message_text, $link_uri);
+        send_flex_message_with_button_link($user, $message_text, $link_uri);
     }    
 }
 
@@ -488,15 +458,11 @@ function get_users_in_site($site_id=0) {
             array(
                 'key'   => 'site_id',
                 'value' => $site_id,
-                //'compare' => '=',
             ),
         ),
     );
-    // Create a new WP_User_Query
     $query = new WP_User_Query($args);
-    // Get the results
     $users = $query->get_results();
-    // Return the list of users
     return $users;
 }
 
@@ -510,8 +476,7 @@ function notice_the_persons_in_site($doc_id=0) {
     //$link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        //send_flex_message_with_button($user, $message_text, $doc_url);
-        send_flex_message_with_button($user);
+        send_flex_message_with_button_link($user, $message_text, $doc_url);
     }    
 }
 
