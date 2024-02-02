@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 //alert('Hi,insert'+response)
-                                $("#todo-status").val(response);
+                                $("#todo_status").val(response);
                             },
                             error: function(error){
                                 console.error(error);
@@ -95,11 +95,11 @@ jQuery(document).ready(function($) {
                                 'action': 'set_todo_dialog_data',
                                 '_job_id': $(this).val(),
                                 '_doc_id': doc_id,
-                                '_todo_id': $("#todo-status").val(),
+                                '_todo_id': $("#todo_status").val(),
                             },
                             success: function (response) {
                                 //alert('Hi,update'+response)
-                                $("#todo-status").val(response);
+                                $("#todo_status").val(response);
                             },
                             error: function(error){
                                 console.error(error);
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
             
                 $("#btn-action-list").on( "click", function(e) {
                     e.preventDefault();
-                    get_doc_action_list_data($("#todo-status").val());
+                    get_doc_action_list_data($("#todo_status").val());
                 })
 
                 // Job action list
