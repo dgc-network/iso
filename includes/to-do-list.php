@@ -293,7 +293,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             switch (true) {
                 case strpos($key, 'url'):
-                    echo '<a href="' . $value . '"><textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea></a>';
+                    echo '<a href="' . $value . '"><textarea id="' . $key . '" class="button" rows="3" style="width:100%;">' . $value . '</textarea></a>';
                     break;
         
                 case strpos($key, 'category'):

@@ -243,8 +243,8 @@ function display_document_dialog($todo_id, $post_id) {
 
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id') 
-        if ($key!='start_job') 
-        if ($key!='start_leadtime') 
+        //if ($key!='start_job')
+        //if ($key!='start_leadtime') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             switch (true) {
@@ -252,7 +252,11 @@ function display_document_dialog($todo_id, $post_id) {
                     echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
                     break;
         
-                case strpos($key, 'category'):
+                    case strpos($key, '_job'):
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_site_job_option_data($value) . '</select>';
+                        break;
+            
+                    case strpos($key, '_category'):
                     echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                     break;
         

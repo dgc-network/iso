@@ -29,6 +29,11 @@ input[type="button"]:hover {
     cursor: pointer;
 }
 
+.button:hover {
+    color: red;
+    cursor: pointer;
+}
+
 /* Styles for desktop browsers */
 @media (min-width: 768px) {
     #job-dialog {
