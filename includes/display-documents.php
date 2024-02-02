@@ -255,7 +255,7 @@ function display_document_dialog($todo_id, $post_id) {
                     break;
         
                     case strpos($key, '_job'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_site_job_option_data($value, $site_id) . '</select>';
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
                         break;
             
                     case strpos($key, '_category'):
@@ -281,6 +281,33 @@ function display_document_dialog($todo_id, $post_id) {
     }
     echo '</fieldset>';
     display_todo_action_list();
+}
+
+function select_start_job_option_data($selected_job=0, $site_id=0) {
+    // Retrieve the value
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+            array(
+                'key'   => 'start_job',
+                'value' => 1,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    $options = '<option value="">Select job</option>';
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata();
+    return $options;
 }
 
 function backup_display_document_dialog($site_id=0){
