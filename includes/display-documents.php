@@ -247,7 +247,7 @@ function display_document_dialog($todo_id, $post_id) {
         if ($key!='site_id') 
         //if ($key!='start_job')
         //if ($key!='start_leadtime') 
-        if ($key!='todo_status') 
+        //if ($key!='todo_status') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             switch (true) {
