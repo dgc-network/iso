@@ -17,34 +17,16 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
-        open_dialog_and_buttons(todo_id)
+        open_todo_dialog_and_buttons(todo_id)
     });            
 
-    $('[id^="btn-"]').mouseover(function() {
-        $(this).css('cursor', 'pointer');
-        $(this).css('color', 'red');
-    });
-        
-    $('[id^="btn-"]').mouseout(function() {
-        $(this).css('cursor', 'default');
-        $(this).css('color', '');
-    });
-    
-    $("#btn-doc-url").on( "click", function() {
-        window.location.replace($("#btn-doc-url").val());
-    })
-
-    $("#btn-workflow").on( "click", function() {
-        get_todo_action_list_data($("#todo-id").val());
-    })
-
-    function open_dialog_and_buttons(todo_id){
+    function open_todo_dialog_and_buttons(todo_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
-                action: 'open_dialog_and_buttons',
+                action: 'open_todo_dialog_and_buttons',
                 _todo_id: todo_id,
             },
             success: function (response) {
@@ -96,7 +78,7 @@ jQuery(document).ready(function($) {
                             '_todo_id': todo_id,
                         },
                         success: function (response) {
-                            //open_dialog_and_buttons(todo_id)
+                            //open_todo_dialog_and_buttons(todo_id)
                             get_todo_action_list_data(todo_id);
                         },
                         error: function(error){
@@ -123,11 +105,11 @@ jQuery(document).ready(function($) {
                                     '_action_content': $("#action-content").val(),
                                     '_next_job': $("#next-job").val(),
                                     '_next_leadtime': $("#next-leadtime").val(),
-                                    '_doc_id': $("#doc-id").val(),
+                                    //'_doc_id': $("#doc-id").val(),
                                 },
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');
-                                    open_dialog_and_buttons(todo_id)
+                                    open_todo_dialog_and_buttons(todo_id)
                                     get_todo_action_list_data(todo_id);
                                 },
                                 error: function (error) {
@@ -148,7 +130,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#todo-action-dialog").dialog('close');
-                                        open_dialog_and_buttons(todo_id)
+                                        open_todo_dialog_and_buttons(todo_id)
                                         get_todo_action_list_data(todo_id);
                                     },
                                     error: function(error){
@@ -368,5 +350,23 @@ jQuery(document).ready(function($) {
         $("#todo-dialog").dialog("open");
     }
     
+    $('[id^="btn-"]').mouseover(function() {
+        $(this).css('cursor', 'pointer');
+        $(this).css('color', 'red');
+    });
+        
+    $('[id^="btn-"]').mouseout(function() {
+        $(this).css('cursor', 'default');
+        $(this).css('color', '');
+    });
+    
+    $("#btn-doc-url").on( "click", function() {
+        window.location.replace($("#btn-doc-url").val());
+    })
+
+    $("#btn-workflow").on( "click", function() {
+        get_todo_action_list_data($("#todo-id").val());
+    })
+
 
 })

@@ -230,10 +230,9 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function open_dialog_and_buttons() {
+function open_todo_dialog_and_buttons() {
     // Check if the action has been set
-    if (isset($_POST['action']) && $_POST['action'] === 'open_dialog_and_buttons') {
-        // Your server-side logic goes here
+    if (isset($_POST['action']) && $_POST['action'] === 'open_todo_dialog_and_buttons') {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
@@ -244,9 +243,7 @@ function open_dialog_and_buttons() {
             array_push($params,$todo_id,$doc_id);
             $result = call_user_func_array('display_doc_todo_dialog', $params);
         }
-        // Return the result
         echo $result;
-        // It's essential to exit after processing the AJAX request
         wp_die();
     } else {
         // Handle invalid AJAX request
@@ -254,8 +251,8 @@ function open_dialog_and_buttons() {
         wp_die();
     }
 }
-add_action('wp_ajax_open_dialog_and_buttons', 'open_dialog_and_buttons');
-add_action('wp_ajax_nopriv_open_dialog_and_buttons', 'open_dialog_and_buttons');
+add_action('wp_ajax_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons');
+add_action('wp_ajax_nopriv_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons');
 
 function translate_custom_strings($original_string) {
     // Define translations for specific strings
@@ -299,12 +296,7 @@ function display_doc_todo_dialog($todo_id, $post_id) {
     }
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
     echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-    display_todo_action_buttons($todo_id);
-    echo '</fieldset>';
-    display_todo_action_list();
-}
-        
-function display_todo_action_buttons($todo_id) {
+    //display_todo_action_buttons($todo_id);
     echo '<hr>';
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
@@ -313,6 +305,11 @@ function display_todo_action_buttons($todo_id) {
         endwhile;
         wp_reset_postdata();
     }
+    echo '</fieldset>';
+    display_todo_action_list();
+}
+/*        
+function display_todo_action_buttons($todo_id) {
 }
 
 function get_todo_dialog_data() {
@@ -329,7 +326,7 @@ function get_todo_dialog_data() {
 }
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
-
+*/
 function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);

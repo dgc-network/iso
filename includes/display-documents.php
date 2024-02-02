@@ -55,8 +55,8 @@ function display_documents_shortcode() {
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
         ?>
+        <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
-        <div class="ui-widget">
         <fieldset>
             <div id="document-setting-div" style="display:none">
             <fieldset>
@@ -118,7 +118,7 @@ function display_documents_shortcode() {
                 </tbody>
             </table>
             <div id="btn-new-document" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            <?php display_document_dialog($site_id);?>
+            <?php //display_document_dialog($site_id);?>
         </fieldset>
         </div>
         <?php
@@ -208,7 +208,64 @@ function get_document_list_data() {
 add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
 add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
-function display_document_dialog($site_id=0){
+function open_doc_dialog_and_buttons() {
+    // Check if the action has been set
+    if (isset($_POST['action']) && $_POST['action'] === 'open_doc_dialog_and_buttons') {
+        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $todo_id = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+        $params = array();
+        if ($doc_shortcode) {
+            $result = call_user_func_array($doc_shortcode, $params);
+        } else {
+            array_push($params,$todo_id,$doc_id);
+            $result = call_user_func_array('display_document_dialog', $params);
+        }
+        echo $result;
+        wp_die();
+    } else {
+        // Handle invalid AJAX request
+        echo 'Invalid AJAX request!';
+        wp_die();
+    }
+}
+add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
+add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
+
+function display_document_dialog($todo_id, $post_id) {
+    // Get all existing meta data for the specified post ID
+    $all_meta = get_post_meta($post_id);
+    // Output or manipulate the meta data as needed
+    echo '<h2>Document</h2>';
+    echo '<fieldset>';
+    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
+    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
+
+    foreach ($all_meta as $key => $values) {
+        if ($key!='site_id') 
+        if ($key!='start_job') 
+        if ($key!='start_leadtime') 
+        foreach ($values as $value) {
+            echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
+            echo '<input type="text" id="'.$key.'" value="'.$value.'" class="text ui-widget-content ui-corner-all" disabled />';
+        }
+    }
+    echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
+    echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+    //display_todo_action_buttons($todo_id);
+    echo '<hr>';
+    $query = retrieve_todo_action_list_data($todo_id);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            echo '<input type="button" id="doc-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+        endwhile;
+        wp_reset_postdata();
+    }
+    echo '</fieldset>';
+    display_todo_action_list();
+}
+
+function backup_display_document_dialog($site_id=0){
     ?>
     <div id="document-dialog" title="Document dialog" style="display:none;">
         <fieldset>
