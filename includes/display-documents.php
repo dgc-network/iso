@@ -118,7 +118,7 @@ function display_documents_shortcode() {
                 ?>
                 </tbody>
             </table>
-            <input type ="button" id="new-document-button" value="+" style="margin:3px; text-align:center; border-radius:5px; font-size:small;" />
+            <input type ="button" id="new-document-button" value="+" class="text ui-widget-content ui-corner-all" style="margin:3px; border-radius:5px; font-size:small;" />
             <?php //display_document_dialog($site_id);?>
         </fieldset>
         </div>
@@ -242,8 +242,8 @@ function open_doc_dialog_and_buttons() {
         //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
         //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         echo '<hr>';
-        echo '<input type="button" id="set-document-button-'.get_the_ID().'" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:5px;" />';
-        echo '<input type="button" id="del-document-button-'.get_the_ID().'" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:5px;" />';
+        echo '<input type="button" id="set-document-button-'.$doc_id.'" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+        echo '<input type="button" id="del-document-button-'.$doc_id.'" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
 /*
         $query = retrieve_todo_action_list_data($todo_id);
         if ($query->have_posts()) {
