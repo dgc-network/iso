@@ -216,6 +216,7 @@ function open_doc_dialog_and_buttons() {
         $todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
+
         if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
@@ -233,14 +234,21 @@ function open_doc_dialog_and_buttons() {
             array_push($params,$todo_id,$doc_id);
             $result = call_user_func_array('display_document_dialog', $params);
         }
-/*        
-        if ($doc_shortcode) {
-            $result = call_user_func_array($doc_shortcode, $params);
-        } else {
-            array_push($params,$todo_id,$doc_id);
-            $result = call_user_func_array('display_document_dialog', $params);
+
+        $result = '<h2>Document</h2><fieldset>'.$result;
+        $result .= '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
+        $result .= '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        $result .= '<hr>';
+        $query = retrieve_todo_action_list_data($todo_id);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+            $result .= '<input type="button" id="doc-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+            endwhile;
+            wp_reset_postdata();
         }
-*/
+        $result .= '</fieldset>';
+        $result .= display_todo_action_list();
+    
         echo $result;
         wp_die();
     } else {
@@ -255,14 +263,14 @@ add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_bu
 function display_document_dialog($todo_id, $post_id) {
     $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
 
-    // Get all existing meta data for the specified post ID
-    $all_meta = get_post_meta($post_id);
-    // Output or manipulate the meta data as needed
-    echo '<h2>Document</h2>';
-    echo '<fieldset>';
+    //echo '<h2>Document</h2>';
+    //echo '<fieldset>';
     echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
     echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
 
+    // Get all existing meta data for the specified post ID
+    $all_meta = get_post_meta($post_id);
+    // Output or manipulate the meta data as needed
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id') 
         //if ($key!='start_job')
@@ -289,6 +297,7 @@ function display_document_dialog($todo_id, $post_id) {
             }
         }
     }
+/*    
     echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
     echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
     //display_todo_action_buttons($todo_id);
@@ -302,6 +311,7 @@ function display_document_dialog($todo_id, $post_id) {
     }
     echo '</fieldset>';
     display_todo_action_list();
+*/    
 }
 
 function select_start_job_option_data($selected_job=0, $site_id=0) {
@@ -331,56 +341,6 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
     return $options;
 }
 
-function backup_display_document_dialog($site_id=0){
-    ?>
-    <div id="document-dialog" title="Document dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
-            <input type="hidden" id="doc-id" />
-            <label for="doc-title">Title:</label>
-            <input type="text" id="doc-title" class="text ui-widget-content ui-corner-all" />
-            <div>
-                <div style="display:inline-block;">
-                    <label for="doc-number">Doc.#:</label>
-                    <input type="text" id="doc-number" class="text ui-widget-content ui-corner-all" />
-                </div>
-                <div style="display:inline-block; width:25%;">
-                    <label for="doc-revision">Revision:</label>
-                    <input type="text" id="doc-revision" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </div>
-            <label for="doc-url">URL:</label>
-            <textarea id="doc-url" rows="3" class="text ui-widget-content ui-corner-all" ></textarea>
-    
-            <div>
-                <div style="display:inline-block;">
-                    <label for="start-job">Start:</label>
-                    <select id="start-job" class="text ui-widget-content ui-corner-all" ></select>
-                </div>
-                <div style="display:inline-block; width:25%;">
-                    <label for="start-leadtime">Leadtime:</label>
-                    <input type="text" id="start-leadtime" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </div>
-            <div>
-                <div style="display:inline-block;">
-                    <label for="doc-category">Category:</label>
-                    <select id="doc-category" class="text ui-widget-content ui-corner-all" ></select>
-                </div>
-                <div style="display:inline-block; width:35%;">
-                    <label for="doc-date">Published Date:</label>
-                    <input type="text" id="doc-date" class="text ui-widget-content ui-corner-all" disabled />
-                </div>
-            </div>
-            <label for="btn-doc-workflow">Workflow:</label>
-            <div id="btn-doc-workflow" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;"><span class="dashicons dashicons-networking"></span> Workflow list</div>
-            <input type="text" id="btn-doc-status" class="text ui-widget-content ui-corner-all" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" disabled />
-        </fieldset>
-    </div>
-    <?php display_doc_workflow_list();?>
-    <?php
-}
-    
 function select_doc_category_option_data($selected_category=0) {
     // Retrieve the value
     $args = array(

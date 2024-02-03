@@ -174,7 +174,7 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
         </fieldset>
-        <?php //display_doc_todo_dialog();?>
+        <?php //display_todo_dialog();?>
         </div>
         <?php
     } else {
@@ -238,12 +238,25 @@ function open_todo_dialog_and_buttons() {
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
-        if ($doc_shortcode) {
-            $result = call_user_func_array($doc_shortcode, $params);
+        
+        if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
+            $param_count = count($params);
+            $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
+        
+            if ($param_count === $expected_param_count) {
+                // The function is valid, and the parameter count matches
+                call_user_func_array($doc_shortcode, $params);
+            } else {
+                // Invalid parameter count
+                echo "Invalid parameter count for $doc_shortcode";
+            }
         } else {
+            // The function is not defined or not callable
+            //echo "Invalid function or not callable: $doc_shortcode";
             array_push($params,$todo_id,$doc_id);
-            $result = call_user_func_array('display_doc_todo_dialog', $params);
+            $result = call_user_func_array('display_todo_dialog', $params);
         }
+
         echo $result;
         wp_die();
     } else {
@@ -277,7 +290,7 @@ function translate_custom_strings($original_string) {
     return $original_string;
 }
 
-function display_doc_todo_dialog($todo_id, $post_id) {
+function display_todo_dialog($todo_id, $post_id) {
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
