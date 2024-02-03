@@ -19,16 +19,23 @@ jQuery(document).ready(function($) {
         open_doc_dialog_and_buttons(doc_id)
     });            
 
-    //activate_document_list_data()
-
-    $('[id^="btn-"]').mouseover(function() {
-        $(this).css('cursor', 'pointer');
-        $(this).css('color', 'red');
-    });
-        
-    $('[id^="btn-"]').mouseout(function() {
-        $(this).css('cursor', 'default');
-        $(this).css('color', '');
+    $("#new-document-button").on("click", function() {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_document_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_document_list_data($("#site-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
     });
 
     function open_doc_dialog_and_buttons(doc_id){
@@ -295,25 +302,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    $("#btn-new-document").on("click", function() {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_document_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_document_list_data($("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });
-
     $("#btn-doc-workflow").on( "click", function() {
         get_doc_workflow_list_data($("#doc-id").val());
     })
@@ -582,4 +570,18 @@ jQuery(document).ready(function($) {
         modal: true,
         autoOpen: false,
     });    
+
+        //activate_document_list_data()
+
+        $('[id^="btn-"]').mouseover(function() {
+            $(this).css('cursor', 'pointer');
+            $(this).css('color', 'red');
+        });
+            
+        $('[id^="btn-"]').mouseout(function() {
+            $(this).css('cursor', 'default');
+            $(this).css('color', '');
+        });
+    
+    
 });
