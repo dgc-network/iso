@@ -196,11 +196,10 @@ class iso_plugin{
 new iso_plugin();
 */
 ?><?php
-/*
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-*/
 
 function custom_date_format() {
     $date_format = get_option('date_format');
