@@ -3,6 +3,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if( isset($_GET['_doc_title_migration']) ) {
+    // Retrieve the value
+    $args = array(
+        'post_type'      => 'documemt',
+        'posts_per_page' => -1,
+    );
+    $query = new WP_Query($args);
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            update_post_meta( get_the_ID(), 'doc_title', get_the_title());
+        endwhile;
+        wp_reset_postdata();
+    endif;
+
+}
+
+
 // Register custom post type
 function register_document_post_type() {
     $labels = array(
@@ -379,8 +396,9 @@ function set_document_dialog_data() {
         // Update the Document data
         $data = array(
             'ID'         => $_POST['_doc_id'],
-            'post_title' => $_POST['_doc_title'],
+            //'post_title' => $_POST['_doc_title'],
             'meta_input' => array(
+                'doc_title'   => $_POST['_doc_title'],
                 'doc_number'   => $_POST['_doc_number'],
                 'doc_revision' => $_POST['_doc_revision'],
                 'doc_url'      => $_POST['_doc_url'],
@@ -393,7 +411,7 @@ function set_document_dialog_data() {
     } else {
         // Insert the post into the database
         $new_post = array(
-            'post_title'    => 'New document',
+            'post_title'    => 'No title',
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
@@ -401,10 +419,10 @@ function set_document_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta( $post_id, 'doc_title', 'New document');
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', '');
         update_post_meta( $post_id, 'doc_url', '');
-        //update_post_meta( $post_id, 'doc_url', '-');
         update_post_meta( $post_id, 'start_job', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);
         update_post_meta( $post_id, 'doc_category', 0);

@@ -201,6 +201,16 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
+
+function custom_date_format() {
+    $date_format = get_option('date_format');
+    if (empty($date_format)) {
+        $new_date_format = 'Y-m-d'; // Set your desired date format    
+        update_option('date_format', $new_date_format);
+    }
+}
+add_action( 'init', 'custom_date_format' );
+
 function register_session() {
     if ( ! session_id() ) {
         session_start();

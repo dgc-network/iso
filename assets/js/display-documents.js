@@ -19,7 +19,8 @@ jQuery(document).ready(function($) {
         open_doc_dialog_and_buttons(doc_id)
     });            
 
-    $("#new-document-button").on("click", function() {
+    $("#new-document-button").on("click", function(e) {
+        e.preventDefault();
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -51,9 +52,8 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
 
-                $('[id^="set-document-button-"]').on("click", function (e) {
+                $("#set-document-button").on("click", function(e) {
                     e.preventDefault();
-                    //const doc_id = this.id.substring(20);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -61,7 +61,6 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_document_dialog_data',
                             '_doc_id': doc_id,
-                            //'_doc_id': $("#doc-id").val(),
                             '_doc_title': $("#doc_title").val(),
                             '_doc_number': $("#doc_number").val(),
                             '_doc_revision': $("#doc_revision").val(),
@@ -82,9 +81,8 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $('[id^="del-document-button-"]').on("click", function (e) {
+                $("#del-document-button").on("click", function(e) {
                     e.preventDefault();
-                    //const doc_id = this.id.substring(20);
                     if (window.confirm("Are you sure you want to delete this document?")) {
                         $.ajax({
                             type: 'POST',
