@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 //alert('Hi,insert'+response)
-                                $("#todo_status").val(response);
+                                $("#btn-action-list").val(response);
                             },
                             error: function(error){
                                 console.error(error);
@@ -99,7 +99,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 //alert('Hi,update'+response)
-                                $("#todo_status").val(response);
+                                $("#btn-action-list").val(response);
                             },
                             error: function(error){
                                 console.error(error);

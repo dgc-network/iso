@@ -233,12 +233,14 @@ function open_doc_dialog_and_buttons() {
         } else {
             // The function is not defined or not callable
             //echo "Invalid function or not callable: $doc_shortcode";
-            array_push($params,$todo_id,$doc_id);
+            array_push($params, $doc_id);
             call_user_func_array('display_document_dialog', $params);
         }
 
-        echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
+        echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
         echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
+        //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         echo '<hr>';
         $query = retrieve_todo_action_list_data($todo_id);
         if ($query->have_posts()) {
@@ -260,21 +262,15 @@ function open_doc_dialog_and_buttons() {
 add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
-function display_document_dialog($todo_id, $post_id) {
+function display_document_dialog($post_id) {
     $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
-
-    //echo '<h2>Document</h2>';
-    //echo '<fieldset>';
     echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
     echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
-
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id') 
-        //if ($key!='start_job')
-        //if ($key!='start_leadtime') 
         if ($key!='todo_status') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
@@ -297,21 +293,6 @@ function display_document_dialog($todo_id, $post_id) {
             }
         }
     }
-/*    
-    echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
-    echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-    //display_todo_action_buttons($todo_id);
-    echo '<hr>';
-    $query = retrieve_todo_action_list_data($todo_id);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            echo '<input type="button" id="doc-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-        endwhile;
-        wp_reset_postdata();
-    }
-    echo '</fieldset>';
-    display_todo_action_list();    
-*/    
 }
 
 function select_start_job_option_data($selected_job=0, $site_id=0) {
@@ -417,8 +398,8 @@ function set_document_dialog_data() {
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         update_post_meta( $post_id, 'doc_number', '-');
-        update_post_meta( $post_id, 'doc_revision', '-');
-        update_post_meta( $post_id, 'doc_url', '-');
+        update_post_meta( $post_id, 'doc_revision', '');
+        update_post_meta( $post_id, 'doc_url', '');
         //update_post_meta( $post_id, 'doc_shortcode', '-');
         update_post_meta( $post_id, 'start_job', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);

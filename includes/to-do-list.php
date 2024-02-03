@@ -231,6 +231,28 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
+function translate_custom_strings($original_string) {
+    // Define translations for specific strings
+    $translations = array(
+        'todo_status' => __( '文件狀態', 'your-text-domain' ),
+        'doc-title' => __( '文件名稱', 'your-text-domain' ),
+        'doc_number' => __( '文件編號', 'your-text-domain' ),
+        'doc_revision' => __( '文件版本', 'your-text-domain' ),
+        'doc_url' => __( '文件地址', 'your-text-domain' ),
+        'start_job' => __( '起始職務', 'your-text-domain' ),
+        'start_leadtime' => __( '前置時間', 'your-text-domain' ),
+        'doc_category' => __( '文件類別', 'your-text-domain' ),
+        'site_id' => __( '單位', 'your-text-domain' ),
+        // Add more translations as needed
+    );
+    // Check if there's a translation for the given string
+    if (isset($translations[$original_string])) {
+        return $translations[$original_string];
+    }
+    // If no translation is found, return the original string
+    return $original_string;
+}
+
 function open_todo_dialog_and_buttons() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'open_todo_dialog_and_buttons') {
@@ -238,7 +260,9 @@ function open_todo_dialog_and_buttons() {
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
-        
+
+        echo '<h2>To-do</h2>';
+        echo '<fieldset>';
         if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
@@ -253,11 +277,24 @@ function open_todo_dialog_and_buttons() {
         } else {
             // The function is not defined or not callable
             //echo "Invalid function or not callable: $doc_shortcode";
-            array_push($params,$todo_id,$doc_id);
-            $result = call_user_func_array('display_todo_dialog', $params);
+            array_push($params, $doc_id);
+            call_user_func_array('display_todo_dialog', $params);
         }
-
-        echo $result;
+        echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
+        echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
+        //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        //display_todo_action_buttons($todo_id);
+        echo '<hr>';
+        $query = retrieve_todo_action_list_data($todo_id);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+            endwhile;
+            wp_reset_postdata();
+        }
+        echo '</fieldset>';
+        display_todo_action_list();
         wp_die();
     } else {
         // Handle invalid AJAX request
@@ -268,37 +305,12 @@ function open_todo_dialog_and_buttons() {
 add_action('wp_ajax_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons');
 
-function translate_custom_strings($original_string) {
-    // Define translations for specific strings
-    $translations = array(
-        'doc-status' => '文件狀態',
-        'doc-title' => '文件名稱',
-        'doc_number' => '文件編號',
-        'doc_revision' => '文件版本',
-        'doc_url' => '文件網址',
-        'start_job' => '起始職務',
-        'start_leadtime' => '前置時間',
-        'doc_category' => '文件類別',
-        'site_id' => '單位',
-        // Add more translations as needed
-    );
-    // Check if there's a translation for the given string
-    if (isset($translations[$original_string])) {
-        return $translations[$original_string];
-    }
-    // If no translation is found, return the original string
-    return $original_string;
-}
-
-function display_todo_dialog($todo_id, $post_id) {
+function display_todo_dialog($post_id) {
+    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
+    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" disabled />';
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
-    echo '<h2>To-do</h2>';
-    echo '<fieldset>';
-    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
-    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" disabled />';
-
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id') 
         if ($key!='start_job') 
@@ -321,19 +333,6 @@ function display_todo_dialog($todo_id, $post_id) {
             }
         }
     }
-    echo '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
-    echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-    //display_todo_action_buttons($todo_id);
-    echo '<hr>';
-    $query = retrieve_todo_action_list_data($todo_id);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-        endwhile;
-        wp_reset_postdata();
-    }
-    echo '</fieldset>';
-    display_todo_action_list();
 }
 /*        
 function display_todo_action_buttons($todo_id) {
@@ -402,7 +401,7 @@ function set_todo_dialog_data() {
             $todo_id = sanitize_text_field($_POST['_todo_id']);        
             update_post_meta( $todo_id, 'job_id', $job_id);
             update_post_meta( $doc_id, 'start_job', $job_id);
-            $response = $todo_id;
+            $response = get_the_title($todo_id);
         } else {
             $todo_title = get_the_title($job_id);
             $todo_content = get_the_title($doc_id);
@@ -440,8 +439,7 @@ function set_todo_dialog_data() {
                 endwhile;
                 wp_reset_postdata();
             }
-
-            $response = $new_todo_id;
+            $response = get_the_title($new_todo_id);
         }
 
     }
