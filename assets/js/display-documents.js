@@ -44,16 +44,26 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
 
-                $('[id^="doc-dialog-button-"]').on("click", function (e) {
+                $('[id^="set-document-button-"]').on("click", function (e) {
                     e.preventDefault();
-                    const action_id = this.id.substring(18);
+                    const doc_id = this.id.substring(20);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_todo_dialog_data',
-                            '_action_id': action_id,
+                            'action': 'set_document_dialog_data',
+                            '_doc_id': doc_id,
+                            //'_doc_id': $("#doc-id").val(),
+                            '_doc_title': $("#doc_title").val(),
+                            '_doc_number': $("#doc_number").val(),
+                            '_doc_revision': $("#doc_revision").val(),
+                            '_doc_url': $("#doc_url").val(),
+                            '_start_job': $("#start_job").val(),
+                            '_start_leadtime': $("#start_leadtime").val(),
+                            '_doc_date': $("#doc_date").val(),
+                            '_doc_category': $("#doc_category").val(),
+
                         },
                         success: function (response) {
                             window.location.replace("/display-documents/");
@@ -65,6 +75,29 @@ jQuery(document).ready(function($) {
                     });
                 });
 
+                $('[id^="del-document-button-"]').on("click", function (e) {
+                    e.preventDefault();
+                    const doc_id = this.id.substring(20);
+                    if (window.confirm("Are you sure you want to delete this document?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_document_dialog_data',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });
+/*
                 $("#start_job").on( "change", function(e) {
                     e.preventDefault();
                     if (($("#todo_status").length==0)||($("#todo_status").val()=='')) {
@@ -106,9 +139,9 @@ jQuery(document).ready(function($) {
                                 alert(error);
                             }
                         });    
-                    }
+                    }                    
                 });
-            
+*/            
                 $("#btn-action-list").on( "click", function(e) {
                     e.preventDefault();
                     get_doc_action_list_data($("#todo_status").val());

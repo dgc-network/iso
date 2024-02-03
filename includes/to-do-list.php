@@ -258,25 +258,25 @@ function open_todo_dialog_and_buttons() {
     if (isset($_POST['action']) && $_POST['action'] === 'open_todo_dialog_and_buttons') {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+        $doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
         $params = array();
 
         echo '<h2>To-do</h2>';
         echo '<fieldset>';
-        if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
+        if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
-            $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
+            $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
         
             if ($param_count === $expected_param_count) {
                 // The function is valid, and the parameter count matches
-                call_user_func_array($doc_shortcode, $params);
+                call_user_func_array($doc_url, $params);
             } else {
                 // Invalid parameter count
-                echo "Invalid parameter count for $doc_shortcode";
+                echo "Invalid parameter count for $doc_url";
             }
         } else {
             // The function is not defined or not callable
-            //echo "Invalid function or not callable: $doc_shortcode";
+            //echo "Invalid function or not callable: $doc_url";
             array_push($params, $doc_id);
             call_user_func_array('display_todo_dialog', $params);
         }
@@ -306,7 +306,7 @@ add_action('wp_ajax_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons
 add_action('wp_ajax_nopriv_open_todo_dialog_and_buttons', 'open_todo_dialog_and_buttons');
 
 function display_todo_dialog($post_id) {
-    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
+    echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
     echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" disabled />';
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
@@ -352,7 +352,7 @@ function get_todo_dialog_data() {
 }
 add_action( 'wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data' );
-*/
+
 function get_todo_dialog_buttons_data() {
     // Retrieve the data
     $todo_id = esc_attr($_POST['_todo_id']);
@@ -377,7 +377,7 @@ function get_todo_dialog_buttons_data() {
 }
 add_action( 'wp_ajax_get_todo_dialog_buttons_data', 'get_todo_dialog_buttons_data' );
 add_action( 'wp_ajax_nopriv_get_todo_dialog_buttons_data', 'get_todo_dialog_buttons_data' );
-
+*/
 function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
@@ -509,7 +509,6 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
     if ($next_job>0) {
         // Notice the persons in charge the job
         notice_the_persons_in_charge($new_todo_id);
-
         // Insert the Action list for next_job
         $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {

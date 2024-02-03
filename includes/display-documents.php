@@ -214,34 +214,37 @@ function open_doc_dialog_and_buttons() {
     if (isset($_POST['action']) && $_POST['action'] === 'open_doc_dialog_and_buttons') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
         $todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
-        $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
+        $doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
         $params = array();
 
         echo '<h2>Document</h2>';
         echo '<fieldset>';
-        if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
+        if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
-            $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
+            $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
         
             if ($param_count === $expected_param_count) {
                 // The function is valid, and the parameter count matches
-                call_user_func_array($doc_shortcode, $params);
+                call_user_func_array($doc_url, $params);
             } else {
                 // Invalid parameter count
-                echo "Invalid parameter count for $doc_shortcode";
+                echo "Invalid parameter count for $doc_url";
             }
         } else {
             // The function is not defined or not callable
-            //echo "Invalid function or not callable: $doc_shortcode";
+            //echo "Invalid function or not callable: $doc_url";
             array_push($params, $doc_id);
             call_user_func_array('display_document_dialog', $params);
         }
 
-        echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
-        echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        //echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
+        //echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
         //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         echo '<hr>';
+        echo '<input type="button" id="set-document-button-'.get_the_ID().'" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:5px;" />';
+        echo '<input type="button" id="del-document-button-'.get_the_ID().'" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:5px;" />';
+/*
         $query = retrieve_todo_action_list_data($todo_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -249,6 +252,7 @@ function open_doc_dialog_and_buttons() {
             endwhile;
             wp_reset_postdata();
         }
+*/        
         echo '</fieldset>';
         display_todo_action_list();    
         
@@ -264,7 +268,7 @@ add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_bu
 
 function display_document_dialog($post_id) {
     $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
-    echo '<label for="doc-title">'.translate_custom_strings("doc-title").'</label>';
+    echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
     echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
@@ -400,7 +404,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', '');
         update_post_meta( $post_id, 'doc_url', '');
-        //update_post_meta( $post_id, 'doc_shortcode', '-');
+        //update_post_meta( $post_id, 'doc_url', '-');
         update_post_meta( $post_id, 'start_job', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);
         update_post_meta( $post_id, 'doc_category', 0);
