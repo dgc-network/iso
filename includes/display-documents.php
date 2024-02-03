@@ -235,7 +235,8 @@ function open_doc_dialog_and_buttons() {
             $result = call_user_func_array('display_document_dialog', $params);
         }
 
-        $result = '<h2>Document</h2><fieldset>'.$result;
+        echo '<h2>Document</h2><fieldset>';
+        echo $result;
         $result .= '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
         $result .= '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         $result .= '<hr>';
@@ -246,10 +247,9 @@ function open_doc_dialog_and_buttons() {
             endwhile;
             wp_reset_postdata();
         }
-        $result .= '</fieldset>';
+        echo '</fieldset>';
         $result .= display_todo_action_list();
     
-        echo $result;
         wp_die();
     } else {
         // Handle invalid AJAX request
