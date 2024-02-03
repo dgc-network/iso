@@ -118,7 +118,7 @@ function display_documents_shortcode() {
                 ?>
                 </tbody>
             </table>
-            <input type ="button" id="new-document-button" value="+" class="text ui-widget-content ui-corner-all" style="margin:3px; border-radius:5px; font-size:small;" />
+            <input type ="button" id="new-document-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             <?php //display_document_dialog($site_id);?>
         </fieldset>
         </div>

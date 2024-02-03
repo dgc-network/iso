@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
 
                 $('[id^="set-document-button-"]').on("click", function (e) {
                     e.preventDefault();
-                    const doc_id = this.id.substring(20);
+                    //const doc_id = this.id.substring(20);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
 
                 $('[id^="del-document-button-"]').on("click", function (e) {
                     e.preventDefault();
-                    const doc_id = this.id.substring(20);
+                    //const doc_id = this.id.substring(20);
                     if (window.confirm("Are you sure you want to delete this document?")) {
                         $.ajax({
                             type: 'POST',
