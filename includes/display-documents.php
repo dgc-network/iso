@@ -217,13 +217,14 @@ function open_doc_dialog_and_buttons() {
         $doc_shortcode = esc_attr(get_post_meta($doc_id, 'doc_shortcode', true));
         $params = array();
 
+        $result = '<h2>Document</h2><fieldset>';
         if (function_exists($doc_shortcode) && is_callable($doc_shortcode)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_shortcode))->getNumberOfParameters();
         
             if ($param_count === $expected_param_count) {
                 // The function is valid, and the parameter count matches
-                call_user_func_array($doc_shortcode, $params);
+                $result .= call_user_func_array($doc_shortcode, $params);
             } else {
                 // Invalid parameter count
                 echo "Invalid parameter count for $doc_shortcode";
@@ -232,11 +233,9 @@ function open_doc_dialog_and_buttons() {
             // The function is not defined or not callable
             //echo "Invalid function or not callable: $doc_shortcode";
             array_push($params,$todo_id,$doc_id);
-            $result = call_user_func_array('display_document_dialog', $params);
+            $result .= call_user_func_array('display_document_dialog', $params);
         }
 
-        echo '<h2>Document</h2><fieldset>';
-        echo $result;
         $result .= '<label for="btn-action-list">'.translate_custom_strings("doc-status").'</label>';
         $result .= '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         $result .= '<hr>';
@@ -247,9 +246,10 @@ function open_doc_dialog_and_buttons() {
             endwhile;
             wp_reset_postdata();
         }
-        echo '</fieldset>';
-        $result .= display_todo_action_list();
-    
+        $result .= '</fieldset>';
+        $result .= display_todo_action_list();    
+        echo $result;
+        
         wp_die();
     } else {
         // Handle invalid AJAX request
@@ -310,7 +310,7 @@ function display_document_dialog($todo_id, $post_id) {
         wp_reset_postdata();
     }
     echo '</fieldset>';
-    display_todo_action_list();
+    display_todo_action_list();    
 */    
 }
 
