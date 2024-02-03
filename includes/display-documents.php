@@ -52,7 +52,7 @@ function display_documents_shortcode() {
     if( isset($_GET['_doc_title_migration']) ) {
         // Retrieve the value
         $args = array(
-            'post_type'      => 'documemt',
+            'post_type'      => 'document',
             'posts_per_page' => -1,
         );
         $query = new WP_Query($args);
