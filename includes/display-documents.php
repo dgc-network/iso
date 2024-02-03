@@ -3,23 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if( isset($_GET['_doc_title_migration']) ) {
-    // Retrieve the value
-    $args = array(
-        'post_type'      => 'documemt',
-        'posts_per_page' => -1,
-    );
-    $query = new WP_Query($args);
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
-            update_post_meta( get_the_ID(), 'doc_title', get_the_title());
-        endwhile;
-        wp_reset_postdata();
-    endif;
-
-}
-
-
 // Register custom post type
 function register_document_post_type() {
     $labels = array(
@@ -66,6 +49,22 @@ add_action('init', 'register_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
+    if( isset($_GET['_doc_title_migration']) ) {
+        // Retrieve the value
+        $args = array(
+            'post_type'      => 'documemt',
+            'posts_per_page' => -1,
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                update_post_meta( get_the_ID(), 'doc_title', get_the_title());
+            endwhile;
+            wp_reset_postdata();
+        endif;
+    
+    }
+    
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
