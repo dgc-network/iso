@@ -110,6 +110,7 @@ function display_documents_shortcode() {
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
+                        $doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
                         $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                         $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
                         $doc_status = esc_attr(get_post_meta($post_id, 'doc_status', true));
@@ -117,8 +118,8 @@ function display_documents_shortcode() {
                         ?>
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
-                            <?php if ($doc_date){?><td><a href="<?php echo $doc_url;?>"><?php the_title();?></a></td><?php }?>
-                            <?php if (!$doc_date){?><td><?php the_title();?></td><?php }?>
+                            <?php if ($doc_date){?><td><a href="<?php echo $doc_url;?>"><?php echo $doc_title;?></a></td><?php }?>
+                            <?php if (!$doc_date){?><td><?php  echo $doc_title;?></td><?php }?>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo wp_date( get_option('date_format'), $doc_date );?></td>
                         </tr>
@@ -135,7 +136,6 @@ function display_documents_shortcode() {
                 </tbody>
             </table>
             <input type ="button" id="new-document-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-            <?php //display_document_dialog($site_id);?>
         </fieldset>
         </div>
         <?php
@@ -247,28 +247,13 @@ function open_doc_dialog_and_buttons() {
                 echo "Invalid parameter count for $doc_url";
             }
         } else {
-            // The function is not defined or not callable
-            //echo "Invalid function or not callable: $doc_url";
             array_push($params, $doc_id);
             call_user_func_array('display_document_dialog', $params);
         }
 
-        //echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
-        //echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-        //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
-        //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         echo '<hr>';
         echo '<input type="button" id="set-document-button-'.$doc_id.'" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
         echo '<input type="button" id="del-document-button-'.$doc_id.'" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-/*
-        $query = retrieve_todo_action_list_data($todo_id);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-            echo '<input type="button" id="doc-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-            endwhile;
-            wp_reset_postdata();
-        }
-*/        
         echo '</fieldset>';
         display_todo_action_list();    
         

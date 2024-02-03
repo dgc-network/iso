@@ -147,13 +147,12 @@ function to_do_list_shortcode() {
                     $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
                     $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-                    //$due_date = wp_date(get_option('date_format'), $todo_due);
 
                     if (is_my_job($job_id)) { // Another condition to filter the data
                         ?>
                         <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
                             <td style="text-align:center;"><?php the_title(); ?></td>
-                            <td><?php echo get_the_title($doc_id); ?></td>
+                            <td><?php echo esc_html(get_post_meta($doc_id, 'doc_title', true)); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
@@ -174,7 +173,6 @@ function to_do_list_shortcode() {
                 </tbody>
             </table>
         </fieldset>
-        <?php //display_todo_dialog();?>
         </div>
         <?php
     } else {
@@ -457,7 +455,7 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
         $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
     }
     $todo_title = get_the_title($next_job);
-    $doc_title = get_the_title($doc_id);
+    //$doc_title = get_the_title($doc_id);
 
     if ($next_job==-1) {
         $data = array(
@@ -491,7 +489,7 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
     $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
-        'post_content'  => $doc_title,
+        //'post_content'  => $doc_title,
         'post_status'   => 'publish',
         'post_author'   => $current_user_id,
         'post_type'     => 'todo',
@@ -599,7 +597,8 @@ function get_users_by_job_id($job_id=0) {
 // Notice the persons in charge the job
 function notice_the_persons_in_charge($todo_id=0) {
     $job_title = get_the_title($todo_id);
-    $doc_title = get_post_field('post_content', $todo_id);
+    $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $message_text='You have to work on the '.$job_title.':'.$doc_title.' before '.$due_date.'.';
@@ -628,12 +627,12 @@ function get_users_in_site($site_id=0) {
 
 // Notice the persons in site
 function notice_the_persons_in_site($doc_id=0) {
-    $doc_title = get_the_title($doc_id);
     $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     $doc_url = esc_html(get_post_meta($doc_id, 'doc_url', true));
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $doc_date ).'.';
-    //$link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
         send_flex_message_with_button_link($user, $message_text, $doc_url);
