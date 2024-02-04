@@ -104,7 +104,6 @@ function display_documents_shortcode() {
                 <div style="text-align: right">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
                     <span id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
-                    <input type="button" id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic" />
                 </div>
             </div>
 
@@ -247,6 +246,8 @@ function open_doc_dialog_and_buttons() {
 
         echo '<h2>Document</h2>';
         echo '<fieldset>';
+        echo '<span id="btn-doc-dialog-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+
         if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
@@ -281,8 +282,6 @@ add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_bu
 
 function display_document_dialog($post_id) {
     $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
-    //echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
-    //echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
