@@ -28,20 +28,33 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'document', $args );
 }
 add_action('init', 'register_document_post_type');
 
-// Register doc category post type
+// Register doc report post type
+function register_doc_report_post_type() {
+    $args = array(
+        'public'        => true,
+        'rewrite'       => array('slug' => 'doc-reports'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+    );
+    register_post_type( 'doc-report', $args );
+}
+add_action('init', 'register_doc_report_post_type');
+
+// Register doc field post type
 function register_doc_field_post_type() {
     $args = array(
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-fields'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'doc-field', $args );
 }
@@ -54,7 +67,7 @@ function register_doc_category_post_type() {
         'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'doc-category', $args );
 }
@@ -120,7 +133,6 @@ function display_documents_shortcode() {
                 <?php
                 $query = retrieve_document_list_data($site_id);
                 if ($query->have_posts()) :
-                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
                         $doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
@@ -140,10 +152,6 @@ function display_documents_shortcode() {
                         //$x += 1;
                     endwhile;
                     wp_reset_postdata();
-                    //while ($x<50) {
-                    //    echo '<tr class="document-list-'.$x.'" style="display:none;"></tr>';
-                    //    $x += 1;
-                    //}
                 endif;
                 ?>
                 </tbody>
@@ -244,14 +252,6 @@ function open_doc_dialog_and_buttons() {
         $doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
         $params = array();
 
-        echo '<h2>Document</h2>';
-        display_doc_field_list();    
-        echo '<fieldset>';
-        echo '<div style="text-align: right" class="button">';
-        echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
-        //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
-        echo '</div>';
-
         if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
@@ -268,11 +268,6 @@ function open_doc_dialog_and_buttons() {
             call_user_func_array('display_document_dialog', $params);
         }
 
-        echo '<hr>';
-        echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
-        echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-        echo '</fieldset>';
-        
         wp_die();
     } else {
         // Handle invalid AJAX request
@@ -283,21 +278,132 @@ function open_doc_dialog_and_buttons() {
 add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
-function display_document_dialog($post_id) {
-    $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
-    // Get all existing meta data for the specified post ID
-    $all_meta = get_post_meta($post_id);
-    // Output or manipulate the meta data as needed
-    foreach ($all_meta as $key => $values) {
-        if ($key!='site_id') 
-        //if ($key!='todo_status') 
-        foreach ($values as $value) {
-            echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
+function retrieve_is_listing_report_list($doc_id) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+            array(
+                'key'   => 'is_listing',
+                'value' => 1,
+            ),
+
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function retrieve_is_editing_report_list($doc_id) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+            array(
+                'key'   => 'is_editing',
+                'value' => 1,
+            ),
+
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function display_report_list($doc_id) {
+    ?>
+    <fieldset>
+        <table style="width:100%;">
+            <thead>
+                <?php
+                $query = retrieve_is_listing_report_list($doc_id);
+                if ($query->have_posts()) {
+                    echo '<tr>';
+                    while ($query->have_posts()) : $query->the_post();
+                        echo '<th>';
+                        echo esc_html(get_post_field('post_content', get_the_ID()));
+                        echo '</th>';
+                    endwhile;
+                    echo '</tr>';
+                    wp_reset_postdata();
+                }
+                ?>
+            </thead>
+            <tbody>
+                <?php
+                $args = array(
+                    'post_type'      => 'doc-report',
+                    'posts_per_page' => 30,
+                    'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+                    'meta_query'     => array(
+                        'relation' => 'AND',
+                        array(
+                            'key'   => 'doc_id',
+                            'value' => $doc_id,
+                        ),
+                    ),
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $report_id = get_the_ID();
+                        echo '<tr id="edit-report-'.$report_id.'">';
+
+                        // Reset the inner loop before using it again
+                        $inner_query = retrieve_is_listing_report_list($doc_id);
+                        if ($inner_query->have_posts()) {
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $doc_field = get_the_title();
+                                echo '<td>';
+                                echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                echo '</td>';
+                            endwhile;
+                            wp_reset_postdata();
+                        }
+
+                        echo '</tr>';
+                    endwhile;
+                    wp_reset_postdata();
+                }
+                ?>
+            </tbody>
+        </table>
+        <input type="button" id="new-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+    </fieldset>
+    <?php
+    echo '<div style="display:none;">';
+    display_report_dialog($doc_id);
+    echo '</div>';
+}
+
+function display_report_dialog($doc_id) {
+    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+    echo '<h2>Document</h2>';
+    display_doc_field_list();
+    echo '<fieldset>';
+    echo '<div style="text-align: right" class="button">';
+    echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+    echo '</div>';
+    $query = retrieve_is_editing_report_list($doc_id);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $key = esc_attr(get_the_title());
+            echo '<label for="'.$key.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
             switch (true) {
                 case strpos($key, 'url'):
                     echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
                     break;
-        
+/*        
                     case strpos($key, '_job'):
                         echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
                         break;
@@ -305,13 +411,72 @@ function display_document_dialog($post_id) {
                     case strpos($key, '_category'):
                     echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                     break;
-        
+*/        
                 default:
                     echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
                     break;
             }
+
+        endwhile;
+        wp_reset_postdata();
+    }
+    echo '<label for="start-job">'.__( '起始職務', 'your-text-domain' ).'</label>';
+    echo '<select id="start-job" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
+    echo '<label for="start-leadtime">'.__( '前置時間', 'your-text-domain' ).'</label>';
+    echo '<input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />';
+    echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
+    echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+    echo '<hr>';
+    echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '</fieldset>';    
+}
+
+function display_document_dialog($doc_id) {
+    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+    echo '<h2>Document</h2>';
+    echo '<fieldset>';
+    //echo '<div style="text-align: right" class="button">';
+    //echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+    //echo '</div>';
+    // Get all existing meta data for the specified post ID
+    $all_meta = get_post_meta($doc_id);
+    // Output or manipulate the meta data as needed
+    foreach ($all_meta as $key => $values) {
+        if ($key!='site_id') 
+        //if ($key!='todo_status') 
+        foreach ($values as $value) {
+            if ($key=='doc_url') {
+                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
+                display_doc_field_list();
+            } else {
+                echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
+                switch (true) {
+                    case strpos($key, 'url'):
+                        echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
+                        break;
+            
+                        case strpos($key, '_job'):
+                            echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
+                            break;
+                
+                        case strpos($key, '_category'):
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+                        break;
+            
+                    default:
+                        echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
+                        break;
+                }
+    
+            }
         }
     }
+    echo '<hr>';
+    echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '</fieldset>';    
 }
 
 function select_start_job_option_data($selected_job=0, $site_id=0) {
@@ -368,7 +533,6 @@ function set_document_dialog_data() {
         // Update the Document data
         $data = array(
             'ID'         => $_POST['_doc_id'],
-            //'post_title' => $_POST['_doc_title'],
             'meta_input' => array(
                 'doc_title'   => $_POST['_doc_title'],
                 'doc_number'   => $_POST['_doc_number'],
@@ -406,7 +570,7 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 
 function del_document_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_doc_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_doc_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
@@ -420,7 +584,7 @@ function display_doc_field_list() {
             <thead>
                 <tr>
                     <th><?php echo __( 'Field', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Listing', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Editing', 'your-text-domain' );?></th>
                     <th></th>
@@ -554,131 +718,3 @@ function del_doc_field_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
-/*
-function get_document_list_data() {
-    // Retrieve the documents data
-    $query = retrieve_document_list_data($_POST['_site_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-            $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
-            $_list = array();
-            $_list["doc_id"] = $post_id;
-            $_list["doc_title"] = (($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title());
-            $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
-            $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
-            $_list["doc_date"] = esc_html(wp_date( get_option('date_format'), $doc_date ));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
-add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
-
-function get_document_dialog_data() {
-    $response = array();
-    if( isset($_POST['_doc_id']) ) {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
-        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
-        $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
-        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
-        $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
-        $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
-        $response["doc_title"] = get_the_title($doc_id);
-        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
-        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $response["start_job"] = select_site_job_option_data($start_job, $site_id);
-        $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
-        $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
-        $response["doc_category"] = select_doc_category_option_data($doc_category);
-        //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
-        $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
-
-function display_doc_workflow_list() {
-    ?>
-    <div id="doc-workflow-list-dialog" title="Workflow list" style="display:none;">
-        <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-                $x = 0;
-                while ($x<50) {
-                    echo '<tr class="doc-workflow-list-'.$x.'" style="display:none;"></tr>';
-                    $x += 1;
-                }
-            ?>
-            </tbody>
-        </table>
-    </div>
-    <?php
-}
-
-function retrieve_doc_workflow_list_data($doc_id=0){
-    $args = array(
-        'post_type'      => 'todo',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'doc_id',
-                'value'   => $doc_id,
-                'compare' => '=',
-            ),
-        ),
-        'orderby'        => 'meta_value',
-        'meta_key'       => 'submit_time',
-        'order'          => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function get_doc_workflow_list_data() {
-    // Retrieve the document workflows data
-    $query = retrieve_doc_workflow_list_data($_POST['_doc_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["todo_id"] = get_the_ID();
-            $_list["todo_title"] = get_the_title();
-            $_list["todo_content"] = get_post_field('post_content', get_the_ID());
-            $submit_user = esc_attr(get_post_meta(get_the_ID(), 'submit_user', true));
-            $user_data = get_userdata( $submit_user );
-            $_list["submit_user"] = $user_data->display_name;
-            $submit_action = esc_attr(get_post_meta(get_the_ID(), 'submit_action', true));            
-            $_list["submit_action"] = get_the_title($submit_action);
-            $submit_time = esc_attr(get_post_meta(get_the_ID(), 'submit_time', true));            
-            $_list["submit_time"] = wp_date( get_option('date_format'), $submit_time );
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
-add_action( 'wp_ajax_nopriv_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
-*/
