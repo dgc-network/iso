@@ -147,13 +147,9 @@ jQuery(document).ready(function($) {
                     }                    
                 });
 */            
-                $("#btn-action-list").on( "click", function(e) {
-                    e.preventDefault();
-                    get_doc_field_list_data($("#doc_id").val());
-                })
-
                 $("#doc-field-setting").on("click", function () {
                     $("#doc-field-list").toggle();
+                    get_doc_field_list_data(doc_id);
                 });            
 
                 // Doc field list
@@ -163,8 +159,7 @@ jQuery(document).ready(function($) {
                     autoOpen: false,
                 });
             
-                // Todo job actions settings
-                $("#btn-new-doc-field").on("click", function(e) {
+                $("#new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',
@@ -175,8 +170,7 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            //open_todo_dialog_and_buttons(todo_id)
-                            get_doc_field_list_data(todo_id);
+                            get_doc_field_list_data(doc_id);
                         },
                         error: function(error){
                             console.error(error);                    
@@ -206,8 +200,7 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');
-                                    //open_doc_dialog_and_buttons(todo_id)
-                                    get_doc_field_list_data(todo_id);
+                                    get_doc_field_list_data(doc_id);
                                 },
                                 error: function (error) {
                                     console.error(error);                    
@@ -227,8 +220,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#doc-field-dialog").dialog('close');
-                                        //open_doc_dialog_and_buttons(todo_id)
-                                        get_doc_field_list_data(todo_id);
+                                        get_doc_field_list_data(doc_id);
                                     },
                                     error: function(error){
                                         console.error(error);
@@ -247,7 +239,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function get_doc_field_list_data(todo_id){
+    function get_doc_field_list_data(doc_id){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,

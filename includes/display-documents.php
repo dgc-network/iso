@@ -435,7 +435,7 @@ function display_doc_field_list() {
                 ?>
             </tbody>
         </table>
-        <div id="btn-new-doc-field" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <input type ="button" id="new-doc-field" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
     </div>
     <?php display_doc_field_dialog();?>
