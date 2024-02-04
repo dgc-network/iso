@@ -151,6 +151,7 @@ jQuery(document).ready(function($) {
                                     '_field_content': $("#action-content").val(),
                                     '_is_listing': $("#is-listing").val(),
                                     '_is-editing': $("#is-editing").val(),
+                                    '_doc_id': doc_id,
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');

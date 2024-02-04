@@ -528,6 +528,7 @@ function set_doc_field_dialog_data() {
             'meta_input' => array(
                 'is_listing'  => $_POST['_is_listing'],
                 'is_editing'  => $_POST['_is_editing'],
+                'doc_id'  => $_POST['_doc_id'],
             )
         );
         wp_update_post( $data );
