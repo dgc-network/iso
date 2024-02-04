@@ -33,7 +33,7 @@ function web_service_register_settings() {
 
     add_settings_field(
         'line_official_qr_code',
-        'Line official qr_code',
+        'Line official qr-code',
         'line_official_qr_code_callback',
         'general',
         'line_bot_settings_section'

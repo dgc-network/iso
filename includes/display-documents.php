@@ -104,6 +104,7 @@ function display_documents_shortcode() {
                 <div style="text-align: right">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
                     <span id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                    <input type="button" id="btn-document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic" />
                 </div>
             </div>
 
@@ -120,7 +121,7 @@ function display_documents_shortcode() {
                 <?php
                 $query = retrieve_document_list_data($site_id);
                 if ($query->have_posts()) :
-                    $x = 0;
+                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
                         $doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
@@ -137,13 +138,13 @@ function display_documents_shortcode() {
                             <td style="text-align:center;"><?php echo wp_date( get_option('date_format'), $doc_date );?></td>
                         </tr>
                         <?php 
-                        $x += 1;
+                        //$x += 1;
                     endwhile;
                     wp_reset_postdata();
-                    while ($x<50) {
-                        echo '<tr class="document-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
+                    //while ($x<50) {
+                    //    echo '<tr class="document-list-'.$x.'" style="display:none;"></tr>';
+                    //    $x += 1;
+                    //}
                 endif;
                 ?>
                 </tbody>

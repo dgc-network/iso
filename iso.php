@@ -437,7 +437,8 @@ function user_did_not_login_yet() {
         <div class="ui-widget" style="text-align:center;">
             <p>感謝您使用我們的系統</p>
             <p>請利用手機<span class="dashicons dashicons-smartphone"></span>按</p>
-            <a href="'.get_option('line_official_account').'"><img src="https://qr-official.line.me/gs/M_804poufw_GW.png"></a>
+            <a href="<?php echo get_option('line_official_account');?>">
+            <img src="<?php echo get_option('line_official_qr_code');?>"></a>
             <p>加入我們的Line官方帳號,</p>
             <p>並請在聊天室中, 輸入六位數字:</p>
             <h4><?php echo get_option('_one_time_password');?></h4>
