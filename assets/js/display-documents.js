@@ -150,8 +150,7 @@ jQuery(document).ready(function($) {
                                     '_field_title': $("#field-title").val(),
                                     '_field_content': $("#field-content").val(),
                                     '_is_listing': $("#is-listing").val(),
-                                    '_is-editing': $("#is-editing").val(),
-                                    //'_doc_id': doc_id,
+                                    '_is_editing': $("#is-editing").val(),
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');
@@ -209,15 +208,16 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                    const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
+                    const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
                         <td style="text-align:center;">${value.field_title}</td>
                         <td>${value.field_content}</td>
-                        <td style="text-align:center;">${value.is_listing}</td>
-                        <td style="text-align:center;">${value.is_editing}</td>
+                        <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
+                        <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
                     `;
                     $(".doc-field-list-"+index).append(output).show();
                 })
-                //$("#doc-field-list-dialog").dialog('open');
 
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
@@ -234,8 +234,8 @@ jQuery(document).ready(function($) {
                             $("#field-id").val(field_id);
                             $("#field-title").val(response.field_title);
                             $("#field-content").val(response.field_content);
-                            $("#is-listing").val(response.is_listing);
-                            $("#is-editing").val(response.is_editing);
+                            $('#is-listing').prop('checked', response.is_listing == 1);
+                            $('#is-editing').prop('checked', response.is_editing == 1);
                         },
                         error: function (error) {
                             console.error(error);                
