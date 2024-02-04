@@ -201,29 +201,27 @@ function retrieve_document_list_data($site_id = 0) {
     return $query;
 }
 
-function get_document_list_data() {
-    // Retrieve the documents data
-    $query = retrieve_document_list_data($_POST['_site_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $post_id = (int) get_the_ID();
-            $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-            $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
-            $_list = array();
-            $_list["doc_id"] = $post_id;
-            $_list["doc_title"] = (($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title());
-            $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
-            $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
-            $_list["doc_date"] = esc_html(wp_date( get_option('date_format'), $doc_date ));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
+function translate_custom_strings($original_string) {
+    // Define translations for specific strings
+    $translations = array(
+        'doc_title' => __( '文件名稱', 'your-text-domain' ),
+        'doc_number' => __( '文件編號', 'your-text-domain' ),
+        'doc_revision' => __( '文件版本', 'your-text-domain' ),
+        'doc_url' => __( '文件地址', 'your-text-domain' ),
+        'start_job' => __( '起始職務', 'your-text-domain' ),
+        'start_leadtime' => __( '前置時間', 'your-text-domain' ),
+        'doc_category' => __( '文件類別', 'your-text-domain' ),
+        'site_id' => __( '單位', 'your-text-domain' ),
+        'todo_status' => __( '文件狀態', 'your-text-domain' ),
+        // Add more translations as needed
+    );
+    // Check if there's a translation for the given string
+    if (isset($translations[$original_string])) {
+        return $translations[$original_string];
     }
-    wp_send_json($_array);
+    // If no translation is found, return the original string
+    return $original_string;
 }
-add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
-add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
 
 function open_doc_dialog_and_buttons() {
     // Check if the action has been set
@@ -269,14 +267,14 @@ add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_bu
 
 function display_document_dialog($post_id) {
     $site_id = esc_attr(get_post_meta($post_id, 'site_id', true));
-    echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
-    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
+    //echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
+    //echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" />';
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($post_id);
     // Output or manipulate the meta data as needed
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id') 
-        if ($key!='todo_status') 
+        //if ($key!='todo_status') 
         foreach ($values as $value) {
             echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
             switch (true) {
@@ -344,32 +342,6 @@ function select_doc_category_option_data($selected_category=0) {
     return $options;
 }
 
-function get_document_dialog_data() {
-    $response = array();
-    if( isset($_POST['_doc_id']) ) {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
-        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
-        $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
-        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
-        $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
-        $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
-        $response["doc_title"] = get_the_title($doc_id);
-        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
-        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
-        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
-        $response["start_job"] = select_site_job_option_data($start_job, $site_id);
-        $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
-        $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
-        $response["doc_category"] = select_doc_category_option_data($doc_category);
-        //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
-        $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
-
 function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
@@ -423,6 +395,56 @@ function del_document_dialog_data() {
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
+
+function get_document_list_data() {
+    // Retrieve the documents data
+    $query = retrieve_document_list_data($_POST['_site_id']);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $post_id = (int) get_the_ID();
+            $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+            $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
+            $_list = array();
+            $_list["doc_id"] = $post_id;
+            $_list["doc_title"] = (($doc_date) ? '<a href="'.$doc_url.'">'.get_the_title().'</a>' : get_the_title());
+            $_list["doc_number"] = esc_html(get_post_meta($post_id, 'doc_number', true));
+            $_list["doc_revision"] = esc_html(get_post_meta($post_id, 'doc_revision', true));
+            $_list["doc_date"] = esc_html(wp_date( get_option('date_format'), $doc_date ));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_document_list_data', 'get_document_list_data' );
+add_action( 'wp_ajax_nopriv_get_document_list_data', 'get_document_list_data' );
+
+function get_document_dialog_data() {
+    $response = array();
+    if( isset($_POST['_doc_id']) ) {
+        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
+        $doc_category = esc_attr(get_post_meta($doc_id, 'doc_category', true));
+        $doc_status = esc_attr(get_post_meta($doc_id, 'doc_status', true));
+        $deleting = esc_attr(get_post_meta($doc_id, 'deleting', true));
+        $response["doc_title"] = get_the_title($doc_id);
+        $response["doc_number"] = esc_html(get_post_meta($doc_id, 'doc_number', true));
+        $response["doc_revision"] = esc_html(get_post_meta($doc_id, 'doc_revision', true));
+        $response["doc_url"] = esc_html(get_post_meta($doc_id, 'doc_url', true));
+        $response["start_job"] = select_site_job_option_data($start_job, $site_id);
+        $response["start_leadtime"] = esc_attr(get_post_meta($doc_id, 'start_leadtime', true));
+        $response["doc_date"] = wp_date( get_option('date_format'), $doc_date );
+        $response["doc_category"] = select_doc_category_option_data($doc_category);
+        //$response["doc_status"] = get_post_field('post_content', $doc_status).($deleting)?'Deleting':'';
+        $response["doc_status"] = get_post_field('post_content', $start_job).(($deleting>0)?'<span style="color:red;">Deleting</span>':'');
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_document_dialog_data', 'get_document_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data' );
 
 function display_doc_workflow_list() {
     ?>

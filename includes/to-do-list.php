@@ -229,28 +229,6 @@ function get_todo_list_data() {
 add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
 add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 
-function translate_custom_strings($original_string) {
-    // Define translations for specific strings
-    $translations = array(
-        'todo_status' => __( '文件狀態', 'your-text-domain' ),
-        'doc-title' => __( '文件名稱', 'your-text-domain' ),
-        'doc_number' => __( '文件編號', 'your-text-domain' ),
-        'doc_revision' => __( '文件版本', 'your-text-domain' ),
-        'doc_url' => __( '文件地址', 'your-text-domain' ),
-        'start_job' => __( '起始職務', 'your-text-domain' ),
-        'start_leadtime' => __( '前置時間', 'your-text-domain' ),
-        'doc_category' => __( '文件類別', 'your-text-domain' ),
-        'site_id' => __( '單位', 'your-text-domain' ),
-        // Add more translations as needed
-    );
-    // Check if there's a translation for the given string
-    if (isset($translations[$original_string])) {
-        return $translations[$original_string];
-    }
-    // If no translation is found, return the original string
-    return $original_string;
-}
-
 function open_todo_dialog_and_buttons() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'open_todo_dialog_and_buttons') {

@@ -30,7 +30,7 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_document_list_data($("#site-id").val());
+                window.location.replace("/display-documents/");
             },
             error: function(error){
                 console.error(error);                    
