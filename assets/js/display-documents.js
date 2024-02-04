@@ -147,11 +147,11 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_doc_field_dialog_data',
                                     '_field_id': $("#field-id").val(),
-                                    '_field_title': $("#action-title").val(),
-                                    '_field_content': $("#action-content").val(),
+                                    '_field_title': $("#field-title").val(),
+                                    '_field_content': $("#field-content").val(),
                                     '_is_listing': $("#is-listing").val(),
                                     '_is-editing': $("#is-editing").val(),
-                                    '_doc_id': doc_id,
+                                    //'_doc_id': doc_id,
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');
