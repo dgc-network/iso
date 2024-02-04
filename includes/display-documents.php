@@ -245,8 +245,11 @@ function open_doc_dialog_and_buttons() {
         $params = array();
 
         echo '<h2>Document</h2>';
+        display_doc_field_list();    
         echo '<fieldset>';
+        echo '<div style="text-align: right">';
         echo '<span id="btn-doc-dialog-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+        echo '</div>';
 
         if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
@@ -268,7 +271,6 @@ function open_doc_dialog_and_buttons() {
         echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
         echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
         echo '</fieldset>';
-        display_todo_action_list();    
         
         wp_die();
     } else {
@@ -409,6 +411,153 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
+function display_doc_field_list() {
+    ?>
+    <div id="doc-field-list" title="Field list" style="display:none;">
+    <fieldset>
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( 'Field', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Listing', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Editing', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $x = 0;
+                while ($x<50) {
+                    echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
+                    $x += 1;
+                }
+                ?>
+            </tbody>
+        </table>
+        <div id="btn-new-doc-field" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
+    </div>
+    <?php display_doc_field_dialog();?>
+    <?php
+}
+
+function retrieve_doc_field_list_data($doc_id=0) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function get_doc_field_list_data() {
+    // Retrieve the documents data
+    $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $_list = array();
+            $_list["field_id"] = get_the_ID();
+            $_list["field_title"] = get_the_title();
+            $_list["field_content"] = get_post_field('post_content', get_the_ID());
+            //$_list["doc_id"] = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
+            $_list["is_listing"] = esc_attr(get_post_meta(get_the_ID(), 'is_listing', true));
+            $_list["is_editing"] = esc_attr(get_post_meta(get_the_ID(), 'is_editing', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data' );
+
+function display_doc_field_dialog(){
+    ?>
+    <div id="doc-field-dialog" title="Field dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="field-id" />
+        <label for="field-title">Title:</label>
+        <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
+        <label for="field-content">Content:</label>
+        <input type="text" id="field-content" class="text ui-widget-content ui-corner-all" />
+        <div>
+            <div style="display:inline-block; width:50%;">
+                <label for="is-listing">Is listing:</label>
+                <input type="checkbox" id="is-listing" />
+            </div>
+            <div style="display:inline-block;">
+                <label for="is-editing">Is editing:</label>
+                <input type="checkbox" id="is-editing" />
+            </div>
+        </div>
+    </fieldset>
+    </div>
+    <?php    
+}
+
+function get_doc_field_dialog_data() {
+    $response = array();
+    if( isset($_POST['_field_id']) ) {
+        $field_id = (int)sanitize_text_field($_POST['_field_id']);
+        //$doc_id = esc_attr(get_post_meta($field_id, 'doc_id', true));
+        $response["field_title"] = get_the_title($action_id);
+        $response["field_content"] = get_post_field('post_content', $action_id);
+        $response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
+        $response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
+
+function set_doc_field_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_field_id']) ) {
+        // Update the post into the database
+        $data = array(
+            'ID'         => $_POST['_field_id'],
+            'post_title' => $_POST['_field_title'],
+            'post_content' => $_POST['_field_content'],
+            'meta_input' => array(
+                'is_listing'  => $_POST['_is_listing'],
+                'is_editing'  => $_POST['_is_editing'],
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        // Insert the post into the database
+        $new_post = array(
+            'post_title'    => 'New field',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_doc_field_dialog_data', 'set_doc_field_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_doc_field_dialog_data', 'set_doc_field_dialog_data' );
+
+function del_doc_field_dialog_data() {
+    // Delete the post
+    $result = wp_delete_post($_POST['_field_id'], true);
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
+/*
 function get_document_list_data() {
     // Retrieve the documents data
     $query = retrieve_document_list_data($_POST['_site_id']);
@@ -535,4 +684,4 @@ function get_doc_workflow_list_data() {
 }
 add_action( 'wp_ajax_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_workflow_list_data', 'get_doc_workflow_list_data' );
-
+*/

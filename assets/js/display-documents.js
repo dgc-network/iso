@@ -149,30 +149,34 @@ jQuery(document).ready(function($) {
 */            
                 $("#btn-action-list").on( "click", function(e) {
                     e.preventDefault();
-                    get_doc_action_list_data($("#todo_status").val());
+                    get_doc_field_list_data($("#doc_id").val());
                 })
 
-                // Job action list
-                $("#todo-action-list-dialog").dialog({
+                $("#btn-doc-field-setting").on("click", function () {
+                    $("#doc-field-list").toggle();
+                });            
+
+                // Doc field list
+                $("#doc-field-list-dialog").dialog({
                     width: 400,
                     modal: true,
                     autoOpen: false,
                 });
             
                 // Todo job actions settings
-                $("#btn-new-todo-action").on("click", function(e) {
+                $("#btn-new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_todo_action_dialog_data',
-                            '_todo_id': todo_id,
+                            'action': 'set_doc_field_dialog_data',
+                            '_doc_id': doc_id,
                         },
                         success: function (response) {
                             //open_todo_dialog_and_buttons(todo_id)
-                            get_doc_action_list_data(todo_id);
+                            get_doc_field_list_data(todo_id);
                         },
                         error: function(error){
                             console.error(error);                    
@@ -181,7 +185,7 @@ jQuery(document).ready(function($) {
                     });    
                 });                                        
                 
-                $("#todo-action-dialog").dialog({
+                $("#doc-field-dialog").dialog({
                     width: 400,
                     modal: true,
                     autoOpen: false,
@@ -192,18 +196,18 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_todo_action_dialog_data',
-                                    '_action_id': $("#action-id").val(),
-                                    '_action_title': $("#action-title").val(),
-                                    '_action_content': $("#action-content").val(),
-                                    '_next_job': $("#next-job").val(),
-                                    '_next_leadtime': $("#next-leadtime").val(),
+                                    'action': 'set_doc_field_dialog_data',
+                                    '_field_id': $("#field-id").val(),
+                                    '_field_title': $("#action-title").val(),
+                                    '_field_content': $("#action-content").val(),
+                                    '_is_listing': $("#is-listing").val(),
+                                    '_is-editing': $("#is-editing").val(),
                                     //'_doc_id': $("#doc-id").val(),
                                 },
                                 success: function (response) {
-                                    $("#todo-action-dialog").dialog('close');
-                                    open_doc_dialog_and_buttons(todo_id)
-                                    get_doc_action_list_data(todo_id);
+                                    $("#doc-field-dialog").dialog('close');
+                                    //open_doc_dialog_and_buttons(todo_id)
+                                    get_doc_field_list_data(todo_id);
                                 },
                                 error: function (error) {
                                     console.error(error);                    
@@ -212,19 +216,19 @@ jQuery(document).ready(function($) {
                             });            
                         },
                         "Delete": function() {
-                            if (window.confirm("Are you sure you want to delete this todo action?")) {
+                            if (window.confirm("Are you sure you want to delete this doc field?")) {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'del_todo_action_dialog_data',
-                                        '_action_id': $("#action-id").val(),
+                                        'action': 'del_doc_field_dialog_data',
+                                        '_field_id': $("#field-id").val(),
                                     },
                                     success: function (response) {
-                                        $("#todo-action-dialog").dialog('close');
-                                        open_doc_dialog_and_buttons(todo_id)
-                                        get_doc_action_list_data(todo_id);
+                                        $("#doc-field-dialog").dialog('close');
+                                        //open_doc_dialog_and_buttons(todo_id)
+                                        get_doc_field_list_data(todo_id);
                                     },
                                     error: function(error){
                                         console.error(error);
@@ -243,48 +247,48 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function get_doc_action_list_data(todo_id){
+    function get_doc_field_list_data(todo_id){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_todo_action_list_data',
-                '_todo_id': todo_id,
+                'action': 'get_doc_field_list_data',
+                '_doc_id': doc_id,
             },
             success: function (response) {            
                 for(index=0;index<50;index++) {
-                    $(".todo-action-list-"+index).hide().empty();
+                    $(".doc-field-list-"+index).hide().empty();
                 }
                 $.each(response, function (index, value) {
-                    $(".todo-action-list-" + index).attr("id", "edit-action-todo-" + value.action_id);
+                    $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
                     const output = `
-                        <td style="text-align:center;">${value.action_title}</td>
-                        <td>${value.action_content}</td>
-                        <td style="text-align:center;">${value.next_job}</td>
-                        <td style="text-align:center;">${value.next_leadtime}</td>
+                        <td style="text-align:center;">${value.field_title}</td>
+                        <td>${value.field_content}</td>
+                        <td style="text-align:center;">${value.is_listing}</td>
+                        <td style="text-align:center;">${value.is_editing}</td>
                     `;
                     $(".todo-action-list-"+index).append(output).show();
                 })
-                $("#todo-action-list-dialog").dialog('open');
+                $("#doc-field-list-dialog").dialog('open');
 
-                $('[id^="edit-action-todo-"]').on( "click", function() {
-                    const action_id = this.id.substring(17);
+                $('[id^="edit-doc-field-"]').on( "click", function() {
+                    const field_id = this.id.substring(15);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'get_todo_action_dialog_data',
-                            '_action_id': action_id,
+                            'action': 'get_doc_field_dialog_data',
+                            '_field_id': field_id,
                         },
                         success: function (response) {
-                            $("#todo-action-dialog").dialog('open');
-                            $("#action-id").val(action_id);
-                            $("#action-title").val(response.action_title);
-                            $("#action-content").val(response.action_content);
-                            $("#next-job").empty().append(response.next_job);
-                            $("#next-leadtime").val(response.next_leadtime);
+                            $("#doc-field-dialog").dialog('open');
+                            $("#field-id").val(field_id);
+                            $("#field-title").val(response.action_title);
+                            $("#field-content").val(response.action_content);
+                            $("#is-listing").val(response.is_listing);
+                            $("#is-editing").val(response.is_editing);
                         },
                         error: function (error) {
                             console.error(error);                
@@ -299,7 +303,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
+/*    
     $("#btn-doc-workflow").on( "click", function() {
         get_doc_workflow_list_data($("#doc-id").val());
     })
@@ -430,7 +434,7 @@ jQuery(document).ready(function($) {
                                     alert(error);
                                 }
                             });            
-/*        
+
                             $.ajax({
                                 type: 'POST',
                                 url: ajax_object.ajax_url,
@@ -449,7 +453,6 @@ jQuery(document).ready(function($) {
                                     alert(error);
                                 }
                             });
-*/                            
                         }
                     };
                 }
@@ -568,7 +571,7 @@ jQuery(document).ready(function($) {
         modal: true,
         autoOpen: false,
     });    
-
+*/
         //activate_document_list_data()
 
         $('[id^="btn-"]').mouseover(function() {
