@@ -104,6 +104,7 @@ jQuery(document).ready(function($) {
                 });
 
                 // doc-field setting
+                var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
