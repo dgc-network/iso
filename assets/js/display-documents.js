@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
                     get_doc_field_list_data($("#doc_id").val());
                 })
 
-                $("#btn-doc-field-setting").on("click", function () {
+                $("#doc-field-setting").on("click", function () {
                     $("#doc-field-list").toggle();
                 });            
 

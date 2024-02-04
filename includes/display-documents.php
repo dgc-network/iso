@@ -247,8 +247,8 @@ function open_doc_dialog_and_buttons() {
         echo '<h2>Document</h2>';
         display_doc_field_list();    
         echo '<fieldset>';
-        echo '<div style="text-align: right">';
-        echo '<span id="btn-doc-dialog-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+        echo '<div style="text-align: right" class="button">';
+        echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
         echo '</div>';
 
         if (function_exists($doc_url) && is_callable($doc_url)) {
