@@ -414,7 +414,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 function display_doc_field_list() {
     ?>
-    <div id="doc-field-list" title="Field list" style="display:none;">
+    <div id="doc-field-list-dialog" title="Field list" style="display:none;">
     <fieldset>
         <table style="width:100%;">
             <thead>
@@ -464,12 +464,10 @@ function get_doc_field_list_data() {
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
             $_list = array();
             $_list["field_id"] = get_the_ID();
             $_list["field_title"] = get_the_title();
             $_list["field_content"] = get_post_field('post_content', get_the_ID());
-            //$_list["doc_id"] = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
             $_list["is_listing"] = esc_attr(get_post_meta(get_the_ID(), 'is_listing', true));
             $_list["is_editing"] = esc_attr(get_post_meta(get_the_ID(), 'is_editing', true));
             array_push($_array, $_list);

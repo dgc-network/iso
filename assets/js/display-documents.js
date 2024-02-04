@@ -104,16 +104,16 @@ jQuery(document).ready(function($) {
                 });
 
                 $("#doc-field-setting").on("click", function () {
-                    $("#doc-field-list").toggle();
+                    $("#doc-field-list-dialog").toggle();
                     get_doc_field_list_data(doc_id);
                 });            
-
+/*
                 $("#doc-field-list-dialog").dialog({
                     width: 400,
                     modal: true,
                     autoOpen: false,
                 });
-            
+*/            
                 $("#new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -214,9 +214,9 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.is_listing}</td>
                         <td style="text-align:center;">${value.is_editing}</td>
                     `;
-                    $(".todo-action-list-"+index).append(output).show();
+                    $(".doc-field-list-"+index).append(output).show();
                 })
-                $("#doc-field-list-dialog").dialog('open');
+                //$("#doc-field-list-dialog").dialog('open');
 
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
@@ -231,8 +231,8 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#doc-field-dialog").dialog('open');
                             $("#field-id").val(field_id);
-                            $("#field-title").val(response.action_title);
-                            $("#field-content").val(response.action_content);
+                            $("#field-title").val(response.field_title);
+                            $("#field-content").val(response.field_content);
                             $("#is-listing").val(response.is_listing);
                             $("#is-editing").val(response.is_editing);
                         },
