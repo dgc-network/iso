@@ -250,8 +250,8 @@ function open_doc_dialog_and_buttons() {
         }
 
         echo '<hr>';
-        echo '<input type="button" id="set-document-button-'.$doc_id.'" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
-        echo '<input type="button" id="del-document-button-'.$doc_id.'" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
+        echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+        echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
         echo '</fieldset>';
         display_todo_action_list();    
         
