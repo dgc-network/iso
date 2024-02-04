@@ -522,16 +522,14 @@ function set_doc_field_dialog_data() {
     if( isset($_POST['_field_id']) ) {
         // Update the post into the database
         $data = array(
-            'ID'         => $_POST['_field_id'],
-            'post_title' => $_POST['_field_title'],
-            'post_content' => $_POST['_field_content'],
-            'meta_input' => array(
-                'is_listing'  => $_POST['_is_listing'],
-                'is_editing'  => $_POST['_is_editing'],
-                //'doc_id'  => $_POST['_doc_id'],
-            )
+            'ID'         => sanitize_text_field($_POST['_field_id']),
+            'post_title' => sanitize_text_field($_POST['_field_title']),
+            'post_content' => sanitize_text_field($_POST['_field_content']),
         );
         wp_update_post( $data );
+        update_post_meta( sanitize_text_field($_POST['_field_id']), 'is_listing', sanitize_text_field($_POST['_is_listing']));
+        update_post_meta( sanitize_text_field($_POST['_field_id']), 'is_editing', sanitize_text_field($_POST['_is_editing']));
+
     } else {
         // Insert the post into the database
         $new_post = array(
