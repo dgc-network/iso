@@ -249,6 +249,7 @@ function open_doc_dialog_and_buttons() {
         echo '<fieldset>';
         echo '<div style="text-align: right" class="button">';
         echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+        echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
         echo '</div>';
 
         if (function_exists($doc_url) && is_callable($doc_url)) {
