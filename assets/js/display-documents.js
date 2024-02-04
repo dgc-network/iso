@@ -102,57 +102,12 @@ jQuery(document).ready(function($) {
                         });
                     }
                 });
-/*
-                $("#start_job").on( "change", function(e) {
-                    e.preventDefault();
-                    if (($("#todo_status").length==0)||($("#todo_status").val()=='')) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_todo_dialog_data',
-                                '_job_id': $(this).val(),
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                //alert('Hi,insert'+response)
-                                $("#btn-action-list").val(response);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });    
-                    } else {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_todo_dialog_data',
-                                '_job_id': $(this).val(),
-                                '_doc_id': doc_id,
-                                '_todo_id': $("#todo_status").val(),
-                            },
-                            success: function (response) {
-                                //alert('Hi,update'+response)
-                                $("#btn-action-list").val(response);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });    
-                    }                    
-                });
-*/            
+
                 $("#doc-field-setting").on("click", function () {
                     $("#doc-field-list").toggle();
                     get_doc_field_list_data(doc_id);
                 });            
 
-                // Doc field list
                 $("#doc-field-list-dialog").dialog({
                     width: 400,
                     modal: true,
@@ -196,7 +151,6 @@ jQuery(document).ready(function($) {
                                     '_field_content': $("#action-content").val(),
                                     '_is_listing': $("#is-listing").val(),
                                     '_is-editing': $("#is-editing").val(),
-                                    //'_doc_id': $("#doc-id").val(),
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');

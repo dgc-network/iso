@@ -105,7 +105,6 @@ jQuery(document).ready(function($) {
                                     '_action_content': $("#action-content").val(),
                                     '_next_job': $("#next-job").val(),
                                     '_next_leadtime': $("#next-leadtime").val(),
-                                    //'_doc_id': $("#doc-id").val(),
                                 },
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');

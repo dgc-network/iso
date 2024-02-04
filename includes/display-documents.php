@@ -249,7 +249,7 @@ function open_doc_dialog_and_buttons() {
         echo '<fieldset>';
         echo '<div style="text-align: right" class="button">';
         echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
-        echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+        //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
         echo '</div>';
 
         if (function_exists($doc_url) && is_callable($doc_url)) {
@@ -541,7 +541,7 @@ function set_doc_field_dialog_data() {
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
-            'post_type'     => 'action',
+            'post_type'     => 'field',
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
