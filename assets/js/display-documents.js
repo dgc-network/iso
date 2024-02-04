@@ -149,8 +149,8 @@ jQuery(document).ready(function($) {
                                     '_field_id': $("#field-id").val(),
                                     '_field_title': $("#field-title").val(),
                                     '_field_content': $("#field-content").val(),
-                                    '_is_listing': $("#is-listing").val(),
-                                    '_is_editing': $("#is-editing").val(),
+                                    '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
+                                    '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     $("#doc-field-dialog").dialog('close');
@@ -518,7 +518,6 @@ jQuery(document).ready(function($) {
         modal: true,
         autoOpen: false,
     });    
-*/
         //activate_document_list_data()
 
         $('[id^="btn-"]').mouseover(function() {
@@ -530,6 +529,7 @@ jQuery(document).ready(function($) {
             $(this).css('cursor', 'default');
             $(this).css('color', '');
         });
+*/
     
     
 });
