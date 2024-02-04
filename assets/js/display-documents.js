@@ -105,8 +105,13 @@ jQuery(document).ready(function($) {
 
                 // doc-field setting
                 $("#doc-field-setting").on("click", function () {
+                    $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
                     get_doc_field_list_data(doc_id);
+                    // Toggle the value between 'ABC' and 'XYZ'
+                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
+                    // Update the text content of the element
+                    $(this).text(currentValue);
                 });            
 
                 $("#new-doc-field").on("click", function(e) {
