@@ -271,7 +271,7 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/option-setting.php';
+require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
@@ -433,7 +433,18 @@ function user_did_not_login_yet() {
         // Display a message or redirect to the login/registration page
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
-
+        ?>
+        <div class="ui-widget" style="text-align:center;">
+            <p>感謝您使用我們的系統</p>
+            <p>請利用手機<span class="dashicons dashicons-smartphone"></span>按</p>
+            <a href="'.get_option('line_official_account').'"><img src="https://qr-official.line.me/gs/M_804poufw_GW.png"></a>
+            <p>加入我們的Line官方帳號,</p>
+            <p>並請在聊天室中, 輸入六位數字:</p>
+            <h4><?php echo get_option('_one_time_password');?></h4>
+            <p>完成註冊/登入作業</p>
+        </div>
+        <?php
+/*
         echo '<div class="ui-widget" style="text-align:center;">';
         echo '感謝您使用我們的系統<br>';
         echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按';
@@ -443,6 +454,7 @@ function user_did_not_login_yet() {
         echo '<h4>'.get_option('_one_time_password').'</h4>';
         echo '完成註冊/登入作業<br>';
         echo '</div>';
+*/
     }
 }
 

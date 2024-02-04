@@ -35,7 +35,20 @@ function register_document_post_type() {
 add_action('init', 'register_document_post_type');
 
 // Register doc category post type
-function register_category_post_type() {
+function register_doc_field_post_type() {
+    $args = array(
+        'public'        => true,
+        'rewrite'       => array('slug' => 'doc-fields'),
+        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'has_archive'   => true,
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+    );
+    register_post_type( 'doc-field', $args );
+}
+add_action('init', 'register_doc_field_post_type');
+
+// Register doc category post type
+function register_doc_category_post_type() {
     $args = array(
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-categories'),
@@ -45,10 +58,11 @@ function register_category_post_type() {
     );
     register_post_type( 'doc-category', $args );
 }
-add_action('init', 'register_category_post_type');
+add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
+    // Migration
     if( isset($_GET['_doc_title_migration']) ) {
         // Retrieve the value
         $args = array(
@@ -61,8 +75,7 @@ function display_documents_shortcode() {
                 update_post_meta( get_the_ID(), 'doc_title', get_the_title());
             endwhile;
             wp_reset_postdata();
-        endif;
-    
+        endif;    
     }
     
     // Check if the user is logged in
