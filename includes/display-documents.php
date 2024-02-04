@@ -507,9 +507,8 @@ function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
-        //$doc_id = esc_attr(get_post_meta($field_id, 'doc_id', true));
-        $response["field_title"] = get_the_title($action_id);
-        $response["field_content"] = get_post_field('post_content', $action_id);
+        $response["field_title"] = get_the_title($field_id);
+        $response["field_content"] = get_post_field('post_content', $field_id);
         $response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
         $response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
     }
