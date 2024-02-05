@@ -255,6 +255,34 @@ jQuery(document).ready(function($) {
 
     // Special for the Document List setting
     $('#sortable-doc-field-list').sortable({
+        update: function(event, ui) {
+            const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });
+            
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: {
+                    action: 'set_sorted_field_id_data',
+                    _field_id_array: field_id_array,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Sorting order updated successfully.');
+                    } else {
+                        console.error('Error updating sorting order:', response.error);
+                        alert('Error updating sorting order. Please try again.');
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', errorThrown);
+                    alert('AJAX request failed. Please try again.');
+                }
+            });
+        }
+    });
+/*    
+    $('#sortable-doc-field-list').sortable({
         update: function() {
             const field_id_array = [];
             $('.field-id-array').each(function(index) { 
@@ -275,7 +303,7 @@ jQuery(document).ready(function($) {
             });
         }
     });
-
+*/
     $("#new-doc-field").on("click", function(e) {
         e.preventDefault();
         $.ajax({

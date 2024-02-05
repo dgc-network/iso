@@ -780,6 +780,7 @@ function set_sorted_field_id_data() {
 add_action( 'wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data' );
 add_action( 'wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data' );
 */
+/*
 function set_sorted_field_id_data() {
     if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
         $results = $_POST['_field_id_array'];
@@ -797,3 +798,23 @@ function set_sorted_field_id_data() {
     echo json_encode($response);
     wp_die();
 }
+*/
+function set_sorted_field_id_data() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
+        $field_id_array = array_map('absint', $_POST['_field_id_array']);
+        
+        foreach ($field_id_array as $index => $field_id) {
+            update_post_meta($field_id, 'sorting_in_doc_field', $index);
+        }
+
+        $response = array('success' => true);
+    }
+
+    echo json_encode($response);
+    wp_die();
+}
+
+add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
+add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
