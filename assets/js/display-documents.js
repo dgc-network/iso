@@ -218,7 +218,7 @@ jQuery(document).ready(function($) {
         }
     }
 */
-    function get_doc_field_list_data(_id, is_site = 0) {
+    function get_doc_field_list_data(_id, is_site) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
         };
