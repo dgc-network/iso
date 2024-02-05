@@ -763,7 +763,7 @@ function del_doc_field_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
-
+/*
 function set_sorted_field_id_data() {
     if( isset($_POST['_field_id_array']) ) {
         $results = $_POST['_field_id_array'];
@@ -779,4 +779,21 @@ function set_sorted_field_id_data() {
 }
 add_action( 'wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data' );
 add_action( 'wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data' );
+*/
+function set_sorted_field_id_data() {
+    if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
+        $results = $_POST['_field_id_array'];
+        foreach ($results as $index => $result) {
+            // Update metadata to the post
+            $meta_key   = 'sorting_in_doc_field';
+            $meta_value = $index;
+            update_post_meta($result, $meta_key, $meta_value);
+        }
+        $response = array('success' => true);
+    } else {
+        $response = array('success' => false, 'error' => 'Invalid data format');
+    }
 
+    echo json_encode($response);
+    wp_die();
+}
