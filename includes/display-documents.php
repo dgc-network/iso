@@ -297,59 +297,16 @@ function open_doc_dialog_and_buttons() {
 add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
-function retrieve_is_listing_field_list($doc_id) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-            array(
-                'key'   => 'is_listing',
-                'value' => 1,
-            ),
-        ),
-        'meta_key'  => 'sorting_in_doc_field',
-        'orderby'   => 'meta_value', // Sort by meta value
-        'order'     => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function retrieve_is_editing_field_list($doc_id) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-            array(
-                'key'   => 'is_editing',
-                'value' => 1,
-            ),        
-        ),
-        'meta_key'  => 'sorting_in_doc_field',
-        'orderby'   => 'meta_value', // Sort by meta value
-        'order'     => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-
 function display_report_list($doc_id) {
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    echo '<h2>'.$doc_title.'</h2>';
+    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     ?>
     <fieldset>
         <table style="width:100%;">
             <thead>
                 <?php
-                $query = retrieve_is_listing_field_list($doc_id);
+                $query = retrieve_is_listing_doc_field_data($doc_id);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -383,7 +340,7 @@ function display_report_list($doc_id) {
                         echo '<tr id="edit-report-'.$report_id.'">';
 
                         // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_field_list($doc_id);
+                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $doc_field = get_the_title();
@@ -401,7 +358,7 @@ function display_report_list($doc_id) {
                 ?>
             </tbody>
         </table>
-        <input type="button" id="new-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <input type="button" id="new-report-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
     <?php
     echo '<div style="display:none;">';
@@ -411,14 +368,15 @@ function display_report_list($doc_id) {
 
 function display_report_dialog($doc_id) {
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
-    echo '<h2>Document</h2>';
-    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    echo '<h2>'.$doc_title.'</h2>';
+    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     //display_doc_field_list();
     echo '<fieldset>';
     echo '<div style="text-align: right" class="button">';
     echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
     echo '</div>';
-    $query = retrieve_is_editing_field_list($doc_id);
+    $query = retrieve_is_editing_doc_field_data($doc_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $key = esc_attr(get_the_title());
@@ -623,6 +581,7 @@ function display_doc_field_list($_is_show=false) {
                     <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Listing', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Editing', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Default', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody id="sortable-doc-field-list">
@@ -642,6 +601,52 @@ function display_doc_field_list($_is_show=false) {
     <?php
 }
 
+function retrieve_is_listing_doc_field_data($doc_id) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+            array(
+                'key'   => 'is_listing',
+                'value' => 1,
+            ),
+        ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function retrieve_is_editing_doc_field_data($doc_id) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+            array(
+                'key'   => 'is_editing',
+                'value' => 1,
+            ),        
+        ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function retrieve_doc_field_list_data($doc_id=0) {
     $args = array(
         'post_type'      => 'doc-field',
@@ -652,6 +657,9 @@ function retrieve_doc_field_list_data($doc_id=0) {
                 'value' => $doc_id,
             ),
         ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
@@ -667,6 +675,9 @@ function retrieve_doc_field_list_data_in_site($site_id=0) {
                 'value' => $site_id,
             ),
         ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
@@ -683,8 +694,9 @@ function get_doc_field_list_data() {
             $_list["field_id"] = get_the_ID();
             $_list["field_title"] = get_the_title();
             $_list["field_content"] = get_post_field('post_content', get_the_ID());
-            $_list["is_listing"] = esc_attr(get_post_meta(get_the_ID(), 'is_listing', true));
-            $_list["is_editing"] = esc_attr(get_post_meta(get_the_ID(), 'is_editing', true));
+            $_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
+            $_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
+            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -713,6 +725,8 @@ function display_doc_field_dialog(){
                 <input type="checkbox" id="is-editing" />
             </div>
         </div>
+        <label for="default-value">Deafult:</label>
+        <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
     </div>
     <?php    
@@ -726,6 +740,7 @@ function get_doc_field_dialog_data() {
         $response["field_content"] = get_post_field('post_content', $field_id);
         $response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
         $response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
+        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
     wp_send_json($response);
 }
@@ -736,14 +751,16 @@ function set_doc_field_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_field_id']) ) {
         // Update the post into the database
+        $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $data = array(
-            'ID'         => sanitize_text_field($_POST['_field_id']),
-            'post_title' => sanitize_text_field($_POST['_field_title']),
+            'ID'           => $field_id,
+            'post_title'   => sanitize_text_field($_POST['_field_title']),
             'post_content' => sanitize_text_field($_POST['_field_content']),
         );
         wp_update_post( $data );
-        update_post_meta( sanitize_text_field($_POST['_field_id']), 'is_listing', sanitize_text_field($_POST['_is_listing']));
-        update_post_meta( sanitize_text_field($_POST['_field_id']), 'is_editing', sanitize_text_field($_POST['_is_editing']));
+        update_post_meta( $field_id, 'is_listing', sanitize_text_field($_POST['_is_listing']));
+        update_post_meta( $field_id, 'is_editing', sanitize_text_field($_POST['_is_editing']));
+        update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
 
     } else {
         // Insert the post into the database
@@ -832,3 +849,61 @@ function set_sorted_field_id_data() {
 }
 add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
+
+
+function set_report_dialog_data() {
+    $current_user_id = get_current_user_id();
+    if( isset($_POST['_report_id']) ) {
+        $report_id = sanitize_text_field($_POST['_report_id']);
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
+        // Update the Document data
+        $data = array(
+            'ID'         => $_POST['_doc_id'],
+            'meta_input' => array(
+                'doc_title'   => $_POST['_doc_title'],
+                'doc_number'   => $_POST['_doc_number'],
+                'doc_revision' => $_POST['_doc_revision'],
+                'doc_url'      => $_POST['_doc_url'],
+                'start_job'    => $start_job,
+                'start_leadtime' => $start_leadtime,
+                'doc_category'  => $_POST['_doc_category'],
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        // Insert the post into the database
+        $new_post = array(
+            'post_title'    => 'No title',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'doc-report',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+        //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                update_post_meta( $post_id, get_the_title(), '');
+            endwhile;
+            wp_reset_postdata();
+        }
+        wp_send_json($_array);
+/*    
+        update_post_meta( $post_id, 'doc_title', 'New document');
+        update_post_meta( $post_id, 'doc_number', '-');
+        update_post_meta( $post_id, 'doc_revision', '');
+        update_post_meta( $post_id, 'doc_url', '');
+        update_post_meta( $post_id, 'start_job', 0);
+        update_post_meta( $post_id, 'start_leadtime', 86400);
+        update_post_meta( $post_id, 'doc_category', 0);
+*/
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_report_dialog_data', 'set_report_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_report_dialog_data', 'set_report_dialog_data' );
+

@@ -18,7 +18,6 @@ jQuery(document).ready(function($) {
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
         open_doc_dialog_and_buttons(doc_id)
-        get_doc_field_list_data(doc_id, 0);
     });            
 
     $("#new-document-button").on("click", function(e) {
@@ -111,9 +110,8 @@ jQuery(document).ready(function($) {
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
-                    // Toggle the value between 'ABC' and 'XYZ'
+                    get_doc_field_list_data(doc_id, 0);
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
-                    // Update the text content of the element
                     $(this).text(currentValue);
                 });            
 
@@ -178,6 +176,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${isListingChecked} /></td>
                         <td style="text-align: center;"><input type="checkbox" ${isEditingChecked} /></td>
+                        <td>${value.default_value}</td>
                         <input type="hidden" id="field-id-array" value="${value.field_id}" />
                     `;
     
@@ -266,6 +265,7 @@ jQuery(document).ready(function($) {
                     $("#field-content").val(response.field_content);
                     $('#is-listing').prop('checked', response.is_listing == 1);
                     $('#is-editing').prop('checked', response.is_editing == 1);
+                    $("#default-value").val(response.default_value);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -291,6 +291,7 @@ jQuery(document).ready(function($) {
                             '_field_content': $("#field-content").val(),
                             '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
                             '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
+                            '_default_value': $("#default-value").val(),
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
@@ -299,13 +300,6 @@ jQuery(document).ready(function($) {
                             } else {
                                 get_doc_field_list_data($("#site-id").val(), 1);
                             }
-/*
-                            if ($("#site-id").val()=='') {
-                                get_doc_field_list_data($("#doc-id").val(), 0);
-                            } else {
-                                get_doc_field_list_data($("#site-id").val(), 1);
-                            }
-*/    
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -330,13 +324,6 @@ jQuery(document).ready(function($) {
                                 } else {
                                     get_doc_field_list_data($("#site-id").val(), 1);
                                 }
-/*
-                                if ($("#site-id").val()=='') {
-                                    get_doc_field_list_data($("#doc-id").val(), 0);
-                                } else {
-                                    get_doc_field_list_data($("#site-id").val(), 1);
-                                }
-*/                                
                             },
                             error: function(error){
                                 console.error(error);
@@ -348,4 +335,26 @@ jQuery(document).ready(function($) {
             }
         });    
     }
+
+    $("#new-report-button").on("click", function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_report_dialog_data',
+                '_doc_id': $("#doc-id").val(),
+            },
+            success: function (response) {
+                window.location.replace("/display-documents/");
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });
+
+
 });
