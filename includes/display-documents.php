@@ -279,7 +279,8 @@ function open_doc_dialog_and_buttons() {
             }
         } else {
             array_push($params, $doc_id);
-            call_user_func_array('display_document_dialog', $params);
+            //call_user_func_array('display_document_dialog', $params);
+            call_user_func_array('display_report_list', $params);
         }
 
         wp_die();
