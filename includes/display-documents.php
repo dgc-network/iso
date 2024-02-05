@@ -36,12 +36,16 @@ add_action('init', 'register_document_post_type');
 
 // Register doc report post type
 function register_doc_report_post_type() {
+    $labels = array(
+        'menu_name'     => _x('doc-report', 'admin menu', 'textdomain'),
+    );
     $args = array(
+        'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-reports'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'doc-report', $args );
 }
@@ -49,12 +53,16 @@ add_action('init', 'register_doc_report_post_type');
 
 // Register doc field post type
 function register_doc_field_post_type() {
+    $labels = array(
+        'menu_name'     => _x('doc-field', 'admin menu', 'textdomain'),
+    );
     $args = array(
+        'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-fields'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
     );
     register_post_type( 'doc-field', $args );
 }
@@ -62,7 +70,11 @@ add_action('init', 'register_doc_field_post_type');
 
 // Register doc category post type
 function register_doc_category_post_type() {
+    $labels = array(
+        'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
+    );
     $args = array(
+        'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),

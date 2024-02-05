@@ -88,7 +88,11 @@ add_action('init', 'register_todo_post_type');
 
 // Register action post type
 function register_action_post_type() {
+    $labels = array(
+        'menu_name'          => _x('Actions', 'admin menu', 'textdomain'),
+    );
     $args = array(
+        'labels'             => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'actions'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),

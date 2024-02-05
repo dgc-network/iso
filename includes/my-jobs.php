@@ -5,7 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Register job post type
 function register_job_post_type() {
+    $labels = array(
+        'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
+    );
     $args = array(
+        'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'jobs'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
