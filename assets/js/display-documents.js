@@ -364,7 +364,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     //get_doc_field_list_data_in_site($("#site-id").val());
                     //get_doc_field_list_data($("#site-id").val(),1);
-                    if ($("#site-id").val().length==0) {
+                    if ($("#site-id").val()=='') {
                         get_doc_field_list_data($("#site-id").val(),1);
                     } else {
                         get_doc_field_list_data($("#doc-id").val());
@@ -424,7 +424,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
                             //get_doc_field_list_data_in_site($("#site-id").val());
-                            if ($("#site-id").val().length==0) {
+                            if ($("#site-id").val()=='') {
                                 get_doc_field_list_data($("#site-id").val(),1);
                             } else {
                                 get_doc_field_list_data($("#doc-id").val());
@@ -450,7 +450,7 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
                                 //get_doc_field_list_data_in_site($("#site-id").val());
-                                if ($("#site-id").val().length==0) {
+                                if ($("#site-id").val()=='') {
                                     get_doc_field_list_data($("#site-id").val(),1);
                                 } else {
                                     get_doc_field_list_data($("#doc-id").val());
