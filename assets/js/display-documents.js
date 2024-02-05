@@ -366,7 +366,7 @@ jQuery(document).ready(function($) {
                     const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
                     const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
-                        <input type="hidden" class="field-id-array" value="${value.field_id}" />';
+                        <input type="hidden" class="field-id-array" value="${value.field_id}" />
                         <td style="text-align:center;">${value.field_title}</td>
                         <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
