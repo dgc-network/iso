@@ -52,6 +52,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response);
+                $("#doc-id").val(doc_id);
 
                 $("#set-document-button").on("click", function(e) {
                     e.preventDefault();
@@ -135,7 +136,7 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });                                        
-                
+/*                
                 $("#doc-field-dialog").dialog({
                     width: 400,
                     modal: true,
@@ -187,7 +188,7 @@ jQuery(document).ready(function($) {
                         }
                     }
                 });
-            
+*/            
             },
             error: function (error) {
                 console.log(error);
@@ -195,63 +196,124 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function get_doc_field_list_data(doc_id){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_field_list_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {            
-                for(index=0;index<50;index++) {
-                    $(".doc-field-list-"+index).hide().empty();
-                }
-                $.each(response, function (index, value) {
-                    $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
-                    $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
-                    const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
-                    const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
-                    const output = `
-                        <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.field_content}</td>
-                        <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
-                        <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
-                    `;
-                    $(".doc-field-list-"+index).append(output).show();
-                })
-
-                $('[id^="edit-doc-field-"]').on( "click", function() {
-                    const field_id = this.id.substring(15);
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_doc_field_dialog_data',
-                            '_field_id': field_id,
-                        },
-                        success: function (response) {
-                            $("#doc-field-dialog").dialog('open');
-                            $("#field-id").val(field_id);
-                            $("#field-title").val(response.field_title);
-                            $("#field-content").val(response.field_content);
-                            $('#is-listing').prop('checked', response.is_listing == 1);
-                            $('#is-editing').prop('checked', response.is_editing == 1);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
+    function get_doc_field_list_data(_id, is_site=0){
+        if (is_site==1){
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_doc_field_list_data',
+                    '_site_id': _id,
+                },
+                success: function (response) {            
+                    for(index=0;index<50;index++) {
+                        $(".doc-field-list-"+index).hide().empty();
+                    }
+                    $.each(response, function (index, value) {
+                        $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                        $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
+                        const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
+                        const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
+                        const output = `
+                            <td style="text-align:center;">${value.field_title}</td>
+                            <td style="text-align:center;">${value.field_content}</td>
+                            <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
+                            <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
+                        `;
+                        $(".doc-field-list-"+index).append(output).show();
+                    })
+    
+                    $('[id^="edit-doc-field-"]').on( "click", function() {
+                        const field_id = this.id.substring(15);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'get_doc_field_dialog_data',
+                                '_field_id': field_id,
+                            },
+                            success: function (response) {
+                                $("#doc-field-dialog").dialog('open');
+                                $("#field-id").val(field_id);
+                                $("#field-title").val(response.field_title);
+                                $("#field-content").val(response.field_content);
+                                $('#is-listing').prop('checked', response.is_listing == 1);
+                                $('#is-editing').prop('checked', response.is_editing == 1);
+                            },
+                            error: function (error) {
+                                console.error(error);                
+                                alert(error);
+                            }
+                        });
                     });
-                });
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+    
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_doc_field_list_data',
+                    '_doc_id': _id,
+                },
+                success: function (response) {            
+                    for(index=0;index<50;index++) {
+                        $(".doc-field-list-"+index).hide().empty();
+                    }
+                    $.each(response, function (index, value) {
+                        $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                        $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
+                        const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
+                        const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
+                        const output = `
+                            <td style="text-align:center;">${value.field_title}</td>
+                            <td style="text-align:center;">${value.field_content}</td>
+                            <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
+                            <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
+                        `;
+                        $(".doc-field-list-"+index).append(output).show();
+                    })
+    
+                    $('[id^="edit-doc-field-"]').on( "click", function() {
+                        const field_id = this.id.substring(15);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'get_doc_field_dialog_data',
+                                '_field_id': field_id,
+                            },
+                            success: function (response) {
+                                $("#doc-field-dialog").dialog('open');
+                                $("#field-id").val(field_id);
+                                $("#field-title").val(response.field_title);
+                                $("#field-content").val(response.field_content);
+                                $('#is-listing').prop('checked', response.is_listing == 1);
+                                $('#is-editing').prop('checked', response.is_editing == 1);
+                            },
+                            error: function (error) {
+                                console.error(error);                
+                                alert(error);
+                            }
+                        });
+                    });
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+    
+        }
     }
 
     // Special for the Document List setting
@@ -370,7 +432,13 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#doc-field-dialog").dialog('close');
-                        get_doc_field_list_data_in_site($("#site-id").val());
+                        //get_doc_field_list_data_in_site($("#site-id").val());
+                        if ($("#site-id").val().length==0) {
+                            get_doc_field_list_data($("#site-id").val(),1);
+                        } else {
+                            get_doc_field_list_data($("#doc-id").val());
+                        }
+
                     },
                     error: function (error) {
                         console.error(error);                    
@@ -390,7 +458,12 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            get_doc_field_list_data_in_site($("#site-id").val());
+                            //get_doc_field_list_data_in_site($("#site-id").val());
+                            if ($("#site-id").val().length==0) {
+                                get_doc_field_list_data($("#site-id").val(),1);
+                            } else {
+                                get_doc_field_list_data($("#doc-id").val());
+                            }
                         },
                         error: function(error){
                             console.error(error);
@@ -401,7 +474,7 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
+/*
     function get_doc_field_list_data_in_site(site_id){
         $.ajax({
             type: 'POST',
@@ -417,6 +490,7 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                    $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
                     const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
                     const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
@@ -460,4 +534,5 @@ jQuery(document).ready(function($) {
             }
         });
     }
+*/    
 });

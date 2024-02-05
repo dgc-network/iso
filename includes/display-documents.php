@@ -407,6 +407,7 @@ function display_report_list($doc_id) {
 function display_report_dialog($doc_id) {
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     echo '<h2>Document</h2>';
+    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     //display_doc_field_list();
     echo '<fieldset>';
     echo '<div style="text-align: right" class="button">';
@@ -453,6 +454,7 @@ function display_report_dialog($doc_id) {
 function display_document_dialog($doc_id) {
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     echo '<h2>Document</h2>';
+    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     echo '<fieldset>';
     //echo '<div style="text-align: right" class="button">';
     //echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
@@ -692,9 +694,9 @@ function display_doc_field_dialog(){
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="field-id" />
-        <label for="field-title">Title:</label>
+        <label for="field-title">Field:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
-        <label for="field-content">Content:</label>
+        <label for="field-content">Title:</label>
         <input type="text" id="field-content" class="text ui-widget-content ui-corner-all" />
         <div>
             <div style="display:inline-block; width:50%;">
