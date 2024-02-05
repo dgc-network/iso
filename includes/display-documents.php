@@ -389,7 +389,7 @@ function display_report_list($doc_id) {
 function display_report_dialog($doc_id) {
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     echo '<h2>Document</h2>';
-    display_doc_field_list();
+    //display_doc_field_list();
     echo '<fieldset>';
     echo '<div style="text-align: right" class="button">';
     echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
@@ -439,6 +439,7 @@ function display_document_dialog($doc_id) {
     //echo '<div style="text-align: right" class="button">';
     //echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
     //echo '</div>';
+    $is_report = 0;
     // Get all existing meta data for the specified post ID
     $all_meta = get_post_meta($doc_id);
     // Output or manipulate the meta data as needed
@@ -446,10 +447,19 @@ function display_document_dialog($doc_id) {
         if ($key!='site_id') 
         //if ($key!='todo_status') 
         foreach ($values as $value) {
-            if ($key=='doc_url') {
-                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-                echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
-                display_doc_field_list();
+            if ($key=='is_report') {
+                echo '<input type="hidden" id="is_report" value="' . $value . '" />';
+                $is_report = $value;
+            } else if ($key=='doc_url') {
+                if ($is_report==1) {
+                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                    echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
+                    display_doc_field_list(true);
+                } else {
+                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                    echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
+                    display_doc_field_list(false);    
+                }
             } else {
                 echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
                 switch (true) {
@@ -576,9 +586,10 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-function display_doc_field_list() {
+function display_doc_field_list($_is_show=false) {
+    if (!$_is_show) $show='display:none;'
     ?>
-    <div id="doc-field-list-dialog" title="Field list" style="display:none;">
+    <div id="doc-field-list-dialog" title="Field list" style="<?php echo $show;?>">
     <fieldset>
         <table style="width:100%;">
             <thead>
