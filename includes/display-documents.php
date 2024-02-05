@@ -774,6 +774,7 @@ function set_doc_field_dialog_data() {
         $post_id = wp_insert_post($new_post);
         if (isset($_POST['_site_id'])) update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        update_post_meta( $field_id, 'sorting_in_doc_field', -1);
     }
     wp_send_json($response);
 }
