@@ -264,8 +264,9 @@ function open_doc_dialog_and_buttons() {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
         $todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
         $doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
+        $is_report = esc_attr(get_post_meta($doc_id, 'is_report', true));
         $params = array();
-
+/*
         if (function_exists($doc_url) && is_callable($doc_url)) {
             $param_count = count($params);
             $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
@@ -277,10 +278,13 @@ function open_doc_dialog_and_buttons() {
                 // Invalid parameter count
                 echo "Invalid parameter count for $doc_url";
             }
+*/
+        if ($is_report) {            
+            array_push($params, $doc_id);
+            call_user_func_array('display_report_list', $params);
         } else {
             array_push($params, $doc_id);
-            //call_user_func_array('display_document_dialog', $params);
-            call_user_func_array('display_report_list', $params);
+            call_user_func_array('display_document_dialog', $params);
         }
 
         wp_die();
