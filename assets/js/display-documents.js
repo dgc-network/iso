@@ -12,7 +12,8 @@ jQuery(document).ready(function($) {
 
     $("#btn-document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        get_doc_field_list_data_in_site($("#site-id").val());
+        //get_doc_field_list_data_in_site($("#site-id").val());
+        get_doc_field_list_data($("#site-id").val(),1);
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -378,7 +379,8 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_doc_field_list_data_in_site($("#site-id").val());
+                //get_doc_field_list_data_in_site($("#site-id").val());
+                get_doc_field_list_data($("#site-id").val(),1);
             },
             error: function(error){
                 console.error(error);                    
