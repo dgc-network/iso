@@ -737,14 +737,15 @@ function set_doc_field_dialog_data() {
     } else {
         // Insert the post into the database
         $new_post = array(
-            'post_title'    => 'New field',
-            'post_content'  => 'Your post content goes here.',
+            'post_title'    => 'new_field',
+            'post_content'  => 'Title',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-field',
         );    
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        if (isset($_POST['_site_id'])) update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
     }
     wp_send_json($response);
 }

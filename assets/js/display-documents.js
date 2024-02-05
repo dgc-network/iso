@@ -31,7 +31,6 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                //window.location.replace("/display-documents/");
                 get_doc_field_list_data_in_site($("#site-id").val());
             },
             error: function(error){
