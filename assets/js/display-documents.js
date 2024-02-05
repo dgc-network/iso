@@ -137,7 +137,6 @@ jQuery(document).ready(function($) {
                     });    
                 });
 
-                activate_doc_field_data();
             },
             error: function (error) {
                 console.log(error);
@@ -173,6 +172,8 @@ jQuery(document).ready(function($) {
                         $(".doc-field-list-"+index).append(output).show();
                     })
     
+                    activate_doc_field_data();
+/*                    
                     $('[id^="edit-doc-field-"]').on( "click", function() {
                         const field_id = this.id.substring(15);
                         $.ajax({
@@ -197,6 +198,7 @@ jQuery(document).ready(function($) {
                             }
                         });
                     });
+*/                    
                 },
                 error: function (error) {
                     console.error(error);                
@@ -231,6 +233,8 @@ jQuery(document).ready(function($) {
                         $(".doc-field-list-"+index).append(output).show();
                     })
     
+                    activate_doc_field_data();
+/*                    
                     $('[id^="edit-doc-field-"]').on( "click", function() {
                         const field_id = this.id.substring(15);
                         $.ajax({
@@ -255,6 +259,7 @@ jQuery(document).ready(function($) {
                             }
                         });
                     });
+*/                    
                 },
                 error: function (error) {
                     console.error(error);                
