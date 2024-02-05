@@ -294,12 +294,18 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
+                            if ($("#site-id").length === 0 || $("#site-id").val() === '') {
+                                get_doc_field_list_data($("#doc-id").val(), 0);
+                            } else {
+                                get_doc_field_list_data($("#site-id").val(), 1);
+                            }
+/*
                             if ($("#site-id").val()=='') {
                                 get_doc_field_list_data($("#doc-id").val(), 0);
                             } else {
                                 get_doc_field_list_data($("#site-id").val(), 1);
                             }
-    
+*/    
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -319,11 +325,18 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
+                                if ($("#site-id").length === 0 || $("#site-id").val() === '') {
+                                    get_doc_field_list_data($("#doc-id").val(), 0);
+                                } else {
+                                    get_doc_field_list_data($("#site-id").val(), 1);
+                                }
+/*
                                 if ($("#site-id").val()=='') {
                                     get_doc_field_list_data($("#doc-id").val(), 0);
                                 } else {
                                     get_doc_field_list_data($("#site-id").val(), 1);
                                 }
+*/                                
                             },
                             error: function(error){
                                 console.error(error);
