@@ -624,7 +624,7 @@ function display_doc_field_list($_is_show=false) {
                 <?php
                 $x = 0;
                 while ($x<50) {
-                    echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
+                    echo '<tr class="field-id-array doc-field-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
                 ?>
