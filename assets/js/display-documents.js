@@ -220,7 +220,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".doc-field-list-"+index).append(output).show();
                 })
-
+/*
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
                     $.ajax({
@@ -245,6 +245,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
+*/                
             },
             error: function (error) {
                 console.error(error);                
@@ -324,6 +325,31 @@ jQuery(document).ready(function($) {
         });    
     });                                        
     
+    $('[id^="edit-doc-field-"]').on( "click", function() {
+        const field_id = this.id.substring(15);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_doc_field_dialog_data',
+                '_field_id': field_id,
+            },
+            success: function (response) {
+                $("#doc-field-dialog").dialog('open');
+                $("#field-id").val(field_id);
+                $("#field-title").val(response.field_title);
+                $("#field-content").val(response.field_content);
+                $('#is-listing').prop('checked', response.is_listing == 1);
+                $('#is-editing').prop('checked', response.is_editing == 1);
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+    });
+
     $("#doc-field-dialog").dialog({
         width: 400,
         modal: true,
@@ -402,7 +428,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".doc-field-list-"+index).append(output).show();
                 })
-
+/*
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
                     $.ajax({
@@ -427,6 +453,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
+*/                
             },
             error: function (error) {
                 console.error(error);                
