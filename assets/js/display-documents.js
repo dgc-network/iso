@@ -143,81 +143,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*
-    function get_doc_field_list_data(_id, is_site=0){
-        if (is_site==1){
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_field_list_data',
-                    '_site_id': _id,
-                },
-                success: function (response) {            
-                    for(index=0;index<50;index++) {
-                        $(".doc-field-list-"+index).hide().empty();
-                    }
-                    $.each(response, function (index, value) {
-                        $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
-                        $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
-                        const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
-                        const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
-                        const output = `
-                            <td style="text-align:center;">${value.field_title}</td>
-                            <td style="text-align:center;">${value.field_content}</td>
-                            <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
-                            <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
-                        `;
-                        $(".doc-field-list-"+index).append(output).show();
-                    })
-    
-                    activate_doc_field_data();
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-    
-        } else {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_field_list_data',
-                    '_doc_id': _id,
-                },
-                success: function (response) {            
-                    for(index=0;index<50;index++) {
-                        $(".doc-field-list-"+index).hide().empty();
-                    }
-                    $.each(response, function (index, value) {
-                        $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
-                        $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
-                        const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
-                        const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
-                        const output = `
-                            <td style="text-align:center;">${value.field_title}</td>
-                            <td style="text-align:center;">${value.field_content}</td>
-                            <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
-                            <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
-                        `;
-                        $(".doc-field-list-"+index).append(output).show();
-                    })
-    
-                    activate_doc_field_data();
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-    
-        }
-    }
-*/
+
     function get_doc_field_list_data(_id, is_site) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
@@ -267,6 +193,33 @@ jQuery(document).ready(function($) {
     }
     
     // Special for the Document List setting
+    $('#sortable-doc-field-list').sortable({
+        update: function(event, ui) {
+            const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: {
+                    action: 'set_sorted_field_id_data',
+                    _field_id_array: field_id_array,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Sorting order updated successfully.');
+                    } else {
+                        console.error('Error updating sorting order:', response.error);
+                        alert('Error updating sorting order. Please try again.');
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', errorThrown);
+                    alert('AJAX request failed. Please try again.');
+                }
+            });
+        }
+    });
+
     $("#new-doc-field").on("click", function(e) {
         e.preventDefault();
         $.ajax({
@@ -290,32 +243,6 @@ jQuery(document).ready(function($) {
     activate_doc_field_data();
 
     function activate_doc_field_data(){
-        $('#sortable-doc-field-list').sortable({
-            update: function(event, ui) {
-                const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: 'json',
-                    data: {
-                        action: 'set_sorted_field_id_data',
-                        _field_id_array: field_id_array,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            console.log('Sorting order updated successfully.');
-                        } else {
-                            console.error('Error updating sorting order:', response.error);
-                            alert('Error updating sorting order. Please try again.');
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        console.error('AJAX request failed:', errorThrown);
-                        alert('AJAX request failed. Please try again.');
-                    }
-                });
-            }
-        });
     
         $('[id^="edit-doc-field-"]').on( "click", function() {
             const field_id = this.id.substring(15);
