@@ -19,28 +19,6 @@ jQuery(document).ready(function($) {
         open_doc_dialog_and_buttons(doc_id)
     });            
 
-    // Special for the Document List setting
-    $("#new-doc-field").on("click", function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_doc_field_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_doc_field_list_data_in_site($("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });                                        
-    
-
     $("#new-document-button").on("click", function(e) {
         e.preventDefault();
         $.ajax({
@@ -273,6 +251,79 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    // Special for the Document List setting
+    $("#new-doc-field").on("click", function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_doc_field_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_doc_field_list_data_in_site($("#site-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                                        
+    
+    $("#doc-field-dialog").dialog({
+        width: 400,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_doc_field_dialog_data',
+                        '_field_id': $("#field-id").val(),
+                        '_field_title': $("#field-title").val(),
+                        '_field_content': $("#field-content").val(),
+                        '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
+                        '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
+                    },
+                    success: function (response) {
+                        $("#doc-field-dialog").dialog('close');
+                        get_doc_field_list_data_in_site($("#site-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this doc field?")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_doc_field_dialog_data',
+                            '_field_id': $("#field-id").val(),
+                        },
+                        success: function (response) {
+                            $("#doc-field-dialog").dialog('close');
+                            get_doc_field_list_data_in_site($("#site-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                }
+            }
+        }
+    });
 
     function get_doc_field_list_data_in_site(site_id){
         $.ajax({

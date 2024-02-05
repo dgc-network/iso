@@ -611,7 +611,6 @@ function display_doc_field_list($_is_show=false) {
                     <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Listing', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Editing', 'your-text-domain' );?></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -738,7 +737,7 @@ function set_doc_field_dialog_data() {
         // Insert the post into the database
         $new_post = array(
             'post_title'    => 'new_field',
-            'post_content'  => 'Title',
+            'post_content'  => 'Field Title',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-field',
