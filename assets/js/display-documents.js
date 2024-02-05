@@ -12,7 +12,6 @@ jQuery(document).ready(function($) {
 
     $("#btn-document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        //get_doc_field_list_data_in_site($("#site-id").val());
         get_doc_field_list_data($("#site-id").val(),1);
     });
 
@@ -117,7 +116,7 @@ jQuery(document).ready(function($) {
                     // Update the text content of the element
                     $(this).text(currentValue);
                 });            
-/*
+
                 $("#new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -137,61 +136,8 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });
-*/
+
                 activate_doc_field_data();
-/*                
-                $("#doc-field-dialog").dialog({
-                    width: 400,
-                    modal: true,
-                    autoOpen: false,
-                    buttons: {
-                        "Save": function() {
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_doc_field_dialog_data',
-                                    '_field_id': $("#field-id").val(),
-                                    '_field_title': $("#field-title").val(),
-                                    '_field_content': $("#field-content").val(),
-                                    '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
-                                    '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
-                                },
-                                success: function (response) {
-                                    $("#doc-field-dialog").dialog('close');
-                                    get_doc_field_list_data(doc_id);
-                                },
-                                error: function (error) {
-                                    console.error(error);                    
-                                    alert(error);
-                                }
-                            });            
-                        },
-                        "Delete": function() {
-                            if (window.confirm("Are you sure you want to delete this doc field?")) {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'del_doc_field_dialog_data',
-                                        '_field_id': $("#field-id").val(),
-                                    },
-                                    success: function (response) {
-                                        $("#doc-field-dialog").dialog('close');
-                                        get_doc_field_list_data(doc_id);
-                                    },
-                                    error: function(error){
-                                        console.error(error);
-                                        alert(error);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-*/            
             },
             error: function (error) {
                 console.log(error);
@@ -320,13 +266,32 @@ jQuery(document).ready(function($) {
     }
 
     // Special for the Document List setting
+    $("#new-doc-field").on("click", function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_doc_field_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_doc_field_list_data($("#site-id").val(),1);
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                                        
+
     activate_doc_field_data();
 
     function activate_doc_field_data(){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
-                const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });
-                
+                const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
@@ -350,33 +315,6 @@ jQuery(document).ready(function($) {
                 });
             }
         });
-    
-        $("#new-doc-field").on("click", function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_field_dialog_data',
-                    '_site_id': $("#site-id").val(),
-                },
-                success: function (response) {
-                    //get_doc_field_list_data_in_site($("#site-id").val());
-                    //get_doc_field_list_data($("#site-id").val(),1);
-                    if ($("#site-id").val()=='') {
-                        get_doc_field_list_data($("#site-id").val(),1);
-                    } else {
-                        get_doc_field_list_data($("#doc-id").val());
-                    }
-
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });    
-        });                                        
     
         $('[id^="edit-doc-field-"]').on( "click", function() {
             const field_id = this.id.substring(15);
@@ -423,11 +361,10 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            //get_doc_field_list_data_in_site($("#site-id").val());
                             if ($("#site-id").val()=='') {
-                                get_doc_field_list_data($("#site-id").val(),1);
-                            } else {
                                 get_doc_field_list_data($("#doc-id").val());
+                            } else {
+                                get_doc_field_list_data($("#site-id").val(),1);
                             }
     
                         },
@@ -449,11 +386,10 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                //get_doc_field_list_data_in_site($("#site-id").val());
                                 if ($("#site-id").val()=='') {
-                                    get_doc_field_list_data($("#site-id").val(),1);
-                                } else {
                                     get_doc_field_list_data($("#doc-id").val());
+                                } else {
+                                    get_doc_field_list_data($("#site-id").val(),1);
                                 }
                             },
                             error: function(error){
@@ -464,69 +400,6 @@ jQuery(document).ready(function($) {
                     }
                 }
             }
-        });
-    
+        });    
     }
-
-/*
-    function get_doc_field_list_data_in_site(site_id){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_field_list_data',
-                '_site_id': site_id,
-            },
-            success: function (response) {            
-                for(index=0;index<50;index++) {
-                    $(".doc-field-list-"+index).hide().empty();
-                }
-                $.each(response, function (index, value) {
-                    $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
-                    $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
-                    const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
-                    const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
-                    const output = `
-                        <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.field_content}</td>
-                        <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
-                        <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
-                        <input type="hidden" class="field-id-array" value="${value.field_id}" />
-                    `;
-                    $(".doc-field-list-"+index).append(output).show();
-                })
-
-                $('[id^="edit-doc-field-"]').on( "click", function() {
-                    const field_id = this.id.substring(15);
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_doc_field_dialog_data',
-                            '_field_id': field_id,
-                        },
-                        success: function (response) {
-                            $("#doc-field-dialog").dialog('open');
-                            $("#field-id").val(field_id);
-                            $("#field-title").val(response.field_title);
-                            $("#field-content").val(response.field_content);
-                            $('#is-listing').prop('checked', response.is_listing == 1);
-                            $('#is-editing').prop('checked', response.is_editing == 1);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
-                    });
-                });
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-    }
-*/    
 });
