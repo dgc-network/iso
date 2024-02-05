@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
         open_doc_dialog_and_buttons(doc_id)
+        get_doc_field_list_data(doc_id, 0);
     });            
 
     $("#new-document-button").on("click", function(e) {
@@ -54,7 +55,7 @@ jQuery(document).ready(function($) {
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
 
-                $("#set-document-button").on("click", function(e) {
+                $("#save-document-button").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',
@@ -110,7 +111,6 @@ jQuery(document).ready(function($) {
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
-                    get_doc_field_list_data(doc_id, 0);
                     // Toggle the value between 'ABC' and 'XYZ'
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     // Update the text content of the element
@@ -178,7 +178,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${isListingChecked} /></td>
                         <td style="text-align: center;"><input type="checkbox" ${isEditingChecked} /></td>
-                        <input type="hidden" class="field-id-array" value="${value.field_id}">
+                        <input type="hidden" id="field-id-array" value="${value.field_id}" />
                     `;
     
                     $docFieldList.append(output).show();
@@ -220,7 +220,7 @@ jQuery(document).ready(function($) {
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
                 const field_id_array = [];
-                $('.field-id-array').each(function(index) { 
+                $('#field-id-array').each(function(index) { 
                     field_id_array.push($(this).val());
                 });
     

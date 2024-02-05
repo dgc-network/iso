@@ -446,7 +446,7 @@ function display_report_dialog($doc_id) {
     echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
     echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
     echo '<hr>';
-    echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
     echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
     echo '</fieldset>';    
 }
@@ -504,7 +504,7 @@ function display_document_dialog($doc_id) {
         }
     }
     echo '<hr>';
-    echo '<input type="button" id="set-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
     echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
     echo '</fieldset>';    
 }
