@@ -107,6 +107,7 @@ function display_documents_shortcode() {
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <?php display_doc_field_list(true);?>                
             </fieldset>
             </div>
         

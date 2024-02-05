@@ -213,7 +213,7 @@ jQuery(document).ready(function($) {
                     const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
                         <td style="text-align:center;">${value.field_title}</td>
-                        <td>${value.field_content}</td>
+                        <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
                         <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
                     `;
