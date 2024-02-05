@@ -646,9 +646,25 @@ function retrieve_doc_field_list_data($doc_id=0) {
     return $query;
 }
 
+function retrieve_doc_field_list_data_in_site($site_id=0) {
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function get_doc_field_list_data() {
     // Retrieve the documents data
-    $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+    if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+    if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
     $_array = array();
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();

@@ -19,6 +19,29 @@ jQuery(document).ready(function($) {
         open_doc_dialog_and_buttons(doc_id)
     });            
 
+    // Special for the Document List setting
+    $("#new-doc-field").on("click", function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_doc_field_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                //window.location.replace("/display-documents/");
+                get_doc_field_list_data_in_site($("#site-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                                        
+    
+
     $("#new-document-button").on("click", function(e) {
         e.preventDefault();
         $.ajax({
@@ -202,6 +225,64 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'get_doc_field_list_data',
                 '_doc_id': doc_id,
+            },
+            success: function (response) {            
+                for(index=0;index<50;index++) {
+                    $(".doc-field-list-"+index).hide().empty();
+                }
+                $.each(response, function (index, value) {
+                    $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                    const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
+                    const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
+                    const output = `
+                        <td style="text-align:center;">${value.field_title}</td>
+                        <td style="text-align:center;">${value.field_content}</td>
+                        <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
+                        <td style="text-align: center;"><input type="checkbox" ${is_editing_checked} /></td>
+                    `;
+                    $(".doc-field-list-"+index).append(output).show();
+                })
+
+                $('[id^="edit-doc-field-"]').on( "click", function() {
+                    const field_id = this.id.substring(15);
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'get_doc_field_dialog_data',
+                            '_field_id': field_id,
+                        },
+                        success: function (response) {
+                            $("#doc-field-dialog").dialog('open');
+                            $("#field-id").val(field_id);
+                            $("#field-title").val(response.field_title);
+                            $("#field-content").val(response.field_content);
+                            $('#is-listing').prop('checked', response.is_listing == 1);
+                            $('#is-editing').prop('checked', response.is_editing == 1);
+                        },
+                        error: function (error) {
+                            console.error(error);                
+                            alert(error);
+                        }
+                    });
+                });
+            },
+            error: function (error) {
+                console.error(error);                
+                alert(error);
+            }
+        });
+    }
+
+    function get_doc_field_list_data_in_site(site_id){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_doc_field_list_data',
+                '_site_id': site_id,
             },
             success: function (response) {            
                 for(index=0;index<50;index++) {
