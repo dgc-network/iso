@@ -119,6 +119,7 @@ function display_documents_shortcode() {
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <label for="doc-field-setting"> Field setting: </label>
                 <?php display_doc_field_list(true);?>                
             </fieldset>
             </div>
@@ -305,8 +306,10 @@ function retrieve_is_listing_report_list($doc_id) {
                 'key'   => 'is_listing',
                 'value' => 1,
             ),
-
         ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
@@ -325,9 +328,11 @@ function retrieve_is_editing_report_list($doc_id) {
             array(
                 'key'   => 'is_editing',
                 'value' => 1,
-            ),
-
+            ),        
         ),
+        'meta_key'  => 'sorting_in_doc_field',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
@@ -613,7 +618,7 @@ function display_doc_field_list($_is_show=false) {
                     <th><?php echo __( 'Editing', 'your-text-domain' );?></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="sortable-doc-field-list">
                 <?php
                 $x = 0;
                 while ($x<50) {
@@ -758,3 +763,20 @@ function del_doc_field_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
+
+function set_sorted_field_id_data() {
+    if( isset($_POST['_field_id_array']) ) {
+        $results = $_POST['_field_id_array'];
+        foreach ($results as $index => $result) {
+            // Update metadata to the post
+            $meta_key   = 'sorting_in_doc_field';
+            $meta_value = $index;
+            update_post_meta($result, $meta_key, $meta_value);
+        }        
+    }
+    echo json_encode( $response );
+    wp_die();
+}
+add_action( 'wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data' );
+add_action( 'wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data' );
+

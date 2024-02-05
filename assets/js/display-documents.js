@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#btn-document-setting").on("click", function () {
         $("#document-setting-div").toggle();
+        get_doc_field_list_data_in_site($("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -253,6 +254,28 @@ jQuery(document).ready(function($) {
     }
 
     // Special for the Document List setting
+    $('#sortable-doc-field-list').sortable({
+        update: function() {
+            const field_id_array = [];
+            $('.field-id-array').each(function(index) { 
+                field_id_array.push($(this).val());
+            });
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_sorted_field_id_data',
+                    '_field_id_array': field_id_array,
+                },
+                error: function(error){
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        }
+    });
+
     $("#new-doc-field").on("click", function(e) {
         e.preventDefault();
         $.ajax({
@@ -343,6 +366,7 @@ jQuery(document).ready(function($) {
                     const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
                     const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
+                        <input type="hidden" class="field-id-array" value="${value.field_id}" />';
                         <td style="text-align:center;">${value.field_title}</td>
                         <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${is_listing_checked} /></td>
