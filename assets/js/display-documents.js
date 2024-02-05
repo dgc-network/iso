@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
                 $.each(response, function (index, value) {
                     const $docFieldList = $(`.doc-field-list-${index}`);
                     $docFieldList.attr('id', `edit-doc-field-${value.field_id}`);
-                    $docFieldList.attr('data-field-id', value.field_id);
+                    //$docFieldList.attr('data-field-id', value.field_id);
     
                     const isListingChecked = value.is_listing == 1 ? 'checked' : '';
                     const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
@@ -178,6 +178,7 @@ jQuery(document).ready(function($) {
                         <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align: center;"><input type="checkbox" ${isListingChecked} /></td>
                         <td style="text-align: center;"><input type="checkbox" ${isEditingChecked} /></td>
+                        <input type="hidden" class="field-id-array" value="${value.field_id}">
                     `;
     
                     $docFieldList.append(output).show();
