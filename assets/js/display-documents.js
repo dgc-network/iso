@@ -210,6 +210,7 @@ jQuery(document).ready(function($) {
                 }
                 $.each(response, function (index, value) {
                     $(".doc-field-list-" + index).attr("id", "edit-doc-field-" + value.field_id);
+                    $(".doc-field-list-" + index).attr("data-field-id", value.field_id);
                     const is_listing_checked = value.is_listing == 1 ? 'checked' : '';
                     const is_editing_checked = value.is_editing == 1 ? 'checked' : '';
                     const output = `
@@ -220,7 +221,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".doc-field-list-"+index).append(output).show();
                 })
-/*
+
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
                     $.ajax({
@@ -245,7 +246,6 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-*/                
             },
             error: function (error) {
                 console.error(error);                
@@ -324,7 +324,7 @@ jQuery(document).ready(function($) {
             }
         });    
     });                                        
-    
+/*    
     $('[id^="edit-doc-field-"]').on( "click", function() {
         const field_id = this.id.substring(15);
         $.ajax({
@@ -349,7 +349,7 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
+*/
     $("#doc-field-dialog").dialog({
         width: 400,
         modal: true,
@@ -428,7 +428,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".doc-field-list-"+index).append(output).show();
                 })
-/*
+
                 $('[id^="edit-doc-field-"]').on( "click", function() {
                     const field_id = this.id.substring(15);
                     $.ajax({
@@ -453,7 +453,6 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-*/                
             },
             error: function (error) {
                 console.error(error);                
