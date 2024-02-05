@@ -292,7 +292,7 @@ function open_doc_dialog_and_buttons() {
 add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
-function retrieve_is_listing_report_list($doc_id) {
+function retrieve_is_listing_field_list($doc_id) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -315,7 +315,7 @@ function retrieve_is_listing_report_list($doc_id) {
     return $query;
 }
 
-function retrieve_is_editing_report_list($doc_id) {
+function retrieve_is_editing_field_list($doc_id) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -344,7 +344,7 @@ function display_report_list($doc_id) {
         <table style="width:100%;">
             <thead>
                 <?php
-                $query = retrieve_is_listing_report_list($doc_id);
+                $query = retrieve_is_listing_field_list($doc_id);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -378,7 +378,7 @@ function display_report_list($doc_id) {
                         echo '<tr id="edit-report-'.$report_id.'">';
 
                         // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_report_list($doc_id);
+                        $inner_query = retrieve_is_listing_field_list($doc_id);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $doc_field = get_the_title();
@@ -413,7 +413,7 @@ function display_report_dialog($doc_id) {
     echo '<div style="text-align: right" class="button">';
     echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
     echo '</div>';
-    $query = retrieve_is_editing_report_list($doc_id);
+    $query = retrieve_is_editing_field_list($doc_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $key = esc_attr(get_the_title());
