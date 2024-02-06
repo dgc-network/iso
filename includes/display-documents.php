@@ -826,17 +826,15 @@ function set_sorted_field_id_data() {
 */
 function set_sorted_field_id_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-/*
+
     if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
-        $field_id_array = array_map('absint', $_POST['_field_id_array']);
-        
+        $field_id_array = array_map('absint', $_POST['_field_id_array']);        
         foreach ($field_id_array as $index => $field_id) {
             update_post_meta($field_id, 'sorting_key', $index);
         }
-
         $response = array('success' => true);
     }
-*/
+/*
     if( isset($_POST['_field_id_array']) ) {
         $results = $_POST['_field_id_array'];
         foreach ($results as $index => $result) {
@@ -844,7 +842,7 @@ function set_sorted_field_id_data() {
         }        
         $response = array('success' => true);
     }
-
+*/
     echo json_encode($response);
     wp_die();
 }

@@ -166,7 +166,7 @@ jQuery(document).ready(function($) {
                 $.each(response, function (index, value) {
                     const $docFieldList = $(`.doc-field-list-${index}`);
                     $docFieldList.attr('id', `edit-doc-field-${value.field_id}`);
-                    //$docFieldList.attr('data-field-id', value.field_id);
+                    $docFieldList.attr('data-field-id', value.field_id);
     
                     const isListingChecked = value.is_listing == 1 ? 'checked' : '';
                     const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
@@ -218,12 +218,13 @@ jQuery(document).ready(function($) {
     function activate_doc_field_data(){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
+/*                
                 const field_id_array = [];
                 $('#field-id-array').each(function(index) { 
                     field_id_array.push($(this).val());
                 });
-    
-                //const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
+*/    
+                const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
