@@ -300,7 +300,7 @@ add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_bu
 function display_doc_report_list($doc_id) {
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     echo '<h2>'.$doc_title.'</h2>';
-    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     ?>
     <fieldset>
         <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -317,7 +317,7 @@ function display_doc_report_list($doc_id) {
             <thead>
                 <?php
                 $query = retrieve_is_listing_doc_field_data($doc_id);
-                $query = retrieve_doc_field_list_data($doc_id);
+                //$query = retrieve_doc_field_list_data($doc_id);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -605,7 +605,7 @@ function display_doc_field_list($_is_show=false) {
     <?php
 }
 
-function retrieve_is_listing_doc_field_data($doc_id) {
+function retrieve_is_listing_doc_field_data($doc_id=0) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -629,7 +629,7 @@ function retrieve_is_listing_doc_field_data($doc_id) {
     return $query;
 }
 
-function retrieve_is_editing_doc_field_data($doc_id) {
+function retrieve_is_editing_doc_field_data($doc_id=0) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -837,7 +837,7 @@ function set_doc_report_dialog_data() {
         set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
         // Update the Document data
         $data = array(
-            'ID'         => $_POST['_doc_id'],
+            'ID'         => $report_id,
             'meta_input' => array(
                 'doc_title'   => $_POST['_doc_title'],
                 'doc_number'   => $_POST['_doc_number'],
