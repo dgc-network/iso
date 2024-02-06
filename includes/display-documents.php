@@ -616,7 +616,7 @@ function retrieve_is_listing_doc_field_data($doc_id) {
                 'value' => 1,
             ),
         ),
-        'meta_key'  => 'sorting_in_doc_field',
+        'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
         'order'     => 'ASC',
     );
@@ -639,7 +639,7 @@ function retrieve_is_editing_doc_field_data($doc_id) {
                 'value' => 1,
             ),        
         ),
-        'meta_key'  => 'sorting_in_doc_field',
+        'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
         'order'     => 'ASC',
     );
@@ -657,7 +657,7 @@ function retrieve_doc_field_list_data($doc_id=0) {
                 'value' => $doc_id,
             ),
         ),
-        'meta_key'  => 'sorting_in_doc_field',
+        'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
         'order'     => 'ASC',
     );
@@ -675,7 +675,7 @@ function retrieve_doc_field_list_data_in_site($site_id=0) {
                 'value' => $site_id,
             ),
         ),
-        'meta_key'  => 'sorting_in_doc_field',
+        'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
         'order'     => 'ASC',
     );
@@ -774,7 +774,7 @@ function set_doc_field_dialog_data() {
         $post_id = wp_insert_post($new_post);
         if (isset($_POST['_site_id'])) update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-        update_post_meta( $field_id, 'sorting_in_doc_field', -1);
+        update_post_meta( $post_id, 'sorting_key', -1);
     }
     wp_send_json($response);
 }
@@ -794,7 +794,7 @@ function set_sorted_field_id_data() {
         $results = $_POST['_field_id_array'];
         foreach ($results as $index => $result) {
             // Update metadata to the post
-            $meta_key   = 'sorting_in_doc_field';
+            $meta_key   = 'sorting_key';
             $meta_value = $index;
             update_post_meta($result, $meta_key, $meta_value);
         }        
@@ -811,7 +811,7 @@ function set_sorted_field_id_data() {
         $results = $_POST['_field_id_array'];
         foreach ($results as $index => $result) {
             // Update metadata to the post
-            $meta_key   = 'sorting_in_doc_field';
+            $meta_key   = 'sorting_key';
             $meta_value = $index;
             update_post_meta($result, $meta_key, $meta_value);
         }
@@ -831,7 +831,7 @@ function set_sorted_field_id_data() {
         $field_id_array = array_map('absint', $_POST['_field_id_array']);
         
         foreach ($field_id_array as $index => $field_id) {
-            update_post_meta($field_id, 'sorting_in_doc_field', $index);
+            update_post_meta($field_id, 'sorting_key', $index);
         }
 
         $response = array('success' => true);
@@ -840,7 +840,7 @@ function set_sorted_field_id_data() {
     if( isset($_POST['_field_id_array']) ) {
         $results = $_POST['_field_id_array'];
         foreach ($results as $index => $result) {
-            update_post_meta($result, 'sorting_in_doc_field', $index);
+            update_post_meta($result, 'sorting_key', $index);
         }        
         $response = array('success' => true);
     }
