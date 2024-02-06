@@ -297,134 +297,6 @@ function open_doc_dialog_and_buttons() {
 add_action('wp_ajax_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 add_action('wp_ajax_nopriv_open_doc_dialog_and_buttons', 'open_doc_dialog_and_buttons');
 
-function display_doc_report_list($doc_id) {
-    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    echo '<h2>'.$doc_title.'</h2>';
-    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
-    ?>
-    <fieldset>
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
-            </div>
-            <div style="text-align:right; display:flex;">
-                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                <div class="button"><span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
-            </div>
-        </div>
-
-        <table style="width:100%;">
-            <thead>
-                <?php
-                $query = retrieve_is_listing_doc_field_data($doc_id);
-                //$query = retrieve_doc_field_list_data($doc_id);
-                if ($query->have_posts()) {
-                    echo '<tr>';
-                    while ($query->have_posts()) : $query->the_post();
-                        echo '<th>';
-                        echo esc_html(get_post_field('post_content', get_the_ID()));
-                        echo '</th>';
-                    endwhile;
-                    echo '</tr>';
-                    wp_reset_postdata();
-                }
-                ?>
-            </thead>
-            <tbody>
-                <?php
-                $args = array(
-                    'post_type'      => 'doc-report',
-                    'posts_per_page' => 30,
-                    'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'   => 'doc_id',
-                            'value' => $doc_id,
-                        ),
-                    ),
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $report_id = get_the_ID();
-                        echo '<tr id="edit-report-'.$report_id.'">';
-
-                        // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
-                        if ($inner_query->have_posts()) {
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $doc_field = get_the_title();
-                                echo '<td>';
-                                echo esc_html(get_post_meta($report_id, $doc_field, true));
-                                echo '</td>';
-                            endwhile;
-                            wp_reset_postdata();
-                        }
-
-                        echo '</tr>';
-                    endwhile;
-                    wp_reset_postdata();
-                }
-                ?>
-            </tbody>
-        </table>
-        <input type="button" id="new-doc-report-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-    </fieldset>
-    <?php
-    echo '<div style="display:none;">';
-    display_doc_report_dialog($doc_id);
-    echo '</div>';
-}
-
-function display_doc_report_dialog($doc_id) {
-    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
-    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    echo '<h2>'.$doc_title.'</h2>';
-    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
-    //display_doc_field_list();
-    echo '<fieldset>';
-    echo '<div style="text-align: right" class="button">';
-    echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
-    echo '</div>';
-    $query = retrieve_is_editing_doc_field_data($doc_id);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $key = esc_attr(get_the_title());
-            echo '<label for="'.$key.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
-            switch (true) {
-                case strpos($key, 'url'):
-                    echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
-                    break;
-/*        
-                    case strpos($key, '_job'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-                        break;
-            
-                    case strpos($key, '_category'):
-                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
-                    break;
-*/        
-                default:
-                    echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
-                    break;
-            }
-
-        endwhile;
-        wp_reset_postdata();
-    }
-    echo '<label for="start-job">'.__( '起始職務', 'your-text-domain' ).'</label>';
-    echo '<select id="start-job" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-    echo '<label for="start-leadtime">'.__( '前置時間', 'your-text-domain' ).'</label>';
-    echo '<input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />';
-    echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
-    echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
-    echo '<hr>';
-    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '</fieldset>';    
-}
-
 function display_document_dialog($doc_id) {
     $site_id = get_post_meta($doc_id, 'site_id', true);
     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -830,6 +702,122 @@ add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
 
 // doc-report
+function display_doc_report_list($doc_id) {
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    echo '<h2>'.$doc_title.'</h2>';
+    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    ?>
+    <fieldset>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                <div class="button"><span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
+            </div>
+        </div>
+
+        <table style="width:100%;">
+            <thead>
+                <?php
+                $query = retrieve_is_listing_doc_field_data($doc_id);
+                //$query = retrieve_doc_field_list_data($doc_id);
+                if ($query->have_posts()) {
+                    echo '<tr>';
+                    while ($query->have_posts()) : $query->the_post();
+                        echo '<th>';
+                        echo esc_html(get_post_field('post_content', get_the_ID()));
+                        echo '</th>';
+                    endwhile;
+                    echo '</tr>';
+                    wp_reset_postdata();
+                }
+                ?>
+            </thead>
+            <tbody>
+                <?php
+                $query = retrieve_doc_report_list_data($doc_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $report_id = get_the_ID();
+                        echo '<tr id="edit-report-'.$report_id.'">';
+
+                        // Reset the inner loop before using it again
+                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
+                        if ($inner_query->have_posts()) {
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $doc_field = get_the_title();
+                                echo '<td>';
+                                echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                echo '</td>';
+                            endwhile;
+                            wp_reset_postdata();
+                        }
+
+                        echo '</tr>';
+                    endwhile;
+                    wp_reset_postdata();
+                }
+                ?>
+            </tbody>
+        </table>
+        <input type="button" id="new-doc-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+    </fieldset>
+    <?php
+    echo '<div style="display:none;">';
+    display_doc_report_dialog($doc_id);
+    echo '</div>';
+}
+
+function display_doc_report_dialog($doc_id) {
+    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    echo '<h2>'.$doc_title.'</h2>';
+    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    //display_doc_field_list();
+    echo '<fieldset>';
+    echo '<div style="text-align: right" class="button">';
+    echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+    echo '</div>';
+    $query = retrieve_is_editing_doc_field_data($doc_id);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $key = esc_attr(get_the_title());
+            echo '<label for="'.$key.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
+            switch (true) {
+                case strpos($key, 'url'):
+                    echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
+                    break;
+/*        
+                    case strpos($key, '_job'):
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
+                        break;
+            
+                    case strpos($key, '_category'):
+                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+                    break;
+*/        
+                default:
+                    echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
+                    break;
+            }
+
+        endwhile;
+        wp_reset_postdata();
+    }
+    echo '<label for="start-job">'.__( '起始職務', 'your-text-domain' ).'</label>';
+    echo '<select id="start-job" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
+    echo '<label for="start-leadtime">'.__( '前置時間', 'your-text-domain' ).'</label>';
+    echo '<input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />';
+    echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
+    echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+    echo '<hr>';
+    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
+    echo '</fieldset>';    
+}
+
 function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
@@ -878,4 +866,73 @@ function set_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
+
+function retrieve_doc_report_list_data($doc_id=0) {
+    $args = array(
+        'post_type'      => 'doc-report',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+        ),
+        'meta_key'  => 'sorting_key',
+        'orderby'   => 'meta_value', // Sort by meta value
+        'order'     => 'ASC',
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function get_doc_report_list_data() {
+    if (isset($_POST['_doc_id'])) $query = retrieve_doc_report_list_data($_POST['_doc_id']);
+    //if (isset($_POST['_site_id'])) $query = retrieve_doc_report_list_data_in_site($_POST['_site_id']);
+    //$query = retrieve_doc_report_list_data($doc_id);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $report_id = get_the_ID();
+            echo '<tr id="edit-report-'.$report_id.'">';
+
+            // Reset the inner loop before using it again
+            $inner_query = retrieve_is_listing_doc_field_data($doc_id);
+            if ($inner_query->have_posts()) {
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $doc_field = get_the_title();
+                    echo '<td>';
+                    echo esc_html(get_post_meta($report_id, $doc_field, true));
+                    echo '</td>';
+                endwhile;
+                wp_reset_postdata();
+            }
+
+            echo '</tr>';
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_die();
+
+/*
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $_list = array();
+            $_list["field_id"] = esc_attr(get_the_ID());
+            $_list["field_title"] = esc_html(get_the_title());
+            $_list["field_content"] = esc_html(get_post_field('post_content', get_the_ID()));
+            $_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
+            $_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
+            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
+            $_list["listing_style"] = esc_attr(get_post_meta(get_the_ID(), 'listing_style', true));
+            $_list["editing_type"] = esc_attr(get_post_meta(get_the_ID(), 'editing_type', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
+*/    
+}
+add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );
 

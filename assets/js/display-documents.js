@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
                     }
                 });
 
-                // doc-field setting
+                // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
@@ -138,6 +138,26 @@ jQuery(document).ready(function($) {
                     });    
                 });
 
+                // doc-report scripts
+                $("#new-doc-report").on("click", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_report_dialog_data',
+                            '_doc_id': $("#doc-id").val(),
+                        },
+                        success: function (response) {
+                            get_doc_report_list_data(doc_id)
+                        },
+                        error: function(error){
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });    
+                });            
             },
             error: function (error) {
                 console.log(error);
@@ -338,27 +358,55 @@ jQuery(document).ready(function($) {
 
     // doc-report scripts
     function activate_doc_report_data(){
-        $("#new-doc-report-button").on("click", function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_report_dialog_data',
-                    '_doc_id': $("#doc-id").val(),
-                },
-                success: function (response) {
-                    window.location.replace("/display-documents/");
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });    
-        });
-
     }
 
+    function get_doc_report_list_data(_id, is_site) {
+        const ajaxData = {
+            'action': 'get_doc_report_list_data',
+        };
+    
+        if (is_site === 1) {
+            ajaxData['_site_id'] = _id;
+        } else {
+            ajaxData['_doc_id'] = _id;
+        }
+    
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: 'json',
+            data: ajaxData,
+            success: function (response) {
+                for (let index = 0; index < 50; index++) {
+                    $(`.doc-report-list-${index}`).hide().empty();
+                }
+    
+                $.each(response, function (index, value) {
+                    const $docFieldList = $(`.doc-report-list-${index}`);
+                    $docFieldList.attr('id', `edit-doc-report-${value.report_id}`);
+                    $docFieldList.attr('data-report-id', value.report_id);
+    
+                    const isListingChecked = value.is_listing == 1 ? 'checked' : '';
+                    const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
+    
+                    const output = `
+                        <td style="text-align:center;">${value.field_title}</td>
+                        <td style="text-align:center;">${value.field_content}</td>
+                        <td style="text-align:center;">${value.editing_type}</td>
+                        <td style="text-align:center;">${value.default_value}</td>
+                    `;
+    
+                    $docFieldList.append(output).show();
+                });
+    
+                activate_doc_report_data();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+    
 
 });
