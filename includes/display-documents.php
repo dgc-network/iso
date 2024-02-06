@@ -898,54 +898,6 @@ function get_doc_report_list_data() {
         echo 'Invalid AJAX request!';
         wp_die();
     }
-/*
-    if (isset($_POST['_doc_id'])) display_doc_report_list($_POST['_doc_id']);
-/*
-    if (isset($_POST['_doc_id'])) $query = retrieve_doc_report_list_data($_POST['_doc_id']);
-    //if (isset($_POST['_site_id'])) $query = retrieve_doc_report_list_data_in_site($_POST['_site_id']);
-    //$query = retrieve_doc_report_list_data($doc_id);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $report_id = get_the_ID();
-            echo '<tr id="edit-report-'.$report_id.'">';
-
-            // Reset the inner loop before using it again
-            $inner_query = retrieve_is_listing_doc_field_data($doc_id);
-            if ($inner_query->have_posts()) {
-                while ($inner_query->have_posts()) : $inner_query->the_post();
-                    $doc_field = get_the_title();
-                    echo '<td>';
-                    echo esc_html(get_post_meta($report_id, $doc_field, true));
-                    echo '</td>';
-                endwhile;
-                wp_reset_postdata();
-            }
-
-            echo '</tr>';
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_die();
-
-/*
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["field_id"] = esc_attr(get_the_ID());
-            $_list["field_title"] = esc_html(get_the_title());
-            $_list["field_content"] = esc_html(get_post_field('post_content', get_the_ID()));
-            $_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
-            $_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
-            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
-            $_list["listing_style"] = esc_attr(get_post_meta(get_the_ID(), 'listing_style', true));
-            $_list["editing_type"] = esc_attr(get_post_meta(get_the_ID(), 'editing_type', true));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-*/    
 }
 add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );

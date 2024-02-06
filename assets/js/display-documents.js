@@ -56,8 +56,8 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
-                activate_document_data();
-
+                
+                //activate_document_data();
                 $("#save-document-button").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -150,10 +150,10 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_doc_report_dialog_data',
-                            '_doc_id': $("#doc-id").val(),
+                            '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_doc_report_list_data(doc_id)
+                            get_doc_report_list_data(doc_id, 0)
                         },
                         error: function(error){
                             console.error(error);                    
