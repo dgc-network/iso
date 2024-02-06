@@ -748,13 +748,14 @@ function display_doc_report_list($doc_id) {
     </fieldset>
     <?php
     echo '<div style="display:none;">';
-    display_doc_report_dialog($doc_id);
+    //display_doc_report_dialog($doc_id);
     echo '</div>';
 }
 
-function display_doc_report_dialog($doc_id) {
-    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+function display_doc_report_dialog($report_id) {
+    $doc_id = esc_attr(get_post_meta($report_id, 'site_id', true));
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     echo '<h2>'.$doc_title.'</h2>';
     echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     //display_doc_field_list();
@@ -886,7 +887,7 @@ function get_doc_report_dialog_data() {
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
         $report_id = (int)sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta($report_id, 'doc_id', true);
-        display_doc_report_dialog($doc_id);
+        display_doc_report_dialog($report_id);
         wp_die();
     } else {
         // Handle invalid AJAX request
