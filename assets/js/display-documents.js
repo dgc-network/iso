@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
-    $("#btn-document-setting").on("click", function () {
+    $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
         get_doc_field_list_data($("#site-id").val(),1);
     });
@@ -66,12 +66,12 @@ jQuery(document).ready(function($) {
                             '_doc_title': $("#doc_title").val(),
                             '_doc_number': $("#doc_number").val(),
                             '_doc_revision': $("#doc_revision").val(),
-                            '_doc_url': $("#doc_url").val(),
-                            '_start_job': $("#start_job").val(),
-                            '_start_leadtime': $("#start_leadtime").val(),
                             '_doc_date': $("#doc_date").val(),
-                            '_doc_category': $("#doc_category").val(),
-
+                            '_doc_url': $("#doc_url").val(),
+                            '_is_doc_report': $("#is-doc-report").val(),
+                            '_start_job': $("#start-job").val(),
+                            '_start_leadtime': $("#start-leadtime").val(),
+                            '_doc_category': $("#doc-category").val(),
                         },
                         success: function (response) {
                             window.location.replace("/display-documents/");
@@ -110,6 +110,8 @@ jQuery(document).ready(function($) {
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
                     get_doc_field_list_data(doc_id, 0);
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
@@ -142,6 +144,7 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // doc-field scripts
     function get_doc_field_list_data(_id, is_site) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
@@ -174,10 +177,11 @@ jQuery(document).ready(function($) {
                     const output = `
                         <td style="text-align:center;">${value.field_title}</td>
                         <td style="text-align:center;">${value.field_content}</td>
-                        <td style="text-align: center;"><input type="checkbox" ${isListingChecked} /></td>
-                        <td style="text-align: center;"><input type="checkbox" ${isEditingChecked} /></td>
+                        <td style="text-align:center;">${value._editing_type}</td>
+                        <td style="text-align:center;">${value.default_value}</td>
+                        <td style="text-align:center;"><input type="checkbox" ${isListingChecked} /></td>
+                        <td style="text-align:center;"><input type="checkbox" ${isEditingChecked} /></td>
                         <td>${value.default_value}</td>
-                        <input type="hidden" id="field-id-array" value="${value.field_id}" />
                     `;
     
                     $docFieldList.append(output).show();
@@ -192,7 +196,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // Special for the Document List setting
     $("#new-doc-field").on("click", function(e) {
         e.preventDefault();
         $.ajax({
@@ -218,12 +221,6 @@ jQuery(document).ready(function($) {
     function activate_doc_field_data(){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
-/*                
-                const field_id_array = [];
-                $('#field-id-array').each(function(index) { 
-                    field_id_array.push($(this).val());
-                });
-*/    
                 const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
                 $.ajax({
                     type: 'POST',
@@ -265,7 +262,9 @@ jQuery(document).ready(function($) {
                     $("#field-title").val(response.field_title);
                     $("#field-content").val(response.field_content);
                     $('#is-listing').prop('checked', response.is_listing == 1);
+                    $("#listing-style").val(response.listing_style);
                     $('#is-editing').prop('checked', response.is_editing == 1);
+                    $("#editing-type").val(response.editing_type);
                     $("#default-value").val(response.default_value);
                 },
                 error: function (error) {
@@ -291,7 +290,9 @@ jQuery(document).ready(function($) {
                             '_field_title': $("#field-title").val(),
                             '_field_content': $("#field-content").val(),
                             '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
+                            '_listing_style': $("#listing-style").val(),
                             '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
+                            '_editing_type': $("#editing-type").val(),
                             '_default_value': $("#default-value").val(),
                         },
                         success: function (response) {
@@ -337,14 +338,15 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    $("#new-report-button").on("click", function(e) {
+    // doc-report scripts
+    $("#new-doc-report-button").on("click", function(e) {
         e.preventDefault();
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_report_dialog_data',
+                'action': 'set_doc_report_dialog_data',
                 '_doc_id': $("#doc-id").val(),
             },
             success: function (response) {
