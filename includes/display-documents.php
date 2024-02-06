@@ -852,7 +852,7 @@ function set_doc_report_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-/*
+
         if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
         //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
@@ -862,8 +862,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-*/        
-        wp_send_json($_array);
+        //wp_send_json($_array);
     }
     wp_send_json($response);
 }
