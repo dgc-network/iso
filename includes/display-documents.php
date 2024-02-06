@@ -317,6 +317,7 @@ function display_doc_report_list($doc_id) {
             <thead>
                 <?php
                 $query = retrieve_is_listing_doc_field_data($doc_id);
+                $query = retrieve_doc_field_list_data($doc_id);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -614,13 +615,11 @@ function retrieve_is_listing_doc_field_data($doc_id) {
                 'key'   => 'doc_id',
                 'value' => $doc_id,
             ),
-/*
             array(
                 'key'     => 'listing_style',
                 'value'   => '',               // Empty string to ensure it's not empty
                 'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
             ),
-*/
         ),
         'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
@@ -641,9 +640,16 @@ function retrieve_is_editing_doc_field_data($doc_id) {
                 'value' => $doc_id,
             ),
             array(
+                'key'     => 'editing_type',
+                'value'   => '',               // Empty string to ensure it's not empty
+                'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
+            ),
+/*
+            array(
                 'key'   => 'is_editing',
                 'value' => 1,
-            ),        
+            ),
+*/                    
         ),
         'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
