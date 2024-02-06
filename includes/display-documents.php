@@ -303,6 +303,16 @@ function display_doc_report_list($doc_id) {
     //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     ?>
     <fieldset>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                <div class="button"><span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
+            </div>
+        </div>
+
         <table style="width:100%;">
             <thead>
                 <?php
@@ -605,8 +615,9 @@ function retrieve_is_listing_doc_field_data($doc_id) {
                 'value' => $doc_id,
             ),
             array(
-                'key'   => 'is_listing',
-                'value' => 1,
+                'key'     => 'listing_style',
+                'value'   => '',               // Empty string to ensure it's not empty
+                'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
             ),
         ),
         'meta_key'  => 'sorting_key',
