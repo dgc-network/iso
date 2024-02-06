@@ -384,7 +384,7 @@ jQuery(document).ready(function($) {
 
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
-
+/*
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -402,8 +402,9 @@ jQuery(document).ready(function($) {
                             console.error(error);                    
                             alert(error);
                         }
-                    });    
+                    });
                 });            
+*/
 
                 activate_doc_report_data();
         
