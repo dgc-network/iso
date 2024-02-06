@@ -884,7 +884,8 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 function get_doc_report_dialog_data() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $report_id = (int)sanitize_text_field($_POST['_report_id']);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
         display_doc_report_dialog($doc_id);
         wp_die();
     } else {
