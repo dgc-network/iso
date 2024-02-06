@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
-        open_doc_dialog_and_buttons(doc_id)
+        get_document_dialog_data(doc_id)
     });            
 
     $("#new-document-button").on("click", function(e) {
@@ -43,13 +43,13 @@ jQuery(document).ready(function($) {
     function activate_document_data(){
     }
 
-    function open_doc_dialog_and_buttons(doc_id){
+    function get_document_dialog_data(doc_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
-                action: 'open_doc_dialog_and_buttons',
+                action: 'get_document_dialog_data',
                 _doc_id: doc_id,
             },
             success: function (response) {
