@@ -753,7 +753,8 @@ function display_doc_report_list($doc_id) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $doc_field = get_the_title();
                                 echo '<td>';
-                                echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                //echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                echo esc_html($doc_field);
                                 echo '</td>';
                             endwhile;
                 
