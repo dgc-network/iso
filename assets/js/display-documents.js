@@ -160,7 +160,14 @@ jQuery(document).ready(function($) {
                             alert(error);
                         }
                     });    
+                });
+
+                $('[id^="edit-doc-report-"]').on("click", function () {
+                    const report_id = this.id.substring(16);
+                    get_doc_report_dialog_data(report_id)
                 });            
+            
+            
             },
             error: function (error) {
                 console.log(error);
@@ -419,5 +426,87 @@ jQuery(document).ready(function($) {
         });
     }
     
+    function get_doc_report_dialog_data(report_id){
+        // AJAX request
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_doc_report_dialog_data',
+                _report_id: report_id,
+            },
+            success: function (response) {
+                // Display the result
+                $('#result-container').html(response);
+                //$("#report-id").val(report_id);
+                
+                //activate_document_data();
+                $("#save-doc-report-button").on("click", function(e) {
+                    e.preventDefault();
+                    const ajaxData = {
+                        'action': 'set_doc_report_list_data',
+                    };
+                    ajaxData['_report_id'] = report_id;
+                        
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: ajaxData,
+/*                        
+                        data: {
+                            'action': 'set_doc_report_dialog_data',
+                            '_report_id': report_id,
+                            '_doc_title': $("#doc_title").val(),
+                            '_doc_number': $("#doc_number").val(),
+                            '_doc_revision': $("#doc_revision").val(),
+                            '_doc_date': $("#doc_date").val(),
+                            '_doc_url': $("#doc_url").val(),
+                            '_is_doc_report': $("#is-doc-report").val(),
+                            '_start_job': $("#start_job").val(),
+                            '_start_leadtime': $("#start_leadtime").val(),
+                            '_doc_category': $("#doc_category").val(),
+                        },
+*/
+
+                        success: function (response) {
+                            get_doc_report_list_data($("#doc-id").val(),0);
+                            //window.location.replace("/display-documents/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                });
+
+                $("#del-doc-report-button").on("click", function(e) {
+                    e.preventDefault();
+                    if (window.confirm("Are you sure you want to delete this doc report?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_doc_report_dialog_data',
+                                '_report_id': report_id,
+                            },
+                            success: function (response) {
+                                get_doc_report_list_data($("#doc-id").val(),0);
+                                //window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
 
 });

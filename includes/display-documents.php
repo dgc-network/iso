@@ -262,33 +262,12 @@ function get_document_dialog_data() {
     // Check if the action has been set
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        //$todo_id = esc_attr(get_post_meta($doc_id, 'todo_status', true));
-        //$doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        $params = array();
-/*
-        if (function_exists($doc_url) && is_callable($doc_url)) {
-            $param_count = count($params);
-            $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
-        
-            if ($param_count === $expected_param_count) {
-                // The function is valid, and the parameter count matches
-                call_user_func_array($doc_url, $params);
-            } else {
-                // Invalid parameter count
-                echo "Invalid parameter count for $doc_url";
-            }
-*/
         if ($is_doc_report) {            
-            //array_push($params, $doc_id);
-            //call_user_func_array('display_doc_report_list', $params);
             display_doc_report_list($doc_id);
         } else {
-            //array_push($params, $doc_id);
-            //call_user_func_array('display_document_dialog', $params);
             display_document_dialog($doc_id);
         }
-
         wp_die();
     } else {
         // Handle invalid AJAX request
@@ -740,58 +719,28 @@ function display_doc_report_list($doc_id) {
             <tbody>
                 <?php
                 $query = retrieve_doc_report_list_data($doc_id);
-
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
-                        echo '<tr id="edit-report-'.$report_id.'">';
-                
+                        echo '<tr id="edit-doc-report-'.$report_id.'">';                
                         // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
-                
-                        if ($inner_query->have_posts()) {
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $doc_field = get_the_title();
-                                echo '<td>';
-                                //echo esc_html(get_post_meta($report_id, $doc_field, true));
-                                echo esc_html($doc_field);
-                                echo '</td>';
-                            endwhile;
-                
-                            // Reset only the inner loop's data
-                            wp_reset_postdata();
-                        }
-                
-                        echo '</tr>';
-                    endwhile;
-                
-                    // Reset the main query's data
-                    wp_reset_postdata();
-                }
-/*                
-                $query = retrieve_doc_report_list_data($doc_id);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $report_id = get_the_ID();
-                        echo '<tr id="edit-report-'.$report_id.'">';
-
-                        // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
+                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);                
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $doc_field = get_the_title();
                                 echo '<td>';
                                 echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                //echo esc_html($doc_field);
                                 echo '</td>';
-                            endwhile;
+                            endwhile;                
+                            // Reset only the inner loop's data
                             wp_reset_postdata();
-                        }
-
+                        }                
                         echo '</tr>';
-                    endwhile;
+                    endwhile;                
+                    // Reset the main query's data
                     wp_reset_postdata();
                 }
-*/                
                 ?>
             </tbody>
         </table>
@@ -807,7 +756,7 @@ function display_doc_report_dialog($doc_id) {
     $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     echo '<h2>'.$doc_title.'</h2>';
-    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     //display_doc_field_list();
     echo '<fieldset>';
     echo '<div style="text-align: right" class="button">';
@@ -893,7 +842,6 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        //wp_send_json($_array);
     }
     wp_send_json($response);
 }
@@ -932,3 +880,19 @@ function get_doc_report_list_data() {
 }
 add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );
+
+function get_doc_report_dialog_data() {
+    // Check if the action has been set
+    if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
+        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        display_doc_report_dialog($doc_id);
+        wp_die();
+    } else {
+        // Handle invalid AJAX request
+        echo 'Invalid AJAX request!';
+        wp_die();
+    }
+}
+add_action('wp_ajax_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
+add_action('wp_ajax_nopriv_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
+
