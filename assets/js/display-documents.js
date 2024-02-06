@@ -53,6 +53,7 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
+                activate_doc_report_data();
 
                 $("#save-document-button").on("click", function(e) {
                     e.preventDefault();
@@ -336,25 +337,28 @@ jQuery(document).ready(function($) {
     }
 
     // doc-report scripts
-    $("#new-doc-report-button").on("click", function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_doc_report_dialog_data',
-                '_doc_id': $("#doc-id").val(),
-            },
-            success: function (response) {
-                window.location.replace("/display-documents/");
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });
+    function activate_doc_report_data(){
+        $("#new-doc-report-button").on("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_report_dialog_data',
+                    '_doc_id': $("#doc-id").val(),
+                },
+                success: function (response) {
+                    window.location.replace("/display-documents/");
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });    
+        });
+
+    }
 
 
 });
