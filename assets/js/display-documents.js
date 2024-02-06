@@ -411,37 +411,9 @@ jQuery(document).ready(function($) {
                 });            
                 activate_doc_report_data();
 */
-
-        
-/*        
-                for (let index = 0; index < 50; index++) {
-                    $(`.doc-report-list-${index}`).hide().empty();
-                }
-    
-                $.each(response, function (index, value) {
-                    const $docFieldList = $(`.doc-report-list-${index}`);
-                    $docFieldList.attr('id', `edit-doc-report-${value.report_id}`);
-                    $docFieldList.attr('data-report-id', value.report_id);
-    
-                    const isListingChecked = value.is_listing == 1 ? 'checked' : '';
-                    const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
-    
-                    const output = `
-                        <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.field_content}</td>
-                        <td style="text-align:center;">${value.editing_type}</td>
-                        <td style="text-align:center;">${value.default_value}</td>
-                    `;
-    
-                    $docFieldList.append(output).show();
-                });
-    
-                activate_doc_report_data();
-*/                
             },
             error: function (error) {
                 console.error(error);
-                console.log(ajax_object.ajax_url);
                 alert(error);
             }
         });

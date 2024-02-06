@@ -852,7 +852,7 @@ function set_doc_report_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-
+/*
         if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
         //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
@@ -862,6 +862,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+*/        
         wp_send_json($_array);
     }
     wp_send_json($response);
@@ -887,7 +888,7 @@ function retrieve_doc_report_list_data($doc_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
+
 function get_doc_report_list_data() {
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
@@ -901,21 +902,3 @@ function get_doc_report_list_data() {
 }
 add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );
-*/
-function get_doc_report_list_data() {
-    try {
-        if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
-            $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-            display_doc_report_list($doc_id);
-            wp_die();
-        } else {
-            throw new Exception('Invalid AJAX request.');
-        }
-    } catch (Exception $e) {
-        // Handle exceptions
-        echo 'Error: ' . $e->getMessage();
-        wp_die();
-    }
-}
-add_action('wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data');
-add_action('wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data');
