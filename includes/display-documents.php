@@ -697,6 +697,7 @@ function get_doc_field_list_data() {
             $_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
             $_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
             $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
+            $_list["align_key"] = esc_attr(get_post_meta(get_the_ID(), 'align_key', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -727,6 +728,8 @@ function display_doc_field_dialog(){
         </div>
         <label for="default-value">Deafult:</label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
+        <label for="align-key">Align:</label>
+        <input type="text" id="align-key" class="text ui-widget-content ui-corner-all" />
     </fieldset>
     </div>
     <?php    
@@ -741,6 +744,7 @@ function get_doc_field_dialog_data() {
         $response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
         $response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
+        $response["align_key"] = esc_html(get_post_meta($field_id, 'align_key', true));
     }
     wp_send_json($response);
 }
@@ -761,6 +765,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'is_listing', sanitize_text_field($_POST['_is_listing']));
         update_post_meta( $field_id, 'is_editing', sanitize_text_field($_POST['_is_editing']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
+        update_post_meta( $field_id, 'align_key', sanitize_text_field($_POST['_align_key']));
 
     } else {
         // Insert the post into the database
@@ -775,6 +780,7 @@ function set_doc_field_dialog_data() {
         if (isset($_POST['_site_id'])) update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         update_post_meta( $post_id, 'sorting_key', -1);
+        update_post_meta( $post_id, 'align_key', 'left');
     }
     wp_send_json($response);
 }
@@ -788,42 +794,7 @@ function del_doc_field_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
-/*
-function set_sorted_field_id_data() {
-    if( isset($_POST['_field_id_array']) ) {
-        $results = $_POST['_field_id_array'];
-        foreach ($results as $index => $result) {
-            // Update metadata to the post
-            $meta_key   = 'sorting_key';
-            $meta_value = $index;
-            update_post_meta($result, $meta_key, $meta_value);
-        }        
-    }
-    echo json_encode( $response );
-    wp_die();
-}
-add_action( 'wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data' );
-add_action( 'wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data' );
-*/
-/*
-function set_sorted_field_id_data() {
-    if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
-        $results = $_POST['_field_id_array'];
-        foreach ($results as $index => $result) {
-            // Update metadata to the post
-            $meta_key   = 'sorting_key';
-            $meta_value = $index;
-            update_post_meta($result, $meta_key, $meta_value);
-        }
-        $response = array('success' => true);
-    } else {
-        $response = array('success' => false, 'error' => 'Invalid data format');
-    }
 
-    echo json_encode($response);
-    wp_die();
-}
-*/
 function set_sorted_field_id_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
@@ -834,15 +805,7 @@ function set_sorted_field_id_data() {
         }
         $response = array('success' => true);
     }
-/*
-    if( isset($_POST['_field_id_array']) ) {
-        $results = $_POST['_field_id_array'];
-        foreach ($results as $index => $result) {
-            update_post_meta($result, 'sorting_key', $index);
-        }        
-        $response = array('success' => true);
-    }
-*/
+
     echo json_encode($response);
     wp_die();
 }
