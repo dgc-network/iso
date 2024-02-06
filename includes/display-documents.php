@@ -615,11 +615,11 @@ function retrieve_is_listing_doc_field_data($doc_id=0) {
                 'key'   => 'doc_id',
                 'value' => $doc_id,
             ),
-            array(
-                'key'     => 'listing_style',
-                'value'   => '',               // Empty string to ensure it's not empty
-                'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
-            ),
+            //array(
+            //    'key'     => 'listing_style',
+            //    'value'   => '',               // Empty string to ensure it's not empty
+            //    'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
+            //),
         ),
         'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
