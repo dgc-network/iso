@@ -740,6 +740,35 @@ function display_doc_report_list($doc_id) {
             <tbody>
                 <?php
                 $query = retrieve_doc_report_list_data($doc_id);
+
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $report_id = get_the_ID();
+                        echo '<tr id="edit-report-'.$report_id.'">';
+                
+                        // Reset the inner loop before using it again
+                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
+                
+                        if ($inner_query->have_posts()) {
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $doc_field = get_the_title();
+                                echo '<td>';
+                                echo esc_html(get_post_meta($report_id, $doc_field, true));
+                                echo '</td>';
+                            endwhile;
+                
+                            // Reset only the inner loop's data
+                            wp_reset_postdata();
+                        }
+                
+                        echo '</tr>';
+                    endwhile;
+                
+                    // Reset the main query's data
+                    wp_reset_postdata();
+                }
+/*                
+                $query = retrieve_doc_report_list_data($doc_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
@@ -761,6 +790,7 @@ function display_doc_report_list($doc_id) {
                     endwhile;
                     wp_reset_postdata();
                 }
+*/                
                 ?>
             </tbody>
         </table>
