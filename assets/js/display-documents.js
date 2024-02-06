@@ -153,7 +153,7 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            //get_doc_report_list_data(doc_id, 0)
+                            get_doc_report_list_data(doc_id, 0)
                         },
                         error: function(error){
                             console.error(error);                    

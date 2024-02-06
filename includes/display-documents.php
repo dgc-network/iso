@@ -880,9 +880,9 @@ function retrieve_doc_report_list_data($doc_id=0) {
                 'value' => $doc_id,
             ),
         ),
-        'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value', // Sort by meta value
-        'order'     => 'ASC',
+        //'meta_key'  => 'sorting_key',
+        //'orderby'   => 'meta_value', // Sort by meta value
+        //'order'     => 'ASC',
     );
     $query = new WP_Query($args);
     return $query;
