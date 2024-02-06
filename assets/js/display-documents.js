@@ -40,6 +40,9 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    function activate_document_data(){
+    }
+
     function open_doc_dialog_and_buttons(doc_id){
         // AJAX request
         $.ajax({
@@ -53,7 +56,7 @@ jQuery(document).ready(function($) {
                 // Display the result
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
-                activate_doc_report_data();
+                activate_document_data();
 
                 $("#save-document-button").on("click", function(e) {
                     e.preventDefault();
@@ -360,15 +363,16 @@ jQuery(document).ready(function($) {
     function activate_doc_report_data(){
     }
 
-    function get_doc_report_list_data(_id, is_site) {
+    function get_doc_report_list_data(doc_id, site_id=0) {
+
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
     
-        if (is_site === 1) {
-            ajaxData['_site_id'] = _id;
+        if (is_site != 0) {
+            ajaxData['_site_id'] = site_id;
         } else {
-            ajaxData['_doc_id'] = _id;
+            ajaxData['_doc_id'] = doc_id;
         }
     
         $.ajax({
@@ -377,6 +381,33 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
+
+                $('#result-container').html(response);
+                $("#doc-id").val(doc_id);
+
+                $("#new-doc-report").on("click", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_report_dialog_data',
+                            '_doc_id': doc_id,
+                        },
+                        success: function (response) {
+                            get_doc_report_list_data(doc_id)
+                        },
+                        error: function(error){
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });    
+                });            
+
+                activate_doc_report_data();
+        
+/*        
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-report-list-${index}`).hide().empty();
                 }
@@ -400,6 +431,7 @@ jQuery(document).ready(function($) {
                 });
     
                 activate_doc_report_data();
+*/                
             },
             error: function (error) {
                 console.error(error);
