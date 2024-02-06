@@ -128,7 +128,7 @@ function display_documents_shortcode() {
                 <div>
                     <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
                 </div>
-                <div style="text-align: right">
+                <div style="text-align:right; display:flex;">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
                     <div class="button"><span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
                 </div>

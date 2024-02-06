@@ -69,9 +69,9 @@ jQuery(document).ready(function($) {
                             '_doc_date': $("#doc_date").val(),
                             '_doc_url': $("#doc_url").val(),
                             '_is_doc_report': $("#is-doc-report").val(),
-                            '_start_job': $("#start-job").val(),
-                            '_start_leadtime': $("#start-leadtime").val(),
-                            '_doc_category': $("#doc-category").val(),
+                            '_start_job': $("#start_job").val(),
+                            '_start_leadtime': $("#start_leadtime").val(),
+                            '_doc_category': $("#doc_category").val(),
                         },
                         success: function (response) {
                             window.location.replace("/display-documents/");
