@@ -177,11 +177,8 @@ jQuery(document).ready(function($) {
                     const output = `
                         <td style="text-align:center;">${value.field_title}</td>
                         <td style="text-align:center;">${value.field_content}</td>
-                        <td style="text-align:center;">${value._editing_type}</td>
+                        <td style="text-align:center;">${value.editing_type}</td>
                         <td style="text-align:center;">${value.default_value}</td>
-                        <td style="text-align:center;"><input type="checkbox" ${isListingChecked} /></td>
-                        <td style="text-align:center;"><input type="checkbox" ${isEditingChecked} /></td>
-                        <td>${value.default_value}</td>
                     `;
     
                     $docFieldList.append(output).show();

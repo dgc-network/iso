@@ -715,20 +715,14 @@ function display_doc_field_dialog(){
                 <input type="checkbox" id="is-listing" />
             </div>
             <div style="display:inline-block;">
-                <label for="listing-style">Style:</label>
-                <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
-            </div>
-        </div>
-        <div>
-            <div style="display:inline-block; width:50%;">
                 <label for="is-editing">Is editing:</label>
                 <input type="checkbox" id="is-editing" />
             </div>
-            <div style="display:inline-block;">
-                <label for="editing-type">Style:</label>
-                <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
-            </div>
         </div>
+        <label for="listing-style">Style:</label>
+        <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
+        <label for="editing-type">Type:</label>
+        <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
         <label for="default-value">Deafult:</label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
