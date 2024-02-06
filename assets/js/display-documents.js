@@ -369,7 +369,7 @@ jQuery(document).ready(function($) {
             'action': 'get_doc_report_list_data',
         };
     
-        if (is_site != 0) {
+        if (site_id != 0) {
             ajaxData['_site_id'] = site_id;
         } else {
             ajaxData['_doc_id'] = doc_id;
