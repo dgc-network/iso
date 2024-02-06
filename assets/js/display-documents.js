@@ -363,7 +363,7 @@ jQuery(document).ready(function($) {
     function activate_doc_report_data(){
     }
 
-    function get_doc_report_list_data(doc_id, site_id=0) {
+    function get_doc_report_list_data(doc_id, site_id) {
 
         const ajaxData = {
             'action': 'get_doc_report_list_data',
@@ -382,8 +382,8 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
 
-                $('#result-container').html(response);
-                $("#doc-id").val(doc_id);
+                //$('#result-container').html(response);
+                //$("#doc-id").val(doc_id);
 /*
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
@@ -404,9 +404,9 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });            
+                activate_doc_report_data();
 */
 
-                activate_doc_report_data();
         
 /*        
                 for (let index = 0; index < 50; index++) {
