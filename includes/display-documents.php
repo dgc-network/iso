@@ -891,7 +891,7 @@ function retrieve_doc_report_list_data($doc_id=0) {
 function get_doc_report_list_data() {
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        //display_doc_report_list($doc_id);
+        display_doc_report_list($doc_id);
         wp_die();
     } else {
         // Handle invalid AJAX request
