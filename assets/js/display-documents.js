@@ -41,88 +41,6 @@ jQuery(document).ready(function($) {
     });
 
     function activate_document_dialog_data(){
-        $("#save-document-button").on("click", function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_document_dialog_data',
-                    '_doc_id': doc_id,
-                    '_doc_title': $("#doc_title").val(),
-                    '_doc_number': $("#doc_number").val(),
-                    '_doc_revision': $("#doc_revision").val(),
-                    '_doc_date': $("#doc_date").val(),
-                    '_doc_url': $("#doc_url").val(),
-                    '_is_doc_report': $("#is-doc-report").val(),
-                    '_start_job': $("#start_job").val(),
-                    '_start_leadtime': $("#start_leadtime").val(),
-                    '_doc_category': $("#doc_category").val(),
-                },
-                success: function (response) {
-                    window.location.replace("/display-documents/");
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
-        $("#del-document-button").on("click", function(e) {
-            e.preventDefault();
-            if (window.confirm("Are you sure you want to delete this document?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_document_dialog_data',
-                        '_doc_id': doc_id,
-                    },
-                    success: function (response) {
-                        window.location.replace("/display-documents/");
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });
-
-        // doc-field scripts
-        var currentValue = $("#doc-field-setting").text();
-        $("#doc-field-setting").on("click", function () {
-            $("#doc_url").toggle();
-            $("#doc-field-list-dialog").toggle();
-            const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            $("#is-doc-report").val(is_doc_report)
-            get_doc_field_list_data(doc_id, 0);
-            currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
-            $(this).text(currentValue);
-        });            
-
-        $("#new-doc-field").on("click", function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_field_dialog_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    get_doc_field_list_data(doc_id, 0);
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });    
-        });
     }
 
     function get_document_dialog_data(doc_id){
@@ -140,6 +58,89 @@ jQuery(document).ready(function($) {
                 $("#doc-id").val(doc_id);
                 
                 activate_document_dialog_data();
+                $("#save-document-button").on("click", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_document_dialog_data',
+                            '_doc_id': doc_id,
+                            '_doc_title': $("#doc_title").val(),
+                            '_doc_number': $("#doc_number").val(),
+                            '_doc_revision': $("#doc_revision").val(),
+                            '_doc_date': $("#doc_date").val(),
+                            '_doc_url': $("#doc_url").val(),
+                            '_is_doc_report': $("#is-doc-report").val(),
+                            '_start_job': $("#start_job").val(),
+                            '_start_leadtime': $("#start_leadtime").val(),
+                            '_doc_category': $("#doc_category").val(),
+                        },
+                        success: function (response) {
+                            window.location.replace("/display-documents/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                });
+        
+                $("#del-document-button").on("click", function(e) {
+                    e.preventDefault();
+                    if (window.confirm("Are you sure you want to delete this document?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_document_dialog_data',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });
+        
+                // doc-field scripts
+                var currentValue = $("#doc-field-setting").text();
+                $("#doc-field-setting").on("click", function () {
+                    $("#doc_url").toggle();
+                    $("#doc-field-list-dialog").toggle();
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
+                    get_doc_field_list_data(doc_id, 0);
+                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
+                    $(this).text(currentValue);
+                });            
+        
+                $("#new-doc-field").on("click", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_field_dialog_data',
+                            '_doc_id': doc_id,
+                        },
+                        success: function (response) {
+                            get_doc_field_list_data(doc_id, 0);
+                        },
+                        error: function(error){
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });    
+                });
+
                 activate_doc_report_list_data();
                 // doc-report scripts
                 $("#new-doc-report").on("click", function(e) {
