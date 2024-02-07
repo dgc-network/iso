@@ -494,11 +494,13 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
                 'key'   => 'doc_id',
                 'value' => $doc_id,
             ),
+/*            
             array(
                 'key'     => 'editing_type',
                 'value'   => '',               // Empty string to ensure it's not empty
                 'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
             ),
+*/            
 /*
             array(
                 'key'   => 'is_editing',
@@ -753,10 +755,11 @@ function display_doc_report_list($doc_id) {
 }
 
 function display_doc_report_dialog($report_id) {
-    $doc_id = esc_attr(get_post_meta($report_id, 'site_id', true));
+    $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+    $site_id = get_post_meta($doc_id, 'site_id', true);
     echo '<h2>'.$doc_title.'</h2>';
+    echo '<input type="hidden" id="report-id" value="'.$report_id.'" />';
     echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     //display_doc_field_list();
     echo '<fieldset>';
@@ -766,11 +769,13 @@ function display_doc_report_dialog($report_id) {
     $query = retrieve_is_editing_doc_field_data($doc_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $key = esc_attr(get_the_title());
-            echo '<label for="'.$key.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
+            $field_name = esc_attr(get_the_title());
+            $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+            $field_value = esc_html(get_post_meta($report_id, $field_name, true));
+            echo '<label for="'.$field_name.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
             switch (true) {
-                case strpos($key, 'url'):
-                    echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
+                case ($field_type=='textarea'):
+                    echo '<textarea id="' . $field_name . '" rows="3" style="width:100%;">' . $field_value . '</textarea>';
                     break;
 /*        
                     case strpos($key, '_job'):
@@ -782,7 +787,7 @@ function display_doc_report_dialog($report_id) {
                     break;
 */        
                 default:
-                    echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
+                    echo '<input type="text" id="' . $field_name . '" value="' . $field_value . '" class="text ui-widget-content ui-corner-all" />';
                     break;
             }
 
