@@ -468,13 +468,11 @@ function retrieve_is_listing_doc_field_data($doc_id=0) {
                 'key'   => 'doc_id',
                 'value' => $doc_id,
             ),
-/*
             array(
                 'key'     => 'listing_style',
                 'value'   => '',               // Empty string to ensure it's not empty
-                'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
+                'compare' => '!=',       // Compare to ensure it's not like an empty string
             ),
-*/
         ),
         'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
@@ -499,12 +497,6 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
                 'value'   => '',               // Empty string to ensure it's not empty
                 'compare' => '!=',       // Compare to ensure it's not like an empty string
             ),
-/*
-            array(
-                'key'   => 'is_editing',
-                'value' => 1,
-            ),
-*/                    
         ),
         'meta_key'  => 'sorting_key',
         'orderby'   => 'meta_value', // Sort by meta value
@@ -558,13 +550,13 @@ function get_doc_field_list_data() {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
             $_list["field_id"] = esc_attr(get_the_ID());
-            $_list["field_title"] = esc_html(get_the_title());
-            $_list["field_content"] = esc_html(get_post_field('post_content', get_the_ID()));
-            $_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
-            $_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
-            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
+            $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
+            $_list["field_title"] = esc_html(get_post_meta(get_the_ID(), 'field_title', true));
             $_list["listing_style"] = esc_attr(get_post_meta(get_the_ID(), 'listing_style', true));
             $_list["editing_type"] = esc_attr(get_post_meta(get_the_ID(), 'editing_type', true));
+            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
+            //$_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
+            //$_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -579,20 +571,10 @@ function display_doc_field_dialog(){
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="field-id" />
+        <label for="field-name">Title:</label>
+        <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
         <label for="field-title">Field:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
-        <label for="field-content">Title:</label>
-        <input type="text" id="field-content" class="text ui-widget-content ui-corner-all" />
-        <div>
-            <div style="display:inline-block; width:50%;">
-                <label for="is-listing">Is listing:</label>
-                <input type="checkbox" id="is-listing" />
-            </div>
-            <div style="display:inline-block;">
-                <label for="is-editing">Is editing:</label>
-                <input type="checkbox" id="is-editing" />
-            </div>
-        </div>
         <label for="listing-style">Style:</label>
         <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
         <label for="editing-type">Type:</label>
@@ -608,13 +590,13 @@ function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
-        $response["field_title"] = esc_html(get_the_title($field_id));
-        $response["field_content"] = esc_html(get_post_field('post_content', $field_id));
-        $response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
-        $response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
-        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
+        $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
+        $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
         $response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
         $response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
+        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
+        //$response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
+        //$response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
     }
     wp_send_json($response);
 }
@@ -626,22 +608,18 @@ function set_doc_field_dialog_data() {
     if( isset($_POST['_field_id']) ) {
         // Update the post into the database
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
-        $data = array(
-            'ID'           => $field_id,
-            'post_title'   => sanitize_text_field($_POST['_field_title']),
-            'post_content' => sanitize_text_field($_POST['_field_content']),
-        );
-        wp_update_post( $data );
-        update_post_meta( $field_id, 'is_listing', sanitize_text_field($_POST['_is_listing']));
-        update_post_meta( $field_id, 'is_editing', sanitize_text_field($_POST['_is_editing']));
-        update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
+        update_post_meta( $field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
+        update_post_meta( $field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
         update_post_meta( $field_id, 'editing_type', sanitize_text_field($_POST['_editing_type']));
+        update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
+        //update_post_meta( $field_id, 'is_listing', sanitize_text_field($_POST['_is_listing']));
+        //update_post_meta( $field_id, 'is_editing', sanitize_text_field($_POST['_is_editing']));
     } else {
         // Insert the post into the database
         $new_post = array(
-            'post_title'    => 'new_field',
-            'post_content'  => 'Field Title',
+            //'post_title'    => 'new_field',
+            //'post_content'  => 'Field Title',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-field',
@@ -649,6 +627,8 @@ function set_doc_field_dialog_data() {
         $post_id = wp_insert_post($new_post);
         if (isset($_POST['_site_id'])) update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        update_post_meta( $post_id, 'field_name', 'new_field');
+        update_post_meta( $post_id, 'field_title', 'Field title');
         update_post_meta( $post_id, 'sorting_key', -1);
         update_post_meta( $post_id, 'listing_style', 'text-align:center;');
         update_post_meta( $post_id, 'editing_type', 'text');
@@ -703,12 +683,11 @@ function display_doc_report_list($doc_id) {
             <thead>
                 <?php
                 $query = retrieve_is_listing_doc_field_data($doc_id);
-                //$query = retrieve_doc_field_list_data($doc_id);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
                         echo '<th>';
-                        echo esc_html(get_post_field('post_content', get_the_ID()));
+                        echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
                         echo '</th>';
                     endwhile;
                     echo '</tr>';
@@ -727,10 +706,9 @@ function display_doc_report_list($doc_id) {
                         $inner_query = retrieve_is_listing_doc_field_data($doc_id);                
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $doc_field = get_the_title();
+                                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                                 echo '<td>';
-                                echo esc_html(get_post_meta($report_id, $doc_field, true));
-                                //echo esc_html($doc_field);
+                                echo esc_html(get_post_meta($report_id, $field_name, true));
                                 echo '</td>';
                             endwhile;                
                             // Reset only the inner loop's data
@@ -747,9 +725,9 @@ function display_doc_report_list($doc_id) {
         <input type="button" id="new-doc-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
     <?php
-    echo '<div style="display:none;">';
+    //echo '<div style="display:none;">';
     //display_doc_report_dialog($doc_id);
-    echo '</div>';
+    //echo '</div>';
 }
 
 function display_doc_report_dialog($report_id) {
@@ -767,26 +745,30 @@ function display_doc_report_dialog($report_id) {
     $query = retrieve_is_editing_doc_field_data($doc_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
-            $field_name = esc_attr(get_the_title());
+            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+            $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
-            $field_value = esc_html(get_post_meta($report_id, $field_name, true));
-            echo '<label for="'.$field_name.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
+            $field_value = get_post_meta($report_id, $field_name, true);
             switch (true) {
                 case ($field_type=='textarea'):
-                    echo '<textarea id="' . $field_name . '" rows="3" style="width:100%;">' . $field_value . '</textarea>';
+                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                    echo '<textarea id="' . esc_attr($field_name) . '" rows="3" style="width:100%;">' . esc_html($field_value) . '</textarea>';
                     break;
 
                 case ($field_type=='checkbox'):
-                    if ($field_value==1) $is_checked ? 'checked' : '';
-                    echo '<input type="checkbox" id="' . $field_name . '" ' . $is_checked . ' class="text ui-widget-content ui-corner-all" />';
+                    $is_checked = ($field_value==1) ? 'checked' : '';
+                    echo '<input type="checkbox" id="' . esc_attr($field_name) . '" ' . $is_checked . ' />';
+                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label><br>';
                     break;
 /*            
-                    case strpos($key, '_category'):
+                case strpos($key, '_category'):
+                    echo '<label for="'.$field_name.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
                     echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                     break;
 */        
                 default:
-                    echo '<input type="text" id="' . $field_name . '" value="' . $field_value . '" class="text ui-widget-content ui-corner-all" />';
+                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                    echo '<input type="text" id="' . esc_attr($field_name) . '" value="' . esc_html($field_value) . '" class="text ui-widget-content ui-corner-all" />';
                     break;
             }
 
@@ -813,24 +795,22 @@ function set_doc_report_dialog_data() {
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
         // Update the Document data
-        $data = array(
-            'ID'         => $report_id,
-            'meta_input' => array(
-                'doc_title'   => $_POST['_doc_title'],
-                'doc_number'   => $_POST['_doc_number'],
-                'doc_revision' => $_POST['_doc_revision'],
-                'doc_url'      => $_POST['_doc_url'],
-                'start_job'    => $start_job,
-                'start_leadtime' => $start_leadtime,
-                'doc_category'  => $_POST['_doc_category'],
-            )
-        );
-        wp_update_post( $data );
+        if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+        //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $field_value = sanitize_text_field($_POST[$field_name]);
+                update_post_meta( $report_id, $field_name, $field_value);
+            endwhile;
+            wp_reset_postdata();
+        }
+
     } else {
         // Insert the post into the database
         $new_post = array(
-            'post_title'    => 'No title',
-            'post_content'  => 'Your post content goes here.',
+            //'post_title'    => 'No title',
+            //'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-report',
@@ -842,8 +822,9 @@ function set_doc_report_dialog_data() {
         //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                 $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                update_post_meta( $post_id, get_the_title(), $default_value);
+                update_post_meta( $post_id, $field_name, $default_value);
             endwhile;
             wp_reset_postdata();
         }

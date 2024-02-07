@@ -40,7 +40,89 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function activate_document_data(){
+    function activate_document_dialog_data(){
+        $("#save-document-button").on("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_document_dialog_data',
+                    '_doc_id': doc_id,
+                    '_doc_title': $("#doc_title").val(),
+                    '_doc_number': $("#doc_number").val(),
+                    '_doc_revision': $("#doc_revision").val(),
+                    '_doc_date': $("#doc_date").val(),
+                    '_doc_url': $("#doc_url").val(),
+                    '_is_doc_report': $("#is-doc-report").val(),
+                    '_start_job': $("#start_job").val(),
+                    '_start_leadtime': $("#start_leadtime").val(),
+                    '_doc_category': $("#doc_category").val(),
+                },
+                success: function (response) {
+                    window.location.replace("/display-documents/");
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#del-document-button").on("click", function(e) {
+            e.preventDefault();
+            if (window.confirm("Are you sure you want to delete this document?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_document_dialog_data',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        window.location.replace("/display-documents/");
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        // doc-field scripts
+        var currentValue = $("#doc-field-setting").text();
+        $("#doc-field-setting").on("click", function () {
+            $("#doc_url").toggle();
+            $("#doc-field-list-dialog").toggle();
+            const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+            $("#is-doc-report").val(is_doc_report)
+            get_doc_field_list_data(doc_id, 0);
+            currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
+            $(this).text(currentValue);
+        });            
+
+        $("#new-doc-field").on("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_field_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_field_list_data(doc_id, 0);
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });    
+        });
     }
 
     function get_document_dialog_data(doc_id){
@@ -57,91 +139,14 @@ jQuery(document).ready(function($) {
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
                 
-                //activate_document_data();
-                $("#save-document-button").on("click", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_document_dialog_data',
-                            '_doc_id': doc_id,
-                            '_doc_title': $("#doc_title").val(),
-                            '_doc_number': $("#doc_number").val(),
-                            '_doc_revision': $("#doc_revision").val(),
-                            '_doc_date': $("#doc_date").val(),
-                            '_doc_url': $("#doc_url").val(),
-                            '_is_doc_report': $("#is-doc-report").val(),
-                            '_start_job': $("#start_job").val(),
-                            '_start_leadtime': $("#start_leadtime").val(),
-                            '_doc_category': $("#doc_category").val(),
-                        },
-                        success: function (response) {
-                            window.location.replace("/display-documents/");
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-
-                $("#del-document-button").on("click", function(e) {
-                    e.preventDefault();
-                    if (window.confirm("Are you sure you want to delete this document?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_document_dialog_data',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                window.location.replace("/display-documents/");
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });
-
-                // doc-field scripts
-                var currentValue = $("#doc-field-setting").text();
-                $("#doc-field-setting").on("click", function () {
-                    $("#doc_url").toggle();
-                    $("#doc-field-list-dialog").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
-                    get_doc_field_list_data(doc_id, 0);
-                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
-                    $(this).text(currentValue);
-                });            
-
-                $("#new-doc-field").on("click", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_field_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            get_doc_field_list_data(doc_id, 0);
-                        },
-                        error: function(error){
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });    
-                });
-
+                activate_document_dialog_data();
+                activate_doc_report_list_data();
                 // doc-report scripts
+                $("#new-doc-report").on("click", function(e) {
+                    e.preventDefault();
+                    get_document_dialog_data(doc_id)
+                });
+
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -206,8 +211,8 @@ jQuery(document).ready(function($) {
                     const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
     
                     const output = `
+                        <td style="text-align:center;">${value.field_name}</td>
                         <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.field_content}</td>
                         <td style="text-align:center;">${value.editing_type}</td>
                         <td style="text-align:center;">${value.default_value}</td>
                     `;
@@ -215,7 +220,7 @@ jQuery(document).ready(function($) {
                     $docFieldList.append(output).show();
                 });
     
-                activate_doc_field_data();
+                activate_doc_field_list_data();
             },
             error: function (error) {
                 console.error(error);
@@ -244,9 +249,9 @@ jQuery(document).ready(function($) {
         });    
     });                                        
 
-    activate_doc_field_data();
+    activate_doc_field_list_data();
 
-    function activate_doc_field_data(){
+    function activate_doc_field_list_data(){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
                 const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
@@ -287,13 +292,13 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-field-dialog").dialog('open');
                     $("#field-id").val(field_id);
+                    $("#field-name").val(response.field_name);
                     $("#field-title").val(response.field_title);
-                    $("#field-content").val(response.field_content);
-                    $('#is-listing').prop('checked', response.is_listing == 1);
                     $("#listing-style").val(response.listing_style);
-                    $('#is-editing').prop('checked', response.is_editing == 1);
                     $("#editing-type").val(response.editing_type);
                     $("#default-value").val(response.default_value);
+                    $('#is-listing').prop('checked', response.is_listing == 1);
+                    $('#is-editing').prop('checked', response.is_editing == 1);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -315,13 +320,13 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_doc_field_dialog_data',
                             '_field_id': $("#field-id").val(),
+                            '_field_name': $("#field-name").val(),
                             '_field_title': $("#field-title").val(),
-                            '_field_content': $("#field-content").val(),
-                            '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
                             '_listing_style': $("#listing-style").val(),
-                            '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
                             '_editing_type': $("#editing-type").val(),
                             '_default_value': $("#default-value").val(),
+                            '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
+                            '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
@@ -367,7 +372,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-report scripts
-    function activate_doc_report_data(){
+    function activate_doc_report_list_data(){
     }
 
     function get_doc_report_list_data(doc_id, site_id) {
@@ -396,7 +401,7 @@ jQuery(document).ready(function($) {
 
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
-/*
+
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -416,8 +421,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });            
-                activate_doc_report_data();
-*/
+                activate_doc_report_list_data();
             },
             error: function (error) {
                 console.error(error);
