@@ -777,7 +777,8 @@ function display_doc_report_dialog($report_id) {
                     break;
 
                 case ($field_type=='checkbox'):
-                    echo '<input type="checkbox" id="' . $field_name . '" value="' . $field_value . '" class="text ui-widget-content ui-corner-all" />';
+                    if ($field_value==1) $is_checked ? 'checked' : '';
+                    echo '<input type="checkbox" id="' . $field_name . '" ' . $is_checked . ' class="text ui-widget-content ui-corner-all" />';
                     break;
 /*            
                     case strpos($key, '_category'):
