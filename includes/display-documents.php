@@ -494,13 +494,11 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
                 'key'   => 'doc_id',
                 'value' => $doc_id,
             ),
-/*            
             array(
                 'key'     => 'editing_type',
                 'value'   => '',               // Empty string to ensure it's not empty
-                'compare' => 'NOT LIKE',       // Compare to ensure it's not like an empty string
+                'compare' => '!=',       // Compare to ensure it's not like an empty string
             ),
-*/            
 /*
             array(
                 'key'   => 'is_editing',
@@ -777,11 +775,11 @@ function display_doc_report_dialog($report_id) {
                 case ($field_type=='textarea'):
                     echo '<textarea id="' . $field_name . '" rows="3" style="width:100%;">' . $field_value . '</textarea>';
                     break;
-/*        
-                    case strpos($key, '_job'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-                        break;
-            
+
+                case ($field_type=='checkbox'):
+                    echo '<input type="checkbox" id="' . $field_name . '" value="' . $field_value . '" class="text ui-widget-content ui-corner-all" />';
+                    break;
+/*            
                     case strpos($key, '_category'):
                     echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                     break;
