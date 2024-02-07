@@ -263,8 +263,14 @@ function get_document_dialog_data() {
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        if ($is_doc_report) {            
-            display_doc_report_list($doc_id);
+        $todo_status = get_post_meta($doc_id, 'todo_status', true);
+        $doc_url = get_post_meta($doc_id, 'doc_url', true);
+        if ($todo_status==-1) {
+            if ($is_doc_report) {
+                display_doc_report_list($doc_id);    
+            } else {
+                wp_redirect($doc_url);
+            }
         } else {
             display_document_dialog($doc_id);
         }
@@ -571,9 +577,9 @@ function display_doc_field_dialog(){
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="field-id" />
-        <label for="field-name">Title:</label>
+        <label for="field-name">Name:</label>
         <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
-        <label for="field-title">Field:</label>
+        <label for="field-title">Title:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style">Style:</label>
         <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
