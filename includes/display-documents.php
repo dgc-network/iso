@@ -302,7 +302,7 @@ function display_document_dialog($doc_id) {
             if ($key=='doc_url') {
                 if ($is_doc_report==1) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                    echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
+                    echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     display_doc_field_list(true);
                 } else {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
