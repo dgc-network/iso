@@ -130,7 +130,7 @@ function display_documents_shortcode() {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                    <div class="button"><span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
+                    <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                 </div>
             </div>
 
@@ -306,9 +306,7 @@ function display_document_dialog($doc_id) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                     echo '</div>';
                     echo '<div style="text-align: right">';
-                    //echo '<div class="button">';
                     echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button"></span>';
-                    //echo '</div>';
                     echo '</div>';
                     echo '</div>';
     
@@ -317,7 +315,15 @@ function display_document_dialog($doc_id) {
                     display_doc_field_list($doc_id, false);
                     echo '</div>';
                 } else {
+                    echo '<div style="display:flex; justify-content:space-between; margin:5px;">';
+                    echo '<div>';
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                    echo '</div>';
+                    echo '<div style="text-align: right">';
+                    echo '<span id="doc-url-preview-'.$doc_id.'" <span class="dashicons dashicons-external button"></span>';
+                    echo '</div>';
+                    echo '</div>';
+    
                     echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog" style="display:none;">';
                     display_doc_field_list($doc_id, false);
@@ -736,7 +742,7 @@ function display_doc_report_list($doc_id) {
             </div>
             <div style="text-align:right; display:flex;">
                 <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                <div class="button"><span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></div>
+                <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
 
