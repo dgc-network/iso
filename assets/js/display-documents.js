@@ -159,7 +159,7 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_doc_report_list_data(doc_id, 0)
+                            get_doc_report_list_data(doc_id)
                         },
                         error: function(error){
                             console.error(error);                    
@@ -378,28 +378,20 @@ jQuery(document).ready(function($) {
     function activate_doc_report_list_data(){
     }
 
-    function get_doc_report_list_data(doc_id, site_id) {
+    function get_doc_report_list_data(doc_id=false, site_id=false) {
 
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
     
-        if (site_id != 0) {
-            ajaxData['_site_id'] = site_id;
-        } else {
-            ajaxData['_doc_id'] = doc_id;
-        }
+        if (doc_id) ajaxData['_doc_id'] = doc_id;
+        if (site_id) ajaxData['_site_id'] = site_id;
     
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: 'json',
-            //data: ajaxData,
-            data: {
-                'action': 'get_doc_report_list_data',
-                '_doc_id': doc_id,
-            },
-
+            data: ajaxData,
             success: function (response) {
 
                 $('#result-container').html(response);
@@ -460,25 +452,8 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: ajaxData,
-/*                        
-                        data: {
-                            'action': 'set_doc_report_dialog_data',
-                            '_report_id': report_id,
-                            '_doc_title': $("#doc_title").val(),
-                            '_doc_number': $("#doc_number").val(),
-                            '_doc_revision': $("#doc_revision").val(),
-                            '_doc_date': $("#doc_date").val(),
-                            '_doc_url': $("#doc_url").val(),
-                            '_is_doc_report': $("#is-doc-report").val(),
-                            '_start_job': $("#start_job").val(),
-                            '_start_leadtime': $("#start_leadtime").val(),
-                            '_doc_category': $("#doc_category").val(),
-                        },
-*/
-
                         success: function (response) {
-                            get_doc_report_list_data($("#doc-id").val(),0);
-                            //window.location.replace("/display-documents/");
+                            get_doc_report_list_data($("#doc-id").val());
                         },
                         error: function(error){
                             console.error(error);
@@ -499,8 +474,7 @@ jQuery(document).ready(function($) {
                                 '_report_id': report_id,
                             },
                             success: function (response) {
-                                get_doc_report_list_data($("#doc-id").val(),0);
-                                //window.location.replace("/display-documents/");
+                                get_doc_report_list_data($("#doc-id").val());
                             },
                             error: function(error){
                                 console.error(error);
