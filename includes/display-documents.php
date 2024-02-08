@@ -452,8 +452,8 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
             </thead>
             <tbody id="sortable-doc-field-list">
                 <?php
-                $query = retrieve_doc_field_list_data($doc_id);
-                if (!$site_id) $query = retrieve_doc_field_list_data_in_site($site_id);
+                $query = retrieve_doc_field_list_data($doc_id, $site_id);
+                //if (!$site_id) $query = retrieve_doc_field_list_data_in_site($site_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
@@ -529,7 +529,7 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
     return $query;
 }
 
-function retrieve_doc_field_list_data($doc_id=0) {
+function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -824,7 +824,8 @@ function set_doc_report_dialog_data() {
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
         // Update the Document data
-        if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+        $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
+        //if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
         //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -847,7 +848,8 @@ function set_doc_report_dialog_data() {
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
 
-        if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
+        $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
+        //if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
         //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();

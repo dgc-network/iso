@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        get_doc_field_list_data_in_site($("#site-id").val());
+        get_doc_field_list_data(false, $("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function get_doc_field_list_data(doc_id) {
+    function backup_get_doc_field_list_data(doc_id) {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -193,7 +193,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#doc-field-list-dialog').html(response);
-                //activate_doc_field_list_data();
+                activate_doc_field_list_data();
             },
             error: function (error) {
                 console.error(error);
@@ -203,7 +203,7 @@ jQuery(document).ready(function($) {
     }
 
 
-    function get_doc_field_list_data_in_site(doc_id, site_id) {
+    function get_doc_field_list_data(doc_id=false, site_id=false) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
         };
@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
 
                 $('#doc-field-list-dialog').html(response);
-                //$("#doc-id").val(doc_id);
+                $("#doc-id").val(doc_id);
 /*
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-field-list-${index}`).hide().empty();
