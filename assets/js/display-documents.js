@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        get_doc_field_list_data(false, $("#site-id").val());
+        //get_doc_field_list_data(false, $("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -208,11 +208,8 @@ jQuery(document).ready(function($) {
             'action': 'get_doc_field_list_data',
         };
     
-        if (site_id != false) {
-            ajaxData['_site_id'] = site_id;
-        } else {
-            ajaxData['_doc_id'] = doc_id;
-        }
+        if (doc_id) ajaxData['_doc_id'] = doc_id;
+        if (site_id) ajaxData['_site_id'] = site_id;
     
         $.ajax({
             type: 'POST',
