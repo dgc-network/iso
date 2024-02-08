@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        get_doc_field_list_data(false, $("#site-id").val());
+        get_doc_field_list_data_in_site($("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
                     $("#doc-field-list-dialog").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
-                    get_doc_field_list_data(doc_id, false);
+                    //get_doc_field_list_data(doc_id);
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_doc_field_list_data(doc_id, false);
+                            get_doc_field_list_data(doc_id);
                         },
                         error: function(error){
                             console.error(error);                    
@@ -357,7 +357,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
                             if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                get_doc_field_list_data($("#doc-id").val(), false);
+                                get_doc_field_list_data($("#doc-id").val());
                             } else {
                                 get_doc_field_list_data(false, $("#site-id").val());
                             }
@@ -381,7 +381,7 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
                                 if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                    get_doc_field_list_data($("#doc-id").val(), false);
+                                    get_doc_field_list_data($("#doc-id").val());
                                 } else {
                                     get_doc_field_list_data(false, $("#site-id").val());
                                 }
