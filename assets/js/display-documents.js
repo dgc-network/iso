@@ -12,7 +12,6 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        //get_doc_field_list_data(false, $("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -116,7 +115,6 @@ jQuery(document).ready(function($) {
                     $("#doc-field-list-dialog").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
-                    //get_doc_field_list_data(doc_id);
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
@@ -182,27 +180,6 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function backup_get_doc_field_list_data(doc_id) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: 'json',
-            data: {
-                'action': 'get_doc_field_list_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {
-                $('#doc-field-list-dialog').html(response);
-                activate_doc_field_list_data();
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-
-
     function get_doc_field_list_data(doc_id=false, site_id=false) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',

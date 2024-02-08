@@ -576,7 +576,23 @@ function retrieve_doc_field_list_data_in_site($site_id=0) {
 }
 
 function get_doc_field_list_data() {
-    if (isset($_POST['_doc_id'])) display_doc_field_list($_POST['_doc_id'], false);
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = (int) $_POST['_doc_id'];
+        display_doc_field_list($doc_id);
+    } elseif (isset($_POST['_site_id'])) {
+        $site_id = (int) $_POST['_site_id'];
+        display_doc_field_list(false, $site_id);
+    }
+
+    wp_die();
+}
+
+add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
+add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
+
+function backup_get_doc_field_list_data() {
+    
+    if (isset($_POST['_doc_id'])) display_doc_field_list($_POST['_doc_id']);
     if (isset($_POST['_site_id'])) display_doc_field_list(false, $_POST['_site_id']);
     wp_die();
 
@@ -602,8 +618,8 @@ function get_doc_field_list_data() {
     wp_send_json($_array);
 */    
 }
-add_action( 'wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data' );
-add_action( 'wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data' );
+//add_action( 'wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data' );
+//add_action( 'wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data' );
 
 function display_doc_field_dialog(){
     ?>
