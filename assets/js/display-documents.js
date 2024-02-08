@@ -139,13 +139,15 @@ jQuery(document).ready(function($) {
                     });    
                 });
 
-                activate_doc_report_list_data();
+                activate_doc_field_list_data();
+
                 // doc-report scripts
+/*                
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     get_document_dialog_data(doc_id)
                 });
-
+*/
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -171,7 +173,8 @@ jQuery(document).ready(function($) {
                     get_doc_report_dialog_data(report_id)
                 });            
             
-            
+                activate_doc_report_list_data();
+
             },
             error: function (error) {
                 console.log(error);
