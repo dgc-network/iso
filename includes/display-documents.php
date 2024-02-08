@@ -320,7 +320,7 @@ function display_document_dialog($doc_id) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                     echo '</div>';
                     echo '<div style="text-align: right">';
-                    echo '<span id="doc-url-preview-'.$doc_id.'" <span class="dashicons dashicons-external button"></span>';
+                    echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button"></span>';
                     echo '</div>';
                     echo '</div>';
     
