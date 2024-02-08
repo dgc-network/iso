@@ -192,8 +192,8 @@ jQuery(document).ready(function($) {
                 '_doc_id': doc_id,
             },
             success: function (response) {
-                //$('#doc-field-list-dialog').html(response);
-                activate_doc_field_list_data();
+                $('#doc-field-list-dialog').html(response);
+                //activate_doc_field_list_data();
             },
             error: function (error) {
                 console.error(error);
