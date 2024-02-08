@@ -182,7 +182,28 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function get_doc_field_list_data(doc_id, site_id) {
+    function get_doc_field_list_data(doc_id) {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: 'json',
+            data: {
+                'action': 'get_doc_field_list_data',
+                '_doc_id': doc_id,
+            },
+            success: function (response) {
+                $('#doc-field-list-dialog').html(response);
+                activate_doc_field_list_data();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
+
+    function get_doc_field_list_data_in_site(doc_id, site_id) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
         };
