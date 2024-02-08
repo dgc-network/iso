@@ -305,13 +305,13 @@ function display_document_dialog($doc_id) {
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
                     display_doc_field_list($doc_id, false);
-                    echo '</dic>';
+                    echo '</div>';
                 } else {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog" style="display:none;">';
                     display_doc_field_list($doc_id, false);
-                    echo '</dic>';
+                    echo '</div>';
                 }
             } else {
                 echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
