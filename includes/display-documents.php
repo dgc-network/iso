@@ -301,7 +301,17 @@ function display_document_dialog($doc_id) {
         foreach ($values as $value) {
             if ($key=='doc_url') {
                 if ($is_doc_report==1) {
+                    echo '<div style="display:flex; justify-content:space-between; margin:5px;">';
+                    echo '<div>';
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                    echo '</div>';
+                    echo '<div style="text-align: right">';
+                    //echo '<div class="button">';
+                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button"></span>';
+                    //echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+    
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
                     display_doc_field_list($doc_id, false);
@@ -316,16 +326,12 @@ function display_document_dialog($doc_id) {
             } else {
                 echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
                 switch (true) {
-                    case strpos($key, 'url'):
-                        echo '<textarea id="' . $key . '" rows="3" style="width:100%;">' . $value . '</textarea>';
+                    case strpos($key, '_job'):
+                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
                         break;
-            
-                        case strpos($key, '_job'):
-                            echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-                            break;
                 
-                        case strpos($key, '_category'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+                    case strpos($key, '_category'):
+                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
                         break;
             
                     default:

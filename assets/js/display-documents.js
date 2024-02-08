@@ -223,7 +223,27 @@ jQuery(document).ready(function($) {
                     $docFieldList.append(output).show();
                 });
 */    
+                $("#new-doc-field").on("click", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_field_dialog_data',
+                            '_doc_id': doc_id,
+                        },
+                        success: function (response) {
+                            get_doc_field_list_data(doc_id);
+                        },
+                        error: function(error){
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });    
+                });
                 activate_doc_field_list_data();
+
             },
             error: function (error) {
                 console.error(error);
