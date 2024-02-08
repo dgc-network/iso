@@ -530,19 +530,29 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
 }
 
 function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
+
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-        ),
-        'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value', // Sort by meta value
-        'order'     => 'ASC',
+        'meta_key'       => 'sorting_key',
+        'orderby'        => 'meta_value',
+        'order'          => 'ASC',
     );
+    
+    if ($doc_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'doc_id',
+            'value' => $doc_id,
+        );
+    }
+    
+    if ($site_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'site_id',
+            'value' => $site_id,
+        );
+    }
+    
     $query = new WP_Query($args);
     return $query;
 }
