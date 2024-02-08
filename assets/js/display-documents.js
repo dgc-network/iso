@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         $("#document-setting-div").toggle();
-        get_doc_field_list_data($("#site-id").val(),1);
+        get_doc_field_list_data(false, $("#site-id").val());
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
                     $("#doc-field-list-dialog").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
-                    get_doc_field_list_data(doc_id, 0);
+                    get_doc_field_list_data(doc_id, false);
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_doc_field_list_data(doc_id, 0);
+                            get_doc_field_list_data(doc_id, false);
                         },
                         error: function(error){
                             console.error(error);                    
@@ -182,15 +182,15 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function get_doc_field_list_data(_id, is_site) {
+    function get_doc_field_list_data(doc_id, site_id) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
         };
     
-        if (is_site === 1) {
-            ajaxData['_site_id'] = _id;
+        if (site_id != false) {
+            ajaxData['_site_id'] = site_id;
         } else {
-            ajaxData['_doc_id'] = _id;
+            ajaxData['_doc_id'] = doc_id;
         }
     
         $.ajax({
@@ -199,6 +199,10 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
+
+                $('#doc-field-list-dialog').html(response);
+                //$("#doc-id").val(doc_id);
+/*
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-field-list-${index}`).hide().empty();
                 }
@@ -220,7 +224,7 @@ jQuery(document).ready(function($) {
     
                     $docFieldList.append(output).show();
                 });
-    
+*/    
                 activate_doc_field_list_data();
             },
             error: function (error) {
@@ -241,7 +245,7 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_doc_field_list_data($("#site-id").val(),1);
+                get_doc_field_list_data(false, $("#site-id").val());
             },
             error: function(error){
                 console.error(error);                    
@@ -332,9 +336,9 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
                             if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                get_doc_field_list_data($("#doc-id").val(), 0);
+                                get_doc_field_list_data($("#doc-id").val(), false);
                             } else {
-                                get_doc_field_list_data($("#site-id").val(), 1);
+                                get_doc_field_list_data(false, $("#site-id").val());
                             }
                         },
                         error: function (error) {
@@ -356,9 +360,9 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
                                 if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                    get_doc_field_list_data($("#doc-id").val(), 0);
+                                    get_doc_field_list_data($("#doc-id").val(), false);
                                 } else {
-                                    get_doc_field_list_data($("#site-id").val(), 1);
+                                    get_doc_field_list_data(false, $("#site-id").val());
                                 }
                             },
                             error: function(error){

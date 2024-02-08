@@ -120,7 +120,7 @@ function display_documents_shortcode() {
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <label for="doc-field-setting"> Field setting: </label>
-                <?php display_doc_field_list(true);?>                
+                <?php display_doc_field_list(false, $site_id);?>                
             </fieldset>
             </div>
         
@@ -303,11 +303,15 @@ function display_document_dialog($doc_id) {
                 if ($is_doc_report==1) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
-                    display_doc_field_list(true);
+                    echo '<div id="doc-field-list-dialog">';
+                    display_doc_field_list($doc_id, false);
+                    echo '</dic>';
                 } else {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
-                    display_doc_field_list(false);    
+                    echo '<div id="doc-field-list-dialog" style="display:none;">';
+                    display_doc_field_list($doc_id, false);
+                    echo '</dic>';
                 }
             } else {
                 echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
@@ -433,10 +437,9 @@ add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
 // doc-field
-function display_doc_field_list($_is_show=false) {
-    if (!$_is_show) $show='display:none;'
+function display_doc_field_list($doc_id=false, $site_id=false) {
+    //if (!$is_display) $display='display:none;';
     ?>
-    <div id="doc-field-list-dialog" title="Field list" style="<?php echo $show;?>">
     <fieldset>
         <table style="width:100%;">
             <thead>
@@ -449,17 +452,31 @@ function display_doc_field_list($_is_show=false) {
             </thead>
             <tbody id="sortable-doc-field-list">
                 <?php
+                $query = retrieve_doc_field_list_data($doc_id);
+                if (!$site_id) $query = retrieve_doc_field_list_data_in_site($site_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'editing_type', true)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
+                        echo '</tr>';
+                    endwhile;
+                    wp_reset_postdata();
+                }
+/*            
                 $x = 0;
                 while ($x<50) {
                     echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
+*/                
                 ?>
             </tbody>
         </table>
         <input type ="button" id="new-doc-field" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
-    </div>
     <?php display_doc_field_dialog();?>
     <?php
 }
@@ -549,6 +566,11 @@ function retrieve_doc_field_list_data_in_site($site_id=0) {
 }
 
 function get_doc_field_list_data() {
+    if (isset($_POST['_doc_id'])) display_doc_field_list($_POST['_doc_id'], false);
+    if (isset($_POST['_site_id'])) display_doc_field_list(false, $_POST['_site_id']);
+    wp_die();
+
+/*    
     if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
     if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
     $_array = array();
@@ -568,6 +590,7 @@ function get_doc_field_list_data() {
         wp_reset_postdata();
     }
     wp_send_json($_array);
+*/    
 }
 add_action( 'wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data' );
