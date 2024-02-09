@@ -574,6 +574,8 @@ function retrieve_doc_field_list_data_in_site($site_id=0) {
 }
 
 function get_doc_field_list_data() {
+    error_log('Debugging message: ' . print_r($_POST, true));
+
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
         display_doc_field_list($doc_id);
