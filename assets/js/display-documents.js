@@ -415,7 +415,11 @@ jQuery(document).ready(function($) {
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: 'json',
-            data: ajaxData,
+            //data: ajaxData,
+            data: {
+                action: 'get_doc_report_list_data',
+                _doc_id: doc_id,
+            },
             success: function (response) {
 
                 $('#result-container').html(response);
