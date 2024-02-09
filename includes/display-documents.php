@@ -303,13 +303,13 @@ function display_document_dialog($doc_id) {
                 if ($is_doc_report==1) {
                     echo '<div style="display:flex; justify-content:space-between; margin:5px;">';
                     echo '<div>';
-                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                     echo '</div>';
                     echo '<div style="text-align: right">';
-                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button"></span>';
                     echo '</div>';
                     echo '</div>';
     
+                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
                     display_doc_field_list($doc_id, false);

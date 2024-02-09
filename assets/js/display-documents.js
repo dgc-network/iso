@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
         });            
     
         $("#doc-url-preview").on("click", function () {
-            window.location.replace($("#doc-url").val());
+            window.location.replace($("#doc_url").val());
         });            
     
 
