@@ -558,11 +558,9 @@ function get_doc_field_list_data() {
     // Retrieve the value
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
-        //display_doc_field_list($doc_id);
         $query = retrieve_doc_field_list_data($doc_id);
     } elseif (isset($_POST['_site_id'])) {
         $site_id = (int) $_POST['_site_id'];
-        //display_doc_field_list(false, $site_id);
         $query = retrieve_doc_field_list_data(false, $site_id);
     }
 
@@ -614,8 +612,6 @@ function get_doc_field_dialog_data() {
         $response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
         $response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
-        //$response["is_listing"] = esc_html(get_post_meta($field_id, 'is_listing', true));
-        //$response["is_editing"] = esc_html(get_post_meta($field_id, 'is_editing', true));
     }
     wp_send_json($response);
 }
@@ -822,8 +818,6 @@ function set_doc_report_dialog_data() {
     } else {
         // Insert the post into the database
         $new_post = array(
-            //'post_title'    => 'No title',
-            //'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-report',
@@ -847,25 +841,68 @@ add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' )
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
 function retrieve_doc_report_list_data($doc_id=0) {
+
     $args = array(
         'post_type'      => 'doc-report',
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-        ),
-        //'meta_key'  => 'sorting_key',
-        //'orderby'   => 'meta_value', // Sort by meta value
-        //'order'     => 'ASC',
     );
+    
+    if ($doc_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'doc_id',
+            'value' => $doc_id,
+        );
+    }
+    
+    if ($site_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'site_id',
+            'value' => $site_id,
+        );
+    }
+    
     $query = new WP_Query($args);
     return $query;
 }
 
 function get_doc_report_list_data() {
+    // Retrieve the value
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = (int) $_POST['_doc_id'];
+        $query = retrieve_doc_report_list_data($doc_id);
+        $inner_query = retrieve_is_listing_doc_field_data($doc_id);
+    } elseif (isset($_POST['_site_id'])) {
+        $site_id = (int) $_POST['_site_id'];
+        $query = retrieve_doc_report_list_data(false, $site_id);
+        $inner_query = retrieve_is_listing_doc_field_data(false, $site_id);
+    }
+
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $report_id = get_the_ID();
+            $_list = array();
+            $_list["report_id"] = get_the_ID();
+            $_list["report_contain"] = '';
+
+            if ($inner_query->have_posts()) {
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                    $field_value = get_post_meta($report_id, $field_name, true);
+                    $_list["report_contain"] .= '<td style="'.$listing_style.'">'.$field_value.'</td>';
+                endwhile;
+                wp_reset_postdata();
+            }
+
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
+
+/*
     error_log('Debugging message: ' . print_r($_POST, true));
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
@@ -876,6 +913,7 @@ function get_doc_report_list_data() {
         echo 'Invalid AJAX request!';
         wp_die();
     }
+*/    
 }
 add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );

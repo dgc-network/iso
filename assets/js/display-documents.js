@@ -43,13 +43,11 @@ jQuery(document).ready(function($) {
         $('[id^="doc-report-preview-"]').on("click", function () {
             const doc_id = this.id.substring(19);
             get_doc_report_list_data(doc_id)
-        });            
+        });
     
         $("#doc-url-preview").on("click", function () {
             window.location.replace($("#doc_url").val());
-        });            
-    
-
+        });    
     }
 
     function get_document_dialog_data(doc_id){
@@ -403,7 +401,6 @@ jQuery(document).ready(function($) {
     }
 
     function get_doc_report_list_data(doc_id=false, site_id=false) {
-
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
@@ -415,13 +412,21 @@ jQuery(document).ready(function($) {
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: 'json',
-            //data: ajaxData,
-            data: {
-                action: 'get_doc_report_list_data',
-                _doc_id: doc_id,
-            },
+            data: ajaxData,
             success: function (response) {
 
+                for (let index = 0; index < 50; index++) {
+                    $(`.doc-report-list-${index}`).hide().empty();
+                }
+    
+                $.each(response, function (index, value) {
+                    const doc_report_list = $(`.doc-report-list-${index}`);
+                    doc_report_list.attr('id', `edit-doc-report-${value.report_id}`);
+                    doc_report_list.attr('data-report-id', value.report_id);
+                    const output = value.report_contain;    
+                    $docFieldList.append(output).show();
+                });
+/*
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
 
@@ -445,6 +450,7 @@ jQuery(document).ready(function($) {
                     });
                 });            
                 activate_doc_report_list_data();
+*/                
             },
             error: function (error) {
                 console.error(error);
