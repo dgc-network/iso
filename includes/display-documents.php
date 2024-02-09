@@ -149,18 +149,19 @@ function display_documents_shortcode() {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
-                        $doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
-                        $doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-                        $doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
-                        $doc_status = esc_attr(get_post_meta($post_id, 'doc_status', true));
-                        $deleting = esc_attr(get_post_meta($post_id, 'deleting', true));
+                        //$doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
+                        //$doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
+                        //$doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
+                        $todo_id = get_post_meta($post_id, 'todo_status', true);
+                        $todo_status = ($todo_id) ? get_the_title($todo_if) : 'Draft';
+                        $is_deleting = get_post_meta($post_id, 'is_deleting', true);
+                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
                         ?>
                         <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
-                            <?php if ($doc_date){?><td><a href="<?php echo $doc_url;?>"><?php echo $doc_title;?></a></td><?php }?>
-                            <?php if (!$doc_date){?><td><?php  echo $doc_title;?></td><?php }?>
+                            <td><?php echo esc_html(get_post_meta($post_id, 'doc_title', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
-                            <td style="text-align:center;"><?php echo wp_date( get_option('date_format'), $doc_date );?></td>
+                            <td style="text-align:center;"><?php echo esc_html($todo_status.$del_status);?></td>
                         </tr>
                         <?php 
                         //$x += 1;
