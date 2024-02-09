@@ -47,7 +47,7 @@ jQuery(document).ready(function($) {
             };
         
             if (doc_id) ajaxData['_doc_id'] = doc_id;
-            if (site_id) ajaxData['_site_id'] = site_id;
+            //if (site_id) ajaxData['_site_id'] = site_id;
         
             $.ajax({
                 type: 'POST',
