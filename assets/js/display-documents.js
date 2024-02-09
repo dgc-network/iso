@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
     
                     $docFieldList.append(output).show();
                 });
-
+/*
                 $("#new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -267,7 +267,7 @@ jQuery(document).ready(function($) {
                     });    
                 });
                 activate_doc_field_list_data();
-
+*/
             },
             error: function (error) {
                 console.error(error);

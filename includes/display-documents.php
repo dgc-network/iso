@@ -555,17 +555,31 @@ function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
 }
 
 function get_doc_field_list_data() {
-    error_log('Debugging message: ' . print_r($_POST, true));
-
+    // Retrieve the value
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
-        display_doc_field_list($doc_id);
+        //display_doc_field_list($doc_id);
+        $query = retrieve_doc_field_list_data($doc_id);
     } elseif (isset($_POST['_site_id'])) {
         $site_id = (int) $_POST['_site_id'];
-        display_doc_field_list(false, $site_id);
+        //display_doc_field_list(false, $site_id);
+        $query = retrieve_doc_field_list_data(false, $site_id);
     }
 
-    wp_die();
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $_list = array();
+            $_list["field_id"] = get_the_ID();
+            $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
+            $_list["field_title"] = esc_html(get_post_meta(get_the_ID(), 'field_title', true));
+            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'editing_type', true));
+            $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
 }
 
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
