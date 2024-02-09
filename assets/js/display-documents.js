@@ -424,7 +424,7 @@ jQuery(document).ready(function($) {
                     doc_report_list.attr('id', `edit-doc-report-${value.report_id}`);
                     doc_report_list.attr('data-report-id', value.report_id);
                     const output = value.report_contain;    
-                    $docFieldList.append(output).show();
+                    doc_report_list.append(output).show();
                 });
 /*
                 $('#result-container').html(response);
