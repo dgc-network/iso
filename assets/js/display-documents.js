@@ -423,8 +423,8 @@ jQuery(document).ready(function($) {
                     const doc_report_list = $(`.doc-report-list-${index}`);
                     doc_report_list.attr('id', `edit-doc-report-${value.report_id}`);
                     doc_report_list.attr('data-report-id', value.report_id);
-                    const output = value.report_contain;    
-                    doc_report_list.append(output).show();
+                    //const output = value.report_contain;    
+                    doc_report_list.append(value.report_contain).show();
                 });
 /*
                 $('#result-container').html(response);
