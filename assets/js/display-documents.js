@@ -42,7 +42,28 @@ jQuery(document).ready(function($) {
     function activate_document_dialog_data(){
         $('[id^="doc-report-preview-"]').on("click", function () {
             const doc_id = this.id.substring(19);
-            get_doc_report_list_data(doc_id)
+            const ajaxData = {
+                'action': 'open_doc_report_data',
+            };
+        
+            if (doc_id) ajaxData['_doc_id'] = doc_id;
+            if (site_id) ajaxData['_site_id'] = site_id;
+        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: ajaxData,
+                success: function (response) {
+                    $('#result-container').html(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        
+
         });
     
         $("#doc-url-preview").on("click", function () {
@@ -423,7 +444,6 @@ jQuery(document).ready(function($) {
                     const doc_report_list = $(`.doc-report-list-${index}`);
                     doc_report_list.attr('id', `edit-doc-report-${value.report_id}`);
                     doc_report_list.attr('data-report-id', value.report_id);
-                    //const output = value.report_contain;    
                     doc_report_list.append(value.report_contain).show();
                 });
 /*
