@@ -451,26 +451,24 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
             </thead>
             <tbody id="sortable-doc-field-list">
                 <?php
+                $x = 0;
                 $query = retrieve_doc_field_list_data($doc_id, $site_id);
-                //if (!$site_id) $query = retrieve_doc_field_list_data_in_site($site_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                        echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'editing_type', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                         echo '</tr>';
+                        $x += 1;
                     endwhile;
                     wp_reset_postdata();
                 }
-/*            
-                $x = 0;
                 while ($x<50) {
                     echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
                     $x += 1;
                 }
-*/                
                 ?>
             </tbody>
         </table>
@@ -556,24 +554,6 @@ function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
     return $query;
 }
 
-function retrieve_doc_field_list_data_in_site($site_id=0) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-        'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value', // Sort by meta value
-        'order'     => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-
 function get_doc_field_list_data() {
     error_log('Debugging message: ' . print_r($_POST, true));
 
@@ -590,37 +570,6 @@ function get_doc_field_list_data() {
 
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
-
-function backup_get_doc_field_list_data() {
-    
-    if (isset($_POST['_doc_id'])) display_doc_field_list($_POST['_doc_id']);
-    if (isset($_POST['_site_id'])) display_doc_field_list(false, $_POST['_site_id']);
-    wp_die();
-
-/*    
-    if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
-    if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["field_id"] = esc_attr(get_the_ID());
-            $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
-            $_list["field_title"] = esc_html(get_post_meta(get_the_ID(), 'field_title', true));
-            $_list["listing_style"] = esc_attr(get_post_meta(get_the_ID(), 'listing_style', true));
-            $_list["editing_type"] = esc_attr(get_post_meta(get_the_ID(), 'editing_type', true));
-            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
-            //$_list["is_listing"] = esc_html(get_post_meta(get_the_ID(), 'is_listing', true));
-            //$_list["is_editing"] = esc_html(get_post_meta(get_the_ID(), 'is_editing', true));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-*/    
-}
-//add_action( 'wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data' );
-//add_action( 'wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data' );
 
 function display_doc_field_dialog(){
     ?>
@@ -816,12 +765,7 @@ function display_doc_report_dialog($report_id) {
                     echo '<input type="checkbox" id="' . esc_attr($field_name) . '" ' . $is_checked . ' />';
                     echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label><br>';
                     break;
-/*            
-                case strpos($key, '_category'):
-                    echo '<label for="'.$field_name.'">'.esc_html(get_post_field('post_content', get_the_ID())).'</label>';
-                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
-                    break;
-*/        
+
                 default:
                     echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                     echo '<input type="text" id="' . esc_attr($field_name) . '" value="' . esc_html($field_value) . '" class="text ui-widget-content ui-corner-all" />';
@@ -852,8 +796,6 @@ function set_doc_report_dialog_data() {
         set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
         // Update the Document data
         $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
-        //if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
-        //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -876,8 +818,6 @@ function set_doc_report_dialog_data() {
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
 
         $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
-        //if (isset($_POST['_doc_id'])) $query = retrieve_doc_field_list_data($_POST['_doc_id']);
-        //if (isset($_POST['_site_id'])) $query = retrieve_doc_field_list_data_in_site($_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);

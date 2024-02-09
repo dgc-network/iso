@@ -187,6 +187,26 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
+    $("#new-doc-field").on("click", function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_doc_field_dialog_data',
+                '_site_id': $("#site-id").val(),
+            },
+            success: function (response) {
+                get_doc_field_list_data(false, $("#site-id").val());
+            },
+            error: function(error){
+                console.error(error);                    
+                alert(error);
+            }
+        });    
+    });                                        
+
     function get_doc_field_list_data(doc_id=false, site_id=false) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
@@ -202,9 +222,9 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
 
-                $('#doc-field-list-dialog').html(response);
-                $("#doc-id").val(doc_id);
-/*
+                //$('#doc-field-list-dialog').html(response);
+                //$("#doc-id").val(doc_id);
+
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-field-list-${index}`).hide().empty();
                 }
@@ -226,7 +246,7 @@ jQuery(document).ready(function($) {
     
                     $docFieldList.append(output).show();
                 });
-*/    
+
                 $("#new-doc-field").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -256,26 +276,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    $("#new-doc-field").on("click", function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_doc_field_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_doc_field_list_data(false, $("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });                                        
-
     activate_doc_field_list_data();
 
     function activate_doc_field_list_data(){
