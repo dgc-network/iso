@@ -153,7 +153,7 @@ function display_documents_shortcode() {
                         //$doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
                         //$doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
                         $todo_id = get_post_meta($post_id, 'todo_status', true);
-                        $todo_status = ($todo_id) ? get_the_title($todo_if) : 'Draft';
+                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                         $is_deleting = get_post_meta($post_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
                         ?>
