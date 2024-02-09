@@ -152,12 +152,6 @@ jQuery(document).ready(function($) {
                 activate_doc_field_list_data();
 
                 // doc-report scripts
-/*                
-                $("#new-doc-report").on("click", function(e) {
-                    e.preventDefault();
-                    get_document_dialog_data(doc_id)
-                });
-*/
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({

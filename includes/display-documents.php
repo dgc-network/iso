@@ -301,32 +301,18 @@ function display_document_dialog($doc_id) {
         foreach ($values as $value) {
             if ($key=='doc_url') {
                 if ($is_doc_report==1) {
-                    echo '<div style="display:flex; justify-content:space-between; margin:5px;">';
-                    echo '<div>';
-                    echo '</div>';
-                    echo '<div style="text-align: right">';
-                    echo '</div>';
-                    echo '</div>';
-    
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px;"></span>';
+                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
-                    display_doc_field_list($doc_id, false);
+                    display_doc_field_list($doc_id);
                     echo '</div>';
                 } else {
-                    echo '<div style="display:flex; justify-content:space-between; margin:5px;">';
-                    echo '<div>';
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-                    echo '</div>';
-                    echo '<div style="text-align: right">';
-                    echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button"></span>';
-                    echo '</div>';
-                    echo '</div>';
-    
+                    echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog" style="display:none;">';
-                    display_doc_field_list($doc_id, false);
+                    display_doc_field_list($doc_id);
                     echo '</div>';
                 }
             } else {
@@ -923,6 +909,7 @@ function retrieve_doc_report_list_data($doc_id=0) {
 }
 
 function get_doc_report_list_data() {
+    error_log('Debugging message: ' . print_r($_POST, true));
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
         display_doc_report_list($doc_id);
