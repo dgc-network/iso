@@ -881,7 +881,9 @@ function open_doc_report_list_data() {
         $result = display_doc_report_list($site_id);
     }
 */    
-    wp_send_json($result);
+    //wp_send_json($result);
+    wp_die();
+
 }
 add_action( 'wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data' );
