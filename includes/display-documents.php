@@ -680,7 +680,7 @@ add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
 
 // doc-report
-function revise_display_doc_field_dialog() {
+function revised_display_doc_field_dialog() {
     ob_start();
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
@@ -903,6 +903,7 @@ function open_doc_report_list_data() {
         $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
         $result['doc_title'] = '<h2>' . $doc_title . '</h2>';
         //$result['dialog_html'] = display_doc_report_list();
+        $result['dialog_html'] = revised_display_doc_field_dialog();
     }
 
     wp_send_json($result);
