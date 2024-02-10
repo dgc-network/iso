@@ -164,7 +164,7 @@ jQuery(document).ready(function($) {
 
                 success: function (response) {
                     //$('#result-container').empty();
-                    $('#result-container').html(response);
+                    $('#result-container').html(response.dialog_html);
                 },
                 error: function (error) {
                     console.error(error);

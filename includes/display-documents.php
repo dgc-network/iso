@@ -680,7 +680,31 @@ add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
 
 // doc-report
+function revise_display_doc_field_dialog() {
+    ob_start();
+    ?>
+    <div id="doc-field-dialog" title="Field dialog" style="display:none;">
+        <fieldset>
+            <input type="hidden" id="field-id" />
+            <label for="field-name">Name:</label>
+            <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
+            <label for="field-title">Title:</label>
+            <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
+            <label for="listing-style">Style:</label>
+            <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
+            <label for="editing-type">Type:</label>
+            <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
+            <label for="default-value">Deafult:</label>
+            <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+    </div>
+    <?php
+    $html = ob_get_clean();
+    return $html;
+}
+
 function display_doc_report_list($doc_id) {
+    ob_start();
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     echo '<h2>'.$doc_title.'</h2>';
     echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
@@ -742,6 +766,9 @@ function display_doc_report_list($doc_id) {
         <input type="button" id="new-doc-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
     <?php
+    $html = ob_get_clean();
+    return $html;
+    
     //echo '<div style="display:none;">';
     //display_doc_report_dialog($doc_id);
     //echo '</div>';
@@ -869,6 +896,21 @@ function retrieve_doc_report_list_data($doc_id=0) {
 }
 
 function open_doc_report_list_data() {
+    $result = array();
+
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = (int) $_POST['_doc_id'];
+        $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+        $result['doc_title'] = '<h2>' . $doc_title . '</h2>';
+        $result['dialog_html'] = display_doc_report_list();
+    }
+
+    wp_send_json($result);
+}
+add_action('wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data');
+add_action('wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data');
+/*
+function open_doc_report_list_data() {
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
         $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
@@ -886,13 +928,13 @@ function open_doc_report_list_data() {
         $site_id = (int) $_POST['_site_id'];
         $result = display_doc_report_list($site_id);
     }
-*/    
+
     wp_send_json($result);
 
 }
 add_action( 'wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data' );
-
+*/
 function open_doc_report_data() {
     // Retrieve the value
 /*    
