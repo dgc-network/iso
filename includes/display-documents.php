@@ -298,6 +298,7 @@ function display_document_dialog($doc_id) {
     foreach ($all_meta as $key => $values) {
         if ($key!='site_id')
         if ($key!='is_doc_report')
+        if ($key!='todo_status')
 
         foreach ($values as $value) {
             if ($key=='doc_url') {

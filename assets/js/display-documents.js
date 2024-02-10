@@ -90,6 +90,57 @@ jQuery(document).ready(function($) {
     
 
     function activate_document_dialog_data(){
+        $("#save-document-button").on("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_document_dialog_data',
+                    '_doc_id': doc_id,
+                    '_doc_title': $("#doc_title").val(),
+                    '_doc_number': $("#doc_number").val(),
+                    '_doc_revision': $("#doc_revision").val(),
+                    '_doc_date': $("#doc_date").val(),
+                    '_doc_url': $("#doc_url").val(),
+                    '_is_doc_report': $("#is-doc-report").val(),
+                    '_start_job': $("#start_job").val(),
+                    '_start_leadtime': $("#start_leadtime").val(),
+                    '_doc_category': $("#doc_category").val(),
+                },
+                success: function (response) {
+                    window.location.replace("/display-documents/");
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#del-document-button").on("click", function(e) {
+            e.preventDefault();
+            if (window.confirm("Are you sure you want to delete this document?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_document_dialog_data',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        window.location.replace("/display-documents/");
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
         $('[id^="doc-report-preview-"]').on("click", function (e) {
             e.preventDefault();
             const doc_id = this.id.substring(19);
@@ -139,56 +190,6 @@ jQuery(document).ready(function($) {
                 $("#doc-id").val(doc_id);
                 
                 activate_document_dialog_data();
-                $("#save-document-button").on("click", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_document_dialog_data',
-                            '_doc_id': doc_id,
-                            '_doc_title': $("#doc_title").val(),
-                            '_doc_number': $("#doc_number").val(),
-                            '_doc_revision': $("#doc_revision").val(),
-                            '_doc_date': $("#doc_date").val(),
-                            '_doc_url': $("#doc_url").val(),
-                            '_is_doc_report': $("#is-doc-report").val(),
-                            '_start_job': $("#start_job").val(),
-                            '_start_leadtime': $("#start_leadtime").val(),
-                            '_doc_category': $("#doc_category").val(),
-                        },
-                        success: function (response) {
-                            window.location.replace("/display-documents/");
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-        
-                $("#del-document-button").on("click", function(e) {
-                    e.preventDefault();
-                    if (window.confirm("Are you sure you want to delete this document?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_document_dialog_data',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                window.location.replace("/display-documents/");
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });
         
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
