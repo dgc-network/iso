@@ -106,7 +106,8 @@ jQuery(document).ready(function($) {
                 dataType: 'json',
                 data: ajaxData,
                 success: function (response) {
-                    $('#result-container').html(response);
+                    $('#result-container').empty();
+                    //$('#result-container').html(response);
                 },
                 error: function (error) {
                     console.error(error);
