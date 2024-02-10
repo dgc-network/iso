@@ -90,7 +90,8 @@ jQuery(document).ready(function($) {
     
 
     function activate_document_dialog_data(){
-        $('[id^="doc-report-preview-"]').on("click", function () {
+        $('[id^="doc-report-preview-"]').on("click", function (e) {
+            e.preventDefault();
             const doc_id = this.id.substring(19);
             const ajaxData = {
                 'action': 'open_doc_report_data',
