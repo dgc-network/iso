@@ -39,6 +39,56 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    function get_document_dialog_data(doc_id){
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_document_dialog_data',
+                _doc_id: doc_id,
+            },
+            success: function (response) {
+                // First AJAX request
+                const firstAjaxData = {
+                    'action': 'get_document_dialog_data',
+                    '_doc_id': doc_id,
+                };
+        
+                handleAjaxRequest(firstAjaxData, function (response) {
+                    $('#result-container').html(response);
+                });
+        
+                // Second AJAX request
+                const secondAjaxData = {
+                    'action': 'get_document_dialog_data',
+                    '_doc_id': doc_id,
+                };
+        
+                handleAjaxRequest(secondAjaxData, function (response) {
+                    // Handle the response as needed
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });        
+    }
+
+    function handleAjaxRequest(data, successCallback) {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: 'json',
+            data: data,
+            success: successCallback,
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+    
+
     function activate_document_dialog_data(){
         $('[id^="doc-report-preview-"]').on("click", function () {
             const doc_id = this.id.substring(19);
@@ -72,7 +122,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    function get_document_dialog_data(doc_id){
+    function backup_get_document_dialog_data(doc_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
