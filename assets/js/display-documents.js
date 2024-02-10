@@ -158,7 +158,7 @@ jQuery(document).ready(function($) {
                 dataType: 'json',
                 //data: ajaxData,
                 data: {
-                    'action': 'open_doc_report_data',
+                    'action': 'open_doc_report_list_data',
                     '_doc_id': doc_id,
                 },
 
