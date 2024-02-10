@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function get_document_dialog_data(doc_id){
+    function error_get_document_dialog_data(doc_id){
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -93,8 +93,8 @@ jQuery(document).ready(function($) {
         $('[id^="doc-report-preview-"]').on("click", function () {
             const doc_id = this.id.substring(19);
             const ajaxData = {
-                //'action': 'open_doc_report_data',
-                'action': 'get_document_dialog_data',
+                'action': 'open_doc_report_data',
+                //'action': 'get_document_dialog_data',
             };
         
             if (doc_id) ajaxData['_doc_id'] = doc_id;
@@ -122,7 +122,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    function backup_get_document_dialog_data(doc_id){
+    function get_document_dialog_data(doc_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
