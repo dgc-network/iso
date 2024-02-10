@@ -390,7 +390,6 @@ function set_document_dialog_data() {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
         // Update the Document data
         $data = array(
             'ID'         => $_POST['_doc_id'],
@@ -406,6 +405,7 @@ function set_document_dialog_data() {
             )
         );
         wp_update_post( $data );
+        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -879,7 +879,7 @@ function open_doc_report_data() {
         display_doc_report_list($site_id);
     }
 */
-    echo '';
+    echo 'This is a good testing.';
     wp_die();
 }
 add_action( 'wp_ajax_open_doc_report_data', 'open_doc_report_data' );

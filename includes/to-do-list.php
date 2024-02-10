@@ -431,14 +431,14 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_leadtime=0) {
     if ($next_job==0) return;
     if ($action_id>0){
-        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
-        $next_leadtime = esc_attr(get_post_meta($action_id, 'next_leadtime', true));
+        $todo_id = get_post_meta($action_id, 'todo_id', true);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
     }
     $todo_title = get_the_title($next_job);
-    //$doc_title = get_the_title($doc_id);
-
+    if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
+/*    
     if ($next_job==-1) {
         $data = array(
             'ID'         => $doc_id,
@@ -446,7 +446,7 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
                 'doc_date'   => time()+$next_leadtime,
             )
         );
-        wp_update_post( $data );
+        //wp_update_post( $data );
         
         // Notice the persons in charge the job
         notice_the_persons_in_site($doc_id);
@@ -460,18 +460,17 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
                 'doc_date'   => time()+$next_leadtime,
             )
         );
-        wp_update_post( $data );
+        //wp_update_post( $data );
         
         // Notice the persons in charge the job
         notice_the_persons_in_site($doc_id);
         $todo_title = __( '廢止', 'your-text-domain' );
     }
-
+*/
     // Insert the To-do list for next_job
     $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
-        //'post_content'  => $doc_title,
         'post_status'   => 'publish',
         'post_author'   => $current_user_id,
         'post_type'     => 'todo',
@@ -480,10 +479,12 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
     update_post_meta( $new_todo_id, 'job_id', $next_job);
     update_post_meta( $new_todo_id, 'doc_id', $doc_id);
     update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+    update_post_meta( $doc_id, 'todo_status', $new_todo_id);
 
     if ($next_job==-1) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
+        notice_the_persons_in_site($new_todo_id);
     }
 
     if ($next_job>0) {
@@ -502,9 +503,9 @@ function set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_le
                 );    
                 $new_action_id = wp_insert_post($new_post);
                 update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-                $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+                $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
                 update_post_meta( $new_action_id, 'next_job', $new_next_job);
-                $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
+                $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                 update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
             endwhile;
             wp_reset_postdata();
@@ -579,13 +580,13 @@ function get_users_by_job_id($job_id=0) {
 // Notice the persons in charge the job
 function notice_the_persons_in_charge($todo_id=0) {
     $job_title = get_the_title($todo_id);
-    $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
+    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $message_text='You have to work on the '.$job_title.':'.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
+    $job_id = get_post_meta($todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         send_flex_message_with_button_link($user, $message_text, $link_uri);
@@ -608,11 +609,13 @@ function get_users_in_site($site_id=0) {
 }
 
 // Notice the persons in site
-function notice_the_persons_in_site($doc_id=0) {
-    $doc_date = esc_attr(get_post_meta($doc_id, 'doc_date', true));
-    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    $doc_url = esc_html(get_post_meta($doc_id, 'doc_url', true));
-    $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
+function notice_the_persons_in_site($todo_id=0) {
+    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+
+    $doc_date = get_post_meta($doc_id, 'doc_date', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_url = get_post_meta($doc_id, 'doc_url', true);
+    $site_id = get_post_meta($doc_id, 'site_id', true);
     $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $doc_date ).'.';
 
     $users = get_users_in_site($site_id);

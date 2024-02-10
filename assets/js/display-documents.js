@@ -156,7 +156,12 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: 'json',
-                data: ajaxData,
+                //data: ajaxData,
+                data: {
+                    'action': 'del_document_dialog_data',
+                    '_doc_id': doc_id,
+                },
+
                 success: function (response) {
                     $('#result-container').empty();
                     //$('#result-container').html(response);
