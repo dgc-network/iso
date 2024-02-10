@@ -869,8 +869,14 @@ function retrieve_doc_report_list_data($doc_id=0) {
 }
 
 function open_doc_report_list_data() {
-    if (isset($_POST['_doc_id'])) display_doc_report_list($_POST['_doc_id']);
-    if (isset($_POST['_site_id'])) 
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = (int) $_POST['_doc_id'];
+        $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+        echo '<h2>'.$doc_title.'</h2>';
+        echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';    
+        wp_die();
+    }
+    //if (isset($_POST['_site_id'])) 
 
 /*    
     if (isset($_POST['_doc_id'])) {
@@ -882,7 +888,6 @@ function open_doc_report_list_data() {
     }
 */    
     //wp_send_json($result);
-    wp_die();
 
 }
 add_action( 'wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data' );
