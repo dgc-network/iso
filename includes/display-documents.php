@@ -573,8 +573,8 @@ function get_doc_field_list_data() {
             $_list["field_id"] = get_the_ID();
             $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
             $_list["field_title"] = esc_html(get_post_meta(get_the_ID(), 'field_title', true));
-            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'editing_type', true));
-            $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
+            $_list["editing_type"] = esc_html(get_post_meta(get_the_ID(), 'editing_type', true));
+            $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
