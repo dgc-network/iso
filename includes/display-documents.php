@@ -299,6 +299,7 @@ function display_document_dialog($doc_id) {
         if ($key!='site_id')
         if ($key!='is_doc_report')
         if ($key!='todo_status')
+        if ($key!='doc_date')
 
         foreach ($values as $value) {
             if ($key=='doc_url') {

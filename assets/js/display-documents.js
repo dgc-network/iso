@@ -89,7 +89,7 @@ jQuery(document).ready(function($) {
     }
     
 
-    function activate_document_dialog_data(){
+    function activate_document_dialog_data(doc_id){
         $("#save-document-button").on("click", function(e) {
             e.preventDefault();
             $.ajax({
@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
 
         $('[id^="doc-report-preview-"]').on("click", function (e) {
             e.preventDefault();
-            const doc_id = this.id.substring(19);
+            //const doc_id = this.id.substring(19);
             const ajaxData = {
                 'action': 'open_doc_report_data',
                 //'action': 'get_document_dialog_data',
@@ -189,7 +189,7 @@ jQuery(document).ready(function($) {
                 $('#result-container').html(response);
                 $("#doc-id").val(doc_id);
                 
-                activate_document_dialog_data();
+                activate_document_dialog_data(doc_id);
         
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
