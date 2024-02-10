@@ -869,7 +869,7 @@ function retrieve_doc_report_list_data($doc_id=0) {
 }
 
 function open_doc_report_list_data() {
-    if (isset($_POST['_doc_id'])) $result = display_doc_report_list($_POST['_doc_id']);
+    if (isset($_POST['_doc_id'])) display_doc_report_list($_POST['_doc_id']);
     if (isset($_POST['_site_id'])) 
 
 /*    
