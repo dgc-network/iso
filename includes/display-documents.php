@@ -869,7 +869,7 @@ function retrieve_doc_report_list_data($doc_id=0) {
 }
 
 function open_doc_report_list_data() {
-    $result = wp_delete_post($_POST['_doc_id'], true);
+    //$result = wp_delete_post($_POST['_doc_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data' );
