@@ -43,7 +43,8 @@ jQuery(document).ready(function($) {
         $('[id^="doc-report-preview-"]').on("click", function () {
             const doc_id = this.id.substring(19);
             const ajaxData = {
-                'action': 'open_doc_report_data',
+                //'action': 'open_doc_report_data',
+                'action': 'get_document_dialog_data',
             };
         
             if (doc_id) ajaxData['_doc_id'] = doc_id;
