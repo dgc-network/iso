@@ -141,12 +141,10 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $('[id^="doc-report-preview-"]').on("click", function (e) {
-            e.preventDefault();
-            //const doc_id = this.id.substring(19);
+        $("#doc-report-preview").on("click", function () {
             const ajaxData = {
-                'action': 'open_doc_report_data',
-                //'action': 'get_document_dialog_data',
+                //'action': 'open_doc_report_list_data',
+                'action': 'get_doc_report_list_data',
             };
         
             if (doc_id) ajaxData['_doc_id'] = doc_id;
@@ -158,13 +156,36 @@ jQuery(document).ready(function($) {
                 dataType: 'json',
                 //data: ajaxData,
                 data: {
-                    'action': 'open_doc_report_list_data',
+                    //'action': 'open_doc_report_list_data',
+                    'action': 'get_doc_report_list_data',
                     '_doc_id': doc_id,
                 },
 
                 success: function (response) {
-                    //$('#result-container').empty();
-                    $('#result-container').html(response.dialog_html);
+                    $('#result-container').html(response.doc_html);
+
+                    $("#new-doc-report").on("click", function(e) {
+                        e.preventDefault();
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_doc_report_dialog_data',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                get_doc_report_list_data(doc_id)
+                            },
+                            error: function(error){
+                                console.error(error);                    
+                                alert(error);
+                            }
+                        });
+                    });            
+                    activate_doc_report_list_data();
+    
+    
                 },
                 error: function (error) {
                     console.error(error);
@@ -470,6 +491,8 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
 
+                $('#result-container').html(response.doc_html);
+/*
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-report-list-${index}`).hide().empty();
                 }
@@ -480,8 +503,7 @@ jQuery(document).ready(function($) {
                     doc_report_list.attr('data-report-id', value.report_id);
                     doc_report_list.append(value.report_contain).show();
                 });
-/*
-                $('#result-container').html(response);
+*/
                 $("#doc-id").val(doc_id);
 
                 $("#new-doc-report").on("click", function(e) {
@@ -504,7 +526,7 @@ jQuery(document).ready(function($) {
                     });
                 });            
                 activate_doc_report_list_data();
-*/                
+
             },
             error: function (error) {
                 console.error(error);

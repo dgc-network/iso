@@ -305,7 +305,7 @@ function display_document_dialog($doc_id) {
             if ($key=='doc_url') {
                 if ($is_doc_report==1) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                    echo '<span id="doc-report-preview-'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                    echo '<span id="doc-report-preview'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
                     display_doc_field_list($doc_id);
@@ -630,13 +630,9 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
         update_post_meta( $field_id, 'editing_type', sanitize_text_field($_POST['_editing_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
-        //update_post_meta( $field_id, 'is_listing', sanitize_text_field($_POST['_is_listing']));
-        //update_post_meta( $field_id, 'is_editing', sanitize_text_field($_POST['_is_editing']));
     } else {
         // Insert the post into the database
         $new_post = array(
-            //'post_title'    => 'new_field',
-            //'post_content'  => 'Field Title',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'doc-field',
@@ -768,10 +764,6 @@ function display_doc_report_list($doc_id) {
     <?php
     $html = ob_get_clean();
     return $html;
-    
-    //echo '<div style="display:none;">';
-    //display_doc_report_dialog($doc_id);
-    //echo '</div>';
 }
 
 function display_doc_report_dialog($report_id) {
@@ -903,57 +895,23 @@ function open_doc_report_list_data() {
         $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
         $result['doc_title'] = '<h2>' . $doc_title . '</h2>';
         $result['dialog_html'] = display_doc_report_list($doc_id);
-        //$result['dialog_html'] = revised_display_doc_field_dialog();
     }
 
     wp_send_json($result);
 }
 add_action('wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data');
 add_action('wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data');
-/*
-function open_doc_report_list_data() {
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = (int) $_POST['_doc_id'];
-        $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-        $result = '<h2>'.$doc_title.'</h2>';
-        //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';    
-        //wp_die();
-    }
-    //if (isset($_POST['_site_id'])) 
-
-/*    
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = (int) $_POST['_doc_id'];
-        $result = display_doc_report_list($doc_id);
-    } elseif (isset($_POST['_site_id'])) {
-        $site_id = (int) $_POST['_site_id'];
-        $result = display_doc_report_list($site_id);
-    }
-
-    wp_send_json($result);
-
-}
-add_action( 'wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data' );
-add_action( 'wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data' );
-*/
-function open_doc_report_data() {
-    // Retrieve the value
-/*    
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = (int) $_POST['_doc_id'];
-        display_doc_report_list($doc_id);
-    } elseif (isset($_POST['_site_id'])) {
-        $site_id = (int) $_POST['_site_id'];
-        display_doc_report_list($site_id);
-    }
-*/
-    echo 'This is a good testing.';
-    wp_die();
-}
-add_action( 'wp_ajax_open_doc_report_data', 'open_doc_report_data' );
-add_action( 'wp_ajax_nopriv_open_doc_report_data', 'open_doc_report_data' );
 
 function get_doc_report_list_data() {
+
+    $result = array();
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = (int) $_POST['_doc_id'];
+        $result['doc_html'] = display_doc_report_list($doc_id);
+    }
+    wp_send_json($result);
+
+/*
     // Retrieve the value
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
@@ -988,6 +946,7 @@ function get_doc_report_list_data() {
         wp_reset_postdata();
     }
     wp_send_json($_array);
+*/    
 }
 add_action( 'wp_ajax_get_doc_report_list_data', 'get_doc_report_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data' );
