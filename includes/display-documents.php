@@ -902,8 +902,8 @@ function open_doc_report_list_data() {
         $doc_id = (int) $_POST['_doc_id'];
         $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
         $result['doc_title'] = '<h2>' . $doc_title . '</h2>';
-        //$result['dialog_html'] = display_doc_report_list();
-        $result['dialog_html'] = revised_display_doc_field_dialog();
+        $result['dialog_html'] = display_doc_report_list($doc_id);
+        //$result['dialog_html'] = revised_display_doc_field_dialog();
     }
 
     wp_send_json($result);
