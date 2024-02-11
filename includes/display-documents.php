@@ -305,7 +305,7 @@ function display_document_dialog($doc_id) {
             if ($key=='doc_url') {
                 if ($is_doc_report==1) {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                    echo '<span id="doc-report-preview'.$doc_id.'" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                    echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
                     display_doc_field_list($doc_id);
