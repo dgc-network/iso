@@ -712,6 +712,7 @@ function display_doc_report_list($doc_id) {
                         echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
                         echo '</th>';
                     endwhile;
+                    echo '<th>'. __( '狀態', 'your-text-domain' ).'</th>';
                     echo '</tr>';
                     wp_reset_postdata();
                 }
@@ -736,7 +737,12 @@ function display_doc_report_list($doc_id) {
                             endwhile;                
                             // Reset only the inner loop's data
                             wp_reset_postdata();
-                        }                
+                        }
+                        $todo_id = get_post_meta($report_id, 'todo_status', true);
+                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                        $is_deleting = get_post_meta($report_id, 'is_deleting', true);
+                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
+                        echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
                         echo '</tr>';
                     endwhile;                
                     // Reset the main query's data
@@ -788,7 +794,7 @@ function display_doc_report_dialog($report_id) {
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     ?>
                     <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                     <?php
                     break;
 
@@ -808,8 +814,6 @@ function display_doc_report_dialog($report_id) {
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <hr>
         <input type="button" id="save-doc-report-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-doc-report-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
@@ -836,10 +840,10 @@ function set_doc_report_dialog_data() {
         }
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        $doc_category = sanitize_text_field($_POST['_doc_category']);
+        //$doc_category = sanitize_text_field($_POST['_doc_category']);
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
-        update_post_meta( $report_id, 'doc_category', $doc_category);
+        //update_post_meta( $report_id, 'doc_category', $doc_category);
         set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
 
     } else {
@@ -851,6 +855,7 @@ function set_doc_report_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        //update_post_meta( $post_id, 'todo_status', 0);
 
         $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
         if ($query->have_posts()) {
