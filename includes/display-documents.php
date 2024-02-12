@@ -311,14 +311,14 @@ function display_document_dialog($doc_id) {
                     echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog">';
-                    display_doc_field_list($doc_id);
+                    echo display_doc_field_list($doc_id);
                     echo '</div>';
                 } else {
                     echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                     echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
                     echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
                     echo '<div id="doc-field-list-dialog" style="display:none;">';
-                    display_doc_field_list($doc_id);
+                    echo display_doc_field_list($doc_id);
                     echo '</div>';
                 }
             } else {
@@ -591,7 +591,7 @@ add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
 
 function display_doc_field_dialog(){
-    ob_start();
+    //ob_start();
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
@@ -609,8 +609,8 @@ function display_doc_field_dialog(){
     </fieldset>
     </div>
     <?php
-    $html = ob_get_clean();
-    return $html;    
+    //$html = ob_get_clean();
+    //return $html;    
 }
 
 function get_doc_field_dialog_data() {

@@ -398,8 +398,8 @@ jQuery(document).ready(function($) {
                     $("#listing-style").val(response.listing_style);
                     $("#editing-type").val(response.editing_type);
                     $("#default-value").val(response.default_value);
-                    $('#is-listing').prop('checked', response.is_listing == 1);
-                    $('#is-editing').prop('checked', response.is_editing == 1);
+                    //$('#is-listing').prop('checked', response.is_listing == 1);
+                    //$('#is-editing').prop('checked', response.is_editing == 1);
                 },
                 error: function (error) {
                     console.error(error);                
