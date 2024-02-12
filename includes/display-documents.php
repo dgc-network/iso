@@ -108,7 +108,7 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
-        ob_start();
+        //ob_start();
         ?>
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
@@ -173,8 +173,8 @@ function display_documents_shortcode() {
         </fieldset>
         </div>
         <?php
-        $html = ob_get_clean();
-        return $html;
+        //$html = ob_get_clean();
+        //return $html;
     } else {
         user_did_not_login_yet();
     }

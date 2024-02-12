@@ -38,7 +38,7 @@ jQuery(document).ready(function($) {
             }
         });    
     });
-
+/*
     function error_get_document_dialog_data(doc_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
+*/    
 
     function activate_document_dialog_data(doc_id){
         $("#save-document-button").on("click", function(e) {
@@ -212,7 +212,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 // Display the result
-                $('#result-container').html(response);
+                $('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
                 activate_document_dialog_data(doc_id);
