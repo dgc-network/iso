@@ -546,7 +546,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 // Display the result
-                $('#result-container').html(response);
+                $('#result-container').html(response.html_contain);
                 //$("#report-id").val(report_id);
                 
                 //activate_document_data();

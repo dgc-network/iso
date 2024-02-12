@@ -687,8 +687,6 @@ add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data'
 function display_doc_report_list($doc_id) {
     ob_start();
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    //echo '<h2>'.$doc_title.'</h2>';
-    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     ?>
     <h2><?php echo $doc_title;?></h2>
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -731,7 +729,8 @@ function display_doc_report_list($doc_id) {
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                                echo '<td>';
+                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                echo '<td style="'.$listing_style.'">';
                                 echo esc_html(get_post_meta($report_id, $field_name, true));
                                 echo '</td>';
                             endwhile;                
