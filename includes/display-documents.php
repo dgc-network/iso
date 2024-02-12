@@ -840,7 +840,7 @@ function set_doc_report_dialog_data() {
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
         update_post_meta( $report_id, 'doc_category', $doc_category);
-        set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
+        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
 
     } else {
         // Insert the post into the database
