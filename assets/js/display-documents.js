@@ -163,7 +163,7 @@ jQuery(document).ready(function($) {
 
                 success: function (response) {
                     $('#result-container').html(response.html_contain);
-
+/*
                     $("#new-doc-report").on("click", function(e) {
                         e.preventDefault();
                         $.ajax({
@@ -188,7 +188,7 @@ jQuery(document).ready(function($) {
                         const report_id = this.id.substring(16);
                         get_doc_report_dialog_data(report_id)
                     });            
-                    
+*/                    
                     activate_doc_report_list_data();
     
     
@@ -257,6 +257,7 @@ jQuery(document).ready(function($) {
                 activate_doc_field_list_data();
 
                 // doc-report scripts
+/*                
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -281,7 +282,7 @@ jQuery(document).ready(function($) {
                     const report_id = this.id.substring(16);
                     get_doc_report_dialog_data(report_id)
                 });            
-            
+*/            
                 activate_doc_report_list_data();
 
             },
@@ -480,6 +481,31 @@ jQuery(document).ready(function($) {
 
     // doc-report scripts
     function activate_doc_report_list_data(){
+        $("#new-doc-report").on("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_report_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_report_list_data(doc_id)
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });
+        });
+
+        $('[id^="edit-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(16);
+            get_doc_report_dialog_data(report_id)
+        });            
+
     }
 
     function get_doc_report_list_data(doc_id=false, site_id=false) {
@@ -496,22 +522,9 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
-
                 $('#result-container').html(response.html_contain);
-/*
-                for (let index = 0; index < 50; index++) {
-                    $(`.doc-report-list-${index}`).hide().empty();
-                }
-    
-                $.each(response, function (index, value) {
-                    const doc_report_list = $(`.doc-report-list-${index}`);
-                    doc_report_list.attr('id', `edit-doc-report-${value.report_id}`);
-                    doc_report_list.attr('data-report-id', value.report_id);
-                    doc_report_list.append(value.report_contain).show();
-                });
-*/
                 $("#doc-id").val(doc_id);
-
+/*
                 $("#new-doc-report").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
@@ -536,7 +549,7 @@ jQuery(document).ready(function($) {
                     const report_id = this.id.substring(16);
                     get_doc_report_dialog_data(report_id)
                 });            
-            
+*/            
                 activate_doc_report_list_data();
 
             },
@@ -568,10 +581,13 @@ jQuery(document).ready(function($) {
                         'action': 'set_doc_report_dialog_data',
                     };
                     ajaxData['_report_id'] = report_id;
-
                     $.each(response.doc_fields, function (index, value) {
-                        ajaxData[value.field_name] = $(value.field_name).val();
+                        field_name_id = '#'+value.field_name;
+                        ajaxData[value.field_name] = $(field_name_id).val();
                     });
+                    ajaxData['_start_job'] = $("#start-job").val();
+                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                    ajaxData['_doc_category'] = $("#doc-category").val();
                             
                     $.ajax({
                         type: 'POST',

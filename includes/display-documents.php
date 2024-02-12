@@ -820,10 +820,9 @@ function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
         $report_id = (int) sanitize_text_field($_POST['_report_id']);
-        $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
         // Update the Document data
-        $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
+        $query = retrieve_doc_field_list_data($doc_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -832,6 +831,12 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        $doc_category = sanitize_text_field($_POST['_doc_category']);
+        update_post_meta( $report_id, 'start_job', $start_job);
+        update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
+        update_post_meta( $report_id, 'doc_category', $doc_category);
         set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
 
     } else {
@@ -860,7 +865,6 @@ add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' )
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
 function retrieve_doc_report_list_data($doc_id=0) {
-
     $args = array(
         'post_type'      => 'doc-report',
         'posts_per_page' => 30,
@@ -910,8 +914,7 @@ function get_doc_report_dialog_data() {
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $_list = array();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $_list["field_name"] = esc_html($field_name);
+                $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
                 array_push($_array, $_list);
             endwhile;
             wp_reset_postdata();
