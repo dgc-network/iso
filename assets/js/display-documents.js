@@ -565,10 +565,14 @@ jQuery(document).ready(function($) {
                 $("#save-doc-report-button").on("click", function(e) {
                     e.preventDefault();
                     const ajaxData = {
-                        'action': 'set_doc_report_list_data',
+                        'action': 'set_doc_report_dialog_data',
                     };
                     ajaxData['_report_id'] = report_id;
-                        
+
+                    $.each(response.doc_fields, function (index, value) {
+                        ajaxData[value.field_name] = $(value.field_name).val();
+                    });
+                            
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
