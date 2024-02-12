@@ -189,7 +189,7 @@ jQuery(document).ready(function($) {
                         get_doc_report_dialog_data(report_id)
                     });            
 */                    
-                    activate_doc_report_list_data();
+                    activate_doc_report_list_data(doc_id);
     
     
                 },
@@ -283,7 +283,7 @@ jQuery(document).ready(function($) {
                     get_doc_report_dialog_data(report_id)
                 });            
 */            
-                activate_doc_report_list_data();
+                activate_doc_report_list_data(doc_id);
 
             },
             error: function (error) {
@@ -480,7 +480,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-report scripts
-    function activate_doc_report_list_data(){
+    function activate_doc_report_list_data(doc_id){
         $("#new-doc-report").on("click", function(e) {
             e.preventDefault();
             $.ajax({
@@ -550,7 +550,7 @@ jQuery(document).ready(function($) {
                     get_doc_report_dialog_data(report_id)
                 });            
 */            
-                activate_doc_report_list_data();
+                activate_doc_report_list_data(doc_id);
 
             },
             error: function (error) {
