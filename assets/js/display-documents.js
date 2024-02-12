@@ -273,6 +273,7 @@ jQuery(document).ready(function($) {
 
                 $('[id^="edit-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(16);
+                    alert(report_id)
                     get_doc_report_dialog_data(report_id)
                 });            
             

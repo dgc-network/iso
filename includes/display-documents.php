@@ -963,7 +963,7 @@ function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
         $report_id = (int)sanitize_text_field($_POST['_report_id']);
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
+        //$doc_id = get_post_meta($report_id, 'doc_id', true);
         $result['html_contain'] = display_doc_report_dialog($report_id);
         //wp_die();
     } else {
