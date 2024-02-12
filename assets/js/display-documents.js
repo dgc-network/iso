@@ -162,7 +162,7 @@ jQuery(document).ready(function($) {
                 },
 
                 success: function (response) {
-                    $('#result-container').html(response.doc_html);
+                    $('#result-container').html(response.html_contain);
 
                     $("#new-doc-report").on("click", function(e) {
                         e.preventDefault();
@@ -491,7 +491,7 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
 
-                $('#result-container').html(response.doc_html);
+                $('#result-container').html(response.html_contain);
 /*
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-report-list-${index}`).hide().empty();

@@ -87,7 +87,7 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    // Migration
+    // Migration the_title to meta doc_title
     if( isset($_GET['_doc_title_migration']) ) {
         // Retrieve the value
         $args = array(
@@ -108,6 +108,7 @@ function display_documents_shortcode() {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
+        ob_start();
         ?>
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
@@ -149,9 +150,6 @@ function display_documents_shortcode() {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $post_id = (int) get_the_ID();
-                        //$doc_title = esc_html(get_post_meta($post_id, 'doc_title', true));
-                        //$doc_url = esc_html(get_post_meta($post_id, 'doc_url', true));
-                        //$doc_date = esc_attr(get_post_meta($post_id, 'doc_date', true));
                         $todo_id = get_post_meta($post_id, 'todo_status', true);
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                         $is_deleting = get_post_meta($post_id, 'is_deleting', true);
@@ -175,7 +173,8 @@ function display_documents_shortcode() {
         </fieldset>
         </div>
         <?php
-
+        $html = ob_get_clean();
+        return $html;
     } else {
         user_did_not_login_yet();
     }
@@ -261,6 +260,7 @@ function translate_custom_strings($original_string) {
 
 function get_document_dialog_data() {
     // Check if the action has been set
+    $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -268,19 +268,21 @@ function get_document_dialog_data() {
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
         if ($todo_status==-1) {
             if ($is_doc_report) {
-                display_doc_report_list($doc_id);    
+                $result['html_contain'] = display_doc_report_list($doc_id);
             } else {
                 wp_redirect($doc_url);
             }
         } else {
-            display_document_dialog($doc_id);
+            $result['html_contain'] = display_document_dialog($doc_id);
         }
-        wp_die();
+        //wp_die();
     } else {
         // Handle invalid AJAX request
-        echo 'Invalid AJAX request!';
-        wp_die();
+        //echo 'Invalid AJAX request!';
+        //wp_die();
+        $result['html_contain'] = 'Invalid AJAX request!';
     }
+    wp_send_json($result);
 }
 add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
 add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
@@ -288,6 +290,7 @@ add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data'
 function display_document_dialog($doc_id) {
     $site_id = get_post_meta($doc_id, 'site_id', true);
     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+    ob_start();
     echo '<h2>Document</h2>';
     echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
@@ -339,7 +342,9 @@ function display_document_dialog($doc_id) {
     echo '<hr>';
     echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
     echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '</fieldset>';    
+    echo '</fieldset>';
+    $html = ob_get_clean();
+    return $html;
 }
 
 function select_start_job_option_data($selected_job=0, $site_id=0) {
@@ -439,7 +444,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 // doc-field
 function display_doc_field_list($doc_id=false, $site_id=false) {
-    //if (!$is_display) $display='display:none;';
+    ob_start();
     ?>
     <fieldset>
         <table style="width:100%;">
@@ -478,6 +483,8 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
     </fieldset>
     <?php display_doc_field_dialog();?>
     <?php
+    $html = ob_get_clean();
+    return $html;    
 }
 
 function retrieve_is_listing_doc_field_data($doc_id=0) {
@@ -492,12 +499,12 @@ function retrieve_is_listing_doc_field_data($doc_id=0) {
             ),
             array(
                 'key'     => 'listing_style',
-                'value'   => '',               // Empty string to ensure it's not empty
-                'compare' => '!=',       // Compare to ensure it's not like an empty string
+                'value'   => '',
+                'compare' => '!=',
             ),
         ),
         'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value', // Sort by meta value
+        'orderby'   => 'meta_value',
         'order'     => 'ASC',
     );
     $query = new WP_Query($args);
@@ -516,12 +523,12 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
             ),
             array(
                 'key'     => 'editing_type',
-                'value'   => '',               // Empty string to ensure it's not empty
-                'compare' => '!=',       // Compare to ensure it's not like an empty string
+                'value'   => '',
+                'compare' => '!=',
             ),
         ),
         'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value', // Sort by meta value
+        'orderby'   => 'meta_value',
         'order'     => 'ASC',
     );
     $query = new WP_Query($args);
@@ -529,7 +536,6 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
 }
 
 function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
-
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -581,11 +587,11 @@ function get_doc_field_list_data() {
     }
     wp_send_json($_array);
 }
-
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
 
 function display_doc_field_dialog(){
+    ob_start();
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
@@ -602,7 +608,9 @@ function display_doc_field_dialog(){
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
     </div>
-    <?php    
+    <?php
+    $html = ob_get_clean();
+    return $html;    
 }
 
 function get_doc_field_dialog_data() {
@@ -676,35 +684,14 @@ add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
 
 // doc-report
-function revised_display_doc_field_dialog() {
-    ob_start();
-    ?>
-    <div id="doc-field-dialog" title="Field dialog" style="display:none;">
-        <fieldset>
-            <input type="hidden" id="field-id" />
-            <label for="field-name">Name:</label>
-            <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
-            <label for="field-title">Title:</label>
-            <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
-            <label for="listing-style">Style:</label>
-            <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
-            <label for="editing-type">Type:</label>
-            <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
-            <label for="default-value">Deafult:</label>
-            <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-    </div>
-    <?php
-    $html = ob_get_clean();
-    return $html;
-}
-
 function display_doc_report_list($doc_id) {
     ob_start();
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    echo '<h2>'.$doc_title.'</h2>';
-    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    //echo '<h2>'.$doc_title.'</h2>';
+    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
     ?>
+    <h2><?php echo $doc_title;?></h2>
+    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
@@ -770,14 +757,23 @@ function display_doc_report_dialog($report_id) {
     $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     $site_id = get_post_meta($doc_id, 'site_id', true);
-    echo '<h2>'.$doc_title.'</h2>';
-    echo '<input type="hidden" id="report-id" value="'.$report_id.'" />';
-    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
-    //display_doc_field_list();
-    echo '<fieldset>';
-    echo '<div style="text-align: right" class="button">';
-    echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
-    echo '</div>';
+    ob_start();
+    //echo '<h2>'.$doc_title.'</h2>';
+    //echo '<input type="hidden" id="report-id" value="'.$report_id.'" />';
+    //echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
+    //echo '<fieldset>';
+    //echo '<div style="text-align: right" class="button">';
+    //echo '<span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>';
+    //echo '</div>';
+    ?>
+    <h2><?php echo $doc_title;?></h2>
+    <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
+    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <fieldset>
+    <div style="text-align: right">
+    <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+    </div>
+    <?php
     $query = retrieve_is_editing_doc_field_data($doc_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
@@ -787,44 +783,70 @@ function display_doc_report_dialog($report_id) {
             $field_value = get_post_meta($report_id, $field_name, true);
             switch (true) {
                 case ($field_type=='textarea'):
-                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
-                    echo '<textarea id="' . esc_attr($field_name) . '" rows="3" style="width:100%;">' . esc_html($field_value) . '</textarea>';
+                    //echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                    //echo '<textarea id="' . esc_attr($field_name) . '" rows="3" style="width:100%;">' . esc_html($field_value) . '</textarea>';
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                    <?php
                     break;
 
                 case ($field_type=='checkbox'):
                     $is_checked = ($field_value==1) ? 'checked' : '';
-                    echo '<input type="checkbox" id="' . esc_attr($field_name) . '" ' . $is_checked . ' />';
-                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label><br>';
+                    //echo '<input type="checkbox" id="' . esc_attr($field_name) . '" ' . $is_checked . ' />';
+                    //echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label><br>';
+                    ?>
+                    <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                    <?php
                     break;
 
                 default:
-                    echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
-                    echo '<input type="text" id="' . esc_attr($field_name) . '" value="' . esc_html($field_value) . '" class="text ui-widget-content ui-corner-all" />';
+                    //echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                    //echo '<input type="text" id="' . esc_attr($field_name) . '" value="' . esc_html($field_value) . '" class="text ui-widget-content ui-corner-all" />';
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
                     break;
             }
 
         endwhile;
         wp_reset_postdata();
     }
-    echo '<label for="start-job">'.__( '起始職務', 'your-text-domain' ).'</label>';
-    echo '<select id="start-job" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-    echo '<label for="start-leadtime">'.__( '前置時間', 'your-text-domain' ).'</label>';
-    echo '<input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />';
-    echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
-    echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
-    echo '<hr>';
-    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '</fieldset>';    
+    //echo '<label for="start-job">'.__( '起始職務', 'your-text-domain' ).'</label>';
+    //echo '<select id="start-job" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
+    //echo '<label for="start-leadtime">'.__( '前置時間', 'your-text-domain' ).'</label>';
+    //echo '<input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />';
+    //echo '<label for="doc-category">'.__( '文件類別', 'your-text-domain' ).'</label>';
+    //echo '<select id="doc-category" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
+    //echo '<hr>';
+    //echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
+    //echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
+    //echo '</fieldset>';
+    ?>
+        <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($value, $site_id);?></select>
+        <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+        <input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($value);?></select>
+        <hr>
+        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+    </fieldset>
+    <?php
+    $html = ob_get_clean();
+    return $html;
 }
 
 function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
-        $report_id = sanitize_text_field($_POST['_report_id']);
+        $report_id = (int) sanitize_text_field($_POST['_report_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
         // Update the Document data
         $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
         if ($query->have_posts()) {
@@ -835,6 +857,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        set_next_job_and_actions($start_job, 0, $report_id, $start_leadtime);
 
     } else {
         // Insert the post into the database
@@ -887,27 +910,12 @@ function retrieve_doc_report_list_data($doc_id=0) {
     return $query;
 }
 
-function open_doc_report_list_data() {
-    $result = array();
-
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = (int) $_POST['_doc_id'];
-        $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-        $result['doc_title'] = '<h2>' . $doc_title . '</h2>';
-        $result['dialog_html'] = display_doc_report_list($doc_id);
-    }
-
-    wp_send_json($result);
-}
-add_action('wp_ajax_open_doc_report_list_data', 'open_doc_report_list_data');
-add_action('wp_ajax_nopriv_open_doc_report_list_data', 'open_doc_report_list_data');
-
 function get_doc_report_list_data() {
 
     $result = array();
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
-        $result['doc_html'] = display_doc_report_list($doc_id);
+        $result['html_contain'] = display_doc_report_list($doc_id);
     }
     wp_send_json($result);
 
@@ -953,16 +961,19 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 
 function get_doc_report_dialog_data() {
     // Check if the action has been set
+    $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
         $report_id = (int)sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta($report_id, 'doc_id', true);
-        display_doc_report_dialog($report_id);
-        wp_die();
+        $result['html_contain'] = display_doc_report_dialog($report_id);
+        //wp_die();
     } else {
         // Handle invalid AJAX request
-        echo 'Invalid AJAX request!';
-        wp_die();
+        //echo 'Invalid AJAX request!';
+        //wp_die();
+        $result['html_contain'] = 'Invalid AJAX request!';
     }
+    wp_send_json($result);
 }
 add_action('wp_ajax_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
 add_action('wp_ajax_nopriv_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
