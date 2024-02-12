@@ -754,6 +754,9 @@ function display_doc_report_list($doc_id) {
 
 function display_doc_report_dialog($report_id) {
     $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $start_job = get_post_meta($report_id, 'start_job', true);
+    $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
+    $doc_category = get_post_meta($report_id, 'doc_category', true);
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     $site_id = get_post_meta($doc_id, 'site_id', true);
     ob_start();
@@ -802,11 +805,11 @@ function display_doc_report_dialog($report_id) {
     }
     ?>
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($value, $site_id);?></select>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-        <input type="text" id="start-leadtime" value="86400" class="text ui-widget-content ui-corner-all" />
+        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($value);?></select>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <hr>
         <input type="button" id="save-doc-report-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-doc-report-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
