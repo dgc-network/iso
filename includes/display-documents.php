@@ -315,6 +315,18 @@ function get_document_dialog_data() {
         } else {
             //$result['html_contain'] = display_document_dialog($doc_id);
             $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
+            $site_id = get_post_meta($doc_id, 'site_id', true);
+            $query = retrieve_doc_field_data(false, $site_id);
+            $_array = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $_list = array();
+                    $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
+                    array_push($_array, $_list);
+                endwhile;
+                wp_reset_postdata();
+            }    
+            $result['doc_fields'] = $_array;    
         }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
@@ -1018,22 +1030,6 @@ function get_doc_report_dialog_data() {
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         $result['doc_id'] = $doc_id;
         $query = retrieve_doc_field_data($doc_id);
-/*
-        if( isset($_POST['_report_id']) ) {
-            $report_id = (int)sanitize_text_field($_POST['_report_id']);
-            $result['html_contain'] = display_doc_report_dialog($report_id);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $result['doc_id'] = $doc_id;
-            $query = retrieve_doc_field_data($doc_id);
-        }
-
-        if( isset($_POST['_doc_id']) ) {
-            $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-            $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $query = retrieve_doc_field_data(false, $site_id);
-        }
-*/
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
