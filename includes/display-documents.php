@@ -441,6 +441,24 @@ function select_doc_category_option_data($selected_category=0) {
 function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
+        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
+        // Update the Document data
+        $query = retrieve_doc_field_data(false, $site_id);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $field_value = sanitize_text_field($_POST[$field_name]);
+                update_post_meta( $doc_id, $field_name, $field_value);
+            endwhile;
+            wp_reset_postdata();
+        }
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        update_post_meta( $doc_id, 'start_job', $start_job);
+        update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
+        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
+/*
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
@@ -460,6 +478,7 @@ function set_document_dialog_data() {
         );
         wp_update_post( $data );
         set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
+*/        
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -471,6 +490,16 @@ function set_document_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        $query = retrieve_doc_field_data(false, $_POST['_site_id']);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                update_post_meta( $post_id, $field_name, $default_value);
+            endwhile;
+            wp_reset_postdata();
+        }
+/*
         update_post_meta( $post_id, 'doc_title', 'New document');
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', '');
@@ -478,6 +507,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'start_job', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);
         update_post_meta( $post_id, 'doc_category', 0);
+*/
     }
     wp_send_json($response);
 }
@@ -535,55 +565,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
     $html = ob_get_clean();
     return $html;    
 }
-/*
-function retrieve_is_listing_doc_field_data($doc_id=0) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-            array(
-                'key'     => 'listing_style',
-                'value'   => '',
-                'compare' => '!=',
-            ),
-        ),
-        'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value',
-        'order'     => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
 
-function retrieve_is_editing_doc_field_data($doc_id=0) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-            array(
-                'key'     => 'editing_type',
-                'value'   => '',
-                'compare' => '!=',
-            ),
-        ),
-        'meta_key'  => 'sorting_key',
-        'orderby'   => 'meta_value',
-        'order'     => 'ASC',
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
 function retrieve_doc_field_data($doc_id=false, $site_id=false, $is_listing=false, $is_editing=false) {
     $args = array(
         'post_type'      => 'doc-field',
@@ -952,10 +934,8 @@ function set_doc_report_dialog_data() {
         }
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        //$doc_category = sanitize_text_field($_POST['_doc_category']);
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
-        //update_post_meta( $report_id, 'doc_category', $doc_category);
         set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
 
     } else {
@@ -967,9 +947,7 @@ function set_doc_report_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-        //update_post_meta( $post_id, 'todo_status', 0);
-
-        $query = retrieve_doc_field_data($_POST['_doc_id'], $_POST['_site_id']);
+        $query = retrieve_doc_field_data($_POST['_doc_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
