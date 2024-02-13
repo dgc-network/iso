@@ -28,7 +28,7 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false,
     );
     register_post_type( 'document', $args );
 }
@@ -45,7 +45,7 @@ function register_doc_report_post_type() {
         'rewrite'       => array('slug' => 'doc-reports'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false,
     );
     register_post_type( 'doc-report', $args );
 }
@@ -62,7 +62,7 @@ function register_doc_field_post_type() {
         'rewrite'       => array('slug' => 'doc-fields'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        //'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false,
     );
     register_post_type( 'doc-field', $args );
 }
@@ -79,7 +79,7 @@ function register_doc_category_post_type() {
         'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false,
     );
     register_post_type( 'doc-category', $args );
 }
@@ -137,12 +137,31 @@ function display_documents_shortcode() {
 
             <table class="ui-widget" style="width:100%;">
                 <thead>
+                <?php
+                $query = retrieve_is_listing_doc_field_data(false, $site_id);
+                if ($query->have_posts()) {
+                    echo '<tr>';
+                    while ($query->have_posts()) : $query->the_post();
+                        echo '<th>';
+                        echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
+                        echo '</th>';
+                    endwhile;
+                    echo '<th>'. __( '狀態', 'your-text-domain' ).'</th>';
+                    echo '</tr>';
+                    wp_reset_postdata();
+                }
+                /*
+                ?>
+
                     <tr>
                         <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
-                        <th><?php echo __( '名稱', 'your-text-domain' );?></th>
-                        <th><?php echo __( '版本', 'your-text-domain' );?></th>
-                        <th><?php echo __( '狀態', 'your-text-domain' );?></th>
+                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                        <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
+                        <th><?php echo __( '文件狀態', 'your-text-domain' );?></th>
                     </tr>
+                    <?php
+                    */
+                ?>
                 </thead>
                 <tbody>
                 <?php
@@ -259,7 +278,6 @@ function translate_custom_strings($original_string) {
 }
 
 function get_document_dialog_data() {
-    // Check if the action has been set
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
@@ -275,11 +293,7 @@ function get_document_dialog_data() {
         } else {
             $result['html_contain'] = display_document_dialog($doc_id);
         }
-        //wp_die();
     } else {
-        // Handle invalid AJAX request
-        //echo 'Invalid AJAX request!';
-        //wp_die();
         $result['html_contain'] = 'Invalid AJAX request!';
     }
     wp_send_json($result);

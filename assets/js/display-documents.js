@@ -38,56 +38,6 @@ jQuery(document).ready(function($) {
             }
         });    
     });
-/*
-    function error_get_document_dialog_data(doc_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_document_dialog_data',
-                _doc_id: doc_id,
-            },
-            success: function (response) {
-                // First AJAX request
-                const firstAjaxData = {
-                    'action': 'get_document_dialog_data',
-                    '_doc_id': doc_id,
-                };
-        
-                handleAjaxRequest(firstAjaxData, function (response) {
-                    $('#result-container').html(response);
-                });
-        
-                // Second AJAX request
-                const secondAjaxData = {
-                    'action': 'get_document_dialog_data',
-                    '_doc_id': doc_id,
-                };
-        
-                handleAjaxRequest(secondAjaxData, function (response) {
-                    // Handle the response as needed
-                });
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });        
-    }
-
-    function handleAjaxRequest(data, successCallback) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: 'json',
-            data: data,
-            success: successCallback,
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/    
 
     function activate_document_dialog_data(doc_id){
         $("#save-document-button").on("click", function(e) {
@@ -143,7 +93,6 @@ jQuery(document).ready(function($) {
 
         $("#doc-report-preview").on("click", function () {
             const ajaxData = {
-                //'action': 'open_doc_report_list_data',
                 'action': 'get_doc_report_list_data',
             };
         
@@ -154,52 +103,17 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: 'json',
-                //data: ajaxData,
-                data: {
-                    //'action': 'open_doc_report_list_data',
-                    'action': 'get_doc_report_list_data',
-                    '_doc_id': doc_id,
-                },
-
+                data: ajaxData,
                 success: function (response) {
                     $('#result-container').html(response.html_contain);
-/*
-                    $("#new-doc-report").on("click", function(e) {
-                        e.preventDefault();
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_doc_report_dialog_data',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                get_doc_report_list_data(doc_id)
-                            },
-                            error: function(error){
-                                console.error(error);                    
-                                alert(error);
-                            }
-                        });
-                    });
-
-                    $('[id^="edit-doc-report-"]').on("click", function () {
-                        const report_id = this.id.substring(16);
-                        get_doc_report_dialog_data(report_id)
-                    });            
-*/                    
-                    activate_doc_report_list_data(doc_id);
-    
+                    activate_doc_report_list_data(doc_id);    
     
                 },
                 error: function (error) {
                     console.error(error);
                     alert(error);
                 }
-            });
-        
-
+            });        
         });
     
         $("#doc-url-preview").on("click", function () {
@@ -208,7 +122,6 @@ jQuery(document).ready(function($) {
     }
 
     function get_document_dialog_data(doc_id){
-        // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -217,7 +130,6 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-                // Display the result
                 $('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
@@ -253,36 +165,9 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });
-
                 activate_doc_field_list_data();
 
                 // doc-report scripts
-/*                
-                $("#new-doc-report").on("click", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_report_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            get_doc_report_list_data(doc_id)
-                        },
-                        error: function(error){
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });    
-                });
-
-                $('[id^="edit-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(16);
-                    get_doc_report_dialog_data(report_id)
-                });            
-*/            
                 activate_doc_report_list_data(doc_id);
 
             },
@@ -523,35 +408,8 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                $("#doc-id").val(doc_id);
-/*
-                $("#new-doc-report").on("click", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_report_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            get_doc_report_list_data(doc_id)
-                        },
-                        error: function(error){
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });
-                });
-
-                $('[id^="edit-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(16);
-                    get_doc_report_dialog_data(report_id)
-                });            
-*/            
+                //$("#doc-id").val(doc_id);
                 activate_doc_report_list_data(doc_id);
-
             },
             error: function (error) {
                 console.error(error);
@@ -561,7 +419,6 @@ jQuery(document).ready(function($) {
     }
     
     function get_doc_report_dialog_data(report_id){
-        // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -570,9 +427,7 @@ jQuery(document).ready(function($) {
                 _report_id: report_id,
             },
             success: function (response) {
-                // Display the result
                 $('#result-container').html(response.html_contain);
-                //$("#report-id").val(report_id);
                 
                 //activate_document_data();
                 $("#save-doc-report-button").on("click", function(e) {
@@ -587,7 +442,7 @@ jQuery(document).ready(function($) {
                     });
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                    ajaxData['_doc_category'] = $("#doc-category").val();
+                    //ajaxData['_doc_category'] = $("#doc-category").val();
                             
                     $.ajax({
                         type: 'POST',
