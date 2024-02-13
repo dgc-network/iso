@@ -318,8 +318,8 @@ jQuery(document).ready(function($) {
                             '_listing_style': $("#listing-style").val(),
                             '_editing_type': $("#editing-type").val(),
                             '_default_value': $("#default-value").val(),
-                            '_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
-                            '_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
+                            //'_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
+                            //'_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
@@ -418,6 +418,9 @@ jQuery(document).ready(function($) {
         });
     }
     
+    function activate_doc_report_dialog_data(report_id){
+    }
+    
     function get_doc_report_dialog_data(report_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -429,6 +432,8 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $('#result-container').html(response.html_contain);
                 $("#doc-id").val(response.doc_id);
+                
+                //activate_doc_report_dialog_data(report_id)
 
                 $("#save-doc-report-button").on("click", function(e) {
                     e.preventDefault();
