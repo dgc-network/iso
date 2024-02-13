@@ -177,7 +177,7 @@ function display_documents_shortcode() {
                             wp_reset_postdata();
                         }
                         $todo_id = get_post_meta($doc_id, 'todo_status', true);
-                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                        $todo_status = ($todo_id!=0) ? get_the_title($todo_id) : 'Draft';
                         $is_deleting = get_post_meta($doc_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
                         echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
@@ -827,16 +827,16 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         <?php
         if ($doc_id) {
             if ($is_doc_report==1) {
-                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                 echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $doc_url . '</textarea>';
+                echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;">' . $doc_url . '</textarea>';
                 echo '<div id="doc-field-list-dialog">';
                 echo display_doc_field_list($doc_id);
                 echo '</div>';
             } else {
-                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                 echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $doc_url . '</textarea>';
+                echo '<textarea id="doc-url" rows="3" style="width:100%;">' . $doc_url . '</textarea>';
                 echo '<div id="doc-field-list-dialog" style="display:none;">';
                 echo display_doc_field_list($doc_id);
                 echo '</div>';
