@@ -81,33 +81,6 @@ jQuery(document).ready(function($) {
                             alert(error);
                         }
                     });
-/*
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_document_dialog_data',
-                            '_doc_id': doc_id,
-                            '_doc_title': $("#doc_title").val(),
-                            '_doc_number': $("#doc_number").val(),
-                            '_doc_revision': $("#doc_revision").val(),
-                            '_doc_date': $("#doc_date").val(),
-                            '_doc_url': $("#doc_url").val(),
-                            '_is_doc_report': $("#is-doc-report").val(),
-                            '_start_job': $("#start_job").val(),
-                            '_start_leadtime': $("#start_leadtime").val(),
-                            '_doc_category': $("#doc_category").val(),
-                        },
-                        success: function (response) {
-                            window.location.replace("/display-documents/");
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-*/                    
                 });
         
                 $("#del-document-button").on("click", function(e) {
@@ -133,22 +106,18 @@ jQuery(document).ready(function($) {
                 });
         
                 $("#doc-report-preview").on("click", function () {
-                    const ajaxData = {
-                        'action': 'get_doc_report_list_data',
-                    };
-                
-                    if (doc_id) ajaxData['_doc_id'] = doc_id;
-                    //if (site_id) ajaxData['_site_id'] = site_id;
-                
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: 'json',
                         data: ajaxData,
+                        data: {
+                            'action': 'get_doc_report_list_data',
+                            '_doc_id': doc_id,
+                        },
                         success: function (response) {
                             $('#result-container').html(response.html_contain);
-                            activate_doc_report_list_data(doc_id);    
-            
+                            activate_doc_report_list_data(doc_id);            
                         },
                         error: function (error) {
                             console.error(error);
@@ -166,8 +135,8 @@ jQuery(document).ready(function($) {
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
+                    const is_doc_report = $("#is_doc_report").val() == 1 ? 0 : 1;
+                    $("#is_doc_report").val(is_doc_report)
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
@@ -195,6 +164,67 @@ jQuery(document).ready(function($) {
 
                 // doc-report scripts
                 activate_doc_report_list_data(doc_id);
+
+                //activate_doc_report_dialog_data(report_id)
+
+                $('[id^="save-doc-report-"]').on("click", function () {
+                    const report_id = this.id.substring(16);
+
+                    //$("#save-doc-report-button").on("click", function(e) {
+                    //e.preventDefault();
+                    const ajaxData = {
+                        'action': 'set_doc_report_dialog_data',
+                    };
+                    ajaxData['_report_id'] = report_id;
+                    $.each(response.doc_fields, function (index, value) {
+                        field_name_id = '#'+value.field_name;
+                        ajaxData[value.field_name] = $(field_name_id).val();
+                    });
+                    ajaxData['_start_job'] = $("#start-job").val();
+                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                            
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: ajaxData,
+                        success: function (response) {
+                            get_doc_report_list_data($("#doc-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                });
+
+                $('[id^="del-doc-report-"]').on("click", function () {
+                    const report_id = this.id.substring(15);
+
+                //$("#del-doc-report-button").on("click", function(e) {
+                    //e.preventDefault();
+                    if (window.confirm("Are you sure you want to delete this record?")) {
+                        const ajaxData = {
+                            'action': 'del_doc_report_dialog_data',
+                        };                        
+                        ajaxData['_report_id'] = report_id;
+                            
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: ajaxData,
+                            success: function (response) {
+                                get_doc_report_list_data($("#doc-id").val());
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });
+
 
             },
             error: function (error) {

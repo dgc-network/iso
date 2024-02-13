@@ -150,17 +150,6 @@ function display_documents_shortcode() {
                     echo '</tr>';
                     wp_reset_postdata();
                 }
-                /*
-                ?>
-
-                    <tr>
-                        <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
-                        <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                        <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
-                        <th><?php echo __( '文件狀態', 'your-text-domain' );?></th>
-                    </tr>
-                    <?php
-                    */
                 ?>
                 </thead>
                 <tbody>
@@ -193,17 +182,6 @@ function display_documents_shortcode() {
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
                         echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
                         echo '</tr>';
-
-/*        
-                        ?>
-                        <tr id="edit-document-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
-                            <td><?php echo esc_html(get_post_meta($post_id, 'doc_title', true));?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
-                            <td style="text-align:center;"><?php echo esc_html($todo_status.$del_status);?></td>
-                        </tr>
-                        <?php 
-*/                        
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -335,7 +313,7 @@ function get_document_dialog_data() {
 }
 add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
 add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
-
+/*
 function display_document_dialog($doc_id) {
     $site_id = get_post_meta($doc_id, 'site_id', true);
     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -395,7 +373,7 @@ function display_document_dialog($doc_id) {
     $html = ob_get_clean();
     return $html;
 }
-
+*/
 function select_start_job_option_data($selected_job=0, $site_id=0) {
     $args = array(
         'post_type'      => 'job',
@@ -906,8 +884,8 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             <?php
         } else {
             ?>
-            <input type="button" id="save-doc-report-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-            <input type="button" id="del-doc-report-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
             <?php
         }
         ?>
