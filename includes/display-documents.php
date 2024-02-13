@@ -815,6 +815,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
     if ($doc_id) {
         $start_job = get_post_meta($doc_id, 'start_job', true);
         $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
         //$doc_category = get_post_meta($doc_id, 'doc_category', true);            
@@ -849,10 +850,28 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             }
             switch (true) {
                 case ($field_type=='textarea'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                    <?php
+                    if ($field_name=='doc_url') {
+                        if ($is_doc_report==1) {
+                            echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                            echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                            echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $field_value . '</textarea>';
+                            echo '<div id="doc-field-list-dialog">';
+                            echo display_doc_field_list($doc_id);
+                            echo '</div>';
+                        } else {
+                            echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                            echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                            echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $field_value . '</textarea>';
+                            echo '<div id="doc-field-list-dialog" style="display:none;">';
+                            echo display_doc_field_list($doc_id);
+                            echo '</div>';
+                        }
+                    } else {
+                        ?>
+                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                        <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                        <?php    
+                    }        
                     break;
 
                 case ($field_type=='checkbox'):
