@@ -984,3 +984,10 @@ function get_doc_report_dialog_data() {
 add_action('wp_ajax_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
 add_action('wp_ajax_nopriv_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
 
+function del_doc_report_dialog_data() {
+    $result = wp_delete_post($_POST['_report_id'], true);
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
+

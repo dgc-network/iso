@@ -525,8 +525,6 @@ jQuery(document).ready(function($) {
 
                 $('[id^="del-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(15);
-                //$("#del-doc-report-button").on("click", function(e) {
-                    //e.preventDefault();
                     if (window.confirm("Are you sure you want to delete this record?")) {
                         const ajaxData = {
                             'action': 'del_doc_report_dialog_data',
