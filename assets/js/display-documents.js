@@ -40,85 +40,6 @@ jQuery(document).ready(function($) {
     });
 
     function activate_document_dialog_data(doc_id){
-        $("#save-document-button").on("click", function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_document_dialog_data',
-                    '_doc_id': doc_id,
-                    '_doc_title': $("#doc_title").val(),
-                    '_doc_number': $("#doc_number").val(),
-                    '_doc_revision': $("#doc_revision").val(),
-                    '_doc_date': $("#doc_date").val(),
-                    '_doc_url': $("#doc_url").val(),
-                    '_is_doc_report': $("#is-doc-report").val(),
-                    '_start_job': $("#start_job").val(),
-                    '_start_leadtime': $("#start_leadtime").val(),
-                    '_doc_category': $("#doc_category").val(),
-                },
-                success: function (response) {
-                    window.location.replace("/display-documents/");
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
-        $("#del-document-button").on("click", function(e) {
-            e.preventDefault();
-            if (window.confirm("Are you sure you want to delete this document?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_document_dialog_data',
-                        '_doc_id': doc_id,
-                    },
-                    success: function (response) {
-                        window.location.replace("/display-documents/");
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });
-
-        $("#doc-report-preview").on("click", function () {
-            const ajaxData = {
-                'action': 'get_doc_report_list_data',
-            };
-        
-            if (doc_id) ajaxData['_doc_id'] = doc_id;
-            //if (site_id) ajaxData['_site_id'] = site_id;
-        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: 'json',
-                data: ajaxData,
-                success: function (response) {
-                    $('#result-container').html(response.html_contain);
-                    activate_doc_report_list_data(doc_id);    
-    
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });        
-        });
-    
-        $("#doc-url-preview").on("click", function () {
-            window.location.replace($("#doc_url").val());
-        });    
     }
 
     function get_document_dialog_data(doc_id){
@@ -133,8 +54,113 @@ jQuery(document).ready(function($) {
                 $('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
-                activate_document_dialog_data(doc_id);
+                //activate_document_dialog_data(doc_id);
+                $("#save-document-button").on("click", function(e) {
+                    e.preventDefault();
+                    const ajaxData = {
+                        'action': 'set_document_dialog_data',
+                    };
+                    ajaxData['_doc_id'] = doc_id;
+                    $.each(response.doc_fields, function (index, value) {
+                        field_name_id = '#'+value.field_name;
+                        ajaxData[value.field_name] = $(field_name_id).val();
+                    });
+                    ajaxData['_start_job'] = $("#start-job").val();
+                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                            
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: ajaxData,
+                        success: function (response) {
+                            window.location.replace("/display-documents/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+/*
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_document_dialog_data',
+                            '_doc_id': doc_id,
+                            '_doc_title': $("#doc_title").val(),
+                            '_doc_number': $("#doc_number").val(),
+                            '_doc_revision': $("#doc_revision").val(),
+                            '_doc_date': $("#doc_date").val(),
+                            '_doc_url': $("#doc_url").val(),
+                            '_is_doc_report': $("#is-doc-report").val(),
+                            '_start_job': $("#start_job").val(),
+                            '_start_leadtime': $("#start_leadtime").val(),
+                            '_doc_category': $("#doc_category").val(),
+                        },
+                        success: function (response) {
+                            window.location.replace("/display-documents/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+*/                    
+                });
         
+                $("#del-document-button").on("click", function(e) {
+                    e.preventDefault();
+                    if (window.confirm("Are you sure you want to delete this document?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_document_dialog_data',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });
+        
+                $("#doc-report-preview").on("click", function () {
+                    const ajaxData = {
+                        'action': 'get_doc_report_list_data',
+                    };
+                
+                    if (doc_id) ajaxData['_doc_id'] = doc_id;
+                    //if (site_id) ajaxData['_site_id'] = site_id;
+                
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: 'json',
+                        data: ajaxData,
+                        success: function (response) {
+                            $('#result-container').html(response.html_contain);
+                            activate_doc_report_list_data(doc_id);    
+            
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });        
+                });
+            
+                $("#doc-url-preview").on("click", function () {
+                    window.location.replace($("#doc_url").val());
+                });    
+                
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
