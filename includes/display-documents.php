@@ -419,9 +419,11 @@ function select_doc_category_option_data($selected_category=0) {
 function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
-        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
-        $site_id = get_post_meta($doc_id, 'site_id', true);
         // Update the Document data
+        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -431,10 +433,10 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        $doc_url = sanitize_text_field($_POST['_doc_url']);
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
-        $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        update_post_meta( $doc_id, 'doc_url', $doc_url);
         update_post_meta( $doc_id, 'doc_category', $doc_category);
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
@@ -460,6 +462,7 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        update_post_meta( $doc_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
 }
@@ -763,14 +766,15 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $doc_category = get_post_meta($doc_id, 'doc_category', true);
+        $doc_url = get_post_meta($doc_id, 'doc_url', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
     } else {
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
         $start_job = get_post_meta($report_id, 'start_job', true);
         $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
-        $query = retrieve_doc_field_data($doc_id, false, false, true);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
+        $query = retrieve_doc_field_data($doc_id, false, false, true);
     }
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     ob_start();
@@ -795,29 +799,10 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             }
             switch (true) {
                 case ($field_type=='textarea'):
-                    if ($field_name=='doc_url') {
-                        if ($is_doc_report==1) {
-                            echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                            echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                            echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $field_value . '</textarea>';
-                            echo '<div id="doc-field-list-dialog">';
-                            echo display_doc_field_list($doc_id);
-                            echo '</div>';
-                        } else {
-                            echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-                            echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                            echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $field_value . '</textarea>';
-                            echo '<div id="doc-field-list-dialog" style="display:none;">';
-                            echo display_doc_field_list($doc_id);
-                            echo '</div>';
-                        }
-                        echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
-                    } else {
-                        ?>
-                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                        <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                        <?php    
-                    }        
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                    <?php    
                     break;
 
                 case ($field_type=='checkbox'):
@@ -841,7 +826,23 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
     ?>
         <?php
         if ($doc_id) {
-            ?>
+            if ($is_doc_report==1) {
+                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+                echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $doc_url . '</textarea>';
+                echo '<div id="doc-field-list-dialog">';
+                echo display_doc_field_list($doc_id);
+                echo '</div>';
+            } else {
+                echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+                echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+                echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $doc_url . '</textarea>';
+                echo '<div id="doc-field-list-dialog" style="display:none;">';
+                echo display_doc_field_list($doc_id);
+                echo '</div>';
+            }
+            echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
+        ?>
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
             <?php

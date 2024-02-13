@@ -65,6 +65,7 @@ jQuery(document).ready(function($) {
                         field_name_id = '#'+value.field_name;
                         ajaxData[value.field_name] = $(field_name_id).val();
                     });
+                    ajaxData['_doc_url'] = $("#doc-url").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_start_job'] = $("#start-job").val();
@@ -128,13 +129,13 @@ jQuery(document).ready(function($) {
                 });
             
                 $("#doc-url-preview").on("click", function () {
-                    window.location.replace($("#doc_url").val());
+                    window.location.replace($("#doc-url").val());
                 });    
                 
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
-                    $("#doc_url").toggle();
+                    $("#doc-url").toggle();
                     $("#doc-field-list-dialog").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
