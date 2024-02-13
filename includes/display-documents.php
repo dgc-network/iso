@@ -138,7 +138,7 @@ function display_documents_shortcode() {
             <table class="ui-widget" style="width:100%;">
                 <thead>
                 <?php
-                $query = retrieve_is_listing_doc_field_data(false, $site_id);
+                $query = retrieve_doc_field_data(false, $site_id, true);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -473,7 +473,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
             <tbody id="sortable-doc-field-list">
                 <?php
                 $x = 0;
-                $query = retrieve_doc_field_list_data($doc_id, $site_id);
+                $query = retrieve_doc_field_data($doc_id, $site_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
@@ -549,7 +549,7 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
     return $query;
 }
 
-function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
+function retrieve_doc_field_data($doc_id=false, $site_id=false, $is_listing=false, $is_editing=false) {
     $args = array(
         'post_type'      => 'doc-field',
         'posts_per_page' => -1,
@@ -572,6 +572,22 @@ function retrieve_doc_field_list_data($doc_id=false, $site_id=false) {
         );
     }
     
+    if ($is_listing) {
+        $args['meta_query'][] = array(
+            'key'     => 'listing_style',
+            'value'   => '',
+            'compare' => '!=',
+        );
+    }
+    
+    if ($is_editing) {
+        $args['meta_query'][] = array(
+            'key'     => 'editing_type',
+            'value'   => '',
+            'compare' => '!=',
+        );
+    }
+    
     $query = new WP_Query($args);
     return $query;
 }
@@ -580,10 +596,10 @@ function get_doc_field_list_data() {
     // Retrieve the value
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
-        $query = retrieve_doc_field_list_data($doc_id);
+        $query = retrieve_doc_field_data($doc_id);
     } elseif (isset($_POST['_site_id'])) {
         $site_id = (int) $_POST['_site_id'];
-        $query = retrieve_doc_field_list_data(false, $site_id);
+        $query = retrieve_doc_field_data(false, $site_id);
     }
 
     $_array = array();
@@ -843,7 +859,7 @@ function set_doc_report_dialog_data() {
         $report_id = (int) sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         // Update the Document data
-        $query = retrieve_doc_field_list_data($doc_id);
+        $query = retrieve_doc_field_data($doc_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -871,7 +887,7 @@ function set_doc_report_dialog_data() {
         update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         //update_post_meta( $post_id, 'todo_status', 0);
 
-        $query = retrieve_doc_field_list_data($_POST['_doc_id'], $_POST['_site_id']);
+        $query = retrieve_doc_field_data($_POST['_doc_id'], $_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -931,7 +947,7 @@ function get_doc_report_dialog_data() {
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         $result['html_contain'] = display_doc_report_dialog($report_id);
 
-        if (isset($doc_id)) $query = retrieve_doc_field_list_data($doc_id);    
+        if (isset($doc_id)) $query = retrieve_doc_field_data($doc_id);    
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
