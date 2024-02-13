@@ -174,6 +174,7 @@ function display_documents_shortcode() {
                         $is_deleting = get_post_meta($doc_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
 
+                        echo '<tr id="edit-document-'.$doc_id.'">';
                         $inner_query = retrieve_doc_field_data(false, $site_id, true);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -186,6 +187,13 @@ function display_documents_shortcode() {
                             // Reset only the inner loop's data
                             wp_reset_postdata();
                         }
+                        $todo_id = get_post_meta($doc_id, 'todo_status', true);
+                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                        $is_deleting = get_post_meta($doc_id, 'is_deleting', true);
+                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
+                        echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
+                        echo '</tr>';
+
 /*        
                         ?>
                         <tr id="edit-document-<?php the_ID();?>">
@@ -768,7 +776,7 @@ function display_doc_report_list($doc_id) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
-                        echo '<tr id="edit-doc-report-'.$report_id.'">';                
+                        echo '<tr id="edit-doc-report-'.$report_id.'">';
                         // Reset the inner loop before using it again
                         $inner_query = retrieve_doc_field_data($doc_id, false, true);
                         if ($inner_query->have_posts()) {
