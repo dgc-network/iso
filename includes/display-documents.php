@@ -904,8 +904,19 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         <hr>
-        <input type="button" id="save-doc-report-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-        <input type="button" id="del-doc-report-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+        <?php
+        if ($doc_id) {
+            ?>
+            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            <?php
+        } else {
+            ?>
+            <input type="button" id="save-doc-report-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="del-doc-report-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            <?php
+        }
+        ?>
     </fieldset>
     <?php
     $html = ob_get_clean();
@@ -1002,10 +1013,17 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
+        $report_id = (int)sanitize_text_field($_POST['_report_id']);
+        $result['html_contain'] = display_doc_report_dialog($report_id);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
+        $result['doc_id'] = $doc_id;
+        $query = retrieve_doc_field_data($doc_id);
+/*
         if( isset($_POST['_report_id']) ) {
             $report_id = (int)sanitize_text_field($_POST['_report_id']);
             $result['html_contain'] = display_doc_report_dialog($report_id);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $result['doc_id'] = $doc_id;
             $query = retrieve_doc_field_data($doc_id);
         }
 
@@ -1015,7 +1033,7 @@ function get_doc_report_dialog_data() {
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $query = retrieve_doc_field_data(false, $site_id);
         }
-
+*/
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();

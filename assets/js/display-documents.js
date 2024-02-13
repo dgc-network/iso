@@ -428,7 +428,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                
+                $("#doc-id").val(response.doc_id);
+
                 $("#save-doc-report-button").on("click", function(e) {
                     e.preventDefault();
                     const ajaxData = {
@@ -463,7 +464,7 @@ jQuery(document).ready(function($) {
                         const ajaxData = {
                             'action': 'del_doc_report_dialog_data',
                         };                        
-                        ajaxData['_report_id'] = $report_id;
+                        ajaxData['_report_id'] = report_id;
                             
                         $.ajax({
                             type: 'POST',
