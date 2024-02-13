@@ -65,6 +65,8 @@ jQuery(document).ready(function($) {
                         field_name_id = '#'+value.field_name;
                         ajaxData[value.field_name] = $(field_name_id).val();
                     });
+                    ajaxData['_doc_category'] = $("#doc-category").val();
+                    ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
                             
@@ -110,7 +112,6 @@ jQuery(document).ready(function($) {
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: 'json',
-                        data: ajaxData,
                         data: {
                             'action': 'get_doc_report_list_data',
                             '_doc_id': doc_id,
@@ -135,8 +136,8 @@ jQuery(document).ready(function($) {
                 $("#doc-field-setting").on("click", function () {
                     $("#doc_url").toggle();
                     $("#doc-field-list-dialog").toggle();
-                    const is_doc_report = $("#is_doc_report").val() == 1 ? 0 : 1;
-                    $("#is_doc_report").val(is_doc_report)
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
@@ -491,8 +492,10 @@ jQuery(document).ready(function($) {
                 
                 //activate_doc_report_dialog_data(report_id)
 
-                $("#save-doc-report-button").on("click", function(e) {
-                    e.preventDefault();
+                $('[id^="save-doc-report-"]').on("click", function () {
+                    const report_id = this.id.substring(16);
+                //$("#save-doc-report-button").on("click", function(e) {
+                    //e.preventDefault();
                     const ajaxData = {
                         'action': 'set_doc_report_dialog_data',
                     };
@@ -519,8 +522,10 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $("#del-doc-report-button").on("click", function(e) {
-                    e.preventDefault();
+                $('[id^="del-doc-report-"]').on("click", function () {
+                    const report_id = this.id.substring(15);
+                //$("#del-doc-report-button").on("click", function(e) {
+                    //e.preventDefault();
                     if (window.confirm("Are you sure you want to delete this record?")) {
                         const ajaxData = {
                             'action': 'del_doc_report_dialog_data',

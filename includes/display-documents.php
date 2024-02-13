@@ -431,32 +431,15 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        $doc_category = sanitize_text_field($_POST['_doc_category']);
+        $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        update_post_meta( $doc_id, 'start_job', $doc_category);
+        update_post_meta( $doc_id, 'start_job', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
-/*
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        // Update the Document data
-        $data = array(
-            'ID'         => $_POST['_doc_id'],
-            'meta_input' => array(
-                'doc_title'   => $_POST['_doc_title'],
-                'doc_number'   => $_POST['_doc_number'],
-                'doc_revision' => $_POST['_doc_revision'],
-                'doc_url'      => $_POST['_doc_url'],
-                'is_doc_report' => $_POST['_is_doc_report'],
-                'start_job'    => $start_job,
-                'start_leadtime' => $start_leadtime,
-                'doc_category'  => $_POST['_doc_category'],
-            )
-        );
-        wp_update_post( $data );
-        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
-*/        
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -477,15 +460,6 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-/*
-        update_post_meta( $post_id, 'doc_title', 'New document');
-        update_post_meta( $post_id, 'doc_number', '-');
-        update_post_meta( $post_id, 'doc_revision', '');
-        update_post_meta( $post_id, 'doc_url', '');
-        update_post_meta( $post_id, 'start_job', 0);
-        update_post_meta( $post_id, 'start_leadtime', 86400);
-        update_post_meta( $post_id, 'doc_category', 0);
-*/
     }
     wp_send_json($response);
 }
@@ -788,6 +762,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $start_job = get_post_meta($doc_id, 'start_job', true);
         $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+        $doc_category = get_post_meta($doc_id, 'doc_category', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
     } else {
@@ -836,6 +811,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
                             echo display_doc_field_list($doc_id);
                             echo '</div>';
                         }
+                        echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
                     } else {
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
@@ -852,13 +828,6 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
                     <?php
                     break;
     
-                case ($field_type=='select' && $field_name=='doc_category'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
-                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($field_value);?></select>
-                    <?php
-                    break;
-
                 default:
                     ?>
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
@@ -866,11 +835,18 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
                     <?php
                     break;
             }
-
         endwhile;
         wp_reset_postdata();
     }
     ?>
+        <?php
+        if ($doc_id) {
+            ?>
+            <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+            <?php
+        }
+        ?>
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
