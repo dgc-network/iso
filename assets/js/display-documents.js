@@ -429,7 +429,6 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $('#result-container').html(response.html_contain);
                 
-                //activate_document_data();
                 $("#save-doc-report-button").on("click", function(e) {
                     e.preventDefault();
                     const ajaxData = {
@@ -442,7 +441,6 @@ jQuery(document).ready(function($) {
                     });
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                    //ajaxData['_doc_category'] = $("#doc-category").val();
                             
                     $.ajax({
                         type: 'POST',
@@ -461,15 +459,17 @@ jQuery(document).ready(function($) {
 
                 $("#del-doc-report-button").on("click", function(e) {
                     e.preventDefault();
-                    if (window.confirm("Are you sure you want to delete this doc report?")) {
+                    if (window.confirm("Are you sure you want to delete this record?")) {
+                        const ajaxData = {
+                            'action': 'del_doc_report_dialog_data',
+                        };                        
+                        ajaxData['_report_id'] = $report_id;
+                            
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
                             dataType: "json",
-                            data: {
-                                'action': 'del_doc_report_dialog_data',
-                                '_report_id': report_id,
-                            },
+                            data: ajaxData,
                             success: function (response) {
                                 get_doc_report_list_data($("#doc-id").val());
                             },

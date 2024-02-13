@@ -818,14 +818,12 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
-        //$doc_category = get_post_meta($doc_id, 'doc_category', true);            
     } else {
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         $start_job = get_post_meta($report_id, 'start_job', true);
         $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
         $query = retrieve_doc_field_data($doc_id, false, false, true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
-        //$doc_category = get_post_meta($report_id, 'doc_category', true);    
     }
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     ob_start();
@@ -835,7 +833,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
     <div style="text-align: right">
-    <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+    <span id="doc-report-dialog-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
     </div>
     <?php
     if ($query->have_posts()) {
@@ -1004,11 +1002,20 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
-        $report_id = (int)sanitize_text_field($_POST['_report_id']);
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
-        $result['html_contain'] = display_doc_report_dialog($report_id);
+        if( isset($_POST['_report_id']) ) {
+            $report_id = (int)sanitize_text_field($_POST['_report_id']);
+            $result['html_contain'] = display_doc_report_dialog($report_id);
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $query = retrieve_doc_field_data($doc_id);
+        }
 
-        if (isset($doc_id)) $query = retrieve_doc_field_data($doc_id);    
+        if( isset($_POST['_doc_id']) ) {
+            $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+            $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
+            $site_id = get_post_meta($doc_id, 'site_id', true);
+            $query = retrieve_doc_field_data(false, $site_id);
+        }
+
         $_array = array();
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
