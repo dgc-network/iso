@@ -313,7 +313,8 @@ function get_document_dialog_data() {
                 wp_redirect($doc_url);
             }
         } else {
-            $result['html_contain'] = display_document_dialog($doc_id);
+            //$result['html_contain'] = display_document_dialog($doc_id);
+            $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
         }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
@@ -810,13 +811,22 @@ function display_doc_report_list($doc_id) {
     return $html;
 }
 
-function display_doc_report_dialog($report_id) {
-    $doc_id = get_post_meta($report_id, 'doc_id', true);
-    $start_job = get_post_meta($report_id, 'start_job', true);
-    $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
-    $doc_category = get_post_meta($report_id, 'doc_category', true);
+function display_doc_report_dialog($report_id, $doc_id=false) {
+    if ($doc_id) {
+        $start_job = get_post_meta($doc_id, 'start_job', true);
+        $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
+        $query = retrieve_doc_field_data(false, $site_id, false, true);
+        //$doc_category = get_post_meta($doc_id, 'doc_category', true);            
+    } else {
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
+        $start_job = get_post_meta($report_id, 'start_job', true);
+        $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
+        $query = retrieve_doc_field_data($doc_id, false, false, true);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
+        //$doc_category = get_post_meta($report_id, 'doc_category', true);    
+    }
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
-    $site_id = get_post_meta($doc_id, 'site_id', true);
     ob_start();
     ?>
     <h2><?php echo $doc_title;?></h2>
@@ -827,13 +837,16 @@ function display_doc_report_dialog($report_id) {
     <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
     </div>
     <?php
-    $query = retrieve_doc_field_data($doc_id, false, false, true);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
-            $field_value = get_post_meta($report_id, $field_name, true);
+            if ($doc_id) {
+                $field_value = get_post_meta($doc_id, $field_name, true);
+            } else {
+                $field_value = get_post_meta($report_id, $field_name, true);
+            }
             switch (true) {
                 case ($field_type=='textarea'):
                     ?>
@@ -847,6 +860,13 @@ function display_doc_report_dialog($report_id) {
                     ?>
                     <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <?php
+                    break;
+    
+                case ($field_type=='select' && $field_name=='doc_category'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($field_value);?></select>
                     <?php
                     break;
 
