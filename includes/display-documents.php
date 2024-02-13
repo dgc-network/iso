@@ -435,8 +435,8 @@ function set_document_dialog_data() {
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        update_post_meta( $doc_id, 'start_job', $doc_category);
-        update_post_meta( $doc_id, 'start_job', $is_doc_report);
+        update_post_meta( $doc_id, 'doc_category', $doc_category);
+        update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
