@@ -173,15 +173,29 @@ function display_documents_shortcode() {
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                         $is_deleting = get_post_meta($post_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
+
+                        $inner_query = retrieve_doc_field_data(false, $site_id, true);
+                        if ($inner_query->have_posts()) {
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                echo '<td style="'.$listing_style.'">';
+                                echo esc_html(get_post_meta($report_id, $field_name, true));
+                                echo '</td>';
+                            endwhile;                
+                            // Reset only the inner loop's data
+                            wp_reset_postdata();
+                        }
+/*        
                         ?>
-                        <tr class="document-list-<?php echo $x;?>" id="edit-document-<?php the_ID();?>">
+                        <tr id="edit-document-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_number', true));?></td>
                             <td><?php echo esc_html(get_post_meta($post_id, 'doc_title', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_post_meta($post_id, 'doc_revision', true));?></td>
                             <td style="text-align:center;"><?php echo esc_html($todo_status.$del_status);?></td>
                         </tr>
                         <?php 
-                        //$x += 1;
+*/                        
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -500,7 +514,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
     $html = ob_get_clean();
     return $html;    
 }
-
+/*
 function retrieve_is_listing_doc_field_data($doc_id=0) {
     $args = array(
         'post_type'      => 'doc-field',
@@ -548,7 +562,7 @@ function retrieve_is_editing_doc_field_data($doc_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 function retrieve_doc_field_data($doc_id=false, $site_id=false, $is_listing=false, $is_editing=false) {
     $args = array(
         'post_type'      => 'doc-field',
@@ -734,7 +748,7 @@ function display_doc_report_list($doc_id) {
         <table style="width:100%;">
             <thead>
                 <?php
-                $query = retrieve_is_listing_doc_field_data($doc_id);
+                $query = retrieve_doc_field_data($doc_id, false, true);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -756,7 +770,7 @@ function display_doc_report_list($doc_id) {
                         $report_id = get_the_ID();
                         echo '<tr id="edit-doc-report-'.$report_id.'">';                
                         // Reset the inner loop before using it again
-                        $inner_query = retrieve_is_listing_doc_field_data($doc_id);                
+                        $inner_query = retrieve_doc_field_data($doc_id, false, true);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -805,7 +819,7 @@ function display_doc_report_dialog($report_id) {
     <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
     </div>
     <?php
-    $query = retrieve_is_editing_doc_field_data($doc_id);
+    $query = retrieve_doc_field_data($doc_id, false, false, true);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
