@@ -761,6 +761,7 @@ function display_doc_report_list($doc_id) {
 }
 
 function display_doc_report_dialog($report_id, $doc_id=false) {
+    $is_doc = false;
     if ($doc_id) {
         $start_job = get_post_meta($doc_id, 'start_job', true);
         $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
@@ -769,6 +770,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
+        $is_doc = true;
     } else {
         $start_job = get_post_meta($report_id, 'start_job', true);
         $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
@@ -792,7 +794,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
-            if ($doc_id) {
+            if ($is_doc) {
                 $field_value = get_post_meta($doc_id, $field_name, true);
             } else {
                 $field_value = get_post_meta($report_id, $field_name, true);
@@ -825,7 +827,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
     }
     ?>
         <?php
-        if ($doc_id) {
+        if ($is_doc) {
             if ($is_doc_report==1) {
                 echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                 echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
@@ -854,7 +856,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         <hr>
         <?php
-        if ($doc_id) {
+        if ($is_doc) {
             ?>
             <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
@@ -911,6 +913,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        update_post_meta( $post_id, 'start_leadtime', 86400 );
     }
     wp_send_json($response);
 }
