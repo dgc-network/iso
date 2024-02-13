@@ -168,10 +168,10 @@ function display_documents_shortcode() {
                 $query = retrieve_document_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $post_id = (int) get_the_ID();
-                        $todo_id = get_post_meta($post_id, 'todo_status', true);
+                        $doc_id = (int) get_the_ID();
+                        $todo_id = get_post_meta($doc_id, 'todo_status', true);
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $is_deleting = get_post_meta($post_id, 'is_deleting', true);
+                        $is_deleting = get_post_meta($doc_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
 
                         $inner_query = retrieve_doc_field_data(false, $site_id, true);
@@ -180,7 +180,7 @@ function display_documents_shortcode() {
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 echo '<td style="'.$listing_style.'">';
-                                echo esc_html(get_post_meta($report_id, $field_name, true));
+                                echo esc_html(get_post_meta($doc_id, $field_name, true));
                                 echo '</td>';
                             endwhile;                
                             // Reset only the inner loop's data
