@@ -110,7 +110,7 @@ function to_do_list_shortcode() {
 
                     if (is_my_job($job_id)) { // Aditional condition to filter the data
                         ?>
-                        <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                        <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
                             <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
                             <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
@@ -124,10 +124,6 @@ function to_do_list_shortcode() {
                     }
                     endwhile;
                     wp_reset_postdata();
-                    //while ($x<50) {
-                    //    echo '<tr class="todo-list-'.$x.'" style="display:none;"></tr>';
-                    //    $x += 1;
-                    //}    
                 endif;
                 ?>
                 </tbody>
@@ -135,6 +131,8 @@ function to_do_list_shortcode() {
         </fieldset>
         </div>
         <?php
+        display_todo_action_list();
+
     } else {
         user_did_not_login_yet();
     }
