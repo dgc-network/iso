@@ -145,135 +145,34 @@ function retrieve_todo_list_data(){
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
-            'relation' => 'AND', // Use 'AND' for an AND relationship between conditions
+            'relation' => 'AND',
             array(
                 'key'     => 'todo_due',
-                'compare' => 'EXISTS', // Include posts where todo_due meta key exists
+                'compare' => 'EXISTS',
             ),
             array(
                 'key'     => 'submit_user',
-                'compare' => 'NOT EXISTS', // Exclude posts where submit_user meta key does not exist
+                'compare' => 'NOT EXISTS',
             ),
         ),
     );
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function get_todo_list_data() {
-    // Retrieve the data
-    $query = retrieve_todo_list_data();
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $todo_id = (int) get_the_ID();
-            $job_id = esc_attr(get_post_meta($todo_id, 'job_id', true));
-            $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-            $todo_due = esc_attr(get_post_meta($todo_id, 'todo_due', true));
-            if (is_my_job($job_id)) { // Another condition to filter the data
-                $_list = array();
-                $_list["todo_id"] = $todo_id;
-                $_list["todo_title"] = get_the_title();
-                $_list["doc_title"] = get_the_title($doc_id);
-                $_list["due_date"] = wp_date( get_option('date_format'), $todo_due );
-                $_list["due_color"] = (($todo_due<time()) ? 1 : 0);
-                array_push($_array, $_list);
-            }
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_todo_list_data', 'get_todo_list_data' );
-add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
-*/
+
 function get_todo_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_todo_dialog_data') {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $result['html_contain'] = display_todo_dialog($todo_id);
-/*        
-        $report_id = get_post_meta($todo_id, 'report_id', true);
-        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        if ($report_id) {
-            $result['html_contain'] = display_todo_dialog($report_id);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $query = retrieve_doc_field_data($doc_id);
-        } else {
-            $result['html_contain'] = display_todo_dialog(false, $doc_id);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $query = retrieve_doc_field_data(false, $site_id);
-        }
-        $_array = array();
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $_list = array();
-                $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
-                array_push($_array, $_list);
-            endwhile;
-            wp_reset_postdata();
-        }    
-        $result['doc_fields'] = $_array;
-*/        
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
     wp_send_json($result);
 }
-
-function backup_get_todo_dialog_data() {
-    // Check if the action has been set
-    if (isset($_POST['action']) && $_POST['action'] === 'get_todo_dialog_data') {
-        $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));        
-        $doc_url = esc_attr(get_post_meta($doc_id, 'doc_url', true));
-        $params = array();
-
-        echo '<h2>To-do</h2>';
-        echo '<fieldset>';
-        if (function_exists($doc_url) && is_callable($doc_url)) {
-            $param_count = count($params);
-            $expected_param_count = (new ReflectionFunction($doc_url))->getNumberOfParameters();
-        
-            if ($param_count === $expected_param_count) {
-                // The function is valid, and the parameter count matches
-                call_user_func_array($doc_url, $params);
-            } else {
-                // Invalid parameter count
-                echo "Invalid parameter count for $doc_url";
-            }
-        } else {
-            // The function is not defined or not callable
-            //echo "Invalid function or not callable: $doc_url";
-            array_push($params, $doc_id);
-            call_user_func_array('display_todo_dialog', $params);
-        }
-        echo '<label for="action-list-button">'.__( '文件狀態', 'your-text-domain' ).'</label>';
-        echo '<input type="button" id="action-list-button" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-        //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
-        //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
-        //display_todo_action_buttons($todo_id);
-        echo '<hr>';
-        $query = retrieve_todo_action_list_data($todo_id);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-            endwhile;
-            wp_reset_postdata();
-        }
-        echo '</fieldset>';
-        display_todo_action_list();
-        wp_die();
-    } else {
-        // Handle invalid AJAX request
-        echo 'Invalid AJAX request!';
-        wp_die();
-    }
-}
 add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
 add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
-//function display_todo_dialog($report_id, $doc_id=false) {
 function display_todo_dialog($todo_id) {
     $report_id = get_post_meta($todo_id, 'report_id', true);
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -339,8 +238,6 @@ function display_todo_dialog($todo_id) {
         endwhile;
         wp_reset_postdata();
     }
-    ?>
-        <?php
         if ($is_doc) {
             if ($is_doc_report==1) {
                 echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
@@ -361,17 +258,9 @@ function display_todo_dialog($todo_id) {
         ?>
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+            <hr>
             <?php
         }
-        ?>
-        <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
-        <select id="start-job" class="text ui-widget-content ui-corner-all" disabled><?php echo select_start_job_option_data($start_job, $site_id);?></select>
-        <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" disabled />
-        <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label>
-        <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />
-        <hr>
-        <?php
         $query = retrieve_todo_action_list_data($todo_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -385,36 +274,6 @@ function display_todo_dialog($todo_id) {
     <?php
     $html = ob_get_clean();
     return $html;
-}
-
-function backup_display_todo_dialog($post_id) {
-    echo '<label for="doc-title">'.__( '文件名稱', 'your-text-domain' ).'</label>';
-    echo '<input type="text" id="doc-title" value="'.get_the_title($post_id).'" class="text ui-widget-content ui-corner-all" disabled />';
-    // Get all existing meta data for the specified post ID
-    $all_meta = get_post_meta($post_id);
-    // Output or manipulate the meta data as needed
-    foreach ($all_meta as $key => $values) {
-        if ($key!='site_id') 
-        if ($key!='start_job') 
-        if ($key!='start_leadtime') 
-        if ($key!='todo_status') 
-        foreach ($values as $value) {
-            echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
-            switch (true) {
-                case strpos($key, 'url'):
-                    echo '<a href="' . $value . '"><textarea id="' . $key . '" class="button" rows="3" style="width:100%;">' . $value . '</textarea></a>';
-                    break;
-        
-                case strpos($key, 'category'):
-                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all" disabled>' . select_doc_category_option_data($value) . '</select>';
-                    break;
-        
-                default:
-                    echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" disabled />';
-                    break;
-            }
-        }
-    }
 }
 
 function set_todo_dialog_data() {
@@ -433,8 +292,7 @@ function set_todo_dialog_data() {
             'action_id'     => $action_id,
         );        
         set_next_job_and_actions($params);
-        //set_next_job_and_actions($start_job, $action_id);
-
+/*        
     } else {
         // start_job on change, todo insert or update
         $job_id = sanitize_text_field($_POST['_job_id']);
@@ -486,7 +344,7 @@ function set_todo_dialog_data() {
             }
             $response = get_the_title($new_todo_id);
         }
-
+*/
     }
     wp_send_json($response);
 }
@@ -563,64 +421,6 @@ function set_next_job_and_actions($args = array()) {
     }
 }
 
-function backup_set_next_job_and_actions($next_job=0, $action_id=0, $doc_id=0, $next_leadtime=0) {
-    if ($next_job==0) return;
-    if ($action_id>0){
-        $todo_id = get_post_meta($action_id, 'todo_id', true);
-        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        $next_job = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-    }
-    $todo_title = get_the_title($next_job);
-    if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
-    if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
-    if ($next_job==-1 || $next_job==-2) notice_the_persons_in_site($doc_id);
-    // Insert the To-do list for next_job
-    $current_user_id = get_current_user_id();
-    $new_post = array(
-        'post_title'    => $todo_title,
-        'post_status'   => 'publish',
-        'post_author'   => $current_user_id,
-        'post_type'     => 'todo',
-    );    
-    $new_todo_id = wp_insert_post($new_post);
-    update_post_meta( $new_todo_id, 'job_id', $next_job);
-    update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-    update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-    update_post_meta( $doc_id, 'todo_status', $new_todo_id);
-
-    if ($next_job==-1) {
-        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $new_todo_id, 'submit_time', time());
-        notice_the_persons_in_site($new_todo_id);
-    }
-
-    if ($next_job>0) {
-        // Notice the persons in charge the job
-        notice_the_persons_in_charge($new_todo_id);
-        // Insert the Action list for next_job
-        $query = retrieve_job_action_list_data($next_job);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $new_post = array(
-                    'post_title'    => get_the_title(),
-                    'post_content'  => get_post_field('post_content', get_the_ID()),
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'action',
-                );    
-                $new_action_id = wp_insert_post($new_post);
-                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-                $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                update_post_meta( $new_action_id, 'next_job', $new_next_job);
-                $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-            endwhile;
-            wp_reset_postdata();
-        }
-    }
-}
-
 // Flex Message JSON structure with a button
 function send_flex_message_with_button_link($user, $message_text='', $link_uri='') {
     $line_bot_api = new line_bot_api();
@@ -689,6 +489,8 @@ function get_users_by_job_id($job_id=0) {
 function notice_the_persons_in_charge($todo_id=0) {
     $job_title = get_the_title($todo_id);
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
@@ -719,12 +521,16 @@ function get_users_in_site($site_id=0) {
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0) {
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
-
-    $doc_date = get_post_meta($doc_id, 'doc_date', true);
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    $doc_url = get_post_meta($doc_id, 'doc_url', true);
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     $site_id = get_post_meta($doc_id, 'site_id', true);
-    $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $doc_date ).'.';
+    $doc_url = get_post_meta($doc_id, 'doc_url', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
+    $todo_submit = get_post_meta($todo_id, 'submit_date', true);
+    $submit_date = wp_date( get_option('date_format'), $todo_submit );
+    
+    $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
 
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
