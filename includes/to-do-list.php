@@ -100,15 +100,19 @@ function to_do_list_shortcode() {
                 if ($query->have_posts()) :
                     $x = 0;
                     while ($query->have_posts()) : $query->the_post();
-                    $job_id = esc_attr(get_post_meta(get_the_ID(), 'job_id', true));
-                    $doc_id = esc_attr(get_post_meta(get_the_ID(), 'doc_id', true));
+                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if ($report_id) $doc_title .= '(Report)';
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
                     if (is_my_job($job_id)) { // Aditional condition to filter the data
                         ?>
-                        <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php the_ID(); ?>">
-                            <td style="text-align:center;"><?php the_title(); ?></td>
-                            <td><?php echo esc_html(get_post_meta($doc_id, 'doc_title', true)); ?></td>
+                        <tr class="todo-list-<?php echo $x; ?>" id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
+                            <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
@@ -243,8 +247,8 @@ function backup_get_todo_dialog_data() {
             array_push($params, $doc_id);
             call_user_func_array('display_todo_dialog', $params);
         }
-        echo '<label for="btn-action-list">'.__( '文件狀態', 'your-text-domain' ).'</label>';
-        echo '<input type="button" id="btn-action-list" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
+        echo '<label for="action-list-button">'.__( '文件狀態', 'your-text-domain' ).'</label>';
+        echo '<input type="button" id="action-list-button" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         //echo '<label for="todo_status">'.translate_custom_strings("todo_status").'</label>';
         //echo '<input type="button" id="todo_status" value="'.get_the_title($todo_id).'" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />';
         //display_todo_action_buttons($todo_id);
@@ -359,6 +363,8 @@ function display_todo_dialog($report_id, $doc_id=false) {
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label>
+        <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />
         <hr>
         <?php
         $query = retrieve_todo_action_list_data($todo_id);

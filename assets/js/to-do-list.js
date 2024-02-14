@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 // Display the result
-                $('#result-container').html(response);
+                $('#result-container').html(response.html_contain);
 
                 $('[id^="todo-dialog-button-"]').on("click", function (e) {
                     e.preventDefault();
@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $("#btn-action-list").on( "click", function(e) {
+                $("#action-list-button").on( "click", function(e) {
                     e.preventDefault();
                     get_todo_action_list_data(todo_id);
                 })
