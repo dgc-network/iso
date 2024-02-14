@@ -191,7 +191,7 @@ add_action( 'wp_ajax_nopriv_get_todo_list_data', 'get_todo_list_data' );
 */
 function get_todo_dialog_data() {
     $result = array();
-    if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
+    if (isset($_POST['action']) && $_POST['action'] === 'get_todo_dialog_data') {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
         $report_id = get_post_meta($todo_id, 'report_id', true);
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
