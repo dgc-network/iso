@@ -486,8 +486,8 @@ function set_next_job_and_actions($args = array()) {
     $next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
-    $doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
-    $report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
+    //$doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
+    //$report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
 
     if ($next_job == 0) return;
 
@@ -512,10 +512,11 @@ function set_next_job_and_actions($args = array()) {
     );    
     $new_todo_id = wp_insert_post($new_post);
     update_post_meta( $new_todo_id, 'job_id', $next_job);
-    if ($doc_id!=0) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-    if ($report_id!=0) update_post_meta( $new_todo_id, 'report_id', $report_id);
+    if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+    if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
     update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-    update_post_meta( $doc_id, 'todo_status', $new_todo_id);
+    if ($doc_id) update_post_meta( $doc_id, 'todo_status', $new_todo_id);
+    if ($report_id) update_post_meta( $report_id, 'todo_status', $new_todo_id);
 
     if ($next_job==-1 || $next_job==-2) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
