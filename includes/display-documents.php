@@ -177,7 +177,8 @@ function display_documents_shortcode() {
                         }
                         $todo_id = get_post_meta($doc_id, 'todo_status', true);
                         $todo_status = ($todo_id && $todo_id!=0) ? get_the_title($todo_id) : 'Draft';
-                        $todo_status = ($todo_id && $todo_id!=0) ? $todo_id : 'Draft';
+                        if ($todo_id==-1) $todo_status = __( '發行', 'your-text-domain' );
+                        if ($todo_id==-2) $todo_status = __( '廢止', 'your-text-domain' );
                         $is_deleting = get_post_meta($doc_id, 'is_deleting', true);
                         $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
                         echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
@@ -252,29 +253,7 @@ function retrieve_document_data($site_id = 0) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function translate_custom_strings($original_string) {
-    // Define translations for specific strings
-    $translations = array(
-        'doc_title' => __( '文件名稱', 'your-text-domain' ),
-        'doc_number' => __( '文件編號', 'your-text-domain' ),
-        'doc_revision' => __( '文件版本', 'your-text-domain' ),
-        'doc_url' => __( '文件地址', 'your-text-domain' ),
-        'start_job' => __( '起始職務', 'your-text-domain' ),
-        'start_leadtime' => __( '前置時間', 'your-text-domain' ),
-        'doc_category' => __( '文件類別', 'your-text-domain' ),
-        'site_id' => __( '單位', 'your-text-domain' ),
-        'todo_status' => __( '文件狀態', 'your-text-domain' ),
-        // Add more translations as needed
-    );
-    // Check if there's a translation for the given string
-    if (isset($translations[$original_string])) {
-        return $translations[$original_string];
-    }
-    // If no translation is found, return the original string
-    return $original_string;
-}
-*/
+
 function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
