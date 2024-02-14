@@ -154,7 +154,7 @@ function display_documents_shortcode() {
                 </thead>
                 <tbody>
                 <?php
-                $query = retrieve_document_list_data($site_id);
+                $query = retrieve_document_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $doc_id = (int) get_the_ID();
@@ -200,7 +200,7 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function retrieve_document_list_data($site_id = 0) {
+function retrieve_document_data($site_id = 0) {
     $site_filter = array(
         'key'     => 'site_id',
         'value'   => $site_id,
@@ -254,7 +254,7 @@ function retrieve_document_list_data($site_id = 0) {
     $query = new WP_Query($args);
     return $query;
 }
-
+/*
 function translate_custom_strings($original_string) {
     // Define translations for specific strings
     $translations = array(
@@ -276,7 +276,7 @@ function translate_custom_strings($original_string) {
     // If no translation is found, return the original string
     return $original_string;
 }
-
+*/
 function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
@@ -291,7 +291,6 @@ function get_document_dialog_data() {
                 wp_redirect($doc_url);
             }
         } else {
-            //$result['html_contain'] = display_document_dialog($doc_id);
             $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $query = retrieve_doc_field_data(false, $site_id);
@@ -313,67 +312,7 @@ function get_document_dialog_data() {
 }
 add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
 add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
-/*
-function display_document_dialog($doc_id) {
-    $site_id = get_post_meta($doc_id, 'site_id', true);
-    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-    ob_start();
-    echo '<h2>Document</h2>';
-    echo '<input type="hidden" id="doc-id" value="'.$doc_id.'" />';
-    echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
-    echo '<fieldset>';
-    // Get all existing meta data for the specified post ID
-    $all_meta = get_post_meta($doc_id);
-    // Output or manipulate the meta data as needed
-    foreach ($all_meta as $key => $values) {
-        if ($key!='site_id')
-        if ($key!='is_doc_report')
-        if ($key!='todo_status')
-        if ($key!='doc_date')
 
-        foreach ($values as $value) {
-            if ($key=='doc_url') {
-                if ($is_doc_report==1) {
-                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                    echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                    echo '<textarea id="doc_url" rows="3" style="width:100%; display:none;">' . $value . '</textarea>';
-                    echo '<div id="doc-field-list-dialog">';
-                    echo display_doc_field_list($doc_id);
-                    echo '</div>';
-                } else {
-                    echo '<label id="doc-field-setting" class="button" for="doc_url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-                    echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                    echo '<textarea id="doc_url" rows="3" style="width:100%;">' . $value . '</textarea>';
-                    echo '<div id="doc-field-list-dialog" style="display:none;">';
-                    echo display_doc_field_list($doc_id);
-                    echo '</div>';
-                }
-            } else {
-                echo '<label for="'.$key.'">'.translate_custom_strings($key).'</label>';
-                switch (true) {
-                    case strpos($key, '_job'):
-                        echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_start_job_option_data($value, $site_id) . '</select>';
-                        break;
-                
-                    case strpos($key, '_category'):
-                    echo '<select id="' . $key . '" class="text ui-widget-content ui-corner-all">' . select_doc_category_option_data($value) . '</select>';
-                        break;
-            
-                    default:
-                        echo '<input type="text" id="' . $key . '" value="' . $value . '" class="text ui-widget-content ui-corner-all" />';
-                        break;
-                }    
-            }
-        }
-    }
-    echo '<hr>';
-    echo '<input type="button" id="save-document-button" value="'.__( 'Save', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '<input type="button" id="del-document-button" value="'.__( 'Delete', 'your-text-domain' ).'" style="margin:3px;" />';
-    echo '</fieldset>';
-    $html = ob_get_clean();
-    return $html;
-}
-*/
 function select_start_job_option_data($selected_job=0, $site_id=0) {
     $args = array(
         'post_type'      => 'job',
@@ -391,7 +330,7 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
         ),
     );
     $query = new WP_Query($args);
-    $options = '<option value="">Select job</option>';
+    $options = '<option value="0">Select job</option>';
     while ($query->have_posts()) : $query->the_post();
         $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
@@ -441,7 +380,14 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
-        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
+        $params = array(
+            'doc_id'        => $doc_id,
+            'next_job'      => $start_job,
+            'next_leadtime' => $start_leadtime,
+        );        
+        set_next_job_and_actions($params);
+        
+        //set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -781,13 +727,10 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
     ob_start();
     ?>
-    <h2><?php echo $doc_title;?></h2>
+    <h2 style="margin-left:10px;"><?php echo $doc_title;?></h2>
     <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
-    <div style="text-align: right">
-    <span id="doc-report-dialog-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-    </div>
     <?php
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
@@ -893,7 +836,13 @@ function set_doc_report_dialog_data() {
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
-        set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
+        $params = array(
+            'report_id'     => $report_id,
+            'next_job'      => $start_job,
+            'next_leadtime' => $start_leadtime,
+        );        
+        set_next_job_and_actions($params);
+        //set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
 
     } else {
         // Insert the post into the database

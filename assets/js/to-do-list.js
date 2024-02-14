@@ -17,16 +17,16 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
-        open_todo_dialog_and_buttons(todo_id)
+        get_todo_dialog_data(todo_id)
     });            
 
-    function open_todo_dialog_and_buttons(todo_id){
+    function get_todo_dialog_data(todo_id){
         // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
-                action: 'open_todo_dialog_and_buttons',
+                action: 'get_todo_dialog_data',
                 _todo_id: todo_id,
             },
             success: function (response) {
@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
                             '_todo_id': todo_id,
                         },
                         success: function (response) {
-                            //open_todo_dialog_and_buttons(todo_id)
+                            //get_todo_dialog_data(todo_id)
                             get_todo_action_list_data(todo_id);
                         },
                         error: function(error){
@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');
-                                    open_todo_dialog_and_buttons(todo_id)
+                                    get_todo_dialog_data(todo_id)
                                     get_todo_action_list_data(todo_id);
                                 },
                                 error: function (error) {
@@ -129,7 +129,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#todo-action-dialog").dialog('close');
-                                        open_todo_dialog_and_buttons(todo_id)
+                                        get_todo_dialog_data(todo_id)
                                         get_todo_action_list_data(todo_id);
                                     },
                                     error: function(error){
