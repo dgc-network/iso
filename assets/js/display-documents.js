@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 if (response.redirect_url) {
                     //window.location.href = response.redirect_url;
-                    embedded = '<div style="width: 100%;"><iframe src="https://docs.google.com/document/d/e/2PACX-1vS-ssV9SF9djRbJRX6pE1TM6NlQ3G4wk9zjiXj4xxln7zLnAjogwe4ebhaKPJPuD0kKsnw_pCJOAwNu/pub?embedded=true"></iframe></div>'
+                    embedded = '<div style="width: 100%;"><iframe src="https://docs.google.com/document/d/e/2PACX-1vS-ssV9SF9djRbJRX6pE1TM6NlQ3G4wk9zjiXj4xxln7zLnAjogwe4ebhaKPJPuD0kKsnw_pCJOAwNu/pub?embedded=true"  width="100%" height="600px"></iframe></div>'
                     $('#result-container').html(embedded);
                 } else {
                     $('#result-container').html(response.html_contain);
