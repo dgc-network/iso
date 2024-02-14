@@ -51,6 +51,7 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
+/*                
                 if (response.redirect_url) {
                     //window.location.href = response.redirect_url;
                     embedded = '<iframe src="https://docs.google.com/document/d/e/2PACX-1vS-ssV9SF9djRbJRX6pE1TM6NlQ3G4wk9zjiXj4xxln7zLnAjogwe4ebhaKPJPuD0kKsnw_pCJOAwNu/pub?embedded=true"  width="100%" height="600px"></iframe>'
@@ -58,7 +59,8 @@ jQuery(document).ready(function($) {
                 } else {
                     $('#result-container').html(response.html_contain);
                 }
-                //$('#result-container').html(response.html_contain);
+*/                
+                $('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
                 //activate_document_dialog_data(doc_id);
@@ -136,7 +138,8 @@ jQuery(document).ready(function($) {
                 });
             
                 $("#doc-url-preview").on("click", function () {
-                    window.location.replace($("#doc-url").val());
+                    //window.location.replace($("#doc-url").val());
+                    $('#result-container').html($("#doc-url").val());
                 });    
                 
                 // doc-field scripts
