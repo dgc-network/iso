@@ -195,6 +195,7 @@ function display_todo_dialog($todo_id) {
         $query = retrieve_doc_field_data($doc_id, false, false, true);
     }
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
+
     ob_start();
     ?>
     <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
@@ -238,38 +239,39 @@ function display_todo_dialog($todo_id) {
         endwhile;
         wp_reset_postdata();
     }
-        if ($is_doc) {
-            if ($is_doc_report==1) {
-                echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-                echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled>' . $doc_url . '</textarea>';
-                echo '<div id="doc-field-list-dialog">';
-                echo display_doc_field_list($doc_id);
-                echo '</div>';
-            } else {
-                echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-                echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc-url" rows="3" style="width:100%;" disabled>' . $doc_url . '</textarea>';
-                echo '<div id="doc-field-list-dialog" style="display:none;">';
-                echo display_doc_field_list($doc_id);
-                echo '</div>';
-            }
-            echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
+    if ($is_doc) {
+        if ($is_doc_report==1) {
+            echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
+            echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+            echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled>' . $doc_url . '</textarea>';
+            echo '<div id="doc-field-list-dialog">';
+            echo display_doc_field_list($doc_id);
+            echo '</div>';
+        } else {
+            echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
+            echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
+            echo '<textarea id="doc-url" rows="3" style="width:100%;" disabled>' . $doc_url . '</textarea>';
+            echo '<div id="doc-field-list-dialog" style="display:none;">';
+            echo display_doc_field_list($doc_id);
+            echo '</div>';
+        }
+        echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
         ?>
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+            <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
+            <input type="button" id="action-list-button" value="<?php echo esc_html(get_the_title($todo_id));?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             <hr>
-            <?php
-        }
-        $query = retrieve_todo_action_list_data($todo_id);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-            endwhile;
-            wp_reset_postdata();
-        }
-
-        ?>
+    <?php
+    }
+    $query = retrieve_todo_action_list_data($todo_id);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+        endwhile;
+        wp_reset_postdata();
+    }
+    ?>
     </fieldset>
     <?php
     $html = ob_get_clean();
