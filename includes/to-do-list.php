@@ -484,10 +484,7 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_job_and_actions($args = array()) {
     $next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
-    $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
-    //$doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
-    //$report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
 
     if ($next_job == 0) return;
 
@@ -497,6 +494,10 @@ function set_next_job_and_actions($args = array()) {
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
         $doc_id        = get_post_meta($todo_id, 'doc_id', true);
         $report_id     = get_post_meta($todo_id, 'report_id', true);
+    } else {
+        $doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
+        $report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
+        $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;    
     }
     $todo_title = get_the_title($next_job);
     if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
