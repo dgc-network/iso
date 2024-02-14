@@ -105,7 +105,7 @@ function to_do_list_shortcode() {
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
                     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    if ($report_id) $doc_title .= '(Report)';
+                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
                     if (is_my_job($job_id)) { // Aditional condition to filter the data
