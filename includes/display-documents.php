@@ -353,7 +353,8 @@ function set_document_dialog_data() {
         $doc_url = sanitize_text_field($_POST['_doc_url']);
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
-        update_post_meta( $doc_id, 'doc_url', $doc_url);
+        //update_post_meta( $doc_id, 'doc_url', $doc_url);
+        update_post_meta( $doc_id, 'doc_url', wp_kses_post($doc_url));
         update_post_meta( $doc_id, 'doc_category', $doc_category);
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
