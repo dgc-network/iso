@@ -51,7 +51,12 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-                $('#result-container').html(response.html_contain);
+                if (response.redirect_url) {
+                    window.location.href = response.redirect_url;
+                } else {
+                    $('#result-container').html(response.html_contain);
+                }
+                //$('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
                 //activate_document_dialog_data(doc_id);

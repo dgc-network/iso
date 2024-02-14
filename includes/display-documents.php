@@ -265,7 +265,8 @@ function get_document_dialog_data() {
             if ($is_doc_report) {
                 $result['html_contain'] = display_doc_report_list($doc_id);
             } else {
-                wp_redirect($doc_url);
+                //wp_redirect($doc_url);
+                $result['redirect_url'] = $doc_url;
             }
         } else {
             $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
