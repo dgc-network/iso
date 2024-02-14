@@ -693,6 +693,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $doc_category = get_post_meta($doc_id, 'doc_category', true);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
+        $doc_url = '<'.$doc_url.'>';
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
