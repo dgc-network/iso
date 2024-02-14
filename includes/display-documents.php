@@ -265,7 +265,7 @@ function get_document_dialog_data() {
             if ($is_doc_report) {
                 $result['html_contain'] = display_doc_report_list($doc_id);
             } else {
-                $doc_url .= '<input type ="button" id="new-document-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />';
+                $doc_url .= '<input type ="button" id="workflow-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />';
                 $result['html_contain'] = $doc_url;
             }
         } else {

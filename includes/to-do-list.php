@@ -259,11 +259,13 @@ function display_todo_dialog($todo_id) {
         ?>
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
-            <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
-            <input type="button" id="action-list-button" value="<?php echo esc_html(get_the_title($todo_id));?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-            <hr>
-    <?php
+        <?php
     }
+    ?>
+        <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
+        <input type="button" id="action-list-button" value="<?php echo esc_html(get_the_title($todo_id));?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <hr>
+    <?php
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
