@@ -193,6 +193,8 @@ function get_todo_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_todo_dialog_data') {
         $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
+        $result['html_contain'] = display_todo_dialog($todo_id);
+/*        
         $report_id = get_post_meta($todo_id, 'report_id', true);
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
         if ($report_id) {
@@ -214,6 +216,7 @@ function get_todo_dialog_data() {
             wp_reset_postdata();
         }    
         $result['doc_fields'] = $_array;
+*/        
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
@@ -272,7 +275,11 @@ function backup_get_todo_dialog_data() {
 add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
 add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
-function display_todo_dialog($report_id, $doc_id=false) {
+//function display_todo_dialog($report_id, $doc_id=false) {
+function display_todo_dialog($todo_id) {
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+
     $is_doc = false;
     if ($doc_id) {
         $start_job = get_post_meta($doc_id, 'start_job', true);
@@ -290,10 +297,10 @@ function display_todo_dialog($report_id, $doc_id=false) {
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data($doc_id, false, false, true);
     }
-    $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
     ob_start();
     ?>
-    <h2 style="margin-left:10px;"><?php echo $doc_title;?></h2>
+    <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
     <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
@@ -312,7 +319,7 @@ function display_todo_dialog($report_id, $doc_id=false) {
                 case ($field_type=='textarea'):
                     ?>
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disabled><?php echo esc_html($field_value);?></textarea>
                     <?php    
                     break;
 
@@ -327,7 +334,7 @@ function display_todo_dialog($report_id, $doc_id=false) {
                 default:
                     ?>
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" disabled />
                     <?php
                     break;
             }
@@ -340,14 +347,14 @@ function display_todo_dialog($report_id, $doc_id=false) {
             if ($is_doc_report==1) {
                 echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
                 echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;">' . $doc_url . '</textarea>';
+                echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled>' . $doc_url . '</textarea>';
                 echo '<div id="doc-field-list-dialog">';
                 echo display_doc_field_list($doc_id);
                 echo '</div>';
             } else {
                 echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                 echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-                echo '<textarea id="doc-url" rows="3" style="width:100%;">' . $doc_url . '</textarea>';
+                echo '<textarea id="doc-url" rows="3" style="width:100%;" disabled>' . $doc_url . '</textarea>';
                 echo '<div id="doc-field-list-dialog" style="display:none;">';
                 echo display_doc_field_list($doc_id);
                 echo '</div>';
@@ -355,14 +362,14 @@ function display_todo_dialog($report_id, $doc_id=false) {
             echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
         ?>
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+            <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
             <?php
         }
         ?>
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+        <select id="start-job" class="text ui-widget-content ui-corner-all" disabled><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" disabled />
         <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label>
         <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="text-align:center; background:antiquewhite; color:blue; font-size:smaller;" class="text ui-widget-content ui-corner-all" />
         <hr>
