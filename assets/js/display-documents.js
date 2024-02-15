@@ -169,6 +169,33 @@ jQuery(document).ready(function($) {
                     });
 
                 });
+
+                $("#doc-unpublished").on("click", function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: 'json',
+                        data: {
+                            action: 'set_doc_unpublished_data',
+                            _doc_id: $("#doc-id").val(),
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                console.log('Sorting order updated successfully.');
+                            } else {
+                                console.error('Error updating sorting order:', response.error);
+                                alert('Error updating sorting order. Please try again.');
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.error('AJAX request failed:', errorThrown);
+                            alert('AJAX request failed. Please try again.');
+                        }
+                    });
+    
+                });
+
+
                 
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
