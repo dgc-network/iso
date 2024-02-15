@@ -218,13 +218,12 @@ function display_signature_record() {
                     if ($todo_site==$site_id) { // Aditional condition to filter the data
                         $user_data = get_userdata( $submit_user );
                         ?>
-                        <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time); ?></td>
-                            <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
-                            <td><?php echo esc_html($doc_title); ?></td>
-                            <td style="text-align:center;"><?php echo esc_html(the_title($submit_action)); ?></td>
-                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name); ?></td>
-
+                        <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                            <td style="text-align:center;"><?php esc_html(the_title());?></td>
+                            <td><?php echo esc_html($doc_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                         </tr>
                         <?php
                     }
