@@ -140,7 +140,20 @@ jQuery(document).ready(function($) {
                 $("#doc-url-preview").on("click", function () {
                     //window.location.replace($("#doc-url").val());
                     //$('#result-container').html($("#doc-url").val());
-                    doc_url = '<input type ="button" id="workflow-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />'+$("#doc-url").val();
+                    const header = `
+                    <fieldset>
+                    <input type ="button" id="workflow-button" value="=" />${$("#doc_title").val()}
+                    `;
+
+                    const footer = `
+                    <input type ="button" id="workflow-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+                    <td style="text-align:center;">${value.field_title}</td>
+                    <td style="text-align:center;">${value.editing_type}</td>
+                    <td style="text-align:center;">${value.default_value}</td>
+                    </fieldset>
+                    `;
+
+                    doc_url = header+$("#doc-url").val();
                     $('#result-container').html(doc_url);
                 });    
                 

@@ -247,7 +247,7 @@ function display_signature_record() {
             ?>
             </tbody>
         </table>
-        <p>Total Submissions: <?php echo $x;?></p>
+        <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>
     <?php
