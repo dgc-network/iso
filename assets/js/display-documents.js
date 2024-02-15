@@ -51,15 +51,6 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-/*                
-                if (response.redirect_url) {
-                    //window.location.href = response.redirect_url;
-                    embedded = '<iframe src="https://docs.google.com/document/d/e/2PACX-1vS-ssV9SF9djRbJRX6pE1TM6NlQ3G4wk9zjiXj4xxln7zLnAjogwe4ebhaKPJPuD0kKsnw_pCJOAwNu/pub?embedded=true"  width="100%" height="600px"></iframe>'
-                    $('#result-container').html(embedded);
-                } else {
-                    $('#result-container').html(response.html_contain);
-                }
-*/                
                 $('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
@@ -138,13 +129,11 @@ jQuery(document).ready(function($) {
                 });
             
                 $("#doc-url-preview").on("click", function () {
-                    //window.location.replace($("#doc-url").val());
-                    //$('#result-container').html($("#doc-url").val());
                     const header = `
                     <fieldset>
                     <input type ="button" id="workflow-button" value="=" style="margin-right:10px;" />
                     ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
-                    <span id="unpublish-todo" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
+                    <span id="doc-unpublished" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
                     `;
 
                     const footer = `
@@ -152,9 +141,34 @@ jQuery(document).ready(function($) {
                     </fieldset>
                     `;
 
-                    doc_url = header+$("#doc-url").val();
                     $('#result-container').html(header+$("#doc-url").val()+footer);
-                });    
+
+                    $("#doc-unpublished").on("click", function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: 'json',
+                            data: {
+                                action: 'set_doc_unpublished_data',
+                                _doc_id: $("#doc-id").val(),
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    console.log('Sorting order updated successfully.');
+                                } else {
+                                    console.error('Error updating sorting order:', response.error);
+                                    alert('Error updating sorting order. Please try again.');
+                                }
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.error('AJAX request failed:', errorThrown);
+                                alert('AJAX request failed. Please try again.');
+                            }
+                        });
+        
+                    });
+
+                });
                 
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
