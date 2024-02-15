@@ -142,7 +142,9 @@ jQuery(document).ready(function($) {
                     //$('#result-container').html($("#doc-url").val());
                     const header = `
                     <fieldset>
-                    <input type ="button" id="workflow-button" value="=" />${$("#doc_title").val()}
+                    <input type ="button" id="workflow-button" value="=" style="margin-right:10px;" />
+                    ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
+                    <span id="unpublish-todo" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
                     `;
 
                     const footer = `
