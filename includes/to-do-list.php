@@ -207,8 +207,9 @@ function display_signature_record() {
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody>
@@ -227,7 +228,9 @@ function display_signature_record() {
                     $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                     $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                     $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-    
+                    $next_job = get_post_meta($submit_action, 'next_job', true);
+                    $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
+
                     if ($todo_site==$site_id) { // Aditional condition to filter the data
                         $user_data = get_userdata( $submit_user );
                         ?>
@@ -235,8 +238,9 @@ function display_signature_record() {
                             <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
                             <td style="text-align:center;"><?php esc_html(the_title());?></td>
                             <td><?php echo esc_html($doc_title);?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
                             <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                         </tr>
                         <?php
                         $x += 1;
