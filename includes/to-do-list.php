@@ -55,26 +55,17 @@ function register_action_post_type() {
 }
 add_action('init', 'register_action_post_type');
 
-function retrieve_signature_record_data(){
-    $args = array(
-        'post_type'      => 'todo',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'submit_action',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'EXISTS',
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    return $query;
+// Shortcode to display To-do list on frontend
+function to_do_list_shortcode() {
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
+        if ($_GET['_select_todo']=='1') display_signature_record($site_id);
+        if ($_GET['_select_todo']!='1') display_to_do_list($site_id);
+    } else {
+        user_did_not_login_yet();
+    }
 }
+add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_to_do_list() {
     $current_user_id = get_current_user_id();
@@ -157,6 +148,27 @@ function display_to_do_list() {
 
 }
 
+function retrieve_todo_list_data(){
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'todo_due',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'NOT EXISTS',
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function display_signature_record() {
     $current_user_id = get_current_user_id();
     $site_id = get_post_meta($current_user_id, 'site_id', true);
@@ -202,6 +214,7 @@ function display_signature_record() {
             <tbody>
             <?php
             $query = retrieve_signature_record_data();
+            $x = 0;
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
@@ -226,6 +239,7 @@ function display_signature_record() {
                             <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                         </tr>
                         <?php
+                        $x += 1;
                     }
                 endwhile;
                 wp_reset_postdata();
@@ -233,37 +247,26 @@ function display_signature_record() {
             ?>
             </tbody>
         </table>
+        <p>Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>
     <?php
 }
 
-// Shortcode to display To-do list on frontend
-function to_do_list_shortcode() {
-    // Check if the user is logged in
-    if (is_user_logged_in()) {
-        if ($_GET['_select_todo']=='1') display_signature_record($site_id);
-        if ($_GET['_select_todo']!='1') display_to_do_list($site_id);
-    } else {
-        user_did_not_login_yet();
-    }
-}
-add_shortcode('to-do-list', 'to_do_list_shortcode');
-
-function retrieve_todo_list_data(){
+function retrieve_signature_record_data(){
     $args = array(
         'post_type'      => 'todo',
-        'posts_per_page' => 30,
+        'posts_per_page' => -1,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(
-                'key'     => 'todo_due',
+                'key'     => 'submit_action',
                 'compare' => 'EXISTS',
             ),
             array(
                 'key'     => 'submit_user',
-                'compare' => 'NOT EXISTS',
+                'compare' => 'EXISTS',
             ),
         ),
     );
