@@ -169,7 +169,7 @@ function retrieve_todo_list_data(){
     return $query;
 }
 
-function display_workflow_list($doc_id=false, $site_id=false) {
+function display_workflow_list($doc=false) {
     ob_start();
     ?>
         <table class="ui-widget" style="width:100%;">
@@ -185,7 +185,7 @@ function display_workflow_list($doc_id=false, $site_id=false) {
             </thead>
             <tbody>
             <?php
-            $query = retrieve_signature_record_data($doc_id);
+            $query = retrieve_signature_record_data($doc);
             $x = 0;
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
@@ -258,7 +258,7 @@ function display_signature_record() {
                 <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-        <?php display_workflow_list(false,$site_id);?>
+        <?php display_workflow_list();?>
         <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>

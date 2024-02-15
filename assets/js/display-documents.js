@@ -181,6 +181,10 @@ jQuery(document).ready(function($) {
 
                 });
 
+                $("#workflow-button").on("click", function () {
+                    $("#workflow-div").toggle()
+                });
+
                 $("#doc-unpublished").on("click", function () {
                     $.ajax({
                         type: 'POST',
