@@ -280,7 +280,7 @@ function get_document_dialog_data() {
                 $result['html_contain'] = $header.$doc_url.$footer;
             }
         } else {
-            if ($todo_status<1 || isset($_GET['_back_door'])) {
+            //if ($todo_status<1) {
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
                 $site_id = get_post_meta($doc_id, 'site_id', true);
                 $query = retrieve_doc_field_data(false, $site_id);
@@ -294,7 +294,7 @@ function get_document_dialog_data() {
                     wp_reset_postdata();
                 }    
                 $result['doc_fields'] = $_array;
-            }
+            //}
         }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
