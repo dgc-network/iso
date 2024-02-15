@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-                if (response.html_contain === null) {
+                if (response.html_contain === undefined || response.html_contain === null) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     // Handle the HTML content as needed
@@ -561,7 +561,7 @@ jQuery(document).ready(function($) {
                 _report_id: report_id,
             },
             success: function (response) {
-                if (response.html_contain === null) {
+                if (response.html_contain === undefined || response.html_contain === null) {
                     alert("The report is in To-do process. Please wait for publishing.");
                 } else {
                     // Handle the HTML content as needed
