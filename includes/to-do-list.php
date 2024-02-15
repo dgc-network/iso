@@ -169,38 +169,8 @@ function retrieve_todo_list_data(){
     return $query;
 }
 
-function display_signature_record() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_post_meta($current_user_id, 'site_id', true);
-    $user_data = get_userdata( $current_user_id );
+function display_workflow_list($doc_id=0) {
     ?>
-    <div class="ui-widget" id="result-container">
-    <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
-    <fieldset>
-        <div id="todo-setting-div" style="display:none">
-        <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-        </fieldset>
-        </div>
-    
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-todo">
-                    <option value="1">Signature record</option>
-                    <option value="0">To-do list</option>
-                    <option value="2">...</option>
-                </select>
-            </div>
-            <div style="text-align: right">
-                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
-
         <table class="ui-widget" style="width:100%;">
             <thead>
                 <tr>
@@ -214,7 +184,7 @@ function display_signature_record() {
             </thead>
             <tbody>
             <?php
-            $query = retrieve_signature_record_data();
+            $query = retrieve_signature_record_data($doc_id);
             $x = 0;
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
@@ -251,13 +221,48 @@ function display_signature_record() {
             ?>
             </tbody>
         </table>
+    <?php
+}
+
+function display_signature_record() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    $user_data = get_userdata( $current_user_id );
+    ?>
+    <div class="ui-widget" id="result-container">
+    <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="todo-setting-div" style="display:none">
+        <fieldset>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-todo">
+                    <option value="1">Signature record</option>
+                    <option value="0">To-do list</option>
+                    <option value="2">...</option>
+                </select>
+            </div>
+            <div style="text-align: right">
+                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+        <?php display_workflow_list();?>
         <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>
     <?php
 }
 
-function retrieve_signature_record_data(){
+function retrieve_signature_record_data($doc_id=0){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
@@ -414,59 +419,6 @@ function set_todo_dialog_data() {
             'action_id'     => $action_id,
         );        
         set_next_job_and_actions($params);
-/*        
-    } else {
-        // start_job on change, todo insert or update
-        $job_id = sanitize_text_field($_POST['_job_id']);
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        if ($job_id==0) wp_send_json($response);
-
-        if( isset($_POST['_todo_id']) ) {
-            // Insert To-do
-            $todo_id = sanitize_text_field($_POST['_todo_id']);        
-            update_post_meta( $todo_id, 'job_id', $job_id);
-            update_post_meta( $doc_id, 'start_job', $job_id);
-            $response = get_the_title($todo_id);
-        } else {
-            $todo_title = get_the_title($job_id);
-            $todo_content = get_the_title($doc_id);
-            // Insert To-do
-            $new_post = array(
-                'post_title'    => $todo_title,
-                'post_content'  => $todo_content,
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'todo',
-            );    
-            $new_todo_id = wp_insert_post($new_post);
-            update_post_meta( $new_todo_id, 'job_id', $job_id);
-            update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-            update_post_meta( $doc_id, 'start_job', $job_id);
-            update_post_meta( $doc_id, 'todo_status', $new_todo_id);
-
-            // Insert the Action list for start_job
-            $query = retrieve_job_action_list_data($job_id);
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    $new_post = array(
-                        'post_title'    => get_the_title(),
-                        'post_content'  => get_post_field('post_content', get_the_ID()),
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'action',
-                    );    
-                    $new_action_id = wp_insert_post($new_post);
-                    update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-                    $new_next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-                    update_post_meta( $new_action_id, 'next_job', $new_next_job);
-                    $new_next_leadtime = esc_attr(get_post_meta(get_the_ID(), 'next_leadtime', true));
-                    update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-                endwhile;
-                wp_reset_postdata();
-            }
-            $response = get_the_title($new_todo_id);
-        }
-*/
     }
     wp_send_json($response);
 }

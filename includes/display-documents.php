@@ -266,11 +266,13 @@ function get_document_dialog_data() {
             if ($is_doc_report) {
                 $result['html_contain'] = display_doc_report_list($doc_id);
             } else {
+                $workflow_list = display_workflow_list();
                 $header = <<<HTML
                     <fieldset>
                         <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
                         <span id='doc-title'>$doc_title</span>
                         <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                        <div id="workflow-div" style="display:none;">$workflow_list</div>                                                
                 HTML;
 
                 $footer = <<<HTML
