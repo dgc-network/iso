@@ -207,7 +207,7 @@ function display_signature_record() {
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'User', 'your-text-domain' );?></th>
                 </tr>
             </thead>

@@ -364,6 +364,8 @@ jQuery(document).ready(function($) {
                     `;
     
                     $docFieldList.append(output).show();
+
+                    activate_doc_field_list_data();
                 });
             },
             error: function (error) {
@@ -373,8 +375,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    activate_doc_field_list_data();
-
     function activate_doc_field_list_data(){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
