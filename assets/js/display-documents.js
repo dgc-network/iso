@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
                             dataType: 'json',
                             data: {
                                 action: 'set_doc_unpublished_data',
-                                _doc_id: $("#doc-id").val(),
+                                _doc_id: doc_id,
                             },
                             success: function(response) {
                                 if (response.success) {
@@ -177,7 +177,7 @@ jQuery(document).ready(function($) {
                         dataType: 'json',
                         data: {
                             action: 'set_doc_unpublished_data',
-                            _doc_id: $("#doc-id").val(),
+                            _doc_id: doc_id,
                         },
                         success: function(response) {
                             if (response.success) {
