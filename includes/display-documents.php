@@ -261,12 +261,23 @@ function get_document_dialog_data() {
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta($doc_id, 'todo_status', true);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
+        $doc_title = get_post_meta($doc_id, 'doc_title', true);
         if ($todo_status==-1) {
             if ($is_doc_report) {
                 $result['html_contain'] = display_doc_report_list($doc_id);
             } else {
-                $doc_url .= '<input type ="button" id="workflow-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />';
-                $result['html_contain'] = $doc_url;
+                $header = <<<HTML
+                    <fieldset>
+                        <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
+                        <span id='doc-title'>$doc_title</span>
+                        <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                HTML;
+
+                $footer = <<<HTML
+                    </fieldset>
+                HTML;
+
+                $result['html_contain'] = $header.$doc_url.$footer;
             }
         } else {
             $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
