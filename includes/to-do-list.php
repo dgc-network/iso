@@ -169,7 +169,7 @@ function retrieve_todo_list_data(){
     return $query;
 }
 
-function display_workflow_list($doc_id=0) {
+function display_workflow_list($doc_id=false, $site_id=false) {
     ?>
         <table class="ui-widget" style="width:100%;">
             <thead>
@@ -255,14 +255,14 @@ function display_signature_record() {
                 <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-        <?php display_workflow_list();?>
+        <?php display_workflow_list(false,$site_id);?>
         <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>
     <?php
 }
 
-function retrieve_signature_record_data($doc_id=0){
+function retrieve_signature_record_data($doc_id=false){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
@@ -279,6 +279,14 @@ function retrieve_signature_record_data($doc_id=0){
             ),
         ),
     );
+
+    if ($doc_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'doc_id',
+            'value' => $doc_id,
+        );
+    }
+    
     $query = new WP_Query($args);
     return $query;
 }
