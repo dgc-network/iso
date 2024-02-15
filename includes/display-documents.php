@@ -368,7 +368,6 @@ function set_document_dialog_data() {
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
         //update_post_meta( $doc_id, 'doc_url', $doc_url);
         update_post_meta( $doc_id, 'doc_url', $_POST['_doc_url']);
-        //update_post_meta( $doc_id, 'doc_url', substr($doc_url, 1, -1));
         update_post_meta( $doc_id, 'doc_category', $doc_category);
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
@@ -920,20 +919,23 @@ function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
         $report_id = (int)sanitize_text_field($_POST['_report_id']);
-        $result['html_contain'] = display_doc_report_dialog($report_id);
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
-        $result['doc_id'] = $doc_id;
-        $query = retrieve_doc_field_data($doc_id);
-        $_array = array();
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $_list = array();
-                $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
-                array_push($_array, $_list);
-            endwhile;
-            wp_reset_postdata();
-        }    
-        $result['doc_fields'] = $_array;
+        $todo_status = get_post_meta($report_id, 'todo_status', true);
+        if ($todo_status<1) {
+            $result['html_contain'] = display_doc_report_dialog($report_id);
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $result['doc_id'] = $doc_id;
+            $query = retrieve_doc_field_data($doc_id);
+            $_array = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $_list = array();
+                    $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
+                    array_push($_array, $_list);
+                endwhile;
+                wp_reset_postdata();
+            }    
+            $result['doc_fields'] = $_array;    
+        }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }

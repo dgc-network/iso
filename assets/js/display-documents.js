@@ -51,7 +51,14 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-                $('#result-container').html(response.html_contain);
+                if (response.html_contain === null) {
+                    alert("The document is in To-do process. Please wait for publishing.");
+                } else {
+                    // Handle the HTML content as needed
+                    $('#result-container').html(response.html_contain);
+                }
+                
+                //$('#result-container').html(response.html_contain);
                 $("#doc-id").val(doc_id);
                 
                 //activate_document_dialog_data(doc_id);
@@ -554,7 +561,14 @@ jQuery(document).ready(function($) {
                 _report_id: report_id,
             },
             success: function (response) {
-                $('#result-container').html(response.html_contain);
+                if (response.html_contain === null) {
+                    alert("The report is in To-do process. Please wait for publishing.");
+                } else {
+                    // Handle the HTML content as needed
+                    $('#result-container').html(response.html_contain);
+                }
+                
+                //$('#result-container').html(response.html_contain);
                 $("#doc-id").val(response.doc_id);
                 
                 //activate_doc_report_dialog_data(report_id)
