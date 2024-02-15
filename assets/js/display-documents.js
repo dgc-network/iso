@@ -149,6 +149,10 @@ jQuery(document).ready(function($) {
 
                     $('#result-container').html(header+$("#doc-url").val()+footer);
 
+                    $("#workflow-button").on("click", function () {
+                        $("#workflow-div").toggle()
+                    });
+
                     $("#doc-unpublished").on("click", function () {
                         $.ajax({
                             type: 'POST',
