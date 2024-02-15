@@ -258,7 +258,7 @@ function display_signature_record() {
                 <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-        <?php display_workflow_list();?>
+        <?php echo display_workflow_list();?>
         <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
     </fieldset>
     </div>
@@ -282,14 +282,14 @@ function retrieve_signature_record_data($doc_id=false){
             ),
         ),
     );
-
+/*
     if ($doc_id) {
         $args['meta_query'][] = array(
             'key'   => 'doc_id',
             'value' => $doc_id,
         );
     }
-    
+*/    
     $query = new WP_Query($args);
     return $query;
 }
