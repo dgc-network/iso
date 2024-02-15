@@ -170,6 +170,7 @@ function retrieve_todo_list_data(){
 }
 
 function display_workflow_list($doc_id=false, $site_id=false) {
+    //ob_start();
     ?>
         <table class="ui-widget" style="width:100%;">
             <thead>
@@ -222,6 +223,8 @@ function display_workflow_list($doc_id=false, $site_id=false) {
             </tbody>
         </table>
     <?php
+    //$html = ob_get_clean();
+    //return $html;    
 }
 
 function display_signature_record() {

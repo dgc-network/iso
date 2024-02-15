@@ -272,8 +272,9 @@ function get_document_dialog_data() {
                         <fieldset>
                             <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
                             <span id='doc-title'>$doc_title</span>
-                            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>                            
                     HTML;
+                    $header .= '<div id="workflow-div" style="display:none;">'.display_workflow_list().'</div>';
     
                     $footer = <<<HTML
                         </fieldset>
