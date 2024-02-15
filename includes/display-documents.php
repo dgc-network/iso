@@ -280,7 +280,7 @@ function get_document_dialog_data() {
                 $result['html_contain'] = $header.$doc_url.$footer;
             }
         } else {
-            if ($todo_status<1) {
+            if ($todo_status<1 || isset($_GET['_back_door'])) {
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
                 $site_id = get_post_meta($doc_id, 'site_id', true);
                 $query = retrieve_doc_field_data(false, $site_id);
