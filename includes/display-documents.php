@@ -267,7 +267,7 @@ function get_document_dialog_data() {
                 if ($is_doc_report) {
                     $result['html_contain'] = display_doc_report_list($doc_id);
                 } else {
-                    $workflow_list = display_workflow_list();
+                    //$workflow_list = display_workflow_list();
                     $header = <<<HTML
                         <fieldset>
                             <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
