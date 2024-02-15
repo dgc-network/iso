@@ -1,8 +1,8 @@
 // To-do list
 jQuery(document).ready(function($) {
 
-    $("#select-site-job").on( "change", function() {
-        window.location.replace("?_job="+$(this).val());
+    $("#select-todo").on( "change", function() {
+        window.location.replace("?_select_todo="+$(this).val());
         $(this).val('');
     });
 
@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
-    $("#btn-todo-setting").on("click", function () {
+    $("#todo-setting").on("click", function () {
         $("#todo-setting-div").toggle();
     });
 
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
                 });
             
                 // Todo job actions settings
-                $("#btn-new-todo-action").on("click", function(e) {
+                $("#new-todo-action").on("click", function(e) {
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',

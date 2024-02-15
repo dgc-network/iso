@@ -1,6 +1,16 @@
 // my-jobs
 jQuery(document).ready(function($) {
 
+    $("#select-site-job").on( "change", function() {
+        window.location.replace("?_job="+$(this).val());
+        $(this).val('');
+    });
+
+    $("#search-job").on( "change", function() {
+        window.location.replace("?_search="+$(this).val());
+        $(this).val('');
+    });
+
     $("#btn-profile-setting").on("click", function () {
         $("#profile-setting-div").toggle();
     });

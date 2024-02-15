@@ -55,12 +55,118 @@ function register_action_post_type() {
 }
 add_action('init', 'register_action_post_type');
 
+function retrieve_signature_record_data(){
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'submit_action',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'EXISTS',
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function display_signature_record() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    ?>
+    <div class="ui-widget" id="result-container">
+    <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="todo-setting-div" style="display:none">
+        <fieldset>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-todo">
+                    <option value="0">To-do list</option>
+                    <option value="1">Signature record</option>
+                    <option value="2">...</option>
+                </select>
+            </div>
+            <div style="text-align: right">
+                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+
+        <table class="ui-widget" style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $query = retrieve_signature_record_data();
+            if ($query->have_posts()) :
+                //$x = 0;
+                while ($query->have_posts()) : $query->the_post();
+                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $todo_site = get_post_meta($doc_id, 'site_id', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+                    $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
+                    $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
+                    $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
+    
+                    if ($todo_site==$_site_id) { // Aditional condition to filter the data
+                        $user_data = get_userdata( $submit_user );
+                        ?>
+                        <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
+                            <td><?php echo esc_html($doc_title); ?></td>
+                            <td style="text-align:center;"><?php esc_html(the_title($submit_action)); ?></td>
+                            <td style="text-align:center;"><?php esc_html($user_data->display_name); ?></td>
+                            <td style="text-align:center;"><?php wp_date(get_option('date_format'), $submit_time); ?></td>
+
+                        </tr>
+                        <?php
+                        //$x += 1;
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+            </tbody>
+        </table>
+    </fieldset>
+    </div>
+    <?php
+}
+
 // Shortcode to display To-do list on frontend
 function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        $current_user_id = get_current_user_id();    
-        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        if ($_GET['_select_todo']=='1') display_signature_record();
+
+        $current_user_id = get_current_user_id();
+        $site_id = get_post_meta($current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
         ?>
         <div class="ui-widget" id="result-container">
@@ -78,11 +184,15 @@ function to_do_list_shortcode() {
         
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job'],$site_id);?></select>
+                    <select id="select-todo">
+                        <option value="0">To-do list</option>
+                        <option value="1">Signature record</option>
+                        <option value="2">...</option>
+                    </select>
                 </div>
                 <div style="text-align: right">
                     <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                    <span id="btn-todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                    <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                 </div>
             </div>
 
@@ -566,7 +676,7 @@ function display_todo_action_list() {
                 ?>
             </tbody>
         </table>
-        <div id="btn-new-todo-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <div id="new-todo-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     </div>
     <?php display_todo_action_dialog();?>
