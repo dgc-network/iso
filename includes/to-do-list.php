@@ -120,7 +120,7 @@ function display_to_do_list() {
             <?php
             $query = retrieve_todo_list_data();
             if ($query->have_posts()) :
-                $x = 0;
+                //$x = 0;
                 while ($query->have_posts()) : $query->the_post();
                 $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                 $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -142,7 +142,7 @@ function display_to_do_list() {
                         <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                     </tr>
                     <?php
-                    $x += 1;
+                    //$x += 1;
                 }
                 endwhile;
                 wp_reset_postdata();
@@ -192,18 +192,17 @@ function display_signature_record() {
         <table class="ui-widget" style="width:100%;">
             <thead>
                 <tr>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Submit', 'your-text-domain' );?></th>
                     <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody>
             <?php
             $query = retrieve_signature_record_data();
             if ($query->have_posts()) :
-                //$x = 0;
                 while ($query->have_posts()) : $query->the_post();
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -220,15 +219,14 @@ function display_signature_record() {
                         $user_data = get_userdata( $submit_user );
                         ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time); ?></td>
                             <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
                             <td><?php echo esc_html($doc_title); ?></td>
-                            <td style="text-align:center;"><?php esc_html(the_title($submit_action)); ?></td>
-                            <td style="text-align:center;"><?php esc_html($user_data->display_name); ?></td>
-                            <td style="text-align:center;"><?php wp_date(get_option('date_format'), $submit_time); ?></td>
+                            <td style="text-align:center;"><?php echo esc_html(the_title($submit_action)); ?></td>
+                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name); ?></td>
 
                         </tr>
                         <?php
-                        //$x += 1;
                     }
                 endwhile;
                 wp_reset_postdata();
