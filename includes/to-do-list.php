@@ -178,8 +178,8 @@ function display_signature_record() {
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
                 <select id="select-todo">
-                    <option value="0">To-do list</option>
                     <option value="1">Signature record</option>
+                    <option value="0">To-do list</option>
                     <option value="2">...</option>
                 </select>
             </div>
