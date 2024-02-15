@@ -262,27 +262,27 @@ function get_document_dialog_data() {
         $todo_status = get_post_meta($doc_id, 'todo_status', true);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-        if ($todo_status==-1) {
-            if ($is_doc_report) {
-                $result['html_contain'] = display_doc_report_list($doc_id);
+        if ($todo_status<1) {
+            if ($todo_status==-1) {
+                if ($is_doc_report) {
+                    $result['html_contain'] = display_doc_report_list($doc_id);
+                } else {
+                    $workflow_list = display_workflow_list();
+                    $header = <<<HTML
+                        <fieldset>
+                            <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
+                            <span id='doc-title'>$doc_title</span>
+                            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                            <div id="workflow-div" style="display:none;">$workflow_list</div>                                                
+                    HTML;
+    
+                    $footer = <<<HTML
+                        </fieldset>
+                    HTML;
+    
+                    $result['html_contain'] = $header.$doc_url.$footer;
+                }
             } else {
-                $workflow_list = display_workflow_list();
-                $header = <<<HTML
-                    <fieldset>
-                        <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
-                        <span id='doc-title'>$doc_title</span>
-                        <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-                        <div id="workflow-div" style="display:none;">$workflow_list</div>                                                
-                HTML;
-
-                $footer = <<<HTML
-                    </fieldset>
-                HTML;
-
-                $result['html_contain'] = $header.$doc_url.$footer;
-            }
-        } else {
-            if ($todo_status<1) {
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
                 $site_id = get_post_meta($doc_id, 'site_id', true);
                 $query = retrieve_doc_field_data(false, $site_id);
@@ -298,6 +298,7 @@ function get_document_dialog_data() {
                 $result['doc_fields'] = $_array;
             }
         }
+
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
