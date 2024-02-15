@@ -137,7 +137,6 @@ jQuery(document).ready(function($) {
                     `;
 
                     const footer = `
-                    <input type ="button" id="workflow-button" value="-" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
                     </fieldset>
                     `;
 
@@ -155,6 +154,7 @@ jQuery(document).ready(function($) {
                             success: function(response) {
                                 if (response.success) {
                                     console.log('Sorting order updated successfully.');
+                                    window.location.replace("/display-documents/");
                                 } else {
                                     console.error('Error updating sorting order:', response.error);
                                     alert('Error updating sorting order. Please try again.');
@@ -182,6 +182,7 @@ jQuery(document).ready(function($) {
                         success: function(response) {
                             if (response.success) {
                                 console.log('Sorting order updated successfully.');
+                                window.location.replace("/display-documents/");
                             } else {
                                 console.error('Error updating sorting order:', response.error);
                                 alert('Error updating sorting order. Please try again.');
