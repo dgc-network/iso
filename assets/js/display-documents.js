@@ -364,9 +364,8 @@ jQuery(document).ready(function($) {
                     `;
     
                     $docFieldList.append(output).show();
-
-                    activate_doc_field_list_data();
                 });
+                activate_doc_field_list_data();
             },
             error: function (error) {
                 console.error(error);
