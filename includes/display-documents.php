@@ -258,6 +258,7 @@ function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
         $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta($doc_id, 'todo_status', true);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
@@ -273,7 +274,7 @@ function get_document_dialog_data() {
                             <span id='doc-title'>$doc_title</span>
                             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>                            
                     HTML;
-                    $header .= '<div id="workflow-div" style="display:none;">'.display_workflow_list().'</div>';
+                    $header .= '<div id="workflow-div" style="display:none;">'.display_workflow_list($site_id, $doc_id).'</div>';
     
                     $footer = <<<HTML
                         </fieldset>
