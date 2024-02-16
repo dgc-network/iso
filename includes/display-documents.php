@@ -538,6 +538,43 @@ function get_doc_field_list_data() {
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
 
+function select_editing_type_option_data($selected_type = 'text') {
+    $options = '';
+    $editing_types = array(
+        'text' => __('Text', 'your-text-domain'),
+        'number' => __('Number', 'your-text-domain'),
+        'date' => __('Date', 'your-text-domain'),
+        'checkbox' => __('Checkbox', 'your-text-domain'),
+        'textarea' => __('Textarea', 'your-text-domain'),
+    );
+
+    foreach ($editing_types as $type => $label) {
+        $selected = ($selected_type == $type) ? 'selected' : '';
+        $options .= '<option value="' . $type . '" ' . $selected . ' >' . $label . '</option>';
+    }
+
+    return $options;
+}
+/*
+function get_doc_field_dialog_data() {
+    $response = array();
+
+    if (isset($_POST['_field_id'])) {
+        $field_id = (int) sanitize_text_field($_POST['_field_id']);
+        $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
+        $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
+
+        // Use the function to get the HTML options with selected attribute
+        $editing_type = get_post_meta($field_id, 'editing_type', true);
+        $response["editing_type"] = esc_html(select_editing_type_option_data($editing_type));
+
+        $response["listing_style"] = esc_html(select_listing_style_option_data($listing_style));
+        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
+    }
+
+    wp_send_json($response);
+}
+*/
 function display_doc_field_dialog(){
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
@@ -563,7 +600,7 @@ function display_doc_field_dialog(){
     </div>
     <?php
 }
-
+/*
 function select_listing_style_option_data($selected_style=0) {
     echo '<option value="">Select style</option>';
     
@@ -600,10 +637,8 @@ function get_doc_field_dialog_data() {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-        $listing_style = get_post_meta($field_id, 'listing_style', true);
-        $editing_type = get_post_meta($field_id, 'editing_type', true);
-        //$response["listing_style"] = select_listing_style_option_data($listing_style);
-        $response["editing_type"] = esc_html($editing_type);
+        $response["listing_style"] = get_post_meta($field_id, 'listing_style', true);
+        $response["editing_type"] = get_post_meta($field_id, 'editing_type', true);
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
     wp_send_json($response);
