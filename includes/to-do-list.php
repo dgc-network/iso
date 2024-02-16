@@ -177,7 +177,9 @@ function display_workflow_list($site_id=false, $doc=false ) {
                 <tr>
                     <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                    <?php if(!$doc) {;?>
                     <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                    <?php };?>
                     <th><?php echo __( 'User', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Next', 'your-text-domain' );?></th>
@@ -208,7 +210,9 @@ function display_workflow_list($site_id=false, $doc=false ) {
                         <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                             <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
                             <td style="text-align:center;"><?php esc_html(the_title());?></td>
+                            <?php if(!$doc) {;?>
                             <td><?php echo esc_html($doc_title);?></td>
+                            <?php };?>
                             <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                             <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
                             <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
