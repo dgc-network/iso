@@ -564,17 +564,17 @@ function get_doc_field_dialog_data() {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-        $listing_style = <<<HTML
+        $listing_style = '
             <option value="text-align:left;">Left</option>
             <option value="text-align:center;">Center</option>
             <option value="text-align:right;">Right</option>
-        HTML;
+        ';
 
-        $editing_type = <<<HTML
+        $editing_type = '
             <option value="text">Text</option>
             <option value="textarea">Textarea</option>
             <option value="checkbox">Checkbox</option>
-        HTML;
+        ';
 
         //$response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
         //$response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
