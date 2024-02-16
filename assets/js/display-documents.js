@@ -427,8 +427,10 @@ jQuery(document).ready(function($) {
                     $("#field-title").val(response.field_title);
                     //$("#listing-style").val(response.listing_style);
                     //$("#editing-type").val(response.editing_type);
-                    $("#listing-style").empty().append(response.listing_style);
-                    $("#editing-type").empty().append(response.editing_type);
+                    //$("#listing-style").empty().append(response.listing_style);
+                    //$("#editing-type").empty().append(response.editing_type);
+                    $("#listing-style").html(response.listing_style);
+                    $("#editing-type").html(response.editing_type);
                     $("#default-value").val(response.default_value);
                     //$('#is-listing').prop('checked', response.is_listing == 1);
                     //$('#is-editing').prop('checked', response.is_editing == 1);
