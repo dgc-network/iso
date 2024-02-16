@@ -596,7 +596,7 @@ function get_doc_field_dialog_data() {
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
         $listing_style = get_post_meta($field_id, 'listing_style', true);
         $editing_type = get_post_meta($field_id, 'editing_type', true);
-        $response["listing_style"] = esc_html(select_listing_style_option_data($listing_style));
+        $response["listing_style"] = select_listing_style_option_data($listing_style);
         $response["editing_type"] = esc_html($editing_type);
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
