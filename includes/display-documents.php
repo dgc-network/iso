@@ -550,7 +550,13 @@ function display_doc_field_dialog(){
         <label for="listing-style">Style:</label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all"></select>
         <label for="editing-type">Type:</label>
-        <select id="editing-type" class="text ui-widget-content ui-corner-all"></select>
+        <select id="editing-type" class="text ui-widget-content ui-corner-all">
+            <option value="text">Text</option>
+            <option value="number">Number</option>
+            <option value="date">Date</option>
+            <option value="checkbox">Checkbox</option>
+            <option value="textarea">Textarea</option>
+        </select>
         <label for="default-value">Deafult:</label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
@@ -596,7 +602,7 @@ function get_doc_field_dialog_data() {
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
         $listing_style = get_post_meta($field_id, 'listing_style', true);
         $editing_type = get_post_meta($field_id, 'editing_type', true);
-        $response["listing_style"] = select_listing_style_option_data($listing_style);
+        //$response["listing_style"] = select_listing_style_option_data($listing_style);
         $response["editing_type"] = esc_html($editing_type);
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
