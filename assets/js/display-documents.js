@@ -546,7 +546,6 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                //$("#doc-id").val(doc_id);
                 activate_doc_report_list_data(doc_id);
             },
             error: function (error) {
@@ -571,19 +570,14 @@ jQuery(document).ready(function($) {
                 if (response.html_contain === undefined || response.html_contain === null) {
                     alert("The report is in To-do process. Please wait for publishing.");
                 } else {
-                    // Handle the HTML content as needed
                     $('#result-container').html(response.html_contain);
                 }
-                
-                //$('#result-container').html(response.html_contain);
                 $("#doc-id").val(response.doc_id);
                 
                 //activate_doc_report_dialog_data(report_id)
 
                 $('[id^="save-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(16);
-                //$("#save-doc-report-button").on("click", function(e) {
-                    //e.preventDefault();
                     const ajaxData = {
                         'action': 'set_doc_report_dialog_data',
                     };

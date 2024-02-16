@@ -281,7 +281,7 @@ function get_document_dialog_data() {
                     $result = display_workflow_list($site_id, $doc_id);
                     $html_content = $result['html'];
                     $x_value = $result['x'];
-                    $header .= '<fieldset><div id="workflow-div" style="display:none;">'.$html_content.'</div></fieldset>';
+                    $header .= '<div id="workflow-div" style="display:none;"><fieldset>'.$html_content.'</fieldset></div>';
     
                     $footer = <<<HTML
                         </fieldset>
@@ -539,7 +539,6 @@ add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
 
 function display_doc_field_dialog(){
-    //ob_start();
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
@@ -557,8 +556,6 @@ function display_doc_field_dialog(){
     </fieldset>
     </div>
     <?php
-    //$html = ob_get_clean();
-    //return $html;    
 }
 
 function get_doc_field_dialog_data() {
@@ -638,7 +635,6 @@ function set_doc_unpublished_data() {
         $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
         // Delete the specified meta key
         delete_post_meta($doc_id, 'todo_status');
-        //update_post_meta( $doc_id, 'todo_status', 0);
         $response = array('success' => true);
     }
 
@@ -652,10 +648,15 @@ add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data'
 function display_doc_report_list($doc_id) {
     ob_start();
     $doc_title = esc_html(get_post_meta($doc_id, 'doc_title', true));
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $result = display_workflow_list($site_id, $doc_id);
+    $html_content = $result['html'];
     ?>
     <h2><?php echo $doc_title;?></h2>
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
     <fieldset>
+        <div style="text-align:right;"><span id="workflow-button" class="dashicons dashicons-trash button"></span></div>
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
                 <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
@@ -731,7 +732,6 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $doc_category = get_post_meta($doc_id, 'doc_category', true);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
-        //$doc_url = '<'.$doc_url.'>';
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
@@ -860,8 +860,6 @@ function set_doc_report_dialog_data() {
             'next_leadtime' => $start_leadtime,
         );        
         set_next_job_and_actions($params);
-        //set_next_job_and_actions($start_job, 0, $doc_id, $start_leadtime);
-
     } else {
         // Insert the post into the database
         $new_post = array(
