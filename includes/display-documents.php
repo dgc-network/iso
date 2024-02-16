@@ -558,27 +558,29 @@ function display_doc_field_dialog(){
     <?php
 }
 
+function select_listing_style_option_data($selected_style=0) {
+    $options = '<option value="">Select style</option>';
+    $listing_style = 'text-align:left;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Left', 'your-text-domain' ).'</option>';
+    $listing_style = 'text-align:center;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Center', 'your-text-domain' ).'</option>';
+    $listing_style = 'text-align:right;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Right', 'your-text-domain' ).'</option>';
+    return $options;
+}
+
 function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-        $listing_style = '
-            <option value="text-align:left;">Left</option>
-            <option value="text-align:center;">Center</option>
-            <option value="text-align:right;">Right</option>
-        ';
-
-        $editing_type = '
-            <option value="text">Text</option>
-            <option value="textarea">Textarea</option>
-            <option value="checkbox">Checkbox</option>
-        ';
-
-        //$response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
-        //$response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
-        $response["listing_style"] = esc_html($listing_style);
+        $listing_style = get_post_meta($field_id, 'listing_style', true);
+        $editing_type = get_post_meta($field_id, 'editing_type', true);
+        $response["listing_style"] = esc_html(select_listing_style_option_data($listing_style));
         $response["editing_type"] = esc_html($editing_type);
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
