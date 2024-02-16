@@ -281,7 +281,7 @@ function get_document_dialog_data() {
                     $result = display_workflow_list($site_id, $doc_id);
                     $html_content = $result['html'];
                     $x_value = $result['x'];
-                    $header .= '<div id="workflow-div" style="display:none;">'.$html_content.'</div>';
+                    $header .= '<fieldset><div id="workflow-div" style="display:none;">'.$html_content.'</div></fieldset>';
     
                     $footer = <<<HTML
                         </fieldset>
