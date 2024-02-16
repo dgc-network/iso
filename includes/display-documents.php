@@ -548,8 +548,10 @@ function display_doc_field_dialog(){
         <label for="field-title">Title:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style">Style:</label>
+        <select id="listing-style" class="text ui-widget-content ui-corner-all"></select>
         <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
         <label for="editing-type">Type:</label>
+        <select id="editing-type" class="text ui-widget-content ui-corner-all"></select>
         <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
         <label for="default-value">Deafult:</label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
@@ -564,8 +566,22 @@ function get_doc_field_dialog_data() {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-        $response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
-        $response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
+        $listing_style = <<<HTML
+            <option value="text-align:left;">Left</option>
+            <option value="text-align:center;">Center</option>
+            <option value="text-align:right;">Right</option>
+        HTML;
+
+        $editing_type = <<<HTML
+            <option value="text">Text</option>
+            <option value="textarea">Textarea</option>
+            <option value="checkbox">Checkbox</option>
+        HTML;
+
+        //$response["listing_style"] = esc_html(get_post_meta($field_id, 'listing_style', true));
+        //$response["editing_type"] = esc_html(get_post_meta($field_id, 'editing_type', true));
+        $response["listing_style"] = esc_html($listing_style);
+        $response["editing_type"] = esc_html($editing_type);
         $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
     }
     wp_send_json($response);
@@ -595,9 +611,9 @@ function set_doc_field_dialog_data() {
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         update_post_meta( $post_id, 'field_name', 'new_field');
         update_post_meta( $post_id, 'field_title', 'Field title');
-        update_post_meta( $post_id, 'sorting_key', -1);
         update_post_meta( $post_id, 'listing_style', 'text-align:center;');
         update_post_meta( $post_id, 'editing_type', 'text');
+        update_post_meta( $post_id, 'sorting_key', -1);
     }
     wp_send_json($response);
 }
@@ -656,9 +672,9 @@ function display_doc_report_list($doc_id) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
     <fieldset>
-        <div style="text-align:right;"><span id="workflow-button" class="dashicons dashicons-trash button"></span></div>
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
+                <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
                 <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
             </div>
             <div style="text-align:right; display:flex;">
