@@ -274,7 +274,10 @@ function get_document_dialog_data() {
                             <span id='doc-title'>$doc_title</span>
                             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>                            
                     HTML;
-                    $header .= '<div id="workflow-div" style="display:none;">'.display_workflow_list($site_id, $doc_id).'</div>';
+                    $result = display_workflow_list($site_id, $doc_id);
+                    $html_content = $result['html'];
+                    $x_value = $result['x'];
+                    $header .= '<div id="workflow-div" style="display:none;">'.$html_content.'</div>';
     
                     $footer = <<<HTML
                         </fieldset>

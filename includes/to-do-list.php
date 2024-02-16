@@ -228,13 +228,21 @@ function display_workflow_list($site_id=false, $doc=false ) {
         </table>
     <?php
     $html = ob_get_clean();
-    return $html;    
+    // Return an array containing both HTML content and $x
+    return array(
+        'html' => $html,
+        'x'    => $x,
+    );
+    //return $html;    
 }
 
 function display_signature_record() {
     $current_user_id = get_current_user_id();
     $site_id = get_post_meta($current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
+    $result = display_workflow_list($site_id);
+    $html_content = $result['html'];
+    $x_value = $result['x'];
     ?>
     <div class="ui-widget" id="result-container">
     <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
@@ -262,8 +270,8 @@ function display_signature_record() {
                 <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-        <?php echo display_workflow_list($site_id);?>
-        <p style="background-color:lightblue;">Total Submissions: <?php echo $x;?></p>
+        <?php echo $html_content;?>
+        <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
     </fieldset>
     </div>
     <?php
