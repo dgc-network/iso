@@ -559,6 +559,22 @@ function display_doc_field_dialog(){
 }
 
 function select_listing_style_option_data($selected_style=0) {
+    echo '<option value="">Select style</option>';
+    
+    $listing_style = 'text-align:left;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Left', 'your-text-domain' ).'</option>';
+
+    $listing_style = 'text-align:center;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Center', 'your-text-domain' ).'</option>';
+
+    $listing_style = 'text-align:right;';
+    $selected = ($selected_style == $listing_style) ? 'selected' : '';
+    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Right', 'your-text-domain' ).'</option>';
+}
+/*
+function select_listing_style_option_data($selected_style=0) {
     $options = '<option value="">Select style</option>';
     $listing_style = 'text-align:left;';
     $selected = ($selected_style == $listing_style) ? 'selected' : '';
@@ -571,7 +587,7 @@ function select_listing_style_option_data($selected_style=0) {
     $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Right', 'your-text-domain' ).'</option>';
     return $options;
 }
-
+*/
 function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
