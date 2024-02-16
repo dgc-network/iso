@@ -555,26 +555,7 @@ function select_editing_type_option_data($selected_type = 'text') {
 
     return $options;
 }
-/*
-function get_doc_field_dialog_data() {
-    $response = array();
 
-    if (isset($_POST['_field_id'])) {
-        $field_id = (int) sanitize_text_field($_POST['_field_id']);
-        $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
-        $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-
-        // Use the function to get the HTML options with selected attribute
-        $editing_type = get_post_meta($field_id, 'editing_type', true);
-        $response["editing_type"] = esc_html(select_editing_type_option_data($editing_type));
-
-        $response["listing_style"] = esc_html(select_listing_style_option_data($listing_style));
-        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
-    }
-
-    wp_send_json($response);
-}
-*/
 function display_doc_field_dialog(){
     ?>
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
@@ -585,7 +566,11 @@ function display_doc_field_dialog(){
         <label for="field-title">Title:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style">Style:</label>
-        <select id="listing-style" class="text ui-widget-content ui-corner-all"></select>
+        <select id="listing-style" class="text ui-widget-content ui-corner-all">
+            <option value="text-align:left;">Left</option>
+            <option value="text-align:center;">Center</option>
+            <option value="text-align:right;">Right</option>
+        </select>
         <label for="editing-type">Type:</label>
         <select id="editing-type" class="text ui-widget-content ui-corner-all">
             <option value="text">Text</option>
@@ -600,37 +585,7 @@ function display_doc_field_dialog(){
     </div>
     <?php
 }
-/*
-function select_listing_style_option_data($selected_style=0) {
-    echo '<option value="">Select style</option>';
-    
-    $listing_style = 'text-align:left;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Left', 'your-text-domain' ).'</option>';
 
-    $listing_style = 'text-align:center;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Center', 'your-text-domain' ).'</option>';
-
-    $listing_style = 'text-align:right;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    echo '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Right', 'your-text-domain' ).'</option>';
-}
-/*
-function select_listing_style_option_data($selected_style=0) {
-    $options = '<option value="">Select style</option>';
-    $listing_style = 'text-align:left;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Left', 'your-text-domain' ).'</option>';
-    $listing_style = 'text-align:center;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Center', 'your-text-domain' ).'</option>';
-    $listing_style = 'text-align:right;';
-    $selected = ($selected_style == $listing_style) ? 'selected' : '';
-    $options .= '<option value="'.$listing_style.'" '.$selected.' >'.__( 'Right', 'your-text-domain' ).'</option>';
-    return $options;
-}
-*/
 function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
