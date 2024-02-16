@@ -549,10 +549,8 @@ function display_doc_field_dialog(){
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style">Style:</label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all"></select>
-        <input type="text" id="listing-style" class="text ui-widget-content ui-corner-all" />
         <label for="editing-type">Type:</label>
         <select id="editing-type" class="text ui-widget-content ui-corner-all"></select>
-        <input type="text" id="editing-type" class="text ui-widget-content ui-corner-all" />
         <label for="default-value">Deafult:</label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
