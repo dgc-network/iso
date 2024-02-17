@@ -106,19 +106,19 @@ function init_webhook_events() {
 
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
-
+/*
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         error_log('Method not allowed');
     }
-
+*/
     $entityBody = file_get_contents('php://input');
-/*
+
     if ($entityBody === false || strlen($entityBody) === 0) {
         http_response_code(400);
         error_log('Missing request body');
     }
-*/
+
     $data = json_decode($entityBody, true);
 
     foreach ((array)$data['events'] as $event) {
