@@ -142,7 +142,7 @@ function init_webhook_events() {
         http_response_code(405);
         error_log('Method not allowed');
     }
-
+*/
     $entityBody = file_get_contents('php://input');
 
     if ($entityBody === false || strlen($entityBody) === 0) {
@@ -151,8 +151,15 @@ function init_webhook_events() {
     }
 
     $data = json_decode($entityBody, true);
-*/    
-    $data = listen_webhook();
+    
+    // Verify that the JSON payload can be decoded
+    if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        error_log('Invalid JSON payload');
+        exit;
+    }
+    
+    //$data = listen_webhook();
 
     foreach ((array)$data['events'] as $event) {
 
