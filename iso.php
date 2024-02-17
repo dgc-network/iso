@@ -102,6 +102,129 @@ add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
+add_action('parse_request', 'handle_line_webhook');
+
+function handle_line_webhook() {
+    // Retrieve the request method
+    $request_method = $_SERVER['REQUEST_METHOD'];
+
+    // Check if the request method is POST
+    if ($request_method === 'POST' && isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
+        // Process Line webhook data
+        process_line_webhook();
+    }
+}
+
+function process_line_webhook() {
+    // Retrieve the request body
+    $entityBody = file_get_contents('php://input');
+
+    // Verify that the request body is not empty
+    if ($entityBody === false || strlen($entityBody) === 0) {
+        http_response_code(400);
+        error_log('Missing request body');
+        exit;
+    }
+
+    // Decode the JSON payload
+    $data = json_decode($entityBody, true);
+
+    // Verify that the JSON payload can be decoded
+    if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        error_log('Invalid JSON payload: ' . json_last_error_msg());
+        exit;
+    }
+
+    // Implement your logic here based on the $data array
+    foreach ((array)$data['events'] as $event) {
+
+        // Start the User Login/Registration process if got the one time password
+        if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
+            $profile = $line_bot_api->getProfile($event['source']['userId']);
+            $display_name = str_replace(' ', '', $profile['displayName']);
+            // Encode the Chinese characters for inclusion in the URL
+            $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+            // Flex Message JSON structure with a button
+            $flexMessage = [
+                'type' => 'flex',
+                'altText' => 'This is a Flex Message with a Button',
+                'contents' => [
+                    'type' => 'bubble',
+                    'body' => [
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'contents' => [
+                            [
+                                'type' => 'text',
+                                'text' => 'Hello, '.$display_name,
+                                'size' => 'lg',
+                                'weight' => 'bold',
+                            ],
+                            [
+                                'type' => 'text',
+                                'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
+                                'wrap' => true,
+                            ],
+                        ],
+                    ],
+                    'footer' => [
+                        'type' => 'box',
+                        'layout' => 'vertical',
+                        'contents' => [
+                            [
+                                'type' => 'button',
+                                'action' => [
+                                    'type' => 'uri',
+                                    'label' => 'Click me!',
+                                    'uri' => $link_uri, // Replace with your desired URI
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+            
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
+                'messages' => [$flexMessage],
+            ]);            
+        }
+
+        // Regular webhook response
+        switch ($event['type']) {
+            case 'message':
+                $message = $event['message'];
+                switch ($message['type']) {
+                    case 'text':
+                        // Open-AI auto reply
+                        $response = $open_ai_api->createChatCompletion($message['text']);
+                        $line_bot_api->replyMessage([
+                            'replyToken' => $event['replyToken'],
+                            'messages' => [
+                                [
+                                    'type' => 'text',
+                                    'text' => $response
+                                ]                                                                    
+                            ]
+                        ]);
+                        break;
+                    default:
+                        error_log('Unsupported message type: ' . $message['type']);
+                        break;
+                }
+                break;
+            default:
+                error_log('Unsupported event type: ' . $event['type']);
+                break;
+        }
+    }
+
+    // Send a response (optional)
+    http_response_code(200);
+    echo 'Webhook received successfully';
+}
+
 function listen_webhook() {
     // Retrieve the request body
     $entityBody = file_get_contents('php://input');
@@ -245,7 +368,7 @@ function init_webhook_events() {
     }
 
 }
-add_action( 'init', 'init_webhook_events' );
+//add_action( 'init', 'init_webhook_events' );
 
 // User did not login system yet
 function user_did_not_login_yet() {
