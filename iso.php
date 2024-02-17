@@ -112,13 +112,13 @@ function init_webhook_events() {
         error_log('Method not allowed');
     }
 
-    $entityBody = file_get_contents('php://input');            
-
+    $entityBody = file_get_contents('php://input');
+/*
     if ($entityBody === false || strlen($entityBody) === 0) {
         http_response_code(400);
         error_log('Missing request body');
     }
-
+*/
     $data = json_decode($entityBody, true);
 
     foreach ((array)$data['events'] as $event) {
@@ -182,11 +182,6 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         // Open-AI auto reply
-/*
-                        $param=array();
-                        $param["messages"][0]["content"]=$message['text'];                        
-                        $response = $open_ai_api->createChatCompletion($param);
-*/
                         $response = $open_ai_api->createChatCompletion($message['text']);
                         $line_bot_api->replyMessage([
                             'replyToken' => $event['replyToken'],
