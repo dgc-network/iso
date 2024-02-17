@@ -102,6 +102,36 @@ add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
+function listen_webhook() {
+    // Retrieve the request body
+    $entityBody = file_get_contents('php://input');
+    
+    // Verify that the request body is not empty
+    if ($entityBody === false || strlen($entityBody) === 0) {
+        http_response_code(400);
+        error_log('Missing request body');
+        exit;
+    }
+    
+    // Decode the JSON payload
+    $data = json_decode($entityBody, true);
+    
+    // Verify that the JSON payload can be decoded
+    if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        error_log('Invalid JSON payload');
+        exit;
+    }
+    
+    // Process the Line webhook data
+    // Implement your logic here based on the $data array
+    
+    // Send a response (optional)
+    http_response_code(200);
+    //echo 'Webhook received successfully';
+}
+
+
 function init_webhook_events() {
 
     $line_bot_api = new line_bot_api();
@@ -111,7 +141,7 @@ function init_webhook_events() {
         http_response_code(405);
         error_log('Method not allowed');
     }
-*/
+
     $entityBody = file_get_contents('php://input');
 
     if ($entityBody === false || strlen($entityBody) === 0) {
@@ -120,6 +150,8 @@ function init_webhook_events() {
     }
 
     $data = json_decode($entityBody, true);
+*/    
+    $data = listen_webhook();
 
     foreach ((array)$data['events'] as $event) {
 
