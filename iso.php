@@ -5,7 +5,7 @@
  * Description: The leading documents management plugin for iso system by shortcode
  * Author: dgc.network
  * Author URI: https://dgc.network/
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 6.0
  * Tested up to: 6.4.1
  *
@@ -17,190 +17,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 /*
-class iso_plugin{
-    const JQUERY_UI_VERSION = '1.13.2';
-    private $asset_version;
-
-    public function __construct(){
-        $this->asset_version = '1.0.0.' . time();
-        add_action('init', array($this, 'register_session'));
-        add_action('after_setup_theme', array($this, 'remove_admin_bar'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts_and_styles'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_wp_scripts_and_styles'));
-        add_action('init', array($this, 'init_webhook_events'));
-        add_action('wp_authenticate_user', array($this, 'custom_login_process'), 10, 2);
-        // Include necessary files
-        require_once plugin_dir_path(__FILE__) . 'web-services/line-bot-api.php';
-        require_once plugin_dir_path(__FILE__) . 'web-services/open-ai-api.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/edit-site.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/my-jobs.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/display-documents.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/to-do-list.php';
-        // Add options if they don't exist
-        add_option('_line_account', 'https://line.me/ti/p/@804poufw');
-        add_option('_operation_fee_rate', 0.005);
-        add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
-    }
-
-    public function register_session(){
-        if (!session_id()) {
-            session_start();
-        }
-    }
-
-    public function remove_admin_bar(){
-        if (!current_user_can('administrator') && !is_admin()) {
-            show_admin_bar(false);
-        }
-    }
-
-    public function enqueue_admin_scripts_and_styles(){
-        $this->enqueue_common_scripts_and_styles();
-        wp_enqueue_style('admin-enqueue-css', plugins_url('assets/css/admin-enqueue.css', __FILE__), '', $this->asset_version);
-        wp_enqueue_script('admin-enqueue-js', plugins_url('assets/js/admin-enqueue.js', __FILE__), array('jquery', 'jquery-ui-js'), $this->asset_version, true);
-    }
-
-    public function enqueue_wp_scripts_and_styles(){
-        $this->enqueue_common_scripts_and_styles();
-        wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $this->asset_version);
-        //wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $this->asset_version);
-        $this->enqueue_additional_scripts('wp-enqueue', 'wp-enqueue.js');
-        $this->enqueue_additional_scripts('my-jobs', 'my-jobs.js');
-        $this->enqueue_additional_scripts('display-documents', 'display-documents.js');
-        $this->enqueue_additional_scripts('to-do-list', 'to-do-list.js');
-    }
-
-    private function enqueue_common_scripts_and_styles(){
-        wp_enqueue_style('jquery-ui-style', "https://code.jquery.com/ui/".self::JQUERY_UI_VERSION."/themes/smoothness/jquery-ui.css", '', self::JQUERY_UI_VERSION);
-        wp_enqueue_script('jquery-ui-js', "https://code.jquery.com/ui/".self::JQUERY_UI_VERSION."/jquery-ui.js", array('jquery'), self::JQUERY_UI_VERSION, true);
-    }
-
-    private function enqueue_additional_scripts($script_name, $file_name){
-        wp_enqueue_script($script_name . '-js', plugins_url('assets/js/' . $file_name, __FILE__), array('jquery'), $this->asset_version);
-        wp_localize_script($script_name . '-js', 'ajax_object', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('iso_documents_nonce'),
-        ));
-    }
-
-    public function init_webhook_events(){
-        global $wpdb;
-        $line_bot_api = new LineBotApi();
-        $open_ai_api = new OpenAiApi();
-
-        foreach ((array)$line_bot_api->parseEvents() as $event) {
-            if (esc_attr((int)$event['message']['text']) == esc_attr((int)get_option('_one_time_password'))) {
-                // ... (code for handling one-time password)
-                $profile = $line_bot_api->getProfile($event['source']['userId']);
-                $display_name = str_replace(' ', '', $profile['displayName']);
-                // Encode the Chinese characters for inclusion in the URL
-                $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-                // Flex Message JSON structure with a button
-                $flexMessage = [
-                    'type' => 'flex',
-                    'altText' => 'This is a Flex Message with a Button',
-                    'contents' => [
-                        'type' => 'bubble',
-                        'body' => [
-                            'type' => 'box',
-                            'layout' => 'vertical',
-                            'contents' => [
-                                [
-                                    'type' => 'text',
-                                    'text' => 'Hello, '.$display_name,
-                                    'size' => 'lg',
-                                    'weight' => 'bold',
-                                ],
-                                [
-                                    'type' => 'text',
-                                    'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
-                                    'wrap' => true,
-                                ],
-                            ],
-                        ],
-                        'footer' => [
-                            'type' => 'box',
-                            'layout' => 'vertical',
-                            'contents' => [
-                                [
-                                    'type' => 'button',
-                                    'action' => [
-                                        'type' => 'uri',
-                                        'label' => 'Click me!',
-                                        'uri' => $link_uri, // Replace with your desired URI
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ];
-                
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
-                    'messages' => [$flexMessage],
-                ]);            
-    
-            }
-
-            switch ($event['type']) {
-                case 'message':
-                    $this->handle_message_event($event, $line_bot_api, $open_ai_api);
-                    break;
-                default:
-                    error_log('Unsupported event type: ' . $event['type']);
-                    break;
-            }
-        }
-    }
-
-    private function handle_message_event($event, $line_bot_api, $open_ai_api){
-        $message = $event['message'];
-        switch ($message['type']) {
-            case 'text':
-                $this->handle_text_message($event, $line_bot_api, $open_ai_api, $message);
-                break;
-            default:
-                error_log('Unsupported message type: ' . $message['type']);
-                break;
-        }
-    }
-
-    private function handle_text_message($event, $line_bot_api, $open_ai_api, $message){
-        $param = array();
-        $param["messages"][0]["content"] = $message['text'];
-        $response = $open_ai_api->createChatCompletion($param);
-        $line_bot_api->replyMessage([
-            'replyToken' => $event['replyToken'],
-            'messages' => [
-                [
-                    'type' => 'text',
-                    'text' => $response
-                ]
-            ]
-        ]);
-    }
-
-    public function custom_login_process($user, $password){
-        if (is_a($user, 'WP_User')) {
-            $user_data = wp_update_user(array(
-                'ID' => $user->ID,
-                'display_name' => $_POST['_display_name'],
-            ));
-            update_post_meta($user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
-        }
-        return $user;
-    }
-}
-
-// Instantiate the class
-new iso_plugin();
-*/
-?><?php
-/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-*/
+
 function custom_date_format() {
     $date_format = get_option('date_format');
     if (empty($date_format)) {
@@ -209,7 +29,7 @@ function custom_date_format() {
     }
 }
 add_action( 'init', 'custom_date_format' );
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -301,10 +121,6 @@ function init_webhook_events() {
 
     $data = json_decode($entityBody, true);
 
-    //return $data['events'];
-
-    //foreach ((array)$line_bot_api->parseEvents() as $event) {
-
     foreach ((array)$data['events'] as $event) {
 
         // Start the User Login/Registration process if got the one time password
@@ -366,9 +182,12 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         // Open-AI auto reply
+/*
                         $param=array();
-                        $param["messages"][0]["content"]=$message['text'];
+                        $param["messages"][0]["content"]=$message['text'];                        
                         $response = $open_ai_api->createChatCompletion($param);
+*/
+                        $response = $open_ai_api->createChatCompletion($message['text']);
                         $line_bot_api->replyMessage([
                             'replyToken' => $event['replyToken'],
                             'messages' => [
