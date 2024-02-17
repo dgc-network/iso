@@ -129,6 +129,7 @@ function listen_webhook() {
     // Send a response (optional)
     http_response_code(200);
     //echo 'Webhook received successfully';
+    return $data;
 }
 
 
