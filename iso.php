@@ -413,12 +413,13 @@ function user_did_not_login_yet() {
         ?>
         <div class="ui-widget" style="text-align:center;">
             <p>感謝您使用我們的系統</p>
-            <p>請利用手機<span class="dashicons dashicons-smartphone"></span>按</p>
+            <p>請利用手機按或掃描下方QR code</p>
             <a href="<?php echo get_option('line_official_account');?>">
-            <img src="<?php echo get_option('line_official_qr_code');?>"></a>
+            <img src="<?php echo get_option('line_official_qr_code');?>">
+            </a>
             <p>加入我們的Line官方帳號,</p>
             <p>並請在聊天室中, 輸入六位數字:</p>
-            <h4><?php echo get_option('_one_time_password');?></h4>
+            <h3><?php echo get_option('_one_time_password');?></h3>
             <p>完成註冊/登入作業</p>
         </div>
         <?php
