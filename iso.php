@@ -121,7 +121,7 @@ function display_custom_error_notice($error_message) {
 }
 
 // Example usage:
-
+/*
 add_action('admin_notices', 'display_admin_notice');
 function display_admin_notice($message) {
     ?>
@@ -130,10 +130,10 @@ function display_admin_notice($message) {
     </div>
     <?php
 }
-
+*/
 //add_action('parse_request', 'handle_line_webhook');
 //add_action('wp_loaded', 'handle_line_webhook');
-//add_action('init', 'handle_line_webhook');
+add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
     $content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : $_SERVER['CONTENT_TYPE'];
     $request_method = $_SERVER['REQUEST_METHOD'];
@@ -201,7 +201,7 @@ function handle_line_webhook() {
     }
 }
 */
-add_action('parse_request', 'process_line_webhook');
+//add_action('parse_request', 'process_line_webhook');
 //add_action('wp_loaded', 'process_line_webhook');
 //add_action('init', 'process_line_webhook');
 function process_line_webhook() {
