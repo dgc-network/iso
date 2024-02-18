@@ -116,8 +116,8 @@ function handle_line_webhook() {
     }
 }
 
-add_action('parse_request', 'process_line_webhook');
-//add_action('wp_loaded', 'process_line_webhook');
+//add_action('parse_request', 'process_line_webhook');
+add_action('wp_loaded', 'process_line_webhook');
 //add_action('init', 'process_line_webhook');
 function process_line_webhook() {
     // Retrieve the request body
