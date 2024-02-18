@@ -103,7 +103,7 @@ add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
 //add_action('parse_request', 'handle_line_webhook');
-//add_action('wp_loaded', 'handle_line_webhook');
+add_action('wp_loaded', 'handle_line_webhook');
 //add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
     // Retrieve the request method
@@ -113,11 +113,13 @@ function handle_line_webhook() {
     if ($request_method === 'POST' && isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
         // Process Line webhook data
         process_line_webhook();
+    } else {
+        echo '$_SERVER error!';
     }
 }
 
 //add_action('parse_request', 'process_line_webhook');
-add_action('wp_loaded', 'process_line_webhook');
+//add_action('wp_loaded', 'process_line_webhook');
 //add_action('init', 'process_line_webhook');
 function process_line_webhook() {
     // Retrieve the request body
