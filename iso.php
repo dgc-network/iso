@@ -126,9 +126,19 @@ add_action('wp_loaded', 'handle_line_webhook');
 //add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
     // Check if this is a Line webhook request
-    if (isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
+    //if (isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
         // Retrieve the request method
         $request_method = $_SERVER['REQUEST_METHOD'];
+        // Log details for debugging
+        error_log('Received webhook request. Method: ' . $request_method);
+        error_log('Headers: ' . json_encode(getallheaders()));
+        error_log('Payload: ' . file_get_contents('php://input'));
+        $error_message = 'HTTP_X_LINE_SIGNATURE';
+        add_action('admin_notices', function () use ($error_message) {
+            display_custom_error_notice($error_message);
+            display_custom_error_notice('Headers: ' . json_encode(getallheaders()));
+            display_custom_error_notice('Payload: ' . file_get_contents('php://input'));
+        });
 
         // Check if the request method is POST
         if ($request_method === 'POST') {
@@ -138,9 +148,11 @@ function handle_line_webhook() {
             $error_message = 'REQUEST_METHOD is not the POST!';
             add_action('admin_notices', function () use ($error_message) {
                 display_custom_error_notice($error_message);
+                display_custom_error_notice('Received webhook request. Method: ' . $request_method);
             });
             
         }
+/*        
     } else {
         $error_message = 'HTTP_X_LINE_SIGNATURE is not present';
         add_action('admin_notices', function () use ($error_message) {
@@ -148,6 +160,7 @@ function handle_line_webhook() {
         });
         
     }
+*/    
 }
 /*
 function handle_line_webhook() {
