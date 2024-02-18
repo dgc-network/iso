@@ -137,15 +137,16 @@ add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
     $content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : $_SERVER['CONTENT_TYPE'];
     $request_method = $_SERVER['REQUEST_METHOD'];
-    if (($content_type === 'application/json') && ($request_method === 'POST')) {
-        add_action('admin_notices', function () {
+    //if (($content_type === 'application/json') && ($request_method === 'POST')) {
+    if ($request_method === 'POST') {
+            add_action('admin_notices', function () {
             display_custom_admin_notice('This is a normal notice');
         });
         process_line_webhook();
     } else {
-        add_action('admin_notices', function () {
-            display_custom_admin_notice('This is an error notice but do not panic!', 'error');
-        });        
+        //add_action('admin_notices', function () {
+        //    display_custom_admin_notice('This is an error notice but do not panic!', 'error');
+        //});        
     }
 /*
     // Check if this is a Line webhook request
