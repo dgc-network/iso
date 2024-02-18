@@ -102,8 +102,9 @@ add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
-add_action('parse_request', 'handle_line_webhook');
+//add_action('parse_request', 'handle_line_webhook');
 
+add_action('wp_loaded', 'handle_line_webhook');
 function handle_line_webhook() {
     // Retrieve the request method
     $request_method = $_SERVER['REQUEST_METHOD'];
@@ -413,27 +414,16 @@ function user_did_not_login_yet() {
         ?>
         <div class="ui-widget" style="text-align:center;">
             <p>感謝您使用我們的系統</p>
-            <p>請利用手機按或掃描下方QR code</p>
+            <p>請加入我們的Line官方帳號,</p>
+            <p>利用手機按或掃描下方QR code</p>
             <a href="<?php echo get_option('line_official_account');?>">
             <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
-            <p>加入我們的Line官方帳號,</p>
             <p>並請在聊天室中, 輸入六位數字:</p>
             <h3><?php echo get_option('_one_time_password');?></h3>
             <p>完成註冊/登入作業</p>
         </div>
         <?php
-/*
-        echo '<div class="ui-widget" style="text-align:center;">';
-        echo '感謝您使用我們的系統<br>';
-        echo '請利用手機<span class="dashicons dashicons-smartphone"></span>按';
-        echo '<h4><a href="'.get_option('line_official_account').'">這裡</a><br></h4>';
-        echo '加入我們的Line官方帳號,<br>';
-        echo '並請在聊天室中, 輸入六位數字:';
-        echo '<h4>'.get_option('_one_time_password').'</h4>';
-        echo '完成註冊/登入作業<br>';
-        echo '</div>';
-*/
     }
 }
 
