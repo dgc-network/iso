@@ -102,6 +102,16 @@ add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
+function display_custom_admin_notice($message, $type = 'success') {
+    ?>
+    <div class="notice notice-<?php echo esc_attr($type); ?> is-dismissible">
+        <p><?php echo esc_html($message); ?></p>
+    </div>
+    <?php
+}
+
+// Hook the function to the 'admin_notices' action
+
 function display_custom_error_notice($error_message) {
     ?>
     <div class="error notice">
@@ -125,8 +135,23 @@ function display_admin_notice($message) {
 add_action('wp_loaded', 'handle_line_webhook');
 //add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
+    $content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : $_SERVER['CONTENT_TYPE'];
+    $request_method = $_SERVER['REQUEST_METHOD'];
+    if (($content_type === 'application/json') && ($request_method === 'POST')) {
+        add_action('admin_notices', function () {
+            display_custom_admin_notice('This is a normal notice');
+        });
+        process_line_webhook();
+    } else {
+        add_action('admin_notices', function () {
+            display_custom_admin_notice('This is an error notice but do not panic!', 'error');
+        });        
+    }
+/*
     // Check if this is a Line webhook request
     //if (isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
+        
+
         // Retrieve the request method
         $request_method = $_SERVER['REQUEST_METHOD'];
         // Log details for debugging
