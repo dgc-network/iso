@@ -133,7 +133,7 @@ function display_admin_notice($message) {
 */
 //add_action('parse_request', 'handle_line_webhook');
 //add_action('wp_loaded', 'handle_line_webhook');
-add_action('init', 'handle_line_webhook');
+//add_action('init', 'handle_line_webhook');
 function handle_line_webhook() {
     $content_type = isset($_SERVER['HTTP_CONTENT_TYPE']) ? $_SERVER['HTTP_CONTENT_TYPE'] : $_SERVER['CONTENT_TYPE'];
     $request_method = $_SERVER['REQUEST_METHOD'];
@@ -144,9 +144,9 @@ function handle_line_webhook() {
         });
         process_line_webhook();
     } else {
-        //add_action('admin_notices', function () {
-        //    display_custom_admin_notice('This is an error notice but do not panic!', 'error');
-        //});        
+        add_action('admin_notices', function () {
+            display_custom_admin_notice('This is an error notice but do not panic!', 'error');
+        });        
     }
 /*
     // Check if this is a Line webhook request
@@ -373,8 +373,10 @@ function init_webhook_events() {
     }
     
     //$data = listen_webhook();
+    //foreach ((array)$data['events'] as $event) {
 
-    foreach ((array)$data['events'] as $event) {
+    $events = $line_bot_api->parseEvents();
+    foreach ((array)$events as $event) {
 
         // Start the User Login/Registration process if got the one time password
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
@@ -458,6 +460,7 @@ function init_webhook_events() {
     }
 
 }
+add_action( 'parse_request', 'init_webhook_events' );
 //add_action( 'init', 'init_webhook_events' );
 
 // User did not login system yet
