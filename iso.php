@@ -102,9 +102,54 @@ add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
+function display_custom_error_notice($error_message) {
+    ?>
+    <div class="error notice">
+        <p><?php echo esc_html__('Error: ', 'your-text-domain') . esc_html($error_message); ?></p>
+    </div>
+    <?php
+}
+
+// Example usage:
+
+add_action('admin_notices', 'display_admin_notice');
+function display_admin_notice($message) {
+    ?>
+    <div class="notice notice-error">
+        <p><?php echo esc_html__('This is an important message for administrators!', 'your-text-domain'); ?></p>
+    </div>
+    <?php
+}
+
 //add_action('parse_request', 'handle_line_webhook');
 add_action('wp_loaded', 'handle_line_webhook');
 //add_action('init', 'handle_line_webhook');
+function handle_line_webhook() {
+    // Check if this is a Line webhook request
+    if (isset($_SERVER['HTTP_X_LINE_SIGNATURE'])) {
+        // Retrieve the request method
+        $request_method = $_SERVER['REQUEST_METHOD'];
+
+        // Check if the request method is POST
+        if ($request_method === 'POST') {
+            // Process Line webhook data
+            process_line_webhook();
+        } else {
+            $error_message = 'REQUEST_METHOD is not the POST!';
+            add_action('admin_notices', function () use ($error_message) {
+                display_custom_error_notice($error_message);
+            });
+            
+        }
+    } else {
+        $error_message = 'HTTP_X_LINE_SIGNATURE is not present';
+        add_action('admin_notices', function () use ($error_message) {
+            display_custom_error_notice($error_message);
+        });
+        
+    }
+}
+/*
 function handle_line_webhook() {
     // Retrieve the request method
     $request_method = $_SERVER['REQUEST_METHOD'];
@@ -117,7 +162,7 @@ function handle_line_webhook() {
         echo '$_SERVER error!';
     }
 }
-
+*/
 //add_action('parse_request', 'process_line_webhook');
 //add_action('wp_loaded', 'process_line_webhook');
 //add_action('init', 'process_line_webhook');
