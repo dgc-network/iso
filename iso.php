@@ -114,7 +114,7 @@ function init_webhook_events() {
     foreach ((array)$events as $event) {
 
         // Start the User Login/Registration process if got the one time password
-        if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
+        if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $display_name = str_replace(' ', '', $profile['displayName']);
             // Encode the Chinese characters for inclusion in the URL
