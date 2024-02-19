@@ -350,35 +350,36 @@ function init_webhook_events() {
 
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
-
+/*
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         error_log('Method not allowed');
         exit;
     }
-
+*/
     $entityBody = file_get_contents('php://input');
-
+/*
     if ($entityBody === false || strlen($entityBody) === 0) {
         http_response_code(400);
         error_log('Missing request body');
         exit;
     }
-
+*/
     $data = json_decode($entityBody, true);
-    
+/*    
     // Verify that the JSON payload can be decoded
     if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
         http_response_code(400);
         error_log('Invalid JSON payload');
         exit;
     }
-    
+*/    
+    $events = $data['events'] ?? [];
     //$data = listen_webhook();
-    foreach ((array)$data['events'] as $event) {
+    //foreach ((array)$data['events'] as $event) {
 
     //$events = $line_bot_api->parseEvents();
-    //foreach ((array)$events as $event) {
+    foreach ((array)$events as $event) {
 
         // Start the User Login/Registration process if got the one time password
         if (esc_attr((int)$event['message']['text'])==esc_attr((int)get_option('_one_time_password'))) {
