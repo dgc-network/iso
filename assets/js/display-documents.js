@@ -138,12 +138,15 @@ jQuery(document).ready(function($) {
                 $("#doc-url-preview").on("click", function () {
                     const header = `
                     <fieldset>
-                    <input type ="button" id="workflow-button" value="=" style="margin-right:10px;" />
+                    <input type ="button" id="workflow-button" value="v" style="margin-right:10px;" />
                     ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
                     <span id="doc-unpublished" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
+                    <span id="doc-print" style="margin-left:5px;" class="dashicons dashicons-printer"></span>
+                    <div id="myDiv">
                     `;
 
                     const footer = `
+                    </div>
                     </fieldset>
                     `;
 
@@ -151,6 +154,15 @@ jQuery(document).ready(function($) {
 
                     $("#workflow-button").on("click", function () {
                         $("#workflow-div").toggle()
+                    });
+
+                    $("#doc-print").on("click", function () {
+                        var divContent = document.getElementById('myDiv').outerHTML;
+                        var printWindow = window.open('', '_blank');
+                        printWindow.document.open();
+                        printWindow.document.write('<html><head><title>Print</title></head><body>' + divContent + '</body></html>');
+                        printWindow.document.close();
+                        printWindow.print();
                     });
 
                     $("#doc-unpublished").on("click", function () {
@@ -175,10 +187,8 @@ jQuery(document).ready(function($) {
                                 console.error('AJAX request failed:', errorThrown);
                                 alert('AJAX request failed. Please try again.');
                             }
-                        });
-        
+                        });        
                     });
-
                 });
 
                 $("#workflow-button").on("click", function () {
@@ -186,29 +196,30 @@ jQuery(document).ready(function($) {
                 });
 
                 $("#doc-unpublished").on("click", function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: 'json',
-                        data: {
-                            action: 'set_doc_unpublished_data',
-                            _doc_id: doc_id,
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                console.log('Sorting order updated successfully.');
-                                window.location.replace("/display-documents/");
-                            } else {
-                                console.error('Error updating sorting order:', response.error);
-                                alert('Error updating sorting order. Please try again.');
+                    if (window.confirm("Are you sure you want to unpublish this document?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: 'json',
+                            data: {
+                                action: 'set_doc_unpublished_data',
+                                _doc_id: doc_id,
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    console.log('Sorting order updated successfully.');
+                                    window.location.replace("/display-documents/");
+                                } else {
+                                    console.error('Error updating sorting order:', response.error);
+                                    alert('Error updating sorting order. Please try again.');
+                                }
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.error('AJAX request failed:', errorThrown);
+                                alert('AJAX request failed. Please try again.');
                             }
-                        },
-                        error: function(xhr, textStatus, errorThrown) {
-                            console.error('AJAX request failed:', errorThrown);
-                            alert('AJAX request failed. Please try again.');
-                        }
-                    });
-    
+                        });
+                    }    
                 });
 
 
