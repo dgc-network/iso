@@ -493,17 +493,18 @@ add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_
 
 function set_my_profile_data() {
 
-    $response = array('success' => false, 'error' => 'Invalid data format');
-
-    $current_user_id = get_current_user_id();
-    $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
-    // Convert the current 'my_job_ids' value to an array if not already an array
-    if (!is_array($my_job_ids_array)) {
-        $my_job_ids_array = array();
-    }        
+    //$response = array('success' => false, 'error' => 'Invalid data format');
+    $response = array('error' => 'Invalid data format');
 
     if (isset($_POST['_job_id_array']) && is_array($_POST['_job_id_array'])) {
-        foreach ($_POST['_job_id_array'] as $index => $job_data) {
+        $current_user_id = get_current_user_id();
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
+        // Convert the current 'my_job_ids' value to an array if not already an array
+        if (!is_array($my_job_ids_array)) {
+            $my_job_ids_array = array();
+        }        
+    
+        foreach ($_POST['_job_id_array'] as $job_data) {
             // Extract values from each object
             $is_my_job = isset($job_data['is_my_job']) ? intval($job_data['is_my_job']) : 0;
             $job_id = isset($job_data['data_job_id']) ? absint($job_data['data_job_id']) : 0;
