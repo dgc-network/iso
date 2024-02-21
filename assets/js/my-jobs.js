@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
         window.location.replace("?_select_profile="+$(this).val());
         $(this).val('');
     });
-
+/*
     $("#select-site-job").on( "change", function() {
         window.location.replace("?_job="+$(this).val());
         $(this).val('');
@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
     $("#btn-profile-setting").on("click", function () {
         $("#profile-setting-div").toggle();
     });
-
+*/
     $('#site-title').on('input', function() {
         // Show the site-hint when the user starts typing
         $.ajax({
@@ -93,7 +93,31 @@ jQuery(document).ready(function($) {
                 alert("Error: Something went wrong!");
             }
         });
+    });
 
+    $('[id^="backup-check-start-job-"]').on("click", function () {
+        const id = this.id.substring(16);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_start_job_data',
+                _job_id : id,
+                '_is_start_job': $(this).is(":checked") ? 1 : 0,
+            },
+            success: function (response) {
+                if (response.success) {
+                    //alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert("Error: Something went wrong!");
+            }
+        });
     });
 
     $("#my-profile-submit").on("click", function () {
@@ -128,7 +152,7 @@ jQuery(document).ready(function($) {
         });            
     });
 
-    $("#btn-submit-profile").on("click", function () {
+    $("#site-profile-submit").on("click", function () {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -160,7 +184,7 @@ jQuery(document).ready(function($) {
         $(this).css('color', '');
     });        
 */
-    $("#btn-new-site-job").on("click", function() {
+    $("#new-site-job").on("click", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -196,10 +220,9 @@ jQuery(document).ready(function($) {
                     const isMyJobChecked = value.is_my_job == 1 ? 'checked' : '';
                     const isStartJobChecked = value.is_start_job == 1 ? 'checked' : '';
                     const output = `
-                        <td style="text-align: center;"><input type="checkbox" id="check-my-job-${value.job_id}" ${isMyJobChecked} /></td>
+                        <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
                         <td style="text-align:center;">${value.job_title}</td>
                         <td>${value.job_content}</td>
-                        <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
                     `;
                     $(".site-job-list-" + index).append(output).show();
                 });
@@ -229,7 +252,7 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
-                    $('#is-my-job').prop('checked', response.is_my_job == 1);
+                    //$('#is-my-job').prop('checked', response.is_my_job == 1);
                     $('#is-start-job').prop('checked', response.is_start_job == 1);
                     get_site_job_action_list_data(id);
                 },
@@ -256,7 +279,7 @@ jQuery(document).ready(function($) {
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
-                        '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
+                        //'_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
                         '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
                     },
                     success: function (response) {

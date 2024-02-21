@@ -36,7 +36,7 @@ function display_my_profile() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
-        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        $site_id = get_post_meta($current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
@@ -48,7 +48,7 @@ function display_my_profile() {
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />            <div id="site-hint" style="display:none; color:#999;"></div>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
 
-            <fieldset>
+            <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <th>My</th>
@@ -59,11 +59,11 @@ function display_my_profile() {
                 <?php
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
-                    $x = 0;
+                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $job_id = get_the_ID();
                         $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
-                        $is_start_job = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
+                        $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
                         $start_job_checked = ($is_start_job==1) ? 'checked' : '';
                         ?>
                         <tr id="my-job-list" data-job-id="<?php the_ID();?>">
@@ -72,7 +72,7 @@ function display_my_profile() {
                             <td><?php the_content();?></td>
                         </tr>
                         <?php 
-                        $x += 1;
+                        //$x += 1;
                     endwhile;
                     wp_reset_postdata();
 /*                    
@@ -108,47 +108,28 @@ function display_my_profile() {
 
 function display_site_profile() {
     // Check if the user is logged in
-    if (is_user_logged_in()) {
+    if (is_user_logged_in() && current_user_can('administrator')) {
+    //if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
-        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        $site_id = get_post_meta($current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'Site profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-            <div id="profile-setting-div" style="display:none">
-            <fieldset>
                 <label for="display-name">Name : </label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <hr>
-                <button type="submit" id="btn-submit-profile">Submit</button>
-            </fieldset>
-            </div>
 
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0">My profile</option>
-                        <option value="1" selected>Site profile</option>
-                        <option value="2">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                    <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
-                    <span id="btn-job-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
-                </div>
-            </div>
-
+            <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
-                    <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
+                    <th>Start</th>
                     <th>Job</th>
                     <th>Description</th>
-                    <th>Start</th>
                 </thead>
                 <tbody>
                 <?php
@@ -162,10 +143,9 @@ function display_site_profile() {
                         $start_job_checked = ($is_start_job==1) ? 'checked' : '';
                         ?>
                         <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?>/></td>
+                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
-                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -180,6 +160,21 @@ function display_site_profile() {
                 </tbody>
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            </fieldset>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0">My profile</option>
+                        <option value="1" selected>Site profile</option>
+                        <option value="2">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                    <button type="submit" id="site-profile-submit">Submit</button>
+                </div>
+            </div>
+
         </fieldset>
         </div>
         <?php display_job_dialog();?>
@@ -214,7 +209,7 @@ function get_site_job_list_data() {
             $_list["job_id"] = get_the_ID();
             $_list["job_title"] = get_the_title();
             $_list["job_content"] = get_post_field('post_content', get_the_ID());
-            $_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
+            //$_list["is_my_job"] = is_my_job(get_the_ID()) ? 1 : 0;
             $_list["is_start_job"] = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
             array_push($_array, $_list);
         endwhile;
@@ -250,10 +245,6 @@ function display_job_dialog() {
         <?php display_site_job_action_list();?>
         <div>
             <div style="display:inline-block; width:50%;">
-                <label for="is-my-job">My job:</label>
-                <input type="checkbox" id="is-my-job" />
-            </div>
-            <div style="display:inline-block;">
                 <label for="is-start-job">Start job:</label>
                 <input type="checkbox" id="is-start-job" />
             </div>
@@ -269,7 +260,7 @@ function get_site_job_dialog_data() {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        $response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
+        //$response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
         $response["is_start_job"] = esc_attr(get_post_meta($job_id, 'is_start_job', true));
     }
     wp_send_json($response);
@@ -288,7 +279,7 @@ function set_site_job_dialog_data() {
         );
         wp_update_post( $data );
         update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
-
+/*
         $is_my_job = sanitize_text_field($_POST['_is_my_job']);
         $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
         // Convert the current 'my_job_ids' value to an array if not already an array
@@ -307,7 +298,7 @@ function set_site_job_dialog_data() {
         }        
         // Update 'my_job_ids' meta value
         update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-        
+*/        
     } else {
         // Set up the post data
         $new_post = array(
@@ -328,7 +319,7 @@ add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data
 
 function del_site_job_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_job_id'], true); // Set the second parameter to true to force delete
+    $result = wp_delete_post($_POST['_job_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
