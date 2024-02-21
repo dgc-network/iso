@@ -79,10 +79,11 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_my_job_data',
                 _job_id : id,
+                '_is_my_job': $(this).is(":checked") ? 1 : 0,
             },
             success: function (response) {
                 if (response.success) {
-                    alert("Success!");
+                    //alert("Success!");
                 } else {
                     alert("Error: " + response.error);
                 }

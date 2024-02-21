@@ -537,6 +537,7 @@ function set_my_job_data() {
 
     if (isset($_POST['_job_id'])) {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
+        $is_my_job = sanitize_text_field($_POST['_is_my_job']);
 
         $current_user_id = get_current_user_id();
         $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
