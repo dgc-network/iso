@@ -179,6 +179,8 @@ function display_site_profile() {
         </div>
         <?php display_job_dialog();?>
         <?php
+    } else {
+        return;
     }
 }
 
