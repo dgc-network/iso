@@ -69,7 +69,7 @@ add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_to_do_list() {
     $current_user_id = get_current_user_id();
-    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
     ?>
     <div class="ui-widget" id="result-container">
@@ -116,8 +116,8 @@ function display_to_do_list() {
                 $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                 $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                 $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
+                $doc_title = get_post_meta( $doc_id, 'doc_title', true);
                 if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                 $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
@@ -194,14 +194,14 @@ function display_workflow_list($site_id=false, $doc=false ) {
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $todo_site = get_post_meta($doc_id, 'site_id', true);
-                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
+                    $todo_site = get_post_meta( $doc_id, 'site_id', true);
+                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
                     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                     $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                     $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                     $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                    $next_job = get_post_meta($submit_action, 'next_job', true);
+                    $next_job = get_post_meta( $submit_action, 'next_job', true);
                     $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
 
                     if ($todo_site==$site_id) { // Aditional condition to filter the data
@@ -237,7 +237,7 @@ function display_workflow_list($site_id=false, $doc=false ) {
 
 function display_signature_record() {
     $current_user_id = get_current_user_id();
-    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
     $result = display_workflow_list($site_id);
     $html_content = $result['html'];
@@ -319,27 +319,27 @@ add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
 add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
 function display_todo_dialog($todo_id) {
-    $report_id = get_post_meta($todo_id, 'report_id', true);
-    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+    $report_id = get_post_meta( $todo_id, 'report_id', true);
+    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
 
     $is_doc = false;
     if ($doc_id) {
-        $start_job = get_post_meta($doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
-        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        $doc_category = get_post_meta($doc_id, 'doc_category', true);
-        $doc_url = get_post_meta($doc_id, 'doc_url', true);
-        $site_id = get_post_meta($doc_id, 'site_id', true);
+        $start_job = get_post_meta( $doc_id, 'start_job', true);
+        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
+        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
+        $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+        $site_id = get_post_meta( $doc_id, 'site_id', true);
         $query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
     } else {
-        $start_job = get_post_meta($report_id, 'start_job', true);
-        $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
-        $site_id = get_post_meta($doc_id, 'site_id', true);
+        $start_job = get_post_meta( $report_id, 'start_job', true);
+        $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
+        $doc_id = get_post_meta( $report_id, 'doc_id', true);
+        $site_id = get_post_meta( $doc_id, 'site_id', true);
         $query = retrieve_doc_field_data($doc_id, false, false, true);
     }
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
 
     ob_start();
     ?>
@@ -354,9 +354,9 @@ function display_todo_dialog($todo_id) {
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
             if ($is_doc) {
-                $field_value = get_post_meta($doc_id, $field_name, true);
+                $field_value = get_post_meta( $doc_id, $field_name, true);
             } else {
-                $field_value = get_post_meta($report_id, $field_name, true);
+                $field_value = get_post_meta( $report_id, $field_name, true);
             }
             switch (true) {
                 case ($field_type=='textarea'):
@@ -430,9 +430,9 @@ function set_todo_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         // action button is clicked, current todo update
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $start_job = esc_attr(get_post_meta($doc_id, 'start_job', true));
+        $todo_id = esc_attr(get_post_meta( $action_id, 'todo_id', true));
+        $doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
+        $start_job = esc_attr(get_post_meta( $doc_id, 'start_job', true));
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
@@ -454,11 +454,11 @@ function set_next_job_and_actions($args = array()) {
     if ($next_job == 0) return;
 
     if ($action_id > 0) {
-        $next_job      = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        $todo_id       = get_post_meta($action_id, 'todo_id', true);
-        $doc_id        = get_post_meta($todo_id, 'doc_id', true);
-        $report_id     = get_post_meta($todo_id, 'report_id', true);
+        $next_job      = get_post_meta( $action_id, 'next_job', true);
+        $next_leadtime = get_post_meta( $action_id, 'next_leadtime', true);
+        $todo_id       = get_post_meta( $action_id, 'todo_id', true);
+        $doc_id        = get_post_meta( $todo_id, 'doc_id', true);
+        $report_id     = get_post_meta( $todo_id, 'report_id', true);
     } else {
         $doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
         $report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
@@ -587,15 +587,15 @@ function get_users_by_job_id($job_id=0) {
 // Notice the persons in charge the job
 function notice_the_persons_in_charge($todo_id=0) {
     $job_title = get_the_title($todo_id);
-    $doc_id = get_post_meta($todo_id, 'doc_id', true);
-    $report_id = get_post_meta($todo_id, 'report_id', true);
-    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    $todo_due = get_post_meta($todo_id, 'todo_due', true);
+    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
+    $report_id = get_post_meta( $todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $todo_due = get_post_meta( $todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $message_text='You have to work on the '.$job_title.':'.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $job_id = get_post_meta($todo_id, 'job_id', true);
+    $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         send_flex_message_with_button_link($user, $message_text, $link_uri);
@@ -619,14 +619,14 @@ function get_users_in_site($site_id=0) {
 
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0) {
-    $doc_id = get_post_meta($todo_id, 'doc_id', true);
-    $report_id = get_post_meta($todo_id, 'report_id', true);
-    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-    $site_id = get_post_meta($doc_id, 'site_id', true);
-    $doc_url = get_post_meta($doc_id, 'doc_url', true);
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
+    $report_id = get_post_meta( $todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
+    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
-    $todo_submit = get_post_meta($todo_id, 'submit_date', true);
+    $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );
     
     $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
@@ -729,14 +729,14 @@ function get_todo_action_dialog_data() {
     $response = array();
     if( isset($_POST['_action_id']) ) {
         $action_id = (int)sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta($action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta($todo_id, 'doc_id', true));
-        $site_id = esc_attr(get_post_meta($doc_id, 'site_id', true));
-        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
+        $todo_id = esc_attr(get_post_meta( $action_id, 'todo_id', true));
+        $doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
+        $site_id = esc_attr(get_post_meta( $doc_id, 'site_id', true));
+        $next_job = esc_attr(get_post_meta( $action_id, 'next_job', true));
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
         $response["next_job"] = select_site_job_option_data($next_job, $site_id);
-        $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
+        $response["next_leadtime"] = esc_html(get_post_meta( $action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
 }

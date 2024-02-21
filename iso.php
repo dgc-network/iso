@@ -261,7 +261,7 @@ function custom_login_process($user, $password) {
             'display_name' => $_POST['_display_name'], 
         ) );
         // Add/update user metadata
-        update_post_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_user_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
     }
     return $user;
 }

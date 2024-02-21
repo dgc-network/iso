@@ -36,7 +36,7 @@ function display_my_profile() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
-        $site_id = get_post_meta($current_user_id, 'site_id', true);
+        $site_id = get_user_meta( $current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
         $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
@@ -104,7 +104,7 @@ function display_my_profile() {
 function display_site_profile() {
     // Check if the user is administrator
     $current_user_id = get_current_user_id();
-    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata( $current_user_id );
 
@@ -249,7 +249,7 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         //$response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
-        $response["is_start_job"] = esc_attr(get_post_meta($job_id, 'is_start_job', true));
+        $response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
     }
     wp_send_json($response);
 }
@@ -267,26 +267,6 @@ function set_site_job_dialog_data() {
         );
         wp_update_post( $data );
         update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
-/*
-        $is_my_job = sanitize_text_field($_POST['_is_my_job']);
-        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
-        // Convert the current 'my_job_ids' value to an array if not already an array
-        if (!is_array($my_job_ids_array)) {
-            $my_job_ids_array = array();
-        }        
-        // Check if $job_id is in 'my_job_ids'
-        $job_exists = in_array($job_id, $my_job_ids_array);        
-        // Check the condition and update 'my_job_ids' accordingly
-        if ($is_my_job == 1 && !$job_exists) {
-            // Add $job_id to 'my_job_ids'
-            $my_job_ids_array[] = $job_id;
-        } elseif ($is_my_job != 1 && $job_exists) {
-            // Remove $job_id from 'my_job_ids'
-            $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
-        }        
-        // Update 'my_job_ids' meta value
-        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-*/        
     } else {
         // Set up the post data
         $new_post = array(
@@ -423,9 +403,9 @@ function get_job_action_dialog_data() {
         $action_id = (int)sanitize_text_field($_POST['_action_id']);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $next_job = esc_attr(get_post_meta($action_id, 'next_job', true));
+        $next_job = esc_attr(get_post_meta( $action_id, 'next_job', true));
         $response["next_job"] = select_site_job_option_data($next_job, $_POST['_site_id']);
-        $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
+        $response["next_leadtime"] = esc_html(get_post_meta( $action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
 }
@@ -476,7 +456,7 @@ function set_my_profile_data() {
 
     if (isset($_POST['_is_site_admin'])) {
         $current_user_id = get_current_user_id();
-        update_user_meta($current_user_id, 'is_site_admin', $_POST['_is_site_admin']);
+        update_user_meta( $current_user_id, 'is_site_admin', $_POST['_is_site_admin']);
         $response = array('success' => true);
     }
 
@@ -526,7 +506,7 @@ function set_my_job_data() {
         }
 
         // Update 'my_job_ids' meta value
-        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
+        update_user_meta( $current_user_id, 'my_job_ids', $my_job_ids_array);
 
         $response = array('success' => true);
     }

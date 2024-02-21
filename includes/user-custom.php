@@ -40,11 +40,11 @@ add_action('user_new_form', 'user_custom_fields_on_new_user_form');
 // Save custom fields when a new user is registered
 function save_user_custom_fields_on_registration($user_id) {
     if (isset($_POST['dgc_wallet_balance'])) {
-        update_post_meta($user_id, 'dgc_wallet_balance', sanitize_text_field($_POST['dgc_wallet_balance']));
+        update_user_meta( $user_id, 'dgc_wallet_balance', sanitize_text_field($_POST['dgc_wallet_balance']));
     }
 
     if (isset($_POST['dgc_wallet_address'])) {
-        update_post_meta($user_id, 'dgc_wallet_address', sanitize_text_field($_POST['dgc_wallet_address']));
+        update_user_meta( $user_id, 'dgc_wallet_address', sanitize_text_field($_POST['dgc_wallet_address']));
     }
 }
 add_action('user_register', 'save_user_custom_fields_on_registration');
@@ -95,7 +95,7 @@ function user_custom_fields(WP_User $user) {
                     <select id="site-id" name="_site_id" class="regular-text" >
                         <option value="">Select Site</option>
                     <?php
-                        $site_id = esc_html(get_post_meta($user->ID, 'site_id', true));
+                        $site_id = get_user_meta( $user->ID, 'site_id', true);
                         $site_args = array(
                             'post_type'      => 'site',
                             'posts_per_page' => -1,
@@ -117,9 +117,9 @@ add_action('edit_user_profile', 'user_custom_fields'); // editing another user
 
 function save_user_metadata($userId) {
     if (current_user_can('edit_user', $userId)) {
-        update_post_meta($userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
-        update_post_meta($userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
-        update_post_meta($userId, 'site_id', $_REQUEST['_site_id']);
+        update_user_meta( $userId, 'dgc_wallet_balance', $_REQUEST['dgc_wallet_balance']);
+        update_user_meta( $userId, 'dgc_wallet_address', $_REQUEST['dgc_wallet_address']);
+        update_user_meta( $userId, 'site_id', $_REQUEST['_site_id']);
     }    
 }
 add_action('personal_options_update', 'save_user_metadata');
@@ -146,7 +146,7 @@ function get_balance_by_wallet_address($wallet_address='') {
       
     foreach( $query->posts as $post ) {
         $post_id  = $post->ID;
-        $balance = get_post_meta( $post_id, 'dgc_wallet_balance', true );
+        $balance = get_user_meta( $post_id, 'dgc_wallet_balance', true );
         return $balance;
         // ...
     }
@@ -161,11 +161,11 @@ function set_amount_transfer_to_wallet_address($wallet_address='', $amount=0) {
     //$post_id = 0;
     foreach( $query->posts as $post ) {
         $post_id  = $post->ID;
-        $my_balance = get_post_meta( $current_user->ID, 'dgc_wallet_balance', true );
-        $your_balance = get_post_meta( $post_id, 'dgc_wallet_balance', true );
+        $my_balance = get_user_meta( $current_user->ID, 'dgc_wallet_balance', true );
+        $your_balance = get_user_meta( $post_id, 'dgc_wallet_balance', true );
         if ($my_balance>=$amount) {
-            update_post_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$amount );
-            update_post_meta( $post_id, 'dgc_wallet_balance', $your_balance+$amount );
+            update_user_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$amount );
+            update_user_meta( $post_id, 'dgc_wallet_balance', $your_balance+$amount );
             insert_dgc_transaction(
                 array(
                     'send_id'   => $current_user->ID,
@@ -180,11 +180,11 @@ function set_amount_transfer_to_wallet_address($wallet_address='', $amount=0) {
 function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     if ($_tx_id!=0){
         $current_user = wp_get_current_user();
-        $my_balance = get_post_meta( $current_user->ID, 'dgc_wallet_balance', true );
-        $your_balance = get_post_meta( $_tx_id, 'dgc_wallet_balance', true );
+        $my_balance = get_user_meta( $current_user->ID, 'dgc_wallet_balance', true );
+        $your_balance = get_user_meta( $_tx_id, 'dgc_wallet_balance', true );
         if ($my_balance>=$_tx_amount) {
-            update_post_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$_tx_amount );
-            update_post_meta( $post_id, 'dgc_wallet_balance', $your_balance+$_tx_amount );
+            update_user_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$_tx_amount );
+            update_user_meta( $post_id, 'dgc_wallet_balance', $your_balance+$_tx_amount );
             insert_dgc_transaction(
                 array(
                     'send_id'   => $current_user->ID,
@@ -215,7 +215,6 @@ function custom_users_column_order($columns) {
         'cb' => $columns['cb'],
         'display_name' => $columns['display_name'],
         'username' => $columns['username'],
-        //'name' => $columns['name'],
         'email' => $columns['email'],
         'role' => $columns['role'],
         'posts' => $columns['posts'],
