@@ -70,6 +70,31 @@ jQuery(document).ready(function($) {
         });
     });
 
+    $('[id^="check-my-job-"]').on("click", function () {
+        const id = this.id.substring(13);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_my_job_data',
+                _job_id : id,
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert("Error: Something went wrong!");
+            }
+        });
+
+    });
+
     $("#my-profile-submit").on("click", function () {
         const job_id_array = [];
         $("#my-profile-list").each(function(index) { 
@@ -123,7 +148,7 @@ jQuery(document).ready(function($) {
     });            
 
     activate_site_job_list_data()
-
+/*
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
         $(this).css('color', 'red');
@@ -133,7 +158,7 @@ jQuery(document).ready(function($) {
         $(this).css('cursor', 'default');
         $(this).css('color', '');
     });        
-
+*/
     $("#btn-new-site-job").on("click", function() {
         $.ajax({
             type: 'POST',

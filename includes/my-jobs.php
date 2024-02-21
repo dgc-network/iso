@@ -531,3 +531,40 @@ function set_my_profile_data() {
 add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
 add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
 
+function set_my_job_data() {
+
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_job_id'])) {
+        $job_id = (int)sanitize_text_field($_POST['_job_id']);
+
+        $current_user_id = get_current_user_id();
+        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
+        // Convert the current 'my_job_ids' value to an array if not already an array
+        if (!is_array($my_job_ids_array)) {
+            $my_job_ids_array = array();
+        }        
+    
+        // Check if $job_id is in 'my_job_ids'
+        $job_exists = in_array($job_id, $my_job_ids_array);
+    
+        // Check the condition and update 'my_job_ids' accordingly
+        if ($is_my_job == 1 && !$job_exists) {
+            // Add $job_id to 'my_job_ids'
+            $my_job_ids_array[] = $job_id;
+        } elseif ($is_my_job != 1 && $job_exists) {
+            // Remove $job_id from 'my_job_ids'
+            $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
+        }
+
+        // Update 'my_job_ids' meta value
+        update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
+
+        $response = array('success' => true);
+    }
+
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_my_job_data', 'set_my_job_data' );
+add_action( 'wp_ajax_nopriv_set_my_job_data', 'set_my_job_data' );
+
