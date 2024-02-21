@@ -85,7 +85,7 @@ jQuery(document).ready(function($) {
                 _job_id_array: job_id_array,
             },
             success: function (response) {
-                alert(response);
+                alert(response.success);
             },
             error: function (error) {
                 console.error(error);
