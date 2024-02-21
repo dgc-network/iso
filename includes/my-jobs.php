@@ -21,14 +21,25 @@ function register_job_post_type() {
 add_action('init', 'register_job_post_type');
 
 // Shortcode to display my jobs on frontend
-function my_jobs_shortcode() {
+function profiles_shortcode() {
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
+        if ($_GET['_select_profile']=='1') display_site_profile();
+        if ($_GET['_select_profile']!='1') display_my_profile();
+    } else {
+        user_did_not_login_yet();
+    }
+}
+add_shortcode('my-jobs', 'profiles_shortcode');
+
+function display_my_profile() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
         $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
         $user_data = get_userdata( $current_user_id );
         ?>
-        <h2><?php echo __( 'My jobs', 'your-text-domain' );?></h2>
+        <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
             <div id="profile-setting-div" style="display:none">
@@ -99,11 +110,89 @@ function my_jobs_shortcode() {
         </div>
         <?php display_job_dialog();?>
         <?php
-    } else {
-        user_did_not_login_yet();
     }
 }
-add_shortcode('my-jobs', 'my_jobs_shortcode');
+
+function display_site_profile() {
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
+        $current_user_id = get_current_user_id();
+        $site_id = esc_attr(get_post_meta($current_user_id, 'site_id', true));
+        $user_data = get_userdata( $current_user_id );
+        ?>
+        <h2><?php echo __( 'Site profile', 'your-text-domain' );?></h2>
+        <div class="ui-widget">
+        <fieldset>
+            <div id="profile-setting-div" style="display:none">
+            <fieldset>
+                <label for="display-name">Name : </label>
+                <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="site-title"> Site: </label>
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                <div id="site-hint" style="display:none; color:#999;"></div>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <hr>
+                <button type="submit" id="btn-submit-profile">Submit</button>
+            </fieldset>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0">My profile</option>
+                        <option value="1" selected>Site profile</option>
+                        <option value="2">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                    <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
+                    <span id="btn-job-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
+                </div>
+            </div>
+
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
+                    <th>Job</th>
+                    <th>Description</th>
+                    <th>Start</th>
+                </thead>
+                <tbody>
+                <?php
+                $query = retrieve_site_job_list_data($site_id);
+                if ($query->have_posts()) :
+                    $x = 0;
+                    while ($query->have_posts()) : $query->the_post();
+                        $job_id = get_the_ID();
+                        $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
+                        $is_start_job = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
+                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        ?>
+                        <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?>/></td>
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
+                        </tr>
+                        <?php 
+                        $x += 1;
+                    endwhile;
+                    wp_reset_postdata();
+                    while ($x<50) {
+                        echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        </fieldset>
+        </div>
+        <?php display_job_dialog();?>
+        <?php
+    }
+}
 
 function retrieve_site_job_list_data($site_id=0) {
     // Retrieve the value
