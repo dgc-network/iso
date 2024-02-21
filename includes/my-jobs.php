@@ -493,8 +493,7 @@ add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_
 
 function set_my_profile_data() {
 
-    //$response = array('success' => false, 'error' => 'Invalid data format');
-    $response = array('error' => 'Invalid data format');
+    $response = array('success' => false, 'error' => 'Invalid data format');
 
     if (isset($_POST['_job_id_array']) && is_array($_POST['_job_id_array'])) {
         $current_user_id = get_current_user_id();

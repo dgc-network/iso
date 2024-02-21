@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
             };
             job_id_array.push(check_job_id);
         });
-
+    
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -87,17 +87,20 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_my_profile_data',
                 _job_id_array: job_id_array,
-                '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
             },
             success: function (response) {
-                alert(response.success);
+                if (response.success) {
+                    alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
             },
             error: function (error) {
                 console.error(error);
-                alert(response.error);
+                alert("Error: Something went wrong!");
             }
         });            
-    });            
+    });
 
     $("#btn-submit-profile").on("click", function () {
         $.ajax({
