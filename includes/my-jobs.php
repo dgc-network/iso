@@ -58,8 +58,8 @@ function display_my_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0">My profile</option>
-                        <option value="1" selected>Site profile</option>
+                        <option value="0" selected>My profile</option>
+                        <option value="1">Site profile</option>
                         <option value="2">...</option>
                     </select>
                 </div>
