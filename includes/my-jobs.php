@@ -38,6 +38,8 @@ function display_my_profile() {
         $current_user_id = get_current_user_id();
         $site_id = get_post_meta($current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
+        $is_site_admin = get_post_meta($current_user_id, 'is_site_admin', true);
+        $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
         ?>
         <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -59,34 +61,27 @@ function display_my_profile() {
                 <?php
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
-                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $job_id = get_the_ID();
                         $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
-                        $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
-                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
                         ?>
                         <tr id="my-job-list" data-job-id="<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?>/></td>
+                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?> /></td>
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
                         </tr>
                         <?php 
-                        //$x += 1;
                     endwhile;
                     wp_reset_postdata();
-/*                    
-                    while ($x<50) {
-                        echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
-*/                    
                 endif;
                 ?>
                 </tbody>
             </table>
             </fieldset>
 
+            <label for="is-site-admin">Is site administrator: </label>
+            <input type="checkbox" id="is-site-admin" <?php echo $site_admin_checked;?> />
+            <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
@@ -107,12 +102,14 @@ function display_my_profile() {
 }
 
 function display_site_profile() {
-    // Check if the user is logged in
-    if (is_user_logged_in() && current_user_can('administrator')) {
+    // Check if the user is administrator
+    $current_user_id = get_current_user_id();
+    $site_id = get_post_meta($current_user_id, 'site_id', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_data = get_userdata( $current_user_id );
+
+    if ($is_site_admin==1 || current_user_can('administrator')) {
     //if (is_user_logged_in()) {
-        $current_user_id = get_current_user_id();
-        $site_id = get_post_meta($current_user_id, 'site_id', true);
-        $user_data = get_userdata( $current_user_id );
         ?>
         <h2><?php echo __( 'Site profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -223,19 +220,6 @@ function get_site_job_list_data() {
 }
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
-
-function is_my_job($job_id) {
-    // Get the current user ID
-    $current_user_id = get_current_user_id();    
-    // Get the user's job IDs as an array
-    $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
-    // If $user_jobs is not an array, convert it to an array
-    if (!is_array($user_jobs)) {
-        $user_jobs = array();
-    }
-    // Check if the current user has the specified job ID in their metadata
-    return in_array($job_id, $user_jobs);
-}
 
 function display_job_dialog() {
     ?>
@@ -490,34 +474,9 @@ function set_my_profile_data() {
 
     $response = array('success' => false, 'error' => 'Invalid data format');
 
-    if (isset($_POST['_job_id_array']) && is_array($_POST['_job_id_array'])) {
+    if (isset($_POST['_is_site_admin'])) {
         $current_user_id = get_current_user_id();
-        $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
-        // Convert the current 'my_job_ids' value to an array if not already an array
-        if (!is_array($my_job_ids_array)) {
-            $my_job_ids_array = array();
-        }        
-    
-        foreach ($_POST['_job_id_array'] as $job_data) {
-            // Extract values from each object
-            $is_my_job = isset($job_data['is_my_job']) ? intval($job_data['is_my_job']) : 0;
-            $job_id = isset($job_data['data_job_id']) ? absint($job_data['data_job_id']) : 0;
-    
-            // Check if $job_id is in 'my_job_ids'
-            $job_exists = in_array($job_id, $my_job_ids_array);
-    
-            // Check the condition and update 'my_job_ids' accordingly
-            if ($is_my_job == 1 && !$job_exists) {
-                // Add $job_id to 'my_job_ids'
-                $my_job_ids_array[] = $job_id;
-            } elseif ($is_my_job != 1 && $job_exists) {
-                // Remove $job_id from 'my_job_ids'
-                $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
-            }
-    
-            // Update 'my_job_ids' meta value
-            update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
-        }
+        update_user_meta($current_user_id, 'is_site_admin', $_POST['_is_site_admin']);
         $response = array('success' => true);
     }
 
@@ -525,6 +484,19 @@ function set_my_profile_data() {
 }
 add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
 add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
+
+function is_my_job($job_id) {
+    // Get the current user ID
+    $current_user_id = get_current_user_id();    
+    // Get the user's job IDs as an array
+    $user_jobs = get_user_meta($current_user_id, 'my_job_ids', true);
+    // If $user_jobs is not an array, convert it to an array
+    if (!is_array($user_jobs)) {
+        $user_jobs = array();
+    }
+    // Check if the current user has the specified job ID in their metadata
+    return in_array($job_id, $user_jobs);
+}
 
 function set_my_job_data() {
 
