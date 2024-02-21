@@ -70,6 +70,26 @@ jQuery(document).ready(function($) {
         });
     });
 
+    $("#my-profile-submit").on("click", function () {
+        const job_id_array = $("#my-profile-list").sortable('toArray', { attribute: 'data-job-id' });                
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_my_profile_data',
+                _job_id_array: job_id_array,
+            },
+            success: function (response) {
+                alert(response);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });            
+
     $("#btn-submit-profile").on("click", function () {
         $.ajax({
             type: 'POST',
