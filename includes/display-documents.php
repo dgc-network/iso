@@ -570,6 +570,7 @@ function display_doc_field_dialog(){
             <option value="text-align:left;">Left</option>
             <option value="text-align:center;">Center</option>
             <option value="text-align:right;">Right</option>
+            <option value="">No show</option>
         </select>
         <label for="editing-type">Type:</label>
         <select id="editing-type" class="text ui-widget-content ui-corner-all">

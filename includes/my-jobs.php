@@ -46,7 +46,11 @@ function my_jobs_shortcode() {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <select id="select-site-job"><?php echo select_site_job_option_data($_GET['_job'],$site_id);?></select>
+                    <select id="select-profile">
+                        <option value="0">My profile</option>
+                        <option value="1" selected>Site profile</option>
+                        <option value="2">...</option>
+                    </select>
                 </div>
                 <div style="text-align: right">
                     <input type="text" id="search-job" style="display:inline" placeholder="Search..." />

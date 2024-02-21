@@ -233,7 +233,6 @@ function display_workflow_list($site_id=false, $doc=false ) {
         'html' => $html,
         'x'    => $x,
     );
-    //return $html;    
 }
 
 function display_signature_record() {
@@ -260,8 +259,8 @@ function display_signature_record() {
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
                 <select id="select-todo">
-                    <option value="1">Signature record</option>
                     <option value="0">To-do list</option>
+                    <option value="1" selected>Signature record</option>
                     <option value="2">...</option>
                 </select>
             </div>
@@ -466,6 +465,7 @@ function set_next_job_and_actions($args = array()) {
         $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;    
     }
     $todo_title = get_the_title($next_job);
+
     if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
     
@@ -489,8 +489,10 @@ function set_next_job_and_actions($args = array()) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
         notice_the_persons_in_site($new_todo_id);
-        if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
-        if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+        //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
+        //if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+        if ($doc_id) delete_post_meta($doc_id, 'todo_status');
+        if ($report_id) delete_post_meta($report_id, 'todo_status');
     }
 
     if ($next_job>0) {
@@ -766,6 +768,7 @@ function set_todo_action_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'todo_id', sanitize_text_field($_POST['_todo_id']));
+        update_post_meta( $post_id, 'next_leadtime', 86400);
     }
     wp_send_json($response);
 }
