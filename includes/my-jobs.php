@@ -30,7 +30,7 @@ function profiles_shortcode() {
         user_did_not_login_yet();
     }
 }
-add_shortcode('my-jobs', 'profiles_shortcode');
+add_shortcode('display-profiles', 'profiles_shortcode');
 
 function display_my_profile() {
     // Check if the user is logged in
@@ -42,39 +42,18 @@ function display_my_profile() {
         <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-            <div id="profile-setting-div" style="display:none">
-            <fieldset>
                 <label for="display-name">Name : </label>
-                <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-title"> Site: </label>
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <hr>
-                <button type="submit" id="btn-submit-profile">Submit</button>
-            </fieldset>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0" selected>My profile</option>
-                        <option value="1">Site profile</option>
-                        <option value="2">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                    <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
-                    <span id="btn-job-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span>
-                </div>
-            </div>
 
             <table class="ui-widget" style="width:100%;">
                 <thead>
-                    <th id="btn-profile-setting">My<span style="margin-left:5px;" class="dashicons dashicons-admin-generic"></span></th>
+                    <th>My</th>
                     <th>Job</th>
                     <th>Description</th>
-                    <th>Start</th>
                 </thead>
                 <tbody>
                 <?php
@@ -91,7 +70,6 @@ function display_my_profile() {
                             <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?>/></td>
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
-                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
                         </tr>
                         <?php 
                         $x += 1;
@@ -105,10 +83,22 @@ function display_my_profile() {
                 ?>
                 </tbody>
             </table>
-            <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0" selected>My profile</option>
+                        <option value="1">Site profile</option>
+                        <option value="2">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                    <button type="submit" id="my-profile-submit">Submit</button>
+                </div>
+            </div>
+
         </fieldset>
         </div>
-        <?php display_job_dialog();?>
         <?php
     }
 }
