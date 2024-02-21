@@ -136,7 +136,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_my_profile_data',
-                _job_id_array: job_id_array,
+                '_is_site_admin': $("is-site-admin").is(":checked") ? 1 : 0,
             },
             success: function (response) {
                 if (response.success) {
