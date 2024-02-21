@@ -180,7 +180,9 @@ function display_site_profile() {
         <?php display_job_dialog();?>
         <?php
     } else {
-        return;
+        ?>
+        <p>You do not have permission to access this page.</p>
+        <?php
     }
 }
 
