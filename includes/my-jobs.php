@@ -38,7 +38,7 @@ function display_my_profile() {
         $current_user_id = get_current_user_id();
         $site_id = get_post_meta($current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
-        $is_site_admin = get_post_meta($current_user_id, 'is_site_admin', true);
+        $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
         ?>
         <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
