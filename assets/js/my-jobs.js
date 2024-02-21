@@ -73,7 +73,11 @@ jQuery(document).ready(function($) {
     $("#my-profile-submit").on("click", function () {
         const job_id_array = [];
         $("#my-profile-list").each(function(index) { 
-            job_id_array.push($(this).attr('data-job-id'));
+            const check_job_id = {
+                is_my_job: $('#is-my-job').is(":checked") ? 1 : 0,
+                data_job_id: $(this).attr('data-job-id')
+            };
+            job_id_array.push(check_job_id);
         });
 
         $.ajax({
@@ -83,13 +87,14 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_my_profile_data',
                 _job_id_array: job_id_array,
+                '_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
             },
             success: function (response) {
                 alert(response.success);
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                alert(response.error);
             }
         });            
     });            

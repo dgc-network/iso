@@ -496,7 +496,6 @@ function set_my_profile_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
     $current_user_id = get_current_user_id();
-    //$is_my_job = sanitize_text_field($_POST['_is_my_job']);
     $my_job_ids_array = get_user_meta($current_user_id, 'my_job_ids', true);        
     // Convert the current 'my_job_ids' value to an array if not already an array
     if (!is_array($my_job_ids_array)) {
@@ -504,10 +503,14 @@ function set_my_profile_data() {
     }        
 
     if (isset($_POST['_job_id_array']) && is_array($_POST['_job_id_array'])) {
-        $job_id_array = array_map('absint', $_POST['_job_id_array']);
-        foreach ($job_id_array as $index => $job_id) {
+        foreach ($_POST['_job_id_array'] as $index => $job_data) {
+            // Extract values from each object
+            $is_my_job = isset($job_data['is_my_job']) ? intval($job_data['is_my_job']) : 0;
+            $job_id = isset($job_data['data_job_id']) ? absint($job_data['data_job_id']) : 0;
+    
             // Check if $job_id is in 'my_job_ids'
-            $job_exists = in_array($job_id, $my_job_ids_array);        
+            $job_exists = in_array($job_id, $my_job_ids_array);
+    
             // Check the condition and update 'my_job_ids' accordingly
             if ($is_my_job == 1 && !$job_exists) {
                 // Add $job_id to 'my_job_ids'
@@ -515,12 +518,14 @@ function set_my_profile_data() {
             } elseif ($is_my_job != 1 && $job_exists) {
                 // Remove $job_id from 'my_job_ids'
                 $my_job_ids_array = array_diff($my_job_ids_array, array($job_id));
-            }        
+            }
+    
             // Update 'my_job_ids' meta value
             update_user_meta($current_user_id, 'my_job_ids', $my_job_ids_array);
         }
         $response = array('success' => true);
     }
+
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
