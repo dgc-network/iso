@@ -71,7 +71,11 @@ jQuery(document).ready(function($) {
     });
 
     $("#my-profile-submit").on("click", function () {
-        const job_id_array = $("#my-profile-list").sortable('toArray', { attribute: 'data-job-id' });                
+        const job_id_array = [];
+        $("#my-profile-list").each(function(index) { 
+            job_id_array.push($(this).attr('data-job-id'));
+        });
+
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
