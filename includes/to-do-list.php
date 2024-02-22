@@ -330,14 +330,24 @@ function display_todo_dialog($todo_id) {
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_url = get_post_meta( $doc_id, 'doc_url', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $query = retrieve_doc_field_data(false, $site_id, false, true);
+        $params = array(
+            'site_id'     => $site_id,
+            'is_editing'  => true,
+        );                
+        $query = retrieve_doc_field_data($params);
+        //$query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
     } else {
         $start_job = get_post_meta( $report_id, 'start_job', true);
         $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $query = retrieve_doc_field_data($doc_id, false, false, true);
+        $params = array(
+            'doc_id'     => $doc_id,
+            'is_editing'  => true,
+        );                
+        $query = retrieve_doc_field_data($params);
+        //$query = retrieve_doc_field_data($doc_id, false, false, true);
     }
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
 
