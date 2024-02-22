@@ -304,6 +304,23 @@ function get_document_dialog_data() {
                 }    
                 $result['doc_fields'] = $_array;
             }
+        } else {
+            if (current_user_can('administrator')) {
+                $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
+                $site_id = get_post_meta( $doc_id, 'site_id', true);
+                $query = retrieve_doc_field_data(false, $site_id);
+                $_array = array();
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $_list = array();
+                        $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
+                        array_push($_array, $_list);
+                    endwhile;
+                    wp_reset_postdata();
+                }    
+                $result['doc_fields'] = $_array;
+
+            }
         }
 
     } else {
