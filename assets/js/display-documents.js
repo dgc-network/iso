@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
                 }                
                 $("#doc-id").val(doc_id);
                 
-                $('.datepicker').datepicker({
+                $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
                         $(this).val(dateText);
                     }
@@ -270,8 +270,6 @@ jQuery(document).ready(function($) {
                 $('[id^="save-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(16);
 
-                    //$("#save-doc-report-button").on("click", function(e) {
-                    //e.preventDefault();
                     const ajaxData = {
                         'action': 'set_doc_report_dialog_data',
                     };
@@ -592,7 +590,12 @@ jQuery(document).ready(function($) {
                 $("#doc-id").val(response.doc_id);
                 
                 //activate_doc_report_dialog_data(report_id)
-
+                $(".datepicker").datepicker({
+                    onSelect: function(dateText, inst) {
+                        $(this).val(dateText);
+                    }
+                });
+            
                 $('[id^="save-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(16);
                     const ajaxData = {
