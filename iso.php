@@ -118,7 +118,7 @@ function init_webhook_events() {
             $profile = $line_bot_api->getProfile($event['source']['userId']);
             $display_name = str_replace(' ', '', $profile['displayName']);
             // Encode the Chinese characters for inclusion in the URL
-            $link_uri = home_url().'/my-jobs/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+            $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
             // Flex Message JSON structure with a button
             $flexMessage = [
                 'type' => 'flex',
