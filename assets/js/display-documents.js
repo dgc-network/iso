@@ -545,19 +545,20 @@ jQuery(document).ready(function($) {
         });            
 
         $("#search-doc-report").on( "change", function() {
-            window.location.replace("?_search_doc_report="+$(this).val());
+            get_doc_report_list_data(false, false, $(this).val())
             $(this).val('');
         });
     
     }
 
-    function get_doc_report_list_data(doc_id=false, site_id=false) {
+    function get_doc_report_list_data(doc_id=false, site_id=false, search_doc_report=false) {
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
     
         if (doc_id) ajaxData['_doc_id'] = doc_id;
         if (site_id) ajaxData['_site_id'] = site_id;
+        if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
     
         $.ajax({
             type: 'POST',

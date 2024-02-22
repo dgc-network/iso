@@ -103,10 +103,6 @@ function display_documents_shortcode() {
         endif;    
     }
 
-    if( isset($_GET['_search_doc_report']) ) {
-        display_doc_report_list(false, $_GET['_search_doc_report']);
-    }
-    
     // Check if the user is logged in
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
@@ -999,8 +995,10 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
-        $result['html_contain'] = display_doc_report_list($doc_id);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        if ($doc_id) $result['html_contain'] = display_doc_report_list($doc_id);
+        $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
+        if ($search_doc_report) $result['html_contain'] = display_doc_report_list(false, $search_doc_report);
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
