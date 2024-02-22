@@ -306,6 +306,7 @@ function get_document_dialog_data() {
             }
         } else {
             if (current_user_can('administrator')) {
+/*                
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
                 $site_id = get_post_meta( $doc_id, 'site_id', true);
                 $query = retrieve_doc_field_data(false, $site_id);
@@ -319,7 +320,7 @@ function get_document_dialog_data() {
                     wp_reset_postdata();
                 }    
                 $result['doc_fields'] = $_array;
-
+*/
             }
         }
 

@@ -593,7 +593,7 @@ function notice_the_persons_in_charge($todo_id=0) {
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $todo_due = get_post_meta( $todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
-    $message_text='You have to work on the '.$job_title.':'.$doc_title.' before '.$due_date.'.';
+    $message_text='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
@@ -622,6 +622,7 @@ function notice_the_persons_in_site($todo_id=0) {
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
+
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
