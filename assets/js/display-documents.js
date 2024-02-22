@@ -59,6 +59,11 @@ jQuery(document).ready(function($) {
                 }                
                 $("#doc-id").val(doc_id);
                 
+                $("#search-doc-report").on( "change", function() {
+                    window.location.replace("?_search_doc_report="+$(this).val());
+                    $(this).val('');
+                });
+            
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
                         $(this).val(dateText);

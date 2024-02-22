@@ -102,6 +102,10 @@ function display_documents_shortcode() {
             wp_reset_postdata();
         endif;    
     }
+
+    if( isset($_GET['_search_doc_report']) ) {
+        display_doc_report_list(false, $_GET['_search_doc_report']);
+    }
     
     // Check if the user is logged in
     if (is_user_logged_in()) {
@@ -692,24 +696,26 @@ add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
 add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
 
 // doc-report
-function display_doc_report_list($doc_id) {
+function display_doc_report_list($doc_id, $search_doc_report=false) {
     ob_start();
-    $doc_title = esc_html(get_post_meta( $doc_id, 'doc_title', true));
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $result = display_workflow_list($site_id, $doc_id);
     $html_content = $result['html'];
     ?>
-    <h2><?php echo $doc_title;?></h2>
+    <h2><?php echo esc_html($doc_title);?></h2>
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
     <fieldset>
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
                 <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
-                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+                <select id="select-doc-report-function">
+                    <option value="Duplicate">
+                </select>
             </div>
             <div style="text-align:right; display:flex;">
-                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
                 <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
@@ -733,7 +739,7 @@ function display_doc_report_list($doc_id) {
             </thead>
             <tbody>
                 <?php
-                $query = retrieve_doc_report_list_data($doc_id);
+                $query = retrieve_doc_report_list_data($doc_id, $search_doc_report);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
@@ -946,12 +952,31 @@ function set_doc_report_dialog_data() {
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
-function retrieve_doc_report_list_data($doc_id=0) {
+function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) {
     $args = array(
         'post_type'      => 'doc-report',
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
     );
+    
+    if ($search_doc_report) {
+        $args['meta_query'] = array(
+            'relation' => 'OR',
+        );
+        $inner_query = retrieve_doc_field_data();
+        if ($inner_query->have_posts()) {
+            while ($inner_query->have_posts()) : $inner_query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $args['meta_query'][] = array(
+                    'key'   => $field_name,
+                    'value' => $search_doc_report,
+                    'compare' => 'LIKE',
+                );
+            endwhile;                
+            // Reset only the inner loop's data
+            wp_reset_postdata();
+        }
+    }
     
     if ($doc_id) {
         $args['meta_query'][] = array(
