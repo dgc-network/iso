@@ -56,11 +56,15 @@ jQuery(document).ready(function($) {
                 } else {
                     // Handle the HTML content as needed
                     $('#result-container').html(response.html_contain);
-                }
-                
-                //$('#result-container').html(response.html_contain);
+                }                
                 $("#doc-id").val(doc_id);
                 
+                $('.datepicker').datepicker({
+                    onSelect: function(dateText, inst) {
+                        $(this).val(dateText);
+                    }
+                });
+            
                 //activate_document_dialog_data(doc_id);
                 $("#save-document-button").on("click", function(e) {
                     e.preventDefault();

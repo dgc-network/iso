@@ -145,7 +145,7 @@ function display_documents_shortcode() {
                         echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
                         echo '</th>';
                     endwhile;
-                    echo '<th>'. __( '狀態', 'your-text-domain' ).'</th>';
+                    echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
                     echo '</tr>';
                     wp_reset_postdata();
                 }
@@ -725,7 +725,7 @@ function display_doc_report_list($doc_id) {
                         echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
                         echo '</th>';
                     endwhile;
-                    echo '<th>'. __( '狀態', 'your-text-domain' ).'</th>';
+                    echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
                     echo '</tr>';
                     wp_reset_postdata();
                 }
@@ -820,6 +820,13 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
                     ?>
                     <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <?php
+                    break;
+    
+                case ($field_type=='date'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all datepicker" />
                     <?php
                     break;
     
