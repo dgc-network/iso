@@ -830,6 +830,13 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
                     <?php
                     break;
     
+                case ($field_type=='number'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="number" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                    break;
+    
                 default:
                     ?>
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
