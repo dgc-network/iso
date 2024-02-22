@@ -711,7 +711,7 @@ function display_doc_report_list($doc_id, $search_doc_report=false) {
             <div>
                 <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
                 <select id="select-doc-report-function">
-                    <option value="Duplicate">
+                    <option value="duplicate">Duplicate</option>
                 </select>
             </div>
             <div style="text-align:right; display:flex;">
