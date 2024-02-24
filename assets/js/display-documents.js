@@ -119,6 +119,37 @@ jQuery(document).ready(function($) {
                     }
                 });
         
+                $("#duplicate-document-button").on("click", function(e) {
+                    e.preventDefault();
+                    const ajaxData = {
+                        'action': 'duplicate_document_dialog_data',
+                    };
+                    ajaxData['_doc_id'] = doc_id;
+                    $.each(response.doc_fields, function (index, value) {
+                        field_name_id = '#'+value.field_name;
+                        ajaxData[value.field_name] = $(field_name_id).val();
+                    });
+                    ajaxData['_doc_url'] = $("#doc-url").val();
+                    ajaxData['_doc_category'] = $("#doc-category").val();
+                    ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+                    ajaxData['_start_job'] = $("#start-job").val();
+                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                            
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: ajaxData,
+                        success: function (response) {
+                            window.location.replace("/display-documents/");
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                });
+        
                 $("#doc-report-preview").on("click", function () {
                     $.ajax({
                         type: 'POST',
@@ -265,8 +296,8 @@ jQuery(document).ready(function($) {
                 // doc-report scripts
                 activate_doc_report_list_data(doc_id);
 
-                //activate_doc_report_dialog_data(report_id)
-
+                activate_doc_report_dialog_data()
+/*
                 $('[id^="save-doc-report-"]').on("click", function () {
                     const report_id = this.id.substring(16);
 
@@ -322,7 +353,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                 });
-
+*/
 
             },
             error: function (error) {
@@ -576,7 +607,92 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_report_dialog_data(report_id){
+    function activate_doc_report_dialog_data(){
+        $(".datepicker").datepicker({
+            onSelect: function(dateText, inst) {
+                $(this).val(dateText);
+            }
+        });
+    
+        $('[id^="save-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(16);
+            const ajaxData = {
+                'action': 'set_doc_report_dialog_data',
+            };
+            ajaxData['_report_id'] = report_id;
+            $.each(response.doc_fields, function (index, value) {
+                field_name_id = '#'+value.field_name;
+                ajaxData[value.field_name] = $(field_name_id).val();
+            });
+            ajaxData['_start_job'] = $("#start-job").val();
+            ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                    
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function (response) {
+                    get_doc_report_list_data($("#doc-id").val());
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $('[id^="del-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(15);
+            if (window.confirm("Are you sure you want to delete this record?")) {
+                const ajaxData = {
+                    'action': 'del_doc_report_dialog_data',
+                };                        
+                ajaxData['_report_id'] = report_id;
+                    
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function (response) {
+                        get_doc_report_list_data($("#doc-id").val());
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        $('[id^="duplicate-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(16);
+            const ajaxData = {
+                'action': 'duplicate_doc_report_dialog_data',
+            };
+            ajaxData['_report_id'] = report_id;
+            $.each(response.doc_fields, function (index, value) {
+                field_name_id = '#'+value.field_name;
+                ajaxData[value.field_name] = $(field_name_id).val();
+            });
+            ajaxData['_start_job'] = $("#start-job").val();
+            ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                    
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function (response) {
+                    get_doc_report_list_data($("#doc-id").val());
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
     }
     
     function get_doc_report_dialog_data(report_id){
@@ -595,7 +711,8 @@ jQuery(document).ready(function($) {
                 }
                 $("#doc-id").val(response.doc_id);
                 
-                //activate_doc_report_dialog_data(report_id)
+                activate_doc_report_dialog_data()
+/*                
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
                         $(this).val(dateText);
@@ -653,6 +770,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                 });
+*/                
             },
             error: function (error) {
                 console.log(error);
