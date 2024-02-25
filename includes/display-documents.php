@@ -929,8 +929,6 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
     } else {
         $start_job = get_post_meta( $report_id, 'start_job', true);
@@ -942,15 +940,13 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data($doc_id, false, false, true);
     }
-    $doc_title = esc_html(get_post_meta( $doc_id, 'doc_title', true));
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     ob_start();
     ?>
-    <h2 style="margin-left:10px;"><?php echo $doc_title;?></h2>
-    <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
-    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
+    <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
+    <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
     <fieldset>
     <?php
     if ($query->have_posts()) {
@@ -1021,8 +1017,8 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
             ?>
             <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-url" rows="3" style="width:100%; display:none;"><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-dialog"><?php echo display_doc_field_list($doc_id);?></div>
+            <textarea id="doc-url" rows="3" style="width:100%;"><?php echo $doc_url;?></textarea>
+            <div id="doc-field-list-dialog" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
                 //echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
                 //echo '<span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
