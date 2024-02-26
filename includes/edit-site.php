@@ -363,8 +363,15 @@ function set_site_dialog_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     $site_title = sanitize_text_field($_POST['_site_title']);
     if( isset($_POST['_site_id']) ) {
-        $site_id = (int)sanitize_text_field($_POST['_site_id']);
-        update_post_meta( $site_id, 'site_id', $site_title );
+        $site_id = (int) sanitize_text_field($_POST['_site_id']);
+        $site_title = sanitize_text_field($_POST['_site_title']);
+        // Prepare post data
+        $post_data = array(
+            'ID'         => $site_id,
+            'post_title' => $site_title,
+        );        
+        // Update the post
+        wp_update_post($post_data);
         $response = array('success' => true);
     } else {
         // Set up the new post data
