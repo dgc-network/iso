@@ -1,4 +1,4 @@
-// my-jobs
+// display-profiles
 jQuery(document).ready(function($) {
 
     $("#select-profile").on( "change", function() {
@@ -136,7 +136,8 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_my_profile_data',
-                '_is_site_admin': $("is-site-admin").is(":checked") ? 1 : 0,
+                //'_is_site_admin': $("is-site-admin").is(":checked") ? 1 : 0,
+                '_display_name': $("display-name").val(),
             },
             success: function (response) {
                 if (response.success) {

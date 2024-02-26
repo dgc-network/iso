@@ -453,10 +453,16 @@ add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_
 function set_my_profile_data() {
 
     $response = array('success' => false, 'error' => 'Invalid data format');
-
+/*
     if (isset($_POST['_is_site_admin'])) {
         $current_user_id = get_current_user_id();
         update_user_meta( $current_user_id, 'is_site_admin', $_POST['_is_site_admin']);
+        $response = array('success' => true);
+    }
+*/
+    if (isset($_POST['_display_name'])) {
+        $current_user_id = get_current_user_id();
+        wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
         $response = array('success' => true);
     }
 

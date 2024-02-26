@@ -69,8 +69,8 @@ function wp_enqueue_scripts_and_styles() {
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
     $version = '1.0.1.'.time(); // Update this version number when you make changes
-    wp_enqueue_script('my-jobs-js', plugins_url('assets/js/my-jobs.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('my-jobs-js', 'ajax_object', array(
+    wp_enqueue_script('display-profiles-js', plugins_url('assets/js/display-profiles.js', __FILE__), array('jquery'), $version);
+    wp_localize_script('display-profiles-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
@@ -94,7 +94,7 @@ require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/my-jobs.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
@@ -214,7 +214,7 @@ function user_did_not_login_yet() {
         ?>
         <div class="ui-widget">
             <h2>User profile</h2>
-            <form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post'));?>">
+            <form method="post" action="<?php echo site_url('wp-login.php', 'login_post');?>">
             <fieldset>
                 <label for="display-name">Name:</label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
@@ -225,7 +225,7 @@ function user_did_not_login_yet() {
                 <input type="hidden" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" name="rememberme" value="foreverchecked" />
-                <input type="hidden" name="redirect_to" value="<?php echo esc_url(home_url());?>" />
+                <input type="hidden" name="redirect_to" value="<?php echo esc_attr(home_url());?>" />
                 <hr>
                 <input type="submit" name="wp-submit" class="button button-primary" value="Submit" />
             </fieldset>
