@@ -5,21 +5,7 @@ jQuery(document).ready(function($) {
         window.location.replace("?_select_profile="+$(this).val());
         $(this).val('');
     });
-/*
-    $("#select-site-job").on( "change", function() {
-        window.location.replace("?_job="+$(this).val());
-        $(this).val('');
-    });
 
-    $("#search-job").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
-        $(this).val('');
-    });
-
-    $("#btn-profile-setting").on("click", function () {
-        $("#profile-setting-div").toggle();
-    });
-*/
     $('#site-title').on('input', function() {
         // Show the site-hint when the user starts typing
         $.ajax({
@@ -164,7 +150,12 @@ jQuery(document).ready(function($) {
                 '_site_title': $("#site-title").val(),
             },
             success: function (response) {
-                $("#profile-setting-div").toggle();
+                if (response.success) {
+                    alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
+                //$("#profile-setting-div").toggle();
             },
             error: function (error) {
                 console.error(error);

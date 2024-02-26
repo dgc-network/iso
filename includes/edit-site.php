@@ -360,22 +360,15 @@ add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
 
 function set_site_dialog_data() {
-    // Retrieve the value
-    $current_user_id = get_current_user_id();
+    $response = array('success' => false, 'error' => 'Invalid data format');
     $site_title = sanitize_text_field($_POST['_site_title']);
-    $args = array(
-        'post_type'      => 'site',
-        'posts_per_page' => -1,
-        's'              => $site_title,
-    );
-    $query = new WP_Query($args);
-
-    if( $query->have_posts() ) {
-        // Update the post data
-        $site_id = sanitize_text_field($_POST['_site_id']);
-        update_user_meta( $current_user_id, 'site_id', $site_id );
+    if( isset($_POST['_site_id']) ) {
+        $site_id = (int)sanitize_text_field($_POST['_site_id']);
+        update_post_meta( $site_id, 'site_id', $site_title );
+        $response = array('success' => true);
     } else {
         // Set up the new post data
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_title'    => $site_title,
             'post_content'  => 'Your post content goes here.',
