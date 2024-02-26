@@ -114,12 +114,12 @@ function display_site_profile() {
         <h2><?php echo __( 'Site profile', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-                <label for="display-name">Name : </label>
-                <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="site-title"> Site: </label>
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-                <div id="site-hint" style="display:none; color:#999;"></div>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" name="_display_name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+            <div id="site-hint" style="display:none; color:#999;"></div>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
 
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
@@ -157,6 +157,74 @@ function display_site_profile() {
                 </tbody>
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            </fieldset>
+
+            <fieldset style="margin-top:5px;">
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                </thead>
+                <tbody>
+                <?php
+                //$query = retrieve_site_job_list_data($site_id);
+                // Define the meta query parameters
+                $meta_query_args = array(
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                );
+                
+                // Get users with the specified meta key and value
+                $users = get_users(array('meta_query' => $meta_query_args));
+                
+                // Loop through the users
+                foreach ($users as $x=>$user) {
+                    // Access user data
+                    $user_id = $user->ID;
+                    $user_login = $user->user_login;
+                    // Add more fields as needed
+                    $is_site_admin = get_post_meta(get_the_ID(), 'is_site_admin', true);
+                    $is_admin_checked = ($is_site_admin==1) ? 'checked' : '';
+                    ?>
+                    <tr class="site-user-list-<?php echo esc_attr($x);?>" id="edit-site-user-<?php echo $user->ID;?>">
+                        <td style="text-align:center;"><?php echo $user->display_name;?></td>
+                        <td style="text-align:center;"><?php echo $user->user_email;?></td>
+                        <td style="text-align:center;"><input type="checkbox" id="check-is-admin-<?php echo $user->ID;?>" <?php echo $is_admin_checked;?>/></td>
+                    </tr>
+                    <?php 
+                }
+/*                
+                if ($query->have_posts()) :
+                    $x = 0;
+                    while ($query->have_posts()) : $query->the_post();
+                        $job_id = get_the_ID();
+                        $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
+                        $is_start_job = esc_attr(get_post_meta(get_the_ID(), 'is_start_job', true));
+                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        ?>
+                        <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?>/></td>
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                        </tr>
+                        <?php 
+                        $x += 1;
+                    endwhile;
+                    wp_reset_postdata();
+                    while ($x<50) {
+                        echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
+                        $x += 1;
+                    }
+                endif;
+*/                
+                ?>
+                </tbody>
+            </table>
+            <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
