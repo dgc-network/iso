@@ -79,9 +79,6 @@ function display_my_profile() {
             </table>
             </fieldset>
 
-            <label for="is-site-admin">Is site administrator: </label>
-            <input type="checkbox" id="is-site-admin" <?php echo $site_admin_checked;?> />
-            <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
@@ -267,6 +264,7 @@ function display_user_dialog() {
         <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
         <label for="user-email">Email:</label>
         <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
+        <?php display_site_user_job_list();?>
         <input type="checkbox" id="is-site-admin" />
         <label for="is-site-admin">Is site admin</label><br>
         <?php
@@ -345,6 +343,37 @@ function del_site_user_dialog_data() {
 add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 
+function display_site_user_job_list() {
+    ?>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>My</th>
+                    <th>Job</th>
+                    <th>Description</th>
+                </thead>
+                <tbody>
+                <?php
+                $query = retrieve_site_job_list_data($site_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $job_id = get_the_ID();
+                        $my_job_checked = is_my_job(get_the_ID()) ? 'checked' : '';
+                        ?>
+                        <tr id="my-job-list" data-job-id="<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?> /></td>
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+    <?php
+}
+    
 function display_job_dialog() {
     ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
