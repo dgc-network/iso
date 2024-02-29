@@ -81,68 +81,7 @@ jQuery(document).ready(function($) {
         });
     });
 */
-    $('[id^="check-user-job-"]').on("click", function () {
-        const id = this.id.substring(15);
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_user_job_data',
-                _job_id : id,
-                _user_id : id,
-                '_is_user_job': $(this).is(":checked") ? 1 : 0,
-            },
-            success: function (response) {
-                if (response.success) {
-                    //alert("Success!");
-                } else {
-                    alert("Error: " + response.error);
-                }
-            },
-            error: function (error) {
-                console.error(error);
-                alert("Error: Something went wrong!");
-            }
-        });
-    });
-
-    $('[id^="backup-check-start-job-"]').on("click", function () {
-        const id = this.id.substring(16);
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_start_job_data',
-                _job_id : id,
-                '_is_start_job': $(this).is(":checked") ? 1 : 0,
-            },
-            success: function (response) {
-                if (response.success) {
-                    //alert("Success!");
-                } else {
-                    alert("Error: " + response.error);
-                }
-            },
-            error: function (error) {
-                console.error(error);
-                alert("Error: Something went wrong!");
-            }
-        });
-    });
-
     $("#my-profile-submit").on("click", function () {
-/*        
-        const job_id_array = [];
-        $("#my-profile-list").each(function(index) { 
-            const check_job_id = {
-                is_user_job: $('#is-my-job').is(":checked") ? 1 : 0,
-                data_job_id: $(this).attr('data-job-id')
-            };
-            job_id_array.push(check_job_id);
-        });
-*/    
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -182,7 +121,6 @@ jQuery(document).ready(function($) {
                 } else {
                     alert("Error: " + response.error);
                 }
-                //$("#profile-setting-div").toggle();
             },
             error: function (error) {
                 console.error(error);
@@ -192,17 +130,7 @@ jQuery(document).ready(function($) {
     });            
 
     activate_site_profile_data()
-/*
-    $('[id^="btn-"]').mouseover(function() {
-        $(this).css('cursor', 'pointer');
-        $(this).css('color', 'red');
-    });
-        
-    $('[id^="btn-"]').mouseout(function() {
-        $(this).css('cursor', 'default');
-        $(this).css('color', '');
-    });        
-*/
+
     $("#new-site-job").on("click", function() {
         $.ajax({
             type: 'POST',
@@ -236,7 +164,7 @@ jQuery(document).ready(function($) {
         
                 $.each(response, function (index, value) {
                     $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);        
-                    const isMyJobChecked = value.is_user_job == 1 ? 'checked' : '';
+                    //const isMyJobChecked = value.is_user_job == 1 ? 'checked' : '';
                     const isStartJobChecked = value.is_start_job == 1 ? 'checked' : '';
                     const output = `
                         <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
@@ -274,8 +202,33 @@ jQuery(document).ready(function($) {
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
                     $("#select-site").val(response.site_id);
                     $("#user-job-list").html(response.user_job_list);
-                    //response.user_job_array
-                    //get_site_user_job_list_data(id);
+
+                    $('[id^="check-user-job-"]').on("click", function () {
+                        const id = this.id.substring(15);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_user_job_data',
+                                _job_id : id,
+                                _user_id : id,
+                                '_is_user_job': $(this).is(":checked") ? 1 : 0,
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    //alert("Success!");
+                                } else {
+                                    alert("Error: " + response.error);
+                                }
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert("Error: Something went wrong!");
+                            }
+                        });
+                    });
+                                
                 },
                 error: function (error) {
                     console.error(error);
@@ -311,7 +264,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#user-dialog").dialog({
-        width: 500,
+        width: 450,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -363,7 +316,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#job-dialog").dialog({
-        width: 500,
+        width: 450,
         modal: true,
         autoOpen: false,
         buttons: {
