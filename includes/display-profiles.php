@@ -153,7 +153,7 @@ function display_site_profile() {
             </table>
             <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
-            <?php display_user_dialog();?>
+            <?php display_user_dialog($site_id);?>
 
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
@@ -255,7 +255,7 @@ function get_site_profile_data() {
 add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
 add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
 
-function display_user_dialog() {
+function display_user_dialog($site_id) {
     ?>
     <div id="user-dialog" title="User dialog" style="display:none;">
     <fieldset>
@@ -264,7 +264,7 @@ function display_user_dialog() {
         <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
         <label for="user-email">Email:</label>
         <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
-        <?php display_site_user_job_list();?>
+        <?php display_site_user_job_list($site_id);?>
         <input type="checkbox" id="is-site-admin" />
         <label for="is-site-admin">Is site admin</label><br>
         <?php
@@ -343,7 +343,7 @@ function del_site_user_dialog_data() {
 add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 
-function display_site_user_job_list() {
+function display_site_user_job_list($site_id) {
     ?>
             <table class="ui-widget" style="width:100%;">
                 <thead>
