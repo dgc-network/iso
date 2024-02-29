@@ -137,16 +137,10 @@ function display_site_profile() {
                         'compare' => '=',
                     ),
                 );
-                
-                // Get users with the specified meta key and value
                 $users = get_users(array('meta_query' => $meta_query_args));
                 
                 // Loop through the users
                 foreach ($users as $x=>$user) {
-                    // Access user data
-                    //$user_id = $user->ID;
-                    //$user_login = $user->user_login;
-                    // Add more fields as needed
                     $is_site_admin = get_post_meta($user->ID, 'is_site_admin', true);
                     $is_admin_checked = ($is_site_admin==1) ? 'checked' : '';
                     ?>
@@ -162,6 +156,7 @@ function display_site_profile() {
             </table>
             <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
+            <?php display_user_dialog();?>
 
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
@@ -200,6 +195,7 @@ function display_site_profile() {
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
+            <?php display_job_dialog();?>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -216,8 +212,6 @@ function display_site_profile() {
 
         </fieldset>
         </div>
-        <?php display_user_dialog();?>
-        <?php display_job_dialog();?>
         <?php
     } else {
         ?>
@@ -242,7 +236,7 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
-function get_site_job_list_data() {
+function get_site_profile_data() {
     // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
 
@@ -261,25 +255,46 @@ function get_site_job_list_data() {
     }
     wp_send_json($_array);
 }
-add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
-add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
+add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
+add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
 
 function display_user_dialog() {
     ?>
     <div id="user-dialog" title="Userb dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="user-id" />
-        <label for="job-title">Title:</label>
-        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
-        <label for="job-content">Content:</label>
-        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
-        <?php display_site_job_action_list();?>
-        <div>
-            <div style="display:inline-block; width:50%;">
-                <label for="is-start-job">Start job:</label>
-                <input type="checkbox" id="is-start-job" />
-            </div>
-        </div>
+        <label for="display-name">Name:</label>
+        <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
+        <label for="user-email">Email:</label>
+        <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
+        <input type="checkbox" id="is-site-admin" />
+        <label for="is-site-admin">Is site admin</label>
+                <td>
+                    <?php
+                    ?>
+                    </select>
+                </td>
+
+        <?php
+        if (current_user_can('administrator')) {
+            ?>
+            <label for="site-id">Site</label>
+            <select id="site-id" name="_site_id" class="regular-text" >
+                <option value="">Select Site</option>
+            <?php
+            $site_id = get_user_meta( $user->ID, 'site_id', true);
+            $site_args = array(
+                'post_type'      => 'site',
+                'posts_per_page' => -1,
+            );
+            $sites = get_posts($site_args);    
+            foreach ($sites as $site) {
+                $selected = ($site_id == $site->ID) ? 'selected' : '';
+                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+            }
+            echo '</select>';
+        }
+        ?>
     </fieldset>
     </div>
     <?php
@@ -306,13 +321,26 @@ function display_job_dialog() {
     <?php
 }
 
+function get_site_user_dialog_data() {
+    $response = array();
+    if( isset($_POST['_user_id']) ) {
+        $user_id = (int)sanitize_text_field($_POST['_user_id']);
+        $user_data = get_userdata( $current_user_id );
+        $response["display_name"] = $user_data->display_name;
+        $response["user_email"] = $user_data->user_email;
+        $response["is_site_admin"] = get_user_meta( $user_id, 'is_site_admin', true);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_site_user_dialog_data', 'get_site_user_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', 'get_site_user_dialog_data' );
+
 function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
         $job_id = (int)sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        //$response["is_my_job"] = is_my_job($job_id) ? 1 : 0;
         $response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
     }
     wp_send_json($response);

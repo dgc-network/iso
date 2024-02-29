@@ -164,7 +164,7 @@ jQuery(document).ready(function($) {
         });            
     });            
 
-    activate_site_job_list_data()
+    activate_site_profile_data()
 /*
     $('[id^="btn-"]').mouseover(function() {
         $(this).css('cursor', 'pointer');
@@ -186,7 +186,7 @@ jQuery(document).ready(function($) {
                 '_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                get_site_job_list_data($("#site-id").val());
+                get_site_profile_data($("#site-id").val());
             },
             error: function(error){
                 console.error(error);
@@ -195,13 +195,13 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function get_site_job_list_data(id){
+    function get_site_profile_data(id){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_site_job_list_data',
+                'action': 'get_site_profile_data',
                 '_site_id': id,
             },
             success: function (response) {
@@ -219,7 +219,7 @@ jQuery(document).ready(function($) {
                     $(".site-job-list-" + index).append(output).show();
                 });
         
-                activate_site_job_list_data();
+                activate_site_profile_data();
             },
             error: function (error) {
                 console.error(error);
@@ -228,7 +228,32 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function activate_site_job_list_data(){
+    function activate_site_profile_data(){
+        $('[id^="edit-site-user-"]').on("click", function () {
+            const id = this.id.substring(15);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_user_dialog_data',
+                    '_user_id': id,
+                },
+                success: function (response) {
+                    $("#user-dialog").dialog('open');
+                    $("#user-id").val(id);
+                    $("#display-name").val(response.display_name);
+                    $("#user-email").val(response.user_email);
+                    $('#is-site-admin').prop('checked', response.is_site_admin == 1);
+                    //get_site_job_action_list_data(id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
         $('[id^="edit-site-job-"]').on("click", function () {
             const id = this.id.substring(14);
             $.ajax({
@@ -244,7 +269,6 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
-                    //$('#is-my-job').prop('checked', response.is_my_job == 1);
                     $('#is-start-job').prop('checked', response.is_start_job == 1);
                     get_site_job_action_list_data(id);
                 },
@@ -255,6 +279,57 @@ jQuery(document).ready(function($) {
             });
         });
     }
+
+    $("#user-dialog").dialog({
+        width: 500,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function () {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_site_user_dialog_data',
+                        '_user_id': $("#user-id").val(),
+                        '_display_name': $("#display-name").val(),
+                        '_user_email': $("#user-email").val(),
+                        '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                    },
+                    success: function (response) {
+                        $("#user-dialog").dialog('close');
+                        get_site_profile_data($("#site-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            },
+            "Delete": function () {
+                if (window.confirm("Are you sure you want to delete this site user?")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_site_user_dialog_data',
+                            '_user_id': $("#user-id").val(),
+                        },
+                        success: function (response) {
+                            $("#user-dialog").dialog('close');
+                            get_site_profile_data($("#site-id").val());
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                }
+            },
+        }
+    });
 
     $("#job-dialog").dialog({
         width: 500,
@@ -271,12 +346,11 @@ jQuery(document).ready(function($) {
                         '_job_id': $("#job-id").val(),
                         '_job_title': $("#job-title").val(),
                         '_job_content': $("#job-content").val(),
-                        //'_is_my_job': $('#is-my-job').is(":checked") ? 1 : 0,
                         '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
                     },
                     success: function (response) {
                         $("#job-dialog").dialog('close');
-                        get_site_job_list_data($("#site-id").val());
+                        get_site_profile_data($("#site-id").val());
                     },
                     error: function (error) {
                         console.error(error);
@@ -296,7 +370,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#job-dialog").dialog('close');
-                            get_site_job_list_data($("#site-id").val());
+                            get_site_profile_data($("#site-id").val());
                         },
                         error: function (error) {
                             console.error(error);
