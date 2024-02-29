@@ -245,6 +245,7 @@ jQuery(document).ready(function($) {
                     $("#display-name").val(response.display_name);
                     $("#user-email").val(response.user_email);
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
+                    $("#select-site").val(response.site_id);
                     //get_site_job_action_list_data(id);
                 },
                 error: function (error) {
@@ -296,6 +297,7 @@ jQuery(document).ready(function($) {
                         '_display_name': $("#display-name").val(),
                         '_user_email': $("#user-email").val(),
                         '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                        '_select_site': $("#select-site").val(),
                     },
                     success: function (response) {
                         $("#user-dialog").dialog('close');

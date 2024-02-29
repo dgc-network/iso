@@ -272,11 +272,11 @@ function display_user_dialog() {
         <?php
         if (current_user_can('administrator')) {
             ?>
-            <label for="site-id">Site:</label>
-            <select id="site-id" name="_site_id" class="regular-text" >
+            <label for="select-site">Site:</label>
+            <select id="select-site" class="text ui-widget-content ui-corner-all" >
                 <option value="">Select Site</option>
             <?php
-            $site_id = get_user_meta( $user->ID, 'site_id', true);
+            //$site_id = get_user_meta( $user->ID, 'site_id', true);
             $site_args = array(
                 'post_type'      => 'site',
                 'posts_per_page' => -1,
@@ -294,27 +294,6 @@ function display_user_dialog() {
     <?php
 }
 
-function display_job_dialog() {
-    ?>
-    <div id="job-dialog" title="Job dialog" style="display:none;">
-    <fieldset>
-        <input type="hidden" id="job-id" />
-        <label for="job-title">Title:</label>
-        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
-        <label for="job-content">Content:</label>
-        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
-        <?php display_site_job_action_list();?>
-        <div>
-            <div style="display:inline-block; width:50%;">
-                <label for="is-start-job">Start job:</label>
-                <input type="checkbox" id="is-start-job" />
-            </div>
-        </div>
-    </fieldset>
-    </div>
-    <?php
-}
-
 function get_site_user_dialog_data() {
     $response = array();
     if( isset($_POST['_user_id']) ) {
@@ -323,6 +302,7 @@ function get_site_user_dialog_data() {
         $response["display_name"] = $user_data->display_name;
         $response["user_email"] = $user_data->user_email;
         $response["is_site_admin"] = get_user_meta( $user_id, 'is_site_admin', true);
+        $response["site_id"] = get_user_meta( $user_id, 'site_id', true);
     }
     wp_send_json($response);
 }
@@ -347,7 +327,7 @@ function set_site_user_dialog_data() {
         } else {
             // Update user meta
             update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
-            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
 
             $response = array('success' => true);
         }
@@ -364,6 +344,23 @@ function del_site_user_dialog_data() {
 }
 add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
+
+function display_job_dialog() {
+    ?>
+    <div id="job-dialog" title="Job dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="job-id" />
+        <label for="job-title">Title:</label>
+        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+        <label for="job-content">Content:</label>
+        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+        <?php display_site_job_action_list();?>
+        <input type="checkbox" id="is-start-job" />
+        <label for="is-start-job">Start job</label>
+    </fieldset>
+    </div>
+    <?php
+}
 
 function get_site_job_dialog_data() {
     $response = array();
