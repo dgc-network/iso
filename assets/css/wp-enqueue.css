@@ -40,38 +40,6 @@ input[type="button"]:hover {
     cursor: pointer;
 }
 
-/* Styles for desktop browsers */
-@media (min-width: 768px) {
-    #job-dialog {
-        width: 500px; /* Set the width for desktop */
-    }
-}
-
-/* Styles for mobile browsers */
-@media (max-width: 767px) {
-    #job-dialog {
-        width: 80%; /* Set the width as a percentage for mobile */
-    }
-}
-
-/* Styles for desktop browsers */
-@media (min-width: 768px) {
-    #document-dialog {
-        width: 900px; /* Set the width for desktop */
-    }
-}
-
-/* Styles for mobile browsers */
-@media (max-width: 767px) {
-    #document-dialog {
-        width: 90%; /* Set the width as a percentage for mobile */
-    }
-}
-
-.custom-dialog-buttons button {
-    margin-right: 10px;
-}
-
 ol {
     margin-left: 20px; /* Adjust the margin as needed */
 }

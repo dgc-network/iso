@@ -264,7 +264,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#user-dialog").dialog({
-        width: 450,
+        width: 400,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#job-dialog").dialog({
-        width: 450,
+        width: 400,
         modal: true,
         autoOpen: false,
         buttons: {
