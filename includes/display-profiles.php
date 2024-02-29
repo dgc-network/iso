@@ -141,7 +141,7 @@ function display_site_profile() {
                 
                 // Loop through the users
                 foreach ($users as $x=>$user) {
-                    $is_site_admin = get_post_meta($user->ID, 'is_site_admin', true);
+                    $is_site_admin = get_usert_meta($user->ID, 'is_site_admin', true);
                     $is_admin_checked = ($is_site_admin==1) ? 'checked' : '';
                     ?>
                     <tr class="site-user-list-<?php echo esc_attr($x);?>" id="edit-site-user-<?php echo $user->ID;?>">
