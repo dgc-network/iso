@@ -273,6 +273,8 @@ jQuery(document).ready(function($) {
                     $("#user-email").val(response.user_email);
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
                     $("#select-site").val(response.site_id);
+                    $("#user-job-list").html(response.user_job_list);
+                    //response.user_job_array
                     //get_site_user_job_list_data(id);
                 },
                 error: function (error) {

@@ -297,63 +297,6 @@ jQuery(document).ready(function($) {
                 activate_doc_report_list_data(doc_id);
 
                 activate_doc_report_dialog_data()
-/*
-                $('[id^="save-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(16);
-
-                    const ajaxData = {
-                        'action': 'set_doc_report_dialog_data',
-                    };
-                    ajaxData['_report_id'] = report_id;
-                    $.each(response.doc_fields, function (index, value) {
-                        field_name_id = '#'+value.field_name;
-                        ajaxData[value.field_name] = $(field_name_id).val();
-                    });
-                    ajaxData['_start_job'] = $("#start-job").val();
-                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                            
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: ajaxData,
-                        success: function (response) {
-                            get_doc_report_list_data($("#doc-id").val());
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-
-                $('[id^="del-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(15);
-
-                //$("#del-doc-report-button").on("click", function(e) {
-                    //e.preventDefault();
-                    if (window.confirm("Are you sure you want to delete this record?")) {
-                        const ajaxData = {
-                            'action': 'del_doc_report_dialog_data',
-                        };                        
-                        ajaxData['_report_id'] = report_id;
-                            
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: ajaxData,
-                            success: function (response) {
-                                get_doc_report_list_data($("#doc-id").val());
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });
-*/
 
             },
             error: function (error) {

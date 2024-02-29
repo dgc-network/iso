@@ -126,12 +126,12 @@ function display_site_profile() {
         <h2><?php echo __( '單位設定', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-            <label for="site-title"><?php echo __( '單位名稱:', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
 
-            <label for="site-title"><?php echo __( '單位成員:', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位成員：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -171,7 +171,7 @@ function display_site_profile() {
             </fieldset>
             <?php display_user_dialog($site_id);?>
 
-            <label for="site-title"><?php echo __( '單位職務:', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位職務：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -279,9 +279,20 @@ function display_user_dialog($site_id) {
         <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
         <label for="user-email">Email:</label>
         <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
-        <?php display_site_user_job_list($site_id);?>
         <input type="checkbox" id="is-site-admin" />
         <label for="is-site-admin">Is site admin</label><br>
+        <?php //display_site_user_job_list($site_id);?>
+        <fieldset>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Is</th>
+                    <th>Job</th>
+                    <th>Description</th>
+                </thead>
+                <tbody id="user-job-list">
+                </tbody>
+            </table>
+        </fieldset>
         <?php
         if (current_user_can('administrator')) {
             ?>
@@ -306,7 +317,40 @@ function display_user_dialog($site_id) {
     </div>
     <?php
 }
-
+/*
+function display_site_user_job_list($site_id) {
+    ?>
+    <fieldset>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Is</th>
+                    <th>Job</th>
+                    <th>Description</th>
+                </thead>
+                <tbody id="user-job-list">
+                <?php
+                $query = retrieve_site_job_list_data($site_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $job_id = get_the_ID();
+                        $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                        ?>
+                        <tr id="user-job-list" data-job-id="<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-user-job-<?php the_ID();?>" <?php echo $user_job_checked;?> /></td>
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+    </fieldset>
+    <?php
+}
+    
 function get_site_user_dialog_data() {
     $response = array();
     if( isset($_POST['_user_id']) ) {
@@ -319,24 +363,65 @@ function get_site_user_dialog_data() {
 
         $site_id = get_user_meta($user_id, 'site_id', true);
         $query = retrieve_site_job_list_data($site_id);
-        $_array = array();
+        $user_job_list = '';
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
-                $_list = array();
-                $_list["job_id"] = get_the_ID();
-                $_list["job_title"] = get_the_title();
-                $_list["job_content"] = get_post_field('post_content', get_the_ID());
-                $_list["is_user_job"] = is_user_job(get_the_ID(), $user_id);
-                array_push($_array, $_list);
+                $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                $user_job_list .= '<tr>';
+                $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="check-user-job-'.get_the_ID().'" '.$user_job_checked.' /></td>';
+                $user_job_list .= '<td style="text-align:center;">'.get_the_title().'</td>';
+                $user_job_list .= '<td>'.get_the_content().'</td>';
+                $user_job_list .= '</tr>';
             endwhile;
             wp_reset_postdata();
         }
-        $response["user_job_array"] = $_array;    
+        $response["user_job_list"] = $user_job_list;
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_get_site_user_dialog_data', 'get_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', 'get_site_user_dialog_data' );
+*/
+function get_site_user_dialog_data() {
+    $response = array();
+    if (isset($_POST['_user_id'])) {
+        $user_id = (int)$_POST['_user_id'];
+        // Get user data
+        $user_data = get_userdata($user_id);
+
+        if ($user_data) {
+            $response["display_name"] = $user_data->display_name;
+            $response["user_email"] = $user_data->user_email;
+            $response["is_site_admin"] = get_user_meta($user_id, 'is_site_admin', true);
+            $response["site_id"] = get_user_meta($user_id, 'site_id', true);
+            // Get site job list data
+            $site_id = get_user_meta($user_id, 'site_id', true);
+            $query = retrieve_site_job_list_data($site_id);
+            if ($query->have_posts()) {
+                $user_job_list = '';
+                while ($query->have_posts()) : $query->the_post();
+                    $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                    $user_job_list .= '<tr>';
+                    $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="check-user-job-' . get_the_ID() . '" ' . $user_job_checked . ' /></td>';
+                    $user_job_list .= '<td style="text-align:center;">' . get_the_title() . '</td>';
+                    $user_job_list .= '<td>' . get_the_content() . '</td>';
+                    $user_job_list .= '</tr>';
+                endwhile;
+                wp_reset_postdata();
+                $response["user_job_list"] = $user_job_list;
+            } else {
+                $response["error"] = 'Error retrieving site job list data.';
+            }
+        } else {
+            $response["error"] = 'Error retrieving user data.';
+        }
+    } else {
+        $response["error"] = 'User ID not provided in the request.';
+    }
+    wp_send_json($response);
+}
+add_action('wp_ajax_get_site_user_dialog_data', 'get_site_user_dialog_data');
+add_action('wp_ajax_nopriv_get_site_user_dialog_data', 'get_site_user_dialog_data');
 
 function set_site_user_dialog_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
@@ -374,39 +459,6 @@ function del_site_user_dialog_data() {
 add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 
-function display_site_user_job_list($site_id) {
-    ?>
-    <fieldset>
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th>Is</th>
-                    <th>Job</th>
-                    <th>Description</th>
-                </thead>
-                <tbody>
-                <?php
-                $query = retrieve_site_job_list_data($site_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $job_id = get_the_ID();
-                        $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
-                        ?>
-                        <tr id="user-job-list" data-job-id="<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="check-user-job-<?php the_ID();?>" <?php echo $user_job_checked;?> /></td>
-                            <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php the_content();?></td>
-                        </tr>
-                        <?php 
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-    </fieldset>
-    <?php
-}
-    
 function display_job_dialog() {
     ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
