@@ -85,8 +85,8 @@ function display_my_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0" selected>My profile</option>
-                        <option value="1">Site profile</option>
+                        <option value="0" selected>My profile..</option>
+                        <option value="1">Site profile..</option>
                         <option value="2">...</option>
                     </select>
                 </div>
@@ -204,8 +204,8 @@ function display_site_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0">My profile</option>
-                        <option value="1" selected>Site profile</option>
+                        <option value="0">My profile..</option>
+                        <option value="1" selected>Site profile..</option>
                         <option value="2">...</option>
                     </select>
                 </div>
@@ -216,6 +216,7 @@ function display_site_profile() {
 
         </fieldset>
         </div>
+        <?php display_user_dialog();?>
         <?php display_job_dialog();?>
         <?php
     } else {
@@ -262,6 +263,27 @@ function get_site_job_list_data() {
 }
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
+
+function display_user_dialog() {
+    ?>
+    <div id="user-dialog" title="Userb dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="user-id" />
+        <label for="job-title">Title:</label>
+        <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+        <label for="job-content">Content:</label>
+        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+        <?php display_site_job_action_list();?>
+        <div>
+            <div style="display:inline-block; width:50%;">
+                <label for="is-start-job">Start job:</label>
+                <input type="checkbox" id="is-start-job" />
+            </div>
+        </div>
+    </fieldset>
+    </div>
+    <?php
+}
 
 function display_job_dialog() {
     ?>
