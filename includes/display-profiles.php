@@ -325,7 +325,7 @@ function get_site_user_dialog_data() {
     $response = array();
     if( isset($_POST['_user_id']) ) {
         $user_id = (int)sanitize_text_field($_POST['_user_id']);
-        $user_data = get_userdata( $current_user_id );
+        $user_data = get_userdata( $user_id );
         $response["display_name"] = $user_data->display_name;
         $response["user_email"] = $user_data->user_email;
         $response["is_site_admin"] = get_user_meta( $user_id, 'is_site_admin', true);
