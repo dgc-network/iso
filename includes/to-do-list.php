@@ -121,7 +121,7 @@ function display_to_do_list() {
                 if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                 $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
-                if (is_my_job($job_id)) { // Aditional condition to filter the data
+                if (is_user_job($job_id)) { // Aditional condition to filter the data
                     ?>
                     <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
                         <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
@@ -599,7 +599,7 @@ function get_users_by_job_id($job_id=0) {
     $args = array(
         'meta_query'     => array(
             array(
-                'key'     => 'my_job_ids',
+                'key'     => 'user_job_ids',
                 'value'   => $job_id,
                 'compare' => 'LIKE', // Check if $job_id exists in the array
             ),

@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
+/*
     $('[id^="check-my-job-"]').on("click", function () {
         const id = this.id.substring(13);
         $.ajax({
@@ -65,7 +65,33 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_my_job_data',
                 _job_id : id,
-                '_is_my_job': $(this).is(":checked") ? 1 : 0,
+                '_is_user_job': $(this).is(":checked") ? 1 : 0,
+            },
+            success: function (response) {
+                if (response.success) {
+                    //alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert("Error: Something went wrong!");
+            }
+        });
+    });
+*/
+    $('[id^="check-user-job-"]').on("click", function () {
+        const id = this.id.substring(15);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_user_job_data',
+                _job_id : id,
+                _user_id : id,
+                '_is_user_job': $(this).is(":checked") ? 1 : 0,
             },
             success: function (response) {
                 if (response.success) {
@@ -107,23 +133,24 @@ jQuery(document).ready(function($) {
     });
 
     $("#my-profile-submit").on("click", function () {
+/*        
         const job_id_array = [];
         $("#my-profile-list").each(function(index) { 
             const check_job_id = {
-                is_my_job: $('#is-my-job').is(":checked") ? 1 : 0,
+                is_user_job: $('#is-my-job').is(":checked") ? 1 : 0,
                 data_job_id: $(this).attr('data-job-id')
             };
             job_id_array.push(check_job_id);
         });
-    
+*/    
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'set_my_profile_data',
-                //'_is_site_admin': $("#is-site-admin").is(":checked") ? 1 : 0,
                 '_display_name': $("#display-name").val(),
+                '_user_email': $("#user-email").val(),
             },
             success: function (response) {
                 if (response.success) {
@@ -209,7 +236,7 @@ jQuery(document).ready(function($) {
         
                 $.each(response, function (index, value) {
                     $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);        
-                    const isMyJobChecked = value.is_my_job == 1 ? 'checked' : '';
+                    const isMyJobChecked = value.is_user_job == 1 ? 'checked' : '';
                     const isStartJobChecked = value.is_start_job == 1 ? 'checked' : '';
                     const output = `
                         <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
@@ -246,7 +273,7 @@ jQuery(document).ready(function($) {
                     $("#user-email").val(response.user_email);
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
                     $("#select-site").val(response.site_id);
-                    //get_site_job_action_list_data(id);
+                    //get_site_user_job_list_data(id);
                 },
                 error: function (error) {
                     console.error(error);
