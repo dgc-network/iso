@@ -185,14 +185,14 @@ jQuery(document).ready(function($) {
 
     function activate_site_profile_data(){
         $('[id^="edit-site-user-"]').on("click", function () {
-            const id = this.id.substring(15);
+            const user_id = this.id.substring(15);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_site_user_dialog_data',
-                    '_user_id': id,
+                    '_user_id': user_id,
                 },
                 success: function (response) {
                     $("#user-dialog").dialog('open');
@@ -204,20 +204,20 @@ jQuery(document).ready(function($) {
                     $("#user-job-list").html(response.user_job_list);
 
                     $('[id^="check-user-job-"]').on("click", function () {
-                        const id = this.id.substring(15);
+                        const job_id = this.id.substring(15);
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
                             dataType: "json",
                             data: {
                                 'action': 'set_user_job_data',
-                                _job_id : id,
-                                _user_id : id,
-                                '_is_user_job': $(this).is(":checked") ? 1 : 0,
+                                _job_id : job_id,
+                                _user_id : user_id,
+                                _is_user_job : $(this).is(":checked") ? 1 : 0,
                             },
                             success: function (response) {
                                 if (response.success) {
-                                    //alert("Success!");
+                                    alert("Success!");
                                 } else {
                                     alert("Error: " + response.error);
                                 }
