@@ -260,7 +260,7 @@ add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
 
 function display_user_dialog() {
     ?>
-    <div id="user-dialog" title="Userb dialog" style="display:none;">
+    <div id="user-dialog" title="User dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="user-id" />
         <label for="display-name">Name:</label>
@@ -268,17 +268,11 @@ function display_user_dialog() {
         <label for="user-email">Email:</label>
         <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
         <input type="checkbox" id="is-site-admin" />
-        <label for="is-site-admin">Is site admin</label>
-                <td>
-                    <?php
-                    ?>
-                    </select>
-                </td>
-
+        <label for="is-site-admin">Is site admin</label><br>
         <?php
         if (current_user_can('administrator')) {
             ?>
-            <label for="site-id">Site</label>
+            <label for="site-id">Site:</label>
             <select id="site-id" name="_site_id" class="regular-text" >
                 <option value="">Select Site</option>
             <?php
@@ -334,6 +328,42 @@ function get_site_user_dialog_data() {
 }
 add_action( 'wp_ajax_get_site_user_dialog_data', 'get_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', 'get_site_user_dialog_data' );
+
+function set_site_user_dialog_data() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+    if (isset($_POST['_user_id'])) {
+        $user_id = absint($_POST['_user_id']);
+        // Prepare user data
+        $user_data = array(
+            'ID'           => $user_id,
+            'display_name' => sanitize_text_field($_POST['_display_name']),
+            'user_email'   => sanitize_text_field($_POST['_user_email']),
+        );        
+        // Update the user
+        $result = wp_update_user($user_data);
+
+        if (is_wp_error($result)) {
+            $response['error'] = $result->get_error_message();
+        } else {
+            // Update user meta
+            update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
+            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+
+            $response = array('success' => true);
+        }
+    }
+    wp_send_json($response);
+}
+add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
+add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
+
+function del_site_user_dialog_data() {
+    // Delete the post
+    //$result = wp_delete_post($_POST['_job_id'], true);
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 
 function get_site_job_dialog_data() {
     $response = array();
