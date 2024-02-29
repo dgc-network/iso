@@ -196,7 +196,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#user-dialog").dialog('open');
-                    $("#user-id").val(id);
+                    $("#user-id").val(user_id);
                     $("#display-name").val(response.display_name);
                     $("#user-email").val(response.user_email);
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
@@ -238,22 +238,22 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-site-job-"]').on("click", function () {
-            const id = this.id.substring(14);
+            const job_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_site_job_dialog_data',
-                    '_job_id': id,
+                    '_job_id': job_id,
                 },
                 success: function (response) {
                     $("#job-dialog").dialog('open');
-                    $("#job-id").val(id);
+                    $("#job-id").val(job_id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
                     $('#is-start-job').prop('checked', response.is_start_job == 1);
-                    get_site_job_action_list_data(id);
+                    get_site_job_action_list_data(job_id);
                 },
                 error: function (error) {
                     console.error(error);
