@@ -468,6 +468,8 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 function duplicate_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
+        //$doc_id = (int) sanitize_text_field($_POST['_doc_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
         // Insert the post into the database
         $new_post = array(
             'post_title'    => 'No title',
@@ -477,7 +479,7 @@ function duplicate_document_dialog_data() {
             'post_type'     => 'document',
         );    
         $post_id = wp_insert_post($new_post);
-        $site_id = sanitize_text_field($_POST['_site_id']);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
         update_post_meta( $post_id, 'site_id', $site_id);
         $params = array(
             'site_id'     => $site_id,
@@ -491,7 +493,6 @@ function duplicate_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
         $doc_url = get_post_meta($doc_id, 'doc_url', true);
         $doc_category = get_post_meta($doc_id, 'doc_category', true);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
