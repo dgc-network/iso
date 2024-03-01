@@ -331,8 +331,10 @@ function get_site_user_dialog_data() {
                 $user_job_list = '';
                 while ($query->have_posts()) : $query->the_post();
                     $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
-                    $user_job_list .= '<tr>';
-                    $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="check-user-job-' . get_the_ID() . '" ' . $user_job_checked . ' /></td>';
+                    //$user_job_list .= '<tr>';
+                    //$user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="check-user-job-' . get_the_ID() . '" ' . $user_job_checked . ' /></td>';
+                    $user_job_list .= '<tr id="check-user-job-' . get_the_ID() . '">';
+                    $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
                     $user_job_list .= '<td style="text-align:center;">' . get_the_title() . '</td>';
                     $user_job_list .= '<td>' . get_the_content() . '</td>';
                     $user_job_list .= '</tr>';
