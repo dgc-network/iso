@@ -219,7 +219,8 @@ jQuery(document).ready(function($) {
                                     'action': 'set_user_job_data',
                                     _job_id : job_id,
                                     _user_id : user_id,
-                                    _is_user_job : $(this).is(":checked") ? 1 : 0,
+                                    //_is_user_job : $(this).is(":checked") ? 1 : 0,
+                                    _is_user_job : $("#myCheckbox-"+job_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     if (response.success) {
