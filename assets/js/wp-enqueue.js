@@ -36,24 +36,6 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $('#otp-input-div').show();
 
-                $("#one-time-password-input").on( "change", function() {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'submit_one_time_password',
-                            '_one_time_password': $(this).val(),
-                        },
-                        success: function (response) {
-                            window.location.replace("?_search="+$(this).val());
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });            
-                });            
             },
             error: function (error) {
                 console.error(error);
@@ -62,5 +44,23 @@ jQuery(document).ready(function($) {
         });
     });
 
+    $("#one-time-password-input").on( "change", function() {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'submit_one_time_password',
+                '_one_time_password': $(this).val(),
+            },
+            success: function (response) {
+                window.location.replace("?_search="+$(this).val());
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });            
 
 })
