@@ -884,8 +884,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                             'is_listing'  => true,
                         );                
                         $inner_query = retrieve_doc_field_data($params);
-
-                        //$inner_query = retrieve_doc_field_data($doc_id, false, true);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -917,7 +915,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     return $html;
 }
 
-function display_doc_report_dialog($report_id, $doc_id=false) {
+function display_doc_report_dialog($report_id=false, $doc_id=false) {
     $is_doc = false;
     if ($doc_id) {
         $start_job = get_post_meta( $doc_id, 'start_job', true);
@@ -944,6 +942,7 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
         $query = retrieve_doc_field_data($params);
     }
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
     ob_start();
     ?>
     <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
@@ -1065,14 +1064,13 @@ function display_doc_report_dialog($report_id, $doc_id=false) {
 function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
-        $report_id = (int) sanitize_text_field($_POST['_report_id']);
+        $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
         // Update the Document data
         $params = array(
             'doc_id'     => $doc_id,
         );                
         $query = retrieve_doc_field_data($params);
-        //$query = retrieve_doc_field_data($doc_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);

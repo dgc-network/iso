@@ -151,25 +151,6 @@ jQuery(document).ready(function($) {
         
                 $("#doc-report-preview").on("click", function () {
                     get_doc_report_list_data(doc_id);
-/*                    
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: 'json',
-                        data: {
-                            'action': 'get_doc_report_list_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            $('#result-container').html(response.html_contain);
-                            activate_doc_report_list_data(doc_id);            
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-*/                    
                 });
             
                 $("#doc-url-preview").on("click", function () {
@@ -298,7 +279,7 @@ jQuery(document).ready(function($) {
                 // doc-report scripts
                 activate_doc_report_list_data(doc_id);
 
-                activate_doc_report_dialog_data()
+                activate_doc_report_dialog_data(response)
 
             },
             error: function (error) {
@@ -551,7 +532,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_report_dialog_data(){
+    function activate_doc_report_dialog_data(response){
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
@@ -611,7 +592,7 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="duplicate-doc-report-"]').on("click", function () {
-            const report_id = this.id.substring(16);
+            const report_id = this.id.substring(21);
             const ajaxData = {
                 'action': 'duplicate_doc_report_dialog_data',
             };
@@ -655,7 +636,7 @@ jQuery(document).ready(function($) {
                 }
                 $("#doc-id").val(response.doc_id);
                 
-                activate_doc_report_dialog_data()
+                activate_doc_report_dialog_data(response)
 /*                
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
