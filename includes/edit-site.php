@@ -323,7 +323,6 @@ function import_sites_from_csv() {
 }
 
 function get_site_list_data() {
-    // Retrieve the value
     $search_query = sanitize_text_field($_POST['_site_title']);
     $args = array(
         'post_type'      => 'site',
@@ -340,7 +339,7 @@ function get_site_list_data() {
             $_list["site_title"] = get_the_title();
             array_push($_array, $_list);
         endwhile;
-        wp_reset_postdata(); // Reset post data to the main loop
+        wp_reset_postdata();
     }
     wp_send_json($_array);
 }

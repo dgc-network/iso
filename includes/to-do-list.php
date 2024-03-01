@@ -111,7 +111,6 @@ function display_to_do_list() {
             <?php
             $query = retrieve_todo_list_data();
             if ($query->have_posts()) :
-                //$x = 0;
                 while ($query->have_posts()) : $query->the_post();
                 $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                 $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -133,7 +132,6 @@ function display_to_do_list() {
                         <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                     </tr>
                     <?php
-                    //$x += 1;
                 }
                 endwhile;
                 wp_reset_postdata();
@@ -280,7 +278,7 @@ function retrieve_signature_record_data($doc_id=false){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(
@@ -335,7 +333,6 @@ function display_todo_dialog($todo_id) {
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
-        //$query = retrieve_doc_field_data(false, $site_id, false, true);
         $is_doc = true;
     } else {
         $start_job = get_post_meta( $report_id, 'start_job', true);
@@ -347,7 +344,6 @@ function display_todo_dialog($todo_id) {
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
-        //$query = retrieve_doc_field_data($doc_id, false, false, true);
     }
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
 
@@ -711,7 +707,6 @@ function retrieve_todo_action_list_data($todo_id=0) {
 }
 
 function get_todo_action_list_data() {
-    // Retrieve the documents data
     $query = retrieve_todo_action_list_data($_POST['_todo_id']);
     $_array = array();
     if ($query->have_posts()) {

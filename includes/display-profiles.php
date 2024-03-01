@@ -230,7 +230,6 @@ function display_site_profile() {
 }
 
 function retrieve_site_job_list_data($site_id=0) {
-    // Retrieve the value
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
@@ -246,7 +245,6 @@ function retrieve_site_job_list_data($site_id=0) {
 }
 
 function get_site_profile_data() {
-    // Retrieve the value
     $query = retrieve_site_job_list_data($_POST['_site_id']);
     $_array = array();
     if ($query->have_posts()) {
@@ -331,8 +329,6 @@ function get_site_user_dialog_data() {
                 $user_job_list = '';
                 while ($query->have_posts()) : $query->the_post();
                     $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
-                    //$user_job_list .= '<tr>';
-                    //$user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="check-user-job-' . get_the_ID() . '" ' . $user_job_checked . ' /></td>';
                     $user_job_list .= '<tr id="check-user-job-' . get_the_ID() . '">';
                     $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
                     $user_job_list .= '<td style="text-align:center;">' . get_the_title() . '</td>';
@@ -484,14 +480,14 @@ function display_site_job_action_list() {
     <?php
 }
     
-function retrieve_job_action_list_data($_id=0) {
+function retrieve_job_action_list_data($job_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,
         'meta_query'     => array(
             array(
                 'key'   => 'job_id',
-                'value' => $_id,
+                'value' => $job_id,
             ),
         ),
     );

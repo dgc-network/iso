@@ -89,7 +89,6 @@ add_action('init', 'register_doc_category_post_type');
 function display_documents_shortcode() {
     // Migration the_title to meta doc_title
     if( isset($_GET['_doc_title_migration']) ) {
-        // Retrieve the value
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
@@ -103,11 +102,10 @@ function display_documents_shortcode() {
         endif;    
     }
 
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $user_data = get_userdata( $current_user_id );
     // Check if the user is logged in
-    //if (is_user_logged_in()) {
-        $current_user_id = get_current_user_id();
-        $site_id = get_user_meta( $current_user_id, 'site_id', true);
-        $user_data = get_userdata( $current_user_id );
     if (is_user_logged_in() && isset($site_id)) {
         ?>
         <div class="ui-widget" id="result-container">
@@ -143,8 +141,6 @@ function display_documents_shortcode() {
                     'is_listing'  => true,
                 );                
                 $query = retrieve_doc_field_data($params);
-                
-                //$query = retrieve_doc_field_data(false, $site_id, true);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -175,8 +171,6 @@ function display_documents_shortcode() {
                             'is_listing'  => true,
                         );                
                         $inner_query = retrieve_doc_field_data($params);
-
-                        //$inner_query = retrieve_doc_field_data(false, $site_id, true);
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -257,7 +251,6 @@ function retrieve_document_data($site_id = 0) {
                 ($search_query) ? $title_filter : '',
             )
         ),
-        //'s'              => $search_query,
         'orderby'        => 'meta_value',
         'meta_key'       => 'doc_number',
         'order'          => 'ASC',
@@ -309,7 +302,6 @@ function get_document_dialog_data() {
                     'site_id'     => $site_id,
                 );                
                 $query = retrieve_doc_field_data($params);
-                //$query = retrieve_doc_field_data(false, $site_id);
                 $_array = array();
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -330,7 +322,6 @@ function get_document_dialog_data() {
                     'site_id'     => $site_id,
                 );                
                 $query = retrieve_doc_field_data($params);
-                //$query = retrieve_doc_field_data(false, $site_id);
                 $_array = array();
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -399,7 +390,7 @@ function set_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
         // Update the Document data
-        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
@@ -407,8 +398,6 @@ function set_document_dialog_data() {
             'site_id'     => $site_id,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data(false, $site_id);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -417,7 +406,7 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        $doc_url = sanitize_text_field($_POST['_doc_url']);
+        //$doc_url = sanitize_text_field($_POST['_doc_url']);
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
         //update_post_meta( $doc_id, 'doc_url', $doc_url);
@@ -448,8 +437,6 @@ function set_document_dialog_data() {
             'site_id'     => $site_id,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data(false, $_POST['_site_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -468,7 +455,6 @@ add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data
 function duplicate_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
-        //$doc_id = (int) sanitize_text_field($_POST['_doc_id']);
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         // Insert the post into the database
         $new_post = array(
@@ -535,8 +521,6 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                     'site_id'     => $site_id,
                 );                
                 $query = retrieve_doc_field_data($params);
-
-                //$query = retrieve_doc_field_data($doc_id, $site_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
@@ -606,68 +590,20 @@ function retrieve_doc_field_data($params = array()) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_doc_field_data($doc_id=false, $site_id=false, $is_listing=false, $is_editing=false) {
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_key'       => 'sorting_key',
-        'orderby'        => 'meta_value',
-        'order'          => 'ASC',
-    );
-    
-    if ($doc_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'doc_id',
-            'value' => $doc_id,
-        );
-    }
-    
-    if ($site_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'site_id',
-            'value' => $site_id,
-        );
-    }
-    
-    if ($is_listing) {
-        $args['meta_query'][] = array(
-            'key'     => 'listing_style',
-            'value'   => '',
-            'compare' => '!=',
-        );
-    }
-    
-    if ($is_editing) {
-        $args['meta_query'][] = array(
-            'key'     => 'editing_type',
-            'value'   => '',
-            'compare' => '!=',
-        );
-    }
-    
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
+
 function get_doc_field_list_data() {
-    // Retrieve the value
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
         $params = array(
             'doc_id'     => $doc_id,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data($doc_id);
     } elseif (isset($_POST['_site_id'])) {
         $site_id = (int) $_POST['_site_id'];
         $params = array(
             'site_id'     => $site_id,
         );                
         $query = retrieve_doc_field_data($params);
-
-        //$query = retrieve_doc_field_data(false, $site_id);
     }
 
     $_array = array();
@@ -1063,9 +999,9 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
 function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
+        // Update the Document data
         $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
-        // Update the Document data
         $params = array(
             'doc_id'     => $doc_id,
         );                
@@ -1102,7 +1038,6 @@ function set_doc_report_dialog_data() {
             'doc_id'     => $doc_id,
         );                
         $query = retrieve_doc_field_data($params);
-        //$query = retrieve_doc_field_data($_POST['_doc_id']);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -1227,8 +1162,6 @@ function get_doc_report_dialog_data() {
                 'doc_id'     => $doc_id,
             );                
             $query = retrieve_doc_field_data($params);
-
-            //$query = retrieve_doc_field_data($doc_id);
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
