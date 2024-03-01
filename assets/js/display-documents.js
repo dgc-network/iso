@@ -119,8 +119,7 @@ jQuery(document).ready(function($) {
                     }
                 });
         
-                $("#duplicate-document-button").on("click", function(e) {
-                    e.preventDefault();
+                $("#duplicate-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'duplicate_document_dialog_data',
                     };
