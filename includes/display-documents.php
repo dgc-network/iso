@@ -1049,7 +1049,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
             <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         </div>
         <div style="text-align:right;">
-            <input type="button" id="duplicate-doc-report" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
         </div>
         </div>
         <?php
