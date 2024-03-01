@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
                 '_user_email': $(this).val(),
             },
             success: function (response) {
-                $('#opt-input-div').show();
+                $('#otp-input-div').show();
 
                 $("#one-time-password-input").on( "change", function() {
                     $.ajax({
@@ -60,9 +60,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
-        window.location.replace("?_search="+$(this).val());
-        $(this).val('');
     });
 
 
