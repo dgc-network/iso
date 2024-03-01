@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
         // $.post('your_email_sending_endpoint.php', { oneTimePassword: <?php echo $one_time_password; ?> });
     }
 
-    $("#user-email").on( "change", function() {
+    $("#user-email-input").on( "change", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -34,30 +34,19 @@ jQuery(document).ready(function($) {
                 '_user_email': $(this).val(),
             },
             success: function (response) {
-                $('#site-hint').empty();
-                let output = '<table>'        
-                $.each(response, function (index, value) {
-                    output += '<tr><td id="select-site-id-'+value.site_id+'">'
-                    output += value.site_title
-                    output += '</td></tr>'
-                });
-                output += '</table>'
-                $('#site-hint').append(output).show();
+                $('#opt-input-div').show();
 
-                $('[id^="select-site-id-"]').on("click", function () {
-                    const id = this.id.substring(15);
-                    $('#site-id').val(id);
+                $("#one-time-password-input").on( "change", function() {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'get_site_dialog_data',
-                            '_site_id': $("#site-id").val(),
+                            'action': 'submit_one_time_password',
+                            '_one_time_password': $(this).val(),
                         },
                         success: function (response) {
-                            $('#site-title').val(response.site_title);
-                            $("#site-hint").hide();
+                            window.location.replace("?_search="+$(this).val());
                         },
                         error: function (error) {
                             console.error(error);

@@ -242,10 +242,10 @@ function user_did_not_login_yet() {
             <!-- Content for desktop users -->
             <p>感謝您使用我們的系統</p>
             <p>請輸入您的 Email 帳號</p>
-            <input type="text" id="user-email">
-            <div id="otp-div" style="display:none;">
+            <input type="text" id="user-email-input">
+            <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
-            <input type="text" id="one-time-password">
+            <input type="text" id="one-time-password-input">
             </div>
         </div>
 
