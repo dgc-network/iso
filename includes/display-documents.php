@@ -824,7 +824,7 @@ add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
 add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
 
 // doc-report
-function display_doc_report_list($doc_id, $search_doc_report=false) {
+function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     ob_start();
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
@@ -1202,11 +1202,14 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
 
 function get_doc_report_list_data() {
     $result = array();
-    if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_list_data') {
+    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
-        if ($doc_id) $result['html_contain'] = display_doc_report_list($doc_id);
         $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
-        if ($search_doc_report) $result['html_contain'] = display_doc_report_list(false, $search_doc_report);
+        if ($search_doc_report) {
+            $result['html_contain'] = display_doc_report_list($doc_id, $search_doc_report);
+        } else {
+            $result['html_contain'] = display_doc_report_list($doc_id);
+        }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }

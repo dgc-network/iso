@@ -150,6 +150,8 @@ jQuery(document).ready(function($) {
                 });
         
                 $("#doc-report-preview").on("click", function () {
+                    get_doc_report_list_data(doc_id);
+/*                    
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -166,7 +168,8 @@ jQuery(document).ready(function($) {
                             console.error(error);
                             alert(error);
                         }
-                    });        
+                    });
+*/                    
                 });
             
                 $("#doc-url-preview").on("click", function () {
@@ -492,8 +495,7 @@ jQuery(document).ready(function($) {
 
     // doc-report scripts
     function activate_doc_report_list_data(doc_id){
-        $("#new-doc-report").on("click", function(e) {
-            e.preventDefault();
+        $("#new-doc-report").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -518,7 +520,7 @@ jQuery(document).ready(function($) {
         });            
 
         $("#search-doc-report").on( "change", function() {
-            get_doc_report_list_data(false, false, $(this).val())
+            get_doc_report_list_data(doc_id, false, $(this).val())
             $(this).val('');
         });
     
