@@ -623,45 +623,7 @@ function is_user_job($job_id, $user_id=0) {
     // Check if the current user has the specified job ID in their metadata
     return in_array($job_id, $user_jobs);
 }
-/*
-function set_my_job_data() {
 
-    $response = array('success' => false, 'error' => 'Invalid data format');
-
-    if (isset($_POST['_job_id'])) {
-        $job_id = (int)sanitize_text_field($_POST['_job_id']);
-        $is_user_job = sanitize_text_field($_POST['_is_user_job']);
-
-        $current_user_id = get_current_user_id();
-        $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);        
-        // Convert the current 'user_job_ids' value to an array if not already an array
-        if (!is_array($user_job_ids_array)) {
-            $user_job_ids_array = array();
-        }        
-    
-        // Check if $job_id is in 'user_job_ids'
-        $job_exists = in_array($job_id, $user_job_ids_array);
-    
-        // Check the condition and update 'user_job_ids' accordingly
-        if ($is_user_job == 1 && !$job_exists) {
-            // Add $job_id to 'user_job_ids'
-            $user_job_ids_array[] = $job_id;
-        } elseif ($is_user_job != 1 && $job_exists) {
-            // Remove $job_id from 'user_job_ids'
-            $user_job_ids_array = array_diff($user_job_ids_array, array($job_id));
-        }
-
-        // Update 'user_job_ids' meta value
-        update_user_meta( $current_user_id, 'user_job_ids', $user_job_ids_array);
-
-        $response = array('success' => true);
-    }
-
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_my_job_data', 'set_my_job_data' );
-add_action( 'wp_ajax_nopriv_set_my_job_data', 'set_my_job_data' );
-*/
 function set_user_job_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     if (isset($_POST['_job_id'])) {

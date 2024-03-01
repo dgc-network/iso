@@ -111,7 +111,7 @@ function display_documents_shortcode() {
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <fieldset>
-            <div id="document-setting-div" style="display:none">
+            <div id="document-setting-dialog" style="display:none">
             <fieldset>
                 <label for="display-name">Name : </label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -120,6 +120,7 @@ function display_documents_shortcode() {
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <label for="doc-field-setting"> Field setting: </label>
                 <?php echo display_doc_field_list(false, $site_id);?>                
+                <div id="site-field-list-dialog" style="display:none;"><?php echo display_doc_field_list(false, $site_id);?></div>
             </fieldset>
             </div>
         
@@ -262,8 +263,8 @@ function retrieve_document_data($site_id = 0) {
 
 function get_document_dialog_data() {
     $result = array();
-    if (isset($_POST['action']) && $_POST['action'] === 'get_document_dialog_data') {
-        $doc_id = (int)sanitize_text_field($_POST['_doc_id']);
+    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_document_dialog_data') {
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta( $doc_id, 'todo_status', true);
@@ -747,7 +748,7 @@ function set_doc_unpublished_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
     if (isset($_POST['_doc_id'])) {
-        $doc_id = (int) sanitize_text_field($_POST['_doc_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
         // Delete the specified meta key
         delete_post_meta($doc_id, 'todo_status');
         $response = array('success' => true);
@@ -941,14 +942,14 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
             <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-url" rows="3" style="width:100%; display:none;"><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-dialog"><?php echo display_doc_field_list($doc_id);?></div>
+            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
             <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-url" rows="3" style="width:100%;"><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-dialog" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
+            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         }
         ?>
@@ -1152,7 +1153,7 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
-        $report_id = (int)sanitize_text_field($_POST['_report_id']);
+        $report_id = sanitize_text_field($_POST['_report_id']);
         $todo_status = get_post_meta( $report_id, 'todo_status', true);
         if ($todo_status<1) {
             $result['html_contain'] = display_doc_report_dialog($report_id);

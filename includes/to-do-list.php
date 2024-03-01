@@ -396,42 +396,26 @@ function display_todo_dialog($todo_id) {
             <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-dialog"><?php echo display_doc_field_list($doc_id);?></div>
+            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
             <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-url" rows="3" style="width:100%;" disabled><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-dialog" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
+            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
-/*
-            echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '欄位設定', 'your-text-domain' ).'</label>';
-            echo '<span id="doc-report-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-            echo '<textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled>' . $doc_url . '</textarea>';
-            echo '<div id="doc-field-list-dialog">';
-            echo display_doc_field_list($doc_id);
-            echo '</div>';
-        } else {
-            echo '<label id="doc-field-setting" class="button" for="doc-url">'.__( '文件地址', 'your-text-domain' ).'</label>';
-            echo '<span id="doc-url-preview" <span class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>';
-            echo '<textarea id="doc-url" rows="3" style="width:100%;" disabled>' . $doc_url . '</textarea>';
-            echo '<div id="doc-field-list-dialog" style="display:none;">';
-            echo display_doc_field_list($doc_id);
-            echo '</div>';
-*/            
         }
-        //echo '<input type="hidden" id="is-doc-report" value="'.$is_doc_report.'" />';
         ?>
-            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-            <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-            <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php
     }
     ?>
-        <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
-        <input type="button" id="action-list-button" value="<?php echo esc_html(get_the_title($todo_id));?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-        <hr>
+    <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
+    <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+    <hr>
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
     if ($query->have_posts()) {

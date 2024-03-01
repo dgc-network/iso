@@ -238,7 +238,19 @@ function user_did_not_login_yet() {
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
         ?>
-        <div class="ui-widget" style="text-align:center;">
+        <div class="desktop-content ui-widget" style="text-align:center;">
+            <!-- Content for desktop users -->
+            <p>感謝您使用我們的系統</p>
+            <p>請輸入您的 Email 帳號</p>
+            <input type="text" id="user-email">
+            <div id="otp-div" style="display:none;">
+            <p>請輸入傳送到您 Line 上的六位數字密碼</p>
+            <input type="text" id="one-time-password">
+            </div>
+        </div>
+
+        <div class="mobile-content ui-widget" style="text-align:center;">
+            <!-- Content for mobile users -->
             <p>感謝您使用我們的系統</p>
             <p>請加入我們的Line官方帳號,</p>
             <p>利用手機按或掃描下方QR code</p>
@@ -266,3 +278,96 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
+/*
+function send_one_time_password() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+    if (isset($_POST['_user_email'])) {
+        $user_email = sanitize_text_field($_POST['_user_email']);
+        // Get user by email
+        $user = get_user_by('email', $user_email);
+
+        if ($user) {
+            // Get user meta "line_user_id"
+            $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                // Do something with $line_user_id
+                $one_time_password = random_int(100000, 999999);
+                update_option('_one_time_password', $one_time_password);
+        
+                echo "Line User ID: " . $line_user_id;
+            } else {
+                echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
+            }
+        } else {
+            echo "User not found with email: " . $user_email;
+        }
+        
+        $response = array('success' => true);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
+add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );
+*/
+function send_one_time_password() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+    
+    if (isset($_POST['_user_email'])) {
+        $user_email = sanitize_text_field($_POST['_user_email']);
+        // Get user by email
+        $user = get_user_by('email', $user_email);
+
+        if ($user) {
+            // Get user meta "line_user_id"
+            $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                // Generate a one-time password
+                $one_time_password = random_int(100000, 999999);
+                update_option('_one_time_password', $one_time_password);
+                
+                // Send the one-time password to Line user
+                $access_token = get_option('line_bot_token_option');
+
+                $message = [
+                    'to' => $line_user_id,
+                    'messages' => [
+                        [
+                            'type' => 'text',
+                            'text' => 'Your one-time password is: ' . $one_time_password,
+                        ],
+                    ],
+                ];
+
+                $ch = curl_init('https://api.line.me/v2/bot/message/push');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $access_token,
+                ]);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $response_line = curl_exec($ch);
+                curl_close($ch);
+
+                // Handle the Line response as needed
+                if ($response_line === false) {
+                    echo 'Error sending Line message: ' . curl_error($ch);
+                } else {
+                    echo 'Line message sent successfully.';
+                }
+            } else {
+                echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
+            }
+        } else {
+            echo "User not found with email: " . $user_email;
+        }
+        
+        $response = array('success' => true);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
+add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );

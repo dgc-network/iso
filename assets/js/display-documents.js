@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#document-setting").on("click", function () {
-        $("#document-setting-div").toggle();
+        $("#document-setting-dialog").toggle();
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -19,8 +19,7 @@ jQuery(document).ready(function($) {
         get_document_dialog_data(doc_id)
     });            
 
-    $("#new-document-button").on("click", function(e) {
-        e.preventDefault();
+    $("#new-document-button").on("click", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -54,7 +53,6 @@ jQuery(document).ready(function($) {
                 if (response.html_contain === undefined || response.html_contain === null) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
-                    // Handle the HTML content as needed
                     $('#result-container').html(response.html_contain);
                 }                
                 $("#doc-id").val(doc_id);
@@ -66,8 +64,7 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
-                $("#save-document-button").on("click", function(e) {
-                    e.preventDefault();
+                $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
                     };
@@ -97,8 +94,7 @@ jQuery(document).ready(function($) {
                     });
                 });
         
-                $("#del-document-button").on("click", function(e) {
-                    e.preventDefault();
+                $("#del-document-button").on("click", function() {
                     if (window.confirm("Are you sure you want to delete this document?")) {
                         $.ajax({
                             type: 'POST',
@@ -195,11 +191,10 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function(response) {
                                     if (response.success) {
-                                        console.log('Sorting order updated successfully.');
                                         window.location.replace("/display-documents/");
                                     } else {
-                                        console.error('Error updating sorting order:', response.error);
-                                        alert('Error updating sorting order. Please try again.');
+                                        console.error('Error updating:', response.error);
+                                        alert('Error updating. Please try again.');
                                     }
                                 },
                                 error: function(xhr, textStatus, errorThrown) {
@@ -227,11 +222,10 @@ jQuery(document).ready(function($) {
                             },
                             success: function(response) {
                                 if (response.success) {
-                                    console.log('Sorting order updated successfully.');
                                     window.location.replace("/display-documents/");
                                 } else {
-                                    console.error('Error updating sorting order:', response.error);
-                                    alert('Error updating sorting order. Please try again.');
+                                    console.error('Error updating:', response.error);
+                                    alert('Error updating. Please try again.');
                                 }
                             },
                             error: function(xhr, textStatus, errorThrown) {
@@ -248,15 +242,14 @@ jQuery(document).ready(function($) {
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
                     $("#doc-url").toggle();
-                    $("#doc-field-list-dialog").toggle();
+                    $("#doc-field-list-div").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });            
         
-                $("#new-doc-field").on("click", function(e) {
-                    e.preventDefault();
+                $("#new-doc-field").on("click", function() {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -289,8 +282,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    $("#new-doc-field").on("click", function(e) {
-        e.preventDefault();
+    $("#new-doc-field").on("click", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -332,9 +324,6 @@ jQuery(document).ready(function($) {
                     const $docFieldList = $(`.doc-field-list-${index}`);
                     $docFieldList.attr('id', `edit-doc-field-${value.field_id}`);
                     $docFieldList.attr('data-field-id', value.field_id);
-    
-                    const isListingChecked = value.is_listing == 1 ? 'checked' : '';
-                    const isEditingChecked = value.is_editing == 1 ? 'checked' : '';
     
                     const output = `
                         <td style="text-align:center;">${value.field_name}</td>
@@ -400,8 +389,6 @@ jQuery(document).ready(function($) {
                     $("#listing-style").val(response.listing_style).change();
                     $("#editing-type").val(response.editing_type).change();
                     $("#default-value").val(response.default_value);
-                    //$('#is-listing').prop('checked', response.is_listing == 1);
-                    //$('#is-editing').prop('checked', response.is_editing == 1);
                 },
                 error: function (error) {
                     console.error(error);                
@@ -428,8 +415,6 @@ jQuery(document).ready(function($) {
                             '_listing_style': $("#listing-style").val(),
                             '_editing_type': $("#editing-type").val(),
                             '_default_value': $("#default-value").val(),
-                            //'_is_listing': $('#is-listing').is(":checked") ? 1 : 0,
-                            //'_is_editing': $('#is-editing').is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
@@ -503,8 +488,7 @@ jQuery(document).ready(function($) {
         $("#search-doc-report").on( "change", function() {
             get_doc_report_list_data(doc_id, $(this).val())
             $(this).val('');
-        });
-    
+        });    
     }
 
     function get_doc_report_list_data(doc_id=false, search_doc_report=false) {

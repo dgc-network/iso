@@ -55,32 +55,7 @@ jQuery(document).ready(function($) {
             }
         });
     });
-/*
-    $('[id^="check-my-job-"]').on("click", function () {
-        const id = this.id.substring(13);
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_my_job_data',
-                _job_id : id,
-                '_is_user_job': $(this).is(":checked") ? 1 : 0,
-            },
-            success: function (response) {
-                if (response.success) {
-                    //alert("Success!");
-                } else {
-                    alert("Error: " + response.error);
-                }
-            },
-            error: function (error) {
-                console.error(error);
-                alert("Error: Something went wrong!");
-            }
-        });
-    });
-*/
+
     $("#my-profile-submit").on("click", function () {
         $.ajax({
             type: 'POST',
