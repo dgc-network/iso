@@ -238,7 +238,7 @@ function user_did_not_login_yet() {
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
         ?>
-        <div class="desktop-content ui-widget" style="text-align:center;">
+        <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
             <p>感謝您使用我們的系統</p>
             <p>請輸入您的 Email 帳號</p>
@@ -249,7 +249,7 @@ function user_did_not_login_yet() {
             </div>
         </div>
 
-        <div class="mobile-content ui-widget" style="text-align:center;">
+        <div class="mobile-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for mobile users -->
             <p>感謝您使用我們的系統</p>
             <p>請加入我們的Line官方帳號,</p>

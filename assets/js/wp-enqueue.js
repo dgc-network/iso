@@ -12,12 +12,12 @@ jQuery(document).ready(function($) {
     // JavaScript to detect mobile browser
     if (/Mobi/.test(navigator.userAgent)) {
         // User is on a mobile device
+        $('.mobile-content').show();
         console.log('User is on a mobile device.');
-        $('.desktop-content').hide();
     } else {
         // User is not on a mobile device, send one-time password via email
+        $('.desktop-content').show();
         console.log('User is not on a mobile device. Send one-time password via email.');
-        $('.mobile-content').hide();
 
         // You can use AJAX to send a request to your server to trigger the email sending
         // Example using jQuery
