@@ -857,7 +857,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                     'is_listing'  => true,
                 );                
                 $query = retrieve_doc_field_data($params);
-                //$query = retrieve_doc_field_data($doc_id, false, true);
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
@@ -1165,7 +1164,6 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
         );
         $params = array();                
         $inner_query = retrieve_doc_field_data($params);
-        //$inner_query = retrieve_doc_field_data();
         if ($inner_query->have_posts()) {
             while ($inner_query->have_posts()) : $inner_query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);

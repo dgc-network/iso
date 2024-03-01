@@ -501,19 +501,19 @@ jQuery(document).ready(function($) {
         });            
 
         $("#search-doc-report").on( "change", function() {
-            get_doc_report_list_data(doc_id, false, $(this).val())
+            get_doc_report_list_data(doc_id, $(this).val())
             $(this).val('');
         });
     
     }
 
-    function get_doc_report_list_data(doc_id=false, site_id=false, search_doc_report=false) {
+    function get_doc_report_list_data(doc_id=false, search_doc_report=false) {
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
     
         if (doc_id) ajaxData['_doc_id'] = doc_id;
-        if (site_id) ajaxData['_site_id'] = site_id;
+        //if (site_id) ajaxData['_site_id'] = site_id;
         if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
     
         $.ajax({
@@ -637,65 +637,6 @@ jQuery(document).ready(function($) {
                 $("#doc-id").val(response.doc_id);
                 
                 activate_doc_report_dialog_data(response)
-/*                
-                $(".datepicker").datepicker({
-                    onSelect: function(dateText, inst) {
-                        $(this).val(dateText);
-                    }
-                });
-            
-                $('[id^="save-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(16);
-                    const ajaxData = {
-                        'action': 'set_doc_report_dialog_data',
-                    };
-                    ajaxData['_report_id'] = report_id;
-                    $.each(response.doc_fields, function (index, value) {
-                        field_name_id = '#'+value.field_name;
-                        ajaxData[value.field_name] = $(field_name_id).val();
-                    });
-                    ajaxData['_start_job'] = $("#start-job").val();
-                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                            
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: ajaxData,
-                        success: function (response) {
-                            get_doc_report_list_data($("#doc-id").val());
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-
-                $('[id^="del-doc-report-"]').on("click", function () {
-                    const report_id = this.id.substring(15);
-                    if (window.confirm("Are you sure you want to delete this record?")) {
-                        const ajaxData = {
-                            'action': 'del_doc_report_dialog_data',
-                        };                        
-                        ajaxData['_report_id'] = report_id;
-                            
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: ajaxData,
-                            success: function (response) {
-                                get_doc_report_list_data($("#doc-id").val());
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });
-*/                
             },
             error: function (error) {
                 console.log(error);
