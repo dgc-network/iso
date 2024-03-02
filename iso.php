@@ -353,7 +353,7 @@ function submit_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     
     if (isset($_POST['_one_time_password'])) {
-        $one_time_password = sanitize_text_field($_POST['_one_time_passwordl']);
+        $one_time_password = sanitize_text_field($_POST['_one_time_password']);
         $line_user_id = sanitize_text_field($_POST['_line_user_id']);
         if ((int)$one_time_password==(int)get_option('_one_time_password')) {
             // Get user by 'line_user_id' meta
