@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
                 '_one_time_password': $(this).val(),
             },
             success: function (response) {
-                window.location.replace("?_search="+$(this).val());
+                window.location.replace("/");
             },
             error: function (error) {
                 console.error(error);
