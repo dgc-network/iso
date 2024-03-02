@@ -213,11 +213,13 @@ function user_did_not_login_yet() {
         }
         ?>
         <div class="ui-widget">
-            <h2>User profile</h2>
+            <h2>User registration/login</h2>
             <form method="post" action="<?php echo site_url('wp-login.php', 'login_post');?>">
             <fieldset>
                 <label for="display-name">Name:</label>
                 <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
+                <label for="user-email">Email:</label>
+                <input type="text" id="user-email" name="_user_email" value="" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
                 <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
@@ -271,6 +273,7 @@ function custom_login_process($user, $password) {
         $user_data = wp_update_user( array( 
             'ID' => $user->ID, 
             'display_name' => $_POST['_display_name'], 
+            'user_email' => $_POST['_user_email'], 
         ) );
         // Add/update user metadata
         update_user_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
@@ -278,38 +281,7 @@ function custom_login_process($user, $password) {
     return $user;
 }
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
-/*
-function send_one_time_password() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if (isset($_POST['_user_email'])) {
-        $user_email = sanitize_text_field($_POST['_user_email']);
-        // Get user by email
-        $user = get_user_by('email', $user_email);
 
-        if ($user) {
-            // Get user meta "line_user_id"
-            $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
-        
-            if ($line_user_id) {
-                // Do something with $line_user_id
-                $one_time_password = random_int(100000, 999999);
-                update_option('_one_time_password', $one_time_password);
-        
-                echo "Line User ID: " . $line_user_id;
-            } else {
-                echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
-            }
-        } else {
-            echo "User not found with email: " . $user_email;
-        }
-        
-        $response = array('success' => true);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
-add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );
-*/
 function send_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     
@@ -372,3 +344,66 @@ function send_one_time_password() {
 }
 add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
 add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );
+
+function submit_one_time_password() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+    
+    if (isset($_POST['_one_time_password'])) {
+        $one_time_password = sanitize_text_field($_POST['_one_time_passwordl']);
+        $line_user_id = sanitize_text_field($_POST['_line_user_id']);
+        if ($one_time_password==(int)get_option('_one_time_password')) {
+            // Get user by 'line_user_id' meta
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $line_user_id
+            ));
+
+            if ($user_id) {
+                // Do something with $user_id
+                $user_password = sanitize_text_field($_POST['_line_user_id']);
+                custom_login_user($line_user_id, $user_password);
+                $response = array('success' => true);
+            }
+        }
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_submit_one_time_password', 'submit_one_time_password' );
+add_action( 'wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password' );
+
+function custom_login_user($user_id, $user_password) {
+    // Check if the provided user ID exists
+    $user = get_user_by('ID', $user_id);
+
+    if ($user) {
+        // Check user's password
+        if (wp_check_password($user_password, $user->user_pass, $user_id)) {
+            // Password is correct, log in the user
+            $credentials = array(
+                'user_login'    => $user->user_login,
+                'user_password' => $user_password,
+                'remember'      => true,
+            );
+
+            $user_signon = wp_signon($credentials, false);
+
+            if (!is_wp_error($user_signon)) {
+                // Login successful
+                wp_set_current_user($user_id);
+                wp_set_auth_cookie($user_id);
+                do_action('wp_login', $user->user_login);
+                echo "Login successful!";
+            } else {
+                // Login failed
+                echo "Login failed: " . $user_signon->get_error_message();
+            }
+        } else {
+            // Incorrect password
+            echo "Incorrect password!";
+        }
+    } else {
+        // User not found
+        echo "User not found!";
+    }
+}
