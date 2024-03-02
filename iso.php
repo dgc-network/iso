@@ -336,7 +336,8 @@ function send_one_time_password() {
                     $response = array('error' => 'Error sending Line message: ' . curl_error($ch));
                 } else {
                     //echo 'Line message sent successfully.';
-                    $response = array('line_user_id' => $line_user_id);
+                    //$response = array('line_user_id' => $line_user_id);
+                    $response = array('line_user_id' => 'test');
                     $response = array('success' => true);
                 }
             } else {
