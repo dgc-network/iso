@@ -34,8 +34,12 @@ jQuery(document).ready(function($) {
                 '_user_email': $(this).val(),
             },
             success: function (response) {
-                $('#otp-input-div').show();
-
+                if (response.success) {
+                    $('#otp-input-div').show();
+                    //alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
             },
             error: function (error) {
                 console.error(error);
