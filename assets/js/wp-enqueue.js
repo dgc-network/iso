@@ -36,6 +36,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 if (response.success) {
                     $('#otp-input-div').show();
+                    console.log("Line User ID:", response.line_user_id); 
                     $('#line-user-id-input').val(response.line_user_id);
                     //alert("Success!");
                 } else {
@@ -44,7 +45,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                alert("An error occurred while processing your request. Please try again later.");
             }
         });
     });
