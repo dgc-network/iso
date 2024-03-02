@@ -284,7 +284,7 @@ function custom_login_process($user, $password) {
 add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
 
 function send_one_time_password() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
+    $response = array('success' => false, 'error' => 'Invalid data format', 'line_user_id' => false);
     
     if (isset($_POST['_user_email'])) {
         $user_email = sanitize_text_field($_POST['_user_email']);
@@ -336,13 +336,10 @@ function send_one_time_password() {
                 $response = array('success' => true);
             } else {
                 $response = array('error' => "User meta 'line_user_id' not found for the user with email: " . $user_email);
-                //echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
             }
         } else {
             $response = array('error' => "User not found with email: " . $user_email);
-            //echo "User not found with email: " . $user_email;
-        }
-        
+        }        
     }
     wp_send_json($response);
 }
