@@ -244,11 +244,11 @@ function user_did_not_login_yet() {
             <!-- Content for desktop users -->
             <p>感謝您使用我們的系統</p>
             <p>請輸入您的 Email 帳號</p>
-            <input type="text" id="user-email-input">
+            <input type="text" id="user-email-input" />
             <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
-            <input type="text" id="one-time-password-input">
-            <input type="hidden" id="line-user-id-input">
+            <input type="text" id="one-time-password-input" />
+            <input type="hidden" id="line-user-id-input" />
             </div>
         </div>
 
@@ -294,6 +294,7 @@ function send_one_time_password() {
         if ($user) {
             // Get user meta "line_user_id"
             $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
+            $response = array('line_user_id' => $line_user_id);
         
             if ($line_user_id) {
                 // Generate a one-time password
@@ -332,7 +333,6 @@ function send_one_time_password() {
                     echo 'Line message sent successfully.';
                 }
 */                
-                $response = array('line_user_id' => $line_user_id);
                 $response = array('success' => true);
             } else {
                 $response = array('error' => "User meta 'line_user_id' not found for the user with email: " . $user_email);
@@ -369,7 +369,7 @@ function submit_one_time_password() {
                 //custom_login_user($line_user_id, $user_password);
                 $credentials = array(
                     'user_login'    => $line_user_id,
-                    'user_password' => $user_password,
+                    'user_password' => $line_user_id,
                     'remember'      => true,
                 );
     
@@ -387,7 +387,7 @@ function submit_one_time_password() {
                 }
     
             } else {
-                $response = array('error' => "Wrong line_user_id meta key");
+                $response = array('error' => $line_user_id."Wrong line_user_id meta key");
             }
         } else {
             $response = array('error' => "Wrong one time password");
