@@ -362,8 +362,26 @@ function submit_one_time_password() {
             if ($user_id) {
                 // Do something with $user_id
                 $user_password = sanitize_text_field($_POST['_line_user_id']);
-                custom_login_user($line_user_id, $user_password);
-                $response = array('success' => true);
+                //custom_login_user($line_user_id, $user_password);
+                $credentials = array(
+                    'user_login'    => $line_user_id,
+                    'user_password' => $user_password,
+                    'remember'      => true,
+                );
+    
+                $user_signon = wp_signon($credentials, false);
+    
+                if (!is_wp_error($user_signon)) {
+                    // Login successful
+                    wp_set_current_user($user_id);
+                    wp_set_auth_cookie($user_id);
+                    do_action('wp_login', $user->user_login);
+                    $response = array('success' => true);
+                } else {
+                    // Login failed
+                    $response = array('error' => $user_signon->get_error_message());
+                }
+    
             }
         }
     }
