@@ -411,12 +411,13 @@ function submit_one_time_password() {
 
                 $credentials = array(
                     'user_login'    => $user->user_login,
-                    'user_password' => $user->user_pass, // Use the hashed password from the database
+                    'user_password' => $line_user_id,
+                    //'user_password' => $user->user_pass, // Use the hashed password from the database
                     'remember'      => true,
                 );
 
                 $user_signon = wp_signon($credentials, false);
-/*
+
                 if (!is_wp_error($user_signon)) {
                     // Login successful
                     wp_set_current_user($user_id);
@@ -433,8 +434,7 @@ function submit_one_time_password() {
                     // Login failed
                     $response = array('error' => $user_signon->get_error_message());
                 }
-*/
-                $response = array('success' => true,);
+                //$response = array('success' => true,);
             } else {
                 $response = array('error' => $line_user_id . "Wrong line_user_id meta key");
             }
