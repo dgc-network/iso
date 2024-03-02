@@ -416,7 +416,7 @@ function submit_one_time_password() {
                 );
 
                 $user_signon = wp_signon($credentials, false);
-
+/*
                 if (!is_wp_error($user_signon)) {
                     // Login successful
                     wp_set_current_user($user_id);
@@ -433,7 +433,8 @@ function submit_one_time_password() {
                     // Login failed
                     $response = array('error' => $user_signon->get_error_message());
                 }
-
+*/
+                $response = array('success' => true,);
             } else {
                 $response = array('error' => $line_user_id . "Wrong line_user_id meta key");
             }
