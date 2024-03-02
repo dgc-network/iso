@@ -13,11 +13,11 @@ jQuery(document).ready(function($) {
     if (/Mobi/.test(navigator.userAgent)) {
         // User is on a mobile device
         $('.mobile-content').show();
-        console.log('User is on a mobile device.');
+        //console.log('User is on a mobile device.');
     } else {
         // User is not on a mobile device, send one-time password via email
         $('.desktop-content').show();
-        console.log('User is not on a mobile device. Send one-time password via email.');
+        //console.log('User is not on a mobile device. Send one-time password via email.');
 
         // You can use AJAX to send a request to your server to trigger the email sending
         // Example using jQuery
