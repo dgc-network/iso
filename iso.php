@@ -248,7 +248,7 @@ function user_did_not_login_yet() {
             <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
             <input type="text" id="one-time-password-input" />
-            <input type="text" id="line-user-id-input" />
+            <input type="hidden" id="line-user-id-input" />
             </div>
         </div>
 
@@ -342,7 +342,7 @@ function send_one_time_password() {
 }
 add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
 add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );
-
+/*
 function submit_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     
@@ -359,8 +359,6 @@ function submit_one_time_password() {
 
             if ($user_id) {
                 // Do something with $user_id
-                $user_password = sanitize_text_field($_POST['_line_user_id']);
-                //custom_login_user($line_user_id, $user_password);
                 $credentials = array(
                     'user_login'    => $line_user_id,
                     'user_password' => $line_user_id,
@@ -391,39 +389,59 @@ function submit_one_time_password() {
 }
 add_action( 'wp_ajax_submit_one_time_password', 'submit_one_time_password' );
 add_action( 'wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password' );
+*/
+function submit_one_time_password() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
 
-function custom_login_user($user_id, $user_password) {
-    // Check if the provided user ID exists
-    $user = get_user_by('ID', $user_id);
+    if (isset($_POST['_one_time_password'])) {
+        $one_time_password = sanitize_text_field($_POST['_one_time_password']);
+        $line_user_id = sanitize_text_field($_POST['_line_user_id']);
 
-    if ($user) {
-        // Check user's password
-        if (wp_check_password($user_password, $user->user_pass, $user_id)) {
-            // Password is correct, log in the user
-            $credentials = array(
-                'user_login'    => $user->user_login,
-                'user_password' => $user_password,
-                'remember'      => true,
-            );
+        if ((int)$one_time_password == (int)get_option('_one_time_password')) {
+            // Get user by 'line_user_id' meta
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $line_user_id
+            ));
 
-            $user_signon = wp_signon($credentials, false);
+            if ($user_id) {
+                // Do something with $user_id
+                $user = get_user_by('ID', $user_id);
 
-            if (!is_wp_error($user_signon)) {
-                // Login successful
-                wp_set_current_user($user_id);
-                wp_set_auth_cookie($user_id);
-                do_action('wp_login', $user->user_login);
-                echo "Login successful!";
+                $credentials = array(
+                    'user_login'    => $user->user_login,
+                    'user_password' => $user->user_pass, // Use the hashed password from the database
+                    'remember'      => true,
+                );
+
+                $user_signon = wp_signon($credentials, false);
+
+                if (!is_wp_error($user_signon)) {
+                    // Login successful
+                    wp_set_current_user($user_id);
+                    wp_set_auth_cookie($user_id);
+                    do_action('wp_login', $user->user_login);
+
+                    // Include additional user details in the response
+                    $response = array(
+                        'success'      => true,
+                        'display_name' => $user->display_name,
+                        'user_email'   => $user->user_email,
+                    );
+                } else {
+                    // Login failed
+                    $response = array('error' => $user_signon->get_error_message());
+                }
+
             } else {
-                // Login failed
-                echo "Login failed: " . $user_signon->get_error_message();
+                $response = array('error' => $line_user_id . "Wrong line_user_id meta key");
             }
         } else {
-            // Incorrect password
-            echo "Incorrect password!";
+            $response = array('error' => "Wrong one time password");
         }
-    } else {
-        // User not found
-        echo "User not found!";
     }
+    wp_send_json($response);
 }
+add_action('wp_ajax_submit_one_time_password', 'submit_one_time_password');
+add_action('wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password');
