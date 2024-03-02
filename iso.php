@@ -248,7 +248,7 @@ function user_did_not_login_yet() {
             <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
             <input type="text" id="one-time-password-input" />
-            <input type="hidden" id="line-user-id-input" />
+            <input type="text" id="line-user-id-input" />
             </div>
         </div>
 
