@@ -351,13 +351,14 @@ function send_one_time_password() {
 
                 $response_line = curl_exec($ch);
                 curl_close($ch);
-
+/*
                 // Handle the Line response as needed
                 if ($response_line === false) {
                     echo 'Error sending Line message: ' . curl_error($ch);
                 } else {
                     echo 'Line message sent successfully.';
                 }
+*/                
             } else {
                 echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
             }
