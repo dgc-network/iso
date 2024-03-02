@@ -355,7 +355,7 @@ function submit_one_time_password() {
     if (isset($_POST['_one_time_password'])) {
         $one_time_password = sanitize_text_field($_POST['_one_time_passwordl']);
         $line_user_id = sanitize_text_field($_POST['_line_user_id']);
-        if ($one_time_password==(int)get_option('_one_time_password')) {
+        if ((int)$one_time_password==(int)get_option('_one_time_password')) {
             // Get user by 'line_user_id' meta
             global $wpdb;
             $user_id = $wpdb->get_var($wpdb->prepare(
