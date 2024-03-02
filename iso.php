@@ -386,7 +386,11 @@ function submit_one_time_password() {
                     $response = array('error' => $user_signon->get_error_message());
                 }
     
+            } else {
+                $response = array('error' => "Wrong line_user_id meta key");
             }
+        } else {
+            $response = array('error' => "Wrong one time password");
         }
     }
     wp_send_json($response);
