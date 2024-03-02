@@ -248,6 +248,7 @@ function user_did_not_login_yet() {
             <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
             <input type="text" id="one-time-password-input">
+            <input type="hidden" id="line-user-id-input">
             </div>
         </div>
 
@@ -331,14 +332,17 @@ function send_one_time_password() {
                     echo 'Line message sent successfully.';
                 }
 */                
+                $response = array('line_user_id' => $line_user_id);
+                $response = array('success' => true);
             } else {
-                echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
+                $response = array('error' => "User meta 'line_user_id' not found for the user with email: " . $user_email);
+                //echo "User meta 'line_user_id' not found for the user with email: " . $user_email;
             }
         } else {
-            echo "User not found with email: " . $user_email;
+            $response = array('error' => "User not found with email: " . $user_email);
+            //echo "User not found with email: " . $user_email;
         }
         
-        $response = array('success' => true);
     }
     wp_send_json($response);
 }

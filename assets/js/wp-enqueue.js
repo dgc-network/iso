@@ -36,6 +36,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 if (response.success) {
                     $('#otp-input-div').show();
+                    $('#line-user-id-input').val(response.line_user_id);
                     //alert("Success!");
                 } else {
                     alert("Error: " + response.error);
@@ -56,6 +57,7 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'submit_one_time_password',
                 '_one_time_password': $(this).val(),
+                '_line_user_id': $('#line-user-id-input').val(),
             },
             success: function (response) {
                 if (response.success) {
