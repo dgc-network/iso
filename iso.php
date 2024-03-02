@@ -294,11 +294,6 @@ function send_one_time_password() {
         if ($user) {
             // Get user meta "line_user_id"
             $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
-            // Instead of direct echo or wp_send_json, use these functions
-            //wp_send_json_success(array('line_user_id' => $line_user_id));
-            // or
-            //wp_send_json_error(array('error' => 'Your error message'));
-            
         
             if ($line_user_id) {
                 // Generate a one-time password
@@ -332,13 +327,9 @@ function send_one_time_password() {
 
                 // Handle the Line response as needed
                 if ($response_line === false) {
-                    //echo 'Error sending Line message: ' . curl_error($ch);
                     $response = array('error' => 'Error sending Line message: ' . curl_error($ch));
                 } else {
-                    //echo 'Line message sent successfully.';
-                    //$response = array('line_user_id' => $line_user_id);
-                    $response = array('line_user_id' => 'test');
-                    $response = array('success' => true);
+                    $response = array('success' => true, 'line_user_id' => $line_user_id);
                 }
             } else {
                 $response = array('error' => "User meta 'line_user_id' not found for the user with email: " . $user_email);
