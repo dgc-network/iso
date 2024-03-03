@@ -26,7 +26,7 @@ function profiles_shortcode() {
     if (is_user_logged_in()) {
         echo '<div id="disp[lay-profiles">';
         if ($_GET['_select_profile']=='1') echo display_site_profile();
-        if ($_GET['_select_profile']!='1') display_my_profile();
+        if ($_GET['_select_profile']!='1') echo display_my_profile();
         echo '</div>';
     } else {
         user_did_not_login_yet();
@@ -35,8 +35,9 @@ function profiles_shortcode() {
 add_shortcode('display-profiles', 'profiles_shortcode');
 
 function display_my_profile() {
-    // Check if the user is logged in
+    ob_start();
     if (is_user_logged_in()) {
+        // Check if the user is logged in
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta( $current_user_id, 'site_id', true);
         $user_data = get_userdata( $current_user_id );
@@ -85,8 +86,8 @@ function display_my_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0" selected>My profile..</option>
-                        <option value="1">Site profile..</option>
+                        <option value="0" selected><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
                         <option value="2">...</option>
                     </select>
                 </div>
@@ -99,6 +100,8 @@ function display_my_profile() {
         </div>
         <?php
     }
+    $html = ob_get_clean();
+    return $html;
 }
 
 function set_my_profile_data() {
@@ -212,8 +215,8 @@ function display_site_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0">My profile..</option>
-                        <option value="1" selected>Site profile..</option>
+                        <option value="0"><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
+                        <option value="1" selected><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
                         <option value="2">...</option>
                     </select>
                 </div>
