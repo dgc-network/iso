@@ -390,6 +390,7 @@ function submit_one_time_password() {
 add_action( 'wp_ajax_submit_one_time_password', 'submit_one_time_password' );
 add_action( 'wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password' );
 */
+/*
 function submit_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
@@ -440,6 +441,66 @@ function submit_one_time_password() {
             }
         } else {
             $response = array('error' => "Wrong one time password");
+        }
+    }
+    wp_send_json($response);
+}
+add_action('wp_ajax_submit_one_time_password', 'submit_one_time_password');
+add_action('wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password');
+*/
+function submit_one_time_password() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_one_time_password'])) {
+        $one_time_password = sanitize_text_field($_POST['_one_time_password']);
+        $line_user_id = sanitize_text_field($_POST['_line_user_id']);
+
+        if ((int)$one_time_password == (int)get_option('_one_time_password')) {
+            // Get user by 'line_user_id' meta
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $line_user_id
+            ));
+
+            if ($user_id) {
+                // Do something with $user_id
+                $user = get_user_by('ID', $user_id);
+
+                $credentials = array(
+                    'user_login'    => $user->user_login,
+                    'user_password' => $user->user_pass,
+                    'remember'      => true,
+                );
+
+                $user_signon = wp_signon($credentials, false);
+
+                if (!is_wp_error($user_signon)) {
+                    // Login successful
+                    wp_set_current_user($user_id);
+                    wp_set_auth_cookie($user_id);
+                    //do_action('wp_login', $user->user_login);
+
+                    // Store user data in the session
+                    $_SESSION['current_user_data'] = $user;
+
+                    // Include additional user details in the response
+                    $response = array(
+                        'success'        => true,
+                        'current_user'   => $user,
+                        'display_name'   => $user->display_name,
+                        'user_email'     => $user->user_email,
+                        'user_meta_data' => get_user_meta($user_id),
+                    );
+                } else {
+                    // Login failed
+                    $response = array('error' => $user_signon->get_error_message());
+                }
+            } else {
+                $response = array('error' => $line_user_id . "Wrong line_user_id meta key");
+            }
+        } else {
+            $response = array('error' => "Wrong one-time password");
         }
     }
     wp_send_json($response);
