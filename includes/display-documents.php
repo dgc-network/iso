@@ -111,16 +111,15 @@ function display_documents_shortcode() {
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <fieldset>
-            <div id="document-setting-dialog" style="display:none">
+            <div id="document-setting-dialog" title="Document setting" style="display:none">
             <fieldset>
-                <label for="display-name">Name : </label>
-                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="site-title"> Site: </label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <label for="doc-field-setting"> Field setting: </label>
                 <?php echo display_doc_field_list(false, $site_id);?>                
-                <div id="site-field-list-dialog" style="display:none;"><?php echo display_doc_field_list(false, $site_id);?></div>
+                <label for="document-rows">Rows: </label>
+                <input type="text" id="document-rows" value="<?php echo get_option('document_rows');?>" />
             </fieldset>
             </div>
         

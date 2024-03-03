@@ -21,6 +21,8 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
+    activate_doc_field_list_data();
+
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
         get_document_dialog_data(doc_id)
