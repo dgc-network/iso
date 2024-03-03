@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
 
     $("#document-setting").on("click", function () {
         //$("#document-setting-dialog").toggle();
-        $("#document-setting-dialog").open();
+        $("#document-setting-dialog").dialog('open');
     });
 
     $("#document-setting-dialog").dialog({
