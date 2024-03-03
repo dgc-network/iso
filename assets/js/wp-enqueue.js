@@ -75,4 +75,33 @@ jQuery(document).ready(function($) {
         });            
     });            
 
+    $("#wp-login").on( "click", function() {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'wp_login_submit',
+                '_display_name': $('#display-name').val(),
+                '_user_email': $('#user-email').val(),
+                '_site_id': $('#site-id').val(),
+                '_log': $('#log').val(),
+                '_pwd': $('#pwd').val(),
+                '_rememberme': $('#rememberme').val(),
+            },
+            success: function (response) {
+                if (response.success) {
+                    window.location.replace("/");
+                    //alert("Success!");
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });            
+
 })

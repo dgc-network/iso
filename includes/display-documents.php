@@ -103,10 +103,13 @@ function display_documents_shortcode() {
     }
 
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
+    if (!isset($site_id)) {
+        return;
+    }
     // Check if the user is logged in
-    if (is_user_logged_in() && isset($site_id)) {
+    if (is_user_logged_in()) {
         ?>
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
