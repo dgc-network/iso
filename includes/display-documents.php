@@ -271,13 +271,17 @@ function get_document_dialog_data() {
                     $result['html_contain'] = display_doc_report_list($doc_id);
                 } else {
                     $header = <<<HTML
-                        <span><h2 id='doc-title'>$doc_title</h2></span>(
-                            <span id='doc-number'>$doc_number</span>:
-                            <span id='doc-revision'>$doc_revision</span>
-                        )
-                        <div>
-                            <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
-                            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                        <div style="display:flex; justify-content:space-between; margin:5px;">
+                            <div>
+                                <h2 id='doc-title' style="display:inline;">$doc_title</h2>(
+                                <span id='doc-number'>$doc_number</span>:
+                                <span id='doc-revision'>$doc_revision</span>
+                                )
+                            </div>
+                            <div style="text-align:right; display:flex;">
+                                <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
+                                <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                            </div>
                         </div>
                         <fieldset>
                     HTML;
