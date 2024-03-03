@@ -281,7 +281,7 @@ function custom_login_process($user, $password) {
     }
     return $user;
 }
-add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
+//add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
 
 function send_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format', 'line_user_id' => false);
@@ -480,7 +480,7 @@ function submit_one_time_password() {
                     // Login successful
                     wp_set_current_user($user_id);
                     wp_set_auth_cookie($user_id);
-                    //do_action('wp_login', $user->user_login);
+                    do_action('wp_login', $user->user_login);
 
                     // Store user data in the session
                     $_SESSION['current_user_data'] = $user;
