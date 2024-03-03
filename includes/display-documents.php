@@ -791,27 +791,27 @@ function display_doc_url_contain($doc_id=false) {
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
     
     <fieldset>
-        <?php echo esc_html($doc_url);?>
-    </fieldset>
     <?php
     $html = ob_get_clean();
-    return $html;
+    return $html.$doc_url.'</fieldset>';
 }
 
 // doc-report
 function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     ob_start();
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $workflow_list = display_workflow_list($site_id, $doc_id);
     $html_content = $workflow_list['html'];
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
-            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>{
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>(
                 <span><?php echo esc_html($doc_number);?></span>:
                 <span><?php echo esc_html($doc_revision);?></span>
-            }
+            )
         </div>
         <div style="text-align:right; display:flex;">
             <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
