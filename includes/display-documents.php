@@ -182,16 +182,6 @@ function display_documents_shortcode() {
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                         $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
                         $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
-                        //$is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
-                        //$del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
-
-                        //$todo_id = get_post_meta( $doc_id, 'todo_status', true);
-                        //$todo_status = ($todo_id && $todo_id!=0) ? get_the_title($todo_id) : 'Draft';
-                        //if ($todo_id==-1) $todo_status = __( '發行', 'your-text-domain' );
-                        //if ($todo_id==-2) $todo_status = __( '廢止', 'your-text-domain' );
-                        //$is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
-                        //$del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
-                        //echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
                         echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                         echo '</tr>';
                     endwhile;
@@ -281,9 +271,9 @@ function get_document_dialog_data() {
                     $result['html_contain'] = display_doc_report_list($doc_id);
                 } else {
                     $header = <<<HTML
+                        <h2 id='doc-title'>$doc_title</h2>
                         <fieldset>
-                            <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />
-                            <span id='doc-title'>$doc_title</span> (
+                            <input type='button' id='workflow-button' value='=' style='margin-right:10px;' />(
                             <span id='doc-number'>$doc_number</span>:
                             <span id='doc-revision'>$doc_revision</span>)
                             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>                            
@@ -777,7 +767,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     <fieldset>
         <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
             <fieldset>
-                <label for="doc-title"> Doc: </label>
+                <label for="doc-title"> Document: </label>
                 <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="doc-field-setting"> Field setting: </label>
                 <?php echo display_doc_field_list($doc_id);?>
@@ -849,9 +839,9 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         }
                         $todo_id = get_post_meta( $report_id, 'todo_status', true);
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $is_deleting = get_post_meta( $report_id, 'is_deleting', true);
-                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
-                        echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
+                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                        echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                         echo '</tr>';
                     endwhile;                
                     // Reset the main query's data
