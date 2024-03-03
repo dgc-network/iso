@@ -25,7 +25,7 @@ function profiles_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         echo '<div id="disp[lay-profiles">';
-        if ($_GET['_select_profile']=='1') display_site_profile();
+        if ($_GET['_select_profile']=='1') echo display_site_profile();
         if ($_GET['_select_profile']!='1') display_my_profile();
         echo '</div>';
     } else {
@@ -103,25 +103,26 @@ function display_my_profile() {
 
 function set_my_profile_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-    //if (isset($_POST['_display_name'])) {
+    if (isset($_POST['_display_name'])) {
         $current_user_id = get_current_user_id();
         wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
         wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
         $response = array('success' => true);
-    //}
+    }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
 add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
 
 function display_site_profile() {
-    // Check if the user is administrator
+    ob_start();
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata( $current_user_id );
 
     if ($is_site_admin==1 || current_user_can('administrator')) {
+        // Check if the user is administrator
         ?>
         <h2><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
         <div class="ui-widget">
@@ -229,6 +230,8 @@ function display_site_profile() {
         <p>You do not have permission to access this page.</p>
         <?php
     }
+    $html = ob_get_clean();
+    return $html;
 }
 
 function retrieve_site_job_list_data($site_id=0) {
