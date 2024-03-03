@@ -75,7 +75,7 @@ jQuery(document).ready(function($) {
         });            
     });            
 
-    $("#wp-login").on( "click", function() {
+    $("#wp-login-submit").on( "click", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,

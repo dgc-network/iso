@@ -216,17 +216,17 @@ function user_did_not_login_yet() {
             <h2>User registration/login</h2>
             <fieldset>
                 <label for="display-name">Name:</label>
-                <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email">Email:</label>
-                <input type="text" id="user-email" name="_user_email" value="" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
                 <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
-                <input type="hidden" id="site-id" name="_site_id" />
-                <input type="hidden" id="log" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
-                <input type="hidden" id="pwd" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
+                <input type="hidden" id="site-id" />
+                <input type="hidden" id="log" value="<?php echo esc_attr($_GET['_id']);?>" />
+                <input type="hidden" id="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <hr>
-                <input type="submit" id="wp-submit" name="wp-submit" class="button button-primary" value="Submit" />
+                <input type="submit" id="wp-login-submit" class="button button-primary" value="Submit" />
             </fieldset>
         </div>
         <?php        
