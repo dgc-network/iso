@@ -469,7 +469,8 @@ function submit_one_time_password() {
 
                 $credentials = array(
                     'user_login'    => $user->user_login,
-                    'user_password' => $user->user_pass,
+                    'user_password' => $line_user_id,
+                    //'user_password' => $user->user_pass,
                     'remember'      => true,
                 );
 
