@@ -270,12 +270,14 @@ function get_document_dialog_data() {
                 if ($is_doc_report) {
                     $result['html_contain'] = display_doc_report_list($doc_id);
                 } else {
+                    $result['html_contain'] = display_doc_url_contain($doc_id);
+/*
                     $header = <<<HTML
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
-                                <h2 id='doc-title' style="display:inline;">$doc_title</h2>(
-                                <span id='doc-number'>$doc_number</span>:
-                                <span id='doc-revision'>$doc_revision</span>
+                                <h2 style="display:inline;">$doc_title</h2>(
+                                <span>$doc_number</span>:
+                                <span>$doc_revision</span>
                                 )
                             </div>
                             <div style="text-align:right; display:flex;">
@@ -295,6 +297,7 @@ function get_document_dialog_data() {
                     HTML;
     
                     $result['html_contain'] = $header.$doc_url.$footer;
+*/                    
                 }
             } else {
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
@@ -760,17 +763,65 @@ function set_doc_unpublished_data() {
 add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
 add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
 
+// doc-url
+function display_doc_url_contain($doc_id=false) {
+    ob_start();
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+    $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $workflow_list = display_workflow_list($site_id, $doc_id);
+    $html_content = $workflow_list['html'];
+    ?>    
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>{
+                <span><?php echo esc_html($doc_number);?></span>:
+                <span><?php echo esc_html($doc_revision);?></span>
+            }
+        </div>
+        <div style="text-align:right; display:flex;">
+            <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
+            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+        </div>
+    </div>
+
+    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
+    
+    <fieldset>
+        <?php echo esc_html($doc_url);?>
+    </fieldset>
+    <?php
+    $html = ob_get_clean();
+    return $html;
+}
+
 // doc-report
 function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     ob_start();
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $result = display_workflow_list($site_id, $doc_id);
-    $html_content = $result['html'];
-    ?>
-    <h2><?php echo esc_html($doc_title);?></h2>
+    $workflow_list = display_workflow_list($site_id, $doc_id);
+    $html_content = $workflow_list['html'];
+    ?>    
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>{
+                <span><?php echo esc_html($doc_number);?></span>:
+                <span><?php echo esc_html($doc_revision);?></span>
+            }
+        </div>
+        <div style="text-align:right; display:flex;">
+            <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
+            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+        </div>
+    </div>
+
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
+
     <fieldset>
         <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
             <fieldset>
@@ -782,8 +833,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                 <label for="doc-report-rows">Doc-report rows: </label>
                 <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
             </fieldset>
-            </div>
-        
+        </div>        
 
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
