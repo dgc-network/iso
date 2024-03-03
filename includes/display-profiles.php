@@ -265,6 +265,7 @@ function get_site_profile_data() {
     }
     wp_send_json($_array);
 */    
+    wp_send_json($response);
 }
 add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
 add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
