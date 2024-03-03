@@ -161,11 +161,6 @@ function display_documents_shortcode() {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $doc_id = (int) get_the_ID();
-                        $todo_id = get_post_meta( $doc_id, 'todo_status', true);
-                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
-                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
-
                         echo '<tr id="edit-document-'.$doc_id.'">';
                         $params = array(
                             'site_id'     => $site_id,
@@ -184,12 +179,20 @@ function display_documents_shortcode() {
                             wp_reset_postdata();
                         }
                         $todo_id = get_post_meta( $doc_id, 'todo_status', true);
-                        $todo_status = ($todo_id && $todo_id!=0) ? get_the_title($todo_id) : 'Draft';
-                        if ($todo_id==-1) $todo_status = __( '發行', 'your-text-domain' );
-                        if ($todo_id==-2) $todo_status = __( '廢止', 'your-text-domain' );
-                        $is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
-                        $del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
-                        echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
+                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                        //$is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
+                        //$del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
+
+                        //$todo_id = get_post_meta( $doc_id, 'todo_status', true);
+                        //$todo_status = ($todo_id && $todo_id!=0) ? get_the_title($todo_id) : 'Draft';
+                        //if ($todo_id==-1) $todo_status = __( '發行', 'your-text-domain' );
+                        //if ($todo_id==-2) $todo_status = __( '廢止', 'your-text-domain' );
+                        //$is_deleting = get_post_meta( $doc_id, 'is_deleting', true);
+                        //$del_status = ($is_deleting) ? '<span style="color:red;">(Deleting)</span>' : '';
+                        //echo '<td style="text-align:center;">'.esc_html($todo_status.$del_status).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                         echo '</tr>';
                     endwhile;
                     wp_reset_postdata();

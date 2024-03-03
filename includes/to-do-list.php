@@ -495,10 +495,10 @@ function set_next_job_and_actions($args = array()) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
         notice_the_persons_in_site($new_todo_id);
-        //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
-        //if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
-        if ($doc_id) delete_post_meta($doc_id, 'todo_status');
-        if ($report_id) delete_post_meta($report_id, 'todo_status');
+        if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
+        if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+        //if ($doc_id) delete_post_meta($doc_id, 'todo_status');
+        //if ($report_id) delete_post_meta($report_id, 'todo_status');
     }
 
     if ($next_job>0) {
