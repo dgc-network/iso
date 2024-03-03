@@ -24,8 +24,10 @@ add_action('init', 'register_job_post_type');
 function profiles_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
+        echo '<div id="disp[lay-profiles">';
         if ($_GET['_select_profile']=='1') display_site_profile();
         if ($_GET['_select_profile']!='1') display_my_profile();
+        echo '</div>';
     } else {
         user_did_not_login_yet();
     }
@@ -121,15 +123,15 @@ function display_site_profile() {
 
     if ($is_site_admin==1 || current_user_can('administrator')) {
         ?>
-        <h2><?php echo __( '單位設定', 'your-text-domain' );?></h2>
+        <h2><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
         <div class="ui-widget">
         <fieldset>
-            <label for="site-title"><?php echo __( '單位名稱：', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
 
-            <label for="site-title"><?php echo __( '單位成員：', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -168,7 +170,7 @@ function display_site_profile() {
             </fieldset>
             <?php display_user_dialog($site_id);?>
 
-            <label for="site-title"><?php echo __( '單位職務：', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '單位組織職務：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -245,6 +247,9 @@ function retrieve_site_job_list_data($site_id=0) {
 }
 
 function get_site_profile_data() {
+    $response = array('html_contain' => display_site_profile());
+    //display_site_profile();
+/*
     $query = retrieve_site_job_list_data($_POST['_site_id']);
     $_array = array();
     if ($query->have_posts()) {
@@ -259,6 +264,7 @@ function get_site_profile_data() {
         wp_reset_postdata();
     }
     wp_send_json($_array);
+*/    
 }
 add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
 add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );

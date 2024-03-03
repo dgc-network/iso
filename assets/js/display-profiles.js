@@ -135,6 +135,8 @@ jQuery(document).ready(function($) {
                 '_site_id': id,
             },
             success: function (response) {
+                $("#display-profiles").html(response.html_contain);
+/*
                 $("[class^='site-job-list-']").hide().empty();
         
                 $.each(response, function (index, value) {
@@ -148,7 +150,7 @@ jQuery(document).ready(function($) {
                     `;
                     $(".site-job-list-" + index).append(output).show();
                 });
-        
+*/        
                 activate_site_profile_data();
             },
             error: function (error) {
