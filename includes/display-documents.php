@@ -775,6 +775,19 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
     <fieldset>
+        <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
+            <fieldset>
+                <label for="doc-title"> Doc: </label>
+                <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="doc-field-setting"> Field setting: </label>
+                <?php echo display_doc_field_list($doc_id);?>
+                <div class="separator"></div>
+                <label for="doc-report-rows">Doc-report rows: </label>
+                <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
+            </fieldset>
+            </div>
+        
+
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
                 <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>

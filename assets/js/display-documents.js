@@ -11,7 +11,6 @@ jQuery(document).ready(function($) {
     });
 
     $("#document-setting").on("click", function () {
-        //$("#document-setting-dialog").toggle();
         $("#document-setting-dialog").dialog('open');
     });
 
@@ -470,6 +469,19 @@ jQuery(document).ready(function($) {
 
     // doc-report scripts
     function activate_doc_report_list_data(doc_id){
+        $("#doc-report-setting").on("click", function () {
+            $("#doc-report-setting-dialog").dialog('open');
+        });
+    
+        $("#doc-report-setting-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+        });
+    
+        activate_doc_field_list_data();
+    
+    
         $("#new-doc-report").on("click", function() {
             $.ajax({
                 type: 'POST',
