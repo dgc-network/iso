@@ -11,7 +11,14 @@ jQuery(document).ready(function($) {
     });
 
     $("#document-setting").on("click", function () {
-        $("#document-setting-dialog").toggle();
+        //$("#document-setting-dialog").toggle();
+        $("#document-setting-dialog").open();
+    });
+
+    $("#document-setting-dialog").dialog({
+        width: 450,
+        modal: true,
+        autoOpen: false,
     });
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -398,7 +405,7 @@ jQuery(document).ready(function($) {
         });
     
         $("#doc-field-dialog").dialog({
-            width: 400,
+            width: 450,
             modal: true,
             autoOpen: false,
             buttons: {

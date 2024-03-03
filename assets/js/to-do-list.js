@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
 
                 // Job action list
                 $("#todo-action-list-dialog").dialog({
-                    width: 400,
+                    width: 450,
                     modal: true,
                     autoOpen: false,
                 });
@@ -89,7 +89,7 @@ jQuery(document).ready(function($) {
                 });                                        
                 
                 $("#todo-action-dialog").dialog({
-                    width: 400,
+                    width: 450,
                     modal: true,
                     autoOpen: false,
                     buttons: {

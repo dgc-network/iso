@@ -247,7 +247,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#user-dialog").dialog({
-        width: 400,
+        width: 450,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -299,7 +299,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#job-dialog").dialog({
-        width: 400,
+        width: 450,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -426,7 +426,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#site-job-action-dialog").dialog({
-        width: 400,
+        width: 450,
         modal: true,
         autoOpen: false,
         buttons: {
