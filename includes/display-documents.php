@@ -280,21 +280,7 @@ function get_document_dialog_data() {
             if (current_user_can('administrator')) {
 /*                
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
-                $site_id = get_post_meta( $doc_id, 'site_id', true);
-                $params = array(
-                    'site_id'     => $site_id,
-                );                
-                $query = retrieve_doc_field_data($params);
-                $_array = array();
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $_list = array();
-                        $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
-                        array_push($_array, $_list);
-                    endwhile;
-                    wp_reset_postdata();
-                }    
-                $result['doc_fields'] = $_array;
+                $result['doc_fields'] = display_doc_field_keys(false, $site_id);
 */
             }
         }
@@ -757,13 +743,12 @@ function display_doc_url_contain($doc_id=false) {
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
-            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>{
-                <span><?php echo esc_html($doc_number);?></span>:
-                <span><?php echo esc_html($doc_revision);?></span>
-            }
+            <span><?php echo esc_html($doc_number);?></span>:
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+            <span><?php echo esc_html($doc_revision);?></span>
         </div>
         <div style="text-align:right; display:flex;">
-            <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
+            <span id="workflow-button" style="margin-right:5px;" class="button">=</span>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -789,10 +774,9 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
-            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>(
-                <span><?php echo esc_html($doc_number);?></span>:
-                <span><?php echo esc_html($doc_revision);?></span>
-            )
+            <span><?php echo esc_html($doc_number);?></span>
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+            <span><?php echo esc_html($doc_revision);?></span>            
         </div>
         <div style="text-align:right; display:flex;">
             <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
@@ -1196,13 +1180,15 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 
 function get_doc_report_dialog_data() {
     $result = array();
-    if (isset($_POST['action']) && $_POST['action'] === 'get_doc_report_dialog_data') {
+    if (isset($_POST['_report_id']) && $_POST['action'] === 'get_doc_report_dialog_data') {
         $report_id = sanitize_text_field($_POST['_report_id']);
         $todo_status = get_post_meta( $report_id, 'todo_status', true);
         if ($todo_status<1) {
             $result['html_contain'] = display_doc_report_dialog($report_id);
             $doc_id = get_post_meta( $report_id, 'doc_id', true);
             $result['doc_id'] = $doc_id;
+            $result['doc_fields'] = display_doc_field_keys($doc_id);
+/*
             $params = array(
                 'doc_id'     => $doc_id,
             );                
@@ -1217,6 +1203,7 @@ function get_doc_report_dialog_data() {
                 wp_reset_postdata();
             }    
             $result['doc_fields'] = $_array;    
+*/            
         }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
