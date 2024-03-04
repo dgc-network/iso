@@ -136,21 +136,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#display-profiles").html(response.html_contain);
-/*
-                $("[class^='site-job-list-']").hide().empty();
-        
-                $.each(response, function (index, value) {
-                    $(".site-job-list-" + index).attr("id", "edit-site-job-" + value.job_id);        
-                    //const isMyJobChecked = value.is_user_job == 1 ? 'checked' : '';
-                    const isStartJobChecked = value.is_start_job == 1 ? 'checked' : '';
-                    const output = `
-                        <td style="text-align: center;"><input type="checkbox" id="check-start-job-${value.job_id}" ${isStartJobChecked} /></td>
-                        <td style="text-align:center;">${value.job_title}</td>
-                        <td>${value.job_content}</td>
-                    `;
-                    $(".site-job-list-" + index).append(output).show();
-                });
-*/        
                 activate_site_profile_data();
             },
             error: function (error) {

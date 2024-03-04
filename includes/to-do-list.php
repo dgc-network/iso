@@ -237,9 +237,9 @@ function display_signature_record() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
-    $result = display_workflow_list($site_id);
-    $html_content = $result['html'];
-    $x_value = $result['x'];
+    $workflow_list = display_workflow_list($site_id);
+    $$html_contain = $workflow_list['html'];
+    $x_value = $workflow_list['x'];
     ?>
     <div class="ui-widget" id="result-container">
     <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
@@ -267,7 +267,7 @@ function display_signature_record() {
                 <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-        <?php echo $html_content;?>
+        <?php echo $$html_contain;?>
         <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
     </fieldset>
     </div>

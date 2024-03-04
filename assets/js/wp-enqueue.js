@@ -1,27 +1,11 @@
 jQuery(document).ready(function($) {
-/*
-    // Check if the user is on a mobile device
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // User is on a mobile device
-        $('.desktop-content').hide();
-    } else {
-        // User is on a desktop
-        $('.mobile-content').hide();
-    }
-*/
     // JavaScript to detect mobile browser
     if (/Mobi/.test(navigator.userAgent)) {
         // User is on a mobile device
         $('.mobile-content').show();
-        //console.log('User is on a mobile device.');
     } else {
-        // User is not on a mobile device, send one-time password via email
+        // User is not on a mobile device, send one-time password via Line
         $('.desktop-content').show();
-        //console.log('User is not on a mobile device. Send one-time password via email.');
-
-        // You can use AJAX to send a request to your server to trigger the email sending
-        // Example using jQuery
-        // $.post('your_email_sending_endpoint.php', { oneTimePassword: <?php echo $one_time_password; ?> });
     }
 
     $("#user-email-input").on( "change", function() {
@@ -103,5 +87,4 @@ jQuery(document).ready(function($) {
             }
         });            
     });            
-
 })

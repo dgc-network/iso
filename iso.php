@@ -20,15 +20,6 @@ if (!defined('ABSPATH')) {
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-function custom_date_format() {
-    $date_format = get_option('date_format');
-    if (empty($date_format)) {
-        $new_date_format = 'Y-m-d'; // Set your desired date format    
-        update_option('date_format', $new_date_format);
-    }
-}
-add_action( 'init', 'custom_date_format' );
 */
 function register_session() {
     if ( ! session_id() ) {
@@ -98,7 +89,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
-add_option('_line_account', 'https://line.me/ti/p/@804poufw');
 add_option('_operation_fee_rate', 0.005);
 add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
 
@@ -230,31 +220,6 @@ function user_did_not_login_yet() {
             </fieldset>
         </div>
         <?php        
-/*
-?>
-<div class="ui-widget">
-    <h2>User registration/login</h2>
-    <form method="post" action="<?php echo site_url('wp-login.php', 'login_post');?>">
-    <fieldset>
-        <label for="display-name">Name:</label>
-        <input type="text" id="display-name" name="_display_name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
-        <label for="user-email">Email:</label>
-        <input type="text" id="user-email" name="_user_email" value="" class="text ui-widget-content ui-corner-all" />
-        <label for="site-id">Site:</label>
-        <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" />
-        <div id="site-hint" style="display:none; color:#999;"></div>
-        <input type="hidden" id="site-id" name="_site_id" />
-        <input type="hidden" id="log" name="log" value="<?php echo esc_attr($_GET['_id']);?>" />
-        <input type="hidden" id="pwd" name="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
-        <input type="hidden" id="rememberme" name="rememberme" value="foreverchecked" />
-        <input type="hidden" name="redirect_to" value="<?php echo esc_attr(home_url());?>" />
-        <hr>
-        <input type="submit" id="wp-submit" name="wp-submit" class="button button-primary" value="Submit" />
-    </fieldset>
-    </form>
-</div>
-<?php        
-*/
 } else {
         // Display a message or redirect to the login/registration page
         $one_time_password = random_int(100000, 999999);
@@ -287,22 +252,7 @@ function user_did_not_login_yet() {
         <?php
     }
 }
-/*
-function custom_login_process($user, $password) {
-    // Check if the login was successful
-    if (is_a($user, 'WP_User')) {
-        $user_data = wp_update_user( array( 
-            'ID' => $user->ID, 
-            'display_name' => $_POST['_display_name'], 
-            'user_email' => $_POST['_user_email'], 
-        ) );
-        // Add/update user metadata
-        update_user_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
-    }
-    return $user;
-}
-//add_filter('wp_authenticate_user', 'custom_login_process', 10, 2);
-*/
+
 function send_one_time_password() {
     $response = array('success' => false, 'error' => 'Invalid data format', 'line_user_id' => false);
     

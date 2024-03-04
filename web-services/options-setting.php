@@ -58,6 +58,34 @@ function web_service_register_settings() {
     );
     register_setting('web-service-settings', 'open_ai_api_key');
     
+    // Register Operation section
+    add_settings_section(
+        'operation_settings_section',
+        'Operation Settings',
+        'operation_settings_section_callback',
+        'web-service-settings'
+    );
+
+    // Register a field
+    add_settings_field(
+        'operation_fee_rate',
+        'Operation fee rate',
+        'operation_fee_rate_callback',
+        'web-service-settings',
+        'operation_settings_section'
+    );
+    register_setting('web-service-settings', 'operation_fee_rate');
+    
+    // Register a field
+    add_settings_field(
+        'operation_wallet_address',
+        'Operation wallet address',
+        'operation_wallet_address_callback',
+        'web-service-settings',
+        'operation_settings_section'
+    );
+    register_setting('web-service-settings', 'operation_wallet_address');
+    
 }
 add_action('admin_init', 'web_service_register_settings');
 
@@ -113,5 +141,19 @@ function open_ai_settings_section_callback() {
 function open_ai_api_key_callback() {
     $value = get_option('open_ai_api_key');
     echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function operation_settings_section_callback() {
+    echo '<p>Settings for operation.</p>';
+}
+
+function operation_fee_rate_callback() {
+    $value = get_option('operation_fee_rate');
+    echo '<input type="text" id="operation_fee_rate" name="operation_fee_rate" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function operation_wallet_address_callback() {
+    $value = get_option('operation_wallet_address');
+    echo '<input type="text" id="operation_wallet_address" name="operation_wallet_address" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 

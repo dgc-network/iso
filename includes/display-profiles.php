@@ -120,9 +120,9 @@ add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
 function display_site_profile() {
     ob_start();
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $user_data = get_userdata( $current_user_id );
+    $user_data = get_userdata($current_user_id);
 
     if ($is_site_admin==1 || current_user_can('administrator')) {
         // Check if the user is administrator
@@ -254,23 +254,6 @@ function retrieve_site_job_list_data($site_id=0) {
 
 function get_site_profile_data() {
     $response = array('html_contain' => display_site_profile());
-    //display_site_profile();
-/*
-    $query = retrieve_site_job_list_data($_POST['_site_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["job_id"] = get_the_ID();
-            $_list["job_title"] = get_the_title();
-            $_list["job_content"] = get_post_field('post_content', get_the_ID());
-            $_list["is_start_job"] = get_post_meta(get_the_ID(), 'is_start_job', true);
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-*/    
     wp_send_json($response);
 }
 add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
@@ -383,7 +366,6 @@ function set_site_user_dialog_data() {
             // Update user meta
             update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
             update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
-
             $response = array('success' => true);
         }
     }
@@ -420,7 +402,7 @@ function display_job_dialog() {
 function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
-        $job_id = (int)sanitize_text_field($_POST['_job_id']);
+        $job_id = sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         $response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
@@ -446,11 +428,10 @@ function set_site_job_dialog_data() {
         $new_post = array(
             'post_title'    => 'New job',
             'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'job', // Change to your custom post type if needed
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'job',
         );    
-        // Insert the post into the database
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
     }

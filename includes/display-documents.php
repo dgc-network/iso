@@ -450,8 +450,6 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 // doc-field
 function display_doc_field_keys($doc_id=false, $site_id=false) {
-    //ob_start();
-    //$site_id = get_post_meta( $doc_id, 'site_id', true);
     $params = array(
         'site_id'     => $site_id,
     );                
@@ -465,9 +463,6 @@ function display_doc_field_keys($doc_id=false, $site_id=false) {
         endwhile;
         wp_reset_postdata();
     }    
-    //echo $_array;
-    //$html = ob_get_clean();
-    //return $html;
     return $_array;
 }
 
@@ -739,11 +734,11 @@ function display_doc_url_contain($doc_id=false) {
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $workflow_list = display_workflow_list($site_id, $doc_id);
-    $html_content = $workflow_list['html'];
+    $$html_contain = $workflow_list['html'];
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
-            <span><?php echo esc_html($doc_number);?></span>:
+            <span><?php echo esc_html($doc_number);?></span>
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
@@ -754,7 +749,7 @@ function display_doc_url_contain($doc_id=false) {
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
+    <div id="workflow-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
     
     <fieldset>
     <?php
@@ -764,13 +759,13 @@ function display_doc_url_contain($doc_id=false) {
 
 // doc-report
 function display_doc_report_list($doc_id=false, $search_doc_report=false) {
-    ob_start();
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $workflow_list = display_workflow_list($site_id, $doc_id);
-    $html_content = $workflow_list['html'];
+    $$html_contain = $workflow_list['html'];
+    ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
@@ -779,13 +774,13 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
         <div style="text-align:right; display:flex;">
-            <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
+            <span id="workflow-button" style="margin-right:5px;" class="button">=</span>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <div id="workflow-div" style="display:none;"><fieldset><?php echo $html_content;?></fieldset></div>
+    <div id="workflow-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
 
     <fieldset>
         <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
@@ -1188,22 +1183,6 @@ function get_doc_report_dialog_data() {
             $doc_id = get_post_meta( $report_id, 'doc_id', true);
             $result['doc_id'] = $doc_id;
             $result['doc_fields'] = display_doc_field_keys($doc_id);
-/*
-            $params = array(
-                'doc_id'     => $doc_id,
-            );                
-            $query = retrieve_doc_field_data($params);
-            $_array = array();
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    $_list = array();
-                    $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
-                    array_push($_array, $_list);
-                endwhile;
-                wp_reset_postdata();
-            }    
-            $result['doc_fields'] = $_array;    
-*/            
         }
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
