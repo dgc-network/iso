@@ -482,10 +482,8 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
             <tbody id="sortable-doc-field-list">
                 <?php
                 $x = 0;
-                $params = array(
-                    'doc_id'     => $doc_id,
-                    'site_id'     => $site_id,
-                );                
+                if ($doc_id) $params = array('doc_id' => $doc_id);
+                if ($site_id) $params = array('site_id' => $site_id);                
                 $query = retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
