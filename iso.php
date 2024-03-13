@@ -197,9 +197,42 @@ function init_webhook_events() {
             
             // Output the detected URLs
             foreach ($urls as $url) {
-                // Redirect to the URL
-                header("Location: $url");
-                exit; // Make sure to exit after the header to prevent further execution
+
+                // Access token for Line's messaging API
+                $access_token = get_option('line_bot_token_option');
+                
+                // Message data
+                $message = [
+                    //'to' => 'USER_ID', // Replace USER_ID with the recipient's Line user ID
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [
+                        [
+                            'type' => 'text',
+                            'text' => $url,
+                        ],
+                    ],
+                ];
+                
+                // Send the message using Line's messaging API
+                //$ch = curl_init('https://api.line.me/v2/bot/message/push');
+                $ch = curl_init('https://api.line.me/v2/bot/message/reply');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $access_token,
+                ]);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                // Handle the response as needed
+                if ($response === false) {
+                    echo 'Error sending Line message: ' . curl_error($ch);
+                } else {
+                    echo 'Line message sent successfully.';
+                }
             }
         }
         
