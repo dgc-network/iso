@@ -118,29 +118,14 @@ function display_documents_shortcode() {
                 'post_type'     => 'document',
             );    
             $post_id = wp_insert_post($new_post);
-            //$site_id = get_post_meta($doc_id, 'site_id', true);
-            update_post_meta( $post_id, 'site_id', $site_id);
-/*
-            $params = array(
-                'site_id'     => $site_id,
-            );                
-            $query = retrieve_doc_field_data($params);
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                    $field_value = sanitize_text_field($_POST[$field_name]);
-                    update_post_meta( $post_id, $field_name, $field_value);
-                endwhile;
-                wp_reset_postdata();
-            }
-*/
+
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_url = get_post_meta($doc_id, 'doc_url', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //update_post_meta( $post_id, 'doc_url', $_POST['_doc_url']);
+            update_post_meta( $post_id, 'site_id', $site_id);
             update_post_meta( $post_id, 'doc_title', $doc_title);
             update_post_meta( $post_id, 'doc_number', $doc_number);
             update_post_meta( $post_id, 'doc_revision', $doc_revision);
@@ -157,8 +142,25 @@ function display_documents_shortcode() {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = sanitize_text_field($_POST[$field_name]);
-                        update_post_meta( $post_id, $field_name, $field_value);
+                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                        $editing_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        // Insert the post into the database
+                        $new_post = array(
+                            'post_status'   => 'publish',
+                            'post_author'   => $current_user_id,
+                            'post_type'     => 'doc-field',
+                        );    
+                        $field_id = wp_insert_post($new_post);
+                        update_post_meta( $field_id, 'doc_id', $post_id);
+                        update_post_meta( $field_id, 'field_name', $field_name);
+                        update_post_meta( $field_id, 'field_title', $field_title);
+                        update_post_meta( $field_id, 'listing_style', $listing_style);
+                        update_post_meta( $field_id, 'editing_type', $editing_type);
+                        update_post_meta( $field_id, 'default_value', $default_value);
+                        update_post_meta( $field_id, 'sorting_key', $sorting_key);
                     endwhile;
                     wp_reset_postdata();
                 }
