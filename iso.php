@@ -88,41 +88,49 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
-/*
-// Sample text containing URLs
-$text = "Here is a link to Google: https://www.google.com";
 
-// Regular expression to detect URLs
-$urlRegex = '/(https?:\/\/[^\s]+)/';
+function send_flex_message($display_name, $link_uri, $text_message) {
+    // Flex Message JSON structure with a button
+    return $flexMessage = [
+        'type' => 'flex',
+        'altText' => 'This is a Flex Message with a Button',
+        'contents' => [
+            'type' => 'bubble',
+            'body' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'Hello, '.$display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ],
+                ],
+            ],
+            'footer' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Replace with your desired URI
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
 
-// Use preg_replace_callback to replace URLs with anchor tags
-$processedText = preg_replace_callback($urlRegex, function($matches) {
-    $url = $matches[0];
-    return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
-}, $text);
-
-// Output the processed text
-//echo $processedText;
-
-// Sample text containing URLs
-$text = "Here is a link to Google: https://www.google.com and another link to OpenAI: https://openai.com";
-
-// Regular expression to detect URLs
-$urlRegex = '/\bhttps?:\/\/\S+\b/';
-
-// Match URLs in the text
-if (preg_match_all($urlRegex, $text, $matches)) {
-    // Extract the matched URLs
-    $urls = $matches[0];
-    
-    // Output the detected URLs
-    foreach ($urls as $url) {
-        echo "Detected URL: $url<br>";
-    }
-} else {
-    echo "No URLs found in the text.";
 }
-*/
 
 function init_webhook_events() {
 
@@ -135,12 +143,16 @@ function init_webhook_events() {
 
     foreach ((array)$events as $event) {
 
+        $profile = $line_bot_api->getProfile($event['source']['userId']);
+        $display_name = str_replace(' ', '', $profile['displayName']);
+
         // Start the User Login/Registration process if got the one time password
         if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
-            $profile = $line_bot_api->getProfile($event['source']['userId']);
-            $display_name = str_replace(' ', '', $profile['displayName']);
+            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
             // Encode the Chinese characters for inclusion in the URL
             $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+            $flexMessage = send_flex_message($display_name, $link_uri, $text_message);
+/*            
             // Flex Message JSON structure with a button
             $flexMessage = [
                 'type' => 'flex',
@@ -180,9 +192,9 @@ function init_webhook_events() {
                     ],
                 ],
             ];
-            
+*/            
             $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'], // Make sure $event['replyToken'] is valid and present
+                'replyToken' => $event['replyToken'],
                 'messages' => [$flexMessage],
             ]);            
         }
@@ -198,6 +210,14 @@ function init_webhook_events() {
             // Output the detected URLs
             foreach ($urls as $url) {
 
+                $text_message = 'You have to click the button below to add a new document.';
+                $flexMessage = send_flex_message($display_name, $url, $text_message);
+
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [$flexMessage],
+                ]);            
+/*    
                 // Access token for Line's messaging API
                 $access_token = get_option('line_bot_token_option');
                 
@@ -233,7 +253,7 @@ function init_webhook_events() {
                 } else {
                     echo 'Line message sent successfully.';
                 }
-                
+*/                
             }
         }
         
