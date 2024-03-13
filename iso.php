@@ -197,7 +197,9 @@ function init_webhook_events() {
             
             // Output the detected URLs
             foreach ($urls as $url) {
-                return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
+                // Redirect to the URL
+                header("Location: $url");
+                exit; // Make sure to exit after the header to prevent further execution
             }
         }
         
