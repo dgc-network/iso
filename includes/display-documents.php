@@ -107,6 +107,65 @@ function display_documents_shortcode() {
     $user_data = get_userdata( $current_user_id );
     // Check if the user is logged in
     if (is_user_logged_in()&&($site_id!=null)) {
+        if( isset($_GET['_get_shared_doc_id']) ) {
+            $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
+            // Insert the post into the database
+            $new_post = array(
+                'post_title'    => 'No title',
+                'post_content'  => 'Your post content goes here.',
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'document',
+            );    
+            $post_id = wp_insert_post($new_post);
+            //$site_id = get_post_meta($doc_id, 'site_id', true);
+            update_post_meta( $post_id, 'site_id', $site_id);
+/*
+            $params = array(
+                'site_id'     => $site_id,
+            );                
+            $query = retrieve_doc_field_data($params);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    $field_value = sanitize_text_field($_POST[$field_name]);
+                    update_post_meta( $post_id, $field_name, $field_value);
+                endwhile;
+                wp_reset_postdata();
+            }
+*/
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $doc_url = get_post_meta($doc_id, 'doc_url', true);
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            //update_post_meta( $post_id, 'doc_url', $_POST['_doc_url']);
+            update_post_meta( $post_id, 'doc_title', $doc_title);
+            update_post_meta( $post_id, 'doc_number', $doc_number);
+            update_post_meta( $post_id, 'doc_revision', $doc_revision);
+            update_post_meta( $post_id, 'doc_url', $doc_url);
+            update_post_meta( $post_id, 'doc_category', $doc_category);
+            update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
+            update_post_meta( $post_id, 'start_leadtime', 86400);
+
+            if ($is_doc_report==1){
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
+                $query = retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $field_value = sanitize_text_field($_POST[$field_name]);
+                        update_post_meta( $post_id, $field_name, $field_value);
+                    endwhile;
+                    wp_reset_postdata();
+                }
+    
+            }
+
+        }
         ?>
         <div class="ui-widget" id="result-container">
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
@@ -278,10 +337,8 @@ function get_document_dialog_data() {
             }
         } else {
             if (current_user_can('administrator')) {
-/*                
-                $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
-                $result['doc_fields'] = display_doc_field_keys(false, $site_id);
-*/
+                //$result['html_contain'] = display_doc_report_dialog(false, $doc_id);
+                //$result['doc_fields'] = display_doc_field_keys(false, $site_id);
             }
         }
 
@@ -741,7 +798,8 @@ function display_doc_url_contain($doc_id=false) {
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
         <div style="text-align:right; display:flex;">
-            <span id="workflow-button" style="margin-right:5px;" class="button">=</span>
+            <span id="share-document" style="margin-right:5px;" class="button"><?php echo __('分享文件', 'your-text-domain')?></span>
+            <span id="workflow-button" style="margin-right:5px;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></span>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -979,13 +1037,13 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php
     }
-        ?>
+    ?>
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         <hr>
-        <?php
+    <?php
     if ($is_doc) {
         ?>
         <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -994,7 +1052,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         </div>
         <div style="text-align:right;">
-            <input type="button" id="duplicate-document-button" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="share-document" value="<?php echo __( 'Share', 'your-text-domain' );?>" style="margin:3px;" />
         </div>
         </div>
         <?php

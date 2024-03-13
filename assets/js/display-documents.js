@@ -1,5 +1,19 @@
 // display documents
 jQuery(document).ready(function($) {
+    function copyToClipboard(text) {
+        // Create a temporary textarea element
+        var textarea = $("<textarea>")
+            .val(text)
+            .appendTo("body")
+            .select();
+    
+        // Execute the copy command
+        document.execCommand("copy");
+    
+        // Remove the textarea from the document
+        textarea.remove();
+    }
+    
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val());
         $(this).val('');
@@ -123,7 +137,7 @@ jQuery(document).ready(function($) {
                     }
                 });
         
-                $("#duplicate-document-button").on("click", function() {
+                $("#duplicate-document").on("click", function() {
                     const ajaxData = {
                         'action': 'duplicate_document_dialog_data',
                     };
@@ -214,6 +228,16 @@ jQuery(document).ready(function($) {
                     });
                 });
 
+                $("#share-document").on("click", function() {
+                    var homeAddress = window.location.origin;
+                    console.log(homeAddress);
+
+                    // Example usage
+                    var textToCopy = homeAddress+"/display-documents/?_get_shared_doc_id="+doc_id;
+                    copyToClipboard(textToCopy);                    
+
+                });
+        
                 $("#workflow-button").on("click", function () {
                     $("#workflow-div").toggle()
                 });
