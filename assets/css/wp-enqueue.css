@@ -40,6 +40,19 @@ input[type="button"]:hover {
     cursor: pointer;
 }
 
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffcc00; /* Yellow background */
+    color: #333; /* Dark text color */
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    z-index: 9999; /* Ensure the box is above other content */
+}
+
 ol {
     margin-left: 20px; /* Adjust the margin as needed */
 }
