@@ -238,6 +238,30 @@ jQuery(document).ready(function($) {
                     // Show the custom alert message
                     var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
                     $("body").append(alertBox);
+                    
+                    // Center the alert box
+                    alertBox.css({
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                    });
+                
+                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                        $(this).remove();
+                    });
+                });
+/*                
+                $("#share-document").on("click", function() {
+                    var homeAddress = window.location.origin;
+                    var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
+                
+                    // Copy the text to clipboard
+                    copyToClipboard(textToCopy);
+                
+                    // Show the custom alert message
+                    var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
+                    $("body").append(alertBox);
                     alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
                         $(this).remove();
                     });

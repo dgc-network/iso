@@ -798,8 +798,8 @@ function display_doc_url_contain($doc_id=false) {
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
         <div style="text-align:right; display:flex;">
-            <button id="share-document" style="margin-right:5px;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="workflow-button" style="margin-right:5px;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
+            <button id="workflow-button" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -830,8 +830,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
         <div style="text-align:right; display:flex;">
-            <button id="share-document" style="margin-right:5px;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="workflow-button" style="margin-right:5px;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
+            <button id="workflow-button" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
