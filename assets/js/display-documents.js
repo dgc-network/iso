@@ -230,6 +230,30 @@ jQuery(document).ready(function($) {
 
                 $("#share-document").on("click", function() {
                     var homeAddress = window.location.origin;
+                    var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
+                
+                    // Copy the text to clipboard
+                    copyToClipboard(textToCopy);
+                
+                    // Show the custom alert message
+                    var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
+                    $("body").append(alertBox);
+                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                        $(this).remove();
+                    });
+                });
+/*                
+                // Function to copy text to clipboard
+                function copyToClipboard(text) {
+                    var $temp = $("<input>");
+                    $("body").append($temp);
+                    $temp.val(text).select();
+                    document.execCommand("copy");
+                    $temp.remove();
+                }
+                
+                $("#share-document").on("click", function() {
+                    var homeAddress = window.location.origin;
                     console.log(homeAddress);
 
                     // Example usage
@@ -237,7 +261,7 @@ jQuery(document).ready(function($) {
                     copyToClipboard(textToCopy);                    
 
                 });
-        
+*/        
                 $("#workflow-button").on("click", function () {
                     $("#workflow-div").toggle()
                 });

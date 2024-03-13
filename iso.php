@@ -233,6 +233,7 @@ function init_webhook_events() {
                 } else {
                     echo 'Line message sent successfully.';
                 }
+                
             }
         }
         
