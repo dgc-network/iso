@@ -807,10 +807,10 @@ function display_doc_url_contain($doc_id=false) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <div id="workflow-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
     
-    <fieldset>
+    <fieldset style="overflow-x:auto; white-space:nowrap;">
     <?php
     $html = ob_get_clean();
-    return $html.$doc_url.'</fieldset>';
+    return $html.'<div style="display:inline-block;">'.$doc_url.'</div></fieldset>';
 }
 
 // doc-report
@@ -830,7 +830,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
         <div style="text-align:right; display:flex;">
-            <span id="workflow-button" style="margin-right:5px;" class="button">=</span>
+            <button id="share-document" style="margin-right:5px;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
+            <button id="workflow-button" style="margin-right:5px;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -1046,15 +1047,8 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     <?php
     if ($is_doc) {
         ?>
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-        <div>
-            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-        </div>
-        <div style="text-align:right;">
-            <input type="button" id="share-document" value="<?php echo __( 'Share', 'your-text-domain' );?>" style="margin:3px;" />
-        </div>
-        </div>
+        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         <?php
     } else {
         ?>
