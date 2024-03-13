@@ -88,9 +88,41 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
+/*
+// Sample text containing URLs
+$text = "Here is a link to Google: https://www.google.com";
 
-//add_option('_operation_fee_rate', 0.005);
-//add_option('_operation_wallet_address', 'DKVr5kVFcDDREPeLSDvUcNbXAffdYuPQCd');
+// Regular expression to detect URLs
+$urlRegex = '/(https?:\/\/[^\s]+)/';
+
+// Use preg_replace_callback to replace URLs with anchor tags
+$processedText = preg_replace_callback($urlRegex, function($matches) {
+    $url = $matches[0];
+    return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
+}, $text);
+
+// Output the processed text
+//echo $processedText;
+
+// Sample text containing URLs
+$text = "Here is a link to Google: https://www.google.com and another link to OpenAI: https://openai.com";
+
+// Regular expression to detect URLs
+$urlRegex = '/\bhttps?:\/\/\S+\b/';
+
+// Match URLs in the text
+if (preg_match_all($urlRegex, $text, $matches)) {
+    // Extract the matched URLs
+    $urls = $matches[0];
+    
+    // Output the detected URLs
+    foreach ($urls as $url) {
+        echo "Detected URL: $url<br>";
+    }
+} else {
+    echo "No URLs found in the text.";
+}
+*/
 
 function init_webhook_events() {
 
@@ -154,6 +186,21 @@ function init_webhook_events() {
                 'messages' => [$flexMessage],
             ]);            
         }
+
+        // Regular expression to detect URLs
+        $urlRegex = '/\bhttps?:\/\/\S+\b/';
+
+        // Match URLs in the text
+        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
+            // Extract the matched URLs
+            $urls = $matches[0];
+            
+            // Output the detected URLs
+            foreach ($urls as $url) {
+                return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
+            }
+        }
+        
 
         // Regular webhook response
         switch ($event['type']) {
