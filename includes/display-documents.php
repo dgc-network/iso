@@ -87,7 +87,23 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    // Migration the_title to meta doc_title
+    // Migrate meta key editing_type to field_type in doc-fields
+    if( isset($_GET['_field_type_migration']) ) {
+        $args = array(
+            'post_type'      => 'doc-field',
+            'posts_per_page' => -1,
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                update_post_meta(get_the_ID(), 'field_type', $field_type);
+                endwhile;
+            wp_reset_postdata();
+        endif;    
+    }
+
+    // Migrate the_title to meta doc_title
     if( isset($_GET['_doc_title_migration']) ) {
         $args = array(
             'post_type'      => 'document',
@@ -684,6 +700,8 @@ function display_doc_field_dialog(){
             <option value="checkbox">Checkbox</option>
             <option value="textarea">Textarea</option>
         </select>
+        <label for="default-value">Deafult:</label>
+        <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style">Style:</label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all">
             <option value="text-align:left;">Left</option>
@@ -691,8 +709,6 @@ function display_doc_field_dialog(){
             <option value="text-align:right;">Right</option>
             <option value=""></option>
         </select>
-        <label for="default-value">Deafult:</label>
-        <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
     </fieldset>
     </div>
     <?php
@@ -704,9 +720,9 @@ function get_doc_field_dialog_data() {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         $response["field_name"] = esc_html(get_post_meta( $field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta( $field_id, 'field_title', true));
-        $response["listing_style"] = get_post_meta( $field_id, 'listing_style', true);
         $response["field_type"] = get_post_meta( $field_id, 'field_type', true);
         $response["default_value"] = esc_html(get_post_meta( $field_id, 'default_value', true));
+        $response["listing_style"] = get_post_meta( $field_id, 'listing_style', true);
     }
     wp_send_json($response);
 }
@@ -720,9 +736,9 @@ function set_doc_field_dialog_data() {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
         update_post_meta( $field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
         update_post_meta( $field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
-        update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
         update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
+        update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -735,8 +751,8 @@ function set_doc_field_dialog_data() {
         if (isset($_POST['_doc_id'])) update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
         update_post_meta( $post_id, 'field_name', 'new_field');
         update_post_meta( $post_id, 'field_title', 'Field title');
-        update_post_meta( $post_id, 'listing_style', 'text-align:center;');
         update_post_meta( $post_id, 'field_type', 'text');
+        update_post_meta( $post_id, 'listing_style', 'text-align:center;');
         update_post_meta( $post_id, 'sorting_key', -1);
     }
     wp_send_json($response);
