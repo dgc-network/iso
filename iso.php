@@ -5,9 +5,9 @@
  * Description: The leading documents management plugin for iso system by shortcode
  * Author: dgc.network
  * Author URI: https://dgc.network/
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.0
- * Tested up to: 6.4.1
+ * Tested up to: 6.4.3
  *
  * Text Domain: iso
  * Domain Path: /languages/
@@ -83,7 +83,7 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
+//require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';

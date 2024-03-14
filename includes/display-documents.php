@@ -459,7 +459,7 @@ function set_document_dialog_data() {
 }
 add_action( 'wp_ajax_set_document_dialog_data', 'set_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data' );
-
+/*
 function duplicate_document_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_doc_id']) ) {
@@ -499,7 +499,7 @@ function duplicate_document_dialog_data() {
 }
 add_action( 'wp_ajax_duplicate_document_dialog_data', 'duplicate_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_duplicate_document_dialog_data', 'duplicate_document_dialog_data' );
-
+*/
 function del_document_dialog_data() {
     $result = wp_delete_post($_POST['_doc_id'], true);
     wp_send_json($result);
@@ -509,9 +509,8 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 // doc-field
 function display_doc_field_keys($doc_id=false, $site_id=false) {
-    $params = array(
-        'site_id'     => $site_id,
-    );                
+    if ($doc_id) $params = array('doc_id' => $doc_id);
+    if ($site_id) $params = array('site_id' => $site_id);
     $query = retrieve_doc_field_data($params);
     $_array = array();
     if ($query->have_posts()) {

@@ -136,7 +136,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                 });
-        
+/*        
                 $("#duplicate-document").on("click", function() {
                     const ajaxData = {
                         'action': 'duplicate_document_dialog_data',
@@ -166,7 +166,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-        
+*/        
                 $("#doc-report-preview").on("click", function () {
                     get_doc_report_list_data(doc_id);
                 });
