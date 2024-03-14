@@ -167,7 +167,7 @@ function retrieve_todo_list_data(){
     return $query;
 }
 
-function display_workflow_list($site_id=false, $doc=false ) {
+function display_signature_record_list($site_id=false, $doc=false ) {
     ob_start();
     ?>
         <table class="ui-widget" style="width:100%;">
@@ -237,9 +237,9 @@ function display_signature_record() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $user_data = get_userdata( $current_user_id );
-    $workflow_list = display_workflow_list($site_id);
-    $$html_contain = $workflow_list['html'];
-    $x_value = $workflow_list['x'];
+    $signature_record_list = display_signature_record_list($site_id);
+    $$html_contain = $signature_record_list['html'];
+    $x_value = $signature_record_list['x'];
     ?>
     <div class="ui-widget" id="result-container">
     <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
@@ -278,7 +278,6 @@ function retrieve_signature_record_data($doc_id=false){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
-        //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(

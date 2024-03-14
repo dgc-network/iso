@@ -791,8 +791,8 @@ function display_doc_url_contain($doc_id=false) {
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $workflow_list = display_workflow_list($site_id, $doc_id);
-    $$html_contain = $workflow_list['html'];
+    $signature_record_list = display_signature_record_list($site_id, $doc_id);
+    $$html_contain = $signature_record_list['html'];
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
@@ -802,13 +802,13 @@ function display_doc_url_contain($doc_id=false) {
         </div>
         <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="workflow-button" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <div id="workflow-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
+    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
     
     <fieldset style="overflow-x:auto; white-space:nowrap;">
     <?php
@@ -822,8 +822,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $workflow_list = display_workflow_list($site_id, $doc_id);
-    $$html_contain = $workflow_list['html'];
+    $signature_record_list = display_signature_record_list($site_id, $doc_id);
+    $html_contain = $signature_record_list['html'];
     ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -834,13 +834,13 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
         </div>
         <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="workflow-button" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <div id="workflow-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
+    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <fieldset>
         <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
@@ -857,7 +857,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
 
         <div style="display:flex; justify-content:space-between; margin:5px;">
             <div>
-                <span id="workflow-button" style="margin-right:5px;" class="dashicons dashicons-menu button"></span>
                 <select id="select-doc-report-function">
                     <option value="">Select action</option>
                     <option value="duplicate">Duplicate</option>
@@ -906,9 +905,16 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                $field_value = get_post_meta( $report_id, $field_name, true);
                                 echo '<td style="'.$listing_style.'">';
-                                echo esc_html(get_post_meta( $report_id, $field_name, true));
+                                if ($field_type=='checkbox') {
+                                    $is_checked = ($field_value==1) ? 'checked' : '';
+                                    echo '<input type="checkbox" '.$is_checked.' />';
+                                } else {
+                                    echo esc_html($field_value);
+                                }
                                 echo '</td>';
                             endwhile;                
                             // Reset only the inner loop's data
@@ -1172,6 +1178,45 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
     
     if ($search_doc_report) {
         $args['meta_query'] = array(
+            'relation' => 'AND', // Change relation to 'AND'
+            array(
+                'key'     => 'doc_id',
+                'value'   => $doc_id,
+                'compare' => '='
+            ),
+            array(
+                'relation' => 'OR',
+            )
+        );
+        $params = array();                
+        $inner_query = retrieve_doc_field_data($params);
+        if ($inner_query->have_posts()) {
+            while ($inner_query->have_posts()) : $inner_query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $args['meta_query'][1][] = array( // Append to the OR relation
+                    'key'     => $field_name,
+                    'value'   => $search_doc_report,
+                    'compare' => 'LIKE',
+                );
+            endwhile;                
+            // Reset only the inner loop's data
+            wp_reset_postdata();
+        }
+    }
+    
+    $query = new WP_Query($args);
+    return $query;
+}
+/*
+function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) {
+    $args = array(
+        'post_type'      => 'doc-report',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+    );
+    
+    if ($search_doc_report) {
+        $args['meta_query'] = array(
             'relation' => 'OR',
         );
         $params = array();                
@@ -1196,18 +1241,18 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
             'value' => $doc_id,
         );
     }
-    
+
     if ($site_id) {
         $args['meta_query'][] = array(
             'key'   => 'site_id',
             'value' => $site_id,
         );
     }
-    
+
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {

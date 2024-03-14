@@ -174,7 +174,7 @@ jQuery(document).ready(function($) {
                 $("#doc-url-preview").on("click", function () {
                     const header = `
                     <fieldset>
-                    <input type ="button" id="workflow-button" value="v" style="margin-right:10px;" />
+                    <input type ="button" id="signature-record" value="v" style="margin-right:10px;" />
                     ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
                     <span id="doc-unpublished" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
                     <span id="doc-print" style="margin-left:5px;" class="dashicons dashicons-printer"></span>
@@ -188,8 +188,8 @@ jQuery(document).ready(function($) {
 
                     $('#result-container').html(header+$("#doc-url").val()+footer);
 
-                    $("#workflow-button").on("click", function () {
-                        $("#workflow-div").toggle()
+                    $("#signature-record").on("click", function () {
+                        $("#signature-record-div").toggle()
                     });
 
                     $("#doc-print").on("click", function () {
@@ -286,8 +286,8 @@ jQuery(document).ready(function($) {
 
                 });
 */        
-                $("#workflow-button").on("click", function () {
-                    $("#workflow-div").toggle()
+                $("#signature-record").on("click", function () {
+                    $("#signature-record-div").toggle()
                 });
 
                 $("#doc-unpublished").on("click", function () {
