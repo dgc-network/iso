@@ -152,47 +152,6 @@ function init_webhook_events() {
             // Encode the Chinese characters for inclusion in the URL
             $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
             $flexMessage = send_flex_message($display_name, $link_uri, $text_message);
-/*            
-            // Flex Message JSON structure with a button
-            $flexMessage = [
-                'type' => 'flex',
-                'altText' => 'This is a Flex Message with a Button',
-                'contents' => [
-                    'type' => 'bubble',
-                    'body' => [
-                        'type' => 'box',
-                        'layout' => 'vertical',
-                        'contents' => [
-                            [
-                                'type' => 'text',
-                                'text' => 'Hello, '.$display_name,
-                                'size' => 'lg',
-                                'weight' => 'bold',
-                            ],
-                            [
-                                'type' => 'text',
-                                'text' => 'You have not logged in yet. Please click the button below to go to the Login/Registration system.',
-                                'wrap' => true,
-                            ],
-                        ],
-                    ],
-                    'footer' => [
-                        'type' => 'box',
-                        'layout' => 'vertical',
-                        'contents' => [
-                            [
-                                'type' => 'button',
-                                'action' => [
-                                    'type' => 'uri',
-                                    'label' => 'Click me!',
-                                    'uri' => $link_uri, // Replace with your desired URI
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-*/            
             $line_bot_api->replyMessage([
                 'replyToken' => $event['replyToken'],
                 'messages' => [$flexMessage],
@@ -209,55 +168,15 @@ function init_webhook_events() {
             
             // Output the detected URLs
             foreach ($urls as $url) {
-
                 $text_message = 'You have to click the button below to add a new document.';
                 $flexMessage = send_flex_message($display_name, $url, $text_message);
-
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
                 ]);            
-/*    
-                // Access token for Line's messaging API
-                $access_token = get_option('line_bot_token_option');
-                
-                // Message data
-                $message = [
-                    //'to' => 'USER_ID', // Replace USER_ID with the recipient's Line user ID
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [
-                        [
-                            'type' => 'text',
-                            'text' => $url,
-                        ],
-                    ],
-                ];
-                
-                // Send the message using Line's messaging API
-                //$ch = curl_init('https://api.line.me/v2/bot/message/push');
-                $ch = curl_init('https://api.line.me/v2/bot/message/reply');
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Content-Type: application/json',
-                    'Authorization: Bearer ' . $access_token,
-                ]);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                
-                $response = curl_exec($ch);
-                curl_close($ch);
-                
-                // Handle the response as needed
-                if ($response === false) {
-                    echo 'Error sending Line message: ' . curl_error($ch);
-                } else {
-                    echo 'Line message sent successfully.';
-                }
-*/                
             }
         }
         
-
         // Regular webhook response
         switch ($event['type']) {
             case 'message':
@@ -300,20 +219,23 @@ function user_did_not_login_yet() {
                 'user_login' => $_GET['_id'],
                 'user_pass' => $_GET['_id'],
             ));
-            $user = get_user_by( 'ID', $user_id );
             add_user_meta( $user_id, 'line_user_id', $_GET['_id']);
-            // To-Do: add_user_meta( $user_id, 'wallet_address', $_GET['_wallet_address']);
+        } else {
+            $user_id = $_GET['_id'];
+            $site_id = get_user_meta( $user_id, 'site_id', true);
+            $site_title = get_the_title($site_id);
         }
+        $user = get_user_by( 'ID', $user_id );
         ?>
         <div class="ui-widget">
             <h2>User registration/login</h2>
             <fieldset>
                 <label for="display-name">Name:</label>
-                <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email">Email:</label>
-                <input type="text" id="user-email" value="" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo esc_attr($user->user_email);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
-                <input type="text" id="site-title" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" />
                 <input type="hidden" id="log" value="<?php echo esc_attr($_GET['_id']);?>" />
