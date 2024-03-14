@@ -1176,17 +1176,18 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
     );
     
+    $args['meta_query'] = array(
+        'relation' => 'AND', // Change relation to 'AND'
+        array(
+            'key'     => 'doc_id',
+            'value'   => $doc_id,
+            'compare' => '='
+        ),
+    );
+
     if ($search_doc_report) {
-        $args['meta_query'] = array(
-            'relation' => 'AND', // Change relation to 'AND'
-            array(
-                'key'     => 'doc_id',
-                'value'   => $doc_id,
-                'compare' => '='
-            ),
-            array(
-                'relation' => 'OR',
-            )
+        $args['meta_query'][] = array(
+            'relation' => 'OR',
         );
         $params = array();                
         $inner_query = retrieve_doc_field_data($params);
