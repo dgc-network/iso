@@ -144,7 +144,7 @@ function display_documents_shortcode() {
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                        $editing_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         // Insert the post into the database
@@ -158,7 +158,7 @@ function display_documents_shortcode() {
                         update_post_meta( $field_id, 'field_name', $field_name);
                         update_post_meta( $field_id, 'field_title', $field_title);
                         update_post_meta( $field_id, 'listing_style', $listing_style);
-                        update_post_meta( $field_id, 'editing_type', $editing_type);
+                        update_post_meta( $field_id, 'field_type', $field_type);
                         update_post_meta( $field_id, 'default_value', $default_value);
                         update_post_meta( $field_id, 'sorting_key', $sorting_key);
                     endwhile;
@@ -549,7 +549,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                         echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'editing_type', true)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                         echo '</tr>';
                         $x += 1;
@@ -604,7 +604,7 @@ function retrieve_doc_field_data($params = array()) {
 
     if (!empty($params['is_editing'])) {
         $args['meta_query'][] = array(
-            'key'     => 'editing_type',
+            'key'     => 'field_type',
             'value'   => '',
             'compare' => '!=',
         );
@@ -638,7 +638,7 @@ function get_doc_field_list_data() {
             $_list["field_id"] = get_the_ID();
             $_list["field_name"] = esc_html(get_post_meta(get_the_ID(), 'field_name', true));
             $_list["field_title"] = esc_html(get_post_meta(get_the_ID(), 'field_title', true));
-            $_list["editing_type"] = esc_html(get_post_meta(get_the_ID(), 'editing_type', true));
+            $_list["field_type"] = esc_html(get_post_meta(get_the_ID(), 'field_type', true));
             $_list["default_value"] = esc_html(get_post_meta(get_the_ID(), 'default_value', true));
             array_push($_array, $_list);
         endwhile;
@@ -649,9 +649,9 @@ function get_doc_field_list_data() {
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
 
-function select_editing_type_option_data($selected_type = 'text') {
+function select_field_type_option_data($selected_type = 'text') {
     $options = '';
-    $editing_types = array(
+    $field_types = array(
         'text' => __('Text', 'your-text-domain'),
         'number' => __('Number', 'your-text-domain'),
         'date' => __('Date', 'your-text-domain'),
@@ -659,7 +659,7 @@ function select_editing_type_option_data($selected_type = 'text') {
         'textarea' => __('Textarea', 'your-text-domain'),
     );
 
-    foreach ($editing_types as $type => $label) {
+    foreach ($field_types as $type => $label) {
         $selected = ($selected_type == $type) ? 'selected' : '';
         $options .= '<option value="' . $type . '" ' . $selected . ' >' . $label . '</option>';
     }
@@ -676,8 +676,8 @@ function display_doc_field_dialog(){
         <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
         <label for="field-title">Title:</label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
-        <label for="editing-type">Type:</label>
-        <select id="editing-type" class="text ui-widget-content ui-corner-all">
+        <label for="field-type">Type:</label>
+        <select id="field-type" class="text ui-widget-content ui-corner-all">
             <option value="text">Text</option>
             <option value="number">Number</option>
             <option value="date">Date</option>
@@ -705,7 +705,7 @@ function get_doc_field_dialog_data() {
         $response["field_name"] = esc_html(get_post_meta( $field_id, 'field_name', true));
         $response["field_title"] = esc_html(get_post_meta( $field_id, 'field_title', true));
         $response["listing_style"] = get_post_meta( $field_id, 'listing_style', true);
-        $response["editing_type"] = get_post_meta( $field_id, 'editing_type', true);
+        $response["field_type"] = get_post_meta( $field_id, 'field_type', true);
         $response["default_value"] = esc_html(get_post_meta( $field_id, 'default_value', true));
     }
     wp_send_json($response);
@@ -721,7 +721,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
         update_post_meta( $field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
-        update_post_meta( $field_id, 'editing_type', sanitize_text_field($_POST['_editing_type']));
+        update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
     } else {
         // Insert the post into the database
@@ -736,7 +736,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $post_id, 'field_name', 'new_field');
         update_post_meta( $post_id, 'field_title', 'Field title');
         update_post_meta( $post_id, 'listing_style', 'text-align:center;');
-        update_post_meta( $post_id, 'editing_type', 'text');
+        update_post_meta( $post_id, 'field_type', 'text');
         update_post_meta( $post_id, 'sorting_key', -1);
     }
     wp_send_json($response);
@@ -906,7 +906,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                                $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta( $report_id, $field_name, true);
                                 echo '<td style="'.$listing_style.'">';
@@ -980,7 +980,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-            $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
             if ($is_doc) {
                 $field_value = get_post_meta( $doc_id, $field_name, true);
             } else {

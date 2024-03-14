@@ -357,7 +357,7 @@ function display_todo_dialog($todo_id) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-            $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
             if ($is_doc) {
                 $field_value = get_post_meta( $doc_id, $field_name, true);
             } else {

@@ -408,7 +408,7 @@ jQuery(document).ready(function($) {
                     const output = `
                         <td style="text-align:center;">${value.field_name}</td>
                         <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.editing_type}</td>
+                        <td style="text-align:center;">${value.field_type}</td>
                         <td style="text-align:center;">${value.default_value}</td>
                     `;
     
@@ -467,7 +467,7 @@ jQuery(document).ready(function($) {
                     $("#field-name").val(response.field_name);
                     $("#field-title").val(response.field_title);
                     $("#listing-style").val(response.listing_style).change();
-                    $("#editing-type").val(response.editing_type).change();
+                    $("#field-type").val(response.field_type).change();
                     $("#default-value").val(response.default_value);
                 },
                 error: function (error) {
@@ -493,7 +493,7 @@ jQuery(document).ready(function($) {
                             '_field_name': $("#field-name").val(),
                             '_field_title': $("#field-title").val(),
                             '_listing_style': $("#listing-style").val(),
-                            '_editing_type': $("#editing-type").val(),
+                            '_field_type': $("#field-type").val(),
                             '_default_value': $("#default-value").val(),
                         },
                         success: function (response) {
