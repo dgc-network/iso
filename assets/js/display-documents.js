@@ -624,7 +624,11 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
                 field_name_id = '#'+value.field_name;
-                ajaxData[value.field_name] = $(field_name_id).val();
+                if (value.field_type=='checkbox') {
+                    ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_id).val();
+                }
             });
             ajaxData['_start_job'] = $("#start-job").val();
             ajaxData['_start_leadtime'] = $("#start-leadtime").val();
@@ -676,7 +680,11 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
                 field_name_id = '#'+value.field_name;
-                ajaxData[value.field_name] = $(field_name_id).val();
+                if (value.field_type=='checkbox') {
+                    ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_id).val();
+                }
             });
             ajaxData['_start_job'] = $("#start-job").val();
             ajaxData['_start_leadtime'] = $("#start-leadtime").val();

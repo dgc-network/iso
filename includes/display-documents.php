@@ -517,6 +517,7 @@ function display_doc_field_keys($doc_id=false, $site_id=false) {
         while ($query->have_posts()) : $query->the_post();
             $_list = array();
             $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
+            $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -1208,52 +1209,7 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) {
-    $args = array(
-        'post_type'      => 'doc-report',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-    );
-    
-    if ($search_doc_report) {
-        $args['meta_query'] = array(
-            'relation' => 'OR',
-        );
-        $params = array();                
-        $inner_query = retrieve_doc_field_data($params);
-        if ($inner_query->have_posts()) {
-            while ($inner_query->have_posts()) : $inner_query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $args['meta_query'][] = array(
-                    'key'   => $field_name,
-                    'value' => $search_doc_report,
-                    'compare' => 'LIKE',
-                );
-            endwhile;                
-            // Reset only the inner loop's data
-            wp_reset_postdata();
-        }
-    }
-    
-    if ($doc_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'doc_id',
-            'value' => $doc_id,
-        );
-    }
 
-    if ($site_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'site_id',
-            'value' => $site_id,
-        );
-    }
-
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {
