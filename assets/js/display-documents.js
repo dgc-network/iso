@@ -498,7 +498,11 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            get_doc_field_list_data($("#doc-id").val());
+                            if ($("#site-id").val() != '') {
+                                get_doc_field_list_data(false, $("#site-id").val());
+                            } else {
+                                get_doc_field_list_data($("#doc-id").val());
+                            }
 /*
                             if ($("#site-id").length === 0 || $("#site-id").val() === '') {
                                 get_doc_field_list_data($("#doc-id").val());

@@ -87,7 +87,7 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    // Migrate meta key editing_type to field_type in doc-fields
+    // Migrate meta key editing_type to field_type in doc-field
     if( isset($_GET['_field_type_migration']) ) {
         $args = array(
             'post_type'      => 'doc-field',
