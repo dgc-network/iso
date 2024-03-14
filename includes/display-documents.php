@@ -614,16 +614,18 @@ function retrieve_doc_field_data($params = array()) {
 }
 
 function get_doc_field_list_data() {
+    if (isset($_POST['_site_id'])) {
+        $site_id = (int) $_POST['_site_id'];
+        $params = array(
+            'site_id'     => $site_id,
+        );                
+        $query = retrieve_doc_field_data($params);
+    }
+
     if (isset($_POST['_doc_id'])) {
         $doc_id = (int) $_POST['_doc_id'];
         $params = array(
             'doc_id'     => $doc_id,
-        );                
-        $query = retrieve_doc_field_data($params);
-    } elseif (isset($_POST['_site_id'])) {
-        $site_id = (int) $_POST['_site_id'];
-        $params = array(
-            'site_id'     => $site_id,
         );                
         $query = retrieve_doc_field_data($params);
     }
