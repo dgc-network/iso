@@ -474,47 +474,7 @@ function set_document_dialog_data() {
 }
 add_action( 'wp_ajax_set_document_dialog_data', 'set_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data' );
-/*
-function duplicate_document_dialog_data() {
-    $current_user_id = get_current_user_id();
-    if( isset($_POST['_doc_id']) ) {
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        // Insert the post into the database
-        $new_post = array(
-            'post_title'    => 'No title',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'document',
-        );    
-        $post_id = wp_insert_post($new_post);
-        $site_id = get_post_meta($doc_id, 'site_id', true);
-        update_post_meta( $post_id, 'site_id', $site_id);
-        $params = array(
-            'site_id'     => $site_id,
-        );                
-        $query = retrieve_doc_field_data($params);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $field_value = sanitize_text_field($_POST[$field_name]);
-                update_post_meta( $post_id, $field_name, $field_value);
-            endwhile;
-            wp_reset_postdata();
-        }
-        $doc_url = get_post_meta($doc_id, 'doc_url', true);
-        $doc_category = get_post_meta($doc_id, 'doc_category', true);
-        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        update_post_meta( $post_id, 'doc_url', $_POST['_doc_url']);
-        update_post_meta( $post_id, 'doc_category', $doc_category);
-        update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
-        update_post_meta( $post_id, 'start_leadtime', 86400);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_duplicate_document_dialog_data', 'duplicate_document_dialog_data' );
-add_action( 'wp_ajax_nopriv_duplicate_document_dialog_data', 'duplicate_document_dialog_data' );
-*/
+
 function del_document_dialog_data() {
     $result = wp_delete_post($_POST['_doc_id'], true);
     wp_send_json($result);
@@ -543,6 +503,7 @@ function display_doc_field_keys($doc_id=false, $site_id=false) {
 function display_doc_field_list($doc_id=false, $site_id=false) {
     ob_start();
     ?>
+    <div id="fields-container">
     <fieldset>
         <table style="width:100%;">
             <thead>
@@ -580,6 +541,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
         </table>
         <input type ="button" id="new-doc-field" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     </fieldset>
+    </div>
     <?php display_doc_field_dialog();?>
     <?php
     $html = ob_get_clean();
@@ -630,6 +592,19 @@ function retrieve_doc_field_data($params = array()) {
 }
 
 function get_doc_field_list_data() {
+    $result = array();
+    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_field_list_data') {
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $result['html_contain'] = display_doc_field_list($doc_id);
+        if (isset($_POST['_site_id'])) {
+            $site_id = sanitize_text_field($_POST['_site_id']);
+            $result['html_contain'] = display_doc_field_list(false, $site_id);
+        }
+    } else {
+        $result['html_contain'] = 'Invalid AJAX request!';
+    }
+    wp_send_json($result);
+/*
     if (isset($_POST['_site_id'])) {
         $site_id = (int) $_POST['_site_id'];
         $params = array(
@@ -660,6 +635,7 @@ function get_doc_field_list_data() {
         wp_reset_postdata();
     }
     wp_send_json($_array);
+*/    
 }
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');

@@ -24,7 +24,7 @@ add_action('init', 'register_job_post_type');
 function profiles_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        echo '<div id="disp[lay-profiles">';
+        echo '<div class="ui-widget" id="result-container">';
         if ($_GET['_select_profile']=='1') echo display_site_profile();
         if ($_GET['_select_profile']!='1') echo display_my_profile();
         echo '</div>';
@@ -45,7 +45,6 @@ function display_my_profile() {
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
         ?>
         <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
-        <div class="ui-widget">
         <fieldset>
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
@@ -97,7 +96,6 @@ function display_my_profile() {
             </div>
 
         </fieldset>
-        </div>
         <?php
     }
     $html = ob_get_clean();
@@ -128,7 +126,6 @@ function display_site_profile() {
         // Check if the user is administrator
         ?>
         <h2><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
-        <div class="ui-widget">
         <fieldset>
             <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
@@ -226,7 +223,6 @@ function display_site_profile() {
             </div>
 
         </fieldset>
-        </div>
         <?php
     } else {
         ?>

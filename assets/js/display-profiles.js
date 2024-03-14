@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
                 '_site_id': id,
             },
             success: function (response) {
-                $("#display-profiles").html(response.html_contain);
+                $("#result-container").html(response.html_contain);
                 activate_site_profile_data();
             },
             error: function (error) {

@@ -395,7 +395,8 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
-
+                $('#fields-container').html(response.html_contain);
+/*
                 for (let index = 0; index < 50; index++) {
                     $(`.doc-field-list-${index}`).hide().empty();
                 }
@@ -414,6 +415,7 @@ jQuery(document).ready(function($) {
     
                     $docFieldList.append(output).show();
                 });
+*/                
                 activate_doc_field_list_data();
             },
             error: function (error) {
