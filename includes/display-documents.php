@@ -892,6 +892,64 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     return $html;
 }
 
+function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
+    $args = array(
+        'post_type'      => 'doc-report',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            'relation' => 'AND', // Change relation to 'AND'
+            array(
+                'key'     => 'doc_id',
+                'value'   => $doc_id,
+                'compare' => '='
+            ),
+        ),
+    );
+
+    $order_field_name = ''; // Initialize variable to store the meta key for ordering
+    $order_field_value = ''; // Initialize variable to store the order direction
+
+    if ($search_doc_report) {
+        $args['meta_query'][] = array(
+            'relation' => 'OR',
+        );
+
+        $inner_query = retrieve_doc_field_data(array()); // I assume retrieve_doc_field_data function returns WP_Query object
+
+        if ($inner_query->have_posts()) {
+            while ($inner_query->have_posts()) : $inner_query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
+
+                // Check if the order_field_value is valid
+                if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
+                    $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
+                }
+
+                $args['meta_query'][1][] = array( // Append to the OR relation
+                    'key'     => $field_name,
+                    'value'   => $search_doc_report,
+                    'compare' => 'LIKE',
+                );
+            endwhile;
+
+            // Reset only the inner loop's data
+            wp_reset_postdata();
+        }
+    }
+
+    // Check if order_field_name is not empty before setting orderby and meta_key
+    if (!empty($order_field_name)) {
+        $args['orderby']  = 'meta_value';
+        $args['meta_key'] = $order_field_name;
+        $args['order']    = $order_field_value;
+    }
+
+    $query = new WP_Query($args);
+    return $query;
+}
+
 function display_doc_report_dialog($report_id=false, $doc_id=false) {
     $is_doc = false;
     if ($doc_id) {
@@ -1142,7 +1200,7 @@ function duplicate_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
-
+/*
 function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) {
     $args = array(
         'post_type'      => 'doc-report',
@@ -1188,7 +1246,7 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {
