@@ -1059,11 +1059,14 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         <?php
     } else {
+        $todo_status = get_post_meta( $report_id, 'todo_status', true);        
         ?>
         <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
+        <?php if ($todo_status!=-1){?>
             <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
             <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+        <?php }?>
         </div>
         <div style="text-align:right;">
             <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
