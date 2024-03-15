@@ -1212,6 +1212,8 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
         if ($inner_query->have_posts()) {
             while ($inner_query->have_posts()) : $inner_query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
+                if ($order_field_value) $order_field_name = $field_name;
                 $args['meta_query'][1][] = array( // Append to the OR relation
                     'key'     => $field_name,
                     'value'   => $search_doc_report,
@@ -1223,6 +1225,10 @@ function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) 
         }
     }
     
+    $args['orderby'] = 'meta_value';
+    $args['meta_key'] = $order_field_name;
+    $args['order'] = $order_field_value;
+
     $query = new WP_Query($args);
     return $query;
 }
