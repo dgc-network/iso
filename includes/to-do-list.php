@@ -398,17 +398,15 @@ function display_todo_dialog($todo_id) {
     if ($is_doc) {
         if ($is_doc_report==1) {
             ?>
-            <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <label id="doc-field-setting" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-url" rows="3" style="width:100%; display:none;" disabled><?php echo $doc_url;?></textarea>
             <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
-            <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <label id="doc-field-setting" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-url" rows="3" style="width:100%;" disabled><?php echo $doc_url;?></textarea>
-            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         }
         ?>
@@ -418,7 +416,7 @@ function display_todo_dialog($todo_id) {
         <?php
     }
     ?>
-    <label for="todo-action-list"><?php echo get_the_title($todo_id).__( '待辦狀態', 'your-text-domain' );?></label><br>
+    <label for="todo-action-list"><?php echo get_the_title($todo_id).__( '待辦', 'your-text-domain' );?></label><br>
     <fieldset>
         <table style="width:100%;">
             <thead>
@@ -427,16 +425,15 @@ function display_todo_dialog($todo_id) {
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
                     <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                $inner_query = retrieve_todo_action_list_data($todo_id);
-                if ($inner_query->have_posts()) {
+                $query = retrieve_todo_action_list_data($todo_id);
+                if ($query->have_posts()) {
                     while ($inner_query->have_posts()) : $inner_query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        echo '<tr id="edit-todo-action-'.esc_attr(get_the_ID()).'">';
+                        echo '<tr id="edit-action-'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
                         echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
                         if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
@@ -450,11 +447,9 @@ function display_todo_dialog($todo_id) {
                 ?>
             </tbody>
         </table>
-        <div id="new-todo-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <div id="new-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     <?php display_todo_action_dialog();?>
-
-    <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     <hr>
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
