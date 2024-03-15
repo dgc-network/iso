@@ -416,13 +416,6 @@ jQuery(document).ready(function($) {
                             $("#doc-field-dialog").dialog('close');
                             if (site_id) get_doc_field_list_data(false, site_id);
                             if (doc_id) get_doc_field_list_data(doc_id);
-/*
-                            if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                get_doc_field_list_data($("#doc-id").val());
-                            } else {
-                                get_doc_field_list_data(false, $("#site-id").val());
-                            }
-*/                            
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -442,11 +435,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                if ($("#site-id").length === 0 || $("#site-id").val() === '') {
-                                    get_doc_field_list_data($("#doc-id").val());
-                                } else {
-                                    get_doc_field_list_data(false, $("#site-id").val());
-                                }
+                                if (site_id) get_doc_field_list_data(false, site_id);
+                                if (doc_id) get_doc_field_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
@@ -509,7 +499,6 @@ jQuery(document).ready(function($) {
         };
     
         if (doc_id) ajaxData['_doc_id'] = doc_id;
-        //if (site_id) ajaxData['_site_id'] = site_id;
         if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
     
         $.ajax({
@@ -589,6 +578,10 @@ jQuery(document).ready(function($) {
                     }
                 });
             }
+        });
+
+        $("#signature-record").on("click", function () {
+            $("#signature-record-div").toggle()
         });
 
         $('[id^="duplicate-doc-report-"]').on("click", function () {
