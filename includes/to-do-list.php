@@ -331,6 +331,7 @@ function display_todo_dialog($todo_id) {
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_url = get_post_meta( $doc_id, 'doc_url', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
             'site_id'     => $site_id,
             'is_editing'  => true,
@@ -416,7 +417,7 @@ function display_todo_dialog($todo_id) {
         <?php
     }
     ?>
-    <label for="todo-action-list"><?php echo get_the_title($todo_id).__( '待辦', 'your-text-domain' );?></label><br>
+    <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
     <fieldset>
         <table style="width:100%;">
             <thead>
