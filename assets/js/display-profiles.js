@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
         });            
     });            
 
-    activate_site_profile_data()
+    activate_site_profile_data($("#site-id").val())
 
     $("#new-site-job").on("click", function() {
         $.ajax({
@@ -125,18 +125,18 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function get_site_profile_data(id){
+    function get_site_profile_data(site_id){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'get_site_profile_data',
-                '_site_id': id,
+                '_site_id': site_id,
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
-                activate_site_profile_data();
+                activate_site_profile_data(site_id);
             },
             error: function (error) {
                 console.error(error);
@@ -145,7 +145,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function activate_site_profile_data(){
+    function activate_site_profile_data(site_id){
         $('[id^="edit-site-user-"]').on("click", function () {
             const user_id = this.id.substring(15);
             $.ajax({
@@ -231,110 +231,116 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    }
 
-    $("#user-dialog").dialog({
-        width: 450,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function () {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_site_user_dialog_data',
-                        '_user_id': $("#user-id").val(),
-                        '_display_name': $("#display-name").val(),
-                        '_user_email': $("#user-email").val(),
-                        '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
-                        '_select_site': $("#select-site").val(),
-                    },
-                    success: function (response) {
-                        $("#user-dialog").dialog('close');
-                        get_site_profile_data($("#site-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            },
-            "Delete": function () {
-                if (window.confirm("Are you sure you want to delete this site user?")) {
+        $("#user-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'del_site_user_dialog_data',
+                            'action': 'set_site_user_dialog_data',
                             '_user_id': $("#user-id").val(),
+                            '_display_name': $("#display-name").val(),
+                            '_user_email': $("#user-email").val(),
+                            '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                            '_select_site': $("#select-site").val(),
                         },
                         success: function (response) {
                             $("#user-dialog").dialog('close');
-                            get_site_profile_data($("#site-id").val());
+                            //get_site_profile_data($("#site-id").val());
+                            get_site_profile_data(site_id);
                         },
                         error: function (error) {
                             console.error(error);
                             alert(error);
                         }
                     });
-                }
-            },
-        }
-    });
-
-    $("#job-dialog").dialog({
-        width: 450,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function () {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_site_job_dialog_data',
-                        '_job_id': $("#job-id").val(),
-                        '_job_title': $("#job-title").val(),
-                        '_job_content': $("#job-content").val(),
-                        '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
-                    },
-                    success: function (response) {
-                        $("#job-dialog").dialog('close');
-                        get_site_profile_data($("#site-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this site user?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_site_user_dialog_data',
+                                '_user_id': $("#user-id").val(),
+                            },
+                            success: function (response) {
+                                $("#user-dialog").dialog('close');
+                                //get_site_profile_data($("#site-id").val());
+                                get_site_profile_data(site_id);
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
                     }
-                });
-            },
-            "Delete": function () {
-                if (window.confirm("Are you sure you want to delete this site job?")) {
+                },
+            }
+        });
+    
+        $("#job-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'del_site_job_dialog_data',
+                            'action': 'set_site_job_dialog_data',
                             '_job_id': $("#job-id").val(),
+                            '_job_title': $("#job-title").val(),
+                            '_job_content': $("#job-content").val(),
+                            '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#job-dialog").dialog('close');
-                            get_site_profile_data($("#site-id").val());
+                            //get_site_profile_data($("#site-id").val());
+                            get_site_profile_data(site_id);
                         },
                         error: function (error) {
                             console.error(error);
                             alert(error);
                         }
                     });
-                }
-            },
-        }
-    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this site job?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_site_job_dialog_data',
+                                '_job_id': $("#job-id").val(),
+                            },
+                            success: function (response) {
+                                $("#job-dialog").dialog('close');
+                                //get_site_profile_data($("#site-id").val());
+                                get_site_profile_data(site_id);
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });
+    
+    }
+
 
     // Site job actions template
     $("#btn-new-site-job-action").on("click", function() {
