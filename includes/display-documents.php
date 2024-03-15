@@ -179,10 +179,8 @@ function display_documents_shortcode() {
                         update_post_meta( $field_id, 'sorting_key', $sorting_key);
                     endwhile;
                     wp_reset_postdata();
-                }
-    
+                }    
             }
-
         }
         ?>
         <div class="ui-widget" id="result-container">
@@ -191,6 +189,7 @@ function display_documents_shortcode() {
             <div id="document-setting-dialog" title="Document setting" style="display:none">
             <fieldset>
                 <label for="site-title"> Site: </label>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="doc-field-setting"> Field setting: </label>
                 <?php echo display_doc_field_list(false, $site_id);?>
