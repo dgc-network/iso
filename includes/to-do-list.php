@@ -418,7 +418,42 @@ function display_todo_dialog($todo_id) {
         <?php
     }
     ?>
-    <label for="action-list-button"><?php echo __( '待辦狀態', 'your-text-domain' );?></label><br>
+    <label for="todo-action-list"><?php echo __( '待辦狀態', 'your-text-domain' );?></label><br>
+    <fieldset>
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $query = retrieve_todo_action_list_data($todo_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        echo '<tr id="edit-todo-action-'.esc_attr(get_the_ID()).'" style="display:none;">';
+                        echo '<td style="text-align:center;">'.get_the_title().'</td>';
+                        echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
+                        if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
+                        if ($next_job==-1) echo '<td style="text-align:center;">'.__( '發行', 'your-text-domain' ).'</td>';
+                        if ($next_job==-2) echo '<td style="text-align:center;">'.__( '廢止', 'your-text-domain' ).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
+                        echo '</tr>';
+                    endwhile;
+                    wp_reset_postdata();
+                }
+                ?>
+            </tbody>
+        </table>
+        <div id="new-todo-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
+    <?php display_todo_action_dialog();?>
+
     <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     <hr>
     <?php

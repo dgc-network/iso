@@ -54,8 +54,7 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                $("#action-list-button").on( "click", function(e) {
-                    e.preventDefault();
+                $("#action-list-button").on( "click", function() {
                     get_todo_action_list_data(todo_id);
                 })
 
