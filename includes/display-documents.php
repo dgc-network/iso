@@ -794,7 +794,7 @@ function display_doc_url_contain($doc_id=false) {
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
-        <div style="text-align:right;">
+        <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -828,7 +828,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
-        <div style="text-align:right;">
+        <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -963,13 +963,26 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
+        $todo_status = get_post_meta( $report_id, 'todo_status', true);
     }
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
     ob_start();
     ?>
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+        </div>
+        <div style="text-align:right; display:flex;">        
+        <?php if ($todo_status==-1){?>
+            <button id="duplicate-doc-report" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製文件', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+        <?php }?>
+        </div>
+    </div>
+
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
     <fieldset>
@@ -1059,20 +1072,19 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         <?php
     } else {
-        $todo_status = get_post_meta( $report_id, 'todo_status', true);        
+        if ($todo_status!=-1){
         ?>
         <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
-        <?php if ($todo_status!=-1){?>
             <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
             <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-        <?php }?>
         </div>
         <div style="text-align:right;">
             <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
         </div>
         </div>
         <?php
+        }
     }
     ?>
     </fieldset>
