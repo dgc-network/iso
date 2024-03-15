@@ -435,8 +435,8 @@ function display_todo_dialog($todo_id) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        if ($is_site_admin) $action_id = get_the_ID();
-                        echo '<tr id="edit-action-'.esc_attr($action_id).'">';
+                        if ($is_site_admin) $edit_action = 'edit-action-';
+                        echo '<tr id="'.$edit_action.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
                         echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
                         if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
@@ -450,8 +450,9 @@ function display_todo_dialog($todo_id) {
                 ?>
             </tbody>
         </table>
-        <?php if ($is_site_admin)?>
+        <?php if ($is_site_admin){?>
         <div id="new-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+        <?php }?>
     </fieldset>
     <?php display_todo_action_dialog();?>
     <hr>
