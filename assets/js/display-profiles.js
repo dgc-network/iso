@@ -1,11 +1,6 @@
 // display-profiles
 jQuery(document).ready(function($) {
 
-    $("#select-profile").on( "change", function() {
-        window.location.replace("?_select_profile="+$(this).val());
-        $(this).val('');
-    });
-
     $('#site-title').on('input', function() {
         // Show the site-hint when the user starts typing
         $.ajax({
@@ -146,6 +141,11 @@ jQuery(document).ready(function($) {
     }
 
     function activate_site_profile_data(site_id){
+        $("#select-profile").on( "change", function() {
+            window.location.replace("?_select_profile="+$(this).val());
+            $(this).val('');
+        });
+    
         $('[id^="edit-site-user-"]').on("click", function () {
             const user_id = this.id.substring(15);
             $.ajax({

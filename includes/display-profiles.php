@@ -188,7 +188,7 @@ function display_site_profile() {
                 <?php
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
-                    $x = 0;
+                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
                         $start_job_checked = ($is_start_job==1) ? 'checked' : '';
@@ -199,13 +199,13 @@ function display_site_profile() {
                             <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?> /></td>
                         </tr>
                         <?php 
-                        $x += 1;
+                        //$x += 1;
                     endwhile;
                     wp_reset_postdata();
-                    while ($x<50) {
-                        echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
-                        $x += 1;
-                    }
+                    //while ($x<50) {
+                    //    echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
+                    //    $x += 1;
+                    //}
                 endif;
                 ?>
                 </tbody>
