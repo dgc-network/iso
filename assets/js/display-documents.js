@@ -161,6 +161,25 @@ jQuery(document).ready(function($) {
                     });
 
                     $("#doc-print").on("click", function () {
+
+                        window.frames['iframe'].print();
+/*
+                        // Fetch the content of the Google Docs document using the Google Docs API
+                        fetch('https://docs.google.com/document/d/e/2PACX-1vT2hovdMX1k-QBXx8VaSfP4mpgny6zED9qVY7DJ5gR8r_j9a1cYmQjj_zG0FU6RNj02Y92CkdomZ3BL/pub?embedded=true')
+                        .then(response => response.text())
+                        .then(data => {
+                          // Display the content on the page or process it as needed
+                          document.getElementById('iframe-content').innerHTML = data;
+                        })
+                        .catch(error => {
+                          console.error('Error fetching document:', error);
+                        });
+                        
+                        // Function to print the content of the iframe
+                        function printIframeContent() {
+                        window.frames['iframe'].print();
+                        }
+                        
                         // Find the iframe element in the document
                         var iframe = document.querySelector('iframe');
 
