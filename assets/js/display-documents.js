@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    activate_doc_field_list_data(false, $("#site-id"));
+    activate_doc_field_list_data(false, $("#site-id").val());
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
