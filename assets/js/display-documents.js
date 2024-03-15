@@ -581,7 +581,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#signature-record").on("click", function () {
-            $("#signature-record-div").toggle()
+            $("#report-signature-record-div").toggle()
         });
 
         $('[id^="duplicate-doc-report-"]').on("click", function () {

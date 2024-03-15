@@ -985,7 +985,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         </div>
     </div>
 
-    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
+    <div id="report-signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
