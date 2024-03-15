@@ -512,7 +512,6 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                     <th><?php echo __( 'Field', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Type', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Default', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody id="sortable-doc-field-list">
@@ -527,7 +526,6 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                         echo '</tr>';
                         $x += 1;
                     endwhile;
@@ -607,24 +605,6 @@ function get_doc_field_list_data() {
 }
 add_action('wp_ajax_get_doc_field_list_data', 'get_doc_field_list_data');
 add_action('wp_ajax_nopriv_get_doc_field_list_data', 'get_doc_field_list_data');
-
-function select_field_type_option_data($selected_type = 'text') {
-    $options = '';
-    $field_types = array(
-        'text' => __('Text', 'your-text-domain'),
-        'number' => __('Number', 'your-text-domain'),
-        'date' => __('Date', 'your-text-domain'),
-        'checkbox' => __('Checkbox', 'your-text-domain'),
-        'textarea' => __('Textarea', 'your-text-domain'),
-    );
-
-    foreach ($field_types as $type => $label) {
-        $selected = ($selected_type == $type) ? 'selected' : '';
-        $options .= '<option value="' . $type . '" ' . $selected . ' >' . $label . '</option>';
-    }
-
-    return $options;
-}
 
 function display_doc_field_dialog(){
     ?>
