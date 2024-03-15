@@ -382,9 +382,10 @@ jQuery(document).ready(function($) {
                     $("#field-id").val(field_id);
                     $("#field-name").val(response.field_name);
                     $("#field-title").val(response.field_title);
-                    $("#listing-style").val(response.listing_style).change();
                     $("#field-type").val(response.field_type).change();
                     $("#default-value").val(response.default_value);
+                    $("#listing-style").val(response.listing_style).change();
+                    $("#order-field").val(response.order_field).change();
                 },
                 error: function (error) {
                     console.error(error);                
@@ -408,9 +409,10 @@ jQuery(document).ready(function($) {
                             '_field_id': $("#field-id").val(),
                             '_field_name': $("#field-name").val(),
                             '_field_title': $("#field-title").val(),
-                            '_listing_style': $("#listing-style").val(),
                             '_field_type': $("#field-type").val(),
                             '_default_value': $("#default-value").val(),
+                            '_listing_style': $("#listing-style").val(),
+                            '_order_field': $("#order-field").val(),
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');

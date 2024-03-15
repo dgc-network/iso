@@ -684,6 +684,12 @@ function display_doc_field_dialog(){
             <option value="text-align:right;">Right</option>
             <option value=""></option>
         </select>
+        <label for="order-field">Order:</label>
+        <select id="order-field" class="text ui-widget-content ui-corner-all">
+            <option value="ASC">ASC</option>
+            <option value="DESC">DESC</option>
+            <option value=""></option>
+        </select>
     </fieldset>
     </div>
     <?php
@@ -698,6 +704,7 @@ function get_doc_field_dialog_data() {
         $response["field_type"] = get_post_meta( $field_id, 'field_type', true);
         $response["default_value"] = esc_html(get_post_meta( $field_id, 'default_value', true));
         $response["listing_style"] = get_post_meta( $field_id, 'listing_style', true);
+        $response["order_field"] = get_post_meta( $field_id, 'order_field', true);
     }
     wp_send_json($response);
 }
@@ -714,6 +721,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
+        update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
     } else {
         // Insert the post into the database
         $new_post = array(
