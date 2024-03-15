@@ -559,7 +559,7 @@ function set_next_job_and_actions($args = array()) {
 }
 /*
 // Flex Message JSON structure with a button
-function send_flex_message_with_button_link($user, $message_text='', $link_uri='') {
+function set_flex_message_with_button_link($user, $message_text='', $link_uri='') {
     $line_bot_api = new line_bot_api();
     $flexMessage = [
         'type' => 'flex',
@@ -638,9 +638,9 @@ function notice_the_persons_in_charge($todo_id=0) {
     $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        //send_flex_message_with_button_link($user, $message_text, $link_uri);
-        $flexMessage = send_flex_message($user->display_name, $link_uri, $text_message);
-        $line_bot_api->replyMessage([
+        //set_flex_message_with_button_link($user, $message_text, $link_uri);
+        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
+        $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
         ]);            
@@ -682,9 +682,9 @@ function notice_the_persons_in_site($todo_id=0) {
 
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        //send_flex_message_with_button_link($user, $message_text, $doc_url);
-        $flexMessage = send_flex_message($user->display_name, $link_uri, $text_message);
-        $line_bot_api->replyMessage([
+        //set_flex_message_with_button_link($user, $message_text, $doc_url);
+        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
+        $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
         ]);            

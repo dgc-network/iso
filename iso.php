@@ -89,7 +89,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
-function send_flex_message($display_name, $link_uri, $text_message) {
+function set_flex_message($display_name, $link_uri, $text_message) {
     // Flex Message JSON structure with a button
     return $flexMessage = [
         'type' => 'flex',
@@ -151,7 +151,7 @@ function init_webhook_events() {
             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
             // Encode the Chinese characters for inclusion in the URL
             $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-            $flexMessage = send_flex_message($display_name, $link_uri, $text_message);
+            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
             $line_bot_api->replyMessage([
                 'replyToken' => $event['replyToken'],
                 'messages' => [$flexMessage],
@@ -187,7 +187,7 @@ function init_webhook_events() {
                     }
                 }
                 
-                $flexMessage = send_flex_message($display_name, $url, $text_message);
+                $flexMessage = set_flex_message($display_name, $url, $text_message);
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
