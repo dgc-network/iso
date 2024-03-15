@@ -163,12 +163,22 @@ jQuery(document).ready(function($) {
                     });
 
                     $("#doc-print").on("click", function () {
+                        // Find the iframe element in the document
+                        var iframe = document.querySelector('iframe');
+
+                        // Access the document within the iframe
+                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        
+                        // Print the content of the iframe
+                        iframeDocument.print();
+/*                        
                         var divContent = document.getElementById('myDiv').outerHTML;
                         var printWindow = window.open('', '_blank');
                         printWindow.document.open();
                         printWindow.document.write('<html><head><title>Print</title></head><body>' + divContent + '</body></html>');
                         printWindow.document.close();
                         printWindow.print();
+*/                        
                     });
 
                     $("#doc-unpublished").on("click", function () {
