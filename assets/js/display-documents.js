@@ -147,12 +147,10 @@ jQuery(document).ready(function($) {
                     <input type ="button" id="signature-record" value="v" style="margin-right:10px;" />
                     ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
                     <span id="doc-unpublished" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
-                    <span id="doc-print" style="margin-left:5px;" class="dashicons dashicons-printer"></span>
-                    <div id="myDiv">
+                    <span id="doc-print" style="margin-left:5px;" class="dashicons dashicons-printer button"></span>
                     `;
 
                     const footer = `
-                    </div>
                     </fieldset>
                     `;
 
