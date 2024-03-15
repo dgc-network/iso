@@ -418,7 +418,7 @@ function display_todo_dialog($todo_id) {
         <?php
     }
     ?>
-    <label for="todo-action-list"><?php echo __( '待辦狀態', 'your-text-domain' );?></label><br>
+    <label for="todo-action-list"><?php echo get_the_title($todo_id).__( '待辦狀態', 'your-text-domain' );?></label><br>
     <fieldset>
         <table style="width:100%;">
             <thead>
@@ -432,11 +432,11 @@ function display_todo_dialog($todo_id) {
             </thead>
             <tbody>
                 <?php
-                $query = retrieve_todo_action_list_data($todo_id);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
+                $inner_query = retrieve_todo_action_list_data($todo_id);
+                if ($inner_query->have_posts()) {
+                    while ($inner_query->have_posts()) : $inner_query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        echo '<tr id="edit-todo-action-'.esc_attr(get_the_ID()).'" style="display:none;">';
+                        echo '<tr id="edit-todo-action-'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
                         echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
                         if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
