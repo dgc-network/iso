@@ -310,7 +310,7 @@ function get_todo_dialog_data() {
     $result = array();
     if (isset($_POST['_todo_id']) && $_POST['action'] === 'get_todo_dialog_data') {
         $todo_id = sanitize_text_field($_POST['_todo_id']);
-        $result['html_contain'] = display_todo_dialog($todo_id);
+        //$result['html_contain'] = display_todo_dialog($todo_id);
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
