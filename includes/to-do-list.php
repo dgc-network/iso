@@ -211,7 +211,7 @@ function display_signature_record() {
     <?php
 }
 
-function get_signature_record_list($site_id=false, $doc=false ) {
+function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
     ob_start();
     ?>
         <table class="ui-widget" style="width:100%;">
@@ -229,7 +229,7 @@ function get_signature_record_list($site_id=false, $doc=false ) {
             </thead>
             <tbody>
             <?php
-            $query = retrieve_signature_record_data($doc);
+            $query = retrieve_signature_record_data($doc, $report);
             $x = 0;
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
@@ -277,7 +277,7 @@ function get_signature_record_list($site_id=false, $doc=false ) {
     );
 }
 
-function retrieve_signature_record_data($doc_id=false){
+function retrieve_signature_record_data($doc_id=false, $report_id=false){
     $args = array(
         'post_type'      => 'todo',
         'posts_per_page' => -1,
@@ -298,6 +298,13 @@ function retrieve_signature_record_data($doc_id=false){
         $args['meta_query'][] = array(
             'key'   => 'doc_id',
             'value' => $doc_id,
+        );
+    }
+
+    if ($report_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'report_id',
+            'value' => $report_id,
         );
     }
 
