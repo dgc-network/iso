@@ -596,10 +596,9 @@ function get_doc_field_list_data() {
     if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_field_list_data') {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $result['html_contain'] = display_doc_field_list($doc_id);
-        if (isset($_POST['_site_id'])) {
-            $site_id = sanitize_text_field($_POST['_site_id']);
-            $result['html_contain'] = display_doc_field_list(false, $site_id);
-        }
+    } elseif (isset($_POST['_site_id'])) {
+        $site_id = sanitize_text_field($_POST['_site_id']);
+        $result['html_contain'] = display_doc_field_list(false, $site_id);    
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }

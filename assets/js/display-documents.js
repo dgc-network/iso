@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    activate_doc_field_list_data();
+    activate_doc_field_list_data(false, $("#site-id"));
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
@@ -136,37 +136,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                 });
-/*        
-                $("#duplicate-document").on("click", function() {
-                    const ajaxData = {
-                        'action': 'duplicate_document_dialog_data',
-                    };
-                    ajaxData['_doc_id'] = doc_id;
-                    $.each(response.doc_fields, function (index, value) {
-                        field_name_id = '#'+value.field_name;
-                        ajaxData[value.field_name] = $(field_name_id).val();
-                    });
-                    ajaxData['_doc_url'] = $("#doc-url").val();
-                    ajaxData['_doc_category'] = $("#doc-category").val();
-                    ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_start_job'] = $("#start-job").val();
-                    ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                            
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: ajaxData,
-                        success: function (response) {
-                            window.location.replace("/display-documents/");
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-*/        
+
                 $("#doc-report-preview").on("click", function () {
                     get_doc_report_list_data(doc_id);
                 });
@@ -251,41 +221,7 @@ jQuery(document).ready(function($) {
                         $(this).remove();
                     });
                 });
-/*                
-                $("#share-document").on("click", function() {
-                    var homeAddress = window.location.origin;
-                    var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
-                
-                    // Copy the text to clipboard
-                    copyToClipboard(textToCopy);
-                
-                    // Show the custom alert message
-                    var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
-                    $("body").append(alertBox);
-                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
-                        $(this).remove();
-                    });
-                });
-/*                
-                // Function to copy text to clipboard
-                function copyToClipboard(text) {
-                    var $temp = $("<input>");
-                    $("body").append($temp);
-                    $temp.val(text).select();
-                    document.execCommand("copy");
-                    $temp.remove();
-                }
-                
-                $("#share-document").on("click", function() {
-                    var homeAddress = window.location.origin;
-                    console.log(homeAddress);
 
-                    // Example usage
-                    var textToCopy = homeAddress+"/display-documents/?_get_shared_doc_id="+doc_id;
-                    copyToClipboard(textToCopy);                    
-
-                });
-*/        
                 $("#signature-record").on("click", function () {
                     $("#signature-record-div").toggle()
                 });
@@ -315,8 +251,6 @@ jQuery(document).ready(function($) {
                         });
                     }    
                 });
-
-
                 
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
@@ -347,7 +281,7 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });
-                activate_doc_field_list_data();
+                activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
                 activate_doc_report_list_data(doc_id);
@@ -396,27 +330,7 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
                 $('#fields-container').html(response.html_contain);
-/*
-                for (let index = 0; index < 50; index++) {
-                    $(`.doc-field-list-${index}`).hide().empty();
-                }
-    
-                $.each(response, function (index, value) {
-                    const $docFieldList = $(`.doc-field-list-${index}`);
-                    $docFieldList.attr('id', `edit-doc-field-${value.field_id}`);
-                    $docFieldList.attr('data-field-id', value.field_id);
-    
-                    const output = `
-                        <td style="text-align:center;">${value.field_name}</td>
-                        <td style="text-align:center;">${value.field_title}</td>
-                        <td style="text-align:center;">${value.field_type}</td>
-                        <td style="text-align:center;">${value.default_value}</td>
-                    `;
-    
-                    $docFieldList.append(output).show();
-                });
-*/                
-                activate_doc_field_list_data();
+                activate_doc_field_list_data(doc_id, site_id);
             },
             error: function (error) {
                 console.error(error);
@@ -425,7 +339,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_field_list_data(){
+    function activate_doc_field_list_data(doc_id=false, site_id=false){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
                 const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
@@ -500,11 +414,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            if ($("#site-id").val() != '') {
-                                get_doc_field_list_data(false, $("#site-id").val());
-                            } else {
-                                get_doc_field_list_data($("#doc-id").val());
-                            }
+                            if (site_id) get_doc_field_list_data(false, site_id);
+                            if (doc_id) get_doc_field_list_data(doc_id);
 /*
                             if ($("#site-id").length === 0 || $("#site-id").val() === '') {
                                 get_doc_field_list_data($("#doc-id").val());
@@ -560,9 +471,8 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     
-        activate_doc_field_list_data();
-    
-    
+        activate_doc_field_list_data(doc_id);
+        
         $("#new-doc-report").on("click", function() {
             $.ajax({
                 type: 'POST',
