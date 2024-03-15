@@ -976,12 +976,14 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         </div>
         <div style="text-align:right; display:flex;">        
         <?php if ($todo_status==-1){?>
-            <button id="duplicate-doc-report" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製文件', 'your-text-domain')?></button>
+            <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製文件', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         <?php }?>
         </div>
     </div>
+    
+    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
