@@ -144,7 +144,7 @@ function display_to_do_list() {
     </fieldset>
     </div>
     <?php
-    display_todo_action_list();
+    //display_todo_action_list();
 
 }
 
@@ -169,7 +169,7 @@ function retrieve_todo_list_data(){
     return $query;
 }
 
-function display_signature_record_list($site_id=false, $doc=false ) {
+function get_signature_record_list($site_id=false, $doc=false ) {
     ob_start();
     ?>
         <table class="ui-widget" style="width:100%;">
@@ -240,7 +240,7 @@ function display_signature_record() {
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
-    $signature_record_list = display_signature_record_list($site_id);
+    $signature_record_list = get_signature_record_list($site_id);
     $$html_contain = $signature_record_list['html'];
     $x_value = $signature_record_list['x'];
     ?>
@@ -308,8 +308,8 @@ function retrieve_signature_record_data($doc_id=false){
 
 function get_todo_dialog_data() {
     $result = array();
-    if (isset($_POST['action']) && $_POST['action'] === 'get_todo_dialog_data') {
-        $todo_id = (int)sanitize_text_field($_POST['_todo_id']);
+    if (isset($_POST['_todo_id']) && $_POST['action'] === 'get_todo_dialog_data') {
+        $todo_id = sanitize_text_field($_POST['_todo_id']);
         $result['html_contain'] = display_todo_dialog($todo_id);
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';

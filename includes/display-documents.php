@@ -784,7 +784,7 @@ function display_doc_url_contain($doc_id=false) {
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
-    $signature_record_list = display_signature_record_list($site_id, $doc_id);
+    $signature_record_list = get_signature_record_list($site_id, $doc_id);
     $$html_contain = $signature_record_list['html'];
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -817,7 +817,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
-    $signature_record_list = display_signature_record_list($site_id, $doc_id);
+    $signature_record_list = get_signature_record_list($site_id, $doc_id);
     $html_contain = $signature_record_list['html'];
     ob_start();
     ?>    
