@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });
-
+/*
                 $('[id^="edit-action-"]').on( "click", function() {
                     const action_id = this.id.substring(12);
                     $.ajax({
@@ -109,7 +109,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-                
+*/                
                 $("#todo-action-dialog").dialog({
                     width: 450,
                     modal: true,
