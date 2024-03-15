@@ -418,7 +418,7 @@ function display_todo_dialog($todo_id) {
         <?php
     }
     ?>
-    <label for="action-list-button"><?php echo __( '文件狀態', 'your-text-domain' );?></label><br>
+    <label for="action-list-button"><?php echo __( '待辦狀態', 'your-text-domain' );?></label><br>
     <input type="button" id="action-list-button" value="<?php echo get_the_title($todo_id);?>" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
     <hr>
     <?php

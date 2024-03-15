@@ -945,6 +945,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_url = get_post_meta( $doc_id, 'doc_url', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
             'site_id'     => $site_id,
             'is_editing'  => true,

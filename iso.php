@@ -183,7 +183,7 @@ function init_webhook_events() {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_get_shared_doc_id'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = '您可以點擊下方按鍵將文件：'.$doc_title.'，加入您的文件匣中。';
+                        $text_message = '您可以點擊下方按鍵將文件「'.$doc_title.'」加入您的文件匣中。';
                     }
                 }
                 
