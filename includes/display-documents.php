@@ -796,7 +796,7 @@ function display_doc_url_contain($doc_id=false) {
         </div>
         <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -830,7 +830,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
         </div>
         <div style="text-align:right; display:flex;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
-            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
     </div>
@@ -978,8 +978,8 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         </div>
         <div style="text-align:right; display:flex;">        
         <?php if ($todo_status==-1){?>
-            <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製文件', 'your-text-domain')?></button>
-            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
+            <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製記錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
             <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         <?php }?>
         </div>
