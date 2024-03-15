@@ -310,7 +310,7 @@ function get_todo_dialog_data() {
     $result = array();
     if (isset($_POST['_todo_id']) && $_POST['action'] === 'get_todo_dialog_data') {
         $todo_id = sanitize_text_field($_POST['_todo_id']);
-        //$result['html_contain'] = display_todo_dialog($todo_id);
+        $result['html_contain'] = display_todo_dialog($todo_id);
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
@@ -431,7 +431,7 @@ function display_todo_dialog($todo_id) {
                 <?php
                 $query = retrieve_todo_action_list_data($todo_id);
                 if ($query->have_posts()) {
-                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                    while ($query->have_posts()) : $query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                         echo '<tr id="edit-action-'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
