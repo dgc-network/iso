@@ -1,6 +1,29 @@
 // display-profiles
 jQuery(document).ready(function($) {
 
+    // Function to check if the string is a valid URL
+    function isURL(str) {
+        var pattern = /^(http|https):\/\/[^ "]+$/;
+        return pattern.test(str);
+    }
+    
+    $("#site-image-container").on("click", function(e) {
+        e.preventDefault();
+        $("#site-image-container").hide();
+        $("#site-image-url").show();
+    });
+
+    $("#set-image-url").on("click", function(e) {
+        e.preventDefault();
+        $("#site-image-container").show();
+        $("#site-image-url").hide();
+        if (isURL($('#image-url-input').val())) {
+            $("#site-image-container").html('<img src="'+$('#image-url-input').val()+'" style="object-fit:cover; width:250px; height:250px;">');
+        } else {
+            $("#site-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
+        }
+    });
+
     $('#site-title').on('input', function() {
         // Show the site-hint when the user starts typing
         $.ajax({

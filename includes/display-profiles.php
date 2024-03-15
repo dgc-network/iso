@@ -135,7 +135,17 @@ function display_site_profile() {
             <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
-            <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+            
+            <div id="site-image-container">
+                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+            </div>
+            <div id="site-image-url" style="display:none;">
+            <fieldset>
+                <label for="image-url-input">Image URL:</label>
+                <textarea id="image-url-input" name="image_url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+                <button id="set-image-url">Set</button>
+            </fieldset>
+            </div>
 
             <label for="site-members"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
