@@ -7,73 +7,6 @@ jQuery(document).ready(function($) {
         return pattern.test(str);
     }
     
-    $("#site-image-container").on("click", function(e) {
-        e.preventDefault();
-        $("#site-image-container").hide();
-        $("#site-image-url").show();
-    });
-
-    $("#set-image-url").on("click", function(e) {
-        e.preventDefault();
-        $("#site-image-container").show();
-        $("#site-image-url").hide();
-        if (isURL($('#image-url-input').val())) {
-            $("#site-image-container").html('<img src="'+$('#image-url-input').val()+'" style="object-fit:cover; width:250px; height:250px;">');
-        } else {
-            $("#site-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
-        }
-    });
-
-    $('#site-title').on('input', function() {
-        // Show the site-hint when the user starts typing
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_site_list_data',
-                '_site_title': $(this).val(),
-            },
-            success: function (response) {
-                $('#site-hint').empty();
-                let output = '<table>'        
-                $.each(response, function (index, value) {
-                    output += '<tr><td id="select-site-id-'+value.site_id+'">'
-                    output += value.site_title
-                    output += '</td></tr>'
-                });
-                output += '</table>'
-                $('#site-hint').append(output).show();
-
-                $('[id^="select-site-id-"]').on("click", function () {
-                    const id = this.id.substring(15);
-                    $('#site-id').val(id);
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_site_dialog_data',
-                            '_site_id': $("#site-id").val(),
-                        },
-                        success: function (response) {
-                            $('#site-title').val(response.site_title);
-                            $("#site-hint").hide();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });            
-                });            
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    });
-
     $("#my-profile-submit").on("click", function () {
         $.ajax({
             type: 'POST',
@@ -98,50 +31,7 @@ jQuery(document).ready(function($) {
         });            
     });
 
-    $("#site-profile-submit").on("click", function () {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_site_dialog_data',
-                '_site_id': $("#site-id").val(),
-                '_site_title': $("#site-title").val(),
-            },
-            success: function (response) {
-                if (response.success) {
-                    alert("Success!");
-                } else {
-                    alert("Error: " + response.error);
-                }
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });            
-    });            
-
     activate_site_profile_data($("#site-id").val())
-
-    $("#new-site-job").on("click", function() {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_site_job_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_site_profile_data($("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);
-                alert(error);
-            }
-        });    
-    });
 
     function get_site_profile_data(site_id){
         $.ajax({
@@ -164,6 +54,116 @@ jQuery(document).ready(function($) {
     }
 
     function activate_site_profile_data(site_id){
+        $("#site-image-container").on("click", function(e) {
+            e.preventDefault();
+            $("#site-image-container").hide();
+            $("#site-image-url").show();
+        });
+    
+        $("#set-image-url").on("click", function(e) {
+            e.preventDefault();
+            $("#site-image-container").show();
+            $("#site-image-url").hide();
+            if (isURL($('#image-url-input').val())) {
+                $("#site-image-container").html('<img src="'+$('#image-url-input').val()+'" style="object-fit:cover; width:250px; height:250px;">');
+            } else {
+                $("#site-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
+            }
+        });
+    
+        $('#site-title').on('input', function() {
+            // Show the site-hint when the user starts typing
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_list_data',
+                    '_site_title': $(this).val(),
+                },
+                success: function (response) {
+                    $('#site-hint').empty();
+                    let output = '<table>'        
+                    $.each(response, function (index, value) {
+                        output += '<tr><td id="select-site-id-'+value.site_id+'">'
+                        output += value.site_title
+                        output += '</td></tr>'
+                    });
+                    output += '</table>'
+                    $('#site-hint').append(output).show();
+    
+                    $('[id^="select-site-id-"]').on("click", function () {
+                        const id = this.id.substring(15);
+                        $('#site-id').val(id);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'get_site_dialog_data',
+                                '_site_id': $("#site-id").val(),
+                            },
+                            success: function (response) {
+                                $('#site-title').val(response.site_title);
+                                $("#site-hint").hide();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });            
+                    });            
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+    
+        $("#site-profile-submit").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_site_dialog_data',
+                    '_site_id': $("#site-id").val(),
+                    '_site_title': $("#site-title").val(),
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Success!");
+                    } else {
+                        alert("Error: " + response.error);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });            
+        });            
+    
+        $("#new-site-job").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_site_job_dialog_data',
+                    '_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    get_site_profile_data($("#site-id").val());
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
         $("#select-profile").on( "change", function() {
             window.location.replace("?_select_profile="+$(this).val());
             $(this).val('');
