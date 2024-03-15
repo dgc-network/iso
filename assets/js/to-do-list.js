@@ -52,19 +52,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-/*
-                $("#action-list-button").on( "click", function() {
-                    get_todo_action_list_data(todo_id);
-                })
 
-                // Job action list
-                $("#todo-action-list-dialog").dialog({
-                    width: 450,
-                    modal: true,
-                    autoOpen: false,
-                });
-*/            
-                // Todo job actions settings
                 $("#new-action").on("click", function() {
                     $.ajax({
                         type: 'POST',
@@ -76,7 +64,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             get_todo_dialog_data(todo_id)
-                            //get_todo_action_list_data(todo_id);
                         },
                         error: function(error){
                             console.error(error);                    
@@ -131,7 +118,6 @@ jQuery(document).ready(function($) {
                                 success: function (response) {
                                     $("#todo-action-dialog").dialog('close');
                                     get_todo_dialog_data(todo_id)
-                                    //get_todo_action_list_data(todo_id);
                                 },
                                 error: function (error) {
                                     console.error(error);                    
@@ -152,7 +138,6 @@ jQuery(document).ready(function($) {
                                     success: function (response) {
                                         $("#todo-action-dialog").dialog('close');
                                         get_todo_dialog_data(todo_id)
-                                        //get_todo_action_list_data(todo_id);
                                     },
                                     error: function(error){
                                         console.error(error);
@@ -170,61 +155,4 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function get_todo_action_list_data(todo_id){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_todo_action_list_data',
-                '_todo_id': todo_id,
-            },
-            success: function (response) {            
-                for(index=0;index<50;index++) {
-                    $(".todo-action-list-"+index).hide().empty();
-                }
-                $.each(response, function (index, value) {
-                    $(".todo-action-list-" + index).attr("id", "edit-action-todo-" + value.action_id);
-                    const output = `
-                        <td style="text-align:center;">${value.action_title}</td>
-                        <td>${value.action_content}</td>
-                        <td style="text-align:center;">${value.next_job}</td>
-                        <td style="text-align:center;">${value.next_leadtime}</td>
-                    `;
-                    $(".todo-action-list-"+index).append(output).show();
-                })
-                $("#todo-action-list-dialog").dialog('open');
-
-                $('[id^="edit-action-todo-"]').on( "click", function() {
-                    const action_id = this.id.substring(17);
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'get_todo_action_dialog_data',
-                            '_action_id': action_id,
-                            //'_site_id': $("#site-id").val(),
-                        },
-                        success: function (response) {
-                            $("#todo-action-dialog").dialog('open');
-                            $("#action-id").val(action_id);
-                            $("#action-title").val(response.action_title);
-                            $("#action-content").val(response.action_content);
-                            $("#next-job").empty().append(response.next_job);
-                            $("#next-leadtime").val(response.next_leadtime);
-                        },
-                        error: function (error) {
-                            console.error(error);                
-                            alert(error);
-                        }
-                    });
-                });
-            },
-            error: function (error) {
-                console.error(error);                
-                alert(error);
-            }
-        });
-    }
 })

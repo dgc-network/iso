@@ -135,7 +135,7 @@ function display_site_profile() {
             <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
-            
+
             <div id="site-image-container">
                 <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
             </div>
@@ -467,7 +467,7 @@ function display_site_job_action_list() {
             <tr>
                 <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                 <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
+                <th><?php echo __( 'Next', 'your-text-domain' );?></th>
                 <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
             </tr>
         </thead>

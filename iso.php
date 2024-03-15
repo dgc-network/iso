@@ -93,7 +93,7 @@ function send_flex_message($display_name, $link_uri, $text_message) {
     // Flex Message JSON structure with a button
     return $flexMessage = [
         'type' => 'flex',
-        'altText' => 'This is a Flex Message with a Button',
+        'altText' => $text_message,
         'contents' => [
             'type' => 'bubble',
             'body' => [

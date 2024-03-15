@@ -144,8 +144,6 @@ function display_to_do_list() {
     </fieldset>
     </div>
     <?php
-    //display_todo_action_list();
-
 }
 
 function retrieve_todo_list_data(){
@@ -167,6 +165,49 @@ function retrieve_todo_list_data(){
     );
     $query = new WP_Query($args);
     return $query;
+}
+
+function display_signature_record() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $user_data = get_userdata( $current_user_id );
+    $signature_record_list = get_signature_record_list($site_id);
+    $$html_contain = $signature_record_list['html'];
+    $x_value = $signature_record_list['x'];
+    ?>
+    <div class="ui-widget" id="result-container">
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="todo-setting-div" style="display:none">
+        <fieldset>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-todo">
+                    <option value="0">To-do list</option>
+                    <option value="1" selected>Signature record</option>
+                    <option value="2">...</option>
+                </select>
+            </div>
+            <div style="text-align: right">
+                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+        <?php echo $$html_contain;?>
+        <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
+    </fieldset>
+    </div>
+    <?php
 }
 
 function get_signature_record_list($site_id=false, $doc=false ) {
@@ -233,49 +274,6 @@ function get_signature_record_list($site_id=false, $doc=false ) {
         'html' => $html,
         'x'    => $x,
     );
-}
-
-function display_signature_record() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
-    $user_data = get_userdata( $current_user_id );
-    $signature_record_list = get_signature_record_list($site_id);
-    $$html_contain = $signature_record_list['html'];
-    $x_value = $signature_record_list['x'];
-    ?>
-    <div class="ui-widget" id="result-container">
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
-    <fieldset>
-        <div id="todo-setting-div" style="display:none">
-        <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-        </fieldset>
-        </div>
-    
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-todo">
-                    <option value="0">To-do list</option>
-                    <option value="1" selected>Signature record</option>
-                    <option value="2">...</option>
-                </select>
-            </div>
-            <div style="text-align: right">
-                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
-        <?php echo $$html_contain;?>
-        <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
-    </fieldset>
-    </div>
-    <?php
 }
 
 function retrieve_signature_record_data($doc_id=false){
@@ -424,7 +422,7 @@ function display_todo_dialog($todo_id) {
                 <tr>
                     <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
                     <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
                 </tr>
             </thead>
@@ -533,8 +531,6 @@ function set_next_job_and_actions($args = array()) {
         notice_the_persons_in_site($new_todo_id);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
-        //if ($doc_id) delete_post_meta($doc_id, 'todo_status');
-        //if ($report_id) delete_post_meta($report_id, 'todo_status');
     }
 
     if ($next_job>0) {
@@ -561,7 +557,7 @@ function set_next_job_and_actions($args = array()) {
         }
     }
 }
-
+/*
 // Flex Message JSON structure with a button
 function send_flex_message_with_button_link($user, $message_text='', $link_uri='') {
     $line_bot_api = new line_bot_api();
@@ -609,7 +605,7 @@ function send_flex_message_with_button_link($user, $message_text='', $link_uri='
         'messages' => [$flexMessage],
     ]);
 }
-
+*/
 function get_users_by_job_id($job_id=0) {
     // Set up the user query arguments
     $args = array(
@@ -628,6 +624,7 @@ function get_users_by_job_id($job_id=0) {
 
 // Notice the persons in charge the job
 function notice_the_persons_in_charge($todo_id=0) {
+    $line_bot_api = new line_bot_api();
     $job_title = get_the_title($todo_id);
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);
     $report_id = get_post_meta( $todo_id, 'report_id', true);
@@ -635,12 +632,19 @@ function notice_the_persons_in_charge($todo_id=0) {
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $todo_due = get_post_meta( $todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
-    $message_text='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
+    //$message_text='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
+    $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        send_flex_message_with_button_link($user, $message_text, $link_uri);
+        //send_flex_message_with_button_link($user, $message_text, $link_uri);
+        $flexMessage = send_flex_message($user->display_name, $link_uri, $text_message);
+        $line_bot_api->replyMessage([
+            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+            'messages' => [$flexMessage],
+        ]);            
+
     }    
 }
 
@@ -661,6 +665,7 @@ function get_users_in_site($site_id=0) {
 
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0) {
+    $line_bot_api = new line_bot_api();
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
@@ -672,43 +677,18 @@ function notice_the_persons_in_site($todo_id=0) {
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );
     
-    $message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
+    //$message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
+    $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
 
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        send_flex_message_with_button_link($user, $message_text, $doc_url);
+        //send_flex_message_with_button_link($user, $message_text, $doc_url);
+        $flexMessage = send_flex_message($user->display_name, $link_uri, $text_message);
+        $line_bot_api->replyMessage([
+            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+            'messages' => [$flexMessage],
+        ]);            
     }    
-}
-
-function display_todo_action_list() {
-    ?>
-    <div id="todo-action-list-dialog" title="Action list" style="display:none;">
-    <fieldset>
-        <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next job', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $x = 0;
-                while ($x<50) {
-                    echo '<tr class="todo-action-list-'.$x.'" style="display:none;"></tr>';
-                    $x += 1;
-                }
-                ?>
-            </tbody>
-        </table>
-        <div id="new-todo-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-    </fieldset>
-    </div>
-    <?php display_todo_action_dialog();?>
-    <?php
 }
 
 function retrieve_todo_action_list_data($todo_id=0) {
@@ -725,29 +705,6 @@ function retrieve_todo_action_list_data($todo_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
-function get_todo_action_list_data() {
-    $query = retrieve_todo_action_list_data($_POST['_todo_id']);
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
-            $_list = array();
-            $_list["action_id"] = get_the_ID();
-            $_list["action_title"] = get_the_title();
-            $_list["action_content"] = get_post_field('post_content', get_the_ID());
-            $_list["next_job"] = get_the_title($next_job);
-            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
-            if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
-            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_todo_action_list_data', 'get_todo_action_list_data' );
-add_action( 'wp_ajax_nopriv_get_todo_action_list_data', 'get_todo_action_list_data' );
 
 function display_todo_action_dialog(){
     ?>
