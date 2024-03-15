@@ -59,6 +59,7 @@ add_action('init', 'register_action_post_type');
 function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
+        if (isset($_GET['_id'])) display_todo_dialog(sanitize_text_field($_GET['_id']));
         if ($_GET['_select_todo']=='1') display_signature_record();
         if ($_GET['_select_todo']!='1') display_to_do_list();
     } else {
@@ -318,6 +319,8 @@ add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
 add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
 function display_todo_dialog($todo_id) {
+    $current_user_id = get_current_user_id();
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);
 
@@ -432,7 +435,8 @@ function display_todo_dialog($todo_id) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        echo '<tr id="edit-action-'.esc_attr(get_the_ID()).'">';
+                        if ($is_site_admin) $action_id = get_the_ID();
+                        echo '<tr id="edit-action-'.esc_attr($action_id).'">';
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
                         echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
                         if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
@@ -446,6 +450,7 @@ function display_todo_dialog($todo_id) {
                 ?>
             </tbody>
         </table>
+        <?php if ($is_site_admin)?>
         <div id="new-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     <?php display_todo_action_dialog();?>
@@ -557,55 +562,7 @@ function set_next_job_and_actions($args = array()) {
         }
     }
 }
-/*
-// Flex Message JSON structure with a button
-function set_flex_message_with_button_link($user, $message_text='', $link_uri='') {
-    $line_bot_api = new line_bot_api();
-    $flexMessage = [
-        'type' => 'flex',
-        'altText' => $message_text,
-        'contents' => [
-            'type' => 'bubble',
-            'body' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'text',
-                        'text' => 'Hello, '.$user->display_name,
-                        'size' => 'lg',
-                        'weight' => 'bold',
-                    ],
-                    [
-                        'type' => 'text',
-                        'text' => $message_text.' Please click the button below to proceed the process.',
-                        'wrap' => true,
-                    ],
-                ],
-            ],
-            'footer' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'button',
-                        'action' => [
-                            'type' => 'uri',
-                            'label' => 'Click me!',
-                            'uri' => $link_uri,
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ];
-    
-    $line_bot_api->pushMessage([
-        'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-        'messages' => [$flexMessage],
-    ]);
-}
-*/
+
 function get_users_by_job_id($job_id=0) {
     // Set up the user query arguments
     $args = array(
@@ -632,20 +589,17 @@ function notice_the_persons_in_charge($todo_id=0) {
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $todo_due = get_post_meta( $todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
-    //$message_text='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        //set_flex_message_with_button_link($user, $message_text, $link_uri);
         $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
-        ]);            
-
-    }    
+        ]);
+    }
 }
 
 function get_users_in_site($site_id=0) {
@@ -669,21 +623,16 @@ function notice_the_persons_in_site($todo_id=0) {
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
-
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
-    $submit_date = wp_date( get_option('date_format'), $todo_submit );
-    
-    //$message_text=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
+    $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
-
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        //set_flex_message_with_button_link($user, $message_text, $doc_url);
-        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
+        $flexMessage = set_flex_message($user->display_name, $doc_url, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
