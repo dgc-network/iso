@@ -40,11 +40,13 @@ function display_my_profile() {
         // Check if the user is logged in
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta( $current_user_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
         $user_data = get_userdata( $current_user_id );
         $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
         ?>
-        <h2><?php echo __( 'My profile', 'your-text-domain' );?></h2>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '我的設定', 'your-text-domain' );?></h2>
         <fieldset>
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
@@ -119,13 +121,15 @@ function display_site_profile() {
     ob_start();
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
     if ($is_site_admin==1 || current_user_can('administrator')) {
         // Check if the user is administrator
         ?>
-        <h2><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
         <fieldset>
             <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />

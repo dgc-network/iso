@@ -185,8 +185,8 @@ function display_documents_shortcode() {
         }
         ?>
         <div class="ui-widget" id="result-container">
-        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:50px; height:50px;" />
-        <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '文件匣', 'your-text-domain' );?></h2>
         <fieldset>
             <div id="document-setting-dialog" title="Document setting" style="display:none">
             <fieldset>
@@ -783,11 +783,13 @@ function display_doc_url_contain($doc_id=false) {
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $doc_url = get_post_meta( $doc_id, 'doc_url', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $signature_record_list = display_signature_record_list($site_id, $doc_id);
     $$html_contain = $signature_record_list['html'];
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <span><?php echo esc_html($doc_number);?></span>
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>
@@ -814,12 +816,14 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $signature_record_list = display_signature_record_list($site_id, $doc_id);
     $html_contain = $signature_record_list['html'];
     ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <span><?php echo esc_html($doc_number);?></span>
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>            
@@ -952,6 +956,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
             'doc_id'     => $doc_id,
             'is_editing'  => true,
@@ -962,7 +967,8 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
     ob_start();
     ?>
-    <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
     <fieldset>

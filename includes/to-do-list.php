@@ -70,10 +70,12 @@ add_shortcode('to-do-list', 'to_do_list_shortcode');
 function display_to_do_list() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
     ?>
     <div class="ui-widget" id="result-container">
-    <h2><?php echo __( 'To-do list', 'your-text-domain' );?></h2>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
     <fieldset>
         <div id="todo-setting-div" style="display:none">
         <fieldset>
@@ -236,13 +238,15 @@ function display_signature_record_list($site_id=false, $doc=false ) {
 function display_signature_record() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
     $signature_record_list = display_signature_record_list($site_id);
     $$html_contain = $signature_record_list['html'];
     $x_value = $signature_record_list['x'];
     ?>
     <div class="ui-widget" id="result-container">
-    <h2><?php echo __( 'Signature record', 'your-text-domain' );?></h2>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
     <fieldset>
         <div id="todo-setting-div" style="display:none">
         <fieldset>
@@ -338,6 +342,7 @@ function display_todo_dialog($todo_id) {
         $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
             'doc_id'     => $doc_id,
             'is_editing'  => true,
@@ -348,7 +353,8 @@ function display_todo_dialog($todo_id) {
 
     ob_start();
     ?>
-    <h2 style="margin-left:10px;"><?php echo esc_html($doc_title);?></h2>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
     <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
