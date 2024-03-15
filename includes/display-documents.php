@@ -958,6 +958,8 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
+        $signature_record_list = get_signature_record_list($site_id, $doc_id);
+        $html_contain = $signature_record_list['html'];
         $params = array(
             'doc_id'     => $doc_id,
             'is_editing'  => true,
@@ -982,7 +984,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <?php }?>
         </div>
     </div>
-    
+
     <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
