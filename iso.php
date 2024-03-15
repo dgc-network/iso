@@ -169,6 +169,24 @@ function init_webhook_events() {
             // Output the detected URLs
             foreach ($urls as $url) {
                 $text_message = 'You have to click the button below to add a new document.';
+
+                // Parse the URL
+                $parsed_url = parse_url($url);
+                
+                // Check if the URL contains a query string
+                if (isset($parsed_url['query'])) {
+                    // Parse the query string
+                    parse_str($parsed_url['query'], $query_params);
+                    
+                    // Check if the 'doc_id' parameter exists in the query parameters
+                    if (isset($query_params['_get_shared_doc_id'])) {
+                        // Retrieve the value of the 'doc_id' parameter
+                        $doc_id = $query_params['_get_shared_doc_id'];
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $text_message = '您可以點擊下方按鍵將文件：'.$doc_title.'，加入您的文件匣中。';
+                    }
+                }
+                
                 $flexMessage = send_flex_message($display_name, $url, $text_message);
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
@@ -237,7 +255,7 @@ function user_did_not_login_yet() {
                 <label for="site-id">Site:</label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
-                <input type="hidden" id="site-id" />
+                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
                 <input type="hidden" id="log" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" id="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <hr>

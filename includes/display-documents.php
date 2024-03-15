@@ -87,7 +87,7 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    // Migrate meta key editing_type to field_type in doc-field
+    // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
     if( isset($_GET['_field_type_migration']) ) {
         $args = array(
             'post_type'      => 'doc-field',
@@ -103,7 +103,7 @@ function display_documents_shortcode() {
         endif;    
     }
 
-    // Migrate the_title to meta doc_title
+    // Migrate the_title to meta doc_title (2024-1-15)
     if( isset($_GET['_doc_title_migration']) ) {
         $args = array(
             'post_type'      => 'document',
@@ -120,6 +120,7 @@ function display_documents_shortcode() {
 
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
     // Check if the user is logged in
     if (is_user_logged_in()&&($site_id!=null)) {
@@ -184,6 +185,7 @@ function display_documents_shortcode() {
         }
         ?>
         <div class="ui-widget" id="result-container">
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:50px; height:50px;" />
         <h2><?php echo __( 'Documents', 'your-text-domain' );?></h2>
         <fieldset>
             <div id="document-setting-dialog" title="Document setting" style="display:none">
@@ -790,7 +792,7 @@ function display_doc_url_contain($doc_id=false) {
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
-        <div style="text-align:right; display:flex;">
+        <div style="text-align:right;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -822,7 +824,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
-        <div style="text-align:right; display:flex;">
+        <div style="text-align:right;">
             <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核紀錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>

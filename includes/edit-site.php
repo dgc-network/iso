@@ -93,15 +93,15 @@ function isURL($str) {
 
 function site_image_content($post) {
     wp_nonce_field('site_image_nonce', 'site_image_nonce');
-    $image_url = esc_attr(get_post_meta( $post->ID, 'image_url', true));
+    $image_url = get_post_meta( $post->ID, 'image_url', true);
     ?>
     <div id="custom-image-container">
-        <?php echo (isURL($image_url)) ? '<img src="' . $image_url . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+        <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
     </div>
     <div id="image-url-dialog" style="display:none;">
         <fieldset>
             <label for="image-url-input">Image URL:</label>
-            <textarea id="image-url-input" name="image_url" rows="3" style="width:99%;"><?php echo $image_url; ?></textarea>
+            <textarea id="image-url-input" name="image_url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
             <button id="set-image-url">Set</button>
         </fieldset>
     </div>
@@ -321,74 +321,3 @@ function import_sites_from_csv() {
         }
     }
 }
-
-function get_site_list_data() {
-    $search_query = sanitize_text_field($_POST['_site_title']);
-    $args = array(
-        'post_type'      => 'site',
-        'posts_per_page' => -1,
-        's'              => $search_query,
-    );
-    $query = new WP_Query($args);
-
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["site_id"] = get_the_ID();
-            $_list["site_title"] = get_the_title();
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_site_list_data', 'get_site_list_data' );
-add_action( 'wp_ajax_nopriv_get_site_list_data', 'get_site_list_data' );
-
-function get_site_dialog_data() {
-    $response = array();
-    if( isset($_POST['_site_id']) ) {
-        $site_id = (int)sanitize_text_field($_POST['_site_id']);
-        //$response["site_id"] = $site_id;
-        $response["site_title"] = get_the_title($site_id);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
-
-function set_site_dialog_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    $site_title = sanitize_text_field($_POST['_site_title']);
-    if( isset($_POST['_site_id']) ) {
-        $site_id = (int) sanitize_text_field($_POST['_site_id']);
-        $site_title = sanitize_text_field($_POST['_site_title']);
-        // Prepare post data
-        $post_data = array(
-            'ID'         => $site_id,
-            'post_title' => $site_title,
-        );        
-        // Update the post
-        wp_update_post($post_data);
-        $response = array('success' => true);
-    } else {
-        // Set up the new post data
-        $current_user_id = get_current_user_id();
-        $new_post = array(
-            'post_title'    => $site_title,
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'site',
-        );    
-        $post_id = wp_insert_post($new_post);
-        update_user_meta( $current_user_id, 'site_id', $post_id );
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_site_dialog_data', 'set_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_site_dialog_data', 'set_site_dialog_data' );
-
-
-
