@@ -134,14 +134,18 @@ function display_documents_shortcode() {
         endif;    
     }
 
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
-    $user_data = get_userdata( $current_user_id );
+    //$current_user_id = get_current_user_id();
+    //$site_id = get_user_meta($current_user_id, 'site_id', true);
+    //$image_url = get_post_meta( $site_id, 'image_url', true);
+    //$user_data = get_userdata( $current_user_id );
     // Check if the user is logged in
-    if (is_user_logged_in()&&($site_id!=null)) {
+    //if (is_user_logged_in()&&($site_id!=null)) {
+
+    if (is_user_logged_in()) {
+        // Migrate the shared doc_id
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
+            $current_user_id = get_current_user_id();
             // Insert the post into the database
             $new_post = array(
                 'post_title'    => 'No title',
@@ -220,6 +224,10 @@ function display_documents_shortcode() {
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function display_document_list() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    //$user_data = get_userdata( $current_user_id );
     ?>
     <div class="ui-widget" id="result-container">
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
