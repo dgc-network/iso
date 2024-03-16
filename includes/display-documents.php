@@ -384,6 +384,19 @@ function get_document_dialog_data() {
 add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
 add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
 
+function get_doc_frame_contain() {
+    $result = array();
+    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_document_dialog_data') {
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $result['html_contain'] = display_doc_frame_contain($doc_id);
+    } else {
+        $result['html_contain'] = 'Invalid AJAX request!';
+    }
+    wp_send_json($result);
+}
+add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
+add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
+
 function select_start_job_option_data($selected_job=0, $site_id=0) {
     $args = array(
         'post_type'      => 'job',

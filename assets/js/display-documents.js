@@ -142,6 +142,32 @@ jQuery(document).ready(function($) {
                 });
             
                 $("#doc-frame-preview").on("click", function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: 'json',
+                        data: {
+                            action: 'get_doc_frame_contain',
+                            _doc_id: doc_id,
+                        },
+                        success: function(response) {
+                            $('#result-container').html(response.html_contain);
+/*
+                            if (response.success) {
+                                window.location.replace("/display-documents/");
+                            } else {
+                                console.error('Error updating:', response.error);
+                                alert('Error updating. Please try again.');
+                            }
+*/                            
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.error('AJAX request failed:', errorThrown);
+                            alert('AJAX request failed. Please try again.');
+                        }
+                    });
+
+/*                    
                     const header = `
                     <fieldset>
                     <input type ="button" id="signature-record" value="v" style="margin-right:10px;" />
@@ -161,41 +187,12 @@ jQuery(document).ready(function($) {
                     });
 
                     $("#doc-print").on("click", function () {
-
-                        window.frames['iframe'].print();
-/*
-                        // Fetch the content of the Google Docs document using the Google Docs API
-                        fetch('https://docs.google.com/document/d/e/2PACX-1vT2hovdMX1k-QBXx8VaSfP4mpgny6zED9qVY7DJ5gR8r_j9a1cYmQjj_zG0FU6RNj02Y92CkdomZ3BL/pub?embedded=true')
-                        .then(response => response.text())
-                        .then(data => {
-                          // Display the content on the page or process it as needed
-                          document.getElementById('iframe-content').innerHTML = data;
-                        })
-                        .catch(error => {
-                          console.error('Error fetching document:', error);
-                        });
-                        
-                        // Function to print the content of the iframe
-                        function printIframeContent() {
-                        window.frames['iframe'].print();
-                        }
-                        
-                        // Find the iframe element in the document
-                        var iframe = document.querySelector('iframe');
-
-                        // Access the document within the iframe
-                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                        
-                        // Print the content of the iframe
-                        iframeDocument.print();
-/*                        
                         var divContent = document.getElementById('myDiv').outerHTML;
                         var printWindow = window.open('', '_blank');
                         printWindow.document.open();
                         printWindow.document.write('<html><head><title>Print</title></head><body>' + divContent + '</body></html>');
                         printWindow.document.close();
                         printWindow.print();
-*/                        
                     });
 
                     $("#doc-unpublished").on("click", function () {
@@ -223,6 +220,7 @@ jQuery(document).ready(function($) {
                             });
                         }
                     });
+*/                    
                 });
 
                 $("#share-document").on("click", function() {
