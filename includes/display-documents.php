@@ -386,7 +386,7 @@ add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data'
 
 function get_doc_frame_contain() {
     $result = array();
-    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_document_dialog_data') {
+    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_frame_contain') {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $result['html_contain'] = display_doc_frame_contain($doc_id);
     } else {
