@@ -87,6 +87,22 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
+    // Migrate meta key doc_url to doc_frame in document (2024-3-16)
+    if( isset($_GET['_doc_frame_migration']) ) {
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
+                update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
+                endwhile;
+            wp_reset_postdata();
+        endif;    
+    }
+
     // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
     if( isset($_GET['_field_type_migration']) ) {
         $args = array(
@@ -103,7 +119,7 @@ function display_documents_shortcode() {
         endif;    
     }
 
-    // Migrate the_title to meta doc_title (2024-1-15)
+    // Migrate the_title to meta doc_title in document (2024-1-15)
     if( isset($_GET['_doc_title_migration']) ) {
         $args = array(
             'post_type'      => 'document',
