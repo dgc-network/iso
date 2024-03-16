@@ -60,7 +60,9 @@ function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         if (isset($_GET['_id'])) {
+            echo '<div class="ui-widget" id="result-container">';
             echo display_todo_dialog(sanitize_text_field($_GET['_id']));
+            echo '</div>';
         } else {
             if ($_GET['_select_todo']=='1') display_signature_record();
             if ($_GET['_select_todo']!='1') display_to_do_list();    
