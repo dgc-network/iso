@@ -60,13 +60,8 @@ function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         if (isset($_GET['_id'])) echo display_todo_dialog(sanitize_text_field($_GET['_id']));
-
-        if (isset($_GET['_id'])) {
-            echo display_todo_dialog(sanitize_text_field($_GET['_id']));
-        } else {
-            if ($_GET['_select_todo']=='1') display_signature_record();
-            if ($_GET['_select_todo']!='1') display_to_do_list();    
-        }
+        if ($_GET['_select_todo']=='1') display_signature_record();
+        if ($_GET['_select_todo']!='1') display_to_do_list();    
     } else {
         user_did_not_login_yet();
     }
