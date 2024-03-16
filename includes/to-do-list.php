@@ -637,15 +637,16 @@ function notice_the_persons_in_site($todo_id=0) {
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
+    //$doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
+    $link_uri = home_url().'/display-documents/?_id='.$doc_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        $flexMessage = set_flex_message($user->display_name, $doc_frame, $text_message);
+        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],

@@ -199,99 +199,116 @@ function display_documents_shortcode() {
                 }    
             }
         }
-        ?>
-        <div class="ui-widget" id="result-container">
-        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
-        <fieldset>
-            <div id="document-setting-dialog" title="Document setting" style="display:none">
-            <fieldset>
-                <label for="site-title"> Site: </label>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-field-setting"> Field setting: </label>
-                <?php echo display_doc_field_list(false, $site_id);?>
-                <div class="separator"></div>
-                <label for="document-rows">Document rows: </label>
-                <input type="text" id="document-rows" value="<?php echo get_option('document_rows');?>" />
-            </fieldset>
-            </div>
-        
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
-                </div>
-                <div style="text-align:right; display:flex;">
-                    <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                    <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-                </div>
-            </div>
 
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                <?php
-                $params = array(
-                    'site_id'     => $site_id,
-                    'is_listing'  => true,
-                );                
-                $query = retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    echo '<tr>';
-                    while ($query->have_posts()) : $query->the_post();
-                        echo '<th>';
-                        echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
-                        echo '</th>';
-                    endwhile;
-                    echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
-                    echo '</tr>';
-                    wp_reset_postdata();
-                }
-                ?>
-                </thead>
-                <tbody>
-                <?php
-                $query = retrieve_document_data($site_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $doc_id = (int) get_the_ID();
-                        echo '<tr id="edit-document-'.$doc_id.'">';
-                        $params = array(
-                            'site_id'     => $site_id,
-                            'is_listing'  => true,
-                        );                
-                        $inner_query = retrieve_doc_field_data($params);
-                        if ($inner_query->have_posts()) {
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                echo '<td style="'.$listing_style.'">';
-                                echo esc_html(get_post_meta( $doc_id, $field_name, true));
-                                echo '</td>';
-                            endwhile;                
-                            // Reset only the inner loop's data
-                            wp_reset_postdata();
-                        }
-                        $todo_id = get_post_meta( $doc_id, 'todo_status', true);
-                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
-                        echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
-                        echo '</tr>';
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-            <input type ="button" id="new-document-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-        </fieldset>
-        </div>
-        <?php
+        if (isset($_GET['_id'])) {
+            $doc_id = sanitize_text_field($_GET['_id']);
+            $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+            echo '<div class="ui-widget" id="result-container">';
+            if ($is_doc_report) {
+                echo display_doc_report_list($doc_id);
+            } else {
+                echo display_doc_frame_contain($doc_id);
+            }
+            echo '</div>';
+        } else {
+            display_document_list();
+        }
     } else {
         user_did_not_login_yet();
     }
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
+
+function display_document_list() {
+    ?>
+    <div class="ui-widget" id="result-container">
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="document-setting-dialog" title="Document setting" style="display:none">
+        <fieldset>
+            <label for="site-title"> Site: </label>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="doc-field-setting"> Field setting: </label>
+            <?php echo display_doc_field_list(false, $site_id);?>
+            <div class="separator"></div>
+            <label for="document-rows">Document rows: </label>
+            <input type="text" id="document-rows" value="<?php echo get_option('document_rows');?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+
+        <table class="ui-widget" style="width:100%;">
+            <thead>
+            <?php
+            $params = array(
+                'site_id'     => $site_id,
+                'is_listing'  => true,
+            );                
+            $query = retrieve_doc_field_data($params);
+            if ($query->have_posts()) {
+                echo '<tr>';
+                while ($query->have_posts()) : $query->the_post();
+                    echo '<th>';
+                    echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
+                    echo '</th>';
+                endwhile;
+                echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                echo '</tr>';
+                wp_reset_postdata();
+            }
+            ?>
+            </thead>
+            <tbody>
+            <?php
+            $query = retrieve_document_data($site_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $doc_id = (int) get_the_ID();
+                    echo '<tr id="edit-document-'.$doc_id.'">';
+                    $params = array(
+                        'site_id'     => $site_id,
+                        'is_listing'  => true,
+                    );                
+                    $inner_query = retrieve_doc_field_data($params);
+                    if ($inner_query->have_posts()) {
+                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                            $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                            echo '<td style="'.$listing_style.'">';
+                            echo esc_html(get_post_meta( $doc_id, $field_name, true));
+                            echo '</td>';
+                        endwhile;                
+                        // Reset only the inner loop's data
+                        wp_reset_postdata();
+                    }
+                    $todo_id = get_post_meta( $doc_id, 'todo_status', true);
+                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                    $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                    $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                    echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                    echo '</tr>';
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+            </tbody>
+        </table>
+        <input type ="button" id="new-document-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+    </fieldset>
+    </div>
+    <?php
+}
 
 function retrieve_document_data($site_id = 0) {
     $site_filter = array(
@@ -354,10 +371,10 @@ function get_document_dialog_data() {
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta( $doc_id, 'todo_status', true);
-        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+        //$doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
+        //$doc_title = get_post_meta( $doc_id, 'doc_title', true);
+        //$doc_number = get_post_meta( $doc_id, 'doc_number', true);
+        //$doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
         if ($todo_status<1) {
             if ($todo_status==-1) {
                 if ($is_doc_report) {
