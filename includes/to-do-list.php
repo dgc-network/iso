@@ -337,7 +337,7 @@ function display_todo_dialog($todo_id) {
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
@@ -407,15 +407,15 @@ function display_todo_dialog($todo_id) {
     if ($is_doc) {
         if ($is_doc_report==1) {
             ?>
-            <label id="doc-field-setting" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <label id="doc-field-setting" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
-            <label id="doc-field-setting" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-url" rows="3" style="width:100%;" disabled><?php echo $doc_url;?></textarea>
+            <label id="doc-field-setting" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
             <?php
         }
         ?>
@@ -632,7 +632,7 @@ function notice_the_persons_in_site($todo_id=0) {
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+    $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
@@ -640,7 +640,7 @@ function notice_the_persons_in_site($todo_id=0) {
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        $flexMessage = set_flex_message($user->display_name, $doc_url, $text_message);
+        $flexMessage = set_flex_message($user->display_name, $doc_frame, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],

@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
                         field_name_id = '#'+value.field_name;
                         ajaxData[value.field_name] = $(field_name_id).val();
                     });
-                    ajaxData['_doc_url'] = $("#doc-url").val();
+                    ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_start_job'] = $("#start-job").val();
@@ -141,7 +141,7 @@ jQuery(document).ready(function($) {
                     get_doc_report_list_data(doc_id);
                 });
             
-                $("#doc-url-preview").on("click", function () {
+                $("#doc-frame-preview").on("click", function () {
                     const header = `
                     <fieldset>
                     <input type ="button" id="signature-record" value="v" style="margin-right:10px;" />
@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
                     </fieldset>
                     `;
 
-                    $('#result-container').html(header+$("#doc-url").val()+footer);
+                    $('#result-container').html(header+$("#doc-frame").val()+footer);
 
                     $("#signature-record").on("click", function () {
                         $("#signature-record-div").toggle()
@@ -282,7 +282,7 @@ jQuery(document).ready(function($) {
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
-                    $("#doc-url").toggle();
+                    $("#doc-frame").toggle();
                     $("#doc-field-list-div").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)

@@ -139,14 +139,14 @@ function display_documents_shortcode() {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_url = get_post_meta($doc_id, 'doc_url', true);
+            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             update_post_meta( $post_id, 'site_id', $site_id);
             update_post_meta( $post_id, 'doc_title', $doc_title);
             update_post_meta( $post_id, 'doc_number', $doc_number);
             update_post_meta( $post_id, 'doc_revision', $doc_revision);
-            update_post_meta( $post_id, 'doc_url', $doc_url);
+            update_post_meta( $post_id, 'doc_frame', $doc_frame);
             update_post_meta( $post_id, 'doc_category', $doc_category);
             update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
             update_post_meta( $post_id, 'start_leadtime', 86400);
@@ -186,7 +186,7 @@ function display_documents_shortcode() {
         ?>
         <div class="ui-widget" id="result-container">
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '文件匣', 'your-text-domain' );?></h2>
+        <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
         <fieldset>
             <div id="document-setting-dialog" title="Document setting" style="display:none">
             <fieldset>
@@ -338,7 +338,7 @@ function get_document_dialog_data() {
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta( $doc_id, 'todo_status', true);
-        $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $doc_title = get_post_meta( $doc_id, 'doc_title', true);
         $doc_number = get_post_meta( $doc_id, 'doc_number', true);
         $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
@@ -347,7 +347,7 @@ function get_document_dialog_data() {
                 if ($is_doc_report) {
                     $result['html_contain'] = display_doc_report_list($doc_id);
                 } else {
-                    $result['html_contain'] = display_doc_url_contain($doc_id);
+                    $result['html_contain'] = display_doc_frame_contain($doc_id);
                 }
             } else {
                 $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
@@ -430,11 +430,11 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        //$doc_url = sanitize_text_field($_POST['_doc_url']);
+        //$doc_frame = sanitize_text_field($_POST['_doc_frame']);
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
-        //update_post_meta( $doc_id, 'doc_url', $doc_url);
-        update_post_meta( $doc_id, 'doc_url', $_POST['_doc_url']);
+        //update_post_meta( $doc_id, 'doc_frame', $doc_frame);
+        update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'doc_category', $doc_category);
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
         update_post_meta( $doc_id, 'start_job', $start_job);
@@ -731,13 +731,13 @@ function set_doc_unpublished_data() {
 add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
 add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
 
-// doc-url
-function display_doc_url_contain($doc_id=false) {
+// doc-frame
+function display_doc_frame_contain($doc_id=false) {
     ob_start();
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+    $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
     $signature_record_list = get_signature_record_list($site_id, $doc_id);
@@ -763,7 +763,7 @@ function display_doc_url_contain($doc_id=false) {
     <fieldset style="overflow-x:auto; white-space:nowrap;">
     <?php
     $html = ob_get_clean();
-    return $html.'<div style="display:inline-block;">'.$doc_url.'</div></fieldset>';
+    return $html.'<div style="display:inline-block;">'.$doc_frame.'</div></fieldset>';
 }
 
 // doc-report
@@ -957,7 +957,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $doc_url = get_post_meta( $doc_id, 'doc_url', true);
+        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
         $params = array(
@@ -1058,16 +1058,16 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     if ($is_doc) {
         if ($is_doc_report==1) {
             ?>
-            <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-url" rows="3" style="width:100%; display:none;"><?php echo $doc_url;?></textarea>
+            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
             <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
-            <label id="doc-field-setting" class="button" for="doc-url"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-url-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-url" rows="3" style="width:100%;"><?php echo $doc_url;?></textarea>
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
             <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         }
