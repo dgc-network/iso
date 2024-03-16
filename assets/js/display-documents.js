@@ -60,9 +60,6 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function activate_document_dialog_data(doc_id){
-    }
-
     function get_document_dialog_data(doc_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -162,61 +159,7 @@ jQuery(document).ready(function($) {
                 });
 
                 activate_published_document_data(doc_id);
-/*
-                $("#share-document").on("click", function() {
-                    var homeAddress = window.location.origin;
-                    var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
-                
-                    // Copy the text to clipboard
-                    copyToClipboard(textToCopy);
-                
-                    // Show the custom alert message
-                    var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
-                    $("body").append(alertBox);
-                    
-                    // Center the alert box
-                    alertBox.css({
-                        position: "fixed",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                    });
-                
-                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
-                        $(this).remove();
-                    });
-                });
 
-                $("#signature-record").on("click", function () {
-                    $("#signature-record-div").toggle()
-                });
-
-                $("#doc-unpublished").on("click", function () {
-                    if (window.confirm("Are you sure you want to unpublish this document?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: 'json',
-                            data: {
-                                action: 'set_doc_unpublished_data',
-                                _doc_id: doc_id,
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    window.location.replace("/display-documents/");
-                                } else {
-                                    console.error('Error updating:', response.error);
-                                    alert('Error updating. Please try again.');
-                                }
-                            },
-                            error: function(xhr, textStatus, errorThrown) {
-                                console.error('AJAX request failed:', errorThrown);
-                                alert('AJAX request failed. Please try again.');
-                            }
-                        });
-                    }    
-                });
-*/                
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
@@ -246,6 +189,7 @@ jQuery(document).ready(function($) {
                         }
                     });    
                 });
+
                 activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
@@ -313,7 +257,7 @@ jQuery(document).ready(function($) {
             copyToClipboard(textToCopy);
         
             // Show the custom alert message
-            var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
+            var alertBox = $("<div class='custom-alert'>Ducument is copied to clipboard</div>");
             $("body").append(alertBox);
             
             // Center the alert box
