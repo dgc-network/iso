@@ -152,77 +152,17 @@ jQuery(document).ready(function($) {
                         },
                         success: function(response) {
                             $('#result-container').html(response.html_contain);
-/*
-                            if (response.success) {
-                                window.location.replace("/display-documents/");
-                            } else {
-                                console.error('Error updating:', response.error);
-                                alert('Error updating. Please try again.');
-                            }
-*/                            
+                            activate_published_document_data(doc_id);
                         },
                         error: function(xhr, textStatus, errorThrown) {
                             console.error('AJAX request failed:', errorThrown);
                             alert('AJAX request failed. Please try again.');
                         }
                     });
-
-/*                    
-                    const header = `
-                    <fieldset>
-                    <input type ="button" id="signature-record" value="v" style="margin-right:10px;" />
-                    ${$("#doc_title").val()+'('+$("#doc_number").val()+':'+$("#doc_revision").val()+')'}
-                    <span id="doc-unpublished" style="margin-left:5px;" class="dashicons dashicons-trash button"></span>
-                    <span id="doc-print" style="margin-left:5px;" class="dashicons dashicons-printer button"></span>
-                    `;
-
-                    const footer = `
-                    </fieldset>
-                    `;
-
-                    $('#result-container').html(header+$("#doc-frame").val()+footer);
-
-                    $("#signature-record").on("click", function () {
-                        $("#signature-record-div").toggle()
-                    });
-
-                    $("#doc-print").on("click", function () {
-                        var divContent = document.getElementById('myDiv').outerHTML;
-                        var printWindow = window.open('', '_blank');
-                        printWindow.document.open();
-                        printWindow.document.write('<html><head><title>Print</title></head><body>' + divContent + '</body></html>');
-                        printWindow.document.close();
-                        printWindow.print();
-                    });
-
-                    $("#doc-unpublished").on("click", function () {
-                        if (window.confirm("Are you sure you want to unpublish this document?")) {
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: 'json',
-                                data: {
-                                    action: 'set_doc_unpublished_data',
-                                    _doc_id: doc_id,
-                                },
-                                success: function(response) {
-                                    if (response.success) {
-                                        window.location.replace("/display-documents/");
-                                    } else {
-                                        console.error('Error updating:', response.error);
-                                        alert('Error updating. Please try again.');
-                                    }
-                                },
-                                error: function(xhr, textStatus, errorThrown) {
-                                    console.error('AJAX request failed:', errorThrown);
-                                    alert('AJAX request failed. Please try again.');
-                                }
-                            });
-                        }
-                    });
-*/                    
                 });
 
+                activate_published_document_data(doc_id);
+/*
                 $("#share-document").on("click", function() {
                     var homeAddress = window.location.origin;
                     var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
@@ -276,7 +216,7 @@ jQuery(document).ready(function($) {
                         });
                     }    
                 });
-                
+*/                
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
@@ -364,6 +304,62 @@ jQuery(document).ready(function($) {
         });
     }
     
+    function activate_published_document_data(doc_id){
+        $("#share-document").on("click", function() {
+            var homeAddress = window.location.origin;
+            var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
+        
+            // Copy the text to clipboard
+            copyToClipboard(textToCopy);
+        
+            // Show the custom alert message
+            var alertBox = $("<div class='custom-alert'>URL copied to clipboard</div>");
+            $("body").append(alertBox);
+            
+            // Center the alert box
+            alertBox.css({
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            });
+        
+            alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                $(this).remove();
+            });
+        });
+
+        $("#signature-record").on("click", function () {
+            $("#signature-record-div").toggle()
+        });
+
+        $("#doc-unpublished").on("click", function () {
+            if (window.confirm("Are you sure you want to unpublish this document?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: 'json',
+                    data: {
+                        action: 'set_doc_unpublished_data',
+                        _doc_id: doc_id,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.replace("/display-documents/");
+                        } else {
+                            console.error('Error updating:', response.error);
+                            alert('Error updating. Please try again.');
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('AJAX request failed:', errorThrown);
+                        alert('AJAX request failed. Please try again.');
+                    }
+                });
+            }    
+        });
+    }
+
     function activate_doc_field_list_data(doc_id=false, site_id=false){
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
