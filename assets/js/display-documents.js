@@ -428,6 +428,8 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     
+        activate_published_document_data(doc_id);
+
         activate_doc_field_list_data(doc_id);
         
         $("#new-doc-report").on("click", function() {
@@ -482,9 +484,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
-        activate_published_document_data(doc_id);
-
     }
     
     function activate_doc_report_dialog_data(response){
