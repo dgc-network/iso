@@ -550,9 +550,9 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th><?php echo __( 'Field', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                    <th><?php echo __( '欄位', 'your-text-domain' );?></th>
+                    <th><?php echo __( '顯示', 'your-text-domain' );?></th>
+                    <th><?php echo __( '型態', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody id="sortable-doc-field-list">
@@ -652,31 +652,31 @@ function display_doc_field_dialog(){
     <div id="doc-field-dialog" title="Field dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="field-id" />
-        <label for="field-name">Name:</label>
+        <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
         <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
-        <label for="field-title">Title:</label>
+        <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
-        <label for="field-type">Type:</label>
+        <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
         <select id="field-type" class="text ui-widget-content ui-corner-all">
-            <option value="text">Text</option>
-            <option value="number">Number</option>
-            <option value="date">Date</option>
-            <option value="checkbox">Checkbox</option>
-            <option value="textarea">Textarea</option>
+            <option value="text"><?php echo __( '文字型態', 'your-text-domain' );?></option>
+            <option value="number"><?php echo __( '數字型態', 'your-text-domain' );?></option>
+            <option value="date"><?php echo __( '日期型態', 'your-text-domain' );?></option>
+            <option value="checkbox"><?php echo __( '檢查框', 'your-text-domain' );?></option>
+            <option value="textarea"><?php echo __( '文字區域', 'your-text-domain' );?></option>
         </select>
-        <label for="default-value">Deafult:</label>
+        <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
-        <label for="listing-style">Style:</label>
+        <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all">
-            <option value="text-align:left;">Left</option>
-            <option value="text-align:center;">Center</option>
-            <option value="text-align:right;">Right</option>
+            <option value="text-align:left;"><?php echo __( '靠左', 'your-text-domain' );?></option>
+            <option value="text-align:center;"><?php echo __( '置中', 'your-text-domain' );?></option>
+            <option value="text-align:right;"><?php echo __( '靠右', 'your-text-domain' );?></option>
             <option value=""></option>
         </select>
-        <label for="order-field">Order:</label>
+        <label for="order-field"><?php echo __( '排列順序：', 'your-text-domain' );?></label>
         <select id="order-field" class="text ui-widget-content ui-corner-all">
-            <option value="ASC">ASC</option>
-            <option value="DESC">DESC</option>
+            <option value="ASC"><?php echo __( '由小到大', 'your-text-domain' );?></option>
+            <option value="DESC"><?php echo __( '由大到小', 'your-text-domain' );?></option>
             <option value=""></option>
         </select>
     </fieldset>
