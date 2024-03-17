@@ -482,6 +482,9 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
+
+        activate_published_document_data(doc_id);
+
     }
     
     function activate_doc_report_dialog_data(response){
