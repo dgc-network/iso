@@ -239,7 +239,12 @@ function user_did_not_login_yet() {
             ));
             add_user_meta( $user_id, 'line_user_id', $_GET['_id']);
         } else {
-            $user_id = $_GET['_id'];
+            // Get user by 'line_user_id' meta
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $_GET['_id']
+            ));
             $site_id = get_user_meta( $user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
         }
