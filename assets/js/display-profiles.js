@@ -60,12 +60,11 @@ jQuery(document).ready(function($) {
             $("#site-image-url").show();
         });
     
-        $("#set-image-url").on("click", function(e) {
-            e.preventDefault();
+        $("#set-image-url").on("click", function() {
             $("#site-image-container").show();
             $("#site-image-url").hide();
-            if (isURL($('#image-url-input').val())) {
-                $("#site-image-container").html('<img src="'+$('#image-url-input').val()+'" style="object-fit:cover; width:250px; height:250px;">');
+            if (isURL($('#image-url').val())) {
+                $("#site-image-container").html('<img src="'+$('#image-url').val()+'" style="object-fit:cover; width:250px; height:250px;">');
             } else {
                 $("#site-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
             }
@@ -130,6 +129,7 @@ jQuery(document).ready(function($) {
                     'action': 'set_site_dialog_data',
                     '_site_id': $("#site-id").val(),
                     '_site_title': $("#site-title").val(),
+                    '_image_url': $("#image-url").val(),
                 },
                 success: function (response) {
                     if (response.success) {

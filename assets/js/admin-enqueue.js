@@ -18,8 +18,8 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         $("#custom-image-container").show();
         $("#image-url-dialog").hide();
-        if (isURL($('#image-url-input').val())) {
-            $("#custom-image-container").html('<img src="'+$('#image-url-input').val()+'" style="object-fit:cover; width:250px; height:250px;">');
+        if (isURL($('#image-url').val())) {
+            $("#custom-image-container").html('<img src="'+$('#image-url').val()+'" style="object-fit:cover; width:250px; height:250px;">');
         } else {
             $("#custom-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
         }

@@ -137,13 +137,13 @@ function display_site_profile() {
             <div id="site-hint" style="display:none; color:#999;"></div>
 
             <div id="site-image-container">
-                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
             </div>
             <div id="site-image-url" style="display:none;">
             <fieldset>
-                <label for="image-url-input">Image URL:</label>
-                <textarea id="image-url-input" name="image_url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
-                <button id="set-image-url">Set</button>
+                <label for="image-url">Image URL:</label>
+                <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+                <button id="set-image-url" class="button">Set</button>
             </fieldset>
             </div>
 
@@ -199,24 +199,18 @@ function display_site_profile() {
                 <?php
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
-                    //$x = 0;
                     while ($query->have_posts()) : $query->the_post();
                         $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
                         $start_job_checked = ($is_start_job==1) ? 'checked' : '';
                         ?>
-                        <tr class="site-job-list-<?php echo esc_attr($x);?>" id="edit-site-job-<?php the_ID();?>">
+                        <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
                             <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?> /></td>
                         </tr>
                         <?php 
-                        //$x += 1;
                     endwhile;
                     wp_reset_postdata();
-                    //while ($x<50) {
-                    //    echo '<tr class="site-job-list-'.$x.'" style="display:none;"></tr>';
-                    //    $x += 1;
-                    //}
                 endif;
                 ?>
                 </tbody>
@@ -282,7 +276,6 @@ function display_user_dialog($site_id) {
         <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
         <input type="checkbox" id="is-site-admin" />
         <label for="is-site-admin">Is site admin</label><br>
-        <?php //display_site_user_job_list($site_id);?>
         <fieldset>
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -301,7 +294,6 @@ function display_user_dialog($site_id) {
             <select id="select-site" class="text ui-widget-content ui-corner-all" >
                 <option value="">Select Site</option>
             <?php
-            //$site_id = get_user_meta( $user->ID, 'site_id', true);
             $site_args = array(
                 'post_type'      => 'site',
                 'posts_per_page' => -1,
@@ -597,9 +589,9 @@ function set_job_action_dialog_data() {
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish', // Publish the post immediately
-            'post_author'   => $current_user_id, // Use the user ID of the author
-            'post_type'     => 'action', // Change to your custom post type if needed
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_job_id']));
@@ -689,7 +681,6 @@ function get_site_dialog_data() {
     $response = array();
     if( isset($_POST['_site_id']) ) {
         $site_id = (int)sanitize_text_field($_POST['_site_id']);
-        //$response["site_id"] = $site_id;
         $response["site_title"] = get_the_title($site_id);
     }
     wp_send_json($response);
@@ -699,21 +690,21 @@ add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
 
 function set_site_dialog_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-    $site_title = sanitize_text_field($_POST['_site_title']);
     if( isset($_POST['_site_id']) ) {
-        $site_id = (int) sanitize_text_field($_POST['_site_id']);
+        $site_id = sanitize_text_field($_POST['_site_id']);
         $site_title = sanitize_text_field($_POST['_site_title']);
-        // Prepare post data
+        // Update the post
         $post_data = array(
             'ID'         => $site_id,
             'post_title' => $site_title,
         );        
-        // Update the post
         wp_update_post($post_data);
+        update_post_meta( $site_id, 'image_url', $_POST['_image_url'] );
         $response = array('success' => true);
     } else {
         // Set up the new post data
         $current_user_id = get_current_user_id();
+        $site_title = sanitize_text_field($_POST['_site_title']);
         $new_post = array(
             'post_title'    => $site_title,
             'post_content'  => 'Your post content goes here.',

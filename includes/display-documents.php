@@ -134,15 +134,9 @@ function display_documents_shortcode() {
         endif;    
     }
 
-    //$current_user_id = get_current_user_id();
-    //$site_id = get_user_meta($current_user_id, 'site_id', true);
-    //$image_url = get_post_meta( $site_id, 'image_url', true);
-    //$user_data = get_userdata( $current_user_id );
     // Check if the user is logged in
-    //if (is_user_logged_in()&&($site_id!=null)) {
-
     if (is_user_logged_in()) {
-        // Migrate the shared doc_id
+        // Migrate the shared doc_id into my site
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
             $current_user_id = get_current_user_id();
@@ -227,7 +221,6 @@ function display_document_list() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
-    //$user_data = get_userdata( $current_user_id );
     ?>
     <div class="ui-widget" id="result-container">
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -379,10 +372,6 @@ function get_document_dialog_data() {
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $todo_status = get_post_meta( $doc_id, 'todo_status', true);
-        //$doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        //$doc_title = get_post_meta( $doc_id, 'doc_title', true);
-        //$doc_number = get_post_meta( $doc_id, 'doc_number', true);
-        //$doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
         if ($todo_status<1) {
             if ($todo_status==-1) {
                 if ($is_doc_report) {
@@ -484,10 +473,8 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        //$doc_frame = sanitize_text_field($_POST['_doc_frame']);
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
-        //update_post_meta( $doc_id, 'doc_frame', $doc_frame);
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'doc_category', $doc_category);
         update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
@@ -1254,53 +1241,7 @@ function duplicate_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
-/*
-function retrieve_doc_report_list_data($doc_id=false, $search_doc_report=false) {
-    $args = array(
-        'post_type'      => 'doc-report',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-    );
-    
-    $args['meta_query'] = array(
-        'relation' => 'AND', // Change relation to 'AND'
-        array(
-            'key'     => 'doc_id',
-            'value'   => $doc_id,
-            'compare' => '='
-        ),
-    );
 
-    if ($search_doc_report) {
-        $args['meta_query'][] = array(
-            'relation' => 'OR',
-        );
-        $params = array();                
-        $inner_query = retrieve_doc_field_data($params);
-        if ($inner_query->have_posts()) {
-            while ($inner_query->have_posts()) : $inner_query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
-                if ($order_field_value='ASC'||$order_field_value='DESC') $order_field_name = $field_name;
-                $args['meta_query'][1][] = array( // Append to the OR relation
-                    'key'     => $field_name,
-                    'value'   => $search_doc_report,
-                    'compare' => 'LIKE',
-                );
-            endwhile;                
-            // Reset only the inner loop's data
-            wp_reset_postdata();
-        }
-    }
-    
-    $args['orderby'] = 'meta_value';
-    $args['meta_key'] = $order_field_name;
-    $args['order'] = $order_field_value;
-
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {

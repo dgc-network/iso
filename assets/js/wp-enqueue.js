@@ -34,13 +34,13 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $("#one-time-password-input").on( "change", function() {
+    $("#one-time-password-desktop-input").on( "change", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'submit_one_time_password',
+                'action': 'one_time_password_desktop_submit',
                 '_one_time_password': $(this).val(),
                 '_line_user_id': $('#line-user-id-input').val(),
             },

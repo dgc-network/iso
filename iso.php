@@ -243,7 +243,8 @@ function user_did_not_login_yet() {
             $site_id = get_user_meta( $user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
         }
-        $user = get_user_by( 'ID', $user_id );
+        //$user = get_user_by( 'ID', $user_id );
+        $user_data = get_userdata( $user_id );
         ?>
         <div class="ui-widget">
             <h2>User registration/login</h2>
@@ -251,7 +252,7 @@ function user_did_not_login_yet() {
                 <label for="display-name">Name:</label>
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email">Email:</label>
-                <input type="text" id="user-email" value="<?php echo esc_attr($user->user_email);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id">Site:</label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
@@ -275,7 +276,7 @@ function user_did_not_login_yet() {
             <input type="text" id="user-email-input" />
             <div id="otp-input-div" style="display:none;">
             <p>請輸入傳送到您 Line 上的六位數字密碼</p>
-            <input type="text" id="one-time-password-input" />
+            <input type="text" id="one-time-password-desktop-input" />
             <input type="hidden" id="line-user-id-input" />
             </div>
         </div>
@@ -356,7 +357,7 @@ function send_one_time_password() {
 add_action( 'wp_ajax_send_one_time_password', 'send_one_time_password' );
 add_action( 'wp_ajax_nopriv_send_one_time_password', 'send_one_time_password' );
 
-function submit_one_time_password() {
+function one_time_password_desktop_submit() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
     if (isset($_POST['_one_time_password'])) {
@@ -373,10 +374,11 @@ function submit_one_time_password() {
 
             if ($user_id) {
                 // Do something with $user_id
-                $user = get_user_by('ID', $user_id);
+                //$user = get_user_by('ID', $user_id);
+                $user_data = get_userdata( $user_id );
 
                 $credentials = array(
-                    'user_login'    => $user->user_login,
+                    'user_login'    => $user_data->user_login,
                     'user_password' => $line_user_id,
                     'remember'      => true,
                 );
@@ -387,7 +389,7 @@ function submit_one_time_password() {
                     // Login successful
                     wp_set_current_user($user_id);
                     wp_set_auth_cookie($user_id);
-                    do_action('wp_login', $user->user_login);
+                    do_action('wp_login', $user_data->user_login);
 
                     $response = array('success' => true);
                 } else {
@@ -403,8 +405,8 @@ function submit_one_time_password() {
     }
     wp_send_json($response);
 }
-add_action('wp_ajax_submit_one_time_password', 'submit_one_time_password');
-add_action('wp_ajax_nopriv_submit_one_time_password', 'submit_one_time_password');
+add_action('wp_ajax_one_time_password_desktop_submit', 'one_time_password_desktop_submit');
+add_action('wp_ajax_nopriv_one_time_password_desktop_submit', 'one_time_password_desktop_submit');
 
 function wp_login_submit() {
     $response = array('success' => false, 'error' => 'Invalid data format');

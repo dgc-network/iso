@@ -100,8 +100,8 @@ function site_image_content($post) {
     </div>
     <div id="image-url-dialog" style="display:none;">
         <fieldset>
-            <label for="image-url-input">Image URL:</label>
-            <textarea id="image-url-input" name="image_url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+            <label for="image-url">Image URL:</label>
+            <textarea id="image-url" name="image_url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
             <button id="set-image-url">Set</button>
         </fieldset>
     </div>
