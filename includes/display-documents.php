@@ -34,6 +34,27 @@ function register_document_post_type() {
 }
 add_action('init', 'register_document_post_type');
 
+function add_document_settings_metabox() {
+    add_meta_box(
+        'document_settings_id',
+        'Document Settings',
+        'document_settings_content',
+        'document',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_document_settings_metabox');
+
+function document_settings_content($post) {
+    //wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
+    $doc_title = esc_attr(get_post_meta( $post->ID, 'doc_title', true));
+    ?>
+    <label for="doc_title"> doc_title: </label>
+    <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
+    <?php
+}
+
 // Register doc report post type
 function register_doc_report_post_type() {
     $labels = array(
@@ -136,7 +157,7 @@ function display_documents_shortcode() {
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        // Migrate the shared doc_id into my site
+        // Add the shared doc_id into my site
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
             $current_user_id = get_current_user_id();
@@ -174,9 +195,9 @@ function display_documents_shortcode() {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         // Insert the post into the database
                         $new_post = array(
@@ -188,9 +209,9 @@ function display_documents_shortcode() {
                         update_post_meta( $field_id, 'doc_id', $post_id);
                         update_post_meta( $field_id, 'field_name', $field_name);
                         update_post_meta( $field_id, 'field_title', $field_title);
-                        update_post_meta( $field_id, 'listing_style', $listing_style);
                         update_post_meta( $field_id, 'field_type', $field_type);
                         update_post_meta( $field_id, 'default_value', $default_value);
+                        update_post_meta( $field_id, 'listing_style', $listing_style);
                         update_post_meta( $field_id, 'sorting_key', $sorting_key);
                     endwhile;
                     wp_reset_postdata();
