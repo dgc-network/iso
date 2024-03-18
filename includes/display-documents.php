@@ -896,13 +896,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        if ($field_type=='radio') {
-                            echo '<th>'.esc_html($default_value).'</th>';
-                        } else {
-                            echo '<th>'.esc_html($field_title).'</th>';
-                        }
+                        echo '<th>'.esc_html($field_title).'</th>';
                     endwhile;
                     echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
                     echo '</tr>';
@@ -935,7 +929,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                     echo '<input type="checkbox" '.$is_checked.' />';
                                 } elseif ($field_type=='radio') {
-                                    echo get_radio_field_title($doc_id, $field_name);
+                                    echo get_radio_selected_value($doc_id, $field_name, $report_id);
                                 } else {
                                     echo esc_html($field_value);
                                 }
@@ -964,7 +958,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     return $html;
 }
 
-function get_radio_field_title($doc_id, $field_name) {
+function get_radio_selected_value($doc_id, $field_name, $report_id) {
+
     // Define the query arguments
     $args = array(
         'post_type'      => 'doc-field',
@@ -974,10 +969,12 @@ function get_radio_field_title($doc_id, $field_name) {
             array(
                 'key'   => 'doc_id',
                 'value' => $doc_id,
+                'compare' => '='
             ),
             array(
                 'key'   => 'field_name',
                 'value' => $field_name,
+                'compare' => 'LIKE'
             ),
         ),
     );
@@ -987,17 +984,16 @@ function get_radio_field_title($doc_id, $field_name) {
 
     // Check if there are any posts found
     if ($query->have_posts()) {
-        // Retrieve the post
-        $query->the_post();
-        
-        // Get the value of the 'field_title' meta key
-        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+        $x = 0;
+        while ($query->have_posts()) : $query->the_post();
+            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+            $field_value = get_post_meta( $report_id, $field_name.$x, true);
+            if ($field_value==1) return $default_value;
+            $x += 1;
+        endwhile;
 
         // Reset post data
         wp_reset_postdata();
-
-        // Return the field title
-        return $field_title;
     } else {
         // If no matching post is found, return false or any default value
         return false;
