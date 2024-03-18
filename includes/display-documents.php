@@ -1142,7 +1142,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
                 case ($field_type=='radio'):
                     if ($prev_field_name!=$field_name) $x = 0;
                     $is_checked = ($field_value==1) ? 'checked' : '';
-                    if ($x==0) '<label>'.esc_html($field_title).'</label><br>';
+                    if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
                     ?>                    
                     <input type="radio" id="<?php echo esc_attr($field_name.$x);?>" name="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name.$x);?>"><?php echo esc_html($default_value);?></label><br>
