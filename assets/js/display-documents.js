@@ -171,25 +171,6 @@ jQuery(document).ready(function($) {
                     $(this).text(currentValue);
                 });            
         
-                $("#new-doc-field").on("click", function() {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_field_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            get_doc_field_list_data(doc_id);
-                        },
-                        error: function(error){
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });    
-                });
-
                 activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
@@ -305,6 +286,25 @@ jQuery(document).ready(function($) {
     }
 
     function activate_doc_field_list_data(doc_id=false, site_id=false){
+        $("#new-doc-field").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_field_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_field_list_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });    
+        });
+
         $('#sortable-doc-field-list').sortable({
             update: function(event, ui) {
                 const field_id_array = $(this).sortable('toArray', { attribute: 'data-field-id' });                
