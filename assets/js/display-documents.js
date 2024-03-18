@@ -499,9 +499,15 @@ jQuery(document).ready(function($) {
                 'action': 'set_doc_report_dialog_data',
             };
             ajaxData['_report_id'] = report_id;
+            var sequenceNumber = 0; // Initialize sequence number
             $.each(response.doc_fields, function (index, value) {
                 field_name_id = '#'+value.field_name;
-                if (value.field_type=='checkbox' || value.field_type=='radio') {
+                if (value.field_type=='radio') {
+                    // Add sequence number only for radio fields
+                    var modified_field_name = value.field_name + sequenceNumber;
+                    ajaxData[modified_field_name] = $(field_name_id).is(":checked") ? 1 : 0;
+                    sequenceNumber++; // Increment sequence number for the next radio field
+                } else if (value.field_type=='checkbox') {
                     ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_id).val();
