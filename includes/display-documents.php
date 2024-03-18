@@ -959,7 +959,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
 }
 
 function get_radio_selected_value($doc_id, $field_name, $report_id) {
-
     // Define the query arguments
     $args = array(
         'post_type'      => 'doc-field',
@@ -1118,6 +1117,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
             if ($is_doc) {
                 $field_value = get_post_meta( $doc_id, $field_name, true);
             } else {
@@ -1136,6 +1136,14 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
                     ?>
                     <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <?php
+                    break;
+    
+                case ($field_type=='radio'):
+                    $is_checked = ($field_value==1) ? 'checked' : '';
+                    ?>
+                    <input type="radio" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($default_value);?></label><br>
                     <?php
                     break;
     
