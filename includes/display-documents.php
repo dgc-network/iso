@@ -972,7 +972,7 @@ function get_radio_selected_value($doc_id, $field_name, $report_id) {
             ),
             array(
                 'key'   => 'field_name',
-                'value' => $field_name,
+                'value' => substr($field_name, 0, 5),
                 'compare' => 'LIKE'
             ),
         ),
@@ -983,12 +983,13 @@ function get_radio_selected_value($doc_id, $field_name, $report_id) {
 
     // Check if there are any posts found
     if ($query->have_posts()) {
-        $x = 0;
+        //$x = 0;
         while ($query->have_posts()) : $query->the_post();
+            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-            $field_value = get_post_meta( $report_id, $field_name.$x, true);
+            $field_value = get_post_meta( $report_id, $field_name, true);
             if ($field_value==1) return $default_value;
-            $x += 1;
+            //$x += 1;
         endwhile;
 
         // Reset post data
@@ -1140,15 +1141,15 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
                     break;
     
                 case ($field_type=='radio'):
-                    if ($prev_field_name!=$field_name) $x = 0;
+                    if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
                     if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
-                    $field_value = get_post_meta( $doc_id, $field_name.$x, true);
+                    $field_value = get_post_meta( $doc_id, $field_name, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     ?>                    
-                    <input type="radio" id="<?php echo esc_attr($field_name.$x);?>" name="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name.$x);?>"><?php echo esc_html($default_value);?></label><br>
+                    <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($default_value);?></label><br>
                     <?php
-                    $prev_field_name=$field_name;
+                    $prev_field_name=substr($field_name, 0, 5);
                     $x += 1;
                     break;
     
