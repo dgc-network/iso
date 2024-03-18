@@ -161,6 +161,7 @@ function display_documents_shortcode() {
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
             $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Insert the post into the database
             $new_post = array(
                 'post_title'    => 'No title',
