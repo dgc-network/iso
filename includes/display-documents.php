@@ -929,7 +929,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                     echo '<input type="checkbox" '.$is_checked.' />';
                                 } elseif ($field_type=='radio') {
-                                    echo get_radio_selected_value($doc_id, $field_name, $report_id);
+                                    echo get_radio_checked_value($doc_id, $field_name, $report_id);
                                 } else {
                                     echo esc_html($field_value);
                                 }
@@ -958,7 +958,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     return $html;
 }
 
-function get_radio_selected_value($doc_id, $field_name, $report_id) {
+function get_radio_checked_value($doc_id, $field_name, $report_id) {
     // Define the query arguments
     $args = array(
         'post_type'      => 'doc-field',
@@ -992,6 +992,7 @@ function get_radio_selected_value($doc_id, $field_name, $report_id) {
             //$x += 1;
         endwhile;
 
+        return 'No found';
         // Reset post data
         wp_reset_postdata();
     } else {
