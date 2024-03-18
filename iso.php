@@ -149,6 +149,7 @@ function init_webhook_events() {
         // Start the User Login/Registration process if got the one time password
         if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
             // Encode the Chinese characters for inclusion in the URL
             $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
             $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
@@ -168,8 +169,6 @@ function init_webhook_events() {
             
             // Output the detected URLs
             foreach ($urls as $url) {
-                $text_message = 'You have to click the button below to add a new document.';
-
                 // Parse the URL
                 $parsed_url = parse_url($url);
                 

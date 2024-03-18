@@ -603,6 +603,7 @@ function notice_the_persons_in_charge($todo_id=0) {
     $todo_due = get_post_meta( $todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
+    $text_message='你在「'.$job_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $job_id = get_post_meta( $todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
@@ -643,6 +644,7 @@ function notice_the_persons_in_site($todo_id=0) {
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
+    $text_message='「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date ).'發行或廢止，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {

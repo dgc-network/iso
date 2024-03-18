@@ -983,13 +983,11 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
 
     // Check if there are any posts found
     if ($query->have_posts()) {
-        //$x = 0;
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
             $field_value = get_post_meta( $report_id, $field_name, true);
             if ($field_value==1) return $default_value;
-            //$x += 1;
         endwhile;
 
         return 'No found';
