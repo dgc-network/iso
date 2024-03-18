@@ -505,6 +505,7 @@ jQuery(document).ready(function($) {
                 if (value.field_type=='radio') {
                     // Add sequence number only for radio fields
                     var modified_field_name = value.field_name + sequenceNumber;
+                    field_name_id = '#'+modified_field_name;
                     ajaxData[modified_field_name] = $(field_name_id).is(":checked") ? 1 : 0;
                     sequenceNumber++; // Increment sequence number for the next radio field
                 } else if (value.field_type=='checkbox') {
