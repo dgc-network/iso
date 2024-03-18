@@ -684,6 +684,7 @@ function display_doc_field_dialog(){
             <option value="number"><?php echo __( '數字型態', 'your-text-domain' );?></option>
             <option value="date"><?php echo __( '日期型態', 'your-text-domain' );?></option>
             <option value="checkbox"><?php echo __( '檢查框', 'your-text-domain' );?></option>
+            <option value="radio"><?php echo __( '多選一', 'your-text-domain' );?></option>
             <option value="textarea"><?php echo __( '文字區域', 'your-text-domain' );?></option>
         </select>
         <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
@@ -894,9 +895,14 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                 if ($query->have_posts()) {
                     echo '<tr>';
                     while ($query->have_posts()) : $query->the_post();
-                        echo '<th>';
-                        echo esc_html(get_post_meta(get_the_ID(), 'field_title', true));
-                        echo '</th>';
+                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        if ($field_type=='radio') {
+                            echo '<th>'.esc_html($default_value).'</th>';
+                        } else {
+                            echo '<th>'.esc_html($field_title).'</th>';
+                        }
                     endwhile;
                     echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
                     echo '</tr>';
@@ -920,6 +926,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta( $report_id, $field_name, true);
@@ -927,6 +934,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                 if ($field_type=='checkbox') {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                     echo '<input type="checkbox" '.$is_checked.' />';
+                                } elseif ($field_type=='radio') {
+                                    echo get_radio_field_title($doc_id, $field_name);
                                 } else {
                                     echo esc_html($field_value);
                                 }
@@ -953,6 +962,46 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     <?php
     $html = ob_get_clean();
     return $html;
+}
+
+function get_radio_field_title($doc_id, $field_name) {
+    // Define the query arguments
+    $args = array(
+        'post_type'      => 'doc-field',
+        'posts_per_page' => 1, // We only need one post since we're looking for a specific field
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+            array(
+                'key'   => 'field_name',
+                'value' => $field_name,
+            ),
+        ),
+    );
+
+    // Perform the query
+    $query = new WP_Query($args);
+
+    // Check if there are any posts found
+    if ($query->have_posts()) {
+        // Retrieve the post
+        $query->the_post();
+        
+        // Get the value of the 'field_title' meta key
+        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+
+        // Reset post data
+        wp_reset_postdata();
+
+        // Return the field title
+        return $field_title;
+    } else {
+        // If no matching post is found, return false or any default value
+        return false;
+    }
 }
 
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
