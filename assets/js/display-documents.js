@@ -501,7 +501,7 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
                 field_name_id = '#'+value.field_name;
-                if (value.field_type=='checkbox') {
+                if (value.field_type=='checkbox' || value.field_type=='radio') {
                     ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_id).val();

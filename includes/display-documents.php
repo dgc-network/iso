@@ -727,7 +727,7 @@ function set_doc_field_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_field_id']) ) {
         // Update the post into the database
-        $field_id = (int)sanitize_text_field($_POST['_field_id']);
+        $field_id = sanitize_text_field($_POST['_field_id']);
         update_post_meta( $field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
         update_post_meta( $field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
         update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
