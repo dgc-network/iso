@@ -89,8 +89,12 @@ jQuery(document).ready(function($) {
                     };
                     ajaxData['_doc_id'] = doc_id;
                     $.each(response.doc_fields, function (index, value) {
-                        field_name_id = '#'+value.field_name;
-                        ajaxData[value.field_name] = $(field_name_id).val();
+                        const field_name_tag = '#' + value.field_name;
+                        if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                            ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                        } else {
+                            ajaxData[value.field_name] = $(field_name_tag).val();
+                        }
                     });
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
@@ -493,6 +497,40 @@ jQuery(document).ready(function($) {
             }
         });
     
+        $('[id^="save-doc-report-"]').on("click", function() {
+            const report_id = this.id.substring(16);
+            const ajaxData = {
+                'action': 'set_doc_report_dialog_data',
+                '_report_id': report_id
+            };
+        
+            $.each(response.doc_fields, function(index, value) {
+                const field_name_tag = '#' + value.field_name;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_tag).val();
+                }
+            });
+        
+            ajaxData['_start_job'] = $("#start-job").val();
+            ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function(response) {
+                    get_doc_report_list_data($("#doc-id").val());
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', errorThrown);
+                    alert('AJAX request failed. Please try again.');
+                }
+            });
+        });
+/*        
         $('[id^="save-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
             const ajaxData = {
@@ -500,11 +538,11 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
-                field_name_id = '#'+value.field_name;
+                field_name_tag = '#'+value.field_name;
                 if (value.field_type=='checkbox'||value.field_type=='radio') {
-                    ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_id).val();
+                    ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
             ajaxData['_start_job'] = $("#start-job").val();
@@ -524,7 +562,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+*/
         $('[id^="del-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to delete this record?")) {
@@ -560,11 +598,11 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
-                field_name_id = '#'+value.field_name;
-                if (value.field_type=='checkbox'||value.field_type=='radio') {
-                    ajaxData[value.field_name] = $(field_name_id).is(":checked") ? 1 : 0;
+                const field_name_tag = '#' + value.field_name;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_id).val();
+                    ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
             ajaxData['_start_job'] = $("#start-job").val();
