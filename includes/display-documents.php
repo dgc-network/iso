@@ -997,7 +997,7 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
         // Reset post data
         wp_reset_postdata();
 
-        return 'Not found';
+        return $x.'Not found';
     } else {
         // If no matching post is found, return false or any default value
         return false;
