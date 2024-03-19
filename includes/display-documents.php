@@ -733,8 +733,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
-        //update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
-        update_post_meta( $field_id, 'order_field', $_POST['_order_field']);
+        update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -1072,7 +1071,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     $args['order']    = 'ASC';
     
     $args['meta_key'] = $order_field_name;
-    $args['order']    = $order_field_value;
+    //$args['order']    = $order_field_value;
 
     $query = new WP_Query($args);
     return $query;
