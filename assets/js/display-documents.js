@@ -35,6 +35,7 @@ jQuery(document).ready(function($) {
     });
 
     activate_doc_field_list_data(false, $("#site-id").val());
+    activate_doc_report_list_data($("#doc-id").val());
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);

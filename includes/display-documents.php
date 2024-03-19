@@ -28,7 +28,7 @@ function register_document_post_type() {
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
         'rewrite'       => array('slug' => 'documents'),
-        //'show_in_menu'  => false,
+        'show_in_menu'  => false,
     );
     register_post_type( 'document', $args );
 }
@@ -815,7 +815,7 @@ function display_doc_frame_contain($doc_id=false) {
             <span><?php echo esc_html($doc_revision);?></span>
         </div>
         <div style="text-align:right; display:flex;">
-            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
+            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
@@ -849,7 +849,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
         <div style="text-align:right; display:flex;">
-            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('分享文件', 'your-text-domain')?></button>
+            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
             <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
             <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
         </div>
