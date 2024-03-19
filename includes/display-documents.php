@@ -1039,9 +1039,16 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
                 // Add orderby parameters directly to meta_query array
                 $args[] = array(
-                    'key'     => $field_name,
-                    'compare' => 'EXISTS', // Use EXISTS for ordering by meta key
-                    'orderby' => $order_field_value,
+                    'orderby'  => 'meta_value',
+                    'meta_key' => $field_name,
+                    'order' => $order_field_value,
+                    //'key'     => $field_name,
+                    //'compare' => 'EXISTS', // Use EXISTS for ordering by meta key
+                    //'orderby' => $order_field_value,
+                    //    $args['orderby']  = 'meta_value';
+                    //    $args['meta_key'] = $order_field_name;
+                    //    $args['order']    = $order_field_value;
+
                 );
             }
 
