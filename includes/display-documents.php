@@ -1056,6 +1056,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         wp_reset_postdata();
     }
 
+    $args['orderby'] = array(
+        'index' => 'ASC',
+    );
+    
     $query = new WP_Query($args);
     return $query;
 }
