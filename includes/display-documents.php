@@ -1068,10 +1068,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 
     $args['orderby']  = 'meta_value';
     //$args['meta_key'] = 'index';
-    //$args['order']    = 'ASC';
+    $args['order']    = 'ASC';
     
     $args['meta_key'] = $order_field_name;
-    $args['order']    = $order_field_value;
+    //$args['order']    = $order_field_value;
 
     $query = new WP_Query($args);
     return $query;
