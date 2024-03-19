@@ -920,7 +920,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         if ($inner_query->have_posts()) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                                //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta( $report_id, $field_name, true);
@@ -971,6 +970,11 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
                 'compare' => '='
             ),
             array(
+                'key'     => 'field_type',
+                'value'   => 'radio',
+                'compare' => '='
+            ),
+            array(
                 'key'     => 'field_name',
                 'value'   => substr($field_name, 0, 5),
                 'compare' => 'LIKE'
@@ -1003,48 +1007,7 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
         return false;
     }
 }
-/*
-function get_radio_checked_value($doc_id, $field_name, $report_id) {
-    // Define the query arguments
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => 1, // We only need one post since we're looking for a specific field
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-                'compare' => '='
-            ),
-            array(
-                'key'   => 'field_name',
-                'value' => substr($field_name, 0, 5),
-                'compare' => 'LIKE'
-            ),
-        ),
-    );
 
-    // Perform the query
-    $query = new WP_Query($args);
-
-    // Check if there are any posts found
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-            $field_value = get_post_meta( $report_id, $field_name, true);
-            if ($field_value==1) return $default_value;
-        endwhile;
-
-        return 'No found';
-        // Reset post data
-        wp_reset_postdata();
-    } else {
-        // If no matching post is found, return false or any default value
-        return false;
-    }
-}
-*/
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
     $args = array(
         'post_type'      => 'doc-report',
