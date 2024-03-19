@@ -1014,7 +1014,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         'posts_per_page' => 30,
         'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
-            'relation' => 'AND', // Change relation to 'AND'
+            'relation' => 'AND',
             array(
                 'key'     => 'doc_id',
                 'value'   => $doc_id,
@@ -1031,7 +1031,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             'relation' => 'OR',
         );
 
-        $inner_query = retrieve_doc_field_data(array()); // I assume retrieve_doc_field_data function returns WP_Query object
+        $inner_query = retrieve_doc_field_data(array('doc_id' => $doc_id));
 
         if ($inner_query->have_posts()) {
             while ($inner_query->have_posts()) : $inner_query->the_post();
