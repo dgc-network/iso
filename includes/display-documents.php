@@ -1038,7 +1038,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 
             if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
                 // Add orderby parameters directly to meta_query array
-                $args['meta_query'][] = array(
+                $args[] = array(
                     'key'     => $field_name,
                     'compare' => 'EXISTS', // Use EXISTS for ordering by meta key
                     'orderby' => $order_field_value,
