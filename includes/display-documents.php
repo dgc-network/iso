@@ -1023,8 +1023,8 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         ),
     );
 
-    $order_field_name = ''; // Initialize variable to store the meta key for ordering
-    $order_field_value = ''; // Initialize variable to store the order direction
+    //$order_field_name = ''; // Initialize variable to store the meta key for ordering
+    //$order_field_value = ''; // Initialize variable to store the order direction
 
     if ($search_doc_report) {
         $args['meta_query'][] = array(
@@ -1041,7 +1041,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 
             // Check if the order_field_value is valid
             if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
+                //$order_field_name = $field_name; // Assign the field_name if order_field_value is valid
+                $args['orderby'][] = array(
+                    $field_name => $order_field_value,
+                );
             }
 
             if ($search_doc_report) {
@@ -1058,11 +1061,11 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     }
 
     // Check if order_field_name is not empty before setting orderby and meta_key
-    if (!empty($order_field_name)) {
-        $args['orderby']  = 'meta_value';
-        $args['meta_key'] = $order_field_name;
-        $args['order']    = $order_field_value;
-    }
+    //if (!empty($order_field_name)) {
+    //    $args['orderby']  = 'meta_value';
+    //    $args['meta_key'] = $order_field_name;
+    //    $args['order']    = $order_field_value;
+    //}
 
     $query = new WP_Query($args);
     return $query;
