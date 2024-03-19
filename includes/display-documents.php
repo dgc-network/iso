@@ -1018,58 +1018,6 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             array(
                 'key'     => 'doc_id',
                 'value'   => $doc_id,
-                'compare' => '=',
-            ),
-        ),
-        'orderby'        => array(), // Initialize orderby parameter as an array
-    );
-
-    if ($search_doc_report) {
-        $args['meta_query'][] = array(
-            'relation' => 'OR',
-        );
-    }
-
-    $inner_query = retrieve_doc_field_data(array('doc_id' => $doc_id));
-
-    if ($inner_query->have_posts()) {
-        while ($inner_query->have_posts()) : $inner_query->the_post();
-            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-            $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
-
-            // Check if the order_field_value is valid
-            if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                // Add the field_name and order_field_value to orderby array
-                $args['orderby'][$field_name] = $order_field_value;
-            }
-
-            if ($search_doc_report) {
-                $args['meta_query'][0][] = array( // Append to the AND relation
-                    'key'     => $field_name,
-                    'value'   => $search_doc_report,
-                    'compare' => 'LIKE',
-                );
-            }
-        endwhile;
-
-        // Reset only the inner loop's data
-        wp_reset_postdata();
-    }
-
-    $query = new WP_Query($args);
-    return $query;
-}
-/*
-function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
-    $args = array(
-        'post_type'      => 'doc-report',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'doc_id',
-                'value'   => $doc_id,
                 'compare' => '='
             ),
         ),
