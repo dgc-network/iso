@@ -1007,7 +1007,7 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
         return false;
     }
 }
-/*
+
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
     $args = array(
         'post_type'      => 'doc-report',
@@ -1018,9 +1018,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             array(
                 'key'     => 'doc_id',
                 'value'   => $doc_id,
-                'compare' => '='
+                'compare' => '=',
             ),
         ),
+        'orderby'        => array(), // Initialize orderby parameter as an array
     );
 
     if ($search_doc_report) {
@@ -1036,24 +1037,14 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
 
+            // Check if the order_field_value is valid
             if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                // Add orderby parameters directly to meta_query array
-                $args[] = array(
-                    'orderby'  => 'meta_value',
-                    'meta_key' => $field_name,
-                    'order' => $order_field_value,
-                    //'key'     => $field_name,
-                    //'compare' => 'EXISTS', // Use EXISTS for ordering by meta key
-                    //'orderby' => $order_field_value,
-                    //    $args['orderby']  = 'meta_value';
-                    //    $args['meta_key'] = $order_field_name;
-                    //    $args['order']    = $order_field_value;
-
-                );
+                // Add the field_name and order_field_value to orderby array
+                $args['orderby'][$field_name] = $order_field_value;
             }
 
             if ($search_doc_report) {
-                $args['meta_query'][1][] = array( // Append to the OR relation
+                $args['meta_query'][0][] = array( // Append to the AND relation
                     'key'     => $field_name,
                     'value'   => $search_doc_report,
                     'compare' => 'LIKE',
@@ -1064,12 +1055,11 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         // Reset only the inner loop's data
         wp_reset_postdata();
     }
-    //$args['orderby']['serial_number'] = 'ASC';
 
     $query = new WP_Query($args);
     return $query;
 }
-*/
+/*
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
     $args = array(
         'post_type'      => 'doc-report',
