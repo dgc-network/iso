@@ -1029,10 +1029,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         );
     }
 
-    $query = retrieve_doc_field_data(array('doc_id' => $doc_id));
+    $inner_query = retrieve_doc_field_data(array('doc_id' => $doc_id));
 
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
+    if ($inner_query->have_posts()) {
+        while ($inner_query->have_posts()) : $inner_query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
             $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
 
