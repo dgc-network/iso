@@ -961,7 +961,7 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
     // Define the query arguments
     $args = array(
         'post_type'      => 'doc-field',
-        'posts_per_page' => 1, // We only need one post since we're looking for a specific field
+        'posts_per_page' => -1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(
