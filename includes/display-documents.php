@@ -1021,6 +1021,60 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
                 'compare' => '='
             ),
         ),
+    );
+
+    if ($search_doc_report) {
+        $args['meta_query'][] = array(
+            'relation' => 'OR',
+        );
+    }
+
+    $query = retrieve_doc_field_data(array('doc_id' => $doc_id));
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+            $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
+
+            if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
+                // Add orderby parameters directly to meta_query array
+                $args['meta_query'][] = array(
+                    'key'     => $field_name,
+                    'compare' => 'EXISTS', // Use EXISTS for ordering by meta key
+                    'orderby' => $order_field_value,
+                );
+            }
+
+            if ($search_doc_report) {
+                $args['meta_query'][1][] = array( // Append to the OR relation
+                    'key'     => $field_name,
+                    'value'   => $search_doc_report,
+                    'compare' => 'LIKE',
+                );
+            }
+        endwhile;
+
+        // Reset only the inner loop's data
+        wp_reset_postdata();
+    }
+
+    $query = new WP_Query($args);
+    return $query;
+}
+/*
+function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
+    $args = array(
+        'post_type'      => 'doc-report',
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'doc_id',
+                'value'   => $doc_id,
+                'compare' => '='
+            ),
+        ),
         'orderby'        => array(), // Initialize orderby parameter as an array
     );
 
