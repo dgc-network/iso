@@ -733,7 +733,8 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
         update_post_meta( $field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
-        update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
+        //update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
+        update_post_meta( $field_id, 'order_field', $_POST['_order_field']);
     } else {
         // Insert the post into the database
         $new_post = array(
@@ -1071,75 +1072,12 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     $args['order']    = 'ASC';
     
     $args['meta_key'] = $order_field_name;
-    //$args['order']    = $order_field_value;
+    $args['order']    = $order_field_value;
 
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
-    $args = array(
-        'post_type'      => 'doc-report',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'doc_id',
-                'value'   => $doc_id,
-                'compare' => '='
-            ),
-        ),
-    );
 
-    //$order_field_name = ''; // Initialize variable to store the meta key for ordering
-    //$order_field_value = ''; // Initialize variable to store the order direction
-
-    if ($search_doc_report) {
-        $args['meta_query'][] = array(
-            'relation' => 'OR',
-        );
-    }
-
-    $query = retrieve_doc_field_data(array('doc_id' => $doc_id));
-
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-            $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
-
-            // Check if the order_field_value is valid
-            if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                //$order_field_name = $field_name; // Assign the field_name if order_field_value is valid
-                $args['orderby'][] = array(
-                    $field_name => $order_field_value,
-                );
-            }
-
-            if ($search_doc_report) {
-                $args['meta_query'][1][] = array( // Append to the OR relation
-                    'key'     => $field_name,
-                    'value'   => $search_doc_report,
-                    'compare' => 'LIKE',
-                );
-            }
-        endwhile;
-
-        // Reset only the inner loop's data
-        wp_reset_postdata();
-    }
-
-    // Check if order_field_name is not empty before setting orderby and meta_key
-    //if (!empty($order_field_name)) {
-    //    $args['orderby']  = 'meta_value';
-    //    $args['meta_key'] = $order_field_name;
-    //    $args['order']    = $order_field_value;
-    //}
-
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
 function display_doc_report_dialog($report_id=false, $doc_id=false) {
     $is_doc = false;
     if ($doc_id) {
