@@ -1064,6 +1064,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         // Reset only the inner loop's data
         wp_reset_postdata();
     }
+    $args['orderby']['serial_number'] = 'ASC';
 
     $query = new WP_Query($args);
     return $query;
