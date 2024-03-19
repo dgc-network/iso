@@ -1024,6 +1024,9 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
         'orderby'        => array(), // Initialize orderby parameter as an array
     );
 
+    $order_field_name = ''; // Initialize variable to store the meta key for ordering
+    $order_field_value = ''; // Initialize variable to store the order direction
+
     if ($search_doc_report) {
         $args['meta_query'][] = array(
             'relation' => 'OR',
@@ -1041,6 +1044,9 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
             if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
                 // Add the field_name and order_field_value to orderby array
                 $args['orderby'][$field_name] = $order_field_value;
+                
+                $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
+
             }
 
             if ($search_doc_report) {
@@ -1061,9 +1067,12 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     );
 
     $args['orderby']  = 'meta_value';
-    $args['meta_key'] = 'index';
-    $args['order']    = 'ASC';
+    //$args['meta_key'] = 'index';
+    //$args['order']    = 'ASC';
     
+    $args['meta_key'] = $order_field_name;
+    $args['order']    = $order_field_value;
+
     $query = new WP_Query($args);
     return $query;
 }
