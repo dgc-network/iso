@@ -160,64 +160,7 @@ function display_documents_shortcode() {
         // Add the shared doc_id into my site
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            // Insert the post into the database
-            $new_post = array(
-                'post_title'    => 'No title',
-                'post_content'  => 'Your post content goes here.',
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'document',
-            );    
-            $post_id = wp_insert_post($new_post);
-
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            update_post_meta( $post_id, 'site_id', $site_id);
-            update_post_meta( $post_id, 'doc_title', $doc_title);
-            update_post_meta( $post_id, 'doc_number', $doc_number);
-            update_post_meta( $post_id, 'doc_revision', $doc_revision);
-            update_post_meta( $post_id, 'doc_frame', $doc_frame);
-            update_post_meta( $post_id, 'doc_category', $doc_category);
-            update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
-            update_post_meta( $post_id, 'start_leadtime', 86400);
-
-            if ($is_doc_report==1){
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
-                        // Insert the post into the database
-                        $new_post = array(
-                            'post_status'   => 'publish',
-                            'post_author'   => $current_user_id,
-                            'post_type'     => 'doc-field',
-                        );    
-                        $field_id = wp_insert_post($new_post);
-                        update_post_meta( $field_id, 'doc_id', $post_id);
-                        update_post_meta( $field_id, 'field_name', $field_name);
-                        update_post_meta( $field_id, 'field_title', $field_title);
-                        update_post_meta( $field_id, 'field_type', $field_type);
-                        update_post_meta( $field_id, 'default_value', $default_value);
-                        update_post_meta( $field_id, 'listing_style', $listing_style);
-                        update_post_meta( $field_id, 'sorting_key', $sorting_key);
-                    endwhile;
-                    wp_reset_postdata();
-                }    
-            }
+            get_shared_document($doc_id);
         }
 
         if (isset($_GET['_id'])) {
@@ -230,14 +173,218 @@ function display_documents_shortcode() {
                 echo display_doc_frame_contain($doc_id);
             }
             echo '</div>';
-        } else {
+        }
+
+        if (isset($_GET['_print'])) {
+            $doc_id = sanitize_text_field($_GET['_print']);
+            echo display_print_document($doc_id);
+        }
+
+        if (!isset($_GET['_id'])||!isset($_GET['_print'])) {
             display_document_list();
         }
+
     } else {
         user_did_not_login_yet();
     }
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
+
+function display_print_document($doc_id){
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $signature_record_list = get_signature_record_list($site_id, $doc_id);
+    $html_contain = $signature_record_list['html'];
+    ob_start();
+    ?>    
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <span><?php echo esc_html($doc_number);?></span>
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+            <span><?php echo esc_html($doc_revision);?></span>            
+        </div>
+        <div style="text-align:right; display:flex;">
+            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
+            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+        </div>
+    </div>
+
+    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
+
+    <fieldset>
+        <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
+            <fieldset>
+                <label for="doc-title"> Document: </label>
+                <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="doc-field-setting"> Field setting: </label>
+                <?php echo display_doc_field_list($doc_id);?>
+                <div class="separator"></div>
+                <label for="doc-report-rows">Doc-report rows: </label>
+                <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
+            </fieldset>
+        </div>        
+
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-doc-report-function">
+                    <option value="">Select action</option>
+                    <option value="duplicate">Duplicate</option>
+                </select>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
+                <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+
+        <table style="width:100%;">
+            <thead>
+                <?php
+/*
+                $params = array(
+                    'doc_id'     => $doc_id,
+                    'is_listing'  => true,
+                );                
+                $query = retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    echo '<tr>';
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        echo '<th>'.esc_html($field_title).'</th>';
+                    endwhile;
+                    echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                    echo '</tr>';
+                    wp_reset_postdata();
+                }
+*/                
+                ?>
+            </thead>
+            <tbody>
+                <?php
+                $query = retrieve_doc_report_list_data($doc_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $report_id = get_the_ID();
+                        echo '<tr id="edit-doc-report-'.$report_id.'">';
+                        echo '<td>';
+                        $field_value = get_post_meta( $report_id, 'description', true);
+                        echo esc_html($field_value);
+                        echo '</td>';
+                        echo '</tr>';
+
+/*
+                        // Reset the inner loop before using it again
+                        $params = array(
+                            'doc_id'     => $doc_id,
+                            'is_listing'  => true,
+                        );                
+                        $inner_query = retrieve_doc_field_data($params);
+                        if ($inner_query->have_posts()) {
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                $field_value = get_post_meta( $report_id, $field_name, true);
+                                echo '<td style="'.$listing_style.'">';
+                                if ($field_type=='checkbox') {
+                                    $is_checked = ($field_value==1) ? 'checked' : '';
+                                    echo '<input type="checkbox" '.$is_checked.' />';
+                                } elseif ($field_type=='radio') {
+                                    echo get_radio_checked_value($doc_id, $field_name, $report_id);
+                                } else {
+                                    echo esc_html($field_value);
+                                }
+                                echo '</td>';
+                            endwhile;                
+                            // Reset only the inner loop's data
+                            wp_reset_postdata();
+                        }
+                        $todo_id = get_post_meta( $report_id, 'todo_status', true);
+                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                        echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                        echo '</tr>';
+*/                        
+                    endwhile;                
+                    // Reset the main query's data
+                    wp_reset_postdata();
+                }
+                ?>
+            </tbody>
+        </table>
+    </fieldset>
+    <?php
+    $html = ob_get_clean();
+    return $html;
+}
+
+function get_shared_document($doc_id){
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    // Insert the post into the database
+    $new_post = array(
+        'post_title'    => 'No title',
+        'post_content'  => 'Your post content goes here.',
+        'post_status'   => 'publish',
+        'post_author'   => $current_user_id,
+        'post_type'     => 'document',
+    );    
+    $post_id = wp_insert_post($new_post);
+
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+    $doc_category = get_post_meta($doc_id, 'doc_category', true);
+    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+    update_post_meta( $post_id, 'site_id', $site_id);
+    update_post_meta( $post_id, 'doc_title', $doc_title);
+    update_post_meta( $post_id, 'doc_number', $doc_number);
+    update_post_meta( $post_id, 'doc_revision', $doc_revision);
+    update_post_meta( $post_id, 'doc_frame', $doc_frame);
+    update_post_meta( $post_id, 'doc_category', $doc_category);
+    update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
+    update_post_meta( $post_id, 'start_leadtime', 86400);
+
+    if ($is_doc_report==1){
+        $params = array(
+            'doc_id'     => $doc_id,
+        );                
+        $query = retrieve_doc_field_data($params);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                // Insert the post into the database
+                $new_post = array(
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'doc-field',
+                );    
+                $field_id = wp_insert_post($new_post);
+                update_post_meta( $field_id, 'doc_id', $post_id);
+                update_post_meta( $field_id, 'field_name', $field_name);
+                update_post_meta( $field_id, 'field_title', $field_title);
+                update_post_meta( $field_id, 'field_type', $field_type);
+                update_post_meta( $field_id, 'default_value', $default_value);
+                update_post_meta( $field_id, 'listing_style', $listing_style);
+                update_post_meta( $field_id, 'sorting_key', $sorting_key);
+            endwhile;
+            wp_reset_postdata();
+        }    
+    }
+}
 
 function display_document_list() {
     $current_user_id = get_current_user_id();
