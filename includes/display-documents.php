@@ -177,7 +177,7 @@ function display_documents_shortcode() {
 
         if (isset($_GET['_print'])) {
             $doc_id = sanitize_text_field($_GET['_print']);
-            echo display_print_document($doc_id);
+            echo display_description_document($doc_id);
         }
 
         if (!isset($_GET['_id'])&&!isset($_GET['_print'])) {
@@ -190,7 +190,7 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function display_print_document($doc_id){
+function display_description_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
@@ -242,110 +242,45 @@ function display_print_document($doc_id){
                 <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
             </div>
         </div>
-
-        <table style="width:100%;">
-            <thead>
-                <?php
-/*
-                $params = array(
-                    'doc_id'     => $doc_id,
-                    'is_listing'  => true,
-                );                
-                $query = retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    echo '<tr>';
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                        echo '<th>'.esc_html($field_title).'</th>';
-                    endwhile;
-                    echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
-                    echo '</tr>';
-                    wp_reset_postdata();
+        <?php
+        $args = array(
+            'post_type'      => 'doc-report',
+            'posts_per_page' => -1,
+            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'doc_id',
+                    'value'   => $doc_id,
+                    'compare' => '='
+                ),
+            ),
+            'orderby'    => 'meta_value', // Initialize orderby parameter as an array
+            'meta_key'   => 'index',
+            'order'      => 'ASC',
+        );
+        $query = new WP_Query($args);
+                
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $report_id = get_the_ID();
+                //echo '<tr id="edit-doc-report-'.$report_id.'">';
+                //echo '<td>';
+                $index = get_post_meta( $report_id, 'index', true);
+                $description = get_post_meta( $report_id, 'description', true);
+                $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
+                $is_url = get_post_meta( $report_id, 'is_url', true);
+                if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked>';
+                if ($is_url) {
+                    echo '<div class="is-url">參考文件：<a href="'.$is_url.'">'.$description.'</a><br></div>';
+                } else {
+                    echo $description.'<br>';
                 }
-*/                
-                ?>
-            </thead>
-            <tbody>
-                <?php
-                //$query = retrieve_doc_report_list_data($doc_id);
-                $args = array(
-                    'post_type'      => 'doc-report',
-                    'posts_per_page' => -1,
-                    'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'doc_id',
-                            'value'   => $doc_id,
-                            'compare' => '='
-                        ),
-                    ),
-                    'orderby'    => 'meta_value', // Initialize orderby parameter as an array
-                    'meta_key'   => 'index',
-                    'order'      => 'ASC',
-                );
-                $query = new WP_Query($args);
-                        
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $report_id = get_the_ID();
-                        //echo '<tr id="edit-doc-report-'.$report_id.'">';
-                        //echo '<td>';
-                        $index = get_post_meta( $report_id, 'index', true);
-                        $description = get_post_meta( $report_id, 'description', true);
-                        $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
-                        $is_url = get_post_meta( $report_id, 'is_url', true);
-                        if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked>';
-                        if ($is_url) {
-                            echo '<div class="is-url"><a href="'.$is_url.'">'.$description.'</a><br></div>';
-                        } else {
-                            echo $description.'<br>';
-                        }
-                        //echo esc_html($field_value);
-                        //echo '</td>';
-                        //echo '</tr>';
-
-/*
-                        // Reset the inner loop before using it again
-                        $params = array(
-                            'doc_id'     => $doc_id,
-                            'is_listing'  => true,
-                        );                
-                        $inner_query = retrieve_doc_field_data($params);
-                        if ($inner_query->have_posts()) {
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                $field_value = get_post_meta( $report_id, $field_name, true);
-                                echo '<td style="'.$listing_style.'">';
-                                if ($field_type=='checkbox') {
-                                    $is_checked = ($field_value==1) ? 'checked' : '';
-                                    echo '<input type="checkbox" '.$is_checked.' />';
-                                } elseif ($field_type=='radio') {
-                                    echo get_radio_checked_value($doc_id, $field_name, $report_id);
-                                } else {
-                                    echo esc_html($field_value);
-                                }
-                                echo '</td>';
-                            endwhile;                
-                            // Reset only the inner loop's data
-                            wp_reset_postdata();
-                        }
-                        $todo_id = get_post_meta( $report_id, 'todo_status', true);
-                        $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
-                        echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
-                        echo '</tr>';
-*/                        
-                    endwhile;                
-                    // Reset the main query's data
-                    wp_reset_postdata();
-                }
-                ?>
-            </tbody>
-        </table>
+            endwhile;                
+            // Reset the main query's data
+            wp_reset_postdata();
+        }
+        ?>
     </fieldset>
     <?php
     $html = ob_get_clean();
