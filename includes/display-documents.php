@@ -273,9 +273,10 @@ function display_description_document($doc_id){
                 if ($is_url) {
                     echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></span>';
                 } else {
-                    if ($is_url==1) echo '<b>';
-                    echo $description.'<br>';
-                    if ($is_url==1) echo '</b>';
+                    if ($is_bold==1) echo '<b>';
+                    echo $description;
+                    if ($is_bold==1) echo '</b>';
+                    echo '<br>';
                 }
             endwhile;                
             wp_reset_postdata();
