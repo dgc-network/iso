@@ -296,8 +296,11 @@ function display_print_document($doc_id){
                         $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
                         $is_url = get_post_meta( $report_id, 'is_url', true);
                         if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked>';
-                        //echo $description.'<br>';
-                        echo '<a href="'.$is_url.'">'.$description.'</a><br>';
+                        if ($is_url) {
+                            echo '<div class="is-url"><a href="'.$is_url.'">'.$description.'</a><br></div>';
+                        } else {
+                            echo $description.'<br>';
+                        }
                         //echo esc_html($field_value);
                         //echo '</td>';
                         //echo '</tr>';
