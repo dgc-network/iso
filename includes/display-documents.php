@@ -182,7 +182,7 @@ function display_documents_shortcode() {
             echo '</div>';
         }
 
-        if (!isset($_GET['_id'])&&!isset($_GET['_print'])) {
+        if (!isset($_GET['_id'])&&!isset($_GET['_initial'])) {
             display_document_list();
         }
 
