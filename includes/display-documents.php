@@ -270,9 +270,9 @@ function display_description_document($doc_id){
                 $description = get_post_meta( $report_id, 'description', true);
                 $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
                 $is_url = get_post_meta( $report_id, 'is_url', true);
-                if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked>';
+                if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
                 if ($is_url) {
-                    echo '<div class="is-url">參考文件：<a href="'.$is_url.'">'.$description.'</a><br></div>';
+                    echo '<div class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></div>';
                 } else {
                     echo $description.'<br>';
                 }
