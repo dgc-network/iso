@@ -267,14 +267,36 @@ function display_print_document($doc_id){
             </thead>
             <tbody>
                 <?php
-                $query = retrieve_doc_report_list_data($doc_id);
+                //$query = retrieve_doc_report_list_data($doc_id);
+                $args = array(
+                    'post_type'      => 'doc-report',
+                    'posts_per_page' => -1,
+                    'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+                    'meta_query'     => array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'doc_id',
+                            'value'   => $doc_id,
+                            'compare' => '='
+                        ),
+                    ),
+                    'orderby'    => 'meta_value', // Initialize orderby parameter as an array
+                    'meta_key'   => 'index',
+                    'order'      => 'ASC',
+                );
+                $query = new WP_Query($args);
+                        
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
                         //echo '<tr id="edit-doc-report-'.$report_id.'">';
                         //echo '<td>';
-                        $field_value = get_post_meta( $report_id, 'description', true);
-                        echo $field_value.'<br>';
+                        $index = get_post_meta( $report_id, 'index', true);
+                        $description = get_post_meta( $report_id, 'description', true);
+                        $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
+                        $is_url = get_post_meta( $report_id, 'is_url', true);
+                        if ($is_checkbox==1) echo '<input type="checkbox" id="">';
+                        if ($is_url!=1) echo $description.'<br>';
                         //echo esc_html($field_value);
                         //echo '</td>';
                         //echo '</tr>';
