@@ -271,7 +271,7 @@ function display_description_document($doc_id){
                 $is_bold = get_post_meta( $report_id, 'is_bold', true);
                 if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
                 if ($is_url) {
-                    echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></span>';
+                    echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
                 } else {
                     if ($is_bold==1) echo '<b>';
                     echo $description;
