@@ -180,7 +180,7 @@ function display_documents_shortcode() {
             echo display_print_document($doc_id);
         }
 
-        if (!isset($_GET['_id'])||!isset($_GET['_print'])) {
+        if (!isset($_GET['_id'])&&!isset($_GET['_print'])) {
             display_document_list();
         }
 
@@ -271,12 +271,12 @@ function display_print_document($doc_id){
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
-                        echo '<tr id="edit-doc-report-'.$report_id.'">';
-                        echo '<td>';
+                        //echo '<tr id="edit-doc-report-'.$report_id.'">';
+                        //echo '<td>';
                         $field_value = get_post_meta( $report_id, 'description', true);
-                        echo esc_html($field_value);
-                        echo '</td>';
-                        echo '</tr>';
+                        echo esc_html($field_value.'<br>');
+                        //echo '</td>';
+                        //echo '</tr>';
 
 /*
                         // Reset the inner loop before using it again
