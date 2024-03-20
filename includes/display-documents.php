@@ -274,7 +274,8 @@ function display_print_document($doc_id){
                         //echo '<tr id="edit-doc-report-'.$report_id.'">';
                         //echo '<td>';
                         $field_value = get_post_meta( $report_id, 'description', true);
-                        echo esc_html($field_value.'<br>');
+                        echo $field_value.'<br>';
+                        //echo esc_html($field_value);
                         //echo '</td>';
                         //echo '</tr>';
 
