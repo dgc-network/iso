@@ -295,8 +295,9 @@ function display_print_document($doc_id){
                         $description = get_post_meta( $report_id, 'description', true);
                         $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
                         $is_url = get_post_meta( $report_id, 'is_url', true);
-                        if ($is_checkbox==1) echo '<input type="checkbox" id="">';
-                        if ($is_url!=1) echo $description.'<br>';
+                        if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked>';
+                        //echo $description.'<br>';
+                        echo '<a href="'.$is_url.'">'.$description.'</a><br>';
                         //echo esc_html($field_value);
                         //echo '</td>';
                         //echo '</tr>';
