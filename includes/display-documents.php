@@ -177,7 +177,9 @@ function display_documents_shortcode() {
 
         if (isset($_GET['_initial'])) {
             $doc_id = sanitize_text_field($_GET['_initial']);
+            echo '<div class="ui-widget" id="result-container">';
             echo initial_iso_document($doc_id);
+            echo '</div>';
         }
 
         if (!isset($_GET['_id'])&&!isset($_GET['_print'])) {
