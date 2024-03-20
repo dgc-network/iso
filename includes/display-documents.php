@@ -255,7 +255,7 @@ function display_description_document($doc_id){
                     'compare' => '='
                 ),
             ),
-            'orderby'    => 'meta_value', // Initialize orderby parameter as an array
+            'orderby'    => 'meta_value',
             'meta_key'   => 'index',
             'order'      => 'ASC',
         );
@@ -264,20 +264,20 @@ function display_description_document($doc_id){
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $report_id = get_the_ID();
-                //echo '<tr id="edit-doc-report-'.$report_id.'">';
-                //echo '<td>';
                 $index = get_post_meta( $report_id, 'index', true);
                 $description = get_post_meta( $report_id, 'description', true);
                 $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
                 $is_url = get_post_meta( $report_id, 'is_url', true);
+                $is_bold = get_post_meta( $report_id, 'is_bold', true);
                 if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
                 if ($is_url) {
                     echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></span>';
                 } else {
+                    if ($is_url==1) echo '<b>';
                     echo $description.'<br>';
+                    if ($is_url==1) echo '</b>';
                 }
             endwhile;                
-            // Reset the main query's data
             wp_reset_postdata();
         }
         ?>
