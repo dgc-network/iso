@@ -272,7 +272,7 @@ function display_description_document($doc_id){
                 $is_url = get_post_meta( $report_id, 'is_url', true);
                 if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
                 if ($is_url) {
-                    echo '<div class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></div>';
+                    echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a><br></span>';
                 } else {
                     echo $description.'<br>';
                 }
