@@ -175,9 +175,9 @@ function display_documents_shortcode() {
             echo '</div>';
         }
 
-        if (isset($_GET['_print'])) {
-            $doc_id = sanitize_text_field($_GET['_print']);
-            echo display_description_document($doc_id);
+        if (isset($_GET['_initial'])) {
+            $doc_id = sanitize_text_field($_GET['_initial']);
+            echo initial_iso_document($doc_id);
         }
 
         if (!isset($_GET['_id'])&&!isset($_GET['_print'])) {
@@ -190,7 +190,7 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function display_description_document($doc_id){
+function initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
@@ -207,41 +207,16 @@ function display_description_document($doc_id){
             <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             <span><?php echo esc_html($doc_revision);?></span>            
         </div>
-        <div style="text-align:right; display:flex;">
-            <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
-            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-            <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-        </div>
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <fieldset>
-        <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
-            <fieldset>
-                <label for="doc-title"> Document: </label>
-                <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-field-setting"> Field setting: </label>
-                <?php echo display_doc_field_list($doc_id);?>
-                <div class="separator"></div>
-                <label for="doc-report-rows">Doc-report rows: </label>
-                <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
-            </fieldset>
-        </div>        
+        <label for="site-id">Site:</label>
+        <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
+        <div id="site-hint" style="display:none; color:#999;"></div>
+        <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-doc-report-function">
-                    <option value="">Select action</option>
-                    <option value="duplicate">Duplicate</option>
-                </select>
-            </div>
-            <div style="text-align:right; display:flex;">
-                <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
-                <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
         <?php
         $args = array(
             'post_type'      => 'doc-report',
