@@ -27,7 +27,7 @@ function profiles_shortcode() {
         echo '<div class="ui-widget" id="result-container">';
         if ($_GET['_initial']=='true') echo display_site_profile(true);
         if ($_GET['_select_profile']=='1') echo display_site_profile();
-        if ($_GET['_select_profile']!='1') echo display_my_profile();
+        if ($_GET['_select_profile']!='1'&&!isset($_GET['_initial'])) echo display_my_profile();
         echo '</div>';
     } else {
         user_did_not_login_yet();
