@@ -145,6 +145,25 @@ jQuery(document).ready(function($) {
             });            
         });            
     
+        $("#new-site-user").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_site_job_dialog_data',
+                    '_site_id': $("#site-id").val(),
+                },
+                success: function (response) {
+                    get_site_profile_data($("#site-id").val());
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
         $("#new-site-job").on("click", function() {
             $.ajax({
                 type: 'POST',

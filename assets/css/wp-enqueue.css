@@ -32,12 +32,15 @@ iframe {
   
 /* Apply styles to the button when hovering */
 input[type="button"]:hover {
+    color: red;
     cursor: pointer;
+    margin: 5px;
 }
 
 .button:hover {
     color: red;
     cursor: pointer;
+    margin: 5px;
 }
 
 .custom-alert {

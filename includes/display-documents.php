@@ -224,7 +224,6 @@ function initial_iso_document($doc_id){
             'posts_per_page' => -1,
             'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
             'meta_query'     => array(
-                'relation' => 'AND',
                 array(
                     'key'     => 'doc_id',
                     'value'   => $doc_id,

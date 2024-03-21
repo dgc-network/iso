@@ -185,6 +185,7 @@ function display_site_profile($initial=false) {
                 ?>
                 </tbody>
             </table>
+            <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
             <?php display_user_dialog($site_id);?>
 
