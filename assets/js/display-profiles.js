@@ -146,6 +146,8 @@ jQuery(document).ready(function($) {
         });            
     
         $("#new-site-user").on("click", function() {
+            $("#user-dialog").dialog('open');
+/*
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -161,7 +163,8 @@ jQuery(document).ready(function($) {
                     console.error(error);
                     alert(error);
                 }
-            });    
+            });
+*/            
         });
     
         $("#new-site-job").on("click", function() {
