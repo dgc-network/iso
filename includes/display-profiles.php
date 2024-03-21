@@ -25,6 +25,7 @@ function profiles_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         echo '<div class="ui-widget" id="result-container">';
+        if ($_GET['_initial']=='true') echo display_site_profile(true);
         if ($_GET['_select_profile']=='1') echo display_site_profile();
         if ($_GET['_select_profile']!='1') echo display_my_profile();
         echo '</div>';
@@ -117,7 +118,7 @@ function set_my_profile_data() {
 add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
 add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
 
-function display_site_profile() {
+function display_site_profile($initial=false) {
     ob_start();
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -125,7 +126,7 @@ function display_site_profile() {
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
-    if ($is_site_admin==1 || current_user_can('administrator')) {
+    if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
         // Check if the user is administrator
         ?>
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
