@@ -196,10 +196,13 @@ function initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    //$site_id = get_post_meta( $doc_id, 'site_id', true);
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
-    $signature_record_list = get_signature_record_list($site_id, $doc_id);
-    $html_contain = $signature_record_list['html'];
+    $site_title = get_post_meta( $site_id, 'site_title', true);
+    //$signature_record_list = get_signature_record_list($site_id, $doc_id);
+    //$html_contain = $signature_record_list['html'];
     ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
