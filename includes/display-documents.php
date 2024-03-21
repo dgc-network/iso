@@ -260,6 +260,7 @@ function initial_iso_document($doc_id){
         }
         ?>
     </fieldset>
+    <button id="initial-next-step" class="button"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
     <?php
     $html = ob_get_clean();
     return $html;

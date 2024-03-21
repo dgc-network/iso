@@ -14,6 +14,10 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
+    $("#initial-next-step").on("click", function () {
+        window.location.replace("/display-profiles/?_initial=true");
+    });
+
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val());
         $(this).val('');
