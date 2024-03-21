@@ -196,13 +196,9 @@ function initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    //$site_id = get_post_meta( $doc_id, 'site_id', true);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
-    $site_title = get_post_meta( $site_id, 'site_title', true);
-    //$signature_record_list = get_signature_record_list($site_id, $doc_id);
-    //$html_contain = $signature_record_list['html'];
     ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -217,8 +213,8 @@ function initial_iso_document($doc_id){
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
     <fieldset>
-        <label for="site-id">Site:</label>
-        <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
+        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
         <div id="site-hint" style="display:none; color:#999;"></div>
         <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
