@@ -279,7 +279,7 @@ function display_new_user_dialog($site_id) {
         <input type="text" id="new-user-email" class="text ui-widget-content ui-corner-all" />
         <label for="new-user-job">Job:</label>
         <input type="text" id="new-user-job" class="text ui-widget-content ui-corner-all" />
-        <textarea id="new-job-content" rows="3" style="width:100%; display:none;"></textarea>
+        <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
         <input type="checkbox" id="new-is-site-admin" />
         <label for="new-is-site-admin">Is site admin</label><br>
         <?php

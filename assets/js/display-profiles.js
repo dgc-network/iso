@@ -352,6 +352,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#user-dialog").dialog('close');
+                                console.response;
                                 //get_site_profile_data($("#site-id").val());
                                 get_site_profile_data(site_id);
                             },
