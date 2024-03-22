@@ -100,7 +100,7 @@ function register_doc_category_post_type() {
         'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false,
+        //'show_in_menu'  => false,
     );
     register_post_type( 'doc-category', $args );
 }
@@ -258,7 +258,7 @@ function initial_iso_document($doc_id){
         }
         ?>
     </fieldset>
-    <button id="initial-next-step" class="button"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
+    <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
     <?php
     $html = ob_get_clean();
     return $html;
