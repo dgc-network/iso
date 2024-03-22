@@ -531,11 +531,10 @@ add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_dat
 
 function del_site_user_dialog_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-
     // Check if user_id is provided in the POST request
-    if (isset($_POST['user_id'])) {
+    if (isset($_POST['_user_id'])) {
         // Get the user ID from the POST data
-        $user_id = absint($_POST['user_id']);
+        $user_id = absint($_POST['_user_id']);
 
         // Check if the user ID is valid
         if ($user_id > 0) {
@@ -557,11 +556,9 @@ function del_site_user_dialog_data() {
         // If user_id is not provided in the POST request, set an error message in the response
         $response['error'] = 'User ID is missing in the request.';
     }
-
     // Send the JSON response
     wp_send_json($response);
 }
-
 add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
 add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
 /*
