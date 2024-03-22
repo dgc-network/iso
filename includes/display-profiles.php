@@ -270,7 +270,7 @@ add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
 
 function display_new_user_dialog($site_id) {
     ?>
-    <div id="user-dialog" title="User dialog" style="display:none;">
+    <div id="new-user-dialog" title="New user dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="user-id" />
         <label for="display-name">Name:</label>
