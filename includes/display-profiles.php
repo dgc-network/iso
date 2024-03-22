@@ -466,6 +466,7 @@ function set_site_user_dialog_data() {
                     if (!is_wp_error($post_id)) {
                         // If the post is inserted successfully, update the site_id meta
                         update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                        $response = array('success' => true);
                     } else {
                         // If an error occurred while inserting the post, handle it accordingly
                         $response['error'] = $post_id->get_error_message();
@@ -475,51 +476,6 @@ function set_site_user_dialog_data() {
                     $response['error'] = 'A job with the same title already exists within the selected site.';
                 }
             }            
-/*
-            if (isset($_POST['_job_title'])) {
-                $current_user_id = get_current_user_id();
-            
-                // Check if a post with the same title already exists
-                $existing_post = get_page_by_title(sanitize_text_field($_POST['_job_title']), OBJECT, 'job');
-            
-                if ($existing_post === null) {
-                    // If no post with the same title exists, insert the new job
-                    $new_post = array(
-                        'post_title'   => sanitize_text_field($_POST['_job_title']),
-                        'post_content' => sanitize_text_field($_POST['_job_content']),
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'job',
-                    );    
-                    $post_id = wp_insert_post($new_post);
-                    if (!is_wp_error($post_id)) {
-                        // If the post is inserted successfully, update the site_id meta
-                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_select_site']));
-                    } else {
-                        // If an error occurred while inserting the post, handle it accordingly
-                        $response['error'] = $post_id->get_error_message();
-                    }
-                } else {
-                    // If a post with the same title exists, return an error message
-                    $response['error'] = 'A job with the same title already exists.';
-                }
-            }
-/*            
-            if (isset($_POST['_job_title'])) {
-                $current_user_id = get_current_user_id();
-    
-                $new_post = array(
-                    'post_title'   => sanitize_text_field($_POST['_job_title']),
-                    'post_content' => sanitize_text_field($_POST['_job_content']),
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'job',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_select_site']));        
-            }
-*/    
-            $response = array('success' => true);
         }
 
     }
@@ -546,7 +502,8 @@ function del_site_user_dialog_data() {
                 $response['error'] = $result->get_error_message();
             } else {
                 // If the user is successfully deleted, set success to true in the response
-                $response['success'] = true;
+                //$response['success'] = true;
+                $response = array('success' => true);
             }
         } else {
             // If the provided user ID is invalid, set an error message in the response
