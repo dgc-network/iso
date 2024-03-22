@@ -273,19 +273,19 @@ function display_new_user_dialog($site_id) {
     <div id="new-user-dialog" title="New user dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="user-id" />
-        <label for="display-name">Name:</label>
-        <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
-        <label for="user-email">Email:</label>
-        <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
-        <label for="user-job">Email:</label>
-        <input type="text" id="user-job" class="text ui-widget-content ui-corner-all" />
-        <input type="checkbox" id="is-site-admin" />
-        <label for="is-site-admin">Is site admin</label><br>
+        <label for="new-display-name">Name:</label>
+        <input type="text" id="new-display-name" class="text ui-widget-content ui-corner-all" />
+        <label for="new-user-email">Email:</label>
+        <input type="text" id="new-user-email" class="text ui-widget-content ui-corner-all" />
+        <label for="new-user-job">Job:</label>
+        <input type="text" id="new-user-job" class="text ui-widget-content ui-corner-all" />
+        <input type="checkbox" id="new-is-site-admin" />
+        <label for="new-is-site-admin">Is site admin</label><br>
         <?php
         if (current_user_can('administrator')) {
             ?>
-            <label for="select-site">Site:</label>
-            <select id="select-site" class="text ui-widget-content ui-corner-all" >
+            <label for="new-select-site">Site:</label>
+            <select id="new-select-site" class="text ui-widget-content ui-corner-all" >
                 <option value="">Select Site</option>
             <?php
             $site_args = array(
@@ -433,44 +433,101 @@ function set_site_user_dialog_data() {
             // Update user meta
             update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
             update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+
+            if (isset($_POST['_job_title'])) {
+                $current_user_id = get_current_user_id();
+            
+                // Check if a post with the same title already exists within the same site_id
+                $existing_post = get_posts(array(
+                    'post_type'      => 'job',
+                    'post_title'     => sanitize_text_field($_POST['_job_title']),
+                    'post_status'    => 'any',
+                    'posts_per_page' => 1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => sanitize_text_field($_POST['_select_site']),
+                            'compare' => '=',
+                        ),
+                    ),
+                ));
+            
+                if (empty($existing_post)) {
+                    // If no post with the same title and site_id exists, insert the new job
+                    $new_post = array(
+                        'post_title'   => sanitize_text_field($_POST['_job_title']),
+                        'post_content' => sanitize_text_field($_POST['_job_content']),
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'job',
+                    );    
+                    $post_id = wp_insert_post($new_post);
+                    if (!is_wp_error($post_id)) {
+                        // If the post is inserted successfully, update the site_id meta
+                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                    } else {
+                        // If an error occurred while inserting the post, handle it accordingly
+                        $response['error'] = $post_id->get_error_message();
+                    }
+                } else {
+                    // If a post with the same title and site_id exists, return an error message
+                    $response['error'] = 'A job with the same title already exists within the selected site.';
+                }
+            }            
+/*
+            if (isset($_POST['_job_title'])) {
+                $current_user_id = get_current_user_id();
+            
+                // Check if a post with the same title already exists
+                $existing_post = get_page_by_title(sanitize_text_field($_POST['_job_title']), OBJECT, 'job');
+            
+                if ($existing_post === null) {
+                    // If no post with the same title exists, insert the new job
+                    $new_post = array(
+                        'post_title'   => sanitize_text_field($_POST['_job_title']),
+                        'post_content' => sanitize_text_field($_POST['_job_content']),
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'job',
+                    );    
+                    $post_id = wp_insert_post($new_post);
+                    if (!is_wp_error($post_id)) {
+                        // If the post is inserted successfully, update the site_id meta
+                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                    } else {
+                        // If an error occurred while inserting the post, handle it accordingly
+                        $response['error'] = $post_id->get_error_message();
+                    }
+                } else {
+                    // If a post with the same title exists, return an error message
+                    $response['error'] = 'A job with the same title already exists.';
+                }
+            }
+/*            
+            if (isset($_POST['_job_title'])) {
+                $current_user_id = get_current_user_id();
+    
+                $new_post = array(
+                    'post_title'   => sanitize_text_field($_POST['_job_title']),
+                    'post_content' => sanitize_text_field($_POST['_job_content']),
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'job',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_select_site']));        
+            }
+*/    
             $response = array('success' => true);
         }
+
     }
     
     wp_send_json($response);
 }
 add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
 add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
-/*
-function set_site_user_dialog_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if (isset($_POST['_user_id'])) {
-        $user_id = absint($_POST['_user_id']);
-        // Prepare user data
-        $user_data = array(
-            'ID'           => $user_id,
-            'display_name' => sanitize_text_field($_POST['_display_name']),
-            'user_email'   => sanitize_text_field($_POST['_user_email']),
-        );        
-        // Update the user
-        $result = wp_update_user($user_data);
 
-        if (is_wp_error($result)) {
-            $response['error'] = $result->get_error_message();
-        } else {
-            // Update user meta
-            update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
-            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
-            $response = array('success' => true);
-        }
-    } else {
-
-    }
-    wp_send_json($response);
-}
-add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
-add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
-*/
 function del_site_user_dialog_data() {
     // Delete the post
     //$result = wp_delete_post($_POST['_job_id'], true);

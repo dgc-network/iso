@@ -290,11 +290,12 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_site_user_dialog_data',
                             //'_user_id': $("#user-id").val(),
-                            '_display_name': $("#display-name").val(),
-                            '_user_email': $("#user-email").val(),
-                            '_user_job': $("#user-job").val(),
-                            '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
-                            '_select_site': $("#select-site").val(),
+                            '_display_name': $("#new-display-name").val(),
+                            '_user_email': $("#new-user-email").val(),
+                            '_job_title': $("#new-user-job").val(),
+                            '_job_content': $("#new-job-content").val(),
+                            '_is_site_admin': $('#new-is-site-admin').is(":checked") ? 1 : 0,
+                            '_select_site': $("#new-select-site").val(),
                         },
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
