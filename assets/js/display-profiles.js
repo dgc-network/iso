@@ -300,6 +300,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
                             //get_site_profile_data($("#site-id").val());
+                            console.log(response);
                             get_site_profile_data(site_id);
                         },
                         error: function (error) {
