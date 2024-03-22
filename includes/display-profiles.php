@@ -187,6 +187,7 @@ function display_site_profile($initial=false) {
             </table>
             <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
+            <?php display_new_user_dialog($site_id);?>
             <?php display_user_dialog($site_id);?>
 
             <label for="site-title"><?php echo __( '單位組織職務：', 'your-text-domain' );?></label>
@@ -266,6 +267,43 @@ function get_site_profile_data() {
 }
 add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
 add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
+
+function display_new_user_dialog($site_id) {
+    ?>
+    <div id="user-dialog" title="User dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="user-id" />
+        <label for="display-name">Name:</label>
+        <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
+        <label for="user-email">Email:</label>
+        <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
+        <label for="user-job">Email:</label>
+        <input type="text" id="user-job" class="text ui-widget-content ui-corner-all" />
+        <input type="checkbox" id="is-site-admin" />
+        <label for="is-site-admin">Is site admin</label><br>
+        <?php
+        if (current_user_can('administrator')) {
+            ?>
+            <label for="select-site">Site:</label>
+            <select id="select-site" class="text ui-widget-content ui-corner-all" >
+                <option value="">Select Site</option>
+            <?php
+            $site_args = array(
+                'post_type'      => 'site',
+                'posts_per_page' => -1,
+            );
+            $sites = get_posts($site_args);    
+            foreach ($sites as $site) {
+                $selected = ($site_id == $site->ID) ? 'selected' : '';
+                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+            }
+            echo '</select>';
+        }
+        ?>
+    </fieldset>
+    </div>
+    <?php
+}
 
 function display_user_dialog($site_id) {
     ?>

@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
         });            
     
         $("#new-site-user").on("click", function() {
-            $("#user-dialog").dialog('open');
+            $("#new-user-dialog").dialog('open');
 /*
             $.ajax({
                 type: 'POST',
