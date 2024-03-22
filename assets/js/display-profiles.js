@@ -292,7 +292,7 @@ jQuery(document).ready(function($) {
                             //'_user_id': $("#user-id").val(),
                             '_display_name': $("#new-display-name").val(),
                             '_user_email': $("#new-user-email").val(),
-                            '_job_title': $("#new-user-job").val(),
+                            '_job_title': $("#new-job-title").val(),
                             '_job_content': $("#new-job-content").val(),
                             '_is_site_admin': $('#new-is-site-admin').is(":checked") ? 1 : 0,
                             '_select_site': $("#new-select-site").val(),

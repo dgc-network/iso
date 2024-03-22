@@ -261,6 +261,21 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
+// Add a filter to modify capabilities of users with the "subscriber" role
+function allow_subscribers_to_view_users($allcaps, $caps, $args) {
+    // Check if the user is trying to view other users
+    if (isset($caps[0]) && $caps[0] === 'list_users') {
+        // Check if the user has the "subscriber" role
+        $user = wp_get_current_user();
+        if (in_array('subscriber', $user->roles)) {
+            // Allow subscribers to view users
+            $allcaps['list_users'] = true;
+        }
+    }
+    return $allcaps;
+}
+add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
+
 function get_site_profile_data() {
     $response = array('html_contain' => display_site_profile());
     wp_send_json($response);
@@ -277,8 +292,8 @@ function display_new_user_dialog($site_id) {
         <input type="text" id="new-display-name" class="text ui-widget-content ui-corner-all" />
         <label for="new-user-email">Email:</label>
         <input type="text" id="new-user-email" class="text ui-widget-content ui-corner-all" />
-        <label for="new-user-job">Job:</label>
-        <input type="text" id="new-user-job" class="text ui-widget-content ui-corner-all" />
+        <label for="new-job-title">Job:</label>
+        <input type="text" id="new-job-title" class="text ui-widget-content ui-corner-all" />
         <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
         <input type="checkbox" id="new-is-site-admin" />
         <label for="new-is-site-admin">Is site admin</label><br>
