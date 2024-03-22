@@ -277,6 +277,39 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $("#new-user-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Add": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_site_user_dialog_data',
+                            //'_user_id': $("#user-id").val(),
+                            '_display_name': $("#display-name").val(),
+                            '_user_email': $("#user-email").val(),
+                            '_user_job': $("#user-job").val(),
+                            '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                            '_select_site': $("#select-site").val(),
+                        },
+                        success: function (response) {
+                            $("#new-user-dialog").dialog('close');
+                            //get_site_profile_data($("#site-id").val());
+                            get_site_profile_data(site_id);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+            }
+        });
+    
         $("#user-dialog").dialog({
             width: 450,
             modal: true,

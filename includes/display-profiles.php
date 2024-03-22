@@ -393,6 +393,57 @@ add_action('wp_ajax_nopriv_get_site_user_dialog_data', 'get_site_user_dialog_dat
 
 function set_site_user_dialog_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
+    
+    if (isset($_POST['_user_id'])) {
+        $user_id = absint($_POST['_user_id']);
+        // Prepare user data
+        $user_data = array(
+            'ID'           => $user_id,
+            'display_name' => sanitize_text_field($_POST['_display_name']),
+            'user_email'   => sanitize_email($_POST['_user_email']),
+        );        
+        // Update the user
+        $result = wp_update_user($user_data);
+
+        if (is_wp_error($result)) {
+            $response['error'] = $result->get_error_message();
+        } else {
+            // Update user meta
+            update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
+            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+            $response = array('success' => true);
+        }
+    } else {
+        // If $_POST['_user_id'] is not present, add a new user
+        $user_data = array(
+            //'user_login'    => sanitize_user($_POST['_user_login']),
+            'user_login'    => sanitize_email($_POST['_user_email']),
+            'user_email'    => sanitize_email($_POST['_user_email']),
+            'user_pass'     => sanitize_email($_POST['_user_email']),
+            //'user_pass'     => wp_generate_password(),
+            'display_name'  => sanitize_text_field($_POST['_display_name']),
+            'role'          => 'subscriber', // Adjust role as needed
+        );
+
+        $user_id = wp_insert_user($user_data);
+
+        if (is_wp_error($user_id)) {
+            $response['error'] = $user_id->get_error_message();
+        } else {
+            // Update user meta
+            update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
+            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+            $response = array('success' => true);
+        }
+    }
+    
+    wp_send_json($response);
+}
+add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
+add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
+/*
+function set_site_user_dialog_data() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
     if (isset($_POST['_user_id'])) {
         $user_id = absint($_POST['_user_id']);
         // Prepare user data
@@ -412,12 +463,14 @@ function set_site_user_dialog_data() {
             update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
             $response = array('success' => true);
         }
+    } else {
+
     }
     wp_send_json($response);
 }
 add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
 add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
-
+*/
 function del_site_user_dialog_data() {
     // Delete the post
     //$result = wp_delete_post($_POST['_job_id'], true);
