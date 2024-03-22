@@ -529,13 +529,49 @@ add_action('wp_ajax_set_site_user_dialog_data', 'set_site_user_dialog_data');
 add_action('wp_ajax_nopriv_set_site_user_dialog_data', 'set_site_user_dialog_data');
 
 function del_site_user_dialog_data() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    // Check if user_id is provided in the POST request
+    if (isset($_POST['user_id'])) {
+        // Get the user ID from the POST data
+        $user_id = absint($_POST['user_id']);
+
+        // Check if the user ID is valid
+        if ($user_id > 0) {
+            // Attempt to delete the user
+            $result = wp_delete_user($user_id, true);
+
+            if (is_wp_error($result)) {
+                // If an error occurs while deleting the user, set the error message in the response
+                $response['error'] = $result->get_error_message();
+            } else {
+                // If the user is successfully deleted, set success to true in the response
+                $response['success'] = true;
+            }
+        } else {
+            // If the provided user ID is invalid, set an error message in the response
+            $response['error'] = 'Invalid user ID provided.';
+        }
+    } else {
+        // If user_id is not provided in the POST request, set an error message in the response
+        $response['error'] = 'User ID is missing in the request.';
+    }
+
+    // Send the JSON response
+    wp_send_json($response);
+}
+
+add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
+add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
+/*
+function del_site_user_dialog_data() {
     // Delete the post
     //$result = wp_delete_post($_POST['_job_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
-
+*/
 function display_job_dialog() {
     ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
