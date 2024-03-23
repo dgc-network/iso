@@ -15,6 +15,10 @@ jQuery(document).ready(function($) {
     }
     
     $("#initial-next-step").on("click", function () {
+        doc_category = $("#doc-category").val();
+        count_category = $("#count-category").val();
+        if (window.confirm("Are you sure you want to add "+count_category+" "+ doc_category+" new documents?")) {
+        }
         window.location.replace("/display-profiles/?_initial=true");
     });
 

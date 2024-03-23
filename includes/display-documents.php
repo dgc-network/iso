@@ -192,10 +192,38 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
+function count_doc_category($category_id){
+    //$category_id = 123; // Replace 123 with your actual category ID
+
+    $args = array(
+        'post_type'      => 'document', // Replace 'document' with your actual post type
+        'posts_per_page' => -1, // Retrieve all posts
+        'meta_query'     => array(
+            array(
+                'key'     => 'doc_category',
+                'value'   => $category_id,
+                'compare' => '=',
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    
+    $count = $query->found_posts;
+
+    return $count;
+    
+    echo "Number of document posts in category with ID $category_id: $count";
+    
+}
+
 function initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+    $category_id = get_post_meta( $doc_id, 'doc_category', true);
+    $doc_category = get_the_title( $category_id );
+    $count_category = count_doc_category($category_id);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
@@ -211,6 +239,8 @@ function initial_iso_document($doc_id){
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    <input type="hidden" id="doc-category" value="<?php echo $doc_category;?>" />
+    <input type="hidden" id="count-category" value="<?php echo $count_category;?>" />
 
     <fieldset>
         <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
