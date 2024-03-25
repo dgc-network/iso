@@ -125,7 +125,7 @@ function display_site_profile($initial=false) {
     $image_url = get_post_meta( $site_id, 'image_url', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
-
+/*
     //$user = wp_get_current_user();
 
     // Check if the current user has the 'list_users' capability
@@ -134,14 +134,11 @@ function display_site_profile($initial=false) {
     } else {
         echo 'Current user cannot view other users.';
     }
+*/    
     if (current_user_can('list_users')) {
         echo 'Current user can view other users.';
-        // Current user can view other users
-        // Display the user list or perform actions
     } else {
         echo 'Current user cannot view other users.';
-        // Current user cannot view other users
-        // Handle the situation accordingly
     }
     
 
@@ -179,7 +176,7 @@ function display_site_profile($initial=false) {
                 <?php
 
                 $users = get_users(); // Initialize with all users
-
+/*
                 // If the current user is not an administrator, filter by site_id
                 if (!current_user_can('administrator')) {
                     $meta_query_args = array(
@@ -191,7 +188,7 @@ function display_site_profile($initial=false) {
                     );
                     $users = get_users(array('meta_query' => $meta_query_args));
                 }
-                
+*/                
                 // Loop through the users
                 foreach ($users as $user) {
                     $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
