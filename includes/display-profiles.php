@@ -126,6 +126,16 @@ function display_site_profile($initial=false) {
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
+    //$user = wp_get_current_user();
+
+    // Check if the current user has the 'list_users' capability
+    if (user_can($current_user_id, 'list_users')) {
+        echo 'Current user can view other users.';
+    } else {
+        echo 'Current user cannot view other users.';
+    }
+    
+
     if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
         // Check if the user is administrator
         ?>
