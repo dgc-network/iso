@@ -134,6 +134,15 @@ function display_site_profile($initial=false) {
     } else {
         echo 'Current user cannot view other users.';
     }
+    if (current_user_can('list_users')) {
+        echo 'Current user can view other users.';
+        // Current user can view other users
+        // Display the user list or perform actions
+    } else {
+        echo 'Current user cannot view other users.';
+        // Current user cannot view other users
+        // Handle the situation accordingly
+    }
     
 
     if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
