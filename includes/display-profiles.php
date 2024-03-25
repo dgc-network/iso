@@ -125,22 +125,6 @@ function display_site_profile($initial=false) {
     $image_url = get_post_meta( $site_id, 'image_url', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
-/*
-    //$user = wp_get_current_user();
-
-    // Check if the current user has the 'list_users' capability
-    if (user_can($current_user_id, 'list_users')) {
-        echo 'Current user can view other users.';
-    } else {
-        echo 'Current user cannot view other users.';
-    }
-*/    
-    if (current_user_can('list_users')) {
-        echo 'Current user can view other users.';
-    } else {
-        echo 'Current user cannot view other users.';
-    }
-    
 
     if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
         // Check if the user is administrator
@@ -176,7 +160,7 @@ function display_site_profile($initial=false) {
                 <?php
 
                 $users = get_users(); // Initialize with all users
-/*
+
                 // If the current user is not an administrator, filter by site_id
                 if (!current_user_can('administrator')) {
                     $meta_query_args = array(
@@ -188,7 +172,7 @@ function display_site_profile($initial=false) {
                     );
                     $users = get_users(array('meta_query' => $meta_query_args));
                 }
-*/                
+
                 // Loop through the users
                 foreach ($users as $user) {
                     $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
@@ -201,33 +185,6 @@ function display_site_profile($initial=false) {
                     </tr>
                     <?php
                 }
-                
-/*
-                // Define the meta query parameters
-                $meta_query_args = array(
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',
-                    ),
-                );
-                $users = get_users(array('meta_query' => $meta_query_args));
-
-                if (current_user_can('administrator')) $users = get_users();
-                
-                // Loop through the users
-                foreach ($users as $user) {
-                    $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
-                    $is_admin_checked = ($is_site_admin==1) ? 'checked' : '';
-                    ?>
-                    <tr id="edit-site-user-<?php echo $user->ID;?>">
-                        <td style="text-align:center;"><?php echo $user->display_name;?></td>
-                        <td style="text-align:center;"><?php echo $user->user_email;?></td>
-                        <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked;?>/></td>
-                    </tr>
-                    <?php 
-                }
-*/                
                 ?>
                 </tbody>
             </table>
@@ -320,36 +277,7 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     return $allcaps;
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-/*
-function allow_subscribers_to_view_users($caps, $allcaps, $args) {
-    // Check if the user is trying to view other users
-    if (isset($caps[0]) && $caps[0] === 'list_users') {
-        // Check if the user has the "subscriber" role
-        $user = wp_get_current_user();
-        if (in_array('subscriber', $user->roles)) {
-            // Allow subscribers to view users
-            $caps[0] = true;
-        }
-    }
-    return $caps;
-}
-add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-/*
-// Add a filter to modify capabilities of users with the "subscriber" role
-function allow_subscribers_to_view_users($allcaps, $caps, $args) {
-    // Check if the user is trying to view other users
-    if (isset($caps[0]) && $caps[0] === 'list_users') {
-        // Check if the user has the "subscriber" role
-        $user = wp_get_current_user();
-        if (in_array('subscriber', $user->roles)) {
-            // Allow subscribers to view users
-            $allcaps['list_users'] = true;
-        }
-    }
-    return $allcaps;
-}
-add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-*/
+
 function get_site_profile_data() {
     $response = array('html_contain' => display_site_profile());
     wp_send_json($response);
@@ -361,7 +289,7 @@ function display_new_user_dialog($site_id) {
     ?>
     <div id="new-user-dialog" title="New user dialog" style="display:none;">
     <fieldset>
-        <input type="hidden" id="user-id" />
+        <input type="hidden" id="new-site-id" value="<?php echo $site_id?>" />
         <label for="new-display-name">Name:</label>
         <input type="text" id="new-display-name" class="text ui-widget-content ui-corner-all" />
         <label for="new-user-email">Email:</label>
@@ -371,25 +299,6 @@ function display_new_user_dialog($site_id) {
         <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
         <input type="checkbox" id="new-is-site-admin" />
         <label for="new-is-site-admin">Is site admin</label><br>
-        <?php
-        if (current_user_can('administrator')) {
-            ?>
-            <label for="new-select-site">Site:</label>
-            <select id="new-select-site" class="text ui-widget-content ui-corner-all" >
-                <option value="">Select Site</option>
-            <?php
-            $site_args = array(
-                'post_type'      => 'site',
-                'posts_per_page' => -1,
-            );
-            $sites = get_posts($site_args);    
-            foreach ($sites as $site) {
-                $selected = ($site_id == $site->ID) ? 'selected' : '';
-                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-            }
-            echo '</select>';
-        }
-        ?>
     </fieldset>
     </div>
     <?php
@@ -522,7 +431,7 @@ function set_site_user_dialog_data() {
         } else {
             // Update user meta
             update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
-            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+            update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
 
             if (isset($_POST['_job_title'])) {
                 $current_user_id = get_current_user_id();
@@ -536,7 +445,7 @@ function set_site_user_dialog_data() {
                     'meta_query'     => array(
                         array(
                             'key'     => 'site_id',
-                            'value'   => sanitize_text_field($_POST['_select_site']),
+                            'value'   => sanitize_text_field($_POST['_site_id']),
                             'compare' => '=',
                         ),
                     ),

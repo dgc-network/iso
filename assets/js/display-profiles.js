@@ -295,7 +295,8 @@ jQuery(document).ready(function($) {
                             '_job_title': $("#new-job-title").val(),
                             '_job_content': $("#new-job-content").val(),
                             '_is_site_admin': $('#new-is-site-admin').is(":checked") ? 1 : 0,
-                            '_select_site': $("#new-select-site").val(),
+                            //'_select_site': $("#new-select-site").val(),
+                            '_site_id': $("#new-site-id").val(),
                         },
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
