@@ -169,6 +169,34 @@ function display_site_profile($initial=false) {
                 <tbody>
                 <?php
 
+                $users = get_users(); // Initialize with all users
+
+                // If the current user is not an administrator, filter by site_id
+                if (!current_user_can('administrator')) {
+                    $meta_query_args = array(
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => $site_id,
+                            'compare' => '=',
+                        ),
+                    );
+                    $users = get_users(array('meta_query' => $meta_query_args));
+                }
+                
+                // Loop through the users
+                foreach ($users as $user) {
+                    $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
+                    $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
+                    ?>
+                    <tr id="edit-site-user-<?php echo $user->ID; ?>">
+                        <td style="text-align:center;"><?php echo $user->display_name; ?></td>
+                        <td style="text-align:center;"><?php echo $user->user_email; ?></td>
+                        <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                    </tr>
+                    <?php
+                }
+                
+/*
                 // Define the meta query parameters
                 $meta_query_args = array(
                     array(
@@ -178,6 +206,7 @@ function display_site_profile($initial=false) {
                     ),
                 );
                 $users = get_users(array('meta_query' => $meta_query_args));
+
                 if (current_user_can('administrator')) $users = get_users();
                 
                 // Loop through the users
@@ -192,6 +221,7 @@ function display_site_profile($initial=false) {
                     </tr>
                     <?php 
                 }
+*/                
                 ?>
                 </tbody>
             </table>
