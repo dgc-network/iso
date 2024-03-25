@@ -271,6 +271,20 @@ function retrieve_site_job_list_data($site_id=0) {
     return $query;
 }
 
+function allow_subscribers_to_view_users($allcaps, $caps, $args) {
+    // Check if the user is trying to view other users
+    if (isset($args[0]) && $args[0] === 'list_users') {
+        // Check if the user has the "subscriber" role
+        $user = wp_get_current_user();
+        if (in_array('subscriber', $user->roles)) {
+            // Allow subscribers to view users
+            $allcaps['list_users'] = true;
+        }
+    }
+    return $allcaps;
+}
+add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
+/*
 function allow_subscribers_to_view_users($caps, $allcaps, $args) {
     // Check if the user is trying to view other users
     if (isset($caps[0]) && $caps[0] === 'list_users') {
