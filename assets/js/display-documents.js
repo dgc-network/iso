@@ -46,13 +46,12 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_initial_iso_document',
-                    //'_new_site_id': $("#site-id").val(),
                     '_doc_category_id': $("#doc-category-id").val(),
                     '_doc_site_id': $("#doc-site-id").val(),
                 },
                 success: function (response) {
                     console.log(response)
-                    //window.location.replace("/display-documents/");
+                    window.location.replace("/display-profiles/?_initial=true");
                 },
                 error: function(error){
                     console.error(error);                    
@@ -61,7 +60,6 @@ jQuery(document).ready(function($) {
             });    
     
         }
-        //window.location.replace("/display-profiles/?_initial=true");
     });
 
     $("#select-category").on( "change", function() {

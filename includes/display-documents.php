@@ -230,11 +230,11 @@ function display_initial_iso_document($doc_id){
         </div>
     </div>
 
-    <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-    <input type="hidden" id="doc-category" value="<?php echo $doc_category;?>" />
-    <input type="hidden" id="doc-category-id" value="<?php echo $category_id;?>" />
-    <input type="hidden" id="doc-site-id" value="<?php echo $site_id;?>" />
-    <input type="hidden" id="count-category" value="<?php echo $count_category;?>" />
+    <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+    <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
+    <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
+    <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($site_id);?>" />
+    <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
     <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
     <fieldset>
@@ -331,7 +331,8 @@ function set_initial_iso_document() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
     if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
-
+        $doc_category = sanitize_text_field($_POST['_doc_category_id']);
+        $site_id = sanitize_text_field($_POST['_doc_site_id']);
         // Retrieve documents based on doc_category_id and doc_site_id
         $args = array(
             'post_type'      => 'document',
@@ -340,12 +341,12 @@ function set_initial_iso_document() {
                 'relation' => 'AND',
                 array(
                     'key'     => 'doc_category',
-                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
+                    'value'   => $doc_category,
                     'compare' => '=',
                 ),
                 array(
                     'key'     => 'site_id',
-                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
+                    'value'   => $site_id,
                     'compare' => '=',
                 ),
             ),
