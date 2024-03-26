@@ -516,15 +516,7 @@ function del_site_user_dialog_data() {
 }
 add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
 add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
-/*
-function del_site_user_dialog_data() {
-    // Delete the post
-    //$result = wp_delete_post($_POST['_job_id'], true);
-    wp_send_json($result);
-}
-add_action( 'wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data' );
-add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data' );
-*/
+
 function display_job_dialog() {
     ?>
     <div id="job-dialog" title="Job dialog" style="display:none;">
