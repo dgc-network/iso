@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    window.location.replace("/display-profiles/?_initial=true");
+                    //window.location.replace("/display-profiles/?_initial=true");
                 },
                 error: function(error){
                     console.error(error);                    
