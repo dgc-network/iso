@@ -14,6 +14,28 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
+    $("#new-site-title").on("change", function () {
+        new_site_title = $(this).val();
+        if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_new_site_data',
+                    '_new_site_title': new_site_title,
+                },
+                success: function (response) {
+                    //window.location.replace("/display-documents/");
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });        
+        }
+    });
+    
     $("#initial-next-step").on("click", function () {
         doc_category = $("#doc-category").val();
         count_category = $("#count-category").val();
@@ -24,7 +46,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_initial_iso_document',
-                    '_new_site_title': $("#new-site-title").val(),
+                    //'_new_site_title': $("#new-site-title").val(),
                     '_doc_category_id': $("#doc-category-id").val(),
                     '_doc_site_id': $("#doc-site-id").val(),
                 },

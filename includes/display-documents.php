@@ -296,10 +296,8 @@ function initial_iso_document($doc_id){
     return $html;
 }
 
-function set_initial_iso_document() {
+function set_new_site_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-    $new_site_id = false;
-
     if (isset($_POST['_new_site_title'])) {
         // Sanitize input values
         $new_site_title = sanitize_text_field($_POST['_new_site_title']);
@@ -331,7 +329,50 @@ function set_initial_iso_document() {
         }
     }
 
+    wp_send_json($response);
+}
+add_action('wp_ajax_set_new_site_data', 'set_new_site_data');
+add_action('wp_ajax_nopriv_set_new_site_data', 'set_new_site_data');
+
+function set_initial_iso_document() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+    //$new_site_id = false;
+/*
+    if (isset($_POST['_new_site_title'])) {
+        // Sanitize input values
+        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
+        
+        // Check if a site with the same title already exists
+        $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
+        
+        if ($existing_site) {
+            // A site with the same title already exists
+            $response['error'] = 'A site with the same title already exists.';
+        } else {
+            // Insert the new site
+            $current_user_id = get_current_user_id();
+            $new_site_args = array(
+                'post_title'    => $new_site_title,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'site',
+            );
+            $new_site_id = wp_insert_post($new_site_args);
+            
+            if (is_wp_error($new_site_id)) {
+                // Error occurred while inserting the site
+                $response['error'] = $new_site_id->get_error_message();
+            } else {
+                // Successfully created a new site
+                $response['success'] = 'Completed to create a new site';
+            }
+        }
+    }
+*/
     if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+
+        if (isset($_POST['_new_site_id'])) $new_site_id = sanitize_text_field($_POST['_new_site_id']);
+        
         // Retrieve documents based on doc_category_id and doc_site_id
         $args = array(
             'post_type'      => 'document',
