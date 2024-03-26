@@ -312,9 +312,6 @@ function set_initial_iso_document() {
         
         // Execute SQL query
         $existing_post_id = $wpdb->get_var($query);
-
-        
-        
         
         // Check if a post was found
         if ($existing_post_id) {                    
@@ -324,7 +321,7 @@ function set_initial_iso_document() {
             // No matching post found, proceed with inserting the new job
             $current_user_id = get_current_user_id();
             $new_post = array(
-                'post_title'   => sanitize_text_field($_POST['_site_title']),
+                'post_title'   => sanitize_text_field($_POST['_new_site_title']),
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
                 'post_type'     => 'site',
