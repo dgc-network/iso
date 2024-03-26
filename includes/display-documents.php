@@ -522,7 +522,7 @@ function display_document_list() {
                         <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
                         <td><?php echo esc_html($doc_title);?></td>
                         <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
-                        <td style="text-align:center;"><?php echo esc_html($doc_status);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
                     </tr>
                     <?php
 /*
