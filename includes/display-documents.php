@@ -178,7 +178,7 @@ function display_documents_shortcode() {
         if (isset($_GET['_initial'])) {
             $doc_id = sanitize_text_field($_GET['_initial']);
             echo '<div class="ui-widget" id="result-container">';
-            echo initial_iso_document($doc_id);
+            echo display_initial_iso_document($doc_id);
             echo '</div>';
         }
 
@@ -193,10 +193,8 @@ function display_documents_shortcode() {
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function count_doc_category($category_id){
-    //$category_id = 123; // Replace 123 with your actual category ID
-
     $args = array(
-        'post_type'      => 'document', // Replace 'document' with your actual post type
+        'post_type'      => 'document',
         'posts_per_page' => -1, // Retrieve all posts
         'meta_query'     => array(
             array(
@@ -205,19 +203,13 @@ function count_doc_category($category_id){
                 'compare' => '=',
             ),
         ),
-    );
-    
-    $query = new WP_Query($args);
-    
+    );    
+    $query = new WP_Query($args);    
     $count = $query->found_posts;
-
     return $count;
-    
-    echo "Number of document posts in category with ID $category_id: $count";
-    
 }
 
-function initial_iso_document($doc_id){
+function display_initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
@@ -324,6 +316,7 @@ function set_new_site_data() {
                 $response['error'] = $new_site_id->get_error_message();
             } else {
                 // Successfully created a new site
+                $response['new_site_id'] = $new_site_id;
                 $response['success'] = 'Completed to create a new site';
             }
         }
@@ -336,39 +329,7 @@ add_action('wp_ajax_nopriv_set_new_site_data', 'set_new_site_data');
 
 function set_initial_iso_document() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-    //$new_site_id = false;
-/*
-    if (isset($_POST['_new_site_title'])) {
-        // Sanitize input values
-        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-        
-        // Check if a site with the same title already exists
-        $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
-        
-        if ($existing_site) {
-            // A site with the same title already exists
-            $response['error'] = 'A site with the same title already exists.';
-        } else {
-            // Insert the new site
-            $current_user_id = get_current_user_id();
-            $new_site_args = array(
-                'post_title'    => $new_site_title,
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'site',
-            );
-            $new_site_id = wp_insert_post($new_site_args);
-            
-            if (is_wp_error($new_site_id)) {
-                // Error occurred while inserting the site
-                $response['error'] = $new_site_id->get_error_message();
-            } else {
-                // Successfully created a new site
-                $response['success'] = 'Completed to create a new site';
-            }
-        }
-    }
-*/
+
     if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
 
         if (isset($_POST['_new_site_id'])) $new_site_id = sanitize_text_field($_POST['_new_site_id']);
@@ -420,91 +381,7 @@ function set_initial_iso_document() {
 }
 add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
 add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
-/*
-function set_initial_iso_document() {
-    if( isset($_POST['_new_site_title']) ) {
-        // Sanitize input values
-        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-        // Prepare SQL query
-        global $wpdb;
-        $query = $wpdb->prepare("
-            SELECT ID
-            FROM $wpdb->posts
-            WHERE $wpdb->posts.post_type = 'site'
-            AND $wpdb->posts.post_title = %s
-            LIMIT 1
-        ", $new_site_title);
-        
-        // Execute SQL query
-        $existing_post_id = $wpdb->get_var($query);
-        
-        // Check if a post was found
-        if ($existing_post_id) {                    
-            // A post with the same title and site ID exists
-            $response['error'] = 'A site with the same title already exists within the selected site.';
-        } else {
-            // No matching post found, proceed with inserting the new job
-            $current_user_id = get_current_user_id();
-            $new_post = array(
-                'post_title'   => $new_site_title,
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'site',
-            );
-            $new_site_id = wp_insert_post($new_post);
-            if (is_wp_error($new_site_id)) {
-                $response['error'] = $post_id->get_error_message();
-            } else {
-                $response = array('success' => 'Completed to create a new site');
-            }
-        }
-    }
 
-    if( isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id']) ) {
-
-        $args = array(
-            'post_type'      => 'document', // Change 'document' to your custom post type name
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'doc_category',
-                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'site_id',
-                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
-                    'compare' => '=',
-                ),
-            ),
-        );
-        
-        $query = new WP_Query($args);
-
-        // Check if there are any posts
-        if ($query->have_posts()) {
-            // Start the loop
-            while ($query->have_posts()) {
-                $query->the_post();
-                if ($new_site_id) {
-                    get_shared_document(get_the_ID(), $new_site_id);
-                } else {
-                    get_shared_document(get_the_ID());
-                }
-            }
-            // Restore original post data
-            wp_reset_postdata();
-        } else {
-            // No posts found
-            echo 'No documents found.';
-        }
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_initial_iso_document', 'set_initial_iso_document' );
-add_action( 'wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document' );
-*/
 function get_shared_document($doc_id, $site_id=false){
     $current_user_id = get_current_user_id();
     if ($site_id==false) $site_id = get_user_meta($current_user_id, 'site_id', true);
