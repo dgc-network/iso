@@ -472,6 +472,7 @@ function set_site_user_dialog_data() {
                 } else {
                     // If a post with the same title and site_id exists, return an error message
                     $response['error'] = 'A job with the same title already exists within the selected site.';
+                    $response['error'] = var_dump($existing_post);
                 }
             }
             
