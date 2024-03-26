@@ -51,6 +51,7 @@ jQuery(document).ready(function($) {
                     '_doc_site_id': $("#doc-site-id").val(),
                 },
                 success: function (response) {
+                    console.log(response)
                     //window.location.replace("/display-documents/");
                 },
                 error: function(error){
