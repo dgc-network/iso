@@ -360,11 +360,7 @@ function set_initial_iso_document() {
             // Loop through the posts
             while ($query->have_posts()) {
                 $query->the_post();
-                //if ($new_site_id) {
-                //    get_shared_document(get_the_ID(), $new_site_id);
-                //} else {
-                    get_shared_document(get_the_ID());
-                //}
+                get_shared_document(get_the_ID());
             }
             // Restore original post data
             wp_reset_postdata();
@@ -379,9 +375,9 @@ function set_initial_iso_document() {
 add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
 add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
 
-function get_shared_document($doc_id, $site_id=false){
+function get_shared_document($doc_id){
     $current_user_id = get_current_user_id();
-    if ($site_id==false) $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     // Insert the post into the database
     $new_post = array(
         'post_title'    => 'No title',

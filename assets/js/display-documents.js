@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
             });    
     
         }
-        window.location.replace("/display-profiles/?_initial=true");
+        //window.location.replace("/display-profiles/?_initial=true");
     });
 
     $("#select-category").on( "change", function() {
