@@ -470,10 +470,24 @@ function set_site_user_dialog_data() {
                         'post_author'   => $current_user_id,
                         'post_type'     => 'job',
                     );
-                    $post_id = wp_insert_post($new_post);
-                    if (!is_wp_error($post_id)) {
+                    $job_id = wp_insert_post($new_post);
+                    if (!is_wp_error($job_id)) {
                         // If the post is inserted successfully, update the site_id meta
-                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+                        update_post_meta($job_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+
+                        $user_job_ids_array = get_user_meta($user_id, 'user_job_ids', true);
+                        if (!is_array($user_job_ids_array)) $user_job_ids_array = array();
+                        $job_exists = in_array($job_id, $user_job_ids_array);
+                    
+                        // Check the condition and update 'user_job_ids' accordingly
+                        if (!$job_exists) {
+                            // Add $job_id to 'user_job_ids'
+                            $user_job_ids_array[] = $job_id;
+                        }
+                
+                        // Update 'user_job_ids' meta value
+                        update_user_meta( $user_id, 'user_job_ids', $user_job_ids_array);
+                
                         $response = array('success' => true);
                     } else {
                         // If an error occurred while inserting the post, handle it accordingly
@@ -481,45 +495,6 @@ function set_site_user_dialog_data() {
                     }
 
                 }
-/*                
-                // Check if a post with the same title already exists within the same site_id
-                $existing_post = get_posts(array(
-                    'post_type'      => 'job',
-                    'post_title'     => sanitize_text_field($_POST['_job_title']),
-                    'post_status'    => 'any',
-                    'posts_per_page' => 1,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => sanitize_text_field($_POST['_site_id']),
-                            'compare' => '=',
-                        ),
-                    ),
-                ));
-            
-                if (empty($existing_post)) {
-                    // If no post with the same title and site_id exists, insert the new job
-                    $new_post = array(
-                        'post_title'   => sanitize_text_field($_POST['_job_title']),
-                        'post_content' => sanitize_text_field($_POST['_job_content']),
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'job',
-                    );
-                    $post_id = wp_insert_post($new_post);
-                    if (!is_wp_error($post_id)) {
-                        // If the post is inserted successfully, update the site_id meta
-                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
-                        $response = array('success' => true);
-                    } else {
-                        // If an error occurred while inserting the post, handle it accordingly
-                        $response['error'] = $post_id->get_error_message();
-                    }
-                } else {
-                    // If a post with the same title and site_id exists, return an error message
-                    $response['error'] = 'A job with the same title already exists within the selected site.';
-                }
-*/                
             }
         }
     }
@@ -802,12 +777,12 @@ function is_user_job($job_id, $user_id=0) {
 function set_user_job_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     if (isset($_POST['_job_id'])) {
-        $job_id = (int)sanitize_text_field($_POST['_job_id']);
-        $user_id = (int)sanitize_text_field($_POST['_user_id']);
+        $job_id = sanitize_text_field($_POST['_job_id']);
+        $user_id = sanitize_text_field($_POST['_user_id']);
         $is_user_job = sanitize_text_field($_POST['_is_user_job']);
         
         if (!isset($user_id)) $user_id = get_current_user_id();
-        $user_job_ids_array = get_user_meta($user_id, 'user_job_ids', true);        
+        $user_job_ids_array = get_user_meta($user_id, 'user_job_ids', true);
         if (!is_array($user_job_ids_array)) $user_job_ids_array = array();
         $job_exists = in_array($job_id, $user_job_ids_array);
     
