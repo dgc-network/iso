@@ -240,11 +240,13 @@ function initial_iso_document($doc_id){
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <input type="hidden" id="doc-category" value="<?php echo $doc_category;?>" />
+    <input type="hidden" id="doc-category-id" value="<?php echo $category_id;?>" />
+    <input type="hidden" id="doc-site-id" value="<?php echo $site_id;?>" />
     <input type="hidden" id="count-category" value="<?php echo $count_category;?>" />
 
     <fieldset>
-        <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
-        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="new-site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
+        <input type="text" id="new-site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
         <div id="site-hint" style="display:none; color:#999;"></div>
         <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 

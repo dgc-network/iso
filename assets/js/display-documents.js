@@ -24,7 +24,9 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_initial_iso_document',
-                    '_site_title': $("#site-title").val(),
+                    '_new_site_title': $("#new-site-title").val(),
+                    '_doc_category_id': $("#doc-category-id").val(),
+                    '_doc_site_id': $("#doc-site-id").val(),
                 },
                 success: function (response) {
                     //window.location.replace("/display-documents/");
