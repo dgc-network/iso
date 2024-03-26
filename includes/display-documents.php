@@ -297,18 +297,14 @@ function initial_iso_document($doc_id){
 }
 
 function set_initial_iso_document() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_new_site_title']) && isset($_POST['_doc_category_id'])  && isset($_POST['_doc_site_id'])) {
         // Sanitize input values
         $site_title = sanitize_text_field($_POST['_new_site_title']);
-        $category_id = sanitize_text_field($_POST['_doc_category_id']);
-        
         // Prepare SQL query
         global $wpdb;
         $query = $wpdb->prepare("
             SELECT ID
             FROM $wpdb->posts
-            INNER JOIN $wpdb->postmeta ON ($wpdb->posts.ID = $wpdb->postmeta.post_id)
             WHERE $wpdb->posts.post_type = 'site'
             AND $wpdb->posts.post_title = %s
             LIMIT 1
@@ -317,25 +313,6 @@ function set_initial_iso_document() {
         // Execute SQL query
         $existing_post_id = $wpdb->get_var($query);
 
-        $args = array(
-            'post_type'      => 'document', // Change 'document' to your custom post type name
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'doc_category',
-                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'site_id',
-                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
-                    'compare' => '=',
-                ),
-            ),
-        );
-        
-        $query = new WP_Query($args);
         
         
         
@@ -345,6 +322,7 @@ function set_initial_iso_document() {
             $response['error'] = 'A site with the same title already exists within the selected site.';
         } else {
             // No matching post found, proceed with inserting the new job
+            $current_user_id = get_current_user_id();
             $new_post = array(
                 'post_title'   => sanitize_text_field($_POST['_site_title']),
                 'post_status'   => 'publish',
@@ -355,15 +333,32 @@ function set_initial_iso_document() {
             if (is_wp_error($new_site_id)) {
                 $response['error'] = $post_id->get_error_message();
             } else {
+                $args = array(
+                    'post_type'      => 'document', // Change 'document' to your custom post type name
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'doc_category',
+                            'value'   => sanitize_text_field($_POST['_doc_category_id']),
+                            'compare' => '=',
+                        ),
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => sanitize_text_field($_POST['_doc_site_id']),
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+                
+                $query = new WP_Query($args);
+
                 // Check if there are any posts
                 if ($query->have_posts()) {
                     // Start the loop
                     while ($query->have_posts()) {
                         $query->the_post();
-                        // Display the post content or do something else
-                        //the_title();
-                        // Output other post data as needed
-                        get_shared_document(get_the_ID());
+                        get_shared_document(get_the_ID(), $new_site_id);
                     }
                     // Restore original post data
                     wp_reset_postdata();
@@ -382,9 +377,9 @@ add_action( 'wp_ajax_set_initial_iso_document', 'set_initial_iso_document' );
 add_action( 'wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document' );
 
 
-function get_shared_document($doc_id){
+function get_shared_document($doc_id, $site_id=false){
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    if ($site_id==false) $site_id = get_user_meta($current_user_id, 'site_id', true);
     // Insert the post into the database
     $new_post = array(
         'post_title'    => 'No title',
