@@ -213,6 +213,7 @@ function display_initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+    $doc_site = get_post_meta($doc_id, 'site_id', true);
     $category_id = get_post_meta( $doc_id, 'doc_category', true);
     $doc_category = get_the_title( $category_id );
     $count_category = count_doc_category($category_id);
@@ -233,7 +234,7 @@ function display_initial_iso_document($doc_id){
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
     <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
     <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
-    <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($site_id);?>" />
+    <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
     <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
     <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
