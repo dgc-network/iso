@@ -297,9 +297,86 @@ function initial_iso_document($doc_id){
 }
 
 function set_initial_iso_document() {
-    if( isset($_POST['_new_site_title']) && isset($_POST['_doc_category_id'])  && isset($_POST['_doc_site_id'])) {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_new_site_title'])) {
         // Sanitize input values
-        $site_title = sanitize_text_field($_POST['_new_site_title']);
+        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
+        
+        // Check if a site with the same title already exists
+        $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
+        
+        if ($existing_site) {
+            // A site with the same title already exists
+            $response['error'] = 'A site with the same title already exists.';
+        } else {
+            // Insert the new site
+            $current_user_id = get_current_user_id();
+            $new_site_args = array(
+                'post_title'    => $new_site_title,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'site',
+            );
+            $new_site_id = wp_insert_post($new_site_args);
+            
+            if (is_wp_error($new_site_id)) {
+                // Error occurred while inserting the site
+                $response['error'] = $new_site_id->get_error_message();
+            } else {
+                // Successfully created a new site
+                $response['success'] = 'Completed to create a new site';
+            }
+        }
+    }
+
+    if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+        // Retrieve documents based on doc_category_id and doc_site_id
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'doc_category',
+                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => 'site_id',
+                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
+                    'compare' => '=',
+                ),
+            ),
+        );
+        
+        $query = new WP_Query($args);
+
+        // Check if there are any posts
+        if ($query->have_posts()) {
+            // Loop through the posts
+            while ($query->have_posts()) {
+                $query->the_post();
+                // Process each document post here
+                // Example: get_shared_document(get_the_ID());
+            }
+            // Restore original post data
+            wp_reset_postdata();
+        } else {
+            // No documents found
+            $response['error'] = 'No documents found.';
+        }
+    }
+
+    wp_send_json($response);
+}
+add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
+add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
+/*
+function set_initial_iso_document() {
+    if( isset($_POST['_new_site_title']) ) {
+        // Sanitize input values
+        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
         // Prepare SQL query
         global $wpdb;
         $query = $wpdb->prepare("
@@ -308,7 +385,7 @@ function set_initial_iso_document() {
             WHERE $wpdb->posts.post_type = 'site'
             AND $wpdb->posts.post_title = %s
             LIMIT 1
-        ", $site_title);
+        ", $new_site_title);
         
         // Execute SQL query
         $existing_post_id = $wpdb->get_var($query);
@@ -321,7 +398,7 @@ function set_initial_iso_document() {
             // No matching post found, proceed with inserting the new job
             $current_user_id = get_current_user_id();
             $new_post = array(
-                'post_title'   => sanitize_text_field($_POST['_new_site_title']),
+                'post_title'   => $new_site_title,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
                 'post_type'     => 'site',
@@ -330,50 +407,56 @@ function set_initial_iso_document() {
             if (is_wp_error($new_site_id)) {
                 $response['error'] = $post_id->get_error_message();
             } else {
-                $args = array(
-                    'post_type'      => 'document', // Change 'document' to your custom post type name
-                    'posts_per_page' => -1,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'doc_category',
-                            'value'   => sanitize_text_field($_POST['_doc_category_id']),
-                            'compare' => '=',
-                        ),
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => sanitize_text_field($_POST['_doc_site_id']),
-                            'compare' => '=',
-                        ),
-                    ),
-                );
-                
-                $query = new WP_Query($args);
-
-                // Check if there are any posts
-                if ($query->have_posts()) {
-                    // Start the loop
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        get_shared_document(get_the_ID(), $new_site_id);
-                    }
-                    // Restore original post data
-                    wp_reset_postdata();
-                } else {
-                    // No posts found
-                    echo 'No documents found.';
-                }
-
-                $response = array('success' => true);
+                $response = array('success' => 'Completed to create a new site');
             }
+        }
+    }
+
+    if( isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id']) ) {
+
+        $args = array(
+            'post_type'      => 'document', // Change 'document' to your custom post type name
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'doc_category',
+                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => 'site_id',
+                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
+                    'compare' => '=',
+                ),
+            ),
+        );
+        
+        $query = new WP_Query($args);
+
+        // Check if there are any posts
+        if ($query->have_posts()) {
+            // Start the loop
+            while ($query->have_posts()) {
+                $query->the_post();
+                if ($new_site_id) {
+                    get_shared_document(get_the_ID(), $new_site_id);
+                } else {
+                    get_shared_document(get_the_ID());
+                }
+            }
+            // Restore original post data
+            wp_reset_postdata();
+        } else {
+            // No posts found
+            echo 'No documents found.';
         }
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_initial_iso_document', 'set_initial_iso_document' );
 add_action( 'wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document' );
-
-
+*/
 function get_shared_document($doc_id, $site_id=false){
     $current_user_id = get_current_user_id();
     if ($site_id==false) $site_id = get_user_meta($current_user_id, 'site_id', true);
