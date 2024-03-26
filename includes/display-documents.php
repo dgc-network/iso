@@ -478,10 +478,10 @@ function display_document_list() {
         <table class="ui-widget" style="width:100%;">
             <thead>
                 <tr>
-                    <th><?php echo__( '文件編號', 'your-text-domain' );?></th>
-                    <th><?php echo__( '文件名稱', 'your-text-domain' );?></th>
-                    <th><?php echo__( '文件版本', 'your-text-domain' );?></th>
-                    <th><?php echo__( '待辦', 'your-text-domain' );?></th>
+                    <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
+                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                    <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
+                    <th><?php echo __( '待辦', 'your-text-domain' );?></th>
                 </tr>
             <?php
 /*            
