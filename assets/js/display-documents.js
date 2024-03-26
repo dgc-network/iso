@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_new_site_data',
+                    'action': 'set_new_site_by_title',
                     '_new_site_title': new_site_title,
                 },
                 success: function (response) {

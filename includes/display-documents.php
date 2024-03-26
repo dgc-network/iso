@@ -288,7 +288,7 @@ function display_initial_iso_document($doc_id){
     return $html;
 }
 
-function set_new_site_data() {
+function set_new_site_by_title() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     if (isset($_POST['_new_site_title'])) {
         // Sanitize input values
@@ -324,8 +324,8 @@ function set_new_site_data() {
 
     wp_send_json($response);
 }
-add_action('wp_ajax_set_new_site_data', 'set_new_site_data');
-add_action('wp_ajax_nopriv_set_new_site_data', 'set_new_site_data');
+add_action('wp_ajax_set_new_site_by_title', 'set_new_site_by_title');
+add_action('wp_ajax_nopriv_set_new_site_by_title', 'set_new_site_by_title');
 
 function set_initial_iso_document() {
     $response = array('success' => false, 'error' => 'Invalid data format');
@@ -454,8 +454,8 @@ function display_document_list() {
     <fieldset>
         <div id="document-setting-dialog" title="Document setting" style="display:none">
         <fieldset>
-            <label for="site-title"> Site: </label>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <label for="site-title"> Site: </label>
             <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
             <label for="doc-field-setting"> Field setting: </label>
             <?php echo display_doc_field_list(false, $site_id);?>
@@ -477,7 +477,14 @@ function display_document_list() {
 
         <table class="ui-widget" style="width:100%;">
             <thead>
+                <tr>
+                    <th><?php echo__( '文件編號', 'your-text-domain' );?></th>
+                    <th><?php echo__( '文件名稱', 'your-text-domain' );?></th>
+                    <th><?php echo__( '文件版本', 'your-text-domain' );?></th>
+                    <th><?php echo__( '待辦', 'your-text-domain' );?></th>
+                </tr>
             <?php
+/*            
             $params = array(
                 'site_id'     => $site_id,
                 'is_listing'  => true,
@@ -494,6 +501,7 @@ function display_document_list() {
                 echo '</tr>';
                 wp_reset_postdata();
             }
+*/            
             ?>
             </thead>
             <tbody>
@@ -502,6 +510,22 @@ function display_document_list() {
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = (int) get_the_ID();
+                    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+                    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+                    $todo_id = get_post_meta( $doc_id, 'todo_status', true);
+                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                    $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                    $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                    ?>
+                    <tr id="edit-document-<?php echo $doc_id;?>">
+                        <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
+                        <td><?php echo esc_html($doc_title);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($doc_status);?></td>
+                    </tr>
+                    <?php
+/*
                     echo '<tr id="edit-document-'.$doc_id.'">';
                     $params = array(
                         'site_id'     => $site_id,
@@ -525,6 +549,7 @@ function display_document_list() {
                     $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
                     echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                     echo '</tr>';
+*/
                 endwhile;
                 wp_reset_postdata();
             endif;
