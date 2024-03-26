@@ -436,6 +436,52 @@ function set_site_user_dialog_data() {
             if (isset($_POST['_job_title']) && isset($_POST['_site_id'])) {
                 $current_user_id = get_current_user_id();
             
+                global $wpdb;
+
+                // Sanitize input values
+                $job_title = sanitize_text_field($_POST['_job_title']);
+                $site_id = sanitize_text_field($_POST['_site_id']);
+                
+                // Prepare SQL query
+                $query = $wpdb->prepare("
+                    SELECT ID
+                    FROM $wpdb->posts
+                    INNER JOIN $wpdb->postmeta ON ($wpdb->posts.ID = $wpdb->postmeta.post_id)
+                    WHERE $wpdb->posts.post_type = 'job'
+                    AND $wpdb->posts.post_title = %s
+                    AND $wpdb->postmeta.meta_key = 'site_id'
+                    AND $wpdb->postmeta.meta_value = %s
+                    LIMIT 1
+                ", $job_title, $site_id);
+                
+                // Execute SQL query
+                $existing_post_id = $wpdb->get_var($query);
+                
+                // Check if a post was found
+                if ($existing_post_id) {                    
+                    // A post with the same title and site ID exists
+                    $response['error'] = 'A job with the same title already exists within the selected site.';
+                } else {
+                    // No matching post found, proceed with inserting the new job
+                    $new_post = array(
+                        'post_title'   => sanitize_text_field($_POST['_job_title']),
+                        'post_content' => sanitize_text_field($_POST['_job_content']),
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'job',
+                    );
+                    $post_id = wp_insert_post($new_post);
+                    if (!is_wp_error($post_id)) {
+                        // If the post is inserted successfully, update the site_id meta
+                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+                        $response = array('success' => true);
+                    } else {
+                        // If an error occurred while inserting the post, handle it accordingly
+                        $response['error'] = $post_id->get_error_message();
+                    }
+
+                }
+/*                
                 // Check if a post with the same title already exists within the same site_id
                 $existing_post = get_posts(array(
                     'post_type'      => 'job',
@@ -472,55 +518,9 @@ function set_site_user_dialog_data() {
                 } else {
                     // If a post with the same title and site_id exists, return an error message
                     $response['error'] = 'A job with the same title already exists within the selected site.';
-                    //$response['error'] = var_dump($existing_post);
-                    $response['error'] = print_r($existing_post);
                 }
+*/                
             }
-            
-/*
-            if (isset($_POST['_job_title'])) {
-                $current_user_id = get_current_user_id();
-            
-                // Check if a post with the same title already exists within the same site_id
-                $existing_post = get_posts(array(
-                    'post_type'      => 'job',
-                    'post_title'     => sanitize_text_field($_POST['_job_title']),
-                    'post_status'    => 'any',
-                    'posts_per_page' => 1,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => sanitize_text_field($_POST['_site_id']),
-                            'compare' => '=',
-                        ),
-                    ),
-                ));
-            
-                if (empty($existing_post)) {
-                    // If no post with the same title and site_id exists, insert the new job
-                    $new_post = array(
-                        'post_title'   => sanitize_text_field($_POST['_job_title']),
-                        'post_content' => sanitize_text_field($_POST['_job_content']),
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'job',
-                    );    
-                    $post_id = wp_insert_post($new_post);
-                    if (!is_wp_error($post_id)) {
-                        // If the post is inserted successfully, update the site_id meta
-                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
-                        $response = array('success' => true);
-                    } else {
-                        // If an error occurred while inserting the post, handle it accordingly
-                        $response['error'] = $post_id->get_error_message();
-                    }
-                } else {
-                    // If a post with the same title and site_id exists, return an error message
-                    $response['error'] = 'A job with the same title already exists within the selected site.';
-                }
-            }           
-*/
-
         }
     }
     
