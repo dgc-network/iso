@@ -618,7 +618,7 @@ function retrieve_document_data($site_id = 0) {
 
 function get_document_dialog_data() {
     $result = array();
-    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_document_dialog_data') {
+    if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
@@ -631,8 +631,9 @@ function get_document_dialog_data() {
                     $result['html_contain'] = display_doc_frame_contain($doc_id);
                 }
             } else {
-                $result['html_contain'] = display_doc_report_dialog(false, $doc_id);
-                $result['doc_fields'] = display_doc_field_keys(false, $site_id);
+                $result['html_contain'] = display_document_dialog($doc_id);
+                //$result['html_contain'] = display_doc_report_dialog(false, $doc_id);
+                //$result['doc_fields'] = display_doc_field_keys(false, $site_id);
             }
         } else {
             if (current_user_can('administrator')) {
@@ -712,6 +713,7 @@ function set_document_dialog_data() {
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
+/*
         $params = array(
             'site_id'     => $site_id,
         );                
@@ -724,11 +726,16 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+*/
         $doc_category = sanitize_text_field($_POST['_doc_category']);
         $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
+
+        update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
+        update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
+        update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
-        update_post_meta( $doc_id, 'doc_category', $doc_category);
-        update_post_meta( $doc_id, 'is_doc_report', $is_doc_report);
+        update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
+        update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(
@@ -749,6 +756,7 @@ function set_document_dialog_data() {
         $post_id = wp_insert_post($new_post);
         $site_id = sanitize_text_field($_POST['_site_id']);
         update_post_meta( $post_id, 'site_id', $site_id);
+/*        
         $params = array(
             'site_id'     => $site_id,
         );                
@@ -761,6 +769,9 @@ function set_document_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+*/        
+        update_post_meta( $post_id, 'doc_number', '-');
+        update_post_meta( $post_id, 'doc_revision', 'A');
         update_post_meta( $post_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
@@ -1306,6 +1317,72 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     return $query;
 }
 
+function display_document_dialog($doc_id=false) {
+    $is_doc = false;
+    if ($doc_id) {
+        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
+        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
+        $start_job = get_post_meta( $doc_id, 'start_job', true);
+        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
+        $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
+
+        ob_start();
+        ?>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+            </div>
+            <div style="text-align:right; display:flex;">        
+            </div>
+        </div>
+        <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+        <fieldset>
+        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+        <?php    
+        if ($is_doc_report==1) {
+            ?>
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
+            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+            <?php
+        } else {
+            ?>
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
+            <?php
+        }
+        ?>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+        <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+        <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        <hr>
+        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+        </fieldset>
+        <?php
+        $html = ob_get_clean();
+        return $html;
+    }
+}
+
 function display_doc_report_dialog($report_id=false, $doc_id=false) {
     $is_doc = false;
     if ($doc_id) {
@@ -1316,11 +1393,13 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
+/*
         $params = array(
             'site_id'     => $site_id,
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
+*/        
         $is_doc = true;
     } else {
         $start_job = get_post_meta( $report_id, 'start_job', true);

@@ -138,6 +138,7 @@ jQuery(document).ready(function($) {
                         'action': 'set_document_dialog_data',
                     };
                     ajaxData['_doc_id'] = doc_id;
+/*                    
                     $.each(response.doc_fields, function (index, value) {
                         const field_name_tag = '#' + value.field_name;
                         if (value.field_type === 'checkbox' || value.field_type === 'radio') {
@@ -146,6 +147,10 @@ jQuery(document).ready(function($) {
                             ajaxData[value.field_name] = $(field_name_tag).val();
                         }
                     });
+*/                    
+                    ajaxData['_doc_number'] = $("#doc-number").val();
+                    ajaxData['_doc_title'] = $("#doc-title").val();
+                    ajaxData['_doc_revision'] = $("#doc-revision").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
