@@ -463,7 +463,7 @@ function set_site_user_dialog_data() {
                     $post_id = wp_insert_post($new_post);
                     if (!is_wp_error($post_id)) {
                         // If the post is inserted successfully, update the site_id meta
-                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                        update_post_meta($post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
                         $response = array('success' => true);
                     } else {
                         // If an error occurred while inserting the post, handle it accordingly
