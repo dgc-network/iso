@@ -18,6 +18,23 @@ jQuery(document).ready(function($) {
         doc_category = $("#doc-category").val();
         count_category = $("#count-category").val();
         if (window.confirm("Are you sure you want to add "+count_category+" "+ doc_category+" new documents?")) {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_initial_iso_document',
+                    '_site_title': $("#site-title").val(),
+                },
+                success: function (response) {
+                    //window.location.replace("/display-documents/");
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });    
+    
         }
         window.location.replace("/display-profiles/?_initial=true");
     });
