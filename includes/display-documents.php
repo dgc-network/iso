@@ -192,14 +192,20 @@ function display_documents_shortcode() {
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function count_doc_category($category_id){
+function count_doc_category($doc_category, $site_id){
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1, // Retrieve all posts
         'meta_query'     => array(
+            'relation' => 'AND',
             array(
                 'key'     => 'doc_category',
-                'value'   => $category_id,
+                'value'   => $doc_category,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
                 'compare' => '=',
             ),
         ),
@@ -216,7 +222,7 @@ function display_initial_iso_document($doc_id){
     $doc_site = get_post_meta($doc_id, 'site_id', true);
     $category_id = get_post_meta( $doc_id, 'doc_category', true);
     $doc_category = get_the_title( $category_id );
-    $count_category = count_doc_category($category_id);
+    $count_category = count_doc_category($category_id, $doc_site);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
@@ -364,7 +370,7 @@ function set_initial_iso_document() {
             }
             // Restore original post data
             wp_reset_postdata();
-            $response['success'] = true;
+            $response = array('success' => true);
         } else {
             // No documents found
             $response['error'] = 'No documents found.';
@@ -375,55 +381,7 @@ function set_initial_iso_document() {
 }
 add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
 add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
-/*
-function set_initial_iso_document() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
 
-    if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
-
-        //if (isset($_POST['_new_site_id'])) $new_site_id = sanitize_text_field($_POST['_new_site_id']);
-        
-        // Retrieve documents based on doc_category_id and doc_site_id
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'doc_category',
-                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'site_id',
-                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
-                    'compare' => '=',
-                ),
-            ),
-        );
-        
-        $query = new WP_Query($args);
-
-        // Check if there are any posts
-        if ($query->have_posts()) {
-            // Loop through the posts
-            while ($query->have_posts()) {
-                $query->the_post();
-                get_shared_document(get_the_ID());
-            }
-            // Restore original post data
-            wp_reset_postdata();
-        } else {
-            // No documents found
-            $response['error'] = 'No documents found.';
-        }
-    }
-
-    wp_send_json($response);
-}
-add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
-add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
-*/
 function get_shared_document($doc_id){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
