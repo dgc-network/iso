@@ -298,6 +298,7 @@ function initial_iso_document($doc_id){
 
 function set_initial_iso_document() {
     $response = array('success' => false, 'error' => 'Invalid data format');
+    $new_site_id = false;
 
     if (isset($_POST['_new_site_title'])) {
         // Sanitize input values
@@ -359,6 +360,12 @@ function set_initial_iso_document() {
                 $query->the_post();
                 // Process each document post here
                 // Example: get_shared_document(get_the_ID());
+                if ($new_site_id) {
+                    get_shared_document(get_the_ID(), $new_site_id);
+                } else {
+                    get_shared_document(get_the_ID());
+                }
+
             }
             // Restore original post data
             wp_reset_postdata();
