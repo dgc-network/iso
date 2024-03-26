@@ -235,12 +235,12 @@ function display_initial_iso_document($doc_id){
     <input type="hidden" id="doc-category-id" value="<?php echo $category_id;?>" />
     <input type="hidden" id="doc-site-id" value="<?php echo $site_id;?>" />
     <input type="hidden" id="count-category" value="<?php echo $count_category;?>" />
+    <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
     <fieldset>
         <label for="new-site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
         <input type="text" id="new-site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
         <div id="site-hint" style="display:none; color:#999;"></div>
-        <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
         <?php
         $args = array(
@@ -332,6 +332,53 @@ function set_initial_iso_document() {
 
     if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
 
+        // Retrieve documents based on doc_category_id and doc_site_id
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'doc_category',
+                    'value'   => sanitize_text_field($_POST['_doc_category_id']),
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => 'site_id',
+                    'value'   => sanitize_text_field($_POST['_doc_site_id']),
+                    'compare' => '=',
+                ),
+            ),
+        );
+        
+        $query = new WP_Query($args);
+
+        // Check if there are any posts
+        if ($query->have_posts()) {
+            // Loop through the posts
+            while ($query->have_posts()) {
+                $query->the_post();
+                get_shared_document(get_the_ID());
+            }
+            // Restore original post data
+            wp_reset_postdata();
+            $response['success'] = true;
+        } else {
+            // No documents found
+            $response['error'] = 'No documents found.';
+        }
+    }
+
+    wp_send_json($response);
+}
+add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
+add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
+/*
+function set_initial_iso_document() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+
         //if (isset($_POST['_new_site_id'])) $new_site_id = sanitize_text_field($_POST['_new_site_id']);
         
         // Retrieve documents based on doc_category_id and doc_site_id
@@ -374,7 +421,7 @@ function set_initial_iso_document() {
 }
 add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
 add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
-
+*/
 function get_shared_document($doc_id){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
