@@ -731,24 +731,7 @@ function set_document_dialog_data() {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-/*
-        $params = array(
-            'site_id'     => $site_id,
-        );                
-        $query = retrieve_doc_field_data($params);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $field_value = sanitize_text_field($_POST[$field_name]);
-                update_post_meta( $doc_id, $field_name, $field_value);
-            endwhile;
-            wp_reset_postdata();
-        }
-*/
-        $doc_category = sanitize_text_field($_POST['_doc_category']);
-        $is_doc_report = sanitize_text_field($_POST['_is_doc_report']);
-
+        //$site_id = get_post_meta( $doc_id, 'site_id', true);
         update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
         update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
         update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
@@ -775,20 +758,6 @@ function set_document_dialog_data() {
         $post_id = wp_insert_post($new_post);
         $site_id = sanitize_text_field($_POST['_site_id']);
         update_post_meta( $post_id, 'site_id', $site_id);
-/*        
-        $params = array(
-            'site_id'     => $site_id,
-        );                
-        $query = retrieve_doc_field_data($params);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                update_post_meta( $post_id, $field_name, $default_value);
-            endwhile;
-            wp_reset_postdata();
-        }
-*/        
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
         update_post_meta( $post_id, 'start_leadtime', 86400);

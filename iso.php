@@ -197,6 +197,13 @@ function init_webhook_events() {
         // Regular webhook response
         switch ($event['type']) {
             case 'message':
+
+                // Extract Line user ID from the event
+                $line_user_id = $event['source']['userId'];
+
+                // Send Line user ID to WordPress
+                send_line_user_id_to_wordpress($line_user_id, $display_name);
+
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
@@ -451,3 +458,82 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
+
+// Function to send Line user ID to WordPress
+function send_line_user_id_to_wordpress($line_user_id, $line_display_name) {
+    if (!is_user_logged_in()) {
+
+        // Using Line User ID to register and login into the system
+        $array = get_users( array( 'meta_value' => $line_user_id ));
+        if (empty($array)) {
+            $user_id = wp_insert_user( array(
+                'user_login' => $line_user_id,
+                'user_pass' => $line_user_id,
+            ));
+            add_user_meta( $user_id, 'line_user_id', $line_user_id);
+        } else {
+            // Get user by 'line_user_id' meta
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $line_user_id
+            ));
+            $site_id = get_user_meta( $user_id, 'site_id', true);
+            $site_title = get_the_title($site_id);
+        }
+        //$user = get_user_by( 'ID', $user_id );
+        $user_data = get_userdata( $user_id );
+        ?>
+        <div class="ui-widget">
+            <h2>User registration/login</h2>
+            <fieldset>
+                <label for="display-name">Name:</label>
+                <input type="text" id="display-name" value="<?php echo esc_attr($line_display_name);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="user-email">Email:</label>
+                <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="site-id">Site:</label>
+                <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
+                <div id="site-hint" style="display:none; color:#999;"></div>
+                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
+                <input type="hidden" id="log" value="<?php echo esc_attr($line_user_id);?>" />
+                <input type="hidden" id="pwd" value="<?php echo esc_attr($line_user_id);?>" />
+                <hr>
+                <input type="submit" id="wp-login-submit" class="button button-primary" value="Submit" />
+            </fieldset>
+        </div>
+        <?php        
+/*
+        // Generate OTP
+        $otp = generate_otp();
+
+        // Send OTP to Line user
+        send_otp_to_line($line_user_id, $otp); // Function to send OTP to Line user (implementation not provided)
+
+        // Store OTP in session for verification
+        session_start();
+        $_SESSION['registration_otp'] = $otp;
+        $_SESSION['line_user_id'] = $line_user_id;
+        
+        // Redirect to OTP verification page
+        wp_redirect(home_url('/otp-verification')); // Redirect to OTP verification page (change URL as needed)
+        exit();
+
+        // Create HTTP request to WordPress endpoint
+        $wordpressEndpoint = 'http://yourwordpresssite.com/line-user-id-handler.php';
+        $postData = array(
+            'line_user_id' => $line_user_id
+        );
+    
+        $options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'content' => http_build_query($postData)
+            )
+        );
+    
+        $context = stream_context_create($options);
+        $result = file_get_contents($wordpressEndpoint, false, $context);
+*/        
+    }
+}
