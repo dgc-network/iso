@@ -145,9 +145,15 @@ function init_webhook_events() {
 
         $profile = $line_bot_api->getProfile($event['source']['userId']);
         $display_name = str_replace(' ', '', $profile['displayName']);
-
+        // Start the session to access stored OTP and expiration
+        session_start();
+        // Get stored OTP and expiration timestamp from session
+        $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
+    
         // Start the User Login/Registration process if got the one time password
-        if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
+        if ((int)$event['message']['text']===$one_time_password) {
+        //}
+        //if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
             $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
             // Encode the Chinese characters for inclusion in the URL
@@ -279,6 +285,16 @@ function user_did_not_login_yet() {
         // Display a message or redirect to the login/registration page
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
+
+                // Generate OTP
+                $otp = generate_otp(); // Function to generate OTP (implementation not provided)
+
+                // Store OTP in session for verification
+                session_start();
+                $_SESSION['registration_otp'] = $otp;
+
+
+
         ?>
         <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
@@ -302,6 +318,7 @@ function user_did_not_login_yet() {
             </a>
             <p>並請在聊天室中, 輸入六位數字:</p>
             <h3><?php echo get_option('_one_time_password');?></h3>
+            <h3><?php echo $otp;?></h3>
             <p>完成註冊/登入作業</p>
         </div>
         <?php
@@ -505,3 +522,40 @@ function send_line_user_id_to_wordpress($line_user_id, $line_display_name) {
         <?php
     }
 }
+
+// Function to generate a random OTP
+function generate_otp() {
+    // Generate a random 6-digit OTP
+    return rand(100000, 999999);
+}
+
+// Function to verify OTP during login
+function verify_otp_login($user_login, $user) {
+    // Start the session to access stored OTP and expiration
+    session_start();
+
+    // Get submitted OTP
+    $submitted_otp = isset($_POST['otp']) ? intval($_POST['otp']) : 0;
+
+    // Get stored OTP and expiration timestamp from session
+    $stored_otp = isset($_SESSION['otp']) ? intval($_SESSION['otp']) : 0;
+    $expiration = isset($_SESSION['otp_expiration']) ? intval($_SESSION['otp_expiration']) : 0;
+
+    // Check if submitted OTP matches stored OTP and is within expiration time
+    if ($submitted_otp === $stored_otp && $expiration > time()) {
+        // OTP is valid, log the user in
+        wp_set_auth_cookie($user->ID, true);
+        // Clear OTP and expiration from session
+        unset($_SESSION['otp']);
+        unset($_SESSION['otp_expiration']);
+        // Redirect to home page or dashboard
+        wp_redirect(home_url());
+        exit;
+    } else {
+        // Invalid OTP, display error message
+        $error = new WP_Error('invalid_otp', 'Invalid one-time password.');
+        return $error;
+    }
+}
+
+

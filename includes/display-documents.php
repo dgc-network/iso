@@ -705,6 +705,10 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata();
+    $options .= '<option value="-1" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="-2" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="-3" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="-4" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
     return $options;
 }
 
@@ -1308,6 +1312,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 function display_doc_report_dialog($report_id=false, $doc_id=false) {
     $is_doc = false;
     if ($doc_id) {
+/*        
         $start_job = get_post_meta( $doc_id, 'start_job', true);
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
@@ -1315,14 +1320,13 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
-/*
         $params = array(
             'site_id'     => $site_id,
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
-*/        
         $is_doc = true;
+*/        
     } else {
         $start_job = get_post_meta( $report_id, 'start_job', true);
         $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
@@ -1427,6 +1431,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         wp_reset_postdata();
     }
     if ($is_doc) {
+/*        
         if ($is_doc_report==1) {
             ?>
             <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
@@ -1447,6 +1452,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php
+*/        
     }
     ?>
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
@@ -1456,10 +1462,12 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         <hr>
     <?php
     if ($is_doc) {
+/*        
         ?>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
         <?php
+*/        
     } else {
         if ($todo_status!=-1){
         ?>
