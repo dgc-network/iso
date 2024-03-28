@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
-    $("#new-site-title").on("change", function () {
+    $("#site-title").on("change", function () {
         new_site_title = $(this).val();
         if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
             $.ajax({

@@ -245,8 +245,8 @@ function display_initial_iso_document($doc_id){
     <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
 
     <fieldset>
-        <label for="new-site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
-        <input type="text" id="new-site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
+        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
         <div id="site-hint" style="display:none; color:#999;"></div>
 
         <?php
