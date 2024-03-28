@@ -146,6 +146,101 @@ function init_webhook_events() {
         $line_user_id = $event['source']['userId'];
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
+        
+        // Check if user is logged in
+        if (!is_user_logged_in()) {
+            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+            // Encode the Chinese characters for inclusion in the URL
+            $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
+            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+            $line_bot_api->replyMessage([
+                'replyToken' => $event['replyToken'],
+                'messages' => [$flexMessage],
+            ]);
+            continue; // Skip further processing for this event
+        }
+
+        // Regular expression to detect URLs
+        $urlRegex = '/\bhttps?:\/\/\S+\b/';
+
+        // Match URLs in the text
+        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
+            // Extract the matched URLs
+            $urls = $matches[0];
+            
+            // Output the detected URLs
+            foreach ($urls as $url) {
+                // Parse the URL
+                $parsed_url = parse_url($url);
+                
+                // Check if the URL contains a query string
+                if (isset($parsed_url['query'])) {
+                    // Parse the query string
+                    parse_str($parsed_url['query'], $query_params);
+                    
+                    // Check if the 'doc_id' parameter exists in the query parameters
+                    if (isset($query_params['_get_shared_doc_id'])) {
+                        // Retrieve the value of the 'doc_id' parameter
+                        $doc_id = $query_params['_get_shared_doc_id'];
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $text_message = '您可以點擊下方按鍵將文件「'.$doc_title.'」加入您的文件匣中。';
+                    }
+                }
+                
+                $flexMessage = set_flex_message($display_name, $url, $text_message);
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [$flexMessage],
+                ]);            
+            }
+        }
+        
+        // Regular webhook response
+        switch ($event['type']) {
+            case 'message':
+                $message = $event['message'];
+                switch ($message['type']) {
+                    case 'text':
+                        // Open-AI auto reply
+                        $response = $open_ai_api->createChatCompletion($message['text']);
+                        $line_bot_api->replyMessage([
+                            'replyToken' => $event['replyToken'],
+                            'messages' => [
+                                [
+                                    'type' => 'text',
+                                    'text' => $response
+                                ]                                                                    
+                            ]
+                        ]);
+                        break;
+                    default:
+                        error_log('Unsupported message type: ' . $message['type']);
+                        break;
+                }
+                break;
+            default:
+                error_log('Unsupported event type: ' . $event['type']);
+                break;
+        }
+    }
+}
+add_action( 'parse_request', 'init_webhook_events' );
+/*
+function init_webhook_events() {
+
+    $line_bot_api = new line_bot_api();
+    $open_ai_api = new open_ai_api();
+
+    $entityBody = file_get_contents('php://input');
+    $data = json_decode($entityBody, true);
+    $events = $data['events'] ?? [];
+
+    foreach ((array)$events as $event) {
+
+        $line_user_id = $event['source']['userId'];
+        $profile = $line_bot_api->getProfile($line_user_id);
+        $display_name = str_replace(' ', '', $profile['displayName']);
 /*        
         // Start the session to access stored OTP and expiration
         session_start();
@@ -166,7 +261,7 @@ function init_webhook_events() {
                 'messages' => [$flexMessage],
             ]);            
         }
-*/
+
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
 
@@ -244,7 +339,7 @@ function init_webhook_events() {
 
 }
 add_action( 'parse_request', 'init_webhook_events' );
-
+*/
 function proceed_to_registration_login($line_user_id, $display_name) {
     // Using Line User ID to register and login into the system
     $users = get_users( array( 'meta_value' => $line_user_id ));
