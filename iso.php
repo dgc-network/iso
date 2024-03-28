@@ -146,12 +146,12 @@ function init_webhook_events() {
         $line_user_id = $event['source']['userId'];
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
-/*        
+        
         // Start the session to access stored OTP and expiration
         session_start();
         // Get stored OTP and expiration timestamp from session
         $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
-/*    
+    
         // Start the User Login/Registration process if got the one time password
         if ((int)$event['message']['text']===$one_time_password) {
         //}
@@ -166,7 +166,7 @@ function init_webhook_events() {
                 'messages' => [$flexMessage],
             ]);            
         }
-*/
+
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
 
