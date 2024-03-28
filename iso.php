@@ -206,7 +206,7 @@ function init_webhook_events() {
         switch ($event['type']) {
             case 'message':
                 if (!is_user_logged_in()) {
-                    proceed_to_registration_login($line_user_id, $display_name);
+                    echo proceed_to_registration_login($line_user_id, $display_name);
                 }
                 $message = $event['message'];
                 switch ($message['type']) {
@@ -257,6 +257,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
         $site_title = get_the_title($site_id);
     }
     $user_data = get_userdata( $user_id );
+    ob_start();
     ?>
     <div class="ui-widget">
         <h2>User registration/login</h2>
@@ -276,6 +277,8 @@ function proceed_to_registration_login($line_user_id, $display_name) {
         </fieldset>
     </div>
     <?php        
+    $html = ob_get_clean();
+    return $html;
 
 }
 
