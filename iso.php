@@ -438,6 +438,10 @@ function user_did_not_login_yet() {
         // Display a message or redirect to the login/registration page
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
+        // Store OTP in session for verification
+        session_start();
+        $_SESSION['one_time_password'] = $one_time_password;
+
         ?>
         <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
@@ -460,7 +464,7 @@ function user_did_not_login_yet() {
             <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
             <p>並請在聊天室中, 輸入六位數字:</p>
-            <h3><?php echo get_option('_one_time_password');?></h3>
+            <h3><?php echo $_SESSION['one_time_password'].get_option('_one_time_password');?></h3>
             <h3><?php echo $otp;?></h3>
             <p>完成註冊/登入作業</p>
         </div>
