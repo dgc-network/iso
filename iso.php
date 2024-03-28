@@ -146,7 +146,7 @@ function init_webhook_events() {
         $line_user_id = $event['source']['userId'];
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
-        
+/*        
         // Start the session to access stored OTP and expiration
         session_start();
         // Get stored OTP and expiration timestamp from session
@@ -166,7 +166,7 @@ function init_webhook_events() {
                 'messages' => [$flexMessage],
             ]);            
         }
-
+*/
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
 
@@ -206,8 +206,15 @@ function init_webhook_events() {
         switch ($event['type']) {
             case 'message':
                 if (!is_user_logged_in()) {
-                    echo 'Hi';
-                    //proceed_to_registration_login($line_user_id, $display_name);
+                    $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+                    $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+                    // Encode the Chinese characters for inclusion in the URL
+                    $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
+                    $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                    $line_bot_api->replyMessage([
+                        'replyToken' => $event['replyToken'],
+                        'messages' => [$flexMessage],
+                    ]);            
                 }
                 $message = $event['message'];
                 switch ($message['type']) {
