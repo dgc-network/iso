@@ -147,20 +147,6 @@ function init_webhook_events() {
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
         
-        // Check if user is logged in
-        if (!is_user_logged_in()) {
-            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
-            // Encode the Chinese characters for inclusion in the URL
-            $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [$flexMessage],
-            ]);
-            exit;
-            //continue; // Skip further processing for this event
-        }
 
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
@@ -203,17 +189,31 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
-                        // Open-AI auto reply
-                        $response = $open_ai_api->createChatCompletion($message['text']);
-                        $line_bot_api->replyMessage([
-                            'replyToken' => $event['replyToken'],
-                            'messages' => [
-                                [
-                                    'type' => 'text',
-                                    'text' => $response
-                                ]                                                                    
-                            ]
-                        ]);
+                        // Check if user is logged in
+                        if (is_user_logged_in()) {
+                            // Open-AI auto reply
+                            $response = $open_ai_api->createChatCompletion($message['text']);
+                            $line_bot_api->replyMessage([
+                                'replyToken' => $event['replyToken'],
+                                'messages' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => $response
+                                    ]                                                                    
+                                ]
+                            ]);
+                        } else {
+                            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+                            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+                            // Encode the Chinese characters for inclusion in the URL
+                            $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
+                            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                            $line_bot_api->replyMessage([
+                                'replyToken' => $event['replyToken'],
+                                'messages' => [$flexMessage],
+                            ]);
+                        }
+
                         break;
                     default:
                         error_log('Unsupported message type: ' . $message['type']);
