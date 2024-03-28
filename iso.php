@@ -206,7 +206,8 @@ function init_webhook_events() {
         switch ($event['type']) {
             case 'message':
                 if (!is_user_logged_in()) {
-                    echo proceed_to_registration_login($line_user_id, $display_name);
+                    echo 'Hi';
+                    //proceed_to_registration_login($line_user_id, $display_name);
                 }
                 $message = $event['message'];
                 switch ($message['type']) {
