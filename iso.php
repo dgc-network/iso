@@ -158,7 +158,8 @@ function init_webhook_events() {
                 'replyToken' => $event['replyToken'],
                 'messages' => [$flexMessage],
             ]);
-            continue; // Skip further processing for this event
+            exit;
+            //continue; // Skip further processing for this event
         }
 
         // Regular expression to detect URLs
