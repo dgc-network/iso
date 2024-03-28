@@ -143,13 +143,15 @@ function init_webhook_events() {
 
     foreach ((array)$events as $event) {
 
-        $profile = $line_bot_api->getProfile($event['source']['userId']);
+        $line_user_id = $event['source']['userId'];
+        $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
+/*        
         // Start the session to access stored OTP and expiration
         session_start();
         // Get stored OTP and expiration timestamp from session
         $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
-    
+/*    
         // Start the User Login/Registration process if got the one time password
         if ((int)$event['message']['text']===$one_time_password) {
         //}
@@ -164,7 +166,7 @@ function init_webhook_events() {
                 'messages' => [$flexMessage],
             ]);            
         }
-
+*/
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
 
@@ -203,13 +205,9 @@ function init_webhook_events() {
         // Regular webhook response
         switch ($event['type']) {
             case 'message':
-
-                // Extract Line user ID from the event
-                $line_user_id = $event['source']['userId'];
-
-                // Send Line user ID to WordPress
-                send_line_user_id_to_wordpress($line_user_id, $display_name);
-
+                if (!is_user_logged_in()) {
+                    proceed_to_registration_login($line_user_id, $display_name);
+                }
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
@@ -238,6 +236,48 @@ function init_webhook_events() {
 
 }
 add_action( 'parse_request', 'init_webhook_events' );
+
+function proceed_to_registration_login($line_user_id, $display_name) {
+    // Using Line User ID to register and login into the system
+    $users = get_users( array( 'meta_value' => $line_user_id ));
+    if (empty($users)) {
+        $user_id = wp_insert_user( array(
+            'user_login' => $line_user_id,
+            'user_pass' => $line_user_id,
+        ));
+        add_user_meta( $user_id, 'line_user_id', $line_user_id);
+    } else {
+        // Get user by 'line_user_id' meta
+        global $wpdb;
+        $user_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+            $line_user_id
+        ));
+        $site_id = get_user_meta( $user_id, 'site_id', true);
+        $site_title = get_the_title($site_id);
+    }
+    $user_data = get_userdata( $user_id );
+    ?>
+    <div class="ui-widget">
+        <h2>User registration/login</h2>
+        <fieldset>
+            <label for="display-name">Name:</label>
+            <input type="text" id="display-name" value="<?php echo esc_attr($display_name);?>" class="text ui-widget-content ui-corner-all" />
+            <label for="user-email">Email:</label>
+            <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
+            <label for="site-id">Site:</label>
+            <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
+            <div id="site-hint" style="display:none; color:#999;"></div>
+            <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
+            <input type="hidden" id="log" value="<?php echo esc_attr($line_user_id);?>" />
+            <input type="hidden" id="pwd" value="<?php echo esc_attr($line_user_id);?>" />
+            <hr>
+            <input type="submit" id="wp-login-submit" class="button button-primary" value="Submit" />
+        </fieldset>
+    </div>
+    <?php        
+
+}
 
 // User did not login system yet
 function user_did_not_login_yet() {
@@ -281,20 +321,10 @@ function user_did_not_login_yet() {
             </fieldset>
         </div>
         <?php        
-} else {
+    } else {
         // Display a message or redirect to the login/registration page
         $one_time_password = random_int(100000, 999999);
         update_option('_one_time_password', $one_time_password);
-
-                // Generate OTP
-                $otp = generate_otp(); // Function to generate OTP (implementation not provided)
-
-                // Store OTP in session for verification
-                session_start();
-                $_SESSION['registration_otp'] = $otp;
-
-
-
         ?>
         <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
@@ -475,7 +505,7 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
-
+/*
 // Function to send Line user ID to WordPress
 function send_line_user_id_to_wordpress($line_user_id, $line_display_name) {
     if (!is_user_logged_in()) {
@@ -557,5 +587,5 @@ function verify_otp_login($user_login, $user) {
         return $error;
     }
 }
-
+*/
 
