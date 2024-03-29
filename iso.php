@@ -191,11 +191,6 @@ function init_webhook_events() {
                     case 'text':
                         $result = get_keyword_matchmaking($message['text']);
                         if ($result) {
-
-                        //}
-        
-                        // Start the User Login/Registration process if got the one time password
-                        //if ((int)$event['message']['text']===$one_time_password) {
                             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
                             $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
                             // Encode the Chinese characters for inclusion in the URL
@@ -251,154 +246,7 @@ function get_keyword_matchmaking($keyword) {
         return false; // $keyword is not contained within '我要註冊登入登錄'
     }
 }
-/*
-function get_keyword_matchmaking($keyword) {
-    // Start the session to access stored OTP
-    if (!session_id()) {
-        session_start();
-    }
-    
-    // Check if the keyword matches the stored OTP in the session
-    if (isset($_SESSION['one_time_password']) && $keyword === $_SESSION['one_time_password']) {
-        return true; // Keyword matches stored OTP
-    }
 
-    // Check if string1 is contained within string2
-    if (strpos('我要註冊登入登錄', $keyword) !== false) {
-        return true; // string1 is contained within string2
-    } else {
-        return false; // string1 is not contained within string2
-    }
-    
-    return false; // Keyword does not match or OTP is not set in session
-}
-/*
-function get_keyword_matchmaking($keyword) {
-    // Start the session to access stored OTP and expiration
-    session_start();
-    // Get stored OTP and expiration timestamp from session
-    //$one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
-
-    if ($keyword==$_SESSION['one_time_password']) return true;
-    //if (!is_user_logged_in()) return true;
-
-    return false;
-}
-//add_action( 'init', 'init_webhook_events' );
-/*
-function init_webhook_events() {
-
-    $line_bot_api = new line_bot_api();
-    $open_ai_api = new open_ai_api();
-
-    $entityBody = file_get_contents('php://input');
-    $data = json_decode($entityBody, true);
-    $events = $data['events'] ?? [];
-
-    foreach ((array)$events as $event) {
-
-        $line_user_id = $event['source']['userId'];
-        $profile = $line_bot_api->getProfile($line_user_id);
-        $display_name = str_replace(' ', '', $profile['displayName']);
-/*        
-        // Start the session to access stored OTP and expiration
-        session_start();
-        // Get stored OTP and expiration timestamp from session
-        $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
-    
-        // Start the User Login/Registration process if got the one time password
-        if ((int)$event['message']['text']===$one_time_password) {
-        //}
-        //if ((int)$event['message']['text']==(int)get_option('_one_time_password')) {
-            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
-            // Encode the Chinese characters for inclusion in the URL
-            $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-            $line_bot_api->replyMessage([
-                'replyToken' => $event['replyToken'],
-                'messages' => [$flexMessage],
-            ]);            
-        }
-
-        // Regular expression to detect URLs
-        $urlRegex = '/\bhttps?:\/\/\S+\b/';
-
-        // Match URLs in the text
-        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
-            // Extract the matched URLs
-            $urls = $matches[0];
-            
-            // Output the detected URLs
-            foreach ($urls as $url) {
-                // Parse the URL
-                $parsed_url = parse_url($url);
-                
-                // Check if the URL contains a query string
-                if (isset($parsed_url['query'])) {
-                    // Parse the query string
-                    parse_str($parsed_url['query'], $query_params);
-                    
-                    // Check if the 'doc_id' parameter exists in the query parameters
-                    if (isset($query_params['_get_shared_doc_id'])) {
-                        // Retrieve the value of the 'doc_id' parameter
-                        $doc_id = $query_params['_get_shared_doc_id'];
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = '您可以點擊下方按鍵將文件「'.$doc_title.'」加入您的文件匣中。';
-                    }
-                }
-                
-                $flexMessage = set_flex_message($display_name, $url, $text_message);
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [$flexMessage],
-                ]);            
-            }
-        }
-        
-        // Regular webhook response
-        switch ($event['type']) {
-            case 'message':
-                if (!is_user_logged_in()) {
-                    $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-                    $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
-                    // Encode the Chinese characters for inclusion in the URL
-                    $link_uri = home_url().'/display-profiles/?_id='.$event['source']['userId'].'&_name='.urlencode($display_name);
-                    $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-                    $line_bot_api->replyMessage([
-                        'replyToken' => $event['replyToken'],
-                        'messages' => [$flexMessage],
-                    ]);            
-                }
-                $message = $event['message'];
-                switch ($message['type']) {
-                    case 'text':
-                        // Open-AI auto reply
-                        $response = $open_ai_api->createChatCompletion($message['text']);
-                        $line_bot_api->replyMessage([
-                            'replyToken' => $event['replyToken'],
-                            'messages' => [
-                                [
-                                    'type' => 'text',
-                                    'text' => $response
-                                ]                                                                    
-                            ]
-                        ]);
-                        break;
-                    default:
-                        error_log('Unsupported message type: ' . $message['type']);
-                        break;
-                }
-                break;
-            default:
-                error_log('Unsupported event type: ' . $event['type']);
-                break;
-        }
-    }
-
-}
-add_action( 'parse_request', 'init_webhook_events' );
-*/
 function proceed_to_registration_login($line_user_id, $display_name) {
     // Using Line User ID to register and login into the system
     $users = get_users( array( 'meta_value' => $line_user_id ));
@@ -487,13 +335,6 @@ function user_did_not_login_yet() {
         </div>
         <?php        
     } else {
-        // Display a message or redirect to the login/registration page
-        $one_time_password = random_int(100000, 999999);
-        update_option('_one_time_password', $one_time_password);
-        // Store OTP in session for verification
-        session_start();
-        $_SESSION['one_time_password'] = $one_time_password;
-
         ?>
         <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
@@ -515,9 +356,7 @@ function user_did_not_login_yet() {
             <a href="<?php echo get_option('line_official_account');?>">
             <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
-            <p>並請在聊天室中, 輸入六位數字:</p>
-            <h3><?php echo $_SESSION['one_time_password'];?></h3>
-            <p>完成註冊/登入作業</p>
+            <p>並請在聊天室中, 輸入「我要註冊」或「我要登錄」,啟動註冊/登入作業。</p>
         </div>
         <?php
     }
