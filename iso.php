@@ -239,7 +239,7 @@ function get_keyword_matchmaking($keyword) {
     // Get stored OTP and expiration timestamp from session
     $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
 
-    if ($keyword==$one_time_password) return true;
+    if ($keyword==$_SESSION['one_time_password']) return true;
     //if (!is_user_logged_in()) return true;
 
     return false;
