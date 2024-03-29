@@ -189,6 +189,7 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
+/*                        
                         // Start the session to access stored OTP and expiration
                         session_start();
                         // Get stored OTP and expiration timestamp from session
@@ -206,6 +207,7 @@ function init_webhook_events() {
                                 'messages' => [$flexMessage],
                             ]);
                         } else {
+*/                            
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
                             $line_bot_api->replyMessage([
@@ -217,8 +219,9 @@ function init_webhook_events() {
                                     ]                                                                    
                                 ]
                             ]);
+/*                            
                         }
-    
+*/    
                         break;
                     default:
                         error_log('Unsupported message type: ' . $message['type']);
