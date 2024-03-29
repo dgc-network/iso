@@ -235,10 +235,12 @@ jQuery(document).ready(function($) {
                 $("#start-setting").on("change", function() {
                     if ($(this).val()=="1") {
                         $("#period-time").hide();
-                        $("#period-time-label").hide();
+                        $("#start-job-label").hide();
+                        $("#start-setting-button2").text("啟始職務");
                     } else {
                         $("#period-time").show();
-                        $("#period-time-label").show();
+                        $("#start-job-label").show();
+                        $("#start-setting-button2").text("週期時間");
                     }
                     //$(this).val('');
                 });
