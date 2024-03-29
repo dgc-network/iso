@@ -27,7 +27,8 @@ function profiles_shortcode() {
         echo '<div class="ui-widget" id="result-container">';
         if ($_GET['_initial']=='true') echo display_site_profile(true);
         if ($_GET['_select_profile']=='1') echo display_site_profile();
-        if ($_GET['_select_profile']!='1'&&!isset($_GET['_initial'])) echo display_my_profile();
+        if ($_GET['_select_profile']=='2') echo display_site_job_list();
+        if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&!isset($_GET['_initial'])) echo display_my_profile();
         echo '</div>';
     } else {
         user_did_not_login_yet();
@@ -90,7 +91,8 @@ function display_my_profile() {
                     <select id="select-profile">
                         <option value="0" selected><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
                         <option value="1"><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
-                        <option value="2">...</option>
+                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3">...</option>
                     </select>
                 </div>
                 <div style="text-align: right">
@@ -193,7 +195,7 @@ function display_site_profile($initial=false) {
             <?php display_new_user_dialog($site_id);?>
             <?php display_user_dialog($site_id);?>
 
-            <label for="site-title"><?php echo __( '單位組織職務：', 'your-text-domain' );?></label>
+            <label for="site-title"><?php echo __( '工作職掌：', 'your-text-domain' );?></label>
             <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
@@ -230,7 +232,95 @@ function display_site_profile($initial=false) {
                     <select id="select-profile">
                         <option value="0"><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
                         <option value="1" selected><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
-                        <option value="2">...</option>
+                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                    <button type="submit" id="site-profile-submit">Submit</button>
+                </div>
+            </div>
+
+        </fieldset>
+        <?php
+    } else {
+        ?>
+        <p>You do not have permission to access this page.</p>
+        <?php
+    }
+    $html = ob_get_clean();
+    return $html;
+}
+
+function display_site_job_list($initial=false) {
+    ob_start();
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_data = get_userdata($current_user_id);
+
+    if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
+        // Check if the user is administrator
+        ?>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+            <div id="site-hint" style="display:none; color:#999;"></div>
+
+            <div id="site-image-container">
+                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+            </div>
+            <div id="site-image-url" style="display:none;">
+            <fieldset>
+                <label for="image-url">Image URL:</label>
+                <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+                <button id="set-image-url" class="button">Set</button>
+            </fieldset>
+            </div>
+
+            <label><?php echo __( '工作職掌：', 'your-text-domain' );?></label>
+            <fieldset style="margin-top:5px;">
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Job</th>
+                    <th>Description</th>
+                    <th>Start</th>
+                </thead>
+                <tbody>
+                <?php
+                $query = retrieve_site_job_list_data($site_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
+                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        ?>
+                        <tr id="edit-site-job-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?> /></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            </fieldset>
+            <?php display_job_dialog();?>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0"><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
+                        <option value="1" selected><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
+                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3">...</option>
                     </select>
                 </div>
                 <div style="text-align: right">
@@ -537,6 +627,13 @@ function del_site_user_dialog_data() {
 }
 add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
 add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
+
+function get_site_job_list_data() {
+    $response = array('html_contain' => display_site_job_list());
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
+add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
 
 function display_job_dialog() {
     ?>
