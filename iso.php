@@ -238,7 +238,8 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
-    if ((int)$keyword==123) return true;
+    //if ((int)$keyword==123) return true;
+    if (!is_user_logged_in()) return true;
 
     return false;
 }
