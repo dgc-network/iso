@@ -577,9 +577,10 @@ function display_document_dialog($doc_id=false) {
         $doc_number = get_post_meta( $doc_id, 'doc_number', true);
         $doc_title = get_post_meta( $doc_id, 'doc_title', true);
         $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
+        $responsible_unit = get_post_meta( $doc_id, 'responsible_unit', true);
         $start_job = get_post_meta( $doc_id, 'start_job', true);
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
@@ -603,6 +604,8 @@ function display_document_dialog($doc_id=false) {
         <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
         <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
         <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php    
         if ($is_doc_report==1) {
             ?>
@@ -621,8 +624,8 @@ function display_document_dialog($doc_id=false) {
         }
         ?>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+        <label for="responsible-unit"><?php echo __( '負責部門', 'your-text-domain' );?></label>
+        <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
@@ -735,13 +738,13 @@ function set_document_dialog_data() {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        //$site_id = get_post_meta( $doc_id, 'site_id', true);
         update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
         update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
         update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
-        update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
+        update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
+        update_post_meta( $doc_id, 'responsible_unit', sanitize_text_field($_POST['_responsible_unit']));
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(

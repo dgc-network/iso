@@ -5,7 +5,7 @@
  * Description: The leading documents management plugin for iso system by shortcode
  * Author: dgc.network
  * Author URI: https://dgc.network/
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires at least: 6.0
  * Tested up to: 6.4.3
  *
@@ -129,7 +129,6 @@ function set_flex_message($display_name, $link_uri, $text_message) {
             ],
         ],
     ];
-
 }
 
 function init_webhook_events() {
@@ -229,22 +228,14 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
-    // Start the session to access stored OTP
-    if (!session_id()) {
-        session_start();
-    }
-    
-    // Check if the keyword matches the stored OTP in the session
-    if (isset($_SESSION['one_time_password']) && $keyword === $_SESSION['one_time_password']) {
-        return true; // Keyword matches stored OTP
-    }
 
-    // Check if $keyword is contained within '我要註冊登入登錄'
-    if (strpos($keyword, '註冊') !== false) {
-        return true; // $keyword is contained within '我要註冊登入登錄'
-    } else {
-        return false; // $keyword is not contained within '我要註冊登入登錄'
-    }
+    if (strpos($keyword, '註冊') !== false) return 0;
+    if (strpos($keyword, '登入') !== false) return 0;
+    if (strpos($keyword, '登錄') !== false) return 0;
+    if (strpos($keyword, 'login') !== false) return 0;
+    if (strpos($keyword, 'Login') !== false) return 0;
+        
+    return false;
 }
 
 function proceed_to_registration_login($line_user_id, $display_name) {
