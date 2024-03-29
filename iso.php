@@ -193,10 +193,6 @@ function init_webhook_events() {
                         if ($result) {
 
                         //}
-                        // Start the session to access stored OTP and expiration
-                        session_start();
-                        // Get stored OTP and expiration timestamp from session
-                        $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
         
                         // Start the User Login/Registration process if got the one time password
                         //if ((int)$event['message']['text']===$one_time_password) {
@@ -238,8 +234,13 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
-    //if ((int)$keyword==123) return true;
-    if (!is_user_logged_in()) return true;
+    // Start the session to access stored OTP and expiration
+    session_start();
+    // Get stored OTP and expiration timestamp from session
+    $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
+
+    if ((int)$keyword==$one_time_password) return true;
+    //if (!is_user_logged_in()) return true;
 
     return false;
 }
