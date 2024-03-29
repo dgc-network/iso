@@ -635,7 +635,7 @@ function display_document_dialog($doc_id=false) {
         <div id="start-setting-div2" style="display:none;">
             <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
             <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
-            <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
+            <label id="period-time-label" for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
             <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />

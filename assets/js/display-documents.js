@@ -235,8 +235,10 @@ jQuery(document).ready(function($) {
                 $("#start-setting").on("change", function() {
                     if ($(this).val()=="1") {
                         $("#period-time").hide();
+                        $("#period-time-label").hide();
                     } else {
                         $("#period-time").show();
+                        $("#period-time-label").show();
                     }
                     //$(this).val('');
                 });
