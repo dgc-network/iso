@@ -234,10 +234,24 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
+    // Start the session to access stored OTP
+    if (!session_id()) {
+        session_start();
+    }
+    
+    // Check if the keyword matches the stored OTP in the session
+    if (isset($_SESSION['one_time_password']) && $keyword === $_SESSION['one_time_password']) {
+        return true; // Keyword matches stored OTP
+    }
+
+    return false; // Keyword does not match or OTP is not set in session
+}
+/*
+function get_keyword_matchmaking($keyword) {
     // Start the session to access stored OTP and expiration
     session_start();
     // Get stored OTP and expiration timestamp from session
-    $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
+    //$one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
 
     if ($keyword==$_SESSION['one_time_password']) return true;
     //if (!is_user_logged_in()) return true;
