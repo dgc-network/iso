@@ -32,7 +32,7 @@ function register_todo_post_type() {
         'hierarchical'       => false,
         'menu_position'      => null,
         'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
-        //'show_in_menu'       => false, // Set this to false to hide from the admin menu
+        'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
 }
@@ -338,10 +338,13 @@ function display_todo_dialog($todo_id) {
 
     $is_doc = false;
     if ($doc_id) {
+        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $start_job = get_post_meta( $doc_id, 'start_job', true);
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
@@ -373,6 +376,18 @@ function display_todo_dialog($todo_id) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
     <?php
+    if ($is_doc) {
+        ?>
+        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+        <?php
+    }
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -425,8 +440,6 @@ function display_todo_dialog($todo_id) {
         }
         ?>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php
     }
     ?>
