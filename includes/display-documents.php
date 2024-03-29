@@ -718,16 +718,17 @@ function select_start_setting_option($selected_option=0, $site_id=0) {
     endwhile;
     wp_reset_postdata();
 */
-    $selected = ($selected_option == "0") ? 'selected' : '';
-    $options .= '<option value="0" '.$selected.' />' . __( '立即啟動', 'your-text-domain' ) . '</option>';
+    $options = '<option value="0">Select option</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="1" '.$selected.' />' . __( '立即啟動', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="2" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="3" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="4" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "5") ? 'selected' : '';
+    $options .= '<option value="5" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
     return $options;
 }
 
