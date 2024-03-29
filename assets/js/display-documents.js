@@ -222,13 +222,21 @@ jQuery(document).ready(function($) {
                     $(this).text(currentValue);
                 });
                 
-                $("#start-setting-button").on("click", function () {
-                    $("#start-setting-div").toggle();
+                $("#start-setting-button1").on("click", function () {
+                    $("#start-setting-div1").toggle();
+                    $("#start-setting-div2").toggle();
+                });
+
+                $("#start-setting-button2").on("click", function () {
+                    $("#start-setting-div1").toggle();
+                    $("#start-setting-div2").toggle();
                 });
 
                 $("#start-setting").on("change", function() {
                     if ($(this).val()=="1") {
-
+                        $("#start-setting-div1").hide();
+                    } else {
+                        $("#start-setting-div1").show();
                     }
                     //$(this).val('');
                 });

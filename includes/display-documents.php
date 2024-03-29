@@ -628,10 +628,12 @@ function display_document_dialog($doc_id=false) {
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <label for="responsible-unit"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
-        <label  id="start-setting-button" class="button"for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
-        <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
-        <div id="start-setting-div" style="display:none;">
-            <label for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
+        <div id="start-setting-div1">
+            <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
+        </div>
+        <div id="start-setting-div2" style="display:none;">
+            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
             <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
             <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
