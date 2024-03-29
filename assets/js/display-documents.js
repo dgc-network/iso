@@ -133,6 +133,44 @@ jQuery(document).ready(function($) {
             
                 //activate_document_dialog_data(doc_id);
                 $("#save-document-button").on("click", function() {
+                    // Check if the value of #start-job is not 0
+                    if ($("#start-job").val() != 0) {
+                        const ajaxData = {
+                            'action': 'set_document_dialog_data',
+                        };
+                        ajaxData['_doc_id'] = doc_id;
+                        ajaxData['_doc_number'] = $("#doc-number").val();
+                        ajaxData['_doc_title'] = $("#doc-title").val();
+                        ajaxData['_doc_revision'] = $("#doc-revision").val();
+                        ajaxData['_doc_category'] = $("#doc-category").val();
+                        ajaxData['_doc_frame'] = $("#doc-frame").val();
+                        ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+                        ajaxData['_responsible_unit'] = $("#responsible-unit").val();
+                        ajaxData['_start_setting'] = $("#start-setting").val();
+                        ajaxData['_period_time'] = $("#period-time").val();
+                        ajaxData['_start_job'] = $("#start-job").val();
+                        ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                                
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: ajaxData,
+                            success: function (response) {
+                                window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        // Alert the user if the value of #start-job is 0
+                        alert("Start Job cannot be 0. Please select a valid option.");
+                    }
+                });
+/*                
+                $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
                     };
@@ -163,7 +201,7 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-        
+*/        
                 $("#del-document-button").on("click", function() {
                     if (window.confirm("Are you sure you want to delete this document?")) {
                         $.ajax({

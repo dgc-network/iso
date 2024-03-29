@@ -560,8 +560,8 @@ function display_site_job_list($initial=false) {
                 <div>
                     <select id="select-profile">
                         <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                        <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                        <option value="2" selected><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                         <option value="3">...</option>
                     </select>
                 </div>

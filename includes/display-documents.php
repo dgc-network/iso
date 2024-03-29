@@ -734,7 +734,15 @@ function select_start_setting_option($selected_option=0, $site_id=0) {
     return $options;
 }
 
-function select_start_job_option_data($selected_job=0, $site_id=0) {
+function select_start_job_option_data($selected_option=0, $site_id=0) {
+    $current_user_id = get_current_user_id();
+    $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);
+    $options = '<option value="0">Select job</option>';
+    foreach ($user_job_ids_array as $job_id) {
+        $selected = ($selected_option == $job_id) ? 'selected' : '';
+        $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html(get_the_title($job_id)) . '</option>';
+    }
+/*    
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
@@ -753,10 +761,11 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
     $query = new WP_Query($args);
     $options = '<option value="0">Select job</option>';
     while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata();
+*/    
     return $options;
 }
 
@@ -814,6 +823,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'site_id', $site_id);
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
+        update_post_meta( $post_id, 'period_time', 0);
         update_post_meta( $post_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
