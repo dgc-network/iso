@@ -234,9 +234,9 @@ jQuery(document).ready(function($) {
 
                 $("#start-setting").on("change", function() {
                     if ($(this).val()=="1") {
-                        $("#start-setting-div1").hide();
+                        $("#period-time").hide();
                     } else {
-                        $("#start-setting-div1").show();
+                        $("#period-time").show();
                     }
                     //$(this).val('');
                 });
