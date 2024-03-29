@@ -244,6 +244,13 @@ function get_keyword_matchmaking($keyword) {
         return true; // Keyword matches stored OTP
     }
 
+    // Check if string1 is contained within string2
+    if (strpos('我要註冊登入登錄', $keyword) !== false) {
+        return true; // string1 is contained within string2
+    } else {
+        return false; // string1 is not contained within string2
+    }
+    
     return false; // Keyword does not match or OTP is not set in session
 }
 /*
