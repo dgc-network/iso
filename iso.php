@@ -240,16 +240,6 @@ add_action( 'parse_request', 'init_webhook_events' );
 function get_keyword_matchmaking($keyword) {
     if ((int)$keyword==123) return true;
 
-    $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-    $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
-    // Encode the Chinese characters for inclusion in the URL
-    $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-    $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-    $line_bot_api->replyMessage([
-        'replyToken' => $event['replyToken'],
-        'messages' => [$flexMessage],
-    ]);
-
     return false;
 }
 //add_action( 'init', 'init_webhook_events' );
