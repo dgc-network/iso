@@ -53,6 +53,26 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function get_site_job_list_data(site_id){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_site_job_list_data',
+                '_site_id': site_id,
+            },
+            success: function (response) {
+                $("#result-container").html(response.html_contain);
+                activate_site_profile_data(site_id);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
     function activate_site_profile_data(site_id){
         $("#site-image-container").on("click", function(e) {
             e.preventDefault();
@@ -177,7 +197,8 @@ jQuery(document).ready(function($) {
                     '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
-                    get_site_profile_data($("#site-id").val());
+                    //get_site_profile_data($("#site-id").val());
+                    get_site_job_list_data($("#site-id").val());
                 },
                 error: function(error){
                     console.error(error);
