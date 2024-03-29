@@ -808,7 +808,7 @@ function set_document_dialog_data() {
             'next_job'      => $start_job,
             'next_leadtime' => $start_leadtime,
         );        
-        set_next_job_and_actions($params);
+        if ($start_job!=0) set_next_job_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(
