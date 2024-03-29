@@ -32,7 +32,7 @@ function register_todo_post_type() {
         'hierarchical'       => false,
         'menu_position'      => null,
         'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
-        'show_in_menu'       => false, // Set this to false to hide from the admin menu
+        //'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
 }
