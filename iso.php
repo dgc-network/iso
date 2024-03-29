@@ -189,6 +189,10 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
+                        $result = get_keyword_matchmaking($message['text']);
+                        if ($result) {
+
+                        //}
 /*                        
                         // Start the session to access stored OTP and expiration
                         session_start();
@@ -206,8 +210,8 @@ function init_webhook_events() {
                                 'replyToken' => $event['replyToken'],
                                 'messages' => [$flexMessage],
                             ]);
-                        } else {
 */                            
+                        } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
                             $line_bot_api->replyMessage([
@@ -219,9 +223,7 @@ function init_webhook_events() {
                                     ]                                                                    
                                 ]
                             ]);
-/*                            
                         }
-*/    
                         break;
                     default:
                         error_log('Unsupported message type: ' . $message['type']);
@@ -235,6 +237,10 @@ function init_webhook_events() {
     }
 }
 add_action( 'parse_request', 'init_webhook_events' );
+
+function get_keyword_matchmaking($keyword) {
+    return false;
+}
 //add_action( 'init', 'init_webhook_events' );
 /*
 function init_webhook_events() {
