@@ -48,7 +48,7 @@ function display_my_profile() {
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
         ?>
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '我的帳號設定', 'your-text-domain' );?></h2>
+        <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
         <fieldset>
             <label for="display-name">Name : </label>
             <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
@@ -89,8 +89,8 @@ function display_my_profile() {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0" selected><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
-                        <option value="1"><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
+                        <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                         <option value="3">...</option>
                     </select>
@@ -132,7 +132,7 @@ function display_site_profile($initial=false) {
         // Check if the user is administrator
         ?>
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '單位組織設定', 'your-text-domain' );?></h2>
+        <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
         <fieldset>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
             <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
@@ -198,8 +198,8 @@ function display_site_profile($initial=false) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0"><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
-                        <option value="1" selected><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
+                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                         <option value="3">...</option>
                     </select>
@@ -559,8 +559,8 @@ function display_site_job_list($initial=false) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-profile">
-                        <option value="0"><?php echo __( '我的帳號設定', 'your-text-domain' );?></option>
-                        <option value="1" selected><?php echo __( '單位組織設定', 'your-text-domain' );?></option>
+                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                         <option value="3">...</option>
                     </select>
