@@ -626,10 +626,14 @@ function display_document_dialog($doc_id=false) {
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <label for="responsible-unit"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+        <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
+        <div style="display:none;">
         <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
         <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
         <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        </div>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
@@ -685,6 +689,38 @@ function get_doc_frame_contain() {
 add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
+function select_start_setting_option($selected_option=0, $site_id=0) {
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+            array(
+                'key'   => 'is_start_job',
+                'value' => 1,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    $options = '<option value="0">Select option</option>';
+    while ($query->have_posts()) : $query->the_post();
+        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+    endwhile;
+    wp_reset_postdata();
+
+    $options .= '<option value="0" '.$selected.' />' . __( '立即啟動', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="1" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="2" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="3" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="4" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
+    return $options;
+}
+
 function select_start_job_option_data($selected_job=0, $site_id=0) {
     $args = array(
         'post_type'      => 'job',
@@ -708,10 +744,6 @@ function select_start_job_option_data($selected_job=0, $site_id=0) {
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata();
-    $options .= '<option value="-1" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
-    $options .= '<option value="-2" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
-    $options .= '<option value="-3" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
-    $options .= '<option value="-4" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
     return $options;
 }
 
@@ -745,6 +777,7 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'responsible_unit', sanitize_text_field($_POST['_responsible_unit']));
+        update_post_meta( $doc_id, 'start_setting', sanitize_text_field($_POST['_start_setting']));
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(

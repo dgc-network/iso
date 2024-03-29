@@ -144,6 +144,7 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_responsible_unit'] = $("#responsible-unit").val();
+                    ajaxData['_start_setting'] = $("#start-setting").val();
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
                             
