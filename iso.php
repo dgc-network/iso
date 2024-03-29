@@ -244,6 +244,25 @@ function get_keyword_matchmaking($keyword) {
         return true; // Keyword matches stored OTP
     }
 
+    // Check if $keyword is contained within '我要註冊登入登錄'
+    if (strpos($keyword, '註冊') !== false) {
+        return true; // $keyword is contained within '我要註冊登入登錄'
+    } else {
+        return false; // $keyword is not contained within '我要註冊登入登錄'
+    }
+}
+/*
+function get_keyword_matchmaking($keyword) {
+    // Start the session to access stored OTP
+    if (!session_id()) {
+        session_start();
+    }
+    
+    // Check if the keyword matches the stored OTP in the session
+    if (isset($_SESSION['one_time_password']) && $keyword === $_SESSION['one_time_password']) {
+        return true; // Keyword matches stored OTP
+    }
+
     // Check if string1 is contained within string2
     if (strpos('我要註冊登入登錄', $keyword) !== false) {
         return true; // string1 is contained within string2
