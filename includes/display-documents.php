@@ -581,6 +581,8 @@ function display_document_dialog($doc_id=false) {
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $responsible_unit = get_post_meta( $doc_id, 'responsible_unit', true);
+        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
+        $period_time = get_post_meta( $doc_id, 'period_time', true);
         $start_job = get_post_meta( $doc_id, 'start_job', true);
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
@@ -626,13 +628,15 @@ function display_document_dialog($doc_id=false) {
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <label for="responsible-unit"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
-        <label for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+        <label  id="start-setting-button" class="button"for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
         <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
-        <div style="display:none;">
-        <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
-        <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        <div id="start-setting-div" style="display:none;">
+            <label for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
+            <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
+            <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         </div>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
@@ -778,6 +782,7 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'responsible_unit', sanitize_text_field($_POST['_responsible_unit']));
         update_post_meta( $doc_id, 'start_setting', sanitize_text_field($_POST['_start_setting']));
+        update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(

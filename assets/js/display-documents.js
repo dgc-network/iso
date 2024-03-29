@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response.html_contain);
                 }                
                 $("#doc-id").val(doc_id);
-                
+           
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
                         $(this).val(dateText);
@@ -145,6 +145,7 @@ jQuery(document).ready(function($) {
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_responsible_unit'] = $("#responsible-unit").val();
                     ajaxData['_start_setting'] = $("#start-setting").val();
+                    ajaxData['_period_time'] = $("#period-time").val();
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
                             
@@ -219,6 +220,10 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
+                });
+                
+                $("#start-setting-button").on("click", function () {
+                    $("#start-setting-div").toggle();
                 });            
         
                 activate_doc_field_list_data(doc_id);
