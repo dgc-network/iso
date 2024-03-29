@@ -670,9 +670,7 @@ function get_document_dialog_data() {
         } else {
             //if (current_user_can('administrator') && isset($_GET['_is_admin'])) {
             if (current_user_can('administrator')) {
-                $result['html_contain'] = display_document_dialog($doc_id);
-                //$result['html_contain'] = display_doc_report_dialog(false, $doc_id);
-                //$result['doc_fields'] = display_doc_field_keys(false, $site_id);
+                //$result['html_contain'] = display_document_dialog($doc_id);
             }
         }
 
@@ -792,6 +790,7 @@ function set_document_dialog_data() {
     if( isset($_POST['_doc_id']) ) {
         // Update the Document data
         $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
@@ -801,7 +800,7 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'responsible_unit', sanitize_text_field($_POST['_responsible_unit']));
-        update_post_meta( $doc_id, 'start_setting', sanitize_text_field($_POST['_start_setting']));
+        update_post_meta( $doc_id, 'start_setting', $start_setting);
         update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
@@ -810,7 +809,7 @@ function set_document_dialog_data() {
             'next_job'      => $start_job,
             'next_leadtime' => $start_leadtime,
         );        
-        if ($start_job!=0) set_next_job_and_actions($params);
+        if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(
