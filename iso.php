@@ -193,14 +193,13 @@ function init_webhook_events() {
                         if ($result) {
 
                         //}
-/*                        
                         // Start the session to access stored OTP and expiration
                         session_start();
                         // Get stored OTP and expiration timestamp from session
                         $one_time_password = isset($_SESSION['one_time_password']) ? intval($_SESSION['one_time_password']) : 0;
         
                         // Start the User Login/Registration process if got the one time password
-                        if ((int)$event['message']['text']===$one_time_password) {
+                        //if ((int)$event['message']['text']===$one_time_password) {
                             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
                             $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
                             // Encode the Chinese characters for inclusion in the URL
@@ -210,7 +209,7 @@ function init_webhook_events() {
                                 'replyToken' => $event['replyToken'],
                                 'messages' => [$flexMessage],
                             ]);
-*/                            
+
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
@@ -239,6 +238,18 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
+    if ((int)$keyword==123) return true;
+
+    $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+    $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+    // Encode the Chinese characters for inclusion in the URL
+    $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
+    $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+    $line_bot_api->replyMessage([
+        'replyToken' => $event['replyToken'],
+        'messages' => [$flexMessage],
+    ]);
+
     return false;
 }
 //add_action( 'init', 'init_webhook_events' );
