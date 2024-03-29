@@ -668,7 +668,8 @@ function get_document_dialog_data() {
                 $result['html_contain'] = display_document_dialog($doc_id);
             }
         } else {
-            if (current_user_can('administrator')) {
+            if (current_user_can('administrator')&&isset($_GET['_is_admin'])) {
+                $result['html_contain'] = display_document_dialog($doc_id);
                 //$result['html_contain'] = display_doc_report_dialog(false, $doc_id);
                 //$result['doc_fields'] = display_doc_field_keys(false, $site_id);
             }
