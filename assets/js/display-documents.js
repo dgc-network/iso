@@ -224,7 +224,14 @@ jQuery(document).ready(function($) {
                 
                 $("#start-setting-button").on("click", function () {
                     $("#start-setting-div").toggle();
-                });            
+                });
+
+                $("#start-setting").on("change", function() {
+                    if ($(this).val()=="1") {
+
+                    }
+                    //$(this).val('');
+                });
         
                 activate_doc_field_list_data(doc_id);
 
