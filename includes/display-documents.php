@@ -1573,6 +1573,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $report_id, 'start_job', $start_job);
