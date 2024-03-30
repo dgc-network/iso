@@ -124,7 +124,8 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response.html_contain);
                 }                
                 $("#doc-id").val(doc_id);
-           
+                activate_published_document_data(doc_id);
+
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
                         $(this).val(dateText);
@@ -209,7 +210,6 @@ jQuery(document).ready(function($) {
                     });
                 });
 
-                activate_published_document_data(doc_id);
 
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();

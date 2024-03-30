@@ -250,6 +250,7 @@ function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
                     $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                     $next_job = get_post_meta( $submit_action, 'next_job', true);
                     $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
+                    $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
 
                     if ($todo_site==$site_id) { // Aditional condition to filter the data
                         $user_data = get_userdata( $submit_user );
@@ -519,6 +520,7 @@ add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_job_and_actions($args = array()) {
+    $current_user_id = get_current_user_id();
     $next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
@@ -533,7 +535,19 @@ function set_next_job_and_actions($args = array()) {
     } else {
         $doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
         $report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
-        $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;    
+        $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
+        // Insert the To-do list for signature
+        $new_post = array(
+            'post_title'    => $todo_title,
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'todo',
+        );    
+        $new_todo_id = wp_insert_post($new_post);
+        if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+        if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
+        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $new_todo_id, 'submit_time', time());
     }
     $todo_title = get_the_title($next_job);
 
@@ -541,7 +555,6 @@ function set_next_job_and_actions($args = array()) {
     if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
     
     // Insert the To-do list for next_job
-    $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
         'post_status'   => 'publish',
@@ -565,7 +578,7 @@ function set_next_job_and_actions($args = array()) {
     }
 
     if ($next_job>0) {
-        notice_the_persons_in_charge($new_todo_id);
+        notice_the_responsible_persons($new_todo_id);
         // Insert the Action list for next_job
         $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
@@ -606,7 +619,7 @@ function get_users_by_job_id($job_id=0) {
 }
 
 // Notice the persons in charge the job
-function notice_the_persons_in_charge($todo_id=0) {
+function notice_the_responsible_persons($todo_id=0) {
     $line_bot_api = new line_bot_api();
     $job_title = get_the_title($todo_id);
     $doc_id = get_post_meta( $todo_id, 'doc_id', true);

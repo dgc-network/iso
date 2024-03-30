@@ -1115,6 +1115,7 @@ function display_doc_frame_contain($doc_id=false) {
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    
     <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
     
     <fieldset style="overflow-x:auto; white-space:nowrap;">
@@ -1149,6 +1150,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     </div>
 
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+    
     <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
 
     <fieldset>
