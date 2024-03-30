@@ -388,42 +388,43 @@ function display_todo_dialog($todo_id) {
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
         <?php
-    }
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-            $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-            if ($is_doc) {
-                $field_value = get_post_meta( $doc_id, $field_name, true);
-            } else {
-                $field_value = get_post_meta( $report_id, $field_name, true);
-            }
-            switch (true) {
-                case ($field_type=='textarea'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disabled><?php echo esc_html($field_value);?></textarea>
-                    <?php    
-                    break;
-
-                case ($field_type=='checkbox'):
-                    $is_checked = ($field_value==1) ? 'checked' : '';
-                    ?>
-                    <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
-                    <?php
-                    break;
+    } else {
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                if ($is_doc) {
+                    $field_value = get_post_meta( $doc_id, $field_name, true);
+                } else {
+                    $field_value = get_post_meta( $report_id, $field_name, true);
+                }
+                switch (true) {
+                    case ($field_type=='textarea'):
+                        ?>
+                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                        <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disabled><?php echo esc_html($field_value);?></textarea>
+                        <?php    
+                        break;
     
-                default:
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <?php
-                    break;
-            }
-        endwhile;
-        wp_reset_postdata();
+                    case ($field_type=='checkbox'):
+                        $is_checked = ($field_value==1) ? 'checked' : '';
+                        ?>
+                        <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
+                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                        <?php
+                        break;
+        
+                    default:
+                        ?>
+                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                        <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" disabled />
+                        <?php
+                        break;
+                }
+            endwhile;
+            wp_reset_postdata();
+        }    
     }
     if ($is_doc) {
         if ($is_doc_report==1) {
