@@ -25,7 +25,7 @@ tbody tr:hover {
 }
 
 iframe {
-    /* width: 200%; */
+    width: 75%;
     height: 600px; /* Adjust the height as needed */
     border: none; /* Removes the default iframe border */
 }
