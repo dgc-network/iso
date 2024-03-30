@@ -372,7 +372,7 @@ function display_todo_dialog($todo_id) {
     ob_start();
     ?>
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+    <h2 style="display:inline;"><?php echo esc_html('Todo: '.$doc_title);?></h2>
     <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
@@ -387,6 +387,22 @@ function display_todo_dialog($todo_id) {
         <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+        <?php
+        if ($is_doc_report==1) {
+            ?>
+            <label id="doc-field-setting" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+            <?php
+        } else {
+            ?>
+            <label id="doc-field-setting" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
+            <?php
+        }
+        ?>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <?php
     } else {
         if ($query->have_posts()) {
@@ -425,24 +441,6 @@ function display_todo_dialog($todo_id) {
             endwhile;
             wp_reset_postdata();
         }    
-    }
-    if ($is_doc) {
-        if ($is_doc_report==1) {
-            ?>
-            <label id="doc-field-setting" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
-            <?php
-        } else {
-            ?>
-            <label id="doc-field-setting" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-            <?php
-        }
-        ?>
-        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <?php
     }
     ?>
     <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
