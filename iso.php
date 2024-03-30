@@ -189,7 +189,7 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         $result = get_keyword_matchmaking($message['text']);
-                        if ($result) {
+                        if ($result==0) {
                             $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
                             $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
                             // Encode the Chinese characters for inclusion in the URL
