@@ -805,9 +805,11 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'start_job', $start_job);
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(
-            'doc_id'        => $doc_id,
-            'next_job'      => $start_job,
-            'next_leadtime' => $start_leadtime,
+            'doc_id'         => $doc_id,
+            //'next_job'       => $start_job,
+            //'next_leadtime'  => $start_leadtime,
+            'start_job'      => $start_job,
+            'start_leadtime' => $start_leadtime,
         );        
         if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
     } else {
@@ -1576,11 +1578,14 @@ function set_doc_report_dialog_data() {
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
         $params = array(
-            'report_id'     => $report_id,
-            'next_job'      => $start_job,
-            'next_leadtime' => $start_leadtime,
+            'report_id'      => $report_id,
+            //'next_job'       => $start_job,
+            //'next_leadtime'  => $start_leadtime,
+            'start_job'      => $start_job,
+            'start_leadtime' => $start_leadtime,
         );        
-        set_next_job_and_actions($params);
+        if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
+        //set_next_job_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(

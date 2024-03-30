@@ -508,7 +508,7 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
         $params = array(
-            'next_job'      => $start_job,
+            //'next_job'      => $start_job,
             'action_id'     => $action_id,
         );        
         set_next_job_and_actions($params);
@@ -520,7 +520,27 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_job_and_actions($args = array()) {
     $current_user_id = get_current_user_id();
-    $next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
+    $doc_id         = isset($args['doc_id']) ? $args['doc_id'] : 0;
+    $report_id      = isset($args['report_id']) ? $args['report_id'] : 0;
+    $next_job      = isset($args['start_job']) ? $args['start_job'] : 0;
+    $next_leadtime = isset($args['start_leadtime']) ? $args['start_leadtime'] : 0;
+
+    if ($next_job != 0) {
+        // Insert the To-do list for signature
+        $new_post = array(
+            'post_title'    => __( '自動', 'your-text-domain' ),
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'todo',
+        );    
+        $new_todo_id = wp_insert_post($new_post);
+        if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
+        if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
+        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $new_todo_id, 'submit_time', time());
+    }
+
+    //$next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
     if ($next_job == 0) return;
@@ -532,21 +552,9 @@ function set_next_job_and_actions($args = array()) {
         $doc_id        = get_post_meta( $todo_id, 'doc_id', true);
         $report_id     = get_post_meta( $todo_id, 'report_id', true);
     } else {
-        $doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
-        $report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
-        $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
-        // Insert the To-do list for signature
-        $new_post = array(
-            'post_title'    => $todo_title,
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'todo',
-        );    
-        $new_todo_id = wp_insert_post($new_post);
-        if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-        if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
-        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $new_todo_id, 'submit_time', time());
+        //$doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
+        //$report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
+        //$next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
     }
     $todo_title = get_the_title($next_job);
 
