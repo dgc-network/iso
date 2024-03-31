@@ -544,7 +544,7 @@ function set_next_job_and_actions($args = array()) {
     //$next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
-    if ($next_job == 0) return;
+    //if ($next_job == 0) return;
 
     if ($action_id > 0) {
         $next_job      = get_post_meta( $action_id, 'next_job', true);
@@ -583,6 +583,11 @@ function set_next_job_and_actions($args = array()) {
         notice_the_persons_in_site($new_todo_id);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+    }
+
+    if ($next_job==-2) {
+        if ($doc_id) update_post_meta( $doc_id, 'todo_status', 0);
+        if ($report_id) update_post_meta( $report_id, 'todo_status', 0);
     }
 
     if ($next_job>0) {
