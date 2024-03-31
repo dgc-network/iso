@@ -536,7 +536,8 @@ function set_next_job_and_actions($args = array()) {
         $new_todo_id = wp_insert_post($new_post);
         if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
         if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
-        update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+        //update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+        update_post_meta( $new_todo_id, 'submit_action', 0);
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
     }
