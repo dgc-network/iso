@@ -534,6 +534,7 @@ function set_next_job_and_actions($args = array()) {
             'post_type'     => 'todo',
         );    
         $new_todo_id = wp_insert_post($new_post);
+        update_post_meta( $new_todo_id, 'job_id', $next_job);
         if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
         if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
         //update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
