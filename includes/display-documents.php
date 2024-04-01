@@ -1520,10 +1520,22 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
 */        
     }
     ?>
-        <label for="start-job"><?php echo __( '起始職務', 'your-text-domain' );?></label>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
-        <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-        <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        <div id="start-setting-div1">
+            <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
+        </div>
+        <div id="start-setting-div2" style="display:none;">
+            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
+            <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
+            <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+            <label for="prev-doc-report"><?php echo __( '前方表單', 'your-text-domain' );?></label>
+            <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report, $site_id);?></select>
+            <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
+            <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report, $site_id);?></select>
+        </div>
         <hr>
     <?php
     if ($is_doc) {
@@ -1553,6 +1565,47 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     <?php
     $html = ob_get_clean();
     return $html;
+}
+
+function select_doc_report_option_data(){
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'is_doc_report',
+                'value'   => '1',
+                'compare' => '=',
+                'type'    => 'NUMERIC', // Assuming is_doc_report is stored as a numeric value
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    
+    $options = '<option value="0">Select doc</option>';
+    // Check if there are any posts
+    if ($query->have_posts()) {
+        // Start the loop
+        while ($query->have_posts()) {
+            $query->the_post();
+            // Display or process each document post
+            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+
+            // Example: the_title();
+        }
+        // Restore original post data
+        wp_reset_postdata();
+    }
+    return $options;    
+
 }
 
 function set_doc_report_dialog_data() {
