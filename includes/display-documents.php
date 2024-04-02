@@ -1327,6 +1327,7 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 function display_doc_report_dialog($report_id=false) {
 
     $start_setting = get_post_meta( $report_id, 'start_setting', true);
+    $period_time = get_post_meta( $report_id, 'period_time', true);
     $start_job = get_post_meta( $report_id, 'start_job', true);
     $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
     $doc_id = get_post_meta( $report_id, 'doc_id', true);
