@@ -712,7 +712,7 @@ jQuery(document).ready(function($) {
                 if ($(this).val()=="5") {
                     $("#period-time-label1").text("每日");
                     $("#period-time-label2").text("時");
-                    $("#period-time-label3").text("");
+                    $("#period-time-label3").text("0 分");
                     $("#period-time").attr("min", 1);
                     $("#period-time").attr("max", 24);
                 }
