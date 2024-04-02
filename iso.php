@@ -347,7 +347,8 @@ function user_did_not_login_yet() {
             <a href="<?php echo get_option('line_official_account');?>">
             <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
-            <p>並請在聊天室中, 輸入「我要註冊」或「我要登錄」,啟動註冊/登入作業。</p>
+            <p>並請在聊天室中, 輸入「我要註冊」或</p>
+            <p>「我要登錄」,啟動註冊/登入作業。</p>
         </div>
         <?php
     }
