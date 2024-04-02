@@ -74,8 +74,7 @@ jQuery(document).ready(function($) {
     }
 
     function activate_site_profile_data(site_id){
-        $("#site-image-container").on("click", function(e) {
-            e.preventDefault();
+        $("#site-image-container").on("click", function() {
             $("#site-image-container").hide();
             $("#site-image-url").show();
         });

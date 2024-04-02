@@ -157,7 +157,7 @@ function display_documents_shortcode() {
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        // Add the shared doc_id into my site
+
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
             get_shared_document($doc_id);
@@ -696,30 +696,7 @@ add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
 function select_start_setting_option($selected_option=0) {
-/*    
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-            array(
-                'key'   => 'is_start_job',
-                'value' => 1,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    $options = '<option value="0">Select option</option>';
-    while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-    endwhile;
-    wp_reset_postdata();
-*/
+
     $options = '<option value="0">Select option</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
     $options .= '<option value="1" '.$selected.' />' . __( '立即啟動', 'your-text-domain' ) . '</option>';
@@ -742,30 +719,6 @@ function select_start_job_option_data($selected_option=0) {
         $selected = ($selected_option == $job_id) ? 'selected' : '';
         $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html(get_the_title($job_id)) . '</option>';
     }
-/*    
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-            array(
-                'key'   => 'is_start_job',
-                'value' => 1,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    $options = '<option value="0">Select job</option>';
-    while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-    endwhile;
-    wp_reset_postdata();
-*/    
     return $options;
 }
 
@@ -806,8 +759,6 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(
             'doc_id'         => $doc_id,
-            //'next_job'       => $start_job,
-            //'next_leadtime'  => $start_leadtime,
             'start_job'      => $start_job,
             'start_leadtime' => $start_leadtime,
         );        
@@ -1343,7 +1294,6 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
                 $args['orderby'][$field_name] = $order_field_value;
                 
                 $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
-
             }
 
             if ($search_doc_report) {
@@ -1374,40 +1324,23 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     return $query;
 }
 
-function display_doc_report_dialog($report_id=false, $doc_id=false) {
-    $is_doc = false;
-    if ($doc_id) {
-/*        
-        $start_job = get_post_meta( $doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
-        $params = array(
-            'site_id'     => $site_id,
-            'is_editing'  => true,
-        );                
-        $query = retrieve_doc_field_data($params);
-        $is_doc = true;
-*/        
-    } else {
-        $start_setting = get_post_meta( $report_id, 'start_setting', true);
-        $start_job = get_post_meta( $report_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
-        $doc_id = get_post_meta( $report_id, 'doc_id', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
-        $signature_record_list = get_signature_record_list($site_id, false, $report_id);
-        $html_contain = $signature_record_list['html'];
-        $params = array(
-            'doc_id'     => $doc_id,
-            'is_editing'  => true,
-        );                
-        $query = retrieve_doc_field_data($params);
-        $todo_status = get_post_meta( $report_id, 'todo_status', true);
-    }
+function display_doc_report_dialog($report_id=false) {
+
+    $start_setting = get_post_meta( $report_id, 'start_setting', true);
+    $start_job = get_post_meta( $report_id, 'start_job', true);
+    $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
+    $doc_id = get_post_meta( $report_id, 'doc_id', true);
+    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $signature_record_list = get_signature_record_list($site_id, false, $report_id);
+    $html_contain = $signature_record_list['html'];
+    $params = array(
+        'doc_id'     => $doc_id,
+        'is_editing'  => true,
+    );                
+    $query = retrieve_doc_field_data($params);
+    $todo_status = get_post_meta( $report_id, 'todo_status', true);
+
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
     ob_start();
@@ -1496,30 +1429,6 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         endwhile;
         wp_reset_postdata();
     }
-    if ($is_doc) {
-/*        
-        if ($is_doc_report==1) {
-            ?>
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
-            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
-            <?php
-        } else {
-            ?>
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
-            <?php
-        }
-        ?>
-        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
-        <?php
-*/        
-    }
     ?>
         <div id="start-setting-div1">
             <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
@@ -1539,15 +1448,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         </div>
         <hr>
     <?php
-    if ($is_doc) {
-/*        
-        ?>
-        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-        <?php
-*/        
-    } else {
-        if ($todo_status!=-1){
+    if ($todo_status!=-1){
         ?>
         <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
@@ -1559,7 +1460,6 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         </div>
         </div>
         <?php
-        }
     }
     ?>
     </fieldset>
@@ -1632,17 +1532,16 @@ function set_doc_report_dialog_data() {
         $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        update_post_meta( $doc_id, 'start_setting', $start_setting);
+        update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
         $params = array(
             'report_id'      => $report_id,
-            //'next_job'       => $start_job,
-            //'next_leadtime'  => $start_leadtime,
             'start_job'      => $start_job,
             'start_leadtime' => $start_leadtime,
         );        
         if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
-        //set_next_job_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(

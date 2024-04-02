@@ -582,6 +582,8 @@ jQuery(document).ready(function($) {
                 }
             });
         
+            ajaxData['_start_setting'] = $("#start-setting").val();
+            ajaxData['_period_time'] = $("#period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             ajaxData['_start_leadtime'] = $("#start-leadtime").val();
         
@@ -680,7 +682,6 @@ jQuery(document).ready(function($) {
                 $("#start-job-label").show();
                 $("#start-setting-button2").text("週期時間");
             }
-            $("#start-setting").val().change();
         });
 
     }
