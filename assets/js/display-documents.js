@@ -242,7 +242,6 @@ jQuery(document).ready(function($) {
                         $("#start-job-label").show();
                         $("#start-setting-button2").text("週期時間");
                     }
-                    //$(this).val('');
                 });
         
                 activate_doc_field_list_data(doc_id);
@@ -660,6 +659,29 @@ jQuery(document).ready(function($) {
                 }
             });
         });
+
+        $("#start-setting-button1").on("click", function () {
+            $("#start-setting-div1").toggle();
+            $("#start-setting-div2").toggle();
+        });
+
+        $("#start-setting-button2").on("click", function () {
+            $("#start-setting-div1").toggle();
+            $("#start-setting-div2").toggle();
+        });
+
+        $("#start-setting").on("change", function() {
+            if ($(this).val()=="1") {
+                $("#period-time").hide();
+                $("#start-job-label").hide();
+                $("#start-setting-button2").text("啟始職務");
+            } else {
+                $("#period-time").show();
+                $("#start-job-label").show();
+                $("#start-setting-button2").text("週期時間");
+            }
+        });
+
     }
     
     function get_doc_report_dialog_data(report_id){
