@@ -646,8 +646,12 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
+            ajaxData['_start_setting'] = $("#start-setting").val();
+            ajaxData['_period_time'] = $("#period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+            ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
+            ajaxData['_next_doc_report'] = $("#next-doc-report").val();
                     
             $.ajax({
                 type: 'POST',
