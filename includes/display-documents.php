@@ -630,13 +630,13 @@ function display_document_dialog($doc_id=false) {
         <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
         <div id="start-setting-div1">
             <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
-            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
         </div>
         <div id="start-setting-div2" style="display:none;">
             <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
             <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
             <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         </div>
@@ -695,7 +695,7 @@ function get_doc_frame_contain() {
 add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
-function select_start_setting_option($selected_option=0, $site_id=0) {
+function select_start_setting_option($selected_option=0) {
 /*    
     $args = array(
         'post_type'      => 'job',
@@ -734,7 +734,7 @@ function select_start_setting_option($selected_option=0, $site_id=0) {
     return $options;
 }
 
-function select_start_job_option_data($selected_option=0, $site_id=0) {
+function select_start_job_option_data($selected_option=0) {
     $current_user_id = get_current_user_id();
     $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);
     $options = '<option value="0">Select job</option>';
@@ -1393,6 +1393,7 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
         $is_doc = true;
 */        
     } else {
+        $start_setting = get_post_meta( $report_id, 'start_setting', true);
         $start_job = get_post_meta( $report_id, 'start_job', true);
         $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
@@ -1522,19 +1523,19 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     ?>
         <div id="start-setting-div1">
             <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
-            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting, $site_id);?></select>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
         </div>
         <div id="start-setting-div2" style="display:none;">
             <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
             <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job, $site_id);?></select>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
             <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
             <label for="prev-doc-report"><?php echo __( '前方表單', 'your-text-domain' );?></label>
-            <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report, $site_id);?></select>
+            <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report);?></select>
             <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-            <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report, $site_id);?></select>
+            <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report);?></select>
         </div>
         <hr>
     <?php
@@ -1567,7 +1568,9 @@ function display_doc_report_dialog($report_id=false, $doc_id=false) {
     return $html;
 }
 
-function select_doc_report_option_data(){
+function select_doc_report_option_data($selected_option=0){
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
