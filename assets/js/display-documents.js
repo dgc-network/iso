@@ -221,29 +221,7 @@ jQuery(document).ready(function($) {
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });
-/*                
-                $("#start-setting-button1").on("click", function () {
-                    $("#start-setting-div1").toggle();
-                    $("#start-setting-div2").toggle();
-                });
 
-                $("#start-setting-button2").on("click", function () {
-                    $("#start-setting-div1").toggle();
-                    $("#start-setting-div2").toggle();
-                });
-
-                $("#start-setting").on("change", function() {
-                    if ($(this).val()=="1") {
-                        $("#period-time").hide();
-                        $("#start-job-label").hide();
-                        $("#start-setting-button2").text("啟始職務");
-                    } else {
-                        $("#period-time").show();
-                        $("#start-job-label").show();
-                        $("#start-setting-button2").text("週期時間");
-                    }
-                });
-*/        
                 activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
