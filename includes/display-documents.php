@@ -1332,20 +1332,23 @@ function display_doc_report_dialog($report_id=false) {
     $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
     $prev_doc_report = get_post_meta( $report_id, 'prev_doc_report', true);
     $next_doc_report = get_post_meta( $report_id, 'next_doc_report', true);
+    $todo_status = get_post_meta( $report_id, 'todo_status', true);
+
     $doc_id = get_post_meta( $report_id, 'doc_id', true);
+    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+
     $site_id = get_post_meta( $doc_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
     $signature_record_list = get_signature_record_list($site_id, false, $report_id);
     $html_contain = $signature_record_list['html'];
+
     $params = array(
         'doc_id'     => $doc_id,
         'is_editing'  => true,
     );                
     $query = retrieve_doc_field_data($params);
-    $todo_status = get_post_meta( $report_id, 'todo_status', true);
 
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
     ob_start();
     ?>
     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1438,8 +1441,11 @@ function display_doc_report_dialog($report_id=false) {
             <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
         </div>
         <div id="start-setting-div2" style="display:none;">
-            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label>
-            <input type="number" id="period-time" value="<?php echo $period_time;?>" class="text ui-widget-content ui-corner-all" />
+            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label><br>
+            <label id="period-time-label1"><?php echo __( '每日', 'your-text-domain' );?></label>
+            <input type="number" id="period-time" value="<?php echo $period_time;?>" />
+            <label id="period-time-label2"><?php echo __( '時', 'your-text-domain' );?></label>
+            <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
             <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
