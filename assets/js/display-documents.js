@@ -221,7 +221,7 @@ jQuery(document).ready(function($) {
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });
-                
+/*                
                 $("#start-setting-button1").on("click", function () {
                     $("#start-setting-div1").toggle();
                     $("#start-setting-div2").toggle();
@@ -243,7 +243,7 @@ jQuery(document).ready(function($) {
                         $("#start-setting-button2").text("週期時間");
                     }
                 });
-        
+*/        
                 activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
