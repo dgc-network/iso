@@ -586,6 +586,8 @@ jQuery(document).ready(function($) {
             ajaxData['_period_time'] = $("#period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+            ajaxData['_prev_doc'] = $("#prev-doc").val();
+            ajaxData['_next_doc'] = $("#next-doc").val();
         
             $.ajax({
                 type: 'POST',

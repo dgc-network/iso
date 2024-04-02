@@ -777,7 +777,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'site_id', $site_id);
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
-        update_post_meta( $post_id, 'period_time', 0);
+        update_post_meta( $post_id, 'period_time', 1);
         update_post_meta( $post_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
@@ -1533,10 +1533,12 @@ function set_doc_report_dialog_data() {
         $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
         $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        update_post_meta( $doc_id, 'start_setting', $start_setting);
-        update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
+        update_post_meta( $report_id, 'start_setting', $start_setting);
+        update_post_meta( $report_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
+        update_post_meta( $report_id, 'prev_doc', sanitize_text_field($_POST['_prev_doc']));
+        update_post_meta( $report_id, 'next_doc', sanitize_text_field($_POST['_next_doc']));
         $params = array(
             'report_id'      => $report_id,
             'start_job'      => $start_job,
@@ -1565,6 +1567,7 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        update_post_meta( $post_id, 'period_time', 1 );
         update_post_meta( $post_id, 'start_leadtime', 86400 );
     }
     wp_send_json($response);
@@ -1607,7 +1610,7 @@ add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', 'duplicate_doc_re
 
 function get_doc_report_list_data() {
     $result = array();
-    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_report_list_data') {
+    if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
         if ($search_doc_report) {
@@ -1625,7 +1628,7 @@ add_action( 'wp_ajax_nopriv_get_doc_report_list_data', 'get_doc_report_list_data
 
 function get_doc_report_dialog_data() {
     $result = array();
-    if (isset($_POST['_report_id']) && $_POST['action'] === 'get_doc_report_dialog_data') {
+    if (isset($_POST['_report_id'])) {
         $report_id = sanitize_text_field($_POST['_report_id']);
         $todo_status = get_post_meta( $report_id, 'todo_status', true);
         if ($todo_status<1) {
