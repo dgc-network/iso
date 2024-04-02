@@ -680,6 +680,7 @@ jQuery(document).ready(function($) {
                 $("#start-job-label").show();
                 $("#start-setting-button2").text("週期時間");
             }
+            $("#start-setting").val().change();
         });
 
     }
