@@ -1442,9 +1442,9 @@ function display_doc_report_dialog($report_id=false) {
         </div>
         <div id="start-setting-div2" style="display:none;">
             <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label><br>
-            <label id="period-time-label1"><?php echo __( '每日', 'your-text-domain' );?></label>
-            <input type="number" id="period-time" value="<?php echo $period_time;?>" />
-            <label id="period-time-label2"><?php echo __( '時', 'your-text-domain' );?></label>
+            <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
+            <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
+            <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
             <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>

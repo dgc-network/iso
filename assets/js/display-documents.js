@@ -691,7 +691,7 @@ jQuery(document).ready(function($) {
             if ($(this).val()=="2") {
                 $("#period-time-label1").text("每年");
                 $("#period-time-label2").text("月");
-                $("#period-time-label3").text("日");
+                $("#period-time-label3").text("1 日");
             }
             if ($(this).val()=="3") {
                 $("#period-time-label1").text("每月");
