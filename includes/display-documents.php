@@ -1537,8 +1537,8 @@ function set_doc_report_dialog_data() {
         update_post_meta( $report_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $report_id, 'start_job', $start_job);
         update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
-        update_post_meta( $report_id, 'prev_doc', sanitize_text_field($_POST['_prev_doc']));
-        update_post_meta( $report_id, 'next_doc', sanitize_text_field($_POST['_next_doc']));
+        update_post_meta( $report_id, 'prev_doc_report', sanitize_text_field($_POST['_prev_doc_report']));
+        update_post_meta( $report_id, 'next_doc_report', sanitize_text_field($_POST['_next_doc_report']));
         $params = array(
             'report_id'      => $report_id,
             'start_job'      => $start_job,
