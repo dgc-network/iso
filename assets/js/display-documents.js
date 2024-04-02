@@ -678,35 +678,44 @@ jQuery(document).ready(function($) {
             $("#start-setting-div2").toggle();
         });
 
-        $("#start-setting").on("change", function() {
+        $("#start-setting").on("change", function() {            
             if ($(this).val()=="1") {
                 $("#period-time").hide();
                 $("#start-job-label").hide();
                 $("#start-setting-button2").text("啟始職務");
-            } else {
+            } else {                
                 $("#period-time").show();
                 $("#start-job-label").show();
                 $("#start-setting-button2").text("週期時間");
+
                 if ($(this).val()=="2") {
                     $("#period-time-label1").text("每年");
                     $("#period-time-label2").text("月");
                     $("#period-time-label3").text("1 日");
+                    $("#period-time").attr("min", 1);
+                    $("#period-time").attr("max", 12);
                 }
                 if ($(this).val()=="3") {
                     $("#period-time-label1").text("每月");
                     $("#period-time-label2").text("日");
                     $("#period-time-label3").text("");
+                    $("#period-time").attr("min", 1);
+                    $("#period-time").attr("max", 30);
                 }
                 if ($(this).val()=="4") {
                     $("#period-time-label1").text("每週");
                     $("#period-time-label2").text("");
                     $("#period-time-label3").text("");
+                    $("#period-time").attr("min", 1);
+                    $("#period-time").attr("max", 7);
                 }
                 if ($(this).val()=="5") {
                     $("#period-time-label1").text("每日");
                     $("#period-time-label2").text("時");
                     $("#period-time-label3").text("");
-                }    
+                    $("#period-time").attr("min", 1);
+                    $("#period-time").attr("max", 24);
+                }
             }
         });
 
