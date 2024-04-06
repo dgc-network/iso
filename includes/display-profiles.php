@@ -262,7 +262,7 @@ function display_new_user_dialog($site_id) {
 
 function display_user_dialog($site_id) {
     ?>
-    <div id="user-dialog" title="User dialog" style="display:none;">
+    <div id="site-user-dialog" title="User dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="user-id" />
         <label for="display-name">Name:</label>
@@ -605,7 +605,7 @@ add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
 
 function display_job_dialog() {
     ?>
-    <div id="job-dialog" title="Job dialog" style="display:none;">
+    <div id="site-job-dialog" title="Job dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="job-id" />
         <label for="job-title">Title:</label>

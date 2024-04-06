@@ -178,8 +178,7 @@ jQuery(document).ready(function($) {
                     '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
-                    //get_site_profile_data($("#site-id").val());
-                    get_site_job_list_data($("#site-id").val());
+                    get_site_job_list_data(site_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -204,7 +203,7 @@ jQuery(document).ready(function($) {
                     '_user_id': user_id,
                 },
                 success: function (response) {
-                    $("#user-dialog").dialog('open');
+                    $("#site-user-dialog").dialog('open');
                     $("#user-id").val(user_id);
                     $("#display-name").val(response.display_name);
                     $("#user-email").val(response.user_email);
@@ -265,7 +264,7 @@ jQuery(document).ready(function($) {
                     '_job_id': job_id,
                 },
                 success: function (response) {
-                    $("#job-dialog").dialog('open');
+                    $("#site-job-dialog").dialog('open');
                     $("#job-id").val(job_id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
@@ -302,7 +301,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
-                            //get_site_profile_data($("#site-id").val());
                             console.log(response);
                             get_site_profile_data(site_id);
                         },
@@ -315,7 +313,7 @@ jQuery(document).ready(function($) {
             }
         });
     
-        $("#user-dialog").dialog({
+        $("#site-user-dialog").dialog({
             width: 450,
             modal: true,
             autoOpen: false,
@@ -334,8 +332,7 @@ jQuery(document).ready(function($) {
                             '_select_site': $("#select-site").val(),
                         },
                         success: function (response) {
-                            $("#user-dialog").dialog('close');
-                            //get_site_profile_data($("#site-id").val());
+                            $("#site-user-dialog").dialog('close');
                             get_site_profile_data(site_id);
                         },
                         error: function (error) {
@@ -355,9 +352,8 @@ jQuery(document).ready(function($) {
                                 '_user_id': $("#user-id").val(),
                             },
                             success: function (response) {
-                                $("#user-dialog").dialog('close');
+                                $("#site-user-dialog").dialog('close');
                                 console.log(response);
-                                //get_site_profile_data($("#site-id").val());
                                 get_site_profile_data(site_id);
                             },
                             error: function (error) {
@@ -370,7 +366,7 @@ jQuery(document).ready(function($) {
             }
         });
     
-        $("#job-dialog").dialog({
+        $("#site-job-dialog").dialog({
             width: 450,
             modal: true,
             autoOpen: false,
@@ -388,9 +384,8 @@ jQuery(document).ready(function($) {
                             '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
-                            $("#job-dialog").dialog('close');
-                            //get_site_profile_data($("#site-id").val());
-                            get_site_profile_data(site_id);
+                            $("#site-job-dialog").dialog('close');
+                            get_site_job_list_data(site_id);
                         },
                         error: function (error) {
                             console.error(error);
@@ -409,9 +404,8 @@ jQuery(document).ready(function($) {
                                 '_job_id': $("#job-id").val(),
                             },
                             success: function (response) {
-                                $("#job-dialog").dialog('close');
-                                //get_site_profile_data($("#site-id").val());
-                                get_site_profile_data(site_id);
+                                $("#site-job-dialog").dialog('close');
+                                get_site_job_list_data(site_id);
                             },
                             error: function (error) {
                                 console.error(error);
