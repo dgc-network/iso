@@ -630,10 +630,8 @@ function display_document_dialog($doc_id=false) {
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
                 <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
                 <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="prev-doc-report"><?php echo __( '前方表單', 'your-text-domain' );?></label>
-                <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report);?></select>
                 <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-                <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report);?></select>
+                <?php display_site_job_action_list();?>
             </div>
 
             <?php
@@ -713,13 +711,13 @@ function select_start_setting_option($selected_option=0) {
     $selected = ($selected_option == "1") ? 'selected' : '';
     $options .= '<option value="1" '.$selected.' />' . __( '透過前置表單啟動', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="2" '.$selected.' />' . __( '循環表單：每年一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '循環報表：每月一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="3" '.$selected.' />' . __( '循環表單：每月一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '循環報表：每週一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="4" '.$selected.' />' . __( '循環表單：每週一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "5") ? 'selected' : '';
-    $options .= '<option value="5" '.$selected.' />' . __( '循環報表：每日一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="5" '.$selected.' />' . __( '循環表單：每日一次', 'your-text-domain' ) . '</option>';
     return $options;
 }
 
