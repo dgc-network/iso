@@ -626,10 +626,6 @@ function display_document_dialog($doc_id=false) {
                 <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
                 <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-                <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-                <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
-                <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-                <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
                 <?php display_site_job_action_list();?>
             </div>
