@@ -580,7 +580,7 @@ function display_document_dialog($doc_id=false) {
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $responsible_unit = get_post_meta( $doc_id, 'responsible_unit', true);
+        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
         $start_setting = get_post_meta( $doc_id, 'start_setting', true);
         $period_time = get_post_meta( $doc_id, 'period_time', true);
         $start_job = get_post_meta( $doc_id, 'start_job', true);
@@ -608,6 +608,7 @@ function display_document_dialog($doc_id=false) {
         <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <?php    
         if ($is_doc_report==1) {
             ?>
@@ -615,6 +616,26 @@ function display_document_dialog($doc_id=false) {
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
             <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+            <div id="start-setting-div1">
+                <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+                <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
+            </div>
+            <div id="start-setting-div2" style="display:none;">
+                <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期表單', 'your-text-domain' );?></label><br>
+                <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
+                <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
+                <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
+                <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
+                <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
+                <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
+                <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+                <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="prev-doc-report"><?php echo __( '前方表單', 'your-text-domain' );?></label>
+                <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report);?></select>
+                <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
+                <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report);?></select>
+            </div>
+
             <?php
         } else {
             ?>
@@ -622,27 +643,15 @@ function display_document_dialog($doc_id=false) {
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
             <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
-            <?php
-        }
-        ?>
-        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <label for="responsible-unit"><?php echo __( '負責部門', 'your-text-domain' );?></label>
-        <input type="text" id="responsible-unit" value="<?php echo esc_html($responsible_unit);?>" class="text ui-widget-content ui-corner-all" />
-        <div id="start-setting-div1">
-            <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
-            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
-        </div>
-        <div id="start-setting-div2" style="display:none;">
-            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label><br>
-            <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
-            <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
-            <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
-            <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
             <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-        </div>
+            <?php
+        }
+        ?>
+        <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
+        <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
@@ -702,7 +711,7 @@ function select_start_setting_option($selected_option=0) {
 
     $options = '<option value="0">Select option</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '立即啟動', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="1" '.$selected.' />' . __( '透過前置表單啟動', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "2") ? 'selected' : '';
     $options .= '<option value="2" '.$selected.' />' . __( '循環報表：每年一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "3") ? 'selected' : '';
@@ -755,7 +764,7 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        update_post_meta( $doc_id, 'responsible_unit', sanitize_text_field($_POST['_responsible_unit']));
+        update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
         update_post_meta( $doc_id, 'start_setting', $start_setting);
         update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $doc_id, 'start_job', $start_job);
@@ -1439,25 +1448,6 @@ function display_doc_report_dialog($report_id=false) {
         wp_reset_postdata();
     }
     ?>
-        <div id="start-setting-div1">
-            <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
-            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
-        </div>
-        <div id="start-setting-div2" style="display:none;">
-            <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期時間', 'your-text-domain' );?></label><br>
-            <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
-            <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
-            <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
-            <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-            <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
-            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-            <label for="prev-doc-report"><?php echo __( '前方表單', 'your-text-domain' );?></label>
-            <select id="prev-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($prev_doc_report);?></select>
-            <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-            <select id="next-doc-report" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_option_data($next_doc_report);?></select>
-        </div>
         <hr>
     <?php
     if ($todo_status!=-1){

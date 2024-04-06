@@ -342,13 +342,14 @@ function user_did_not_login_yet() {
         <div class="mobile-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for mobile users -->
             <p>感謝您使用我們的系統</p>
-            <p>請加入我們的Line官方帳號,</p>
             <p>利用手機按或掃描下方QR code</p>
+            <p>加入我們的Line官方帳號,</p>
             <a href="<?php echo get_option('line_official_account');?>">
-            <img src="<?php echo get_option('line_official_qr_code');?>">
+                <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
-            <p>並請在聊天室中, 輸入「我要註冊」或</p>
-            <p>「我要登錄」,啟動註冊/登入作業。</p>
+            <p>並請在聊天室中, 輸入</p>
+            <p>「我要註冊」或「我要登錄」,</p>
+            <p>啟動註冊/登入作業。</p>
         </div>
         <?php
     }
@@ -431,7 +432,6 @@ function one_time_password_desktop_submit() {
 
             if ($user_id) {
                 // Do something with $user_id
-                //$user = get_user_by('ID', $user_id);
                 $user_data = get_userdata( $user_id );
 
                 $credentials = array(

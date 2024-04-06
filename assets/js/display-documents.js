@@ -144,7 +144,7 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_responsible_unit'] = $("#responsible-unit").val();
+                    ajaxData['_responsible_department'] = $("#responsible-department").val();
                     ajaxData['_start_setting'] = $("#start-setting").val();
                     ajaxData['_period_time'] = $("#period-time").val();
                     ajaxData['_start_job'] = $("#start-job").val();
@@ -664,7 +664,7 @@ jQuery(document).ready(function($) {
             } else {                
                 $("#period-time").show();
                 $("#start-job-label").show();
-                $("#start-setting-button2").text("週期時間");
+                $("#start-setting-button2").text("週期表單");
 
                 if ($(this).val()=="2") {
                     $("#period-time-label1").text("每年");
