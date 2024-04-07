@@ -677,6 +677,7 @@ function get_document_dialog_data() {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
         $todo_status = get_post_meta( $doc_id, 'todo_status', true);
         if ($todo_status<1) {
             if ($todo_status==-1) {
