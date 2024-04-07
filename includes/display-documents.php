@@ -782,7 +782,7 @@ function display_doc_action_list($doc_id) {
                         echo '<tr id="edit-doc-action-'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.esc_html(get_the_title()).'</td>';
                         echo '<td>'.esc_html(get_post_field('post_content', get_the_ID())).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_the_totle($next_doc)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_the_title($next_doc)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
                         echo '</tr>';
                     endwhile;
