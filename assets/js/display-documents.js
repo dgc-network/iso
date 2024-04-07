@@ -464,13 +464,11 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#doc-action-dialog").dialog('open');
-                    $("#field-id").val(field_id);
-                    $("#field-name").val(response.field_name);
-                    $("#field-title").val(response.field_title);
-                    $("#field-type").val(response.field_type).change();
-                    $("#default-value").val(response.default_value);
-                    $("#listing-style").val(response.listing_style).change();
-                    $("#order-field").val(response.order_field).change();
+                    $("#action-id").val(action_id);
+                    $("#action-title").val(response.action_title);
+                    $("#action-content").val(response.actiont_content);
+                    $("#next-doc").val(response.next_doc);
+                    $("#next-leadtime").val(response.next_leadtime);
                 },
                 error: function (error) {
                     console.error(error);                
