@@ -300,8 +300,8 @@ jQuery(document).ready(function($) {
                 // doc-field scripts
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
-                    $("#doc-frame").toggle();
-                    $("#doc-field-list-div").toggle();
+                    $("#doc-frame-div").toggle();
+                    $("#doc-report-div").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
