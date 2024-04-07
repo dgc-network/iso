@@ -167,30 +167,30 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                 });
         
-                if ($('#start-setting').val()>0) {
+                if ($("#start-setting").val()>0) {
                     $("#start-setting-div").show();
-                    if ($(this).val()=="1") {
+                    if ($("#start-setting").val()=="1") {
                         $("#period-time-label1").text("每年");
                         $("#period-time-label2").text("月");
                         $("#period-time-label3").text("1 日");
                         $("#period-time").attr("min", 1);
                         $("#period-time").attr("max", 12);
                     }
-                    if ($(this).val()=="2") {
+                    if ($("#start-setting").val()=="2") {
                         $("#period-time-label1").text("每月");
                         $("#period-time-label2").text("日");
                         $("#period-time-label3").text("");
                         $("#period-time").attr("min", 1);
                         $("#period-time").attr("max", 30);
                     }
-                    if ($(this).val()=="3") {
+                    if ($("#start-setting").val()=="3") {
                         $("#period-time-label1").text("每週");
                         $("#period-time-label2").text("");
                         $("#period-time-label3").text("");
                         $("#period-time").attr("min", 1);
                         $("#period-time").attr("max", 7);
                     }
-                    if ($(this).val()=="4") {
+                    if ($("#start-setting").val()=="4") {
                         $("#period-time-label1").text("每日");
                         $("#period-time-label2").text("時");
                         $("#period-time-label3").text("0 分");
