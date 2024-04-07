@@ -157,6 +157,47 @@ function display_documents_shortcode() {
 
     // Check if the user is logged in
     if (is_user_logged_in()) {
+        $output = '';
+    
+        // Get shared document if shared doc ID is set
+        if (isset($_GET['_get_shared_doc_id'])) {
+            $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
+            get_shared_document($doc_id);
+        }
+    
+        // Display document details if document ID is set
+        if (isset($_GET['_id'])) {
+            $doc_id = sanitize_text_field($_GET['_id']);
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $output .= '<div class="ui-widget" id="result-container">';
+            if ($is_doc_report) {
+                $output .= display_doc_report_list($doc_id);
+            } else {
+                $output .= display_doc_frame_contain($doc_id);
+            }
+            $output .= '</div>';
+        }
+    
+        // Display initial ISO document if initial ID is set
+        if (isset($_GET['_initial'])) {
+            $doc_id = sanitize_text_field($_GET['_initial']);
+            $output .= '<div class="ui-widget" id="result-container">';
+            $output .= display_initial_iso_document($doc_id);
+            $output .= '</div>';
+        }
+    
+        // Display document list if no specific document IDs are set
+        if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
+            $output .= display_document_list();
+        }
+    
+        echo $output;
+    } else {
+        user_did_not_login_yet();
+    }
+/*    
+    // Check if the user is logged in
+    if (is_user_logged_in()) {
 
         if( isset($_GET['_get_shared_doc_id']) ) {
             $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
@@ -189,6 +230,7 @@ function display_documents_shortcode() {
     } else {
         user_did_not_login_yet();
     }
+*/    
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
@@ -328,7 +370,6 @@ function set_new_site_by_title() {
             }
         }
     }
-
     wp_send_json($response);
 }
 add_action('wp_ajax_set_new_site_by_title', 'set_new_site_by_title');
