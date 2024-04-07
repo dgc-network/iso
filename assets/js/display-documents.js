@@ -136,6 +136,7 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
+/*                
                 var currentValue = $("#doc-field-setting").text();
                 $("#doc-field-setting").on("click", function () {
                     $("#doc-frame-div").toggle();
@@ -145,8 +146,8 @@ jQuery(document).ready(function($) {
                     currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
                     $(this).text(currentValue);
                 });
-
-                if ($('#is-doc-report').val()=="1") {
+*/
+                if ($('#is-doc-report').val()==1) {
                     $("#doc-report-div").show();
                 } else {
                     $("#doc-frame-div").show();
@@ -155,15 +156,47 @@ jQuery(document).ready(function($) {
                 $("#doc-frame-label").on("click", function () {
                     $("#doc-report-div").toggle();
                     $("#doc-frame-div").toggle();
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
                 });
         
                 $("#doc-field-label").on("click", function () {
                     $("#doc-report-div").toggle();
                     $("#doc-frame-div").toggle();
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
                 });
         
                 if ($('#start-setting').val()>0) {
                     $("#start-setting-div").show();
+                    if ($(this).val()=="1") {
+                        $("#period-time-label1").text("每年");
+                        $("#period-time-label2").text("月");
+                        $("#period-time-label3").text("1 日");
+                        $("#period-time").attr("min", 1);
+                        $("#period-time").attr("max", 12);
+                    }
+                    if ($(this).val()=="2") {
+                        $("#period-time-label1").text("每月");
+                        $("#period-time-label2").text("日");
+                        $("#period-time-label3").text("");
+                        $("#period-time").attr("min", 1);
+                        $("#period-time").attr("max", 30);
+                    }
+                    if ($(this).val()=="3") {
+                        $("#period-time-label1").text("每週");
+                        $("#period-time-label2").text("");
+                        $("#period-time-label3").text("");
+                        $("#period-time").attr("min", 1);
+                        $("#period-time").attr("max", 7);
+                    }
+                    if ($(this).val()=="4") {
+                        $("#period-time-label1").text("每日");
+                        $("#period-time-label2").text("時");
+                        $("#period-time-label3").text("0 分");
+                        $("#period-time").attr("min", 1);
+                        $("#period-time").attr("max", 24);
+                    }
                 }
 
                 $("#start-setting").on("change", function() {            
