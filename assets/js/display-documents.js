@@ -199,17 +199,17 @@ jQuery(document).ready(function($) {
                     }
                 });
         
-                $("#btn-new-site-job-action").on("click", function() {
+                $("#new-doc-action").on("click", function() {
                     jQuery.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_job_action_dialog_data',
-                            '_job_id': $("#job-id").val(),
+                            'action': 'set_doc_action_dialog_data',
+                            '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_site_job_action_list_data($("#job-id").val());
+                            get_doc_action_list_data(doc_id);
                         },
                         error: function(error){
                             console.error(error);

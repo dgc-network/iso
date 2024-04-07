@@ -621,7 +621,7 @@ function display_document_dialog($doc_id=false) {
         <div id="doc-report-div" style="display:none;">
             <?php echo display_doc_field_list($doc_id);?>
             <div id="start-setting-div1">
-                <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
+                <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '表單設定', 'your-text-domain' );?></label>
                 <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
             </div>
             <div id="start-setting-div2" style="display:none;">
@@ -632,7 +632,7 @@ function display_document_dialog($doc_id=false) {
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             </div>
             <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-            <?php display_site_job_action_list();?>
+            <?php echo display_doc_action_list($doc_id);?>
         </div>
         <?php
 /*        
@@ -715,8 +715,57 @@ function get_doc_frame_contain() {
 add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
-function select_start_setting_option($selected_option=0) {
+function display_doc_action_list($doc_id) {
+    ?>
+    <table style="width:100%;">
+        <thead>
+            <tr>
+                <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $query = retrieve_doc_action_data($doc_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $next_doc = get_post_meta(get_the_ID(), 'next_doc', true);
+                        echo '<tr id="edit-doc-action-'.esc_attr(get_the_ID()).'">';
+                        echo '<td style="text-align:center;">'.esc_html(get_the_title()).'</td>';
+                        echo '<td>'.esc_html(get_post_field('post_content', get_the_ID())).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_the_totle($next_doc)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
+                        echo '</tr>';
+                        $x += 1;
+                    endwhile;
+                    wp_reset_postdata();
+                }
+            ?>
+        </tbody>
+    </table>
+    <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    <?php display_site_job_action_dialog();?>
+    <?php
+}
+    
+function retrieve_doc_action_list_data($doc_id=0) {
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
 
+function select_start_setting_option($selected_option=0) {
     $options = '<option value="0">Select option</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
     $options .= '<option value="1" '.$selected.' />' . __( '透過前置表單啟動', 'your-text-domain' ) . '</option>';
@@ -921,12 +970,14 @@ function retrieve_doc_field_data($params = array()) {
 
 function get_doc_field_list_data() {
     $result = array();
-    if (isset($_POST['_doc_id']) && $_POST['action'] === 'get_doc_field_list_data') {
+    if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $result['html_contain'] = display_doc_field_list($doc_id);
+/*
     } elseif (isset($_POST['_site_id'])) {
         $site_id = sanitize_text_field($_POST['_site_id']);
-        $result['html_contain'] = display_doc_field_list(false, $site_id);    
+        $result['html_contain'] = display_doc_field_list(false, $site_id);
+*/        
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
@@ -1660,4 +1711,57 @@ function del_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
+
+function get_doc_action_list_data() {
+    $query = retrieve_job_action_list_data($_POST['_job_id']);
+    $_array = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $next_job = esc_attr(get_post_meta(get_the_ID(), 'next_job', true));
+            $_list = array();
+            $_list["action_id"] = get_the_ID();
+            $_list["action_title"] = get_the_title();
+            $_list["action_content"] = get_post_field('post_content', get_the_ID());
+            $_list["next_job"] = get_the_title($next_job);
+            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
+            if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
+            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            array_push($_array, $_list);
+        endwhile;
+        wp_reset_postdata();
+    }
+    wp_send_json($_array);
+}
+add_action( 'wp_ajax_get_doc_action_list_data', 'get_doc_action_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_action_list_data', 'get_doc_action_list_data' );
+
+function set_doc_action_dialog_data() {
+    if( isset($_POST['_action_id']) ) {
+        $data = array(
+            'ID'         => $_POST['_action_id'],
+            'post_title' => $_POST['_action_title'],
+            'post_content' => $_POST['_action_content'],
+            'meta_input' => array(
+                'next_doc'   => $_POST['_next_doc'],
+                'next_leadtime' => $_POST['_next_leadtime'],
+            )
+        );
+        wp_update_post( $data );
+    } else {
+        $current_user_id = get_current_user_id();
+        // Insert the post into the database
+        $new_post = array(
+            'post_title'    => 'New action',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_doc_action_dialog_data', 'set_doc_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', 'set_doc_action_dialog_data' );
 
