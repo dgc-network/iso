@@ -122,8 +122,8 @@ jQuery(document).ready(function($) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     $('#result-container').html(response.html_contain);
-                    $('#is-doc-report').html(response.is_doc_report);
-                    $('#start-setting').html(response.start_setting);
+                    $('#is-doc-report').val(response.is_doc_report);
+                    $('#start-setting').val(response.start_setting);
                 }
                 $("#doc-id").val(doc_id);
 
