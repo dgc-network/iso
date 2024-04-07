@@ -466,8 +466,8 @@ jQuery(document).ready(function($) {
                     $("#doc-action-dialog").dialog('open');
                     $("#action-id").val(action_id);
                     $("#action-title").val(response.action_title);
-                    $("#action-content").val(response.actiont_content);
-                    $("#next-doc").val(response.next_doc);
+                    $("#action-content").val(response.action_content);
+                    $("#next-doc").empty().append(response.next_doc);
                     $("#next-leadtime").val(response.next_leadtime);
                 },
                 error: function (error) {

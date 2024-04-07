@@ -736,93 +736,6 @@ function get_doc_frame_contain() {
 add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
-function display_doc_action_list($doc_id) {
-    ob_start();
-    ?>
-    <fieldset>
-    <table style="width:100%;">
-        <thead>
-            <tr>
-                <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-                $query = retrieve_doc_action_data($doc_id);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $next_doc = get_post_meta(get_the_ID(), 'next_doc', true);
-                        echo '<tr id="edit-doc-action-'.esc_attr(get_the_ID()).'">';
-                        echo '<td style="text-align:center;">'.esc_html(get_the_title()).'</td>';
-                        echo '<td>'.esc_html(get_post_field('post_content', get_the_ID())).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_the_title($next_doc)).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
-                        echo '</tr>';
-                    endwhile;
-                    wp_reset_postdata();
-                }
-            ?>
-        </tbody>
-    </table>
-    <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-    </fieldset>
-    <?php display_doc_action_dialog();?>
-    <?php
-    $html = ob_get_clean();
-    return $html;    
-}
-    
-function retrieve_doc_action_data($doc_id=0) {
-    $args = array(
-        'post_type'      => 'action',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'doc_id',
-                'value' => $doc_id,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function display_doc_action_dialog(){
-    ?>
-    <div id="doc-action-dialog" title="Doc action dialog" style="display:none;">
-    <fieldset>
-        <input type="hidden" id="doc-id" />
-        <input type="hidden" id="action-id" />
-        <label for="action-title">Title:</label>
-        <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
-        <label for="action-content">Content:</label>
-        <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
-        <label for="next-doc">Next doc:</label>
-        <select id="next-doc" class="text ui-widget-content ui-corner-all" ></select>
-        <label for="next-leadtime">Next leadtime:</label>
-        <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
-    </fieldset>
-    </div>
-    <?php
-}
-
-
-function select_start_setting_option($selected_option=0) {
-    $options = '<option value="0">Select option</option>';
-    $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '循環表單：每年一次', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '循環表單：每月一次', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '循環表單：每週一次', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '循環表單：每日一次', 'your-text-domain' ) . '</option>';
-    return $options;
-}
-
 function select_start_job_option_data($selected_option=0) {
     $current_user_id = get_current_user_id();
     $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);
@@ -1572,49 +1485,6 @@ function display_doc_report_dialog($report_id=false) {
     return $html;
 }
 
-function select_doc_report_option_data($selected_option=0){
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            ),
-            array(
-                'key'     => 'is_doc_report',
-                'value'   => '1',
-                'compare' => '=',
-                'type'    => 'NUMERIC', // Assuming is_doc_report is stored as a numeric value
-            ),
-        ),
-    );
-    
-    $query = new WP_Query($args);
-    
-    $options = '<option value="0">Select doc</option>';
-    // Check if there are any posts
-    if ($query->have_posts()) {
-        // Start the loop
-        while ($query->have_posts()) {
-            $query->the_post();
-            // Display or process each document post
-            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-
-            // Example: the_title();
-        }
-        // Restore original post data
-        wp_reset_postdata();
-    }
-    return $options;    
-
-}
-
 function set_doc_report_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
@@ -1754,7 +1624,7 @@ function del_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
-
+/*
 function get_doc_action_list_data() {
     $query = retrieve_job_action_list_data($_POST['_job_id']);
     $_array = array();
@@ -1777,6 +1647,136 @@ function get_doc_action_list_data() {
 }
 add_action( 'wp_ajax_get_doc_action_list_data', 'get_doc_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_action_list_data', 'get_doc_action_list_data' );
+*/
+
+function display_doc_action_list($doc_id) {
+    ob_start();
+    ?>
+    <fieldset>
+    <table style="width:100%;">
+        <thead>
+            <tr>
+                <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $query = retrieve_doc_action_data($doc_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $next_doc = get_post_meta(get_the_ID(), 'next_doc', true);
+                        echo '<tr id="edit-doc-action-'.esc_attr(get_the_ID()).'">';
+                        echo '<td style="text-align:center;">'.esc_html(get_the_title()).'</td>';
+                        echo '<td>'.esc_html(get_post_field('post_content', get_the_ID())).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_the_title($next_doc)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
+                        echo '</tr>';
+                    endwhile;
+                    wp_reset_postdata();
+                }
+            ?>
+        </tbody>
+    </table>
+    <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
+    <?php display_doc_action_dialog();?>
+    <?php
+    $html = ob_get_clean();
+    return $html;    
+}
+    
+function retrieve_doc_action_data($doc_id=0) {
+    $args = array(
+        'post_type'      => 'action',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'doc_id',
+                'value' => $doc_id,
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function select_start_setting_option($selected_option=0) {
+    $options = '<option value="0">Select option</option>';
+    $selected = ($selected_option == "1") ? 'selected' : '';
+    $options .= '<option value="1" '.$selected.' />' . __( '循環表單：每年一次', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "2") ? 'selected' : '';
+    $options .= '<option value="2" '.$selected.' />' . __( '循環表單：每月一次', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "3") ? 'selected' : '';
+    $options .= '<option value="3" '.$selected.' />' . __( '循環表單：每週一次', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "4") ? 'selected' : '';
+    $options .= '<option value="4" '.$selected.' />' . __( '循環表單：每日一次', 'your-text-domain' ) . '</option>';
+    return $options;
+}
+
+function select_doc_report_option_data($selected_option=0){
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'is_doc_report',
+                'value'   => '1',
+                'compare' => '=',
+                'type'    => 'NUMERIC', // Assuming is_doc_report is stored as a numeric value
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    
+    $options = '<option value="0">Select doc</option>';
+    // Check if there are any posts
+    if ($query->have_posts()) {
+        // Start the loop
+        while ($query->have_posts()) {
+            $query->the_post();
+            // Display or process each document post
+            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+
+            // Example: the_title();
+        }
+        // Restore original post data
+        wp_reset_postdata();
+    }
+    return $options;    
+
+}
+
+function display_doc_action_dialog(){
+    ?>
+    <div id="doc-action-dialog" title="Doc action dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="doc-id" />
+        <input type="hidden" id="action-id" />
+        <label for="action-title">Title:</label>
+        <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+        <label for="action-content">Content:</label>
+        <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+        <label for="next-doc">Next doc:</label>
+        <select id="next-doc" class="text ui-widget-content ui-corner-all" ></select>
+        <label for="next-leadtime">Next leadtime:</label>
+        <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+    </fieldset>
+    </div>
+    <?php
+}
 
 function get_doc_action_dialog_data() {
     $response = array();
@@ -1784,9 +1784,9 @@ function get_doc_action_dialog_data() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $next_doc = get_post_meta( $action_id, 'next_doc', true);
+        $next_doc = get_post_meta($action_id, 'next_doc', true);
         $response["next_doc"] = select_doc_report_option_data($next_doc);
-        $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
+        $response["next_leadtime"] = get_post_meta($action_id, 'next_leadtime', true);
     }
     wp_send_json($response);
 }
@@ -1816,8 +1816,8 @@ function set_doc_action_dialog_data() {
             'post_type'     => 'action',
         );    
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-        update_post_meta( $post_id, 'next_leadtime', 86400);
+        update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        update_post_meta($post_id, 'next_leadtime', 86400);
     }
     wp_send_json($response);
 }
