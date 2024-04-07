@@ -676,7 +676,7 @@ function display_document_dialog($doc_id=false) {
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             </div>
             <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-            <?php //echo display_doc_action_list($doc_id);?>
+            <?php echo display_doc_action_list($doc_id);?>
         </div>
         <?php
 /*        
@@ -793,7 +793,7 @@ function display_doc_action_list($doc_id) {
     </table>
     <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
-    <?php display_site_job_action_dialog();?>
+    <?php //display_site_job_action_dialog();?>
     <?php
     $html = ob_get_clean();
     return $html;    

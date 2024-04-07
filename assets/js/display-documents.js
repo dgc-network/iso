@@ -143,9 +143,9 @@ jQuery(document).ready(function($) {
                 }
 
                 if ($('#start-setting').val()=="1") {
-                    $("#start-setting-div1").show();
-                } else {
                     $("#start-setting-div2").show();
+                } else {
+                    $("#start-setting-div1").show();
                 }
 
                 $("#start-setting-button1").on("click", function () {
