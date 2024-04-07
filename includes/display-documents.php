@@ -665,7 +665,7 @@ function display_document_dialog($doc_id=false) {
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
             
-            <label for="start-setting"><?php echo __( '表單設定', 'your-text-domain' );?></label>
+            <label for="start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
             <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
             <div id="start-setting-div" style="display:none;">
                 <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
@@ -676,28 +676,6 @@ function display_document_dialog($doc_id=false) {
             <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
             <?php echo display_doc_action_list($doc_id);?>
         </div>
-        <?php
-/*        
-        if ($is_doc_report==1) {
-            ?>
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
-            <?php
-        } else {
-            ?>
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-            <div id="doc-field-list-div" style="display:none;"><?php echo display_doc_field_list($doc_id);?></div>
-            <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
-            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-            <?php
-        }
-*/        
-        ?>
         <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
         <hr>
@@ -791,7 +769,7 @@ function display_doc_action_list($doc_id) {
     </table>
     <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
-    <?php //display_site_job_action_dialog();?>
+    <?php display_doc_action_dialog();?>
     <?php
     $html = ob_get_clean();
     return $html;    
@@ -812,18 +790,36 @@ function retrieve_doc_action_data($doc_id=0) {
     return $query;
 }
 
+function display_doc_action_dialog(){
+    ?>
+    <div id="doc-action-dialog" title="Doc action dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="doc-id" />
+        <input type="hidden" id="action-id" />
+        <label for="action-title">Title:</label>
+        <input type="text" id="action-title" class="text ui-widget-content ui-corner-all" />
+        <label for="action-content">Content:</label>
+        <input type="text" id="action-content" class="text ui-widget-content ui-corner-all" />
+        <label for="next-doc">Next doc:</label>
+        <select id="next-doc" class="text ui-widget-content ui-corner-all" ></select>
+        <label for="next-leadtime">Next leadtime:</label>
+        <input type="text" id="next-leadtime" class="text ui-widget-content ui-corner-all" />
+    </fieldset>
+    </div>
+    <?php
+}
+
+
 function select_start_setting_option($selected_option=0) {
     $options = '<option value="0">Select option</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '透過前置表單啟動', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="1" '.$selected.' />' . __( '循環表單：每年一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '循環表單：每年一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="2" '.$selected.' />' . __( '循環表單：每月一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '循環表單：每月一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="3" '.$selected.' />' . __( '循環表單：每週一次', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '循環表單：每週一次', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "5") ? 'selected' : '';
-    $options .= '<option value="5" '.$selected.' />' . __( '循環表單：每日一次', 'your-text-domain' ) . '</option>';
+    $options .= '<option value="4" '.$selected.' />' . __( '循環表單：每日一次', 'your-text-domain' ) . '</option>';
     return $options;
 }
 
@@ -1811,4 +1807,12 @@ function set_doc_action_dialog_data() {
 }
 add_action( 'wp_ajax_set_doc_action_dialog_data', 'set_doc_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', 'set_doc_action_dialog_data' );
+
+function del_doc_action_dialog_data() {
+    // Delete the post
+    $result = wp_delete_post($_POST['_action_id'], true);
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_doc_action_dialog_data', 'del_doc_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', 'del_doc_action_dialog_data' );
 

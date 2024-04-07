@@ -162,37 +162,37 @@ jQuery(document).ready(function($) {
                     $("#doc-frame-div").toggle();
                 });
         
-                if ($('#start-setting').val()>1) {
+                if ($('#start-setting').val()>0) {
                     $("#start-setting-div").show();
                 }
 
                 $("#start-setting").on("change", function() {            
-                    if ($(this).val()=="1") {
+                    if ($(this).val()=="0") {
                         $("#start-setting-div").hide();
                     } else {                
                         $("#start-setting-div").show();
-                        if ($(this).val()=="2") {
+                        if ($(this).val()=="1") {
                             $("#period-time-label1").text("每年");
                             $("#period-time-label2").text("月");
                             $("#period-time-label3").text("1 日");
                             $("#period-time").attr("min", 1);
                             $("#period-time").attr("max", 12);
                         }
-                        if ($(this).val()=="3") {
+                        if ($(this).val()=="2") {
                             $("#period-time-label1").text("每月");
                             $("#period-time-label2").text("日");
                             $("#period-time-label3").text("");
                             $("#period-time").attr("min", 1);
                             $("#period-time").attr("max", 30);
                         }
-                        if ($(this).val()=="4") {
+                        if ($(this).val()=="3") {
                             $("#period-time-label1").text("每週");
                             $("#period-time-label2").text("");
                             $("#period-time-label3").text("");
                             $("#period-time").attr("min", 1);
                             $("#period-time").attr("max", 7);
                         }
-                        if ($(this).val()=="5") {
+                        if ($(this).val()=="4") {
                             $("#period-time-label1").text("每日");
                             $("#period-time-label2").text("時");
                             $("#period-time-label3").text("0 分");
@@ -750,5 +750,59 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    $("#doc-action-dialog").dialog({
+        width: 450,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_doc_action_dialog_data',
+                        '_action_id': $("#action-id").val(),
+                        '_action_title': $("#action-title").val(),
+                        '_action_content': $("#action-content").val(),
+                        '_next_doc': $("#next-doc").val(),
+                        '_next_leadtime': $("#next-leadtime").val(),
+                    },
+                    success: function (response) {
+                        $("#doc-action-dialog").dialog('close');
+                        //get_doc_action_list_data($("#doc-id").val());
+                        get_document_dialog_data($("#doc-id").val());
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this doc action?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_doc_action_dialog_data',
+                            '_action_id': $("#action-id").val(),
+                        },
+                        success: function (response) {
+                            $("#doc-action-dialog").dialog('close');
+                            //get_doc_action_list_data($("#doc-id").val());
+                            get_document_dialog_data($("#doc-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                }
+            }
+        }
+    });
 
 });

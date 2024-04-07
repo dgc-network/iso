@@ -820,7 +820,7 @@ add_action( 'wp_ajax_nopriv_set_job_action_dialog_data', 'set_job_action_dialog_
 
 function del_job_action_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_action_id'], true); // Set the second parameter to true to force delete    
+    $result = wp_delete_post($_POST['_action_id'], true);
     wp_send_json($result);
 }
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
