@@ -610,7 +610,6 @@ function display_document_dialog($doc_id=false) {
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <input type="hidden" id="start-setting" value="<?php echo $start_setting;?>" />
         <div id="doc-frame-div" style="display:none;">
             <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
