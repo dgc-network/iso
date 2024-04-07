@@ -716,6 +716,7 @@ add_action('wp_ajax_get_doc_frame_contain', 'get_doc_frame_contain');
 add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
 function display_doc_action_list($doc_id) {
+    ob_start();
     ?>
     <table style="width:100%;">
         <thead>
@@ -748,9 +749,11 @@ function display_doc_action_list($doc_id) {
     <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     <?php display_site_job_action_dialog();?>
     <?php
+    $html = ob_get_clean();
+    return $html;    
 }
     
-function retrieve_doc_action_list_data($doc_id=0) {
+function retrieve_doc_action_data($doc_id=0) {
     $args = array(
         'post_type'      => 'action',
         'posts_per_page' => -1,

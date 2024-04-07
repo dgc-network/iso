@@ -209,7 +209,8 @@ jQuery(document).ready(function($) {
                             '_doc_id': doc_id,
                         },
                         success: function (response) {
-                            get_doc_action_list_data(doc_id);
+                            //get_doc_action_list_data(doc_id);
+                            get_document_dialog_data(doc_id);
                         },
                         error: function(error){
                             console.error(error);
