@@ -652,7 +652,7 @@ function display_document_dialog($doc_id=false) {
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <div id="doc-frame-div" style="display:none;">
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
@@ -661,15 +661,13 @@ function display_document_dialog($doc_id=false) {
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         </div>
         <div id="doc-report-div" style="display:none;">
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
-            <div id="start-setting-div1" style="display:none;">
-                <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '表單設定', 'your-text-domain' );?></label>
-                <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
-            </div>
-            <div id="start-setting-div2" style="display:none;">
-                <label id="start-setting-button2" class="button" for="period-time"><?php echo __( '週期表單', 'your-text-domain' );?></label><br>
+            
+            <label for="start-setting"><?php echo __( '表單設定', 'your-text-domain' );?></label>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
+            <div id="start-setting-div" style="display:none;">
                 <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
                 <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
                 <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>

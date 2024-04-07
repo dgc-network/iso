@@ -136,14 +136,35 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
+                var currentValue = $("#doc-field-setting").text();
+                $("#doc-field-setting").on("click", function () {
+                    $("#doc-frame-div").toggle();
+                    $("#doc-report-div").toggle();
+                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+                    $("#is-doc-report").val(is_doc_report)
+                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
+                    $(this).text(currentValue);
+                });
+
                 if ($('#is-doc-report').val()=="1") {
                     $("#doc-report-div").show();
                 } else {
                     $("#doc-frame-div").show();
                 }
 
+                $("#doc-frame-label").on("click", function () {
+                    $("#doc-report-div").toggle();
+                    $("#doc-frame-div").toggle();
+                });
+        
+                $("#doc-field-label").on("click", function () {
+                    $("#doc-report-div").toggle();
+                    $("#doc-frame-div").toggle();
+                });
+        
                 if ($('#start-setting').val()=="1") {
                     $("#start-setting-div2").show();
+                    $("#start-setting-div").show();
                 } else {
                     $("#start-setting-div1").show();
                 }
@@ -160,13 +181,15 @@ jQuery(document).ready(function($) {
         
                 $("#start-setting").on("change", function() {            
                     if ($(this).val()=="1") {
-                        $("#period-time").hide();
-                        $("#start-job-label").hide();
-                        $("#start-setting-button2").text("啟始職務");
+                        $("#start-setting-div").hide();
+                        //$("#period-time").hide();
+                        //$("#start-job-label").hide();
+                        //$("#start-setting-button2").text("啟始職務");
                     } else {                
-                        $("#period-time").show();
-                        $("#start-job-label").show();
-                        $("#start-setting-button2").text("週期表單");
+                        $("#start-setting-div").show();
+                        //$("#period-time").show();
+                        //$("#start-job-label").show();
+                        //$("#start-setting-button2").text("週期表單");
         
                         if ($(this).val()=="2") {
                             $("#period-time-label1").text("每年");
@@ -298,16 +321,6 @@ jQuery(document).ready(function($) {
 
 
                 // doc-field scripts
-                var currentValue = $("#doc-field-setting").text();
-                $("#doc-field-setting").on("click", function () {
-                    $("#doc-frame-div").toggle();
-                    $("#doc-report-div").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
-                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
-                    $(this).text(currentValue);
-                });
-
                 activate_doc_field_list_data(doc_id);
 
                 // doc-report scripts
