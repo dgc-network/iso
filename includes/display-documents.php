@@ -612,6 +612,8 @@ function display_document_dialog($doc_id=false) {
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <input type="hidden" id="start-setting" value="<?php echo $start_setting;?>" />
         <div id="doc-frame-div" style="display:none;">
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
             <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
             <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
@@ -619,8 +621,10 @@ function display_document_dialog($doc_id=false) {
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
         </div>
         <div id="doc-report-div" style="display:none;">
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
-            <div id="start-setting-div1">
+            <div id="start-setting-div1" style="display:none;">
                 <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '表單設定', 'your-text-domain' );?></label>
                 <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
             </div>
@@ -718,6 +722,8 @@ add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 function display_doc_action_list($doc_id) {
     ob_start();
     ?>
+    <div id="actions-container">
+    <fieldset>
     <table style="width:100%;">
         <thead>
             <tr>
@@ -747,6 +753,8 @@ function display_doc_action_list($doc_id) {
         </tbody>
     </table>
     <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
+    </div>
     <?php display_site_job_action_dialog();?>
     <?php
     $html = ob_get_clean();
