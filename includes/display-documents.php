@@ -572,7 +572,7 @@ function retrieve_document_data($site_id = 0) {
 }
 
 function display_document_dialog($doc_id=false) {
-    $is_doc = false;
+    //$is_doc = false;
     if ($doc_id) {
         $doc_number = get_post_meta( $doc_id, 'doc_number', true);
         $doc_title = get_post_meta( $doc_id, 'doc_title', true);
@@ -580,11 +580,12 @@ function display_document_dialog($doc_id=false) {
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
         $start_setting = get_post_meta( $doc_id, 'start_setting', true);
         $period_time = get_post_meta( $doc_id, 'period_time', true);
         $start_job = get_post_meta( $doc_id, 'start_job', true);
         $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
+        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
+        //$start_setting = get_post_meta( $doc_id, 'start_setting', true);
         $site_id = get_post_meta( $doc_id, 'site_id', true);
         $image_url = get_post_meta( $site_id, 'image_url', true);
 
@@ -609,13 +610,16 @@ function display_document_dialog($doc_id=false) {
         <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
         <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <?php    
-        if ($is_doc_report==1) {
-            ?>
-            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
-            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+        <input type="hidden" id="start-setting" value="<?php echo $start_setting;?>" />
+        <div id="doc-frame-div" style="display:none;">
+            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+            <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
+            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
+            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
+        </div>
+        <div id="doc-report-div" style="display:none;">
+            <?php echo display_doc_field_list($doc_id);?>
             <div id="start-setting-div1">
                 <label id="start-setting-button1" class="button" for="start-setting"><?php echo __( '啟動設定', 'your-text-domain' );?></label>
                 <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
@@ -626,10 +630,17 @@ function display_document_dialog($doc_id=false) {
                 <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
                 <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-                <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-                <?php display_site_job_action_list();?>
             </div>
-
+            <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
+            <?php display_site_job_action_list();?>
+        </div>
+        <?php
+/*        
+        if ($is_doc_report==1) {
+            ?>
+            <label id="doc-field-setting" class="button" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%; display:none;"><?php echo $doc_frame;?></textarea>
             <?php
         } else {
             ?>
@@ -643,6 +654,7 @@ function display_document_dialog($doc_id=false) {
             <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
             <?php
         }
+*/        
         ?>
         <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
@@ -672,6 +684,8 @@ function get_document_dialog_data() {
                 }
             } else {
                 $result['html_contain'] = display_document_dialog($doc_id);
+                $result['is_doc_report'] = $is_doc_report;
+                $result['start_setting'] = $start_setting;
             }
         } else {
             //if (current_user_can('administrator') && isset($_GET['_is_admin'])) {

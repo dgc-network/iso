@@ -434,11 +434,11 @@ jQuery(document).ready(function($) {
                 get_site_job_action_list_data($("#job-id").val());
             },
             error: function(error){
-                console.error(error);                    
+                console.error(error);
                 alert(error);
             }
         });    
-    });                        
+    });
 
     function get_site_job_action_list_data(job_id) {
         $.ajax({

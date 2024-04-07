@@ -122,8 +122,11 @@ jQuery(document).ready(function($) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     $('#result-container').html(response.html_contain);
-                }                
+                    $('#is-doc-report').html(response.is_doc_report);
+                    $('#start-setting').html(response.start_setting);
+                }
                 $("#doc-id").val(doc_id);
+
                 activate_published_document_data(doc_id);
 
                 $(".datepicker").datepicker({
@@ -133,6 +136,88 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
+                if ($('#is-doc-report').val()==1) {
+                    $("#doc-report-div").show();
+                } else {
+                    $("#doc-frame-div").show();
+                }
+
+                if ($('#start-setting').val()==1) {
+                    $("#start-setting-div1").show();
+                } else {
+                    $("#start-setting-div2").show();
+                }
+
+                $("#start-setting-button1").on("click", function () {
+                    $("#start-setting-div1").toggle();
+                    $("#start-setting-div2").toggle();
+                });
+        
+                $("#start-setting-button2").on("click", function () {
+                    $("#start-setting-div1").toggle();
+                    $("#start-setting-div2").toggle();
+                });
+        
+                $("#start-setting").on("change", function() {            
+                    if ($(this).val()=="1") {
+                        $("#period-time").hide();
+                        $("#start-job-label").hide();
+                        $("#start-setting-button2").text("啟始職務");
+                    } else {                
+                        $("#period-time").show();
+                        $("#start-job-label").show();
+                        $("#start-setting-button2").text("週期表單");
+        
+                        if ($(this).val()=="2") {
+                            $("#period-time-label1").text("每年");
+                            $("#period-time-label2").text("月");
+                            $("#period-time-label3").text("1 日");
+                            $("#period-time").attr("min", 1);
+                            $("#period-time").attr("max", 12);
+                        }
+                        if ($(this).val()=="3") {
+                            $("#period-time-label1").text("每月");
+                            $("#period-time-label2").text("日");
+                            $("#period-time-label3").text("");
+                            $("#period-time").attr("min", 1);
+                            $("#period-time").attr("max", 30);
+                        }
+                        if ($(this).val()=="4") {
+                            $("#period-time-label1").text("每週");
+                            $("#period-time-label2").text("");
+                            $("#period-time-label3").text("");
+                            $("#period-time").attr("min", 1);
+                            $("#period-time").attr("max", 7);
+                        }
+                        if ($(this).val()=="5") {
+                            $("#period-time-label1").text("每日");
+                            $("#period-time-label2").text("時");
+                            $("#period-time-label3").text("0 分");
+                            $("#period-time").attr("min", 1);
+                            $("#period-time").attr("max", 24);
+                        }
+                    }
+                });
+        
+                $("#btn-new-site-job-action").on("click", function() {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_job_action_dialog_data',
+                            '_job_id': $("#job-id").val(),
+                        },
+                        success: function (response) {
+                            get_site_job_action_list_data($("#job-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });    
+                });
+                                
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
@@ -644,57 +729,6 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-        });
-
-        $("#start-setting-button1").on("click", function () {
-            $("#start-setting-div1").toggle();
-            $("#start-setting-div2").toggle();
-        });
-
-        $("#start-setting-button2").on("click", function () {
-            $("#start-setting-div1").toggle();
-            $("#start-setting-div2").toggle();
-        });
-
-        $("#start-setting").on("change", function() {            
-            if ($(this).val()=="1") {
-                $("#period-time").hide();
-                $("#start-job-label").hide();
-                $("#start-setting-button2").text("啟始職務");
-            } else {                
-                $("#period-time").show();
-                $("#start-job-label").show();
-                $("#start-setting-button2").text("週期表單");
-
-                if ($(this).val()=="2") {
-                    $("#period-time-label1").text("每年");
-                    $("#period-time-label2").text("月");
-                    $("#period-time-label3").text("1 日");
-                    $("#period-time").attr("min", 1);
-                    $("#period-time").attr("max", 12);
-                }
-                if ($(this).val()=="3") {
-                    $("#period-time-label1").text("每月");
-                    $("#period-time-label2").text("日");
-                    $("#period-time-label3").text("");
-                    $("#period-time").attr("min", 1);
-                    $("#period-time").attr("max", 30);
-                }
-                if ($(this).val()=="4") {
-                    $("#period-time-label1").text("每週");
-                    $("#period-time-label2").text("");
-                    $("#period-time-label3").text("");
-                    $("#period-time").attr("min", 1);
-                    $("#period-time").attr("max", 7);
-                }
-                if ($(this).val()=="5") {
-                    $("#period-time-label1").text("每日");
-                    $("#period-time-label2").text("時");
-                    $("#period-time-label3").text("0 分");
-                    $("#period-time").attr("min", 1);
-                    $("#period-time").attr("max", 24);
-                }
-            }
         });
 
     }
