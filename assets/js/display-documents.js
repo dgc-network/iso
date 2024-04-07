@@ -162,35 +162,15 @@ jQuery(document).ready(function($) {
                     $("#doc-frame-div").toggle();
                 });
         
-                if ($('#start-setting').val()=="1") {
-                    $("#start-setting-div2").show();
+                if ($('#start-setting').val()>1) {
                     $("#start-setting-div").show();
-                } else {
-                    $("#start-setting-div1").show();
                 }
 
-                $("#start-setting-button1").on("click", function () {
-                    $("#start-setting-div1").toggle();
-                    $("#start-setting-div2").toggle();
-                });
-        
-                $("#start-setting-button2").on("click", function () {
-                    $("#start-setting-div1").toggle();
-                    $("#start-setting-div2").toggle();
-                });
-        
                 $("#start-setting").on("change", function() {            
                     if ($(this).val()=="1") {
                         $("#start-setting-div").hide();
-                        //$("#period-time").hide();
-                        //$("#start-job-label").hide();
-                        //$("#start-setting-button2").text("啟始職務");
                     } else {                
                         $("#start-setting-div").show();
-                        //$("#period-time").show();
-                        //$("#start-job-label").show();
-                        //$("#start-setting-button2").text("週期表單");
-        
                         if ($(this).val()=="2") {
                             $("#period-time-label1").text("每年");
                             $("#period-time-label2").text("月");
