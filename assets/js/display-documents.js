@@ -136,13 +136,13 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
-                if ($('#is-doc-report').val()==1) {
+                if ($('#is-doc-report').val()=="1") {
                     $("#doc-report-div").show();
                 } else {
                     $("#doc-frame-div").show();
                 }
 
-                if ($('#start-setting').val()==1) {
+                if ($('#start-setting').val()=="1") {
                     $("#start-setting-div1").show();
                 } else {
                     $("#start-setting-div2").show();
@@ -230,11 +230,11 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_responsible_department'] = $("#responsible-department").val();
                     ajaxData['_start_setting'] = $("#start-setting").val();
                     ajaxData['_period_time'] = $("#period-time").val();
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_start_leadtime'] = $("#start-leadtime").val();
+                    ajaxData['_responsible_department'] = $("#responsible-department").val();
                             
                     $.ajax({
                         type: 'POST',

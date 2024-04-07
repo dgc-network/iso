@@ -722,7 +722,6 @@ add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 function display_doc_action_list($doc_id) {
     ob_start();
     ?>
-    <div id="actions-container">
     <fieldset>
     <table style="width:100%;">
         <thead>
@@ -745,7 +744,6 @@ function display_doc_action_list($doc_id) {
                         echo '<td style="text-align:center;">'.esc_html(get_the_totle($next_doc)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
                         echo '</tr>';
-                        $x += 1;
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -754,7 +752,6 @@ function display_doc_action_list($doc_id) {
     </table>
     <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
-    </div>
     <?php display_site_job_action_dialog();?>
     <?php
     $html = ob_get_clean();
