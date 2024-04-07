@@ -234,26 +234,8 @@ jQuery(document).ready(function($) {
                         }
                     }
                 });
-        
-                $("#new-doc-action").on("click", function() {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_action_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            //get_doc_action_list_data(doc_id);
-                            get_document_dialog_data(doc_id);
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });    
-                });
+                
+                activate_doc_action_list_data(doc_id)
                                 
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
@@ -446,6 +428,112 @@ jQuery(document).ready(function($) {
                 });
             }    
         });
+    }
+
+    function activate_doc_action_list_data(doc_id=false){
+
+        $("#new-doc-action").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_action_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    //get_doc_action_list_data(doc_id);
+                    get_document_dialog_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+
+        $('[id^="edit-doc-action-"]').on( "click", function() {
+            const action_id = this.id.substring(16);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_doc_action_dialog_data',
+                    '_action_id': action_id,
+                },
+                success: function (response) {
+                    $("#doc-action-dialog").dialog('open');
+                    $("#field-id").val(field_id);
+                    $("#field-name").val(response.field_name);
+                    $("#field-title").val(response.field_title);
+                    $("#field-type").val(response.field_type).change();
+                    $("#default-value").val(response.default_value);
+                    $("#listing-style").val(response.listing_style).change();
+                    $("#order-field").val(response.order_field).change();
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+    
+        $("#doc-action-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function() {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_action_dialog_data',
+                            '_action_id': $("#action-id").val(),
+                            '_action_title': $("#action-title").val(),
+                            '_action_content': $("#action-content").val(),
+                            '_next_doc': $("#next-doc").val(),
+                            '_next_leadtime': $("#next-leadtime").val(),
+                        },
+                        success: function (response) {
+                            $("#doc-action-dialog").dialog('close');
+                            //get_doc_action_list_data($("#doc-id").val());
+                            get_document_dialog_data($("#doc-id").val());
+                        },
+                        error: function (error) {
+                            console.error(error);                    
+                            alert(error);
+                        }
+                    });            
+                },
+                "Delete": function() {
+                    if (window.confirm("Are you sure you want to delete this doc action?")) {
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_doc_action_dialog_data',
+                                '_action_id': $("#action-id").val(),
+                            },
+                            success: function (response) {
+                                $("#doc-action-dialog").dialog('close');
+                                //get_doc_action_list_data($("#doc-id").val());
+                                get_document_dialog_data($("#doc-id").val());
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    
+    
     }
 
     function activate_doc_field_list_data(doc_id=false, site_id=false){
@@ -783,59 +871,5 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
-    $("#doc-action-dialog").dialog({
-        width: 450,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function() {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_doc_action_dialog_data',
-                        '_action_id': $("#action-id").val(),
-                        '_action_title': $("#action-title").val(),
-                        '_action_content': $("#action-content").val(),
-                        '_next_doc': $("#next-doc").val(),
-                        '_next_leadtime': $("#next-leadtime").val(),
-                    },
-                    success: function (response) {
-                        $("#doc-action-dialog").dialog('close');
-                        //get_doc_action_list_data($("#doc-id").val());
-                        get_document_dialog_data($("#doc-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
-            },
-            "Delete": function() {
-                if (window.confirm("Are you sure you want to delete this doc action?")) {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'del_doc_action_dialog_data',
-                            '_action_id': $("#action-id").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
-                            //get_doc_action_list_data($("#doc-id").val());
-                            get_document_dialog_data($("#doc-id").val());
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                }
-            }
-        }
-    });
 
 });

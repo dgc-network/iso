@@ -776,12 +776,12 @@ function select_site_job_option_data($selected_job=0, $site_id=0) {
 function get_job_action_dialog_data() {
     $response = array();
     if( isset($_POST['_action_id']) ) {
-        $action_id = (int)sanitize_text_field($_POST['_action_id']);
+        $action_id = sanitize_text_field($_POST['_action_id']);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $next_job = esc_attr(get_post_meta( $action_id, 'next_job', true));
+        $next_job = get_post_meta( $action_id, 'next_job', true);
         $response["next_job"] = select_site_job_option_data($next_job, $_POST['_site_id']);
-        $response["next_leadtime"] = esc_html(get_post_meta( $action_id, 'next_leadtime', true));
+        $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
     }
     wp_send_json($response);
 }

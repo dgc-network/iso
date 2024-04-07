@@ -1778,6 +1778,21 @@ function get_doc_action_list_data() {
 add_action( 'wp_ajax_get_doc_action_list_data', 'get_doc_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_action_list_data', 'get_doc_action_list_data' );
 
+function get_doc_action_dialog_data() {
+    $response = array();
+    if( isset($_POST['_action_id']) ) {
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        $response["action_title"] = get_the_title($action_id);
+        $response["action_content"] = get_post_field('post_content', $action_id);
+        $next_doc = get_post_meta( $action_id, 'next_doc', true);
+        $response["next_doc"] = select_doc_report_option_data($next_doc);
+        $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_doc_action_dialog_data', 'get_doc_action_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', 'get_doc_action_dialog_data' );
+
 function set_doc_action_dialog_data() {
     if( isset($_POST['_action_id']) ) {
         $data = array(
