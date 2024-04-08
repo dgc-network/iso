@@ -537,10 +537,10 @@ function display_site_job_list($initial=false) {
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
-                        $start_job_checked = ($is_start_job==1) ? 'checked' : '';
-                        $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        //$is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
+                        //$start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        $job_doc = get_post_meta(get_the_ID(), 'job_doc', true);
+                        $doc_title = get_post_meta($job_doc, 'doc_title', true);
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php the_title();?></td>
