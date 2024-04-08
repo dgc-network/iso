@@ -268,7 +268,7 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(job_id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
-                    $("#doc-id").val(response.doc_id);
+                    $("#job-doc").empty().append(response.job_doc);
                     //$('#is-start-job').prop('checked', response.is_start_job == 1);
                     get_job_action_list_data(job_id);
                 },
@@ -383,7 +383,7 @@ jQuery(document).ready(function($) {
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
                             //'_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
-                            '_doc_id': $("#doc-id").val(),
+                            '_job_doc': $("#job-doc").val(),
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
@@ -423,7 +423,7 @@ jQuery(document).ready(function($) {
 
 
     // Site job actions template
-    $("#btn-new-site-job-action").on("click", function() {
+    $("#new-job-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -456,7 +456,7 @@ jQuery(document).ready(function($) {
                     $(`.site-job-action-list-${index}`).hide().empty();
                 }    
                 $.each(response, function (index, value) {
-                    $(`.site-job-action-list-${index}`).attr("id", `edit-job-action-site-${value.action_id}`)
+                    $(`.site-job-action-list-${index}`).attr("id", `edit-job-action-${value.action_id}`)
                     const output = `
                         <td style="text-align:center;">${value.action_title}</td>
                         <td>${value.action_content}</td>
@@ -465,19 +465,19 @@ jQuery(document).ready(function($) {
                     $(`.site-job-action-list-${index}`).append(output).show();
                 });
     
-                $('[id^="edit-job-action-site-"]').on("click", function () {
-                    const id = this.id.substring(21);
+                $('[id^="edit-job-action-"]').on("click", function () {
+                    const job_id = this.id.substring(16);
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
                             'action': 'get_job_action_dialog_data',
-                            '_action_id': id,
+                            '_action_id': job_id,
                             '_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
-                            $("#site-job-action-dialog").dialog('open');
+                            $("#job-action-dialog").dialog('open');
                             $("#action-id").val(id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
@@ -498,7 +498,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $("#site-job-action-dialog").dialog({
+    $("#job-action-dialog").dialog({
         width: 450,
         modal: true,
         autoOpen: false,
@@ -517,7 +517,7 @@ jQuery(document).ready(function($) {
                         '_next_leadtime': $("#next-leadtime").val(),
                     },
                     success: function (response) {
-                        $("#site-job-action-dialog").dialog('close');
+                        $("#job-action-dialog").dialog('close');
                         get_job_action_list_data($("#job-id").val());
                     },
                     error: function (error) {
@@ -537,7 +537,7 @@ jQuery(document).ready(function($) {
                             '_action_id': $("#action-id").val(),
                         },
                         success: function (response) {
-                            $("#site-job-action-dialog").dialog('close');
+                            $("#job-action-dialog").dialog('close');
                             get_job_action_list_data($("#job-id").val());
                         },
                         error: function(error){

@@ -544,8 +544,8 @@ function display_document_list() {
                     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
                     $todo_id = get_post_meta( $doc_id, 'todo_status', true);
                     $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                    $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                    $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                    $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
+                    $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
                     ?>
                     <tr id="edit-document-<?php echo $doc_id;?>">
                         <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
@@ -1222,8 +1222,8 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         }
                         $todo_id = get_post_meta( $report_id, 'todo_status', true);
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                        $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                        $todo_status = ($todo_id==-2) ? '廢止' : $todo_status;
+                        $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
+                        $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
                         echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                         echo '</tr>';
                     endwhile;                
@@ -1644,7 +1644,7 @@ function get_doc_action_list_data() {
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
             $_list["next_job"] = get_the_title($next_job);
-            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
+            if ($next_job==-1) $_list["next_job"] = __( '文件發行', 'your-text-domain' );
             if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
             $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
             array_push($_array, $_list);
@@ -1760,6 +1760,7 @@ function select_doc_report_option_data($selected_option=0){
         endwhile;
         wp_reset_postdata();
     endif;
+/*
     $selected = ($selected_option == '-1') ? 'selected' : '';
     $options .= '<option value="-1" '.$selected.' />' . __( '文件承辦', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == '-2') ? 'selected' : '';
@@ -1768,26 +1769,36 @@ function select_doc_report_option_data($selected_option=0){
     $options .= '<option value="-3" '.$selected.' />' . __( '文件發行', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == '-4') ? 'selected' : '';
     $options .= '<option value="-4" '.$selected.' />' . __( '文件廢止', 'your-text-domain' ) . '</option>';
-
-/*
-    $options = '<option value="0">Select doc</option>';
-    // Check if there are any posts
-    if ($query->have_posts()) {
-        // Start the loop
-        while ($query->have_posts()) {
-            $query->the_post();
-            // Display or process each document post
-            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-
-            // Example: the_title();
-        }
-        // Restore original post data
-        wp_reset_postdata();
-    }
 */    
     return $options;    
 
+}
+
+function select_document_option_data($selected_option=0){
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    $options = '<option value="0">Select doc</option>';
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+        endwhile;
+        wp_reset_postdata();
+    endif;
+    return $options;
 }
 
 function display_doc_action_dialog(){

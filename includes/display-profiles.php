@@ -614,9 +614,9 @@ function display_site_job_dialog() {
         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
         <label for="job-content">Content:</label>
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
-        <label for="doc-id">Job doc:</label>
-        <select id="doc-id" class="text ui-widget-content ui-corner-all" ></select>
-        <?php display_site_job_action_list();?>
+        <label for="job-doc">Job doc:</label>
+        <select id="jobdoc" class="text ui-widget-content ui-corner-all" ></select>
+        <?php display_job_action_list();?>
     </fieldset>
     </div>
     <?php
@@ -629,7 +629,8 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         //$response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
-        $response["doc_id"] = get_post_meta( $job_id, 'doc_id', true);
+        $doc_id = get_post_meta( $job_id, 'job_doc', true);
+        $response["job_doc"] = select_doc_report_option_data($doc_id);
     }
     wp_send_json($response);
 }
@@ -637,7 +638,6 @@ add_action( 'wp_ajax_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 
 function set_site_job_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_job_id']) ) {
         $job_id = sanitize_text_field($_POST['_job_id']);
         $data = array(
@@ -647,9 +647,10 @@ function set_site_job_dialog_data() {
         );
         wp_update_post( $data );
         //update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
-        update_post_meta( $job_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+        update_post_meta( $job_id, 'job_doc', sanitize_text_field($_POST['_job_doc']));
     } else {
-        // Set up the post data
+        $current_user_id = get_current_user_id();
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
         $new_post = array(
             'post_title'    => 'New job',
             'post_content'  => 'Your post content goes here.',
@@ -658,7 +659,8 @@ function set_site_job_dialog_data() {
             'post_type'     => 'job',
         );    
         $post_id = wp_insert_post($new_post);
-        update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta($post_id, 'site_id', $site_id);
     }
     wp_send_json($response);
 }
@@ -673,8 +675,9 @@ function del_site_job_dialog_data() {
 add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 
-function display_site_job_action_list() {
+function display_job_action_list() {
     ?>
+    <fieldset>
     <table style="width:100%;">
         <thead>
             <tr>
@@ -694,8 +697,9 @@ function display_site_job_action_list() {
         ?>
         </tbody>
     </table>
-    <div id="btn-new-site-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-    <?php display_site_job_action_dialog();?>
+    <div id="new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    </fieldset>
+    <?php display_job_action_dialog();?>
     <?php
 }
     
@@ -725,9 +729,9 @@ function get_job_action_list_data() {
             $_list["action_title"] = get_the_title();
             $_list["action_content"] = get_post_field('post_content', get_the_ID());
             $_list["next_job"] = get_the_title($next_job);
-            if ($next_job==-1) $_list["next_job"] = __( '發行', 'your-text-domain' );
-            if ($next_job==-2) $_list["next_job"] = __( '廢止', 'your-text-domain' );
-            $_list["next_leadtime"] = esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true));
+            if ($next_job==-1) $_list["next_job"] = __( '文件發行', 'your-text-domain' );
+            if ($next_job==-2) $_list["next_job"] = __( '文件廢止', 'your-text-domain' );
+            $_list["next_leadtime"] = get_post_meta(get_the_ID(), 'next_leadtime', true);
             array_push($_array, $_list);
         endwhile;
         wp_reset_postdata();
@@ -737,9 +741,9 @@ function get_job_action_list_data() {
 add_action( 'wp_ajax_get_job_action_list_data', 'get_job_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_job_action_list_data', 'get_job_action_list_data' );
 
-function display_site_job_action_dialog(){
+function display_job_action_dialog(){
     ?>
-    <div id="site-job-action-dialog" title="Action templates dialog" style="display:none;">
+    <div id="job-action-dialog" title="Action dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="job-id" />
         <input type="hidden" id="action-id" />
@@ -756,23 +760,25 @@ function display_site_job_action_dialog(){
     <?php
 }
 
-function select_site_job_option_data($selected_job=0, $site_id=0) {
+function select_site_job_option_data($selected_option=0) {
     $options = '<option value="">Select job</option>';
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta( $current_user_id, 'site_id', true);
     $query = retrieve_site_job_list_data($site_id);
     while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_job == get_the_ID()) ? 'selected' : '';
+        $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata();
-    if ($selected_job==-1){
-        $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+    if ($selected_option==-1){
+        $options .= '<option value="-1" selected>'.__( '文件發行', 'your-text-domain' ).'</option>';
     } else {
-        $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-1">'.__( '文件發行', 'your-text-domain' ).'</option>';
     }
-    if ($selected_job==-2){
-        $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
+    if ($selected_option==-2){
+        $options .= '<option value="-2" selected>'.__( '文件廢止', 'your-text-domain' ).'</option>';
     } else {
-        $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
+        $options .= '<option value="-2">'.__( '文件廢止', 'your-text-domain' ).'</option>';
     }
     return $options;
 }
@@ -784,7 +790,7 @@ function get_job_action_dialog_data() {
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
         $next_job = get_post_meta( $action_id, 'next_job', true);
-        $response["next_job"] = select_site_job_option_data($next_job, $_POST['_site_id']);
+        $response["next_job"] = select_site_job_option_data($next_job);
         $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
     }
     wp_send_json($response);

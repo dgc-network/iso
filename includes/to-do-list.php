@@ -249,8 +249,8 @@ function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
                     $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                     $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                     $next_job = get_post_meta( $submit_action, 'next_job', true);
-                    $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
-                    $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
+                    $job_title = ($next_job==-1) ? __( '文件發行', 'your-text-domain' ) : get_the_title($next_job);
+                    $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
 
                     if ($todo_site==$site_id) { // Aditional condition to filter the data
                         $user_data = get_userdata( $submit_user );
@@ -465,8 +465,8 @@ function display_todo_dialog($todo_id) {
                         echo '<td style="text-align:center;">'.get_the_title().'</td>';
                         echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
                         if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
-                        if ($next_job==-1) echo '<td style="text-align:center;">'.__( '發行', 'your-text-domain' ).'</td>';
-                        if ($next_job==-2) echo '<td style="text-align:center;">'.__( '廢止', 'your-text-domain' ).'</td>';
+                        if ($next_job==-1) echo '<td style="text-align:center;">'.__( '文件發行', 'your-text-domain' ).'</td>';
+                        if ($next_job==-2) echo '<td style="text-align:center;">'.__( '文件廢止', 'your-text-domain' ).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
                         echo '</tr>';
                     endwhile;
@@ -561,8 +561,8 @@ function set_next_job_and_actions($args = array()) {
     }
     $todo_title = get_the_title($next_job);
 
-    if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
-    if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
+    if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
+    if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
     
     // Insert the To-do list for next_job
     $new_post = array(
@@ -685,7 +685,7 @@ function notice_the_persons_in_site($todo_id=0) {
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
-    $text_message='「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date ).'發行或廢止，你可以點擊下方連結查看該文件。';
+    $text_message='「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date ).'文件發行或廢止，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
@@ -733,14 +733,14 @@ function display_todo_action_dialog(){
 function get_todo_action_dialog_data() {
     $response = array();
     if( isset($_POST['_action_id']) ) {
-        $action_id = (int)sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta( $action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
-        $site_id = esc_attr(get_post_meta( $doc_id, 'site_id', true));
-        $next_job = esc_attr(get_post_meta( $action_id, 'next_job', true));
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        $todo_id = get_post_meta( $action_id, 'todo_id', true);
+        $doc_id = get_post_meta( $todo_id, 'doc_id', true);
+        //$site_id = esc_attr(get_post_meta( $doc_id, 'site_id', true));
+        $next_job = get_post_meta( $action_id, 'next_job', true);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $response["next_job"] = select_site_job_option_data($next_job, $site_id);
+        $response["next_job"] = select_site_job_option_data($next_job);
         $response["next_leadtime"] = esc_html(get_post_meta( $action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
