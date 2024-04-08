@@ -530,7 +530,7 @@ function display_site_job_list($initial=false) {
                 <thead>
                     <th>Job</th>
                     <th>Description</th>
-                    <th>Start</th>
+                    <th>Doc</th>
                 </thead>
                 <tbody>
                 <?php
@@ -539,11 +539,13 @@ function display_site_job_list($initial=false) {
                     while ($query->have_posts()) : $query->the_post();
                         $is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
                         $start_job_checked = ($is_start_job==1) ? 'checked' : '';
+                        $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
-                            <td style="text-align:center;"><input type="checkbox" id="check-start-job-<?php the_ID();?>" <?php echo $start_job_checked;?> /></td>
+                            <td><?php echo esc_html($doc_title);?></td>
                         </tr>
                         <?php 
                     endwhile;
@@ -554,7 +556,7 @@ function display_site_job_list($initial=false) {
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             </fieldset>
-            <?php display_job_dialog();?>
+            <?php display_site_job_dialog();?>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -603,7 +605,7 @@ function get_site_job_list_data() {
 add_action( 'wp_ajax_get_site_job_list_data', 'get_site_job_list_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_list_data', 'get_site_job_list_data' );
 
-function display_job_dialog() {
+function display_site_job_dialog() {
     ?>
     <div id="site-job-dialog" title="Job dialog" style="display:none;">
     <fieldset>
@@ -612,9 +614,9 @@ function display_job_dialog() {
         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
         <label for="job-content">Content:</label>
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-id">Job doc:</label>
+        <select id="doc-id" class="text ui-widget-content ui-corner-all" ></select>
         <?php display_site_job_action_list();?>
-        <input type="checkbox" id="is-start-job" />
-        <label for="is-start-job">Start job</label>
     </fieldset>
     </div>
     <?php
@@ -626,7 +628,8 @@ function get_site_job_dialog_data() {
         $job_id = sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        $response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
+        //$response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
+        $response["doc_id"] = get_post_meta( $job_id, 'doc_id', true);
     }
     wp_send_json($response);
 }
@@ -643,7 +646,8 @@ function set_site_job_dialog_data() {
             'post_content' => sanitize_text_field($_POST['_job_content']),
         );
         wp_update_post( $data );
-        update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
+        //update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
+        update_post_meta( $job_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
     } else {
         // Set up the post data
         $new_post = array(
@@ -802,7 +806,6 @@ function set_job_action_dialog_data() {
         wp_update_post( $data );
     } else {
         $current_user_id = get_current_user_id();
-        // Insert the post into the database
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',
@@ -812,6 +815,7 @@ function set_job_action_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta( $post_id, 'job_id', sanitize_text_field($_POST['_job_id']));
+        update_post_meta( $post_id, 'next_leadtime', 86400);
     }
     wp_send_json($response);
 }

@@ -268,8 +268,9 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(job_id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
-                    $('#is-start-job').prop('checked', response.is_start_job == 1);
-                    get_site_job_action_list_data(job_id);
+                    $("#doc-id").val(response.doc_id);
+                    //$('#is-start-job').prop('checked', response.is_start_job == 1);
+                    get_job_action_list_data(job_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -381,7 +382,8 @@ jQuery(document).ready(function($) {
                             '_job_id': $("#job-id").val(),
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
-                            '_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
+                            //'_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
+                            '_doc_id': $("#doc-id").val(),
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
@@ -431,7 +433,7 @@ jQuery(document).ready(function($) {
                 '_job_id': $("#job-id").val(),
             },
             success: function (response) {
-                get_site_job_action_list_data($("#job-id").val());
+                get_job_action_list_data($("#job-id").val());
             },
             error: function(error){
                 console.error(error);
@@ -440,7 +442,7 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    function get_site_job_action_list_data(job_id) {
+    function get_job_action_list_data(job_id) {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -516,7 +518,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#site-job-action-dialog").dialog('close');
-                        get_site_job_action_list_data($("#job-id").val());
+                        get_job_action_list_data($("#job-id").val());
                     },
                     error: function (error) {
                         console.error(error);                    
@@ -536,7 +538,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-job-action-dialog").dialog('close');
-                            get_site_job_action_list_data($("#job-id").val());
+                            get_job_action_list_data($("#job-id").val());
                         },
                         error: function(error){
                             console.error(error);
