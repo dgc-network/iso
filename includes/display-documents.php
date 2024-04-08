@@ -401,7 +401,14 @@ function set_initial_iso_document() {
         );
         
         $query = new WP_Query($args);
-
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                get_shared_document(get_the_ID());
+            endwhile;
+            wp_reset_postdata();
+            $response = array('success' => true);
+        endif;
+/*
         // Check if there are any posts
         if ($query->have_posts()) {
             // Loop through the posts
@@ -416,6 +423,7 @@ function set_initial_iso_document() {
             // No documents found
             $response['error'] = 'No documents found.';
         }
+*/        
     }
 
     wp_send_json($response);
@@ -1739,7 +1747,24 @@ function select_doc_report_option_data($selected_option=0){
     );
     
     $query = new WP_Query($args);
-    
+    $options = '<option value="0">Select doc</option>';
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+            $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+        endwhile;
+        wp_reset_postdata();
+    endif;
+    $selected = ($selected_option == '-1') ? 'selected' : '';
+    $options .= '<option value="-1" '.$selected.' />' . __( '文件承辦', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == '-2') ? 'selected' : '';
+    $options .= '<option value="-2" '.$selected.' />' . __( '文件審查', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == '-3') ? 'selected' : '';
+    $options .= '<option value="-3" '.$selected.' />' . __( '文件發行', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == '-4') ? 'selected' : '';
+    $options .= '<option value="-4" '.$selected.' />' . __( '文件廢止', 'your-text-domain' ) . '</option>';
+
+/*
     $options = '<option value="0">Select doc</option>';
     // Check if there are any posts
     if ($query->have_posts()) {
@@ -1755,6 +1780,7 @@ function select_doc_report_option_data($selected_option=0){
         // Restore original post data
         wp_reset_postdata();
     }
+*/    
     return $options;    
 
 }
