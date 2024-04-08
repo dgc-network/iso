@@ -1676,10 +1676,15 @@ function display_doc_action_list($doc_id) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $next_doc = get_post_meta(get_the_ID(), 'next_doc', true);
+                        $next_doc_title = get_the_title($next_doc);
+                        if ($next_doc==-1) $next_doc_title=__( '文件承辦', 'your-text-domain' );
+                        if ($next_doc==-2) $next_doc_title=__( '文件審查', 'your-text-domain' );
+                        if ($next_doc==-3) $next_doc_title=__( '文件發行', 'your-text-domain' );
+                        if ($next_doc==-4) $next_doc_title=__( '文件廢止', 'your-text-domain' );
                         echo '<tr id="edit-doc-action-'.esc_attr(get_the_ID()).'">';
                         echo '<td style="text-align:center;">'.esc_html(get_the_title()).'</td>';
                         echo '<td>'.esc_html(get_post_field('post_content', get_the_ID())).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_the_title($next_doc)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html($next_doc_title).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
                         echo '</tr>';
                     endwhile;
