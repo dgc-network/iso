@@ -629,8 +629,8 @@ function get_site_job_dialog_data() {
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         //$response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
-        $doc_id = get_post_meta( $job_id, 'job_doc', true);
-        $response["job_doc"] = select_doc_report_option_data($doc_id);
+        $job_doc = get_post_meta( $job_id, 'job_doc', true);
+        $response["job_doc"] = select_document_option_data($job_doc);
     }
     wp_send_json($response);
 }
