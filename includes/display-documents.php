@@ -843,9 +843,9 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th><?php echo __( '欄位', 'your-text-domain' );?></th>
-                    <th><?php echo __( '顯示', 'your-text-domain' );?></th>
-                    <th><?php echo __( '型態', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Field', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody id="sortable-doc-field-list">
@@ -1733,7 +1733,7 @@ function select_doc_report_option_data($selected_option=0){
                 'key'     => 'is_doc_report',
                 'value'   => '1',
                 'compare' => '=',
-                'type'    => 'NUMERIC', // Assuming is_doc_report is stored as a numeric value
+                //'type'    => 'NUMERIC', // Assuming is_doc_report is stored as a numeric value
             ),
         ),
     );
