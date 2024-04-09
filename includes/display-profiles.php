@@ -178,10 +178,13 @@ function display_site_profile($initial=false) {
                 // Loop through the users
                 foreach ($users as $user) {
                     $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
+                    $user_site = get_user_meta($user->ID, 'site_id', true);
+
+                    $is_other_site = ($user_site == $site_id) ? '' : '*';
                     $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
                     ?>
                     <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                        <td style="text-align:center;"><?php echo $user->display_name; ?></td>
+                        <td style="text-align:center;"><?php echo $is_other_site.$user->display_name; ?></td>
                         <td style="text-align:center;"><?php echo $user->user_email; ?></td>
                         <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
                     </tr>
@@ -506,24 +509,6 @@ function display_site_job_list($initial=false) {
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
         <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
         <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-            <div id="site-hint" style="display:none; color:#999;"></div>
-
-            <div id="site-image-container">
-                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
-            </div>
-            <div id="site-image-url" style="display:none;">
-            <fieldset>
-                <label for="image-url">Image URL:</label>
-                <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
-                <button id="set-image-url" class="button">Set</button>
-            </fieldset>
-            </div>
-
-            <label><?php echo __( '工作職掌：', 'your-text-domain' );?></label>
-            <fieldset style="margin-top:5px;">
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <th>Job</th>
@@ -553,7 +538,7 @@ function display_site_job_list($initial=false) {
                 </tbody>
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-            </fieldset>
+        </fieldset>
             <?php display_site_job_dialog();?>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -570,7 +555,6 @@ function display_site_job_list($initial=false) {
                 </div>
             </div>
 
-        </fieldset>
         <?php
     } else {
         ?>
