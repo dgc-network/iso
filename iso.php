@@ -188,7 +188,7 @@ function init_webhook_events() {
                     case 'text':
                         $result = get_keyword_matchmaking($message['text']);
                         if ($result) {
-                            if ($result==0) {
+                            if ($result==-1) {
                                 $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
                                 $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
                                 // Encode the Chinese characters for inclusion in the URL
@@ -246,12 +246,12 @@ add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matchmaking($keyword) {
 
-    if (strpos($keyword, '註冊') !== false) return 0;
-    if (strpos($keyword, '登入') !== false) return 0;
-    if (strpos($keyword, '登錄') !== false) return 0;
-    if (strpos($keyword, 'login') !== false) return 0;
-    if (strpos($keyword, 'Login') !== false) return 0;
-/*
+    if (strpos($keyword, '註冊') !== false) return -1;
+    if (strpos($keyword, '登入') !== false) return -1;
+    if (strpos($keyword, '登錄') !== false) return -1;
+    if (strpos($keyword, 'login') !== false) return -1;
+    if (strpos($keyword, 'Login') !== false) return -1;
+
     // WP_Query arguments
     $args = array(
         'post_type'      => 'job',
@@ -264,7 +264,7 @@ function get_keyword_matchmaking($keyword) {
     
     // Check if there are any posts that match the query
     if ( $query->have_posts() ) return $query;
-*/        
+
     return false;
 }
 
