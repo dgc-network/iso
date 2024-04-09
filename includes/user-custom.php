@@ -95,7 +95,7 @@ function user_custom_fields(WP_User $user) {
                     <select id="site-id" name="_site_id" class="regular-text" >
                         <option value="">Select Site</option>
                     <?php
-                        $site_id = get_user_meta( $user->ID, 'site_id', true);
+                        $site_id = get_user_meta($user->ID, 'site_id', true);
                         $site_args = array(
                             'post_type'      => 'site',
                             'posts_per_page' => -1,
@@ -146,7 +146,7 @@ function get_balance_by_wallet_address($wallet_address='') {
       
     foreach( $query->posts as $post ) {
         $post_id  = $post->ID;
-        $balance = get_user_meta( $post_id, 'dgc_wallet_balance', true );
+        $balance = get_user_meta($post_id, 'dgc_wallet_balance', true );
         return $balance;
         // ...
     }
@@ -161,8 +161,8 @@ function set_amount_transfer_to_wallet_address($wallet_address='', $amount=0) {
     //$post_id = 0;
     foreach( $query->posts as $post ) {
         $post_id  = $post->ID;
-        $my_balance = get_user_meta( $current_user->ID, 'dgc_wallet_balance', true );
-        $your_balance = get_user_meta( $post_id, 'dgc_wallet_balance', true );
+        $my_balance = get_user_meta($current_user->ID, 'dgc_wallet_balance', true );
+        $your_balance = get_user_meta($post_id, 'dgc_wallet_balance', true );
         if ($my_balance>=$amount) {
             update_user_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$amount );
             update_user_meta( $post_id, 'dgc_wallet_balance', $your_balance+$amount );
@@ -180,8 +180,8 @@ function set_amount_transfer_to_wallet_address($wallet_address='', $amount=0) {
 function set_amount_transfer_to_user($_tx_id='', $_tx_amount=0) {
     if ($_tx_id!=0){
         $current_user = wp_get_current_user();
-        $my_balance = get_user_meta( $current_user->ID, 'dgc_wallet_balance', true );
-        $your_balance = get_user_meta( $_tx_id, 'dgc_wallet_balance', true );
+        $my_balance = get_user_meta($current_user->ID, 'dgc_wallet_balance', true );
+        $your_balance = get_user_meta($_tx_id, 'dgc_wallet_balance', true );
         if ($my_balance>=$_tx_amount) {
             update_user_meta( $current_user->ID, 'dgc_wallet_balance', $my_balance-$_tx_amount );
             update_user_meta( $post_id, 'dgc_wallet_balance', $your_balance+$_tx_amount );

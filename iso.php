@@ -364,7 +364,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
             "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
             $line_user_id
         ));
-        $site_id = get_user_meta( $user_id, 'site_id', true);
+        $site_id = get_user_meta($user_id, 'site_id', true);
         $site_title = get_the_title($site_id);
     }
     $user_data = get_userdata( $user_id );
@@ -411,7 +411,7 @@ function user_did_not_login_yet() {
                 "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
                 $_GET['_id']
             ));
-            $site_id = get_user_meta( $user_id, 'site_id', true);
+            $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
         }
         //$user = get_user_by( 'ID', $user_id );

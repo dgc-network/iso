@@ -61,13 +61,13 @@ add_filter('manage_edit-site_sortable_columns', 'add_sortable_site_custom_field_
 
 function display_site_custom_field_in_admin_list($column, $post_id) {
     if ($column === 'cust_no_column') {
-        echo esc_html(get_post_meta( $post_id, 'cust_no', true));
+        echo esc_html(get_post_meta($post_id, 'cust_no', true));
     }
     if ($column === 'contact_column') {
-        echo esc_html(get_post_meta( $post_id, 'contact', true));
+        echo esc_html(get_post_meta($post_id, 'contact', true));
     }
     if ($column === 'phone_column') {
-        echo esc_html(get_post_meta( $post_id, 'phone', true));
+        echo esc_html(get_post_meta($post_id, 'phone', true));
     }
 }
 add_action('manage_site_posts_custom_column', 'display_site_custom_field_in_admin_list', 10, 2);
@@ -93,7 +93,7 @@ function isURL($str) {
 
 function site_image_content($post) {
     wp_nonce_field('site_image_nonce', 'site_image_nonce');
-    $image_url = get_post_meta( $post->ID, 'image_url', true);
+    $image_url = get_post_meta($post->ID, 'image_url', true);
     ?>
     <div id="custom-image-container">
         <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
@@ -133,13 +133,13 @@ add_action('add_meta_boxes', 'add_site_settings_metabox');
 
 function site_settings_content($post) {
     wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
-    $cust_no = esc_attr(get_post_meta( $post->ID, 'cust_no', true));
-    $contact = esc_attr(get_post_meta( $post->ID, 'contact', true));
-    $email = esc_attr(get_post_meta( $post->ID, 'email', true));
-    $phone = esc_attr(get_post_meta( $post->ID, 'phone', true));
-    $address = esc_attr(get_post_meta( $post->ID, 'address', true));
-    $country = esc_attr(get_post_meta( $post->ID, 'country', true));
-    $site_url = esc_attr(get_post_meta( $post->ID, 'site_url', true));
+    $cust_no = esc_attr(get_post_meta($post->ID, 'cust_no', true));
+    $contact = esc_attr(get_post_meta($post->ID, 'contact', true));
+    $email = esc_attr(get_post_meta($post->ID, 'email', true));
+    $phone = esc_attr(get_post_meta($post->ID, 'phone', true));
+    $address = esc_attr(get_post_meta($post->ID, 'address', true));
+    $country = esc_attr(get_post_meta($post->ID, 'country', true));
+    $site_url = esc_attr(get_post_meta($post->ID, 'site_url', true));
     ?>
     <label for="cust-no"> Cust No: </label>
     <input type="text" id="cust-no" name="cust_no" value="<?php echo $cust_no;?>" style="width:100%" >

@@ -75,8 +75,8 @@ add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_to_do_list() {
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
     ?>
     <div class="ui-widget" id="result-container">
@@ -123,8 +123,8 @@ function display_to_do_list() {
                 $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                 $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                 $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
-                $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $doc_title = get_post_meta($doc_id, 'doc_title', true);
                 if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                 $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
@@ -175,8 +175,8 @@ function retrieve_todo_list_data(){
 
 function display_signature_record() {
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $user_data = get_userdata( $current_user_id );
     $signature_record_list = get_signature_record_list($site_id);
     $$html_contain = $signature_record_list['html'];
@@ -241,14 +241,14 @@ function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
-                    $todo_site = get_post_meta( $doc_id, 'site_id', true);
-                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $todo_site = get_post_meta($doc_id, 'site_id', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
                     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                     $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                     $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                     $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                    $next_job = get_post_meta( $submit_action, 'next_job', true);
+                    $next_job = get_post_meta($submit_action, 'next_job', true);
                     $job_title = ($next_job==-1) ? __( '文件發行', 'your-text-domain' ) : get_the_title($next_job);
                     $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
 
@@ -329,33 +329,33 @@ function display_todo_dialog($todo_id) {
     }
     
     if ( $post_type === 'todo' ) {
-        $report_id = get_post_meta( $todo_id, 'report_id', true);
-        $doc_id = get_post_meta( $todo_id, 'doc_id', true);
+        $report_id = get_post_meta($todo_id, 'report_id', true);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
     }
     
     if ( $post_type === 'job' ) {
-        $doc_id = get_post_meta( $todo_id, 'job_doc', true);
+        $doc_id = get_post_meta($todo_id, 'job_doc', true);
         if (empty($doc_id)) return 'post type is '.$post_type.'. Data empty!';
     }
     
     $is_doc = false;
     if ($doc_id) {
-        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
+        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+        $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+        $doc_category = get_post_meta($doc_id, 'doc_category', true);
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+        $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
         $is_doc = true;
     } else {
-        $doc_id = get_post_meta( $report_id, 'doc_id', true);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
     }
 
     $current_user_id = get_current_user_id();
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $site_id = get_post_meta( $current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
 
     ob_start();
     ?>
@@ -408,9 +408,9 @@ function display_todo_dialog($todo_id) {
                 $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                 if ($is_doc) {
-                    $field_value = get_post_meta( $doc_id, $field_name, true);
+                    $field_value = get_post_meta($doc_id, $field_name, true);
                 } else {
-                    $field_value = get_post_meta( $report_id, $field_name, true);
+                    $field_value = get_post_meta($report_id, $field_name, true);
                 }
                 switch (true) {
                     case ($field_type=='textarea'):
@@ -518,7 +518,7 @@ function set_todo_dialog_data() {
         // action button is clicked, current todo update
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = get_post_meta( $action_id, 'todo_id', true);
+        $todo_id = get_post_meta($action_id, 'todo_id', true);
         // Check if the meta key exists
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
@@ -551,11 +551,11 @@ function set_next_todo_and_actions($args = array()) {
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
     if ($action_id > 0) {
-        $next_job      = get_post_meta( $action_id, 'next_job', true);
-        $next_leadtime = get_post_meta( $action_id, 'next_leadtime', true);
-        $todo_id       = get_post_meta( $action_id, 'todo_id', true);
-        $doc_id        = get_post_meta( $todo_id, 'doc_id', true);
-        $report_id     = get_post_meta( $todo_id, 'report_id', true);
+        $next_job      = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        $todo_id       = get_post_meta($action_id, 'todo_id', true);
+        $doc_id        = get_post_meta($todo_id, 'doc_id', true);
+        $report_id     = get_post_meta($todo_id, 'report_id', true);
     }
     $todo_title = get_the_title($next_job);
 
@@ -636,11 +636,11 @@ function get_users_by_job_id($job_id=0) {
 function notice_the_responsible_persons($todo_id=0) {
     $line_bot_api = new line_bot_api();
     $job_title = get_the_title($todo_id);
-    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
-    $report_id = get_post_meta( $todo_id, 'report_id', true);
-    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-    $todo_due = get_post_meta( $todo_id, 'todo_due', true);
+    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message='你在「'.$job_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
@@ -679,13 +679,13 @@ function get_users_in_site($site_id=0) {
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0) {
     $line_bot_api = new line_bot_api();
-    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
-    $report_id = get_post_meta( $todo_id, 'report_id', true);
-    if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
-    $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
+    $todo_submit = get_post_meta($todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
     $text_message='「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date ).'文件發行或廢止，你可以點擊下方連結查看該文件。';
@@ -742,13 +742,13 @@ function get_todo_action_dialog_data() {
     $response = array();
     if( isset($_POST['_action_id']) ) {
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = get_post_meta( $action_id, 'todo_id', true);
-        $doc_id = get_post_meta( $todo_id, 'doc_id', true);
-        $next_job = get_post_meta( $action_id, 'next_job', true);
+        $todo_id = get_post_meta($action_id, 'todo_id', true);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        $next_job = get_post_meta($action_id, 'next_job', true);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
         $response["next_job"] = select_next_job_option_data($next_job);
-        $response["next_leadtime"] = esc_html(get_post_meta( $action_id, 'next_leadtime', true));
+        $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
     }
     wp_send_json($response);
 }

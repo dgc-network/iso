@@ -48,7 +48,7 @@ add_action('add_meta_boxes', 'add_document_settings_metabox');
 
 function document_settings_content($post) {
     //wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
-    $doc_title = esc_attr(get_post_meta( $post->ID, 'doc_title', true));
+    $doc_title = esc_attr(get_post_meta($post->ID, 'doc_title', true));
     ?>
     <label for="doc_title"> doc_title: </label>
     <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
@@ -201,7 +201,7 @@ add_shortcode('display-documents', 'display_documents_shortcode');
 function display_document_list() {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     ?>
     <div class="ui-widget" id="result-container">
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -246,10 +246,10 @@ function display_document_list() {
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = (int) get_the_ID();
-                    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-                    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-                    $todo_id = get_post_meta( $doc_id, 'todo_status', true);
+                    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                    $todo_id = get_post_meta($doc_id, 'todo_status', true);
                     $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                     $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
                     $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
@@ -332,20 +332,20 @@ function retrieve_document_data() {
 function display_document_dialog($doc_id=false) {
     //$is_doc = false;
     if ($doc_id) {
-        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $period_time = get_post_meta( $doc_id, 'period_time', true);
-        $start_job = get_post_meta( $doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
-        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
-        //$start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
+        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+        $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+        $doc_category = get_post_meta($doc_id, 'doc_category', true);
+        $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+        $start_setting = get_post_meta($doc_id, 'start_setting', true);
+        $period_time = get_post_meta($doc_id, 'period_time', true);
+        $start_job = get_post_meta($doc_id, 'start_job', true);
+        $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
+        $responsible_department = get_post_meta($doc_id, 'responsible_department', true);
+        //$start_setting = get_post_meta($doc_id, 'start_setting', true);
+        $site_id = get_post_meta($doc_id, 'site_id', true);
+        $image_url = get_post_meta($site_id, 'image_url', true);
 
         ob_start();
         ?>
@@ -404,9 +404,9 @@ function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $todo_status = get_post_meta( $doc_id, 'todo_status', true);
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+        $start_setting = get_post_meta($doc_id, 'start_setting', true);
+        $todo_status = get_post_meta($doc_id, 'todo_status', true);
         if ($todo_status<1) {
             if ($todo_status==-1) {
                 if ($is_doc_report) {
@@ -460,7 +460,7 @@ function set_document_dialog_data() {
         //if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
     } else {
         $current_user_id = get_current_user_id();
-        $site_id = get_post_meta( $current_user_id, 'site_id', true);
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
         //$site_id = sanitize_text_field($_POST['_site_id']);
         $new_post = array(
             'post_title'    => 'No title',
@@ -490,7 +490,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 function count_doc_category($doc_category){
     $current_user_id = get_current_user_id();
-    $site_id = get_post_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
 
     $args = array(
         'post_type'      => 'document',
@@ -515,17 +515,17 @@ function count_doc_category($doc_category){
 }
 
 function display_initial_iso_document($doc_id){
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
     //$doc_site = get_post_meta($doc_id, 'site_id', true);
-    $category_id = get_post_meta( $doc_id, 'doc_category', true);
+    $category_id = get_post_meta($doc_id, 'doc_category', true);
     $doc_category = get_the_title( $category_id );
     $count_category = count_doc_category($category_id);
     //$count_category = count_doc_category($category_id, $doc_site);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     ob_start();
     ?>    
     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -570,11 +570,11 @@ function display_initial_iso_document($doc_id){
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $report_id = get_the_ID();
-                $index = get_post_meta( $report_id, 'index', true);
-                $description = get_post_meta( $report_id, 'description', true);
-                $is_checkbox = get_post_meta( $report_id, 'is_checkbox', true);
-                $is_url = get_post_meta( $report_id, 'is_url', true);
-                $is_bold = get_post_meta( $report_id, 'is_bold', true);
+                $index = get_post_meta($report_id, 'index', true);
+                $description = get_post_meta($report_id, 'description', true);
+                $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
+                $is_url = get_post_meta($report_id, 'is_url', true);
+                $is_bold = get_post_meta($report_id, 'is_bold', true);
                 if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
                 if ($is_url) {
                     echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
@@ -940,12 +940,12 @@ function get_doc_field_dialog_data() {
     $response = array();
     if( isset($_POST['_field_id']) ) {
         $field_id = (int)sanitize_text_field($_POST['_field_id']);
-        $response["field_name"] = esc_html(get_post_meta( $field_id, 'field_name', true));
-        $response["field_title"] = esc_html(get_post_meta( $field_id, 'field_title', true));
-        $response["field_type"] = get_post_meta( $field_id, 'field_type', true);
-        $response["default_value"] = esc_html(get_post_meta( $field_id, 'default_value', true));
-        $response["listing_style"] = get_post_meta( $field_id, 'listing_style', true);
-        $response["order_field"] = get_post_meta( $field_id, 'order_field', true);
+        $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
+        $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
+        $response["field_type"] = get_post_meta($field_id, 'field_type', true);
+        $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
+        $response["listing_style"] = get_post_meta($field_id, 'listing_style', true);
+        $response["order_field"] = get_post_meta($field_id, 'order_field', true);
     }
     wp_send_json($response);
 }
@@ -1027,12 +1027,12 @@ add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data'
 // doc-frame
 function display_doc_frame_contain($doc_id=false) {
     ob_start();
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $signature_record_list = get_signature_record_list($site_id, $doc_id);
     $$html_contain = $signature_record_list['html'];
     ?>    
@@ -1062,11 +1062,11 @@ function display_doc_frame_contain($doc_id=false) {
 
 // doc-report
 function display_doc_report_list($doc_id=false, $search_doc_report=false) {
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $signature_record_list = get_signature_record_list($site_id, $doc_id);
     $html_contain = $signature_record_list['html'];
     ob_start();
@@ -1153,7 +1153,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                $field_value = get_post_meta( $report_id, $field_name, true);
+                                $field_value = get_post_meta($report_id, $field_name, true);
                                 echo '<td style="'.$listing_style.'">';
                                 if ($field_type=='checkbox') {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
@@ -1168,7 +1168,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                             // Reset only the inner loop's data
                             wp_reset_postdata();
                         }
-                        $todo_id = get_post_meta( $report_id, 'todo_status', true);
+                        $todo_id = get_post_meta($report_id, 'todo_status', true);
                         $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                         $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
                         $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
@@ -1309,20 +1309,20 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 
 function display_doc_report_dialog($report_id=false) {
 
-    $start_setting = get_post_meta( $report_id, 'start_setting', true);
-    $period_time = get_post_meta( $report_id, 'period_time', true);
-    $start_job = get_post_meta( $report_id, 'start_job', true);
-    $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
-    $prev_doc_report = get_post_meta( $report_id, 'prev_doc_report', true);
-    $next_doc_report = get_post_meta( $report_id, 'next_doc_report', true);
-    $todo_status = get_post_meta( $report_id, 'todo_status', true);
+    $start_setting = get_post_meta($report_id, 'start_setting', true);
+    $period_time = get_post_meta($report_id, 'period_time', true);
+    $start_job = get_post_meta($report_id, 'start_job', true);
+    $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
+    $prev_doc_report = get_post_meta($report_id, 'prev_doc_report', true);
+    $next_doc_report = get_post_meta($report_id, 'next_doc_report', true);
+    $todo_status = get_post_meta($report_id, 'todo_status', true);
 
-    $doc_id = get_post_meta( $report_id, 'doc_id', true);
-    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+    $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
 
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $signature_record_list = get_signature_record_list($site_id, false, $report_id);
     $html_contain = $signature_record_list['html'];
 
@@ -1361,9 +1361,9 @@ function display_doc_report_dialog($report_id=false) {
             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
             if ($is_doc) {
-                $field_value = get_post_meta( $doc_id, $field_name, true);
+                $field_value = get_post_meta($doc_id, $field_name, true);
             } else {
-                $field_value = get_post_meta( $report_id, $field_name, true);
+                $field_value = get_post_meta($report_id, $field_name, true);
             }
             switch (true) {
                 case ($field_type=='textarea'):
@@ -1384,7 +1384,7 @@ function display_doc_report_dialog($report_id=false) {
                 case ($field_type=='radio'):
                     if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
                     if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
-                    $field_value = get_post_meta( $report_id, $field_name, true);
+                    $field_value = get_post_meta($report_id, $field_name, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     ?>                    
                     <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
@@ -1447,7 +1447,7 @@ function set_doc_report_dialog_data() {
     if( isset($_POST['_report_id']) ) {
         // Update the Document data
         $report_id = sanitize_text_field($_POST['_report_id']);
-        $doc_id = get_post_meta( $report_id, 'doc_id', true);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
         $params = array(
             'doc_id'     => $doc_id,
         );                
@@ -1517,7 +1517,7 @@ function duplicate_doc_report_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         $report_id = (int) sanitize_text_field($_POST['_report_id']);
-        $doc_id = get_post_meta( $report_id, 'doc_id', true);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
         update_post_meta( $post_id, 'doc_id', $doc_id);
 
         $params = array(
@@ -1561,10 +1561,10 @@ function get_doc_report_dialog_data() {
     $result = array();
     if (isset($_POST['_report_id'])) {
         $report_id = sanitize_text_field($_POST['_report_id']);
-        $todo_status = get_post_meta( $report_id, 'todo_status', true);
+        $todo_status = get_post_meta($report_id, 'todo_status', true);
         if ($todo_status<1) {
             $result['html_contain'] = display_doc_report_dialog($report_id);
-            $doc_id = get_post_meta( $report_id, 'doc_id', true);
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
             $result['doc_id'] = $doc_id;
             $result['doc_fields'] = display_doc_field_keys($doc_id);
         }
@@ -1681,7 +1681,7 @@ function select_start_setting_option($selected_option=0) {
 
 function select_doc_report_option_data($selected_option=0){
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
@@ -1726,7 +1726,7 @@ function select_doc_report_option_data($selected_option=0){
 
 function select_document_option_data($selected_option=0){
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
@@ -1744,7 +1744,7 @@ function select_document_option_data($selected_option=0){
     if ($query->have_posts()) :
         while ($query->have_posts()) : $query->the_post();
             $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-            $doc_title = get_post_meta( get_the_ID(), 'doc_title', true);
+            $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
             $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_title) . '</option>';
         endwhile;
         wp_reset_postdata();

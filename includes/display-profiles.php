@@ -41,8 +41,8 @@ function display_my_profile() {
     if (is_user_logged_in()) {
         // Check if the user is logged in
         $current_user_id = get_current_user_id();
-        $site_id = get_user_meta( $current_user_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
+        $image_url = get_post_meta($site_id, 'image_url', true);
         $user_data = get_userdata( $current_user_id );
         $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
         $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
@@ -124,7 +124,7 @@ function display_site_profile($initial=false) {
     ob_start();
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
@@ -496,7 +496,7 @@ function display_site_job_list($initial=false) {
     ob_start();
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
@@ -627,8 +627,8 @@ function get_site_job_dialog_data() {
         $job_id = sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        //$response["is_start_job"] = esc_attr(get_post_meta( $job_id, 'is_start_job', true));
-        $job_doc = get_post_meta( $job_id, 'job_doc', true);
+        //$response["is_start_job"] = esc_attr(get_post_meta($job_id, 'is_start_job', true));
+        $job_doc = get_post_meta($job_id, 'job_doc', true);
         $response["job_doc"] = select_document_option_data($job_doc);
     }
     wp_send_json($response);
@@ -762,7 +762,7 @@ function display_job_action_dialog(){
 function select_next_job_option_data($selected_option=0) {
     $options = '<option value="">Select job</option>';
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta( $current_user_id, 'site_id', true);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $query = retrieve_site_job_list_data($site_id);
     while ($query->have_posts()) : $query->the_post();
         $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -788,9 +788,9 @@ function get_job_action_dialog_data() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $next_job = get_post_meta( $action_id, 'next_job', true);
+        $next_job = get_post_meta($action_id, 'next_job', true);
         $response["next_job"] = select_next_job_option_data($next_job);
-        $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
+        $response["next_leadtime"] = get_post_meta($action_id, 'next_leadtime', true);
     }
     wp_send_json($response);
 }
