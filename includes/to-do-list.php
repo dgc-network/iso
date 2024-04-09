@@ -325,7 +325,7 @@ function display_todo_dialog($todo_id) {
 
     // Check if the post type is 'todo'
     if ( ($post_type != 'todo')||($post_type != 'job') ) {
-        return 'No data!';
+        return 'Wrong data!';
     }
     
     if ( $post_type === 'todo' ) {
