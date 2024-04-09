@@ -132,7 +132,6 @@ function set_flex_message($display_name, $link_uri, $text_message) {
 }
 
 function init_webhook_events() {
-
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
 
@@ -146,7 +145,6 @@ function init_webhook_events() {
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
         
-
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
 
@@ -189,17 +187,27 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         $result = get_keyword_matchmaking($message['text']);
-                        if ($result==0) {
-                            $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-                            $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
-                            // Encode the Chinese characters for inclusion in the URL
-                            $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-                            $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-                            $line_bot_api->replyMessage([
-                                'replyToken' => $event['replyToken'],
-                                'messages' => [$flexMessage],
-                            ]);
-
+                        if ($result) {
+                            if ($result==0) {
+                                $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+                                $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+                                // Encode the Chinese characters for inclusion in the URL
+                                $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
+                                $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                                $line_bot_api->replyMessage([
+                                    'replyToken' => $event['replyToken'],
+                                    'messages' => [$flexMessage],
+                                ]);
+                            } else {
+                                $text_message = '您可以點擊下方按鍵執行本系統。';
+                                // Encode the Chinese characters for inclusion in the URL
+                                $link_uri = home_url().'/to-do-list/?_id='.$job_id;
+                                $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                                $line_bot_api->replyMessage([
+                                    'replyToken' => $event['replyToken'],
+                                    'messages' => [$flexMessage],
+                                ]);
+                            }
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
@@ -234,6 +242,19 @@ function get_keyword_matchmaking($keyword) {
     if (strpos($keyword, '登錄') !== false) return 0;
     if (strpos($keyword, 'login') !== false) return 0;
     if (strpos($keyword, 'Login') !== false) return 0;
+
+    // WP_Query arguments
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
+        's'              => $keyword, // Search keyword
+    );
+    
+    // Instantiate new WP_Query
+    $query = new WP_Query( $args );
+    
+    // Check if there are any posts that match the query
+    if ( $query->have_posts() ) return $query;
         
     return false;
 }

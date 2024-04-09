@@ -616,6 +616,7 @@ function display_site_job_dialog() {
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
         <label for="job-doc">Job doc:</label>
         <select id="job-doc" class="text ui-widget-content ui-corner-all" ></select>
+        <div class="separator"></div>
         <?php display_job_action_list();?>
     </fieldset>
     </div>

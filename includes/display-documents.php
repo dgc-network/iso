@@ -195,49 +195,305 @@ function display_documents_shortcode() {
     } else {
         user_did_not_login_yet();
     }
-/*    
-    // Check if the user is logged in
-    if (is_user_logged_in()) {
-
-        if( isset($_GET['_get_shared_doc_id']) ) {
-            $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-            get_shared_document($doc_id);
-        }
-
-        if (isset($_GET['_id'])) {
-            $doc_id = sanitize_text_field($_GET['_id']);
-            $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-            echo '<div class="ui-widget" id="result-container">';
-            if ($is_doc_report) {
-                echo display_doc_report_list($doc_id);
-            } else {
-                echo display_doc_frame_contain($doc_id);
-            }
-            echo '</div>';
-        }
-
-        if (isset($_GET['_initial'])) {
-            $doc_id = sanitize_text_field($_GET['_initial']);
-            echo '<div class="ui-widget" id="result-container">';
-            echo display_initial_iso_document($doc_id);
-            echo '</div>';
-        }
-
-        if (!isset($_GET['_id'])&&!isset($_GET['_initial'])) {
-            display_document_list();
-        }
-
-    } else {
-        user_did_not_login_yet();
-    }
-*/    
 }
 add_shortcode('display-documents', 'display_documents_shortcode');
 
-function count_doc_category($doc_category, $site_id){
+function display_document_list() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
+    ?>
+    <div class="ui-widget" id="result-container">
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="document-setting-dialog" title="Document setting" style="display:none">
+        <fieldset>
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="doc-field-setting"> Field setting: </label>
+            <?php //echo display_doc_field_list(false, $site_id);?>
+            <div class="separator"></div>
+            <label for="document-rows">Document rows: </label>
+            <input type="text" id="document-rows" value="<?php echo get_option('document_rows');?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+
+        <table class="ui-widget" style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
+                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
+                    <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
+                    <th><?php echo __( '待辦', 'your-text-domain' );?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            //$query = retrieve_document_data($site_id);
+            $query = retrieve_document_data();
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $doc_id = (int) get_the_ID();
+                    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+                    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+                    $todo_id = get_post_meta( $doc_id, 'todo_status', true);
+                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                    $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
+                    $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
+                    ?>
+                    <tr id="edit-document-<?php echo $doc_id;?>">
+                        <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
+                        <td><?php echo esc_html($doc_title);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
+                    </tr>
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+            </tbody>
+        </table>
+        <input type ="button" id="new-document" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+    </fieldset>
+    </div>
+    <?php
+}
+
+function retrieve_document_data() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $site_filter = array(
+        'key'     => 'site_id',
+        'value'   => $site_id,
+        'compare' => '=',
+    );
+
+    $select_category = sanitize_text_field($_GET['_category']);
+    $category_filter = array(
+        'key'     => 'doc_category',
+        'value'   => $select_category,
+        'compare' => '=',
+    );
+
+    $search_query = sanitize_text_field($_GET['_search']);
+    $number_filter = array(
+        'key'     => 'doc_number',
+        'value'   => $search_query,
+        'compare' => 'LIKE',
+    );
+    $title_filter = array(
+        'key'     => 'doc_title',
+        'value'   => $search_query,
+        'compare' => 'LIKE',
+    );
+
     $args = array(
         'post_type'      => 'document',
-        'posts_per_page' => -1, // Retrieve all posts
+        'posts_per_page' => 30,
+        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array(
+                'relation' => 'AND',
+                ($site_id) ? $site_filter : '',
+                ($select_category) ? $category_filter : '',
+                ($search_query) ? $number_filter : '',
+            ),
+            array(
+                'relation' => 'AND',
+                ($site_id) ? $site_filter : '',
+                ($select_category) ? $category_filter : '',
+                ($search_query) ? $title_filter : '',
+            )
+        ),
+        'orderby'        => 'meta_value',
+        'meta_key'       => 'doc_number',
+        'order'          => 'ASC',
+    );
+
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function display_document_dialog($doc_id=false) {
+    //$is_doc = false;
+    if ($doc_id) {
+        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
+        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
+        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
+        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
+        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
+        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
+        $period_time = get_post_meta( $doc_id, 'period_time', true);
+        $start_job = get_post_meta( $doc_id, 'start_job', true);
+        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
+        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
+        //$start_setting = get_post_meta( $doc_id, 'start_setting', true);
+        $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $image_url = get_post_meta( $site_id, 'image_url', true);
+
+        ob_start();
+        ?>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+            </div>
+            <div style="text-align:right; display:flex;">        
+            </div>
+        </div>
+        <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+        <fieldset>
+        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+        <div id="doc-frame-div" style="display:none;">
+            <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+        </div>
+        <div id="doc-report-div" style="display:none;">
+            <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <?php echo display_doc_field_list($doc_id);?>
+            
+            <label for="start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
+            <div id="start-setting-div" style="display:none;">
+                <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
+                <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
+                <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
+                <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
+            </div>
+        </div>
+        <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
+        <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
+        <hr>
+        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+        </fieldset>
+        <?php
+        $html = ob_get_clean();
+        return $html;
+    }
+}
+
+function get_document_dialog_data() {
+    $result = array();
+    if (isset($_POST['_doc_id'])) {
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
+        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
+        $todo_status = get_post_meta( $doc_id, 'todo_status', true);
+        if ($todo_status<1) {
+            if ($todo_status==-1) {
+                if ($is_doc_report) {
+                    $result['html_contain'] = display_doc_report_list($doc_id);
+                } else {
+                    $result['html_contain'] = display_doc_frame_contain($doc_id);
+                }
+            } else {
+                $result['html_contain'] = display_document_dialog($doc_id);
+                $result['is_doc_report'] = $is_doc_report;
+                $result['start_setting'] = $start_setting;
+            }
+        } else {
+            //if (current_user_can('administrator') && isset($_GET['_is_admin'])) {
+            if (current_user_can('administrator')) {
+                //$result['html_contain'] = display_document_dialog($doc_id);
+            }
+        }
+
+    } else {
+        $result['html_contain'] = 'Invalid AJAX request!';
+    }
+    wp_send_json($result);
+}
+add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
+add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
+
+function set_document_dialog_data() {
+    if( isset($_POST['_doc_id']) ) {
+        // Update the Document data
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $start_setting = sanitize_text_field($_POST['_start_setting']);
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
+        update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
+        update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
+        update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
+        update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
+        update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
+        update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
+        update_post_meta( $doc_id, 'start_setting', $start_setting);
+        update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
+        update_post_meta( $doc_id, 'start_job', $start_job);
+        update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
+        $params = array(
+            'doc_id'         => $doc_id,
+            'start_job'      => $start_job,
+            'start_leadtime' => $start_leadtime,
+        );        
+        //if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
+    } else {
+        $current_user_id = get_current_user_id();
+        $site_id = get_post_meta( $doc_id, 'site_id', true);
+        //$site_id = sanitize_text_field($_POST['_site_id']);
+        $new_post = array(
+            'post_title'    => 'No title',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'document',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta( $post_id, 'site_id', $site_id);
+        update_post_meta( $post_id, 'doc_number', '-');
+        update_post_meta( $post_id, 'doc_revision', 'A');
+        update_post_meta( $post_id, 'period_time', 1);
+        update_post_meta( $post_id, 'start_leadtime', 86400);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_document_dialog_data', 'set_document_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data' );
+
+function del_document_dialog_data() {
+    $result = wp_delete_post($_POST['_doc_id'], true);
+    wp_send_json($result);
+}
+add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
+
+function count_doc_category($doc_category){
+    $current_user_id = get_current_user_id();
+    $site_id = get_post_meta( $doc_id, 'site_id', true);
+
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(
@@ -261,10 +517,11 @@ function display_initial_iso_document($doc_id){
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     $doc_number = get_post_meta( $doc_id, 'doc_number', true);
     $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-    $doc_site = get_post_meta($doc_id, 'site_id', true);
+    //$doc_site = get_post_meta($doc_id, 'site_id', true);
     $category_id = get_post_meta( $doc_id, 'doc_category', true);
     $doc_category = get_the_title( $category_id );
-    $count_category = count_doc_category($category_id, $doc_site);
+    $count_category = count_doc_category($category_id);
+    //$count_category = count_doc_category($category_id, $doc_site);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta( $site_id, 'image_url', true);
@@ -295,7 +552,7 @@ function display_initial_iso_document($doc_id){
         $args = array(
             'post_type'      => 'doc-report',
             'posts_per_page' => -1,
-            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+            //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
             'meta_query'     => array(
                 array(
                     'key'     => 'doc_id',
@@ -408,24 +665,7 @@ function set_initial_iso_document() {
             wp_reset_postdata();
             $response = array('success' => true);
         endif;
-/*
-        // Check if there are any posts
-        if ($query->have_posts()) {
-            // Loop through the posts
-            while ($query->have_posts()) {
-                $query->the_post();
-                get_shared_document(get_the_ID());
-            }
-            // Restore original post data
-            wp_reset_postdata();
-            $response = array('success' => true);
-        } else {
-            // No documents found
-            $response['error'] = 'No documents found.';
-        }
-*/        
     }
-
     wp_send_json($response);
 }
 add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
@@ -492,245 +732,6 @@ function get_shared_document($doc_id){
     }
 }
 
-function display_document_list() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta( $site_id, 'image_url', true);
-    ?>
-    <div class="ui-widget" id="result-container">
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
-    <fieldset>
-        <div id="document-setting-dialog" title="Document setting" style="display:none">
-        <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="doc-field-setting"> Field setting: </label>
-            <?php echo display_doc_field_list(false, $site_id);?>
-            <div class="separator"></div>
-            <label for="document-rows">Document rows: </label>
-            <input type="text" id="document-rows" value="<?php echo get_option('document_rows');?>" />
-        </fieldset>
-        </div>
-    
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-category"><?php echo select_doc_category_option_data($_GET['_category']);?></select>
-            </div>
-            <div style="text-align:right; display:flex;">
-                <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
-
-        <table class="ui-widget" style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
-                    <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                    <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
-                    <th><?php echo __( '待辦', 'your-text-domain' );?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            $query = retrieve_document_data($site_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $doc_id = (int) get_the_ID();
-                    $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-                    $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-                    $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-                    $todo_id = get_post_meta( $doc_id, 'todo_status', true);
-                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                    $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
-                    $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
-                    ?>
-                    <tr id="edit-document-<?php echo $doc_id;?>">
-                        <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
-                        <td><?php echo esc_html($doc_title);?></td>
-                        <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
-                        <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
-                    </tr>
-                    <?php
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            ?>
-            </tbody>
-        </table>
-        <input type ="button" id="new-document-button" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-    </fieldset>
-    </div>
-    <?php
-}
-
-function retrieve_document_data($site_id = 0) {
-    $site_filter = array(
-        'key'     => 'site_id',
-        'value'   => $site_id,
-        'compare' => '=',
-    );
-
-    $select_category = sanitize_text_field($_GET['_category']);
-    $category_filter = array(
-        'key'     => 'doc_category',
-        'value'   => $select_category,
-        'compare' => '=',
-    );
-
-    $search_query = sanitize_text_field($_GET['_search']);
-    $number_filter = array(
-        'key'     => 'doc_number',
-        'value'   => $search_query,
-        'compare' => 'LIKE',
-    );
-    $title_filter = array(
-        'key'     => 'doc_title',
-        'value'   => $search_query,
-        'compare' => 'LIKE',
-    );
-
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            'relation' => 'OR',
-            array(
-                'relation' => 'AND',
-                ($site_id) ? $site_filter : '',
-                ($select_category) ? $category_filter : '',
-                ($search_query) ? $number_filter : '',
-            ),
-            array(
-                'relation' => 'AND',
-                ($site_id) ? $site_filter : '',
-                ($select_category) ? $category_filter : '',
-                ($search_query) ? $title_filter : '',
-            )
-        ),
-        'orderby'        => 'meta_value',
-        'meta_key'       => 'doc_number',
-        'order'          => 'ASC',
-    );
-
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function display_document_dialog($doc_id=false) {
-    //$is_doc = false;
-    if ($doc_id) {
-        $doc_number = get_post_meta( $doc_id, 'doc_number', true);
-        $doc_title = get_post_meta( $doc_id, 'doc_title', true);
-        $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
-        $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $period_time = get_post_meta( $doc_id, 'period_time', true);
-        $start_job = get_post_meta( $doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
-        $responsible_department = get_post_meta( $doc_id, 'responsible_department', true);
-        //$start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
-
-        ob_start();
-        ?>
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-                <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-            </div>
-            <div style="text-align:right; display:flex;">        
-            </div>
-        </div>
-        <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-        <fieldset>
-        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
-        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
-        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo select_doc_category_option_data($doc_category);?></select>
-        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <div id="doc-frame-div" style="display:none;">
-            <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-            <label id="start-job-label" for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
-            <label for="start-leadtime"><?php echo __( '前置時間', 'your-text-domain' );?></label>
-            <input type="text" id="start-leadtime" value="<?php echo $start_leadtime;?>" class="text ui-widget-content ui-corner-all" />
-        </div>
-        <div id="doc-report-div" style="display:none;">
-            <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <?php echo display_doc_field_list($doc_id);?>
-            
-            <label for="start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-            <select id="start-setting" class="text ui-widget-content ui-corner-all"><?php echo select_start_setting_option($start_setting);?></select>
-            <div id="start-setting-div" style="display:none;">
-                <label id="period-time-label1"><?php echo __( '', 'your-text-domain' );?></label>
-                <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
-                <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
-                <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-            </div>
-            <label for="next-doc-report"><?php echo __( '後續表單', 'your-text-domain' );?></label>
-            <?php echo display_doc_action_list($doc_id);?>
-        </div>
-        <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
-        <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
-        <hr>
-        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-        </fieldset>
-        <?php
-        $html = ob_get_clean();
-        return $html;
-    }
-}
-
-function get_document_dialog_data() {
-    $result = array();
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        //$site_id = get_post_meta( $doc_id, 'site_id', true);
-        $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
-        $start_setting = get_post_meta( $doc_id, 'start_setting', true);
-        $todo_status = get_post_meta( $doc_id, 'todo_status', true);
-        if ($todo_status<1) {
-            if ($todo_status==-1) {
-                if ($is_doc_report) {
-                    $result['html_contain'] = display_doc_report_list($doc_id);
-                } else {
-                    $result['html_contain'] = display_doc_frame_contain($doc_id);
-                }
-            } else {
-                $result['html_contain'] = display_document_dialog($doc_id);
-                $result['is_doc_report'] = $is_doc_report;
-                $result['start_setting'] = $start_setting;
-            }
-        } else {
-            //if (current_user_can('administrator') && isset($_GET['_is_admin'])) {
-            if (current_user_can('administrator')) {
-                //$result['html_contain'] = display_document_dialog($doc_id);
-            }
-        }
-
-    } else {
-        $result['html_contain'] = 'Invalid AJAX request!';
-    }
-    wp_send_json($result);
-}
-add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
-add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
-
 function get_doc_frame_contain() {
     $result = array();
     if (isset($_POST['_doc_id'])) {
@@ -755,7 +756,7 @@ function select_start_job_option_data($selected_option=0) {
     return $options;
 }
 
-function select_doc_category_option_data($selected_category=0) {
+function select_doc_category_option_data($selected_option=0) {
     $args = array(
         'post_type'      => 'doc-category',
         'posts_per_page' => -1,
@@ -764,66 +765,12 @@ function select_doc_category_option_data($selected_category=0) {
 
     $options = '<option value="">Select category</option>';
     while ($query->have_posts()) : $query->the_post();
-        $selected = ($selected_category == get_the_ID()) ? 'selected' : '';
+        $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
         $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
     endwhile;
     wp_reset_postdata();
     return $options;
 }
-
-function set_document_dialog_data() {
-    $current_user_id = get_current_user_id();
-    if( isset($_POST['_doc_id']) ) {
-        // Update the Document data
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        $start_setting = sanitize_text_field($_POST['_start_setting']);
-        $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
-        update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
-        update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
-        update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
-        update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
-        update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
-        update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
-        update_post_meta( $doc_id, 'start_setting', $start_setting);
-        update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
-        update_post_meta( $doc_id, 'start_job', $start_job);
-        update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
-        $params = array(
-            'doc_id'         => $doc_id,
-            'start_job'      => $start_job,
-            'start_leadtime' => $start_leadtime,
-        );        
-        if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
-    } else {
-        // Insert the post into the database
-        $new_post = array(
-            'post_title'    => 'No title',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'document',
-        );    
-        $post_id = wp_insert_post($new_post);
-        $site_id = sanitize_text_field($_POST['_site_id']);
-        update_post_meta( $post_id, 'site_id', $site_id);
-        update_post_meta( $post_id, 'doc_number', '-');
-        update_post_meta( $post_id, 'doc_revision', 'A');
-        update_post_meta( $post_id, 'period_time', 1);
-        update_post_meta( $post_id, 'start_leadtime', 86400);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_document_dialog_data', 'set_document_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data' );
-
-function del_document_dialog_data() {
-    $result = wp_delete_post($_POST['_doc_id'], true);
-    wp_send_json($result);
-}
-add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
-add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
 // doc-field
 function display_doc_field_keys($doc_id=false, $site_id=false) {
@@ -1525,7 +1472,7 @@ function set_doc_report_dialog_data() {
             'start_job'      => $start_job,
             'start_leadtime' => $start_leadtime,
         );        
-        if ($start_job!=0 && $start_setting==1) set_next_job_and_actions($params);
+        if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(

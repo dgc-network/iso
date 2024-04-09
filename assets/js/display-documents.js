@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
         get_document_dialog_data(doc_id)
     });            
 
-    $("#new-document-button").on("click", function() {
+    $("#new-document").on("click", function() {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,

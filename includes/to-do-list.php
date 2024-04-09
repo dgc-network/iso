@@ -318,19 +318,6 @@ function retrieve_signature_record_data($doc_id=false, $report_id=false){
     return $query;
 }
 
-function get_todo_dialog_data() {
-    $result = array();
-    if (isset($_POST['_todo_id']) && $_POST['action'] === 'get_todo_dialog_data') {
-        $todo_id = sanitize_text_field($_POST['_todo_id']);
-        $result['html_contain'] = display_todo_dialog($todo_id);
-    } else {
-        $result['html_contain'] = 'Invalid AJAX request!';
-    }
-    wp_send_json($result);
-}
-add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
-add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
-
 function display_todo_dialog($todo_id) {
     $current_user_id = get_current_user_id();
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
@@ -372,7 +359,7 @@ function display_todo_dialog($todo_id) {
     ob_start();
     ?>
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo esc_html('Todo: '.$doc_title);?></h2>
+    <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
     <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
@@ -496,14 +483,27 @@ function display_todo_dialog($todo_id) {
     return $html;
 }
 
+function get_todo_dialog_data() {
+    $result = array();
+    if (isset($_POST['_todo_id'])) {
+        $todo_id = sanitize_text_field($_POST['_todo_id']);
+        $result['html_contain'] = display_todo_dialog($todo_id);
+    } else {
+        $result['html_contain'] = 'Invalid AJAX request!';
+    }
+    wp_send_json($result);
+}
+add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
+add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
+
 function set_todo_dialog_data() {
     $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
         // action button is clicked, current todo update
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $todo_id = esc_attr(get_post_meta( $action_id, 'todo_id', true));
-        $doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
-        $start_job = esc_attr(get_post_meta( $doc_id, 'start_job', true));
+        $todo_id = get_post_meta( $action_id, 'todo_id', true);
+        //$doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
+        //$start_job = esc_attr(get_post_meta( $doc_id, 'start_job', true));
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
@@ -511,14 +511,14 @@ function set_todo_dialog_data() {
             //'next_job'      => $start_job,
             'action_id'     => $action_id,
         );        
-        set_next_job_and_actions($params);
+        set_next_todo_and_actions($params);
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
-function set_next_job_and_actions($args = array()) {
+function set_next_todo_and_actions($args = array()) {
     $current_user_id = get_current_user_id();
     $doc_id         = isset($args['doc_id']) ? $args['doc_id'] : 0;
     $report_id      = isset($args['report_id']) ? $args['report_id'] : 0;
