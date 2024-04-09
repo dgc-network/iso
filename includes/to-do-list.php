@@ -324,6 +324,10 @@ function display_todo_dialog($todo_id) {
     $post_type = get_post_type( $todo_id );
 
     // Check if the post type is 'todo'
+    if ( ($post_type != 'todo')||($post_type != 'job') ) {
+        return 'No data!';
+    }
+    
     if ( $post_type === 'todo' ) {
         $report_id = get_post_meta( $todo_id, 'report_id', true);
         $doc_id = get_post_meta( $todo_id, 'doc_id', true);
