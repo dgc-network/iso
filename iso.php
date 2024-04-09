@@ -199,14 +199,23 @@ function init_webhook_events() {
                                     'messages' => [$flexMessage],
                                 ]);
                             } else {
-                                $text_message = '您可以點擊下方按鍵執行本系統。';
-                                // Encode the Chinese characters for inclusion in the URL
-                                $link_uri = home_url().'/to-do-list/?_id='.$job_id;
-                                $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-                                $line_bot_api->replyMessage([
-                                    'replyToken' => $event['replyToken'],
-                                    'messages' => [$flexMessage],
-                                ]);
+                                $query = $result;
+                                if ( $query->have_posts() ) {
+                                    // Loop through the posts
+                                    while ( $query->have_posts() ) {
+                                        $query->the_post();
+                                        // Output the post title or content
+                                        $text_message = '您可以點擊下方按鍵執行本系統。';
+                                        $link_uri = home_url().'/to-do-list/?_id='.get_the_ID();
+                                        $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                                        $line_bot_api->replyMessage([
+                                            'replyToken' => $event['replyToken'],
+                                            'messages' => [$flexMessage],
+                                        ]);
+                                    }
+                                    // Restore original post data
+                                    wp_reset_postdata();
+                                }
                             }
                         } else {
                             // Open-AI auto reply

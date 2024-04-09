@@ -319,41 +319,50 @@ function retrieve_signature_record_data($doc_id=false, $report_id=false){
 }
 
 function display_todo_dialog($todo_id) {
-    $current_user_id = get_current_user_id();
-    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $report_id = get_post_meta( $todo_id, 'report_id', true);
-    $doc_id = get_post_meta( $todo_id, 'doc_id', true);
 
+    // Get the post type of the post with the given ID
+    $post_type = get_post_type( $todo_id );
+
+    // Check if the post type is 'todo'
+    if ( $post_type === 'todo' ) {
+        $report_id = get_post_meta( $todo_id, 'report_id', true);
+        $doc_id = get_post_meta( $todo_id, 'doc_id', true);
+    }
+    
+    if ( $post_type === 'job' ) {
+        $doc_id = get_post_meta( $todo_id, 'job_doc', true);
+    }
+    
     $is_doc = false;
     if ($doc_id) {
         $doc_number = get_post_meta( $doc_id, 'doc_number', true);
         $doc_title = get_post_meta( $doc_id, 'doc_title', true);
         $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        $start_job = get_post_meta( $doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
+        //$start_job = get_post_meta( $doc_id, 'start_job', true);
+        //$start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
+        //$site_id = get_post_meta( $doc_id, 'site_id', true);
+        //$image_url = get_post_meta( $site_id, 'image_url', true);
+/*
         $params = array(
             'site_id'     => $site_id,
             'is_editing'  => true,
         );                
         $query = retrieve_doc_field_data($params);
+*/        
         $is_doc = true;
     } else {
-        $start_job = get_post_meta( $report_id, 'start_job', true);
-        $start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
+        //$start_job = get_post_meta( $report_id, 'start_job', true);
+        //$start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
-        $image_url = get_post_meta( $site_id, 'image_url', true);
-        $params = array(
-            'doc_id'     => $doc_id,
-            'is_editing'  => true,
-        );                
-        $query = retrieve_doc_field_data($params);
     }
+
+    $current_user_id = get_current_user_id();
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $site_id = get_post_meta( $current_user_id, 'site_id', true);
+    $image_url = get_post_meta( $site_id, 'image_url', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
 
     ob_start();
@@ -365,6 +374,7 @@ function display_todo_dialog($todo_id) {
     <fieldset>
     <?php
     if ($is_doc) {
+        // document_dialog data
         ?>
         <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
         <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -377,13 +387,13 @@ function display_todo_dialog($todo_id) {
         <?php
         if ($is_doc_report==1) {
             ?>
-            <label id="doc-field-setting" for="doc-frame"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
             <?php
         } else {
             ?>
-            <label id="doc-field-setting" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
             <?php
@@ -391,7 +401,15 @@ function display_todo_dialog($todo_id) {
         ?>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <?php
+
     } else {
+        // doc_report_dialog data
+        $params = array(
+            'doc_id'     => $doc_id,
+            'is_editing'  => true,
+        );                
+        $query = retrieve_doc_field_data($params);
+
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
