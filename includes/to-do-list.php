@@ -518,16 +518,23 @@ function set_todo_dialog_data() {
         // action button is clicked, current todo update
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = get_post_meta( $action_id, 'todo_id', true);
-        //$doc_id = esc_attr(get_post_meta( $todo_id, 'doc_id', true));
-        //$start_job = esc_attr(get_post_meta( $doc_id, 'start_job', true));
-        update_post_meta( $todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $todo_id, 'submit_action', $action_id);
-        update_post_meta( $todo_id, 'submit_time', time());
-        $params = array(
-            //'next_job'      => $start_job,
-            'action_id'     => $action_id,
-        );        
-        set_next_todo_and_actions($params);
+        // Check if the meta key exists
+        if ( empty( $todo_id ) ) {
+            $job_id = get_post_meta( $action_id, 'job_id', true);
+            $params = array(
+                'next_job'      => $job_id,
+                'action_id'     => $action_id,
+            );        
+            set_next_todo_and_actions($params);
+        } else {
+            update_post_meta( $todo_id, 'submit_user', $current_user_id);
+            update_post_meta( $todo_id, 'submit_action', $action_id);
+            update_post_meta( $todo_id, 'submit_time', time());
+            $params = array(
+                'action_id'     => $action_id,
+            );        
+            set_next_todo_and_actions($params);
+        }
     }
     wp_send_json($response);
 }
