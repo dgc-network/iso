@@ -197,6 +197,8 @@ jQuery(document).ready(function($) {
                         $("#period-time").attr("min", 1);
                         $("#period-time").attr("max", 24);
                     }
+                } else {
+                    $("#start-setting-div").hide();
                 }
 
                 $("#start-setting").on("change", function() {            

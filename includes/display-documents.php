@@ -378,10 +378,9 @@ function display_document_dialog($doc_id=false) {
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
             
-            <label for="start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+            <label for="start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="start-setting"><?php echo select_start_setting_option($start_setting);?></select>
             <div id="start-setting-div" style="display:inline;">
-                <label id="period-time-label1"><?php //echo __( '', 'your-text-domain' );?></label>
                 <input type="number" id="period-time" value="<?php echo $period_time;?>" style="width:50px;" />
                 <label id="period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
@@ -1664,7 +1663,7 @@ function retrieve_doc_action_data($doc_id=0) {
 }
 
 function select_start_setting_option($selected_option=0) {
-    $options = '<option value="0">Select option</option>';
+    $options = '<option value="0">'.__( '', 'your-text-domain' ).'</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
     $options .= '<option value="1" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
     $selected = ($selected_option == "2") ? 'selected' : '';
