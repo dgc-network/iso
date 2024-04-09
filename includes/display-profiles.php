@@ -761,7 +761,7 @@ function display_job_action_dialog(){
     <?php
 }
 
-function select_site_job_option_data($selected_option=0) {
+function select_next_job_option_data($selected_option=0) {
     $options = '<option value="">Select job</option>';
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta( $current_user_id, 'site_id', true);
@@ -791,7 +791,7 @@ function get_job_action_dialog_data() {
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
         $next_job = get_post_meta( $action_id, 'next_job', true);
-        $response["next_job"] = select_site_job_option_data($next_job);
+        $response["next_job"] = select_next_job_option_data($next_job);
         $response["next_leadtime"] = get_post_meta( $action_id, 'next_leadtime', true);
     }
     wp_send_json($response);

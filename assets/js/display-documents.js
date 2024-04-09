@@ -237,7 +237,7 @@ jQuery(document).ready(function($) {
                     }
                 });
                 
-                activate_doc_action_list_data(doc_id);
+                //activate_doc_action_list_data(doc_id);
                                 
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
