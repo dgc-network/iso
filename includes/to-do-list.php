@@ -430,8 +430,9 @@ function display_todo_dialog($todo_id) {
         }    
     }
     ?>
-    <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
-    <fieldset>
+    <?php if ($is_site_admin){?>
+        <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
+        <fieldset>
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -462,10 +463,9 @@ function display_todo_dialog($todo_id) {
                 ?>
             </tbody>
         </table>
-        <?php if ($is_site_admin){?>
         <div id="new-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-        <?php }?>
-    </fieldset>
+        </fieldset>
+    <?php }?>
     <?php display_todo_action_dialog();?>
     <hr>
     <?php
