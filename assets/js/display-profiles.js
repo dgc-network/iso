@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_site_job_list_data',
-                '_site_id': site_id,
+                //'_site_id': site_id,
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
@@ -175,7 +175,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_site_job_dialog_data',
-                    '_site_id': $("#site-id").val(),
+                    //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
                     get_site_job_list_data(site_id);
@@ -383,7 +383,7 @@ jQuery(document).ready(function($) {
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
                             //'_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
-                            '_job_doc': $("#job-doc").val(),
+                            //'_job_doc': $("#job-doc").val(),
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');

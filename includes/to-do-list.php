@@ -60,8 +60,17 @@ function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
         if (isset($_GET['_id'])) {
+            // Get the post type of the post with the given ID
+            $todo_id = sanitize_text_field($_GET['_id']);
+            $post_type = get_post_type( $todo_id );
+
+            if ( $post_type === 'job' ) {
+                $doc_id = get_post_meta($todo_id, 'job_doc', true);
+                if (empty($doc_id)) return 'post type is '.$post_type.'. Data empty!';
+            }
+
             echo '<div class="ui-widget" id="result-container">';
-            echo display_todo_dialog(sanitize_text_field($_GET['_id']));
+            echo display_todo_dialog($todo_id);
             echo '</div>';
         } else {
             if ($_GET['_select_todo']=='1') display_signature_record();
@@ -153,22 +162,34 @@ function display_to_do_list() {
 }
 
 function retrieve_todo_list_data(){
-    $args = array(
-        'post_type'      => 'todo',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'todo_due',
-                'compare' => 'EXISTS',
+
+    $search_query = sanitize_text_field($_GET['_search']);
+
+    if ($search_query) {
+        $args = array(
+            'post_type'      => 'job',
+            'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
+            's'              => $search_query, // Search keyword
+        );
+    } else {
+        $args = array(
+            'post_type'      => 'todo',
+            'posts_per_page' => 30,
+            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'todo_due',
+                    'compare' => 'EXISTS',
+                ),
+                array(
+                    'key'     => 'submit_user',
+                    'compare' => 'NOT EXISTS',
+                ),
             ),
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'NOT EXISTS',
-            ),
-        ),
-    );
+        );    
+    }
+
     $query = new WP_Query($args);
     return $query;
 }
