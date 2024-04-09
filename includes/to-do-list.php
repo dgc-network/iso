@@ -513,28 +513,33 @@ add_action('wp_ajax_get_todo_dialog_data', 'get_todo_dialog_data');
 add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
 function set_todo_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
         // action button is clicked, current todo update
+        $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = get_post_meta( $action_id, 'todo_id', true);
         // Check if the meta key exists
         if ( empty( $todo_id ) ) {
-            $job_id = get_post_meta( $action_id, 'job_id', true);
-            $params = array(
-                'start_job'      => $job_id,
-                'action_id'     => $action_id,
-            );        
-            set_next_todo_and_actions($params);
-        } else {
-            update_post_meta( $todo_id, 'submit_user', $current_user_id);
-            update_post_meta( $todo_id, 'submit_action', $action_id);
-            update_post_meta( $todo_id, 'submit_time', time());
-            $params = array(
-                'action_id'     => $action_id,
-            );        
-            set_next_todo_and_actions($params);
+            $job_id = get_post_meta($action_id, 'job_id', true);
+            // Insert the To-do list for signature
+            $new_post = array(
+                'post_title'    => get_the_title($job_id),
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'todo',
+            );    
+            $todo_id = wp_insert_post($new_post);
+            update_post_meta( $todo_id, 'job_id', $job_id);
+            if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
+            if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
         }
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_action', $action_id);
+        update_post_meta( $todo_id, 'submit_time', time());
+        $params = array(
+            'action_id'     => $action_id,
+        );        
+        set_next_todo_and_actions($params);
     }
     wp_send_json($response);
 }
@@ -543,6 +548,7 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
     $current_user_id = get_current_user_id();
+/*    
     $doc_id         = isset($args['doc_id']) ? $args['doc_id'] : 0;
     $report_id      = isset($args['report_id']) ? $args['report_id'] : 0;
     $next_job      = isset($args['start_job']) ? $args['start_job'] : 0;
@@ -565,7 +571,7 @@ function set_next_todo_and_actions($args = array()) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
     }
-
+*/
     //$next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
@@ -669,7 +675,7 @@ function notice_the_responsible_persons($todo_id=0) {
     $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message='你在「'.$job_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $job_id = get_post_meta( $todo_id, 'job_id', true);
+    $job_id = get_post_meta($todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);

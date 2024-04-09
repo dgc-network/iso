@@ -1471,7 +1471,7 @@ function set_doc_report_dialog_data() {
             'start_job'      => $start_job,
             'start_leadtime' => $start_leadtime,
         );        
-        if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
+        //if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
     } else {
         // Insert the post into the database
         $new_post = array(
