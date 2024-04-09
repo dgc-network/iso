@@ -678,7 +678,15 @@ function notice_the_responsible_persons($todo_id=0) {
     $job_id = get_post_meta($todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
-        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
+        $params = [
+            'display_name' => $user->display_name,
+            'link_uri' => $link_uri,
+            'text_message' => $text_message,
+        ];
+        
+        $flexMessage = set_flex_message($params);
+
+        //$flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
@@ -718,7 +726,14 @@ function notice_the_persons_in_site($todo_id=0) {
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {
-        $flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
+        $params = [
+            'display_name' => $user->display_name,
+            'link_uri' => $link_uri,
+            'text_message' => $text_message,
+        ];
+        
+        $flexMessage = set_flex_message($params);
+        //$flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],

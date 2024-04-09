@@ -83,12 +83,66 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
-//require_once plugin_dir_path( __FILE__ ) . 'includes/user-custom.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
+function set_flex_message($params) {
+    $display_name = $params['display_name'];
+    $link_uri = $params['link_uri'];
+    $text_message = $params['text_message'];
+
+    // Flex Message JSON structure with a button
+    return [
+        'type' => 'flex',
+        'altText' => $text_message,
+        'contents' => [
+            'type' => 'bubble',
+            'body' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'Hello, '.$display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ],
+                ],
+            ],
+            'footer' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Replace with your desired URI
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+}
+/*
+// Example usage:
+$params = [
+    'display_name' => 'John',
+    'link_uri' => 'https://example.com',
+    'text_message' => 'This is a sample message.',
+];
+
+$flexMessage = set_flex_message($params);
+/*
 function set_flex_message($display_name, $link_uri, $text_message) {
     // Flex Message JSON structure with a button
     return $flexMessage = [
@@ -130,7 +184,7 @@ function set_flex_message($display_name, $link_uri, $text_message) {
         ],
     ];
 }
-
+*/
 function init_webhook_events() {
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
@@ -172,7 +226,15 @@ function init_webhook_events() {
                     }
                 }
                 
-                $flexMessage = set_flex_message($display_name, $url, $text_message);
+                $params = [
+                    'display_name' => $display_name,
+                    'link_uri' => $url,
+                    'text_message' => $text_message,
+                ];
+                
+                $flexMessage = set_flex_message($params);
+                
+                //$flexMessage = set_flex_message($display_name, $url, $text_message);
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
@@ -193,7 +255,16 @@ function init_webhook_events() {
                                 $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
                                 // Encode the Chinese characters for inclusion in the URL
                                 $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-                                $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                                
+                                $params = [
+                                    'display_name' => $display_name,
+                                    'link_uri' => $link_uri,
+                                    'text_message' => $text_message,
+                                ];
+                                
+                                $flexMessage = set_flex_message($params);
+                                
+                                //$flexMessage = set_flex_message($display_name, $link_uri, $text_message);
                                 $line_bot_api->replyMessage([
                                     'replyToken' => $event['replyToken'],
                                     'messages' => [$flexMessage],
@@ -206,8 +277,17 @@ function init_webhook_events() {
                                         $query->the_post();
                                         // Output the post title or content
                                         $link_uri = home_url().'/to-do-list/?_id='.get_the_ID();
-                                        $text_message = '您可以點擊下方按鍵執行<a href="'.$link_uri.'">『'.get_the_title().'』</a>系統。';
-                                        $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
+                                        $text_message = '您可以點擊下方按鍵執行『'.get_the_title().'』>系統。';
+                                        
+                                        $params = [
+                                            'display_name' => $display_name,
+                                            'link_uri' => $link_uri,
+                                            'text_message' => $text_message,
+                                        ];
+                                        
+                                        $flexMessage = set_flex_message($params);
+
+                                        //$flexMessage = set_flex_message($display_name, $link_uri, $text_message);
                                         $line_bot_api->replyMessage([
                                             'replyToken' => $event['replyToken'],
                                             'messages' => [$flexMessage],
