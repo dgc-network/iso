@@ -186,37 +186,8 @@ function retrieve_todo_list_data(){
                     'key'     => 'submit_user',
                     'compare' => 'NOT EXISTS',
                 ),
-                // Add the new filter to check if the job_id matches
-                array(
-                    'key'     => 'job_id',
-                    'compare' => 'IN',
-                    'value'   => function($post_id) {
-                        // Retrieve the job ID for the current post
-                        $job_id = get_post_meta($post_id, 'job_id', true);
-                        // Use the job ID as the value for is_user_job function
-                        return is_user_job($job_id);
-                    },
-                ),
-            ),
-        );  
-/*        
-        $args = array(
-            'post_type'      => 'todo',
-            'posts_per_page' => 30,
-            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'todo_due',
-                    'compare' => 'EXISTS',
-                ),
-                array(
-                    'key'     => 'submit_user',
-                    'compare' => 'NOT EXISTS',
-                ),
             ),
         );
-*/        
     }
 
     $query = new WP_Query($args);
