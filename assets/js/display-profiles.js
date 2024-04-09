@@ -474,11 +474,11 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': job_id,
-                            '_site_id': $("#site-id").val(),
+                            //'_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
                             $("#job-action-dialog").dialog('open');
-                            $("#action-id").val(id);
+                            $("#action-id").val(job_id);
                             $("#action-title").val(response.action_title);
                             $("#action-content").val(response.action_content);
                             $("#next-job").empty().append(response.next_job);
