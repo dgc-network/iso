@@ -129,27 +129,27 @@ function display_to_do_list() {
             $query = retrieve_todo_list_data();
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                $job_id = get_post_meta(get_the_ID(), 'job_id', true);
-                $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                if ($report_id) $doc_title .= '(Report#'.$report_id.')';
-                $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-
-                if (is_user_job($job_id)) { // Aditional condition to filter the data
-                    ?>
-                    <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                        <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
-                        <td><?php echo esc_html($doc_title); ?></td>
-                        <?php if ($todo_due < time()) { ?>
-                            <td style="text-align:center; color:red;">
-                        <?php } else { ?>
-                            <td style="text-align:center;"><?php } ?>
-                        <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
-                    </tr>
-                    <?php
-                }
+                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
+    
+                    //if (is_user_job($job_id)) { // Aditional condition to filter the data
+                        ?>
+                        <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
+                            <td><?php echo esc_html($doc_title); ?></td>
+                            <?php if ($todo_due < time()) { ?>
+                                <td style="text-align:center; color:red;">
+                            <?php } else { ?>
+                                <td style="text-align:center;"><?php } ?>
+                            <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
+                        </tr>
+                        <?php
+                    //}
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -186,8 +186,37 @@ function retrieve_todo_list_data(){
                     'key'     => 'submit_user',
                     'compare' => 'NOT EXISTS',
                 ),
+                // Add the new filter to check if the job_id matches
+                array(
+                    'key'     => 'job_id',
+                    'compare' => 'IN',
+                    'value'   => function($post_id) {
+                        // Retrieve the job ID for the current post
+                        $job_id = get_post_meta($post_id, 'job_id', true);
+                        // Use the job ID as the value for is_user_job function
+                        return is_user_job($job_id);
+                    },
+                ),
             ),
-        );    
+        );  
+/*        
+        $args = array(
+            'post_type'      => 'todo',
+            'posts_per_page' => 30,
+            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'todo_due',
+                    'compare' => 'EXISTS',
+                ),
+                array(
+                    'key'     => 'submit_user',
+                    'compare' => 'NOT EXISTS',
+                ),
+            ),
+        );
+*/        
     }
 
     $query = new WP_Query($args);

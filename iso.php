@@ -7,7 +7,7 @@
  * Author URI: https://dgc.network/
  * Version: 1.0.4
  * Requires at least: 6.0
- * Tested up to: 6.4.3
+ * Tested up to: 6.5.2
  *
  * Text Domain: iso
  * Domain Path: /languages/

@@ -820,7 +820,7 @@ function del_job_action_dialog_data() {
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 
-function is_user_job($job_id, $user_id=0) {    
+function is_user_job($job_id, $user_id=0) {
     // Get the current user ID
     if ($user_id==0) $user_id = get_current_user_id();    
     // Get the user's job IDs as an array
