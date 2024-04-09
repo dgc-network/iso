@@ -205,7 +205,7 @@ function init_webhook_events() {
                                     while ( $query->have_posts() ) {
                                         $query->the_post();
                                         // Output the post title or content
-                                        $text_message = '您可以點擊下方按鍵執行本系統。';
+                                        $text_message = '您可以點擊下方按鍵執行『'.get_the_title().'』系統。';
                                         $link_uri = home_url().'/to-do-list/?_id='.get_the_ID();
                                         $flexMessage = set_flex_message($display_name, $link_uri, $text_message);
                                         $line_bot_api->replyMessage([
