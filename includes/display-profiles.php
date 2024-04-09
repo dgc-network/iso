@@ -509,6 +509,20 @@ function display_site_job_list($initial=false) {
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
         <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
         <fieldset>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                        <option value="2" selected><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                </div>
+            </div>
+
+            <fieldset>
             <table class="ui-widget" style="width:100%;">
                 <thead>
                     <th>Job</th>
@@ -538,22 +552,11 @@ function display_site_job_list($initial=false) {
                 </tbody>
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-        </fieldset>
-            <?php display_site_job_dialog();?>
+            </fieldset>
 
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                        <option value="2" selected><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                    <button type="submit" id="site-profile-submit">Submit</button>
-                </div>
-            </div>
+        </fieldset>
+        <?php display_site_job_dialog();?>
+
 
         <?php
     } else {
