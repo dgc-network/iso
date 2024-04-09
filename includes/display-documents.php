@@ -388,6 +388,8 @@ function display_document_dialog($doc_id=false) {
         </div>
         <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
         <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
+        <label for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label><br>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
@@ -1417,7 +1419,9 @@ function display_doc_report_dialog($report_id=false) {
         wp_reset_postdata();
     }
     ?>
-        <hr>
+    <label for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label><br>
+    <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
+    <hr>
     <?php
     if ($todo_status!=-1){
         ?>
