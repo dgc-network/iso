@@ -343,23 +343,10 @@ function display_todo_dialog($todo_id) {
         $doc_title = get_post_meta( $doc_id, 'doc_title', true);
         $doc_revision = get_post_meta( $doc_id, 'doc_revision', true);
         $doc_category = get_post_meta( $doc_id, 'doc_category', true);
-        //$start_job = get_post_meta( $doc_id, 'start_job', true);
-        //$start_leadtime = get_post_meta( $doc_id, 'start_leadtime', true);
         $is_doc_report = get_post_meta( $doc_id, 'is_doc_report', true);
         $doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
-        //$site_id = get_post_meta( $doc_id, 'site_id', true);
-        //$image_url = get_post_meta( $site_id, 'image_url', true);
-/*
-        $params = array(
-            'site_id'     => $site_id,
-            'is_editing'  => true,
-        );                
-        $query = retrieve_doc_field_data($params);
-*/        
         $is_doc = true;
     } else {
-        //$start_job = get_post_meta( $report_id, 'start_job', true);
-        //$start_leadtime = get_post_meta( $report_id, 'start_leadtime', true);
         $doc_id = get_post_meta( $report_id, 'doc_id', true);
     }
 
@@ -467,6 +454,9 @@ function display_todo_dialog($todo_id) {
             <tbody>
                 <?php
                 $query = retrieve_todo_action_list_data($todo_id);
+                if ( $post_type === 'job' ) {
+                    $query = retrieve_job_action_list_data($todo_id);
+                }                
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
@@ -492,6 +482,10 @@ function display_todo_dialog($todo_id) {
     <hr>
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
+    if ( $post_type === 'job' ) {
+        $query = retrieve_job_action_list_data($todo_id);
+    }
+    
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
