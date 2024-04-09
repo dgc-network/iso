@@ -251,7 +251,7 @@ function get_keyword_matchmaking($keyword) {
     if (strpos($keyword, '登錄') !== false) return 0;
     if (strpos($keyword, 'login') !== false) return 0;
     if (strpos($keyword, 'Login') !== false) return 0;
-
+/*
     // WP_Query arguments
     $args = array(
         'post_type'      => 'job',
@@ -264,7 +264,7 @@ function get_keyword_matchmaking($keyword) {
     
     // Check if there are any posts that match the query
     if ( $query->have_posts() ) return $query;
-        
+*/        
     return false;
 }
 
