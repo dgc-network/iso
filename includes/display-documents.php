@@ -460,7 +460,7 @@ function set_document_dialog_data() {
         //if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
     } else {
         $current_user_id = get_current_user_id();
-        $site_id = get_post_meta( $doc_id, 'site_id', true);
+        $site_id = get_post_meta( $current_user_id, 'site_id', true);
         //$site_id = sanitize_text_field($_POST['_site_id']);
         $new_post = array(
             'post_title'    => 'No title',
@@ -490,7 +490,7 @@ add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data
 
 function count_doc_category($doc_category){
     $current_user_id = get_current_user_id();
-    $site_id = get_post_meta( $doc_id, 'site_id', true);
+    $site_id = get_post_meta( $current_user_id, 'site_id', true);
 
     $args = array(
         'post_type'      => 'document',
@@ -953,7 +953,6 @@ add_action( 'wp_ajax_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
 
 function set_doc_field_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_field_id']) ) {
         // Update the post into the database
         $field_id = sanitize_text_field($_POST['_field_id']);
@@ -965,6 +964,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
     } else {
         // Insert the post into the database
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
@@ -1444,7 +1444,6 @@ function display_doc_report_dialog($report_id=false) {
 }
 
 function set_doc_report_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
         // Update the Document data
         $report_id = sanitize_text_field($_POST['_report_id']);
@@ -1478,6 +1477,7 @@ function set_doc_report_dialog_data() {
         //if ($start_job!=0 && $start_setting==1) set_next_todo_and_actions($params);
     } else {
         // Insert the post into the database
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
@@ -1507,9 +1507,9 @@ add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' )
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
 function duplicate_doc_report_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_report_id']) ) {
         // Insert the post into the database
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
@@ -1799,8 +1799,8 @@ function set_doc_action_dialog_data() {
         );
         wp_update_post( $data );
     } else {
-        $current_user_id = get_current_user_id();
         // Insert the post into the database
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',

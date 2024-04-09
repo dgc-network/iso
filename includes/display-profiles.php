@@ -389,16 +389,13 @@ function set_site_user_dialog_data() {
             update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
             update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_site_id']));
 
-            if (isset($_POST['_job_title']) && isset($_POST['_site_id'])) {
-                $current_user_id = get_current_user_id();
-            
-                global $wpdb;
-
+            if (isset($_POST['_job_title']) && isset($_POST['_site_id'])) {            
                 // Sanitize input values
                 $job_title = sanitize_text_field($_POST['_job_title']);
                 $site_id = sanitize_text_field($_POST['_site_id']);
                 
                 // Prepare SQL query
+                global $wpdb;
                 $query = $wpdb->prepare("
                     SELECT ID
                     FROM $wpdb->posts
@@ -419,6 +416,7 @@ function set_site_user_dialog_data() {
                     $response['error'] = 'A job with the same title already exists within the selected site.';
                 } else {
                     // No matching post found, proceed with inserting the new job
+                    $current_user_id = get_current_user_id();
                     $new_post = array(
                         'post_title'   => sanitize_text_field($_POST['_job_title']),
                         'post_content' => sanitize_text_field($_POST['_job_content']),

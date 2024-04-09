@@ -325,7 +325,7 @@ function display_todo_dialog($todo_id) {
 
     // Check if the post type is 'todo'
     if ( ($post_type != 'todo')&&($post_type != 'job') ) {
-        return 'post type is '.$post_type.'. Wrong data!';
+        return 'post type is '.$post_type.'. Wrong type!';
     }
     
     if ( $post_type === 'todo' ) {
@@ -335,6 +335,7 @@ function display_todo_dialog($todo_id) {
     
     if ( $post_type === 'job' ) {
         $doc_id = get_post_meta( $todo_id, 'job_doc', true);
+        if (empty($doc_id)) return 'post type is '.$post_type.'. Data empty!';
     }
     
     $is_doc = false;
@@ -547,35 +548,7 @@ add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
-    $current_user_id = get_current_user_id();
-/*    
-    $doc_id         = isset($args['doc_id']) ? $args['doc_id'] : 0;
-    $report_id      = isset($args['report_id']) ? $args['report_id'] : 0;
-    $next_job      = isset($args['start_job']) ? $args['start_job'] : 0;
-    $next_leadtime = isset($args['start_leadtime']) ? $args['start_leadtime'] : 0;
-
-    if ($next_job != 0) {
-        // Insert the To-do list for signature
-        $new_post = array(
-            'post_title'    => __( '自動', 'your-text-domain' ),
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'todo',
-        );    
-        $new_todo_id = wp_insert_post($new_post);
-        update_post_meta( $new_todo_id, 'job_id', $next_job);
-        if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-        if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
-        //update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-        update_post_meta( $new_todo_id, 'submit_action', 0);
-        update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
-        update_post_meta( $new_todo_id, 'submit_time', time());
-    }
-*/
-    //$next_job      = isset($args['next_job']) ? $args['next_job'] : 0;
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
-
-    //if ($next_job == 0) return;
 
     if ($action_id > 0) {
         $next_job      = get_post_meta( $action_id, 'next_job', true);
@@ -583,10 +556,6 @@ function set_next_todo_and_actions($args = array()) {
         $todo_id       = get_post_meta( $action_id, 'todo_id', true);
         $doc_id        = get_post_meta( $todo_id, 'doc_id', true);
         $report_id     = get_post_meta( $todo_id, 'report_id', true);
-    } else {
-        //$doc_id        = isset($args['doc_id']) ? $args['doc_id'] : 0;
-        //$report_id     = isset($args['report_id']) ? $args['report_id'] : 0;
-        //$next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
     }
     $todo_title = get_the_title($next_job);
 
@@ -594,6 +563,7 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
     
     // Insert the To-do list for next_job
+    $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
         'post_status'   => 'publish',
@@ -682,11 +652,8 @@ function notice_the_responsible_persons($todo_id=0) {
             'display_name' => $user->display_name,
             'link_uri' => $link_uri,
             'text_message' => $text_message,
-        ];
-        
+        ];        
         $flexMessage = set_flex_message($params);
-
-        //$flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
@@ -716,7 +683,6 @@ function notice_the_persons_in_site($todo_id=0) {
     $report_id = get_post_meta( $todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta( $report_id, 'doc_id', true);
     $site_id = get_post_meta( $doc_id, 'site_id', true);
-    //$doc_frame = get_post_meta( $doc_id, 'doc_frame', true);
     $doc_title = get_post_meta( $doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
     $todo_submit = get_post_meta( $todo_id, 'submit_date', true);
@@ -730,10 +696,8 @@ function notice_the_persons_in_site($todo_id=0) {
             'display_name' => $user->display_name,
             'link_uri' => $link_uri,
             'text_message' => $text_message,
-        ];
-        
+        ];        
         $flexMessage = set_flex_message($params);
-        //$flexMessage = set_flex_message($user->display_name, $link_uri, $text_message);
         $line_bot_api->pushMessage([
             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
             'messages' => [$flexMessage],
@@ -780,7 +744,6 @@ function get_todo_action_dialog_data() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = get_post_meta( $action_id, 'todo_id', true);
         $doc_id = get_post_meta( $todo_id, 'doc_id', true);
-        //$site_id = esc_attr(get_post_meta( $doc_id, 'site_id', true));
         $next_job = get_post_meta( $action_id, 'next_job', true);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
@@ -793,7 +756,6 @@ add_action( 'wp_ajax_get_todo_action_dialog_data', 'get_todo_action_dialog_data'
 add_action( 'wp_ajax_nopriv_get_todo_action_dialog_data', 'get_todo_action_dialog_data' );
 
 function set_todo_action_dialog_data() {
-    $current_user_id = get_current_user_id();
     if( isset($_POST['_action_id']) ) {
         // Update the post into the database
         $data = array(
@@ -808,6 +770,7 @@ function set_todo_action_dialog_data() {
         wp_update_post( $data );
     } else {
         // Insert the post into the database
+        $current_user_id = get_current_user_id();
         $new_post = array(
             'post_title'    => 'New action',
             'post_content'  => 'Your post content goes here.',
