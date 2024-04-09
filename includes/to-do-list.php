@@ -522,7 +522,7 @@ function set_todo_dialog_data() {
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta( $action_id, 'job_id', true);
             $params = array(
-                'next_job'      => $job_id,
+                'start_job'      => $job_id,
                 'action_id'     => $action_id,
             );        
             set_next_todo_and_actions($params);
