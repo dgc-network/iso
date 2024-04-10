@@ -130,17 +130,19 @@ function display_to_do_list() {
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $job_title = get_the_title($job_id);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
                     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if (!$doc_id) $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
     
                     //if (is_user_job($job_id)) { // Aditional condition to filter the data
                         ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php esc_html(the_title()); ?></td>
+                            <td style="text-align:center;"><?php esc_html($job_title); ?></td>
                             <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
