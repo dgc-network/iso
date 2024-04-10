@@ -180,6 +180,10 @@ function display_to_do_list() {
 
 function retrieve_todo_list_data(){
 
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+    
     $search_query = sanitize_text_field($_GET['_search']);
 
     if ($search_query) {
@@ -188,6 +192,13 @@ function retrieve_todo_list_data(){
             'post_type'      => 'job',
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
             's'              => $search_query, // Search keyword
+            'meta_query'     => array(
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
+            )
         );
         
         $query_jobs = new WP_Query($args_jobs);
@@ -208,10 +219,6 @@ function retrieve_todo_list_data(){
         wp_reset_postdata();
 
         // Step 2: Retrieve document posts with start_job meta matching user's job IDs
-        $current_user_id = get_current_user_id();
-        $site_id = get_user_meta($current_user_id, 'site_id', true);
-        $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
-        
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
@@ -229,7 +236,7 @@ function retrieve_todo_list_data(){
                 ),
                 array(
                     'key'     => 'start_job',
-                    'value'   => $user_jobs, // User's job IDs
+                    'value'   => $user_job_ids, // User's job IDs
                     'compare' => 'IN',
                 ),
                 array(
@@ -435,7 +442,7 @@ function display_todo_dialog($todo_id) {
     $post_type = get_post_type( $todo_id );
 
     // Check if the post type is 'todo'
-    if ( ($post_type != 'todo')&&($post_type != 'job') ) {
+    if ( ($post_type != 'todo')&&($post_type != 'document') ) {
         return 'post type is '.$post_type.'. Wrong type!';
     }
     
@@ -444,9 +451,9 @@ function display_todo_dialog($todo_id) {
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
     }
     
-    if ( $post_type === 'job' ) {
-        $doc_id = get_post_meta($todo_id, 'job_doc', true);
-        if (empty($doc_id)) return 'post type is '.$post_type.'. Data empty!';
+    if ( $post_type === 'document' ) {
+        $doc_id = $todo_id;
+        $job_id = get_post_meta($doc_id, 'start_job', true);
     }
     
     $is_doc = false;
@@ -566,8 +573,8 @@ function display_todo_dialog($todo_id) {
             <tbody>
                 <?php
                 $query = retrieve_todo_action_list_data($todo_id);
-                if ( $post_type === 'job' ) {
-                    $query = retrieve_job_action_list_data($todo_id);
+                if ( $post_type === 'document' ) {
+                    $query = retrieve_job_action_list_data($job_id);
                 }                
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -594,8 +601,8 @@ function display_todo_dialog($todo_id) {
     <hr>
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
-    if ( $post_type === 'job' ) {
-        $query = retrieve_job_action_list_data($todo_id);
+    if ( $post_type === 'document' ) {
+        $query = retrieve_job_action_list_data($job_id);
     }
     
     if ($query->have_posts()) {

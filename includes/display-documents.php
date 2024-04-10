@@ -398,6 +398,19 @@ function display_document_dialog($doc_id=false) {
     }
 }
 
+function select_start_setting_option($selected_option=0) {
+    $options = '<option value="0">'.__( '', 'your-text-domain' ).'</option>';
+    $selected = ($selected_option == "1") ? 'selected' : '';
+    $options .= '<option value="1" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "2") ? 'selected' : '';
+    $options .= '<option value="2" '.$selected.' />' . __( '每月', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "3") ? 'selected' : '';
+    $options .= '<option value="3" '.$selected.' />' . __( '每週', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "4") ? 'selected' : '';
+    $options .= '<option value="4" '.$selected.' />' . __( '每日', 'your-text-domain' ) . '</option>';
+    return $options;
+}
+
 function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['_doc_id'])) {
@@ -1604,7 +1617,7 @@ function get_doc_action_list_data() {
 add_action( 'wp_ajax_get_doc_action_list_data', 'get_doc_action_list_data' );
 add_action( 'wp_ajax_nopriv_get_doc_action_list_data', 'get_doc_action_list_data' );
 */
-
+/*
 function display_doc_action_list($doc_id) {
     ob_start();
     ?>
@@ -1663,20 +1676,7 @@ function retrieve_doc_action_data($doc_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
-function select_start_setting_option($selected_option=0) {
-    $options = '<option value="0">'.__( '', 'your-text-domain' ).'</option>';
-    $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '每月', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '每週', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '每日', 'your-text-domain' ) . '</option>';
-    return $options;
-}
-
+*/
 function select_doc_report_option_data($selected_option=0){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1721,7 +1721,7 @@ function select_doc_report_option_data($selected_option=0){
     return $options;    
 
 }
-
+/*
 function select_document_option_data($selected_option=0){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1822,4 +1822,4 @@ function del_doc_action_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_action_dialog_data', 'del_doc_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', 'del_doc_action_dialog_data' );
-
+*/

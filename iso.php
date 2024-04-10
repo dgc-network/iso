@@ -273,28 +273,29 @@ function init_webhook_events() {
                                 $query = $result;
                                 if ( $query->have_posts() ) {
                                     // Loop through the posts
+                                    $text_message = '您可以點擊下方按鍵執行：';
                                     while ( $query->have_posts() ) {
                                         $query->the_post();
                                         // Output the post title or content
-                                        $link_uri = home_url().'/to-do-list/?_id='.get_the_ID();
-                                        $text_message = '您可以點擊下方按鍵執行『'.get_the_title().'』>系統。';
-                                        
-                                        $params = [
-                                            'display_name' => $display_name,
-                                            'link_uri' => $link_uri,
-                                            'text_message' => $text_message,
-                                        ];
-                                        
-                                        $flexMessage = set_flex_message($params);
-
-                                        //$flexMessage = set_flex_message($display_name, $link_uri, $text_message);
-                                        $line_bot_api->replyMessage([
-                                            'replyToken' => $event['replyToken'],
-                                            'messages' => [$flexMessage],
-                                        ]);
+                                        $text_message = '『'.get_the_title().'』、';
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
+
+                                    $link_uri = home_url().'/to-do-list/?_search='.urlencode($message['text']);
+
+                                    $params = [
+                                        'display_name' => $display_name,
+                                        'link_uri' => $link_uri,
+                                        'text_message' => $text_message,
+                                    ];
+                                    
+                                    $flexMessage = set_flex_message($params);
+
+                                    $line_bot_api->replyMessage([
+                                        'replyToken' => $event['replyToken'],
+                                        'messages' => [$flexMessage],
+                                    ]);
                                 }
                             }
                         } else {
