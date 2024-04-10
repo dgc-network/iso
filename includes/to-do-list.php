@@ -193,11 +193,13 @@ function retrieve_todo_list_data(){
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
             's'              => $search_query, // Search keyword
             'meta_query'     => array(
+/*                
                 array(
                     'key'     => 'site_id',
                     'value'   => $site_id,
                     'compare' => '=',
                 ),
+*/                
             )
         );
         
@@ -224,11 +226,13 @@ function retrieve_todo_list_data(){
             'posts_per_page' => -1,
             'meta_query'     => array(
                 'relation' => 'AND',
+/*                
                 array(
                     'key'     => 'site_id',
                     'value'   => $site_id,
                     'compare' => '=',
                 ),
+*/                
                 array(
                     'key'     => 'start_job',
                     'value'   => $job_ids_array,
