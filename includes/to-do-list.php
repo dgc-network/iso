@@ -129,6 +129,33 @@ function display_to_do_list() {
             $query = retrieve_todo_list_data();
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
+
+                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    
+                    if (!empty($report_id)) {
+                        $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    }
+                    
+                    if (empty($doc_id)) {
+                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                    }
+                    
+                    $job_title = get_the_title($job_id);
+                    
+                    if (empty($doc_id)) {
+                        $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                    } else {
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    }
+                    
+                    if (!empty($report_id)) {
+                        $doc_title .= '(Report#' . $report_id . ')';
+                    }
+                    
+                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
+/*                    
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
@@ -139,7 +166,7 @@ function display_to_do_list() {
                     if (empty($doc_id)) $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                     if (!empty($report_id)) $doc_title .= '(Report#'.$report_id.')';
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-    
+*/    
                     //if (is_user_job($job_id)) { // Aditional condition to filter the data
                         ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
