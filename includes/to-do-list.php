@@ -170,8 +170,8 @@ function display_to_do_list() {
                     //if (is_user_job($job_id)) { // Aditional condition to filter the data
                         ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php esc_html($job_title); ?></td>
-                            <td><?php echo esc_html($doc_title); ?></td>
+                            <td style="text-align:center;"><?php esc_html($job_title.'/'.$job_id); ?></td>
+                            <td><?php echo esc_html($doc_title.'/'.$doc_id); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
