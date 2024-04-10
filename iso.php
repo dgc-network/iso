@@ -277,7 +277,7 @@ function init_webhook_events() {
                                     while ( $query->have_posts() ) {
                                         $query->the_post();
                                         // Output the post title or content
-                                        $text_message = '『'.get_the_title().'』、';
+                                        $text_message .= '『'.get_the_title().'』、';
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
