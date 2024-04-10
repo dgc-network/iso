@@ -132,12 +132,12 @@ function display_to_do_list() {
                     $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    if (!empty($report_id)) $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    if (!$doc_id) $job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                    if (empty($doc_id)) $job_id = get_post_meta(get_the_ID(), 'start_job', true);
                     $job_title = get_the_title($job_id);
-                    if (!$doc_id) $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+                    if (empty($doc_id)) $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                    if (!empty($report_id)) $doc_title .= '(Report#'.$report_id.')';
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
     
                     //if (is_user_job($job_id)) { // Aditional condition to filter the data
