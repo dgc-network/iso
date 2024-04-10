@@ -166,13 +166,60 @@ function retrieve_todo_list_data(){
     $search_query = sanitize_text_field($_GET['_search']);
 
     if ($search_query) {
-        $args = array(
+        // Step 1: Retrieve job posts based on the provided filter
+        $args_jobs = array(
             'post_type'      => 'job',
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
             's'              => $search_query, // Search keyword
         );
-    } else {
+        
+        $query_jobs = new WP_Query($args_jobs);
+        
+        $job_ids_array = array();
 
+        // Check if there are job posts found
+        if ($query_jobs->have_posts()) {
+            // Loop through each job post
+            while ($query_jobs->have_posts()) {
+                $query_jobs->the_post();
+                // Get the ID of the current job post and add it to the array
+                $job_ids_array[] = get_the_ID();
+            }
+        }
+        
+        // Reset post data
+        wp_reset_postdata();
+
+        // Step 2: Retrieve document posts with start_job meta matching user's job IDs
+        $current_user_id = get_current_user_id();
+        $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
+        
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'start_job',
+                    'value'   => $job_ids_array,
+                    'compare' => 'IN',
+                ),
+                array(
+                    'key'     => 'start_job',
+                    'value'   => $user_jobs, // User's job IDs
+                    'compare' => 'IN',
+                ),
+                array(
+                    'key'     => 'todo_status',
+                    'compare' => 'NOT EXISTS',
+                ),
+            ),
+        );
+        
+        //$query_documents = new WP_Query($args_documents);
+        
+        
+    } else {
         // Define the WP_Query arguments
         $args = array(
             'post_type'      => 'todo',
@@ -207,29 +254,7 @@ function retrieve_todo_list_data(){
             'key'     => 'job_id',
             'value'   => $user_jobs, // Value is the array of user job IDs
             'compare' => 'IN',
-        );
-        
-        // Proceed with your WP_Query using the $args
-        //$query = new WP_Query($args);
-    
-/*    
-        $args = array(
-            'post_type'      => 'todo',
-            'posts_per_page' => 30,
-            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'todo_due',
-                    'compare' => 'EXISTS',
-                ),
-                array(
-                    'key'     => 'submit_user',
-                    'compare' => 'NOT EXISTS',
-                ),
-            ),
-        );
-*/        
+        );        
     }
 
     $query = new WP_Query($args);
