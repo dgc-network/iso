@@ -759,11 +759,15 @@ add_action('wp_ajax_nopriv_get_doc_frame_contain', 'get_doc_frame_contain');
 
 function select_start_job_option_data($selected_option=0) {
     $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);
     $options = '<option value="0">Select job</option>';
     foreach ($user_job_ids_array as $job_id) {
-        $selected = ($selected_option == $job_id) ? 'selected' : '';
-        $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html(get_the_title($job_id)) . '</option>';
+        $job_site = get_post_meta($job_id, 'site_id', true);
+        if ($job_site==$site_id) {
+            $selected = ($selected_option == $job_id) ? 'selected' : '';
+            $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html(get_the_title($job_id)) . '</option>';    
+        }
     }
     return $options;
 }
