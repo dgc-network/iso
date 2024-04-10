@@ -223,12 +223,18 @@ function retrieve_todo_list_data(){
         // Step 2: Retrieve document posts with start_job meta matching user's job IDs
         $current_user_id = get_current_user_id();
         $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
         
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
             'meta_query'     => array(
                 'relation' => 'AND',
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
                 array(
                     'key'     => 'start_job',
                     'value'   => $job_ids_array,
