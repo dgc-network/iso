@@ -59,7 +59,10 @@ add_action('init', 'register_action_post_type');
 function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        if (isset($_GET['_search'])) display_to_do_list();
+        if (isset($_GET['_search'])) {
+            display_to_do_list();
+            exit;
+        }
 
         if (isset($_GET['_id'])) {
             // Get the post type of the post with the given ID
