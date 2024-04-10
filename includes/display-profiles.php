@@ -527,22 +527,19 @@ function display_site_job_list($initial=false) {
                 <thead>
                     <th>Job</th>
                     <th>Description</th>
-                    <th>Doc</th>
+                    <th>Department</th>
                 </thead>
                 <tbody>
                 <?php
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$is_start_job = get_post_meta(get_the_ID(), 'is_start_job', true);
-                        //$start_job_checked = ($is_start_job==1) ? 'checked' : '';
-                        $job_doc = get_post_meta(get_the_ID(), 'job_doc', true);
-                        $doc_title = get_post_meta($job_doc, 'doc_title', true);
+                        $department = get_post_meta(get_the_ID(), 'department', true);
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
-                            <td><?php echo esc_html($doc_title);?></td>
+                            <td><?php echo esc_html($department);?></td>
                         </tr>
                         <?php 
                     endwhile;
@@ -601,6 +598,8 @@ function display_site_job_dialog() {
         <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
         <div class="separator"></div>
         <?php display_job_action_list();?>
+        <label for="department">Department:</label>
+        <input type="text" id="department" class="text ui-widget-content ui-corner-all" />
     </fieldset>
     </div>
     <?php
@@ -612,9 +611,7 @@ function get_site_job_dialog_data() {
         $job_id = sanitize_text_field($_POST['_job_id']);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
-        //$response["is_start_job"] = esc_attr(get_post_meta($job_id, 'is_start_job', true));
-        //$job_doc = get_post_meta($job_id, 'job_doc', true);
-        //$response["job_doc"] = select_document_option_data($job_doc);
+        $response["department"] = get_post_meta($job_id, 'department', true);
     }
     wp_send_json($response);
 }
@@ -630,8 +627,7 @@ function set_site_job_dialog_data() {
             'post_content' => sanitize_text_field($_POST['_job_content']),
         );
         wp_update_post( $data );
-        //update_post_meta( $job_id, 'is_start_job', sanitize_text_field($_POST['_is_start_job']));
-        //update_post_meta( $job_id, 'job_doc', sanitize_text_field($_POST['_job_doc']));
+        update_post_meta( $job_id, 'department', sanitize_text_field($_POST['_department']));
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -643,7 +639,6 @@ function set_site_job_dialog_data() {
             'post_type'     => 'job',
         );    
         $post_id = wp_insert_post($new_post);
-        //update_post_meta( $post_id, 'site_id', sanitize_text_field($_POST['_site_id']));
         update_post_meta($post_id, 'site_id', $site_id);
     }
     wp_send_json($response);
@@ -653,8 +648,8 @@ add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data
 
 function del_site_job_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_job_id'], true);
-    wp_send_json($result);
+    $response = wp_delete_post($_POST['_job_id'], true);
+    wp_send_json($response);
 }
 add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', 'del_site_job_dialog_data' );
@@ -814,8 +809,8 @@ add_action( 'wp_ajax_nopriv_set_job_action_dialog_data', 'set_job_action_dialog_
 
 function del_job_action_dialog_data() {
     // Delete the post
-    $result = wp_delete_post($_POST['_action_id'], true);
-    wp_send_json($result);
+    $response = wp_delete_post($_POST['_action_id'], true);
+    wp_send_json($response);
 }
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', 'del_job_action_dialog_data' );

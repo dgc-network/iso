@@ -341,8 +341,8 @@ function display_document_dialog($doc_id=false) {
         $start_setting = get_post_meta($doc_id, 'start_setting', true);
         $period_time = get_post_meta($doc_id, 'period_time', true);
         $start_job = get_post_meta($doc_id, 'start_job', true);
-        $start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
-        $responsible_department = get_post_meta($doc_id, 'responsible_department', true);
+        //$start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
+        //$responsible_department = get_post_meta($doc_id, 'responsible_department', true);
         //$start_setting = get_post_meta($doc_id, 'start_setting', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $image_url = get_post_meta($site_id, 'image_url', true);
@@ -386,8 +386,6 @@ function display_document_dialog($doc_id=false) {
                 <label id="period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             </div>
         </div>
-        <label for="responsible-department"><?php echo __( '負責部門', 'your-text-domain' );?></label>
-        <input type="text" id="responsible-department" value="<?php echo esc_html($responsible_department);?>" class="text ui-widget-content ui-corner-all" />
         <label for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label><br>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
         <hr>
@@ -440,18 +438,18 @@ function set_document_dialog_data() {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        //$start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
         update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
         update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
         update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
+        //update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
         update_post_meta( $doc_id, 'start_setting', $start_setting);
         update_post_meta( $doc_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $doc_id, 'start_job', $start_job);
-        update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
+        //update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
         $params = array(
             'doc_id'         => $doc_id,
             'start_job'      => $start_job,
@@ -474,7 +472,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
         update_post_meta( $post_id, 'period_time', 1);
-        update_post_meta( $post_id, 'start_leadtime', 86400);
+        //update_post_meta( $post_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
 }
@@ -698,7 +696,7 @@ function get_shared_document($doc_id){
     update_post_meta( $post_id, 'doc_frame', $doc_frame);
     update_post_meta( $post_id, 'doc_category', $doc_category);
     update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
-    update_post_meta( $post_id, 'start_leadtime', 86400);
+    //update_post_meta( $post_id, 'start_leadtime', 86400);
 
     if ($is_doc_report==1){
         $params = array(
@@ -1312,9 +1310,9 @@ function display_doc_report_dialog($report_id=false) {
     $start_setting = get_post_meta($report_id, 'start_setting', true);
     $period_time = get_post_meta($report_id, 'period_time', true);
     $start_job = get_post_meta($report_id, 'start_job', true);
-    $start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
-    $prev_doc_report = get_post_meta($report_id, 'prev_doc_report', true);
-    $next_doc_report = get_post_meta($report_id, 'next_doc_report', true);
+    //$start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
+    //$prev_doc_report = get_post_meta($report_id, 'prev_doc_report', true);
+    //$next_doc_report = get_post_meta($report_id, 'next_doc_report', true);
     $todo_status = get_post_meta($report_id, 'todo_status', true);
 
     $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -1462,11 +1460,11 @@ function set_doc_report_dialog_data() {
         }
         $start_setting = sanitize_text_field($_POST['_start_setting']);
         $start_job = sanitize_text_field($_POST['_start_job']);
-        $start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
+        //$start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $report_id, 'start_setting', $start_setting);
         update_post_meta( $report_id, 'period_time', sanitize_text_field($_POST['_period_time']));
         update_post_meta( $report_id, 'start_job', $start_job);
-        update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
+        //update_post_meta( $report_id, 'start_leadtime', $start_leadtime);
         update_post_meta( $report_id, 'prev_doc_report', sanitize_text_field($_POST['_prev_doc_report']));
         update_post_meta( $report_id, 'next_doc_report', sanitize_text_field($_POST['_next_doc_report']));
         $params = array(
@@ -1499,7 +1497,7 @@ function set_doc_report_dialog_data() {
             wp_reset_postdata();
         }
         update_post_meta( $post_id, 'period_time', 1 );
-        update_post_meta( $post_id, 'start_leadtime', 86400 );
+        //update_post_meta( $post_id, 'start_leadtime', 86400 );
     }
     wp_send_json($response);
 }
@@ -1516,7 +1514,7 @@ function duplicate_doc_report_dialog_data() {
             'post_type'     => 'doc-report',
         );    
         $post_id = wp_insert_post($new_post);
-        $report_id = (int) sanitize_text_field($_POST['_report_id']);
+        $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         update_post_meta( $post_id, 'doc_id', $doc_id);
 
@@ -1532,7 +1530,7 @@ function duplicate_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        update_post_meta( $post_id, 'start_leadtime', 86400 );
+        //update_post_meta( $post_id, 'start_leadtime', 86400 );
     }
     wp_send_json($response);
 }

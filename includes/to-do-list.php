@@ -155,31 +155,18 @@ function display_to_do_list() {
                     }
                     
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-/*                    
-                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    if (!empty($report_id)) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    if (empty($doc_id)) $job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                    $job_title = get_the_title($job_id);
-                    if (empty($doc_id)) $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                    if (!empty($report_id)) $doc_title .= '(Report#'.$report_id.')';
-                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-*/    
-                    //if (is_user_job($job_id)) { // Aditional condition to filter the data
-                        ?>
+
+                    ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php echo esc_html($job_title.'/'.$job_id); ?></td>
-                            <td><?php echo esc_html($doc_title.'/'.$doc_id); ?></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
+                            <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
                             <?php } else { ?>
                                 <td style="text-align:center;"><?php } ?>
                             <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                         </tr>
-                        <?php
-                    //}
+                    <?php
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -222,8 +209,8 @@ function retrieve_todo_list_data(){
 
         // Step 2: Retrieve document posts with start_job meta matching user's job IDs
         $current_user_id = get_current_user_id();
-        $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
         $site_id = get_user_meta($current_user_id, 'site_id', true);
+        $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
         
         $args = array(
             'post_type'      => 'document',

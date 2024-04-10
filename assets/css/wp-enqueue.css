@@ -54,6 +54,11 @@ input[type="button"]:hover {
     z-index: 9999; /* Ensure the box is above other content */
 }
 
+.separator {
+    margin: 5px;
+    /* Add more styles as needed */
+}
+
 ol {
     margin-left: 20px; /* Adjust the margin as needed */
 }

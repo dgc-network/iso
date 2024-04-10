@@ -268,8 +268,7 @@ jQuery(document).ready(function($) {
                     $("#job-id").val(job_id);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
-                    $("#job-doc").empty().append(response.job_doc);
-                    //$('#is-start-job').prop('checked', response.is_start_job == 1);
+                    $("#department").val(response.department);
                     get_job_action_list_data(job_id);
                 },
                 error: function (error) {
@@ -382,8 +381,7 @@ jQuery(document).ready(function($) {
                             '_job_id': $("#job-id").val(),
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
-                            //'_is_start_job': $('#is-start-job').is(":checked") ? 1 : 0,
-                            //'_job_doc': $("#job-doc").val(),
+                            '_department': $("#department").val(),
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
