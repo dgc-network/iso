@@ -629,6 +629,8 @@ function notice_the_responsible_persons($todo_id=0) {
     $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message='你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+    $post_type = get_post_type( $todo_id );
+    if ($post_type='job') $job_id = $todo_id;
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         $params = [
