@@ -126,30 +126,32 @@ function display_to_do_list() {
                 while ($query->have_posts()) : $query->the_post();
 
                     //$job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $todo_id = get_the_ID();
+                    $todo_title = get_the_title();
+                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    $todo_title = get_the_title();
                     
                     if (!empty($report_id)) {
                         $doc_id = get_post_meta($report_id, 'doc_id', true);
                     }
                     
                     if (empty($doc_id)) {
-                        $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                        $todo_title = get_the_title($job_id);
-                    } else {
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $doc_id = get_the_ID();
+                        $todo_id = get_post_meta(get_the_ID(), 'start_job', true);
+                        $todo_title = get_the_title($todo_id);
+                        $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
                     }
+
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
                     
                     if (!empty($report_id)) {
                         $doc_title .= '(Report#' . $report_id . ')';
                     }
                     
-                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
 
                     ?>
-                        <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
+                        <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                             <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
                             <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
