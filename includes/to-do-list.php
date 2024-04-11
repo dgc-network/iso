@@ -186,7 +186,7 @@ function retrieve_todo_list_data(){
             'post_type'      => 'job',
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
             's'              => $search_query, // Search keyword
-/*            
+
             'meta_query'     => array(
                 array(
                     'key'     => 'site_id',
@@ -194,7 +194,7 @@ function retrieve_todo_list_data(){
                     'compare' => '=',
                 ),
             )
-*/            
+
         );
         
         $query_jobs = new WP_Query($args_jobs);
