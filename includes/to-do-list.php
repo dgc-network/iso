@@ -322,6 +322,8 @@ function display_todo_dialog($todo_id) {
         $doc_id = get_post_meta($report_id, 'doc_id', true);
     }
 
+    if (!$doc_id) return 'post type is '.$post_type.'. doc_id is empty!';
+
     $current_user_id = get_current_user_id();
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $site_id = get_user_meta($current_user_id, 'site_id', true);
