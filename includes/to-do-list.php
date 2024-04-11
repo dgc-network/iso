@@ -491,6 +491,8 @@ function set_todo_dialog_data() {
         // action button is clicked, current todo update
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $report_id = sanitize_text_field($_POST['_report_id']);
         $todo_id = get_post_meta($action_id, 'todo_id', true);
         // Check if the meta key exists
         if ( empty( $todo_id ) ) {
@@ -521,12 +523,14 @@ add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
+
     $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
 
     if ($action_id > 0) {
         $next_job      = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
+        if (!$todo_id) $todo_id = get_post_meta($action_id, 'job_id', true);
         $doc_id        = get_post_meta($todo_id, 'doc_id', true);
         $report_id     = get_post_meta($todo_id, 'report_id', true);
     }
@@ -554,16 +558,16 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job==-1 || $next_job==-2) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
-        notice_the_persons_in_site($new_todo_id);
+        notice_the_persons_in_site($new_todo_id,$next_job);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
     }
-
+/*
     if ($next_job==-2) {
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', 0);
         if ($report_id) update_post_meta( $report_id, 'todo_status', 0);
     }
-
+*/
     if ($next_job>0) {
         notice_the_responsible_persons($new_todo_id);
         // Insert the Action list for next_job
@@ -650,7 +654,7 @@ function get_users_in_site($site_id=0) {
 }
 
 // Notice the persons in site
-function notice_the_persons_in_site($todo_id=0) {
+function notice_the_persons_in_site($todo_id=0,$job_id=0) {
     $line_bot_api = new line_bot_api();
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
@@ -661,7 +665,9 @@ function notice_the_persons_in_site($todo_id=0) {
     $todo_submit = get_post_meta($todo_id, 'submit_date', true);
     $submit_date = wp_date( get_option('date_format'), $todo_submit );    
     $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
-    $text_message='「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date ).'文件發行或廢止，你可以點擊下方連結查看該文件。';
+    $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date );
+    if ($job_id==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
+    if ($job_id==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
     $users = get_users_in_site($site_id);
     foreach ($users as $user) {

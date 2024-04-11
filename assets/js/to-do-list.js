@@ -32,6 +32,8 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_todo_dialog_data',
                     '_action_id': action_id,
+                    '_doc_id': $("#doc-id").val(),
+                    '_report_id': $("#report-id").val(),
                 },
                 success: function (response) {
                     window.location.replace("/to-do-list/");
