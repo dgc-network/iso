@@ -59,28 +59,18 @@ add_action('init', 'register_action_post_type');
 function to_do_list_shortcode() {
     // Check if the user is logged in
     if (is_user_logged_in()) {
-        if (isset($_GET['_search'])) {
-            display_to_do_list();
-            exit;
-        }
+        if (isset($_GET['_search'])) display_to_do_list();
 
         if (isset($_GET['_id'])) {
-            // Get the post type of the post with the given ID
-            $todo_id = sanitize_text_field($_GET['_id']);
-            $post_type = get_post_type( $todo_id );
-
-            if ( $post_type === 'job' ) {
-                $doc_id = get_post_meta($todo_id, 'job_doc', true);
-                if (empty($doc_id)) return 'post type is '.$post_type.'. Data empty!';
-            }
-
             echo '<div class="ui-widget" id="result-container">';
             echo display_todo_dialog($todo_id);
             echo '</div>';
-        } else {
-            if ($_GET['_select_todo']=='1') display_signature_record();
-            if ($_GET['_select_todo']!='1') display_to_do_list();
         }
+
+        if ($_GET['_select_todo']=='1') display_signature_record();
+
+        if ($_GET['_select_todo']!='1' && !isset($_GET['_search']) && !isset($_GET['_id'])) display_to_do_list();
+
     } else {
         user_did_not_login_yet();
     }
@@ -197,6 +187,7 @@ function retrieve_todo_list_data(){
             'post_type'      => 'job',
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
             's'              => $search_query, // Search keyword
+/*            
             'meta_query'     => array(
                 array(
                     'key'     => 'site_id',
@@ -204,6 +195,7 @@ function retrieve_todo_list_data(){
                     'compare' => '=',
                 ),
             )
+*/            
         );
         
         $query_jobs = new WP_Query($args_jobs);
