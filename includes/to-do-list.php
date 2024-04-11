@@ -138,9 +138,10 @@ function display_to_do_list() {
                     
                     if (empty($doc_id)) {
                         $doc_id = get_the_ID();
-                        $todo_id = get_post_meta(get_the_ID(), 'start_job', true);
-                        $todo_title = get_the_title($todo_id);
+                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                        $todo_title = get_the_title($job_id);
                         $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
+                        $todo_id = get_the_ID();
                     }
 
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -149,7 +150,6 @@ function display_to_do_list() {
                         $doc_title .= '(Report#' . $report_id . ')';
                     }
                     
-
                     ?>
                         <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                             <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
@@ -295,7 +295,7 @@ function display_todo_dialog($todo_id) {
     $post_type = get_post_type( $todo_id );
 
     // Check if the post type is 'todo'
-    if ( ($post_type != 'todo')&&($post_type != 'document') ) {
+    if ( ($post_type != 'todo') && ($post_type != 'document') ) {
         return 'post type is '.$post_type.'. Wrong type!';
     }
     
@@ -306,7 +306,7 @@ function display_todo_dialog($todo_id) {
     
     if ( $post_type === 'document' ) {
         $doc_id = $todo_id;
-        $job_id = get_post_meta($doc_id, 'start_job', true);
+        $todo_id = get_post_meta($doc_id, 'start_job', true);
     }
     
     $is_doc = false;
@@ -427,7 +427,7 @@ function display_todo_dialog($todo_id) {
                 <?php
                 $query = retrieve_todo_action_list_data($todo_id);
                 if ( $post_type === 'document' ) {
-                    $query = retrieve_job_action_list_data($job_id);
+                    $query = retrieve_job_action_list_data($todo_id);
                 }                
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -455,7 +455,7 @@ function display_todo_dialog($todo_id) {
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
     if ( $post_type === 'document' ) {
-        $query = retrieve_job_action_list_data($job_id);
+        $query = retrieve_job_action_list_data($todo_id);
     }
     
     if ($query->have_posts()) {
