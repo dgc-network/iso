@@ -340,6 +340,7 @@ function get_keyword_matchmaking($keyword) {
         'post_type'      => 'job',
         'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
         's'              => $keyword, // Search keyword
+/*        
         'meta_query'     => array(
             array(
                 'key'     => 'site_id',
@@ -347,6 +348,7 @@ function get_keyword_matchmaking($keyword) {
                 'compare' => '=',
             ),
         )
+*/        
     );
     
     // Instantiate new WP_Query
