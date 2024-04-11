@@ -125,22 +125,19 @@ function display_to_do_list() {
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
 
-                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    //$job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    $todo_title = get_the_title();
                     
                     if (!empty($report_id)) {
                         $doc_id = get_post_meta($report_id, 'doc_id', true);
                     }
                     
                     if (empty($doc_id)) {
-                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                    }
-                    
-                    $job_title = get_the_title($job_id);
-                    
-                    if (empty($doc_id)) {
                         $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                        $todo_title = get_the_title($job_id);
                     } else {
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
                     }
@@ -153,7 +150,7 @@ function display_to_do_list() {
 
                     ?>
                         <tr id="edit-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
+                            <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
                             <td><?php echo esc_html($doc_title); ?></td>
                             <?php if ($todo_due < time()) { ?>
                                 <td style="text-align:center; color:red;">
@@ -284,151 +281,6 @@ function retrieve_todo_list_data(){
             'value'   => $user_jobs, // Value is the array of user job IDs
             'compare' => 'IN',
         );        
-    }
-
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function display_signature_record() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    $user_data = get_userdata( $current_user_id );
-    $signature_record_list = get_signature_record_list($site_id);
-    $$html_contain = $signature_record_list['html'];
-    $x_value = $signature_record_list['x'];
-    ?>
-    <div class="ui-widget" id="result-container">
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
-    <fieldset>
-        <div id="todo-setting-div" style="display:none">
-        <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-        </fieldset>
-        </div>
-    
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-todo">
-                    <option value="0">To-do list</option>
-                    <option value="1" selected>Signature record</option>
-                    <option value="2">...</option>
-                </select>
-            </div>
-            <div style="text-align: right">
-                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
-        <?php echo $$html_contain;?>
-        <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
-    </fieldset>
-    </div>
-    <?php
-}
-
-function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
-    ob_start();
-    ?>
-        <table class="ui-widget" style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                    <?php if(!$doc) {;?>
-                    <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                    <?php };?>
-                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            $query = retrieve_signature_record_data($doc, $report);
-            $x = 0;
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $todo_site = get_post_meta($doc_id, 'site_id', true);
-                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
-                    $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
-                    $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
-                    $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                    $next_job = get_post_meta($submit_action, 'next_job', true);
-                    $job_title = ($next_job==-1) ? __( '文件發行', 'your-text-domain' ) : get_the_title($next_job);
-                    $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
-
-                    if ($todo_site==$site_id) { // Aditional condition to filter the data
-                        $user_data = get_userdata( $submit_user );
-                        ?>
-                        <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
-                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                            <?php if(!$doc) {;?>
-                            <td><?php echo esc_html($doc_title);?></td>
-                            <?php };?>
-                            <td style="text-align:center;"><?php esc_html(the_title());?></td>
-                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
-                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                        </tr>
-                        <?php
-                        $x += 1;
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            ?>
-            </tbody>
-        </table>
-    <?php
-    $html = ob_get_clean();
-    // Return an array containing both HTML content and $x
-    return array(
-        'html' => $html,
-        'x'    => $x,
-    );
-}
-
-function retrieve_signature_record_data($doc_id=false, $report_id=false){
-    $args = array(
-        'post_type'      => 'todo',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'submit_action',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'EXISTS',
-            ),
-        ),
-    );
-
-    if ($doc_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'doc_id',
-            'value' => $doc_id,
-        );
-    }
-
-    if ($report_id) {
-        $args['meta_query'][] = array(
-            'key'   => 'report_id',
-            'value' => $report_id,
-        );
     }
 
     $query = new WP_Query($args);
@@ -911,4 +763,150 @@ function del_todo_action_dialog_data() {
 }
 add_action( 'wp_ajax_del_todo_action_dialog_data', 'del_todo_action_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_todo_action_dialog_data', 'del_todo_action_dialog_data' );
+
+// signature_record
+function display_signature_record() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    $user_data = get_userdata( $current_user_id );
+    $signature_record_list = get_signature_record_list($site_id);
+    $$html_contain = $signature_record_list['html'];
+    $x_value = $signature_record_list['x'];
+    ?>
+    <div class="ui-widget" id="result-container">
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
+    <fieldset>
+        <div id="todo-setting-div" style="display:none">
+        <fieldset>
+            <label for="display-name">Name : </label>
+            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <label for="site-title"> Site: </label>
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+        </fieldset>
+        </div>
+    
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <select id="select-todo">
+                    <option value="0">To-do list</option>
+                    <option value="1" selected>Signature record</option>
+                    <option value="2">...</option>
+                </select>
+            </div>
+            <div style="text-align: right">
+                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+            </div>
+        </div>
+        <?php echo $$html_contain;?>
+        <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
+    </fieldset>
+    </div>
+    <?php
+}
+
+function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
+    ob_start();
+    ?>
+        <table class="ui-widget" style="width:100%;">
+            <thead>
+                <tr>
+                    <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                    <?php if(!$doc) {;?>
+                    <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                    <?php };?>
+                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $query = retrieve_signature_record_data($doc, $report);
+            $x = 0;
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $job_id = get_post_meta(get_the_ID(), 'job_id', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $todo_site = get_post_meta($doc_id, 'site_id', true);
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+                    $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
+                    $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
+                    $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
+                    $next_job = get_post_meta($submit_action, 'next_job', true);
+                    $job_title = ($next_job==-1) ? __( '文件發行', 'your-text-domain' ) : get_the_title($next_job);
+                    $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
+
+                    if ($todo_site==$site_id) { // Aditional condition to filter the data
+                        $user_data = get_userdata( $submit_user );
+                        ?>
+                        <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
+                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                            <?php if(!$doc) {;?>
+                            <td><?php echo esc_html($doc_title);?></td>
+                            <?php };?>
+                            <td style="text-align:center;"><?php esc_html(the_title());?></td>
+                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                        </tr>
+                        <?php
+                        $x += 1;
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+            </tbody>
+        </table>
+    <?php
+    $html = ob_get_clean();
+    // Return an array containing both HTML content and $x
+    return array(
+        'html' => $html,
+        'x'    => $x,
+    );
+}
+
+function retrieve_signature_record_data($doc_id=false, $report_id=false){
+    $args = array(
+        'post_type'      => 'todo',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'submit_action',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'EXISTS',
+            ),
+        ),
+    );
+
+    if ($doc_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'doc_id',
+            'value' => $doc_id,
+        );
+    }
+
+    if ($report_id) {
+        $args['meta_query'][] = array(
+            'key'   => 'report_id',
+            'value' => $report_id,
+        );
+    }
+
+    $query = new WP_Query($args);
+    return $query;
+}
 
