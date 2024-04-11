@@ -185,8 +185,7 @@ function retrieve_todo_list_data(){
         $args_jobs = array(
             'post_type'      => 'job',
             'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
-            's'              => $search_query, // Search keyword
-
+            //'s'              => $search_query, // Search keyword            
             'meta_query'     => array(
                 array(
                     'key'     => 'site_id',
@@ -194,7 +193,6 @@ function retrieve_todo_list_data(){
                     'compare' => '=',
                 ),
             )
-
         );
         
         $query_jobs = new WP_Query($args_jobs);
@@ -241,11 +239,14 @@ function retrieve_todo_list_data(){
                     'key'     => 'todo_status',
                     'compare' => 'NOT EXISTS',
                 ),
+                // Add meta query for doc_title search
+                array(
+                    'key'     => 'doc_title',
+                    'value'   => $search_query, // Search keyword for doc_title
+                    'compare' => 'LIKE',
+                ),
             ),
         );
-        
-        //$query_documents = new WP_Query($args_documents);
-        
         
     } else {
         // Define the WP_Query arguments
