@@ -172,6 +172,18 @@ function display_to_do_list() {
     <?php
 }
 
+function get_post_type_meta_keys($post_type) {
+    global $wpdb;
+    $query = $wpdb->prepare("
+        SELECT DISTINCT(meta_key)
+        FROM $wpdb->postmeta
+        INNER JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+        WHERE $wpdb->posts.post_type = %s
+    ", $post_type);
+
+    return $wpdb->get_col($query);
+}
+
 function retrieve_todo_list_data(){
 
     $current_user_id = get_current_user_id();
@@ -181,6 +193,7 @@ function retrieve_todo_list_data(){
     $search_query = sanitize_text_field($_GET['_search']);
 
     if ($search_query) {
+/*        
         // Step 1: Retrieve job posts based on the provided filter
         $args_jobs = array(
             'post_type'      => 'job',
@@ -211,8 +224,9 @@ function retrieve_todo_list_data(){
         
         // Reset post data
         wp_reset_postdata();
-
+*/
         // Step 2: Retrieve document posts with start_job meta matching user's job IDs
+        $document_meta_keys = get_post_type_meta_keys('document');
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
@@ -224,12 +238,13 @@ function retrieve_todo_list_data(){
                     'value'   => $site_id,
                     'compare' => '=',
                 ),
-
+/*
                 array(
                     'key'     => 'start_job',
                     'value'   => $job_ids_array,
                     'compare' => 'IN',
                 ),
+*/                
                 array(
                     'key'     => 'start_job',
                     'value'   => $user_job_ids, // User's job IDs
@@ -240,14 +255,28 @@ function retrieve_todo_list_data(){
                     'compare' => 'NOT EXISTS',
                 ),
                 // Add meta query for doc_title search
+/*                
                 array(
                     'key'     => 'doc_title',
                     'value'   => $search_query, // Search keyword for doc_title
                     'compare' => 'LIKE',
                 ),
+*/                
             ),
         );
+
+        // Add meta query for searching across all meta keys
+        $meta_query_all_keys = array('relation' => 'OR');
+        foreach ($document_meta_keys as $meta_key) {
+            $meta_query_all_keys[] = array(
+                'key'     => $meta_key,
+                'value'   => $search_query,
+                'compare' => 'LIKE',
+            );
+        }
         
+        $args['meta_query'][] = $meta_query_all_keys;
+                
     } else {
         // Define the WP_Query arguments
         $args = array(
