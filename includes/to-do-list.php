@@ -513,7 +513,9 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
         $params = array(
-            'action_id'     => $action_id,
+            'action_id' => $action_id,
+            'doc_id'    => $doc_id,
+            'report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -524,15 +526,19 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
 
-    $action_id     = isset($args['action_id']) ? $args['action_id'] : 0;
+    $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
 
     if ($action_id > 0) {
         $next_job      = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
-        if (!$todo_id) $todo_id = get_post_meta($action_id, 'job_id', true);
         $doc_id        = get_post_meta($todo_id, 'doc_id', true);
         $report_id     = get_post_meta($todo_id, 'report_id', true);
+        if (!$todo_id) {
+            $todo_id = get_post_meta($action_id, 'job_id', true);
+            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+            $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+        }
     }
     $todo_title = get_the_title($next_job);
 
@@ -612,17 +618,17 @@ function get_users_by_job_id($job_id=0) {
 // Notice the persons in charge the job
 function notice_the_responsible_persons($todo_id=0) {
     $line_bot_api = new line_bot_api();
-    $job_title = get_the_title($todo_id);
+    $todo_title = get_the_title($todo_id);
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $job_id = get_post_meta($doc_id, 'todo_status', true);
     $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
-    $text_message='You are in '.$job_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
-    $text_message='你在「'.$job_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
+    $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
+    $text_message='你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $job_id = get_post_meta($todo_id, 'job_id', true);
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         $params = [
