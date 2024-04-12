@@ -244,7 +244,13 @@ function init_webhook_events() {
 
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
-                                        'messages' => [$flexMessage],
+                                        //'messages' => [$flexMessage],
+                                        'messages' => [
+                                            [
+                                                'type' => 'text',
+                                                'text' => $text_message,
+                                            ]                                                                    
+                                        ]
                                     ]);
                                 }
                             }
