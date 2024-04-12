@@ -784,8 +784,10 @@ function select_next_job_option_data($selected_option=0) {
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $query = retrieve_site_job_list_data($site_id);
     while ($query->have_posts()) : $query->the_post();
+        $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+        $job_title = get_the_title().'('.$job_number.')';
         $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+        $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
     endwhile;
     wp_reset_postdata();
     if ($selected_option==-1){
