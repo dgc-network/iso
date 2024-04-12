@@ -69,14 +69,15 @@ function display_my_profile() {
                 if (is_array($user_job_ids)) {
                     foreach ($user_job_ids as $job_id) {
                         // Do something with each job ID
-                        $job_site = get_user_meta($current_user_id, 'site_id', true);
-                        $my_job_checked = is_user_job($job_id) ? 'checked' : '';
+                        $job_site = get_post_meta($job_id, 'site_id', true);
+                        $job_number = get_post_meta($job_id, 'job_number', true);
                         $job_title = get_the_title($job_id);
+                        $job_title .= '('.$job_number.')';
                         $job_content = get_post_field('post_content', $job_id);
                         if ($job_site==$site_id) {
                         ?>
                         <tr id="my-job-list" data-job-id="<?php echo esc_attr($job_id);?>">
-                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo $my_job_checked;?> /></td>
+                            <td style="text-align:center;"><input type="checkbox" checked /></td>
                             <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                             <td><?php echo wp_kses_post($job_content);?></td>
                         </tr>
