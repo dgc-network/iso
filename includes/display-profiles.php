@@ -42,6 +42,7 @@ function display_my_profile() {
         // Check if the user is logged in
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
+        $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
         $image_url = get_post_meta($site_id, 'image_url', true);
         $user_data = get_userdata( $current_user_id );
         $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
@@ -63,6 +64,25 @@ function display_my_profile() {
                 </thead>
                 <tbody>
                 <?php
+
+                // Accessing elements of the array
+                if (is_array($user_job_ids)) {
+                    foreach ($user_job_ids as $job_id) {
+                        // Do something with each job ID
+                        $my_job_checked = is_user_job($job_id) ? 'checked' : '';
+                        $job_title = get_the_title($job_id);
+                        $job_content = get_post_field('post_content', $job_id);
+                
+                        ?>
+                        <tr id="my-job-list" data-job-id="<?php echo esc_attr($job_id);?>">
+                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php echo esc_attr($job_id);?>" <?php echo $my_job_checked;?> /></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                            <td><?php echo wp_kses_post($job_content);?></td>
+                        </tr>
+                        <?php
+                    }
+                }
+/*
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -78,6 +98,7 @@ function display_my_profile() {
                     endwhile;
                     wp_reset_postdata();
                 endif;
+*/                
                 ?>
                 </tbody>
             </table>
@@ -589,24 +610,7 @@ function retrieve_site_job_list_data($site_id = 0) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_site_job_list_data($site_id=0) {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
+
 function get_site_job_list_data() {
     $response = array('html_contain' => display_site_job_list());
     wp_send_json($response);
