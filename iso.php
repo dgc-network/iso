@@ -311,13 +311,13 @@ function get_keyword_matchmaking($keyword) {
         'post_type'      => 'document',
         'posts_per_page' => -1,
         'meta_query'     => array(
-/*            
             'relation' => 'AND',
             array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
+                'key'     => 'doc_title',
+                'value'   => $keyword,
+                'compare' => 'LIKE',
             ),
+/*            
             array(
                 'key'     => 'start_job',
                 'value'   => $user_job_ids, // User's job IDs
@@ -330,7 +330,7 @@ function get_keyword_matchmaking($keyword) {
 */            
         ),
     );
-
+/*
     // Add meta query for searching across all meta keys
     $document_meta_keys = get_post_type_meta_keys('document');
     $meta_query_all_keys = array('relation' => 'OR');
@@ -343,7 +343,7 @@ function get_keyword_matchmaking($keyword) {
     }
     
     $args['meta_query'][] = $meta_query_all_keys;
-
+*/
     // Instantiate new WP_Query
     $query = new WP_Query( $args );
     
