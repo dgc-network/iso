@@ -315,21 +315,9 @@ function get_keyword_matchmaking($keyword) {
         'meta_query'     => array(
             'relation' => 'AND',
             array(
-                'key'     => 'doc_title',
-                'value'   => $keyword,
-                'compare' => 'LIKE',
-            ),
-/*            
-            array(
-                'key'     => 'start_job',
-                'value'   => $user_job_ids, // User's job IDs
-                'compare' => 'IN',
-            ),
-            array(
                 'key'     => 'todo_status',
                 'compare' => 'NOT EXISTS',
             ),
-*/            
         ),
     );
 /*
