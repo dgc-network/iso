@@ -535,11 +535,11 @@ function display_site_job_list($initial=false) {
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $job_nimber = get_post_meta(get_the_ID(), 'job_nimber', true);
+                        $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                         $department = get_post_meta(get_the_ID(), 'department', true);
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html($job_nimber);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
                             <td style="text-align:center;"><?php echo esc_html($department);?></td>
