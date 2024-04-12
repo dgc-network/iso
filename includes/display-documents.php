@@ -340,10 +340,8 @@ function display_document_dialog($doc_id=false) {
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $doc_report_start_setting = get_post_meta($doc_id, 'doc_report_start_setting', true);
         $doc_report_period_time = get_post_meta($doc_id, 'doc_report_period_time', true);
-        $start_job = get_post_meta($doc_id, 'start_job', true);
-        //$start_leadtime = get_post_meta($doc_id, 'start_leadtime', true);
-        //$responsible_department = get_post_meta($doc_id, 'responsible_department', true);
         $doc_report_start_job = get_post_meta($doc_id, 'doc_report_start_job', true);
+        $start_job = get_post_meta($doc_id, 'start_job', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $image_url = get_post_meta($site_id, 'image_url', true);
 
@@ -384,7 +382,7 @@ function display_document_dialog($doc_id=false) {
                 <input type="number" id="doc-report-period-time" value="<?php echo $doc_report_period_time;?>" style="width:50px;" />
                 <label id="doc-report-period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="doc-report-period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-            </div>
+            </div><br>
             <label for="doc-report-start-job"><?php echo __( '表單的啟始職務', 'your-text-domain' );?></label><br>
             <select id="doc-report-start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($doc_report_start_job);?></select>
 
@@ -452,31 +450,19 @@ function set_document_dialog_data() {
     if( isset($_POST['_doc_id']) ) {
         // Update the Document data
         $doc_id = sanitize_text_field($_POST['_doc_id']);
-        //$doc_report_start_setting = sanitize_text_field($_POST['_doc_report_start_setting']);
-        //$start_job = sanitize_text_field($_POST['_start_job']);
-        //$start_leadtime = sanitize_text_field($_POST['_start_leadtime']);
         update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
         update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
         update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
         update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        //update_post_meta( $doc_id, 'responsible_department', sanitize_text_field($_POST['_responsible_department']));
         update_post_meta( $doc_id, 'doc_report_start_setting', sanitize_text_field($_POST['_doc_report_start_setting']));
         update_post_meta( $doc_id, 'doc_report_period_time', sanitize_text_field($_POST['_doc_report_period_time']));
         update_post_meta( $doc_id, 'doc_report_start_job', sanitize_text_field($_POST['_doc_report_start_job']));
         update_post_meta( $doc_id, 'start_job', sanitize_text_field($_POST['_start_job']));
-        //update_post_meta( $doc_id, 'start_leadtime', $start_leadtime);
-        $params = array(
-            //'doc_id'         => $doc_id,
-            //'start_job'      => $start_job,
-            //'start_leadtime' => $start_leadtime,
-        );        
-        //if ($start_job!=0 && $doc_report_start_setting==1) set_next_todo_and_actions($params);
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
-        //$site_id = sanitize_text_field($_POST['_site_id']);
         $new_post = array(
             'post_title'    => 'No title',
             'post_content'  => 'Your post content goes here.',
@@ -489,7 +475,6 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
         update_post_meta( $post_id, 'doc_report_period_time', 1);
-        //update_post_meta( $post_id, 'start_leadtime', 86400);
     }
     wp_send_json($response);
 }
@@ -728,7 +713,6 @@ function get_shared_document($doc_id){
                 $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                 $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
-                // Insert the post into the database
                 $new_post = array(
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -823,6 +807,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                     <th><?php echo __( 'Field', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                     <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Style', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody id="sortable-doc-field-list">
@@ -837,6 +822,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                         echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
+                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
                         echo '</tr>';
                         $x += 1;
                     endwhile;
@@ -1330,14 +1316,11 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 
 function display_doc_report_dialog($report_id=false) {
 
-    $doc_report_start_setting = get_post_meta($report_id, 'doc_report_start_setting', true);
-    $doc_report_period_time = get_post_meta($report_id, 'doc_report_period_time', true);
-    $start_job = get_post_meta($report_id, 'start_job', true);
-    //$start_leadtime = get_post_meta($report_id, 'start_leadtime', true);
-    //$prev_doc_report = get_post_meta($report_id, 'prev_doc_report', true);
-    //$next_doc_report = get_post_meta($report_id, 'next_doc_report', true);
-    $todo_status = get_post_meta($report_id, 'todo_status', true);
+    //$doc_report_start_setting = get_post_meta($report_id, 'doc_report_start_setting', true);
+    //$doc_report_period_time = get_post_meta($report_id, 'doc_report_period_time', true);
+    //$todo_status = get_post_meta($report_id, 'todo_status', true);
 
+    $start_job = get_post_meta($report_id, 'start_job', true);
     $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
@@ -1440,15 +1423,9 @@ function display_doc_report_dialog($report_id=false) {
         wp_reset_postdata();
     }
     ?>
-    <label for="start-job"><?php echo __( '啟始職務', 'your-text-domain' );?></label><br>
-    <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
     <hr>
     <?php
-        $query = retrieve_todo_action_list_data($todo_id);
-        if ( $post_type === 'document' ) {
-        }
-        $query = retrieve_job_action_list_data($start_job);
-        
+        $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
