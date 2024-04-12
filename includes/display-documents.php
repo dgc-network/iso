@@ -1137,6 +1137,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         echo '<th>'.esc_html($field_title).'</th>';
                     endwhile;
                     echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                    echo '<th></th>';
                     echo '</tr>';
                     wp_reset_postdata();
                 }
@@ -1180,6 +1181,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
                         $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
                         echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                        echo '<td style="text-align:center;"><span id="del-doc-report-'.esc_attr($report_id).'" class="dashicons dashicons-trash"></span></td>';
                         echo '</tr>';
                     endwhile;                
                     // Reset the main query's data
@@ -1318,9 +1320,9 @@ function display_doc_report_dialog($report_id=false) {
 
     //$doc_report_start_setting = get_post_meta($report_id, 'doc_report_start_setting', true);
     //$doc_report_period_time = get_post_meta($report_id, 'doc_report_period_time', true);
-    //$todo_status = get_post_meta($report_id, 'todo_status', true);
-
+    $todo_status = get_post_meta($report_id, 'todo_status', true);
     $start_job = get_post_meta($report_id, 'start_job', true);
+
     $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
@@ -1425,6 +1427,7 @@ function display_doc_report_dialog($report_id=false) {
     ?>
     <hr>
     <?php
+    if (!$todo_status){
         $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -1434,6 +1437,7 @@ function display_doc_report_dialog($report_id=false) {
             endwhile;
             wp_reset_postdata();
         }
+    }
 /*    
     if ($todo_status!=-1){
         ?>

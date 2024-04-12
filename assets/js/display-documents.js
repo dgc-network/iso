@@ -773,29 +773,9 @@ jQuery(document).ready(function($) {
                     alert('AJAX request failed. Please try again.');
                 }
             });
-/*
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_report_dialog_data',
-                    '_action_id': action_id,
-                    //'_doc_id': $("#doc-id").val(),
-                    '_report_id': $("#report-id").val(),
-                },
-                success: function (response) {
-                    window.location.replace("/to-do-list/");
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-*/            
         });
 
-
+/*
         $('[id^="save-doc-report-"]').on("click", function() {
             const report_id = this.id.substring(16);
             const ajaxData = {
@@ -833,7 +813,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+*/        
         $('[id^="del-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to delete this record?")) {
