@@ -764,9 +764,11 @@ function select_start_job_option_data($selected_option=0) {
     $options = '<option value="0">Select job</option>';
     foreach ($user_job_ids_array as $job_id) {
         $job_site = get_post_meta($job_id, 'site_id', true);
+        $job_number = get_post_meta($job_id, 'job_number', true);
+        $job_title = get_the_title($job_id).'('.$job_number.')';
         if ($job_site==$site_id) {
             $selected = ($selected_option == $job_id) ? 'selected' : '';
-            $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html(get_the_title($job_id)) . '</option>';    
+            $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';    
         }
     }
     return $options;
