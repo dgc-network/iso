@@ -240,7 +240,7 @@ function init_webhook_events() {
                                         'text_message' => $text_message,
                                     ];
                                     
-                                    $flexMessage = set_flex_message($params);
+                                    //$flexMessage = set_flex_message($params);
 
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
