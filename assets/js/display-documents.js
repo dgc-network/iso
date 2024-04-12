@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_document_dialog_data',
-                '_site_id': $("#site-id").val(),
+                //'_site_id': $("#site-id").val(),
             },
             success: function (response) {
                 window.location.replace("/display-documents/");
@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
                 } else {
                     $('#result-container').html(response.html_contain);
                     $('#is-doc-report').val(response.is_doc_report);
-                    $('#start-setting').val(response.start_setting);
+                    $('#doc-report-start-setting').val(response.doc_report_start_setting);
                 }
                 $("#doc-id").val(doc_id);
 
@@ -167,72 +167,72 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                 });
         
-                if ($("#start-setting").val()>0) {
-                    $("#start-setting-div").show();
-                    if ($("#start-setting").val()=="1") {
-                        $("#period-time-label1").text("每年");
-                        $("#period-time-label2").text("月");
-                        $("#period-time-label3").text("1 日");
-                        $("#period-time").attr("min", 1);
-                        $("#period-time").attr("max", 12);
+                if ($("#doc-report-start-setting").val()>0) {
+                    $("#doc-report-start-setting-div").show();
+                    if ($("#doc-report-start-setting").val()=="1") {
+                        $("#doc-report-period-time-label1").text("每年");
+                        $("#doc-report-period-time-label2").text("月");
+                        $("#doc-report-period-time-label3").text("1 日");
+                        $("#doc-report-period-time").attr("min", 1);
+                        $("#doc-report-period-time").attr("max", 12);
                     }
-                    if ($("#start-setting").val()=="2") {
-                        $("#period-time-label1").text("每月");
-                        $("#period-time-label2").text("日");
-                        $("#period-time-label3").text("");
-                        $("#period-time").attr("min", 1);
-                        $("#period-time").attr("max", 30);
+                    if ($("#doc-report-start-setting").val()=="2") {
+                        $("#doc-report-period-time-label1").text("每月");
+                        $("#doc-report-period-time-label2").text("日");
+                        $("#doc-report-period-time-label3").text("");
+                        $("#doc-report-period-time").attr("min", 1);
+                        $("#doc-report-period-time").attr("max", 30);
                     }
-                    if ($("#start-setting").val()=="3") {
-                        $("#period-time-label1").text("每週");
-                        $("#period-time-label2").text("");
-                        $("#period-time-label3").text("");
-                        $("#period-time").attr("min", 1);
-                        $("#period-time").attr("max", 7);
+                    if ($("#doc-report-start-setting").val()=="3") {
+                        $("#doc-report-period-time-label1").text("每週");
+                        $("#doc-report-period-time-label2").text("");
+                        $("#doc-report-period-time-label3").text("");
+                        $("#doc-report-period-time").attr("min", 1);
+                        $("#doc-report-period-time").attr("max", 7);
                     }
-                    if ($("#start-setting").val()=="4") {
-                        $("#period-time-label1").text("每日");
-                        $("#period-time-label2").text("時");
-                        $("#period-time-label3").text("0 分");
-                        $("#period-time").attr("min", 1);
-                        $("#period-time").attr("max", 24);
+                    if ($("#doc-report-start-setting").val()=="4") {
+                        $("#doc-report-period-time-label1").text("每日");
+                        $("#doc-report-period-time-label2").text("時");
+                        $("#doc-report-period-time-label3").text("0 分");
+                        $("#doc-report-period-time").attr("min", 1);
+                        $("#doc-report-period-time").attr("max", 24);
                     }
                 } else {
-                    $("#start-setting-div").hide();
+                    $("#doc-report-start-setting-div").hide();
                 }
 
-                $("#start-setting").on("change", function() {            
+                $("#doc-report-start-setting").on("change", function() {            
                     if ($(this).val()=="0") {
-                        $("#start-setting-div").hide();
+                        $("#doc-report-start-setting-div").hide();
                     } else {                
-                        $("#start-setting-div").show();
+                        $("#doc-report-start-setting-div").show();
                         if ($(this).val()=="1") {
-                            $("#period-time-label1").text("每年");
-                            $("#period-time-label2").text("月");
-                            $("#period-time-label3").text("1 日");
-                            $("#period-time").attr("min", 1);
-                            $("#period-time").attr("max", 12);
+                            $("#doc-report-period-time-label1").text("每年");
+                            $("#doc-report-period-time-label2").text("月");
+                            $("#doc-report-period-time-label3").text("1 日");
+                            $("#doc-report-period-time").attr("min", 1);
+                            $("#doc-report-period-time").attr("max", 12);
                         }
                         if ($(this).val()=="2") {
-                            $("#period-time-label1").text("每月");
-                            $("#period-time-label2").text("日");
-                            $("#period-time-label3").text("");
-                            $("#period-time").attr("min", 1);
-                            $("#period-time").attr("max", 30);
+                            $("#doc-report-period-time-label1").text("每月");
+                            $("#doc-report-period-time-label2").text("日");
+                            $("#doc-report-period-time-label3").text("");
+                            $("#doc-report-period-time").attr("min", 1);
+                            $("#doc-report-period-time").attr("max", 30);
                         }
                         if ($(this).val()=="3") {
-                            $("#period-time-label1").text("每週");
-                            $("#period-time-label2").text("");
-                            $("#period-time-label3").text("");
-                            $("#period-time").attr("min", 1);
-                            $("#period-time").attr("max", 7);
+                            $("#doc-report-period-time-label1").text("每週");
+                            $("#doc-report-period-time-label2").text("");
+                            $("#doc-report-period-time-label3").text("");
+                            $("#doc-report-period-time").attr("min", 1);
+                            $("#doc-report-period-time").attr("max", 7);
                         }
                         if ($(this).val()=="4") {
-                            $("#period-time-label1").text("每日");
-                            $("#period-time-label2").text("時");
-                            $("#period-time-label3").text("0 分");
-                            $("#period-time").attr("min", 1);
-                            $("#period-time").attr("max", 24);
+                            $("#doc-report-period-time-label1").text("每日");
+                            $("#doc-report-period-time-label2").text("時");
+                            $("#doc-report-period-time-label3").text("0 分");
+                            $("#doc-report-period-time").attr("min", 1);
+                            $("#doc-report-period-time").attr("max", 24);
                         }
                     }
                 });
@@ -250,11 +250,10 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_category'] = $("#doc-category").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_start_setting'] = $("#start-setting").val();
-                    ajaxData['_period_time'] = $("#period-time").val();
+                    ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
+                    ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
+                    ajaxData['_doc_report_start_job'] = $("#doc-report-start-job").val();
                     ajaxData['_start_job'] = $("#start-job").val();
-                    //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-                    //ajaxData['_responsible_department'] = $("#responsible-department").val();
                             
                     $.ajax({
                         type: 'POST',
@@ -760,8 +759,8 @@ jQuery(document).ready(function($) {
                 }
             });
         
-            ajaxData['_start_setting'] = $("#start-setting").val();
-            ajaxData['_period_time'] = $("#period-time").val();
+            ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
+            ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
             //ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
@@ -824,8 +823,8 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-            ajaxData['_start_setting'] = $("#start-setting").val();
-            ajaxData['_period_time'] = $("#period-time").val();
+            ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
+            ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
             //ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
