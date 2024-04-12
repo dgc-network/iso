@@ -1137,7 +1137,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         echo '<th>'.esc_html($field_title).'</th>';
                     endwhile;
                     echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
-                    echo '<th></th>';
                     echo '</tr>';
                     wp_reset_postdata();
                 }
@@ -1181,7 +1180,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
                         $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
                         echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
-                        echo '<td style="text-align:center;"><span id="del-doc-report-'.esc_attr($report_id).'" class="dashicons dashicons-trash"></span></td>';
                         echo '</tr>';
                     endwhile;                
                     // Reset the main query's data
@@ -1428,6 +1426,10 @@ function display_doc_report_dialog($report_id=false) {
     <hr>
     <?php
     if (!$todo_status){
+        ?>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+        <?php
         $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -1437,6 +1439,14 @@ function display_doc_report_dialog($report_id=false) {
             endwhile;
             wp_reset_postdata();
         }
+        ?>
+        </div>
+        <div style="text-align:right; display:flex;">
+            <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+        </div>
+        </div>
+        <?php
     }
 /*    
     if ($todo_status!=-1){
