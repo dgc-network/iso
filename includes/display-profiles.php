@@ -631,7 +631,7 @@ function display_site_job_dialog() {
         <label for="job-title">Title:</label>
         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
         <label for="job-content">Content:</label>
-        <input type="text" id="job-content" class="text ui-widget-content ui-corner-all" />
+        <textarea id="job-content" rows="3" style="width:100%;"></textarea>
         <div class="separator"></div>
         <?php display_job_action_list();?>
         <label for="department">Department:</label>
