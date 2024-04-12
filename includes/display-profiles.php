@@ -568,7 +568,31 @@ function display_site_job_list($initial=false) {
     return $html;
 }
 
+function retrieve_site_job_list_data($site_id = 0) {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+        'meta_key'       => 'job_number', // Meta key for sorting
+        'orderby'        => 'meta_value', // Sort by meta value
+        'order'          => 'ASC', // Sorting order (ascending)
+    );
+
+    $query = new WP_Query($args);
+    return $query;
+}
+/*
 function retrieve_site_job_list_data($site_id=0) {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $args = array(
         'post_type'      => 'job',
         'posts_per_page' => -1,
@@ -582,7 +606,7 @@ function retrieve_site_job_list_data($site_id=0) {
     $query = new WP_Query($args);
     return $query;
 }
-
+*/
 function get_site_job_list_data() {
     $response = array('html_contain' => display_site_job_list());
     wp_send_json($response);
