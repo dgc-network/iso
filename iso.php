@@ -331,7 +331,7 @@ function get_keyword_matchmaking($keyword) {
     foreach ($document_meta_keys as $meta_key) {
         $meta_query_all_keys[] = array(
             'key'     => $meta_key,
-            'value'   => $search_query,
+            'value'   => $keyword,
             'compare' => 'LIKE',
         );
     }
