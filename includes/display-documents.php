@@ -1518,6 +1518,55 @@ function set_doc_report_dialog_data() {
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
+function set_next_doc_report_data() {
+
+    if ( isset($_POST['_action_id']) ) {
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        $report_id = sanitize_text_field($_POST['_report_id']);
+        $next_job      = get_post_meta($action_id, 'next_job', true);
+        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+        $todo_title = get_the_title($next_job);
+        // Insert the To-do list for next_job
+        $current_user_id = get_current_user_id();
+        $new_post = array(
+            'post_title'    => $todo_title,
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'todo',
+        );    
+        $new_todo_id = wp_insert_post($new_post);
+        update_post_meta( $new_todo_id, 'job_id', $next_job);
+        update_post_meta( $new_todo_id, 'report_id', $report_id);
+        update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+        update_post_meta( $report_id, 'todo_status', $new_todo_id);    
+        notice_the_responsible_persons($new_todo_id);
+
+        // Insert the Action list for next_job
+        $query = retrieve_job_action_list_data($next_job);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $new_post = array(
+                    'post_title'    => get_the_title(),
+                    'post_content'  => get_post_field('post_content', get_the_ID()),
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'action',
+                );    
+                $new_action_id = wp_insert_post($new_post);
+                $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
+                update_post_meta( $new_action_id, 'next_job', $new_next_job);
+                update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
+            endwhile;
+            wp_reset_postdata();
+        }
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_next_doc_report_data', 'set_next_doc_report_data' );
+add_action( 'wp_ajax_nopriv_set_next_doc_report_data', 'set_next_doc_report_data' );
+
 function duplicate_doc_report_dialog_data() {
     if( isset($_POST['_report_id']) ) {
         // Insert the post into the database

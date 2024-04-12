@@ -747,9 +747,8 @@ jQuery(document).ready(function($) {
             const action_id = this.id.substring(25);
             const ajaxData = {
                 'action': 'set_doc_report_dialog_data',
-                '_action_id': action_id,
-                '_report_id': $("#report-id").val(),
             };
+            ajaxData['_report_id'] = $("#report-id").val();
         
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
@@ -766,6 +765,28 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function(response) {
+                    if (window.confirm("Are you sure you want to proceed the next doc?")) {
+                        const ajaxData = {
+                            'action': 'set_next_doc_report_data',
+                        };
+                        ajaxData['_action_id'] = action_id;
+                        ajaxData['_report_id'] = $("#report-id").val();
+                            
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: ajaxData,
+                            success: function (response) {
+                                get_doc_report_list_data($("#doc-id").val());
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+        
                     get_doc_report_list_data($("#doc-id").val());
                 },
                 error: function(xhr, textStatus, errorThrown) {
@@ -773,6 +794,8 @@ jQuery(document).ready(function($) {
                     alert('AJAX request failed. Please try again.');
                 }
             });
+
+
         });
 
 /*
@@ -856,8 +879,8 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-            ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
-            ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
+            //ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
+            //ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
             //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
             //ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
