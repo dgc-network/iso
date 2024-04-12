@@ -525,6 +525,7 @@ function display_site_job_list($initial=false) {
             <fieldset>
             <table class="ui-widget" style="width:100%;">
                 <thead>
+                    <th>#</th>
                     <th>Job</th>
                     <th>Description</th>
                     <th>Department</th>
@@ -534,9 +535,11 @@ function display_site_job_list($initial=false) {
                 $query = retrieve_site_job_list_data($site_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        $job_nimber = get_post_meta(get_the_ID(), 'job_nimber', true);
                         $department = get_post_meta(get_the_ID(), 'department', true);
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($job_nimber);?></td>
                             <td style="text-align:center;"><?php the_title();?></td>
                             <td><?php the_content();?></td>
                             <td style="text-align:center;"><?php echo esc_html($department);?></td>
@@ -592,6 +595,8 @@ function display_site_job_dialog() {
     <div id="site-job-dialog" title="Job dialog" style="display:none;">
     <fieldset>
         <input type="hidden" id="job-id" />
+        <label for="job-number">Number:</label>
+        <input type="text" id="job-number" class="text ui-widget-content ui-corner-all" />
         <label for="job-title">Title:</label>
         <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
         <label for="job-content">Content:</label>
@@ -609,6 +614,7 @@ function get_site_job_dialog_data() {
     $response = array();
     if( isset($_POST['_job_id']) ) {
         $job_id = sanitize_text_field($_POST['_job_id']);
+        $response["job_number"] = get_post_meta($job_id, 'job_number', true);
         $response["job_title"] = get_the_title($job_id);
         $response["job_content"] = get_post_field('post_content', $job_id);
         $response["department"] = get_post_meta($job_id, 'department', true);
@@ -627,7 +633,8 @@ function set_site_job_dialog_data() {
             'post_content' => sanitize_text_field($_POST['_job_content']),
         );
         wp_update_post( $data );
-        update_post_meta( $job_id, 'department', sanitize_text_field($_POST['_department']));
+        update_post_meta($job_id, 'job_number', sanitize_text_field($_POST['_job_number']));
+        update_post_meta($job_id, 'department', sanitize_text_field($_POST['_department']));
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -640,6 +647,7 @@ function set_site_job_dialog_data() {
         );    
         $post_id = wp_insert_post($new_post);
         update_post_meta($post_id, 'site_id', $site_id);
+        update_post_meta($post_id, 'job_number', '-');
     }
     wp_send_json($response);
 }

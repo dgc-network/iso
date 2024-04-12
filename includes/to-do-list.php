@@ -144,7 +144,9 @@ function display_to_do_list() {
                         $todo_id = get_the_ID();
                     }
 
+                    $doc_number = get_post_meta($doc_id, 'doc_number', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    $doc_title .= '('.$doc_number.')';
                     
                     if (!empty($report_id)) {
                         $doc_title .= '(Report#' . $report_id . ')';
@@ -193,40 +195,6 @@ function retrieve_todo_list_data(){
     $search_query = sanitize_text_field($_GET['_search']);
 
     if ($search_query) {
-/*        
-        // Step 1: Retrieve job posts based on the provided filter
-        $args_jobs = array(
-            'post_type'      => 'job',
-            'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
-            //'s'              => $search_query, // Search keyword            
-            'meta_query'     => array(
-                array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '=',
-                ),
-            )
-        );
-        
-        $query_jobs = new WP_Query($args_jobs);
-        
-        $job_ids_array = array();
-
-        // Check if there are job posts found
-        if ($query_jobs->have_posts()) {
-            // Loop through each job post
-            while ($query_jobs->have_posts()) {
-                $query_jobs->the_post();
-                // Get the ID of the current job post and add it to the array
-                $job_ids_array[] = get_the_ID();
-            }
-        }
-        
-        // Reset post data
-        wp_reset_postdata();
-*/
-        // Step 2: Retrieve document posts with start_job meta matching user's job IDs
-        $document_meta_keys = get_post_type_meta_keys('document');
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
@@ -238,13 +206,6 @@ function retrieve_todo_list_data(){
                     'value'   => $site_id,
                     'compare' => '=',
                 ),
-/*
-                array(
-                    'key'     => 'start_job',
-                    'value'   => $job_ids_array,
-                    'compare' => 'IN',
-                ),
-*/                
                 array(
                     'key'     => 'start_job',
                     'value'   => $user_job_ids, // User's job IDs
@@ -254,18 +215,11 @@ function retrieve_todo_list_data(){
                     'key'     => 'todo_status',
                     'compare' => 'NOT EXISTS',
                 ),
-                // Add meta query for doc_title search
-/*                
-                array(
-                    'key'     => 'doc_title',
-                    'value'   => $search_query, // Search keyword for doc_title
-                    'compare' => 'LIKE',
-                ),
-*/                
             ),
         );
 
         // Add meta query for searching across all meta keys
+        $document_meta_keys = get_post_type_meta_keys('document');
         $meta_query_all_keys = array('relation' => 'OR');
         foreach ($document_meta_keys as $meta_key) {
             $meta_query_all_keys[] = array(

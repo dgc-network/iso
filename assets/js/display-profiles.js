@@ -266,6 +266,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-job-dialog").dialog('open');
                     $("#job-id").val(job_id);
+                    $("#job-number").val(response.job_number);
                     $("#job-title").val(response.job_title);
                     $("#job-content").val(response.job_content);
                     $("#department").val(response.department);
@@ -379,6 +380,7 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_site_job_dialog_data',
                             '_job_id': $("#job-id").val(),
+                            '_job_number': $("#job-number").val(),
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
                             '_department': $("#department").val(),
