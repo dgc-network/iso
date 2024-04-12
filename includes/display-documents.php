@@ -1428,7 +1428,9 @@ function display_doc_report_dialog($report_id=false) {
         $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
-                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                $job_title = get_the_title().':'.get_the_title($next_job);
+                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.$job_title.'" style="margin:5px;" />';
             endwhile;
             wp_reset_postdata();
         }
