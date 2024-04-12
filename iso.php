@@ -133,58 +133,7 @@ function set_flex_message($params) {
         ],
     ];
 }
-/*
-// Example usage:
-$params = [
-    'display_name' => 'John',
-    'link_uri' => 'https://example.com',
-    'text_message' => 'This is a sample message.',
-];
 
-$flexMessage = set_flex_message($params);
-/*
-function set_flex_message($display_name, $link_uri, $text_message) {
-    // Flex Message JSON structure with a button
-    return $flexMessage = [
-        'type' => 'flex',
-        'altText' => $text_message,
-        'contents' => [
-            'type' => 'bubble',
-            'body' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'text',
-                        'text' => 'Hello, '.$display_name,
-                        'size' => 'lg',
-                        'weight' => 'bold',
-                    ],
-                    [
-                        'type' => 'text',
-                        'text' => $text_message,
-                        'wrap' => true,
-                    ],
-                ],
-            ],
-            'footer' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'button',
-                        'action' => [
-                            'type' => 'uri',
-                            'label' => 'Click me!',
-                            'uri' => $link_uri, // Replace with your desired URI
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ];
-}
-*/
 function init_webhook_events() {
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
@@ -234,7 +183,6 @@ function init_webhook_events() {
                 
                 $flexMessage = set_flex_message($params);
                 
-                //$flexMessage = set_flex_message($display_name, $url, $text_message);
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
@@ -264,7 +212,6 @@ function init_webhook_events() {
                                 
                                 $flexMessage = set_flex_message($params);
                                 
-                                //$flexMessage = set_flex_message($display_name, $link_uri, $text_message);
                                 $line_bot_api->replyMessage([
                                     'replyToken' => $event['replyToken'],
                                     'messages' => [$flexMessage],
@@ -277,7 +224,10 @@ function init_webhook_events() {
                                     while ( $query->have_posts() ) {
                                         $query->the_post();
                                         // Output the post title or content
-                                        $text_message .= '『'.get_the_title().'』、';
+                                        //$text_message .= '『'.get_the_title().'』、';
+                                        $doc_title = get_post_meta(get_the__ID(), 'doc_title', true);
+                                        $text_message .= '『'.$doc_title.'』、';
+
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
@@ -351,6 +301,43 @@ function get_keyword_matchmaking($keyword) {
 */        
     );
     
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+/*            
+            'relation' => 'AND',
+            array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'start_job',
+                'value'   => $user_job_ids, // User's job IDs
+                'compare' => 'IN',
+            ),
+            array(
+                'key'     => 'todo_status',
+                'compare' => 'NOT EXISTS',
+            ),
+*/            
+        ),
+    );
+
+    // Add meta query for searching across all meta keys
+    $document_meta_keys = get_post_type_meta_keys('document');
+    $meta_query_all_keys = array('relation' => 'OR');
+    foreach ($document_meta_keys as $meta_key) {
+        $meta_query_all_keys[] = array(
+            'key'     => $meta_key,
+            'value'   => $search_query,
+            'compare' => 'LIKE',
+        );
+    }
+    
+    $args['meta_query'][] = $meta_query_all_keys;
+
     // Instantiate new WP_Query
     $query = new WP_Query( $args );
     

@@ -191,7 +191,9 @@ function retrieve_todo_list_data(){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
-    
+    if (!is_array($user_job_ids)) {
+        $user_job_ids = array();
+    }        
     $search_query = sanitize_text_field($_GET['_search']);
 
     if ($search_query) {
@@ -249,21 +251,10 @@ function retrieve_todo_list_data(){
             ),
         );
         
-        // Get the current user ID
-        $current_user_id = get_current_user_id();
-        
-        // Get the user's job IDs as an array
-        $user_jobs = get_user_meta($current_user_id, 'user_job_ids', true);
-        
-        // If $user_jobs is not an array, convert it to an empty array
-        if (!is_array($user_jobs)) {
-            $user_jobs = array();
-        }
-        
         // Add a new meta query to filter by job_id
         $args['meta_query'][] = array(
             'key'     => 'job_id',
-            'value'   => $user_jobs, // Value is the array of user job IDs
+            'value'   => $user_job_ids, // Value is the array of user job IDs
             'compare' => 'IN',
         );        
     }
@@ -610,7 +601,7 @@ function notice_the_responsible_persons($todo_id=0) {
     $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
-    $text_message='你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
+    $text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $post_type = get_post_type( $todo_id );
     if ($post_type='job') $job_id = $todo_id;
