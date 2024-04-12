@@ -308,7 +308,7 @@ function get_keyword_matchmaking($keyword) {
         )
 */        
     );
-    
+/*    
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
@@ -320,7 +320,7 @@ function get_keyword_matchmaking($keyword) {
             ),
         ),
     );
-/*
+
     // Add meta query for searching across all meta keys
     $document_meta_keys = get_post_type_meta_keys('document');
     $meta_query_all_keys = array('relation' => 'OR');
