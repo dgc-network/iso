@@ -218,17 +218,18 @@ function init_webhook_events() {
                                 ]);
                             } else {
                                 //$query = $result;
-                                $line_bot_api->replyMessage([
-                                    'replyToken' => $event['replyToken'],
-                                    'messages' => [
-                                        [
-                                            'type' => 'text',
-                                            'text' => 'This is a test from Rover',
-                                        ]                                                                    
-                                    ]                                    
-                                ]);
 
                                 if ( $query->have_posts() ) {
+                                    $line_bot_api->replyMessage([
+                                        'replyToken' => $event['replyToken'],
+                                        'messages' => [
+                                            [
+                                                'type' => 'text',
+                                                'text' => 'This is a test from Rover',
+                                            ]                                                                    
+                                        ]                                    
+                                    ]);
+
                                     // Loop through the posts
                                     $text_message = '您可以點擊下方按鍵執行：';
                                     while ( $query->have_posts() ) {
