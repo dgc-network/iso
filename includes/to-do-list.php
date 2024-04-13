@@ -542,12 +542,7 @@ function set_next_todo_and_actions($args = array()) {
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
     }
-/*
-    if ($next_job==-2) {
-        if ($doc_id) update_post_meta( $doc_id, 'todo_status', 0);
-        if ($report_id) update_post_meta( $report_id, 'todo_status', 0);
-    }
-*/
+
     if ($next_job>0) {
         notice_the_responsible_persons($new_todo_id);
         // Insert the Action list for next_job
@@ -604,7 +599,7 @@ function notice_the_responsible_persons($todo_id=0) {
     $text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
     $post_type = get_post_type( $todo_id );
-    if ($post_type='job') $job_id = $todo_id;
+    //if ($post_type=='job') $job_id = $todo_id;
     $users = get_users_by_job_id($job_id);
     foreach ($users as $user) {
         $params = [
