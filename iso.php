@@ -284,7 +284,7 @@ function get_keyword_matchmaking($keyword) {
         )
 */        
     );
-/*    
+
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
@@ -309,7 +309,7 @@ function get_keyword_matchmaking($keyword) {
     }
     
     $args['meta_query'][] = $meta_query_all_keys;
-*/
+
     // Instantiate new WP_Query
     $query = new WP_Query( $args );
     
