@@ -116,6 +116,7 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'get_document_dialog_data',
                 _doc_id: doc_id,
+                _is_admin: $("#is-admin").val()
             },
             success: function (response) {
                 if (response.html_contain === undefined || response.html_contain === null) {

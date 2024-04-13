@@ -27,7 +27,7 @@ function register_document_post_type() {
         'supports'      => array( 'title', 'custom-fields' ),
         'taxonomies'    => array( 'category', 'post_tag' ),
         'has_archive'   => true,
-        'rewrite'       => array('slug' => 'documents'),
+        'rewrite'       => array( 'slug' => 'documents' ),
         'show_in_menu'  => false,
     );
     register_post_type( 'document', $args );
@@ -64,7 +64,7 @@ function register_doc_report_post_type() {
         'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-reports'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'supports'      => array('title', 'editor', 'custom-fields'),
         'has_archive'   => true,
         'show_in_menu'  => false,
     );
@@ -81,7 +81,7 @@ function register_doc_field_post_type() {
         'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-fields'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'supports'      => array('title', 'editor', 'custom-fields'),
         'has_archive'   => true,
         'show_in_menu'  => false,
     );
@@ -98,7 +98,7 @@ function register_doc_category_post_type() {
         'labels'        => $labels,
         'public'        => true,
         'rewrite'       => array('slug' => 'doc-categories'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
+        'supports'      => array('title', 'editor', 'custom-fields'),
         'has_archive'   => true,
         //'show_in_menu'  => false,
     );
@@ -178,11 +178,11 @@ function display_documents_shortcode() {
             $output .= '</div>';
         }
     
-        // Display initial ISO document if initial ID is set
+        // Display ISO document statement if initial ID is set
         if (isset($_GET['_initial'])) {
             $doc_id = sanitize_text_field($_GET['_initial']);
             $output .= '<div class="ui-widget" id="result-container">';
-            $output .= display_initial_iso_document($doc_id);
+            $output .= display_iso_document_statement($doc_id);
             $output .= '</div>';
         }
     
@@ -199,6 +199,9 @@ function display_documents_shortcode() {
 add_shortcode('display-documents', 'display_documents_shortcode');
 
 function display_document_list() {
+    if (isset($_GET['_is_admin'])) {
+        echo '<input type="hidden" id="is-admin" value="1" />';
+    }
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta($site_id, 'image_url', true);
@@ -236,7 +239,7 @@ function display_document_list() {
                     <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
                     <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
                     <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
-                    <th><?php echo __( '待辦', 'your-text-domain' );?></th>
+                    <th><?php echo __( '待辦狀態', 'your-text-domain' );?></th>
                 </tr>
             </thead>
             <tbody>
@@ -330,7 +333,6 @@ function retrieve_document_data() {
 }
 
 function display_document_dialog($doc_id=false) {
-    //$is_doc = false;
     if ($doc_id) {
         $doc_number = get_post_meta($doc_id, 'doc_number', true);
         $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -432,10 +434,12 @@ function get_document_dialog_data() {
                 $result['doc_report_start_setting'] = $doc_report_start_setting;
             }
         } else {
-            //if (current_user_can('administrator') && isset($_GET['_is_admin'])) {
-            if (current_user_can('administrator')) {
-                //$result['html_contain'] = display_document_dialog($doc_id);
-            }
+            if (isset($_POST['_is_admin'])) {
+                $is_admin = sanitize_text_field($_POST['_is_admin']);
+                if (current_user_can('administrator') && $is_admin=="1") {
+                    $result['html_contain'] = display_document_dialog($doc_id);
+                }
+            }        
         }
 
     } else {
@@ -514,7 +518,7 @@ function count_doc_category($doc_category){
     return $count;
 }
 
-function display_initial_iso_document($doc_id){
+function display_iso_document_statement($doc_id){
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     $doc_number = get_post_meta($doc_id, 'doc_number', true);
     $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
