@@ -364,7 +364,7 @@ function display_document_dialog($doc_id=false) {
                 <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
             </div>
             <div style="text-align:right; display:flex;">
-                <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash"></span>
+                <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash button"></span>
             </div>
         </div>
         <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />

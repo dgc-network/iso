@@ -128,7 +128,7 @@ jQuery(document).ready(function($) {
                 }
                 $("#doc-id").val(doc_id);
 
-                activate_published_document_data(doc_id);
+                //activate_published_document_data(doc_id);
 
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
@@ -441,110 +441,6 @@ jQuery(document).ready(function($) {
                 });
             }    
         });
-    }
-
-    function activate_doc_action_list_data(doc_id=false){
-
-        $("#new-doc-action").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_action_dialog_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    //get_doc_action_list_data(doc_id);
-                    get_document_dialog_data(doc_id);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });    
-        });
-
-        $('[id^="edit-doc-action-"]').on( "click", function() {
-            const action_id = this.id.substring(16);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_action_dialog_data',
-                    '_action_id': action_id,
-                },
-                success: function (response) {
-                    $("#doc-action-dialog").dialog('open');
-                    $("#action-id").val(action_id);
-                    $("#action-title").val(response.action_title);
-                    $("#action-content").val(response.action_content);
-                    $("#next-doc").empty().append(response.next_doc);
-                    $("#next-leadtime").val(response.next_leadtime);
-                },
-                error: function (error) {
-                    console.error(error);                
-                    alert(error);
-                }
-            });
-        });
-    
-        $("#doc-action-dialog").dialog({
-            width: 450,
-            modal: true,
-            autoOpen: false,
-            buttons: {
-                "Save": function() {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_action_dialog_data',
-                            '_action_id': $("#action-id").val(),
-                            '_action_title': $("#action-title").val(),
-                            '_action_content': $("#action-content").val(),
-                            '_next_doc': $("#next-doc").val(),
-                            '_next_leadtime': $("#next-leadtime").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
-                            //get_doc_action_list_data($("#doc-id").val());
-                            get_document_dialog_data($("#doc-id").val());
-                        },
-                        error: function (error) {
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });            
-                },
-                "Delete": function() {
-                    if (window.confirm("Are you sure you want to delete this doc action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_doc_action_dialog_data',
-                                '_action_id': $("#action-id").val(),
-                            },
-                            success: function (response) {
-                                $("#doc-action-dialog").dialog('close');
-                                //get_doc_action_list_data($("#doc-id").val());
-                                get_document_dialog_data($("#doc-id").val());
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    
-    
     }
 
     function activate_doc_field_list_data(doc_id=false, site_id=false){
