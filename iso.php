@@ -220,16 +220,6 @@ function init_webhook_events() {
                                 //$query = $result;
 
                                 if ( $query->have_posts() ) {
-                                    $line_bot_api->replyMessage([
-                                        'replyToken' => $event['replyToken'],
-                                        'messages' => [
-                                            [
-                                                'type' => 'text',
-                                                'text' => 'This is a test from Rover',
-                                            ]                                                                    
-                                        ]                                    
-                                    ]);
-
                                     // Loop through the posts
                                     $text_message = '您可以點擊下方按鍵執行：';
                                     while ( $query->have_posts() ) {
@@ -242,6 +232,15 @@ function init_webhook_events() {
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
+                                    $line_bot_api->replyMessage([
+                                        'replyToken' => $event['replyToken'],
+                                        'messages' => [
+                                            [
+                                                'type' => 'text',
+                                                'text' => 'This is a test from Rover',
+                                            ]                                                                    
+                                        ]                                    
+                                    ]);
 
                                     $link_uri = home_url().'/to-do-list/?_search='.urlencode($message['text']);
 
