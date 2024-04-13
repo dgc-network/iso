@@ -387,7 +387,8 @@ function display_todo_dialog($todo_id) {
         }    
     }
     ?>
-    <?php if ($is_site_admin){?>
+    <?php //if ($is_site_admin){?>
+    <?php if (current_user_can('administrator')) {?>
         <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
         <fieldset>
         <table style="width:100%;">
