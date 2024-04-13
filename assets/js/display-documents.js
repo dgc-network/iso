@@ -137,17 +137,28 @@ jQuery(document).ready(function($) {
                 });
             
                 //activate_document_dialog_data(doc_id);
-/*                
-                var currentValue = $("#doc-field-setting").text();
-                $("#doc-field-setting").on("click", function () {
-                    $("#doc-frame-div").toggle();
-                    $("#doc-report-div").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
-                    currentValue = (currentValue === '文件地址') ? '欄位設定' : '文件地址';
-                    $(this).text(currentValue);
-                });
-*/
+                $('[id^="reset-document-"]').on("click", function () {
+                    const doc_id = this.id.substring(15);
+                    if (window.confirm("Are you sure you want to reset this document status?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'reset_document_todo_status',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                window.location.replace("/display-documents/");
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                });            
+                        
                 if ($('#is-doc-report').val()==1) {
                     $("#doc-report-div").show();
                 } else {

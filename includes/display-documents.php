@@ -359,7 +359,14 @@ function display_document_dialog($doc_id=false) {
         </div>
         <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
         <fieldset>
-        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <div>
+                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+            </div>
+            <div style="text-align:right; display:flex;">
+                <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash"></span>
+            </div>
+        </div>
         <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
         <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
         <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -491,6 +498,19 @@ function del_document_dialog_data() {
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
+
+function reset_document_todo_status() {
+    $response = array();
+    if( isset($_POST['_doc_id']) ) {
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        delete_post_meta($doc_id, 'todo_status');
+        delete_post_meta($doc_id, 'due_date');
+        delete_post_meta($doc_id, 'start_job');
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_reset_document_todo_status', 'reset_document_todo_status' );
+add_action( 'wp_ajax_nopriv_reset_document_todo_status', 'reset_document_todo_status' );
 
 function count_doc_category($doc_category){
     $current_user_id = get_current_user_id();
