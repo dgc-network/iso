@@ -233,7 +233,7 @@ function init_webhook_events() {
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
-*/                                    
+
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
                                         'messages' => [
@@ -243,7 +243,7 @@ function init_webhook_events() {
                                             ]                                                                    
                                         ]                                    
                                     ]);
-
+*/
                                     $link_uri = home_url().'/to-do-list/?_search='.urlencode($message['text']);
 
                                     $params = [
@@ -252,19 +252,11 @@ function init_webhook_events() {
                                         'text_message' => $text_message,
                                     ];
                                     
-                                    //$flexMessage = set_flex_message($params);
+                                    $flexMessage = set_flex_message($params);
 
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
-                                        //'messages' => [$flexMessage],
-                                        
-                                        'messages' => [
-                                            [
-                                                'type' => 'text',
-                                                'text' => '$text_message',
-                                            ]                                                                    
-                                        ]
-                                        
+                                        'messages' => [$flexMessage],
                                     ]);
                                 }
                             }
