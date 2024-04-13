@@ -222,6 +222,7 @@ function init_webhook_events() {
                                 if ( $query->have_posts() ) {
                                     // Loop through the posts
                                     $text_message = '您可以點擊下方按鍵執行：';
+/*                                    
                                     while ( $query->have_posts() ) {
                                         $query->the_post();
                                         // Output the post title or content
@@ -232,6 +233,7 @@ function init_webhook_events() {
                                     }
                                     // Restore original post data
                                     wp_reset_postdata();
+*/                                    
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
                                         'messages' => [
