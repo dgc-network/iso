@@ -216,10 +216,12 @@ function retrieve_todo_list_data(){
                     'value'   => $user_job_ids, // User's job IDs
                     'compare' => 'IN',
                 ),
+/*                
                 array(
                     'key'     => 'todo_status',
                     'compare' => 'NOT EXISTS',
                 ),
+*/                
             ),
         );
 
