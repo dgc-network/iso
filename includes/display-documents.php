@@ -1519,17 +1519,30 @@ add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' )
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
 function set_next_doc_report_data() {
-
-    if ( isset($_POST['_action_id']) ) {
+    if ( isset($_POST['_action_id']) && isset($_POST['_report_id']) ) {
+        $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
+        // Insert the To-do list for current job_id
+        $job_id = get_post_meta($action_id, 'job_id', true);
+        $new_post = array(
+            'post_title'    => get_the_title($job_id),
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'todo',
+        );    
+        $todo_id = wp_insert_post($new_post);
+        update_post_meta( $todo_id, 'job_id', $job_id);
+        update_post_meta( $todo_id, 'report_id', $report_id);
+        update_post_meta( $todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $todo_id, 'submit_action', $action_id);
+        update_post_meta( $todo_id, 'submit_time', time());
+
+        // Insert the To-do list for next_job
         $next_job      = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        $todo_title = get_the_title($next_job);
-        // Insert the To-do list for next_job
-        $current_user_id = get_current_user_id();
         $new_post = array(
-            'post_title'    => $todo_title,
+            'post_title'    => get_the_title($next_job),
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'todo',
