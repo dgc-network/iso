@@ -209,6 +209,10 @@ function retrieve_todo_list_data(){
                 ),
                 array(
                     'key'     => 'start_job',
+                    'compare' => 'EXISTS', // Check if the meta key exists
+                ),
+                array(
+                    'key'     => 'start_job',
                     'value'   => $user_job_ids, // User's job IDs
                     'compare' => 'IN',
                 ),

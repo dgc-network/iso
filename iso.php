@@ -268,23 +268,6 @@ function get_keyword_matchmaking($keyword) {
     if (strpos($keyword, 'Login') !== false) return -1;
 
     // WP_Query arguments
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1, // Set to -1 to retrieve all matching posts
-        's'              => $keyword, // Search keyword
-/*        
-        'meta_query'     => array(
-            array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            ),
-        )
-*/        
-    );
-
     $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
