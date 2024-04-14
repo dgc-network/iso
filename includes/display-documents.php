@@ -392,11 +392,11 @@ function display_document_dialog($doc_id=false) {
                 <label id="doc-report-period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="doc-report-period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
             </div><br>
-            <label for="doc-report-start-job"><?php echo __( '表單的啟始職務', 'your-text-domain' );?></label><br>
+            <label for="doc-report-start-job"><?php echo __( '表單的起始職務', 'your-text-domain' );?></label><br>
             <select id="doc-report-start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($doc_report_start_job);?></select>
 
         </div>
-        <label for="start-job"><?php echo __( '本文件的啟始職務', 'your-text-domain' );?></label><br>
+        <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
