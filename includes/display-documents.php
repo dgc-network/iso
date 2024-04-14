@@ -951,9 +951,9 @@ function display_doc_field_dialog(){
         <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all">
-            <option value="text-align:left;"><?php echo __( '靠左', 'your-text-domain' );?></option>
-            <option value="text-align:center;"><?php echo __( '置中', 'your-text-domain' );?></option>
-            <option value="text-align:right;"><?php echo __( '靠右', 'your-text-domain' );?></option>
+            <option value="left"><?php echo __( '靠左', 'your-text-domain' );?></option>
+            <option value="center"><?php echo __( '置中', 'your-text-domain' );?></option>
+            <option value="right"><?php echo __( '靠右', 'your-text-domain' );?></option>
             <option value=""></option>
         </select>
         <label for="order-field"><?php echo __( '排列順序：', 'your-text-domain' );?></label>
@@ -1007,7 +1007,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $post_id, 'field_name', 'new_field');
         update_post_meta( $post_id, 'field_title', 'Field title');
         update_post_meta( $post_id, 'field_type', 'text');
-        update_post_meta( $post_id, 'listing_style', 'text-align:center;');
+        update_post_meta( $post_id, 'listing_style', 'center');
         update_post_meta( $post_id, 'sorting_key', -1);
     }
     wp_send_json($response);
@@ -1185,7 +1185,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta($report_id, $field_name, true);
-                                echo '<td style="'.$listing_style.'">';
+                                echo '<td style="text-align:'.$listing_style.';">';
                                 if ($field_type=='checkbox') {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                     echo '<input type="checkbox" '.$is_checked.' />';
