@@ -483,10 +483,95 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+        } else {
+            if ( $report_id ) {
+                $next_job = get_post_meta($todo_id, 'next_job', true);
+                // Question: How to get the right doc_id of next_job?
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'start_job',
+                            'value'   => $next_job,
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+                
+                $query = new WP_Query($args);
+                
+                // Check if there are posts found
+                if ($query->have_posts()) {
+                    // Start the loop
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        // Insert the Doc-report list for next_job
+                        $new_post = array(
+                            //'post_title'    => get_the_title($job_id),
+                            'post_title'    => 'New doc-report',
+                            'post_status'   => 'publish',
+                            'post_author'   => $current_user_id,
+                            'post_type'     => 'doc-report',
+                        );    
+                        $new_report_id = wp_insert_post($new_post);
+                        update_post_meta( $new_report_id, 'doc_id', get_the_ID());
+                        // Question: How to insert the data from the previous doc-report?
+                        // Step 1: Retrieve the doc_id from the "doc-report" post
+                        $doc_id = get_post_meta($report_id, 'doc_id', true);
+
+                        // Step 2: Retrieve all meta keys from the "doc-report" post
+                        $meta_keys_report = get_post_meta($report_id);
+                        
+                        // Step 3: Loop through the meta keys to find the matching "field_name"
+                        foreach ($meta_keys_report as $meta_key => $meta_value) {
+                            // Check if the meta key starts with 'your_prefix' (replace 'your_prefix' with the actual prefix used for field names)
+                            //if (strpos($meta_key, 'your_prefix') === 0) {
+                                // Step 4: Check if there is a corresponding "doc-field" post with the doc_id and field_name
+                                $args_doc_field = array(
+                                    'post_type' => 'doc-field',
+                                    'meta_query' => array(
+                                        'relation' => 'AND',
+                                        array(
+                                            'key' => 'doc_id',
+                                            'value' => $doc_id,
+                                            'compare' => '=',
+                                        ),
+                                        array(
+                                            'key' => 'field_name',
+                                            'value' => $meta_key,
+                                            'compare' => '=',
+                                        ),
+                                    ),
+                                );
+                        
+                                $query_doc_field = new WP_Query($args_doc_field);
+                        
+                                if ($query_doc_field->have_posts()) {
+                                    // Step 5: Retrieve the meta value associated with the field_name
+                                    $query_doc_field->the_post();
+                                    //$meta_value_field = get_post_meta(get_the_ID(), 'field_value', true); // Assuming 'field_value' is the meta key for the value
+                                    //$meta_value = get_post_meta($report_id, $meta_key, true);
+                        
+                                    // Step 6: Update the "doc-report" post with the retrieved meta value
+                                    update_post_meta($new_report_id, $meta_key, $meta_value);
+                        
+                                    // Reset post data
+                                    wp_reset_postdata();
+                                }
+                            //}
+                        }
+                    }
+                    // Restore original post data
+                    wp_reset_postdata();
+                }                    
+            }
+    
         }
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
+
         $params = array(
             'action_id' => $action_id,
             'doc_id'    => $doc_id,
