@@ -85,23 +85,6 @@ function display_my_profile() {
                         }
                     }
                 }
-/*
-                $query = retrieve_site_job_list_data($site_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $job_id = get_the_ID();
-                        $my_job_checked = is_user_job(get_the_ID()) ? 'checked' : '';
-                        ?>
-                        <tr id="my-job-list" data-job-id="<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="check-my-job-<?php the_ID();?>" <?php echo $my_job_checked;?> /></td>
-                            <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php the_content();?></td>
-                        </tr>
-                        <?php 
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-*/                
                 ?>
                 </tbody>
             </table>
@@ -595,6 +578,8 @@ function display_site_job_list($initial=false) {
 function retrieve_site_job_list_data($site_id = 0) {
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
 
     $args = array(
         'post_type'      => 'job',
@@ -610,10 +595,42 @@ function retrieve_site_job_list_data($site_id = 0) {
         'order'          => 'ASC', // Sorting order (ascending)
     );
 
+    if (!current_user_can('administrator') && !$is_site_admin) {
+        $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
+    }
+
     $query = new WP_Query($args);
     return $query;
 }
+/*
+function retrieve_site_job_list_data($site_id = 0) {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
 
+    $args = array(
+        'post_type'      => 'job',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+        'meta_key'       => 'job_number', // Meta key for sorting
+        'orderby'        => 'meta_value', // Sort by meta value
+        'order'          => 'ASC', // Sorting order (ascending)
+    );
+
+    if (!current_user_can('administrator') && !($is_site_admin==1)) {
+        $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
+    }
+
+    $query = new WP_Query($args);
+    return $query;
+}
+*/
 function get_site_job_list_data() {
     $response = array('html_contain' => display_site_job_list());
     wp_send_json($response);
@@ -778,7 +795,7 @@ function display_job_action_dialog(){
     <?php
 }
 
-function select_next_job_option_data($selected_option=0) {
+function select_site_job_option_data($selected_option=0) {
     $options = '<option value="">Select job</option>';
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -810,7 +827,7 @@ function get_job_action_dialog_data() {
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
         $next_job = get_post_meta($action_id, 'next_job', true);
-        $response["next_job"] = select_next_job_option_data($next_job);
+        $response["next_job"] = select_site_job_option_data($next_job);
         $response["next_leadtime"] = get_post_meta($action_id, 'next_leadtime', true);
     }
     wp_send_json($response);

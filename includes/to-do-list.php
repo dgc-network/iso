@@ -789,7 +789,7 @@ function get_todo_action_dialog_data() {
         $next_job = get_post_meta($action_id, 'next_job', true);
         $response["action_title"] = get_the_title($action_id);
         $response["action_content"] = get_post_field('post_content', $action_id);
-        $response["next_job"] = select_next_job_option_data($next_job);
+        $response["next_job"] = select_site_job_option_data($next_job);
         $response["next_leadtime"] = esc_html(get_post_meta($action_id, 'next_leadtime', true));
     }
     wp_send_json($response);

@@ -379,25 +379,24 @@ function display_document_dialog($doc_id=false) {
             <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+            <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
         </div>
         <div id="doc-report-div" style="display:none;">
             <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
             
+            <label for="doc-report-start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
+            <select id="doc-report-start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($doc_report_start_job);?></select>
             <label for="doc-report-start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-start-setting"><?php echo select_doc_report_start_setting_option($doc_report_start_setting);?></select>
             <div id="doc-report-start-setting-div" style="display:inline;">
                 <input type="number" id="doc-report-period-time" value="<?php echo $doc_report_period_time;?>" style="width:50px;" />
                 <label id="doc-report-period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
                 <label id="doc-report-period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-            </div><br>
-            <label for="doc-report-start-job"><?php echo __( '表單的起始職務', 'your-text-domain' );?></label><br>
-            <select id="doc-report-start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($doc_report_start_job);?></select>
-
+            </div>
         </div>
-        <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_start_job_option_data($start_job);?></select>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
         <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
