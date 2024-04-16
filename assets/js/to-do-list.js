@@ -36,7 +36,8 @@ jQuery(document).ready(function($) {
                     '_report_id': $("#report-id").val(),
                 },
                 success: function (response) {
-                    window.location.replace("/to-do-list/");
+                    //window.location.replace("/to-do-list/");
+                    window.location.replace(window.location.href);
                 },
                 error: function(error){
                     console.error(error);

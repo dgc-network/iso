@@ -51,7 +51,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    window.location.replace("/display-profiles/?_initial=true");
+                    //window.location.replace("/display-profiles/?_initial=true");
+                    window.location.replace(window.location.href);
                 },
                 error: function(error){
                     console.error(error);                    
@@ -100,7 +101,7 @@ jQuery(document).ready(function($) {
                 //'_site_id': $("#site-id").val(),
             },
             success: function (response) {
-                window.location.replace("/display-documents/");
+                window.location.replace(window.location.href);
             },
             error: function(error){
                 console.error(error);                    
@@ -149,7 +150,7 @@ jQuery(document).ready(function($) {
                                 '_doc_id': doc_id,
                             },
                             success: function (response) {
-                                window.location.replace("/display-documents/");
+                                window.location.replace(window.location.href);
                             },
                             error: function(error){
                                 console.error(error);
@@ -273,8 +274,6 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: ajaxData,
                         success: function (response) {
-                            //window.location.replace("/display-documents/");
-                            //window.location.replace($("#previous-page").val());
                             window.location.replace(window.location.href);
                         },
                         error: function(error){
@@ -295,8 +294,6 @@ jQuery(document).ready(function($) {
                                 '_doc_id': doc_id,
                             },
                             success: function (response) {
-                                //window.location.replace("/display-documents/");
-                                //window.location.replace($("#previous-page").val());
                                 window.location.replace(window.location.href);
                             },
                             error: function(error){
@@ -432,7 +429,6 @@ jQuery(document).ready(function($) {
                     },
                     success: function(response) {
                         if (response.success) {
-                            //window.location.replace("/display-documents/");
                             window.location.replace(window.location.href);
                         } else {
                             console.error('Error updating:', response.error);

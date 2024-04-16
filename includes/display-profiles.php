@@ -505,176 +505,6 @@ function del_site_user_dialog_data() {
 add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
 add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
 
-// doc-category
-function display_doc_category_list() {
-    ob_start();
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $user_data = get_userdata($current_user_id);
-
-    if ($is_site_admin==1 || current_user_can('administrator')) {
-        // Check if the user is administrator
-        ?>
-        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
-        <fieldset>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3" selected><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                        <option value="4">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                </div>
-            </div>
-
-            <fieldset>
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th>Category</th>
-                    <th>Description</th>
-                </thead>
-                <tbody>
-                <?php
-                $query = retrieve_doc_category_data();
-/*                
-                $args = array(
-                    'post_type'      => 'doc-category',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-*/            
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        //$job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                        //$department = get_post_meta(get_the_ID(), 'department', true);
-                        ?>
-                        <tr id="edit-doc-category-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php the_content();?></td>
-                        </tr>
-                        <?php 
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-            <input type ="button" id="new-doc-category" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
-            </fieldset>
-
-        </fieldset>
-        <?php display_doc_category_dialog();?>
-
-
-        <?php
-    } else {
-        ?>
-        <p>You do not have permission to access this page.</p>
-        <?php
-    }
-    $html = ob_get_clean();
-    return $html;
-}
-
-function retrieve_doc_category_data() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    //$is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
-
-    $args = array(
-        'post_type'      => 'doc-category',
-        'posts_per_page' => -1,        
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-    );
-
-    $query = new WP_Query($args);
-    return $query;
-}
-
-function get_doc_category_list_data() {
-    $response = array('html_contain' => display_doc_category_list());
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_doc_category_list_data', 'get_doc_category_list_data' );
-add_action( 'wp_ajax_nopriv_get_doc_category_list_data', 'get_doc_category_list_data' );
-
-function display_doc_category_dialog() {
-    ?>
-    <div id="doc-category-dialog" title="Category dialog" style="display:none;">
-    <fieldset>
-        <input type="hidden" id="category-id" />
-        <label for="category-title">Category:</label>
-        <input type="text" id="category-title" class="text ui-widget-content ui-corner-all" />
-        <label for="category-content">Description:</label>
-        <textarea id="category-content" rows="3" style="width:100%;"></textarea>
-    </fieldset>
-    </div>
-    <?php
-}
-
-function get_doc_category_dialog_data() {
-    $response = array();
-    if( isset($_POST['_category_id']) ) {
-        $category_id = sanitize_text_field($_POST['_category_id']);
-        $response["category_title"] = get_the_title($category_id);
-        $response["category_content"] = get_post_field('post_content', $category_id);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
-
-function set_doc_category_dialog_data() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-
-    if( isset($_POST['_category_id']) ) {
-        $category_id = sanitize_text_field($_POST['_category_id']);
-        $data = array(
-            'ID'           => $category_id,
-            'post_title'   => sanitize_text_field($_POST['_category_title']),
-            'post_content' => sanitize_text_field($_POST['_category_content']),
-        );
-        wp_update_post( $data );
-        update_post_meta($category_id, 'site_id', $site_id);
-    } else {
-        $new_post = array(
-            'post_title'    => 'New category',
-            'post_content'  => 'Your post content goes here.',
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'doc-category',
-        );    
-        $post_id = wp_insert_post($new_post);
-        update_post_meta($post_id, 'site_id', $site_id);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
-
-function del_doc_category_dialog_data() {
-    // Delete the post
-    $response = wp_delete_post($_POST['_category_id'], true);
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
-add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
-
-
 // Site job
 function display_site_job_list($initial=false) {
     ob_start();
@@ -879,7 +709,7 @@ function display_job_action_list() {
         ?>
         </tbody>
     </table>
-    <div id="new-job-action" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+    <div id="new-job-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     <?php display_job_action_dialog();?>
     <?php
@@ -1063,70 +893,158 @@ function set_user_job_data() {
 add_action( 'wp_ajax_set_user_job_data', 'set_user_job_data' );
 add_action( 'wp_ajax_nopriv_set_user_job_data', 'set_user_job_data' );
 
+// doc-category
+function display_doc_category_list() {
+    ob_start();
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_data = get_userdata($current_user_id);
 
-function get_site_list_data() {
-    $search_query = sanitize_text_field($_POST['_site_title']);
+    if ($is_site_admin==1 || current_user_can('administrator')) {
+        // Check if the user is administrator
+        ?>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+        <fieldset>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3" selected><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        <option value="4">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                </div>
+            </div>
+
+            <fieldset>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Category</th>
+                    <th>Description</th>
+                </thead>
+                <tbody>
+                <?php
+                $query = retrieve_doc_category_data();
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        ?>
+                        <tr id="edit-doc-category-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <input type ="button" id="new-doc-category" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            </fieldset>
+
+        </fieldset>
+        <?php display_doc_category_dialog();?>
+
+
+        <?php
+    } else {
+        ?>
+        <p>You do not have permission to access this page.</p>
+        <?php
+    }
+    $html = ob_get_clean();
+    return $html;
+}
+
+function retrieve_doc_category_data() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
     $args = array(
-        'post_type'      => 'site',
-        'posts_per_page' => -1,
-        's'              => $search_query,
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,        
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
     );
     $query = new WP_Query($args);
-
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["site_id"] = get_the_ID();
-            $_list["site_title"] = get_the_title();
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
+    return $query;
 }
-add_action( 'wp_ajax_get_site_list_data', 'get_site_list_data' );
-add_action( 'wp_ajax_nopriv_get_site_list_data', 'get_site_list_data' );
 
-function get_site_dialog_data() {
+function get_doc_category_list_data() {
+    $response = array('html_contain' => display_doc_category_list());
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_doc_category_list_data', 'get_doc_category_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_category_list_data', 'get_doc_category_list_data' );
+
+function display_doc_category_dialog() {
+    ?>
+    <div id="doc-category-dialog" title="Category dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="category-id" />
+        <label for="category-title">Category:</label>
+        <input type="text" id="category-title" class="text ui-widget-content ui-corner-all" />
+        <label for="category-content">Description:</label>
+        <textarea id="category-content" rows="3" style="width:100%;"></textarea>
+    </fieldset>
+    </div>
+    <?php
+}
+
+function get_doc_category_dialog_data() {
     $response = array();
-    if( isset($_POST['_site_id']) ) {
-        $site_id = sanitize_text_field($_POST['_site_id']);
-        $response["site_title"] = get_the_title($site_id);
+    if( isset($_POST['_category_id']) ) {
+        $category_id = sanitize_text_field($_POST['_category_id']);
+        $response["category_title"] = get_the_title($category_id);
+        $response["category_content"] = get_post_field('post_content', $category_id);
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
+add_action( 'wp_ajax_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
 
-function set_site_dialog_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if( isset($_POST['_site_id']) ) {
-        $site_id = sanitize_text_field($_POST['_site_id']);
-        $site_title = sanitize_text_field($_POST['_site_title']);
-        // Update the post
-        $post_data = array(
-            'ID'         => $site_id,
-            'post_title' => $site_title,
-        );        
-        wp_update_post($post_data);
-        update_post_meta( $site_id, 'image_url', $_POST['_image_url'] );
-        $response = array('success' => true);
+function set_doc_category_dialog_data() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+    if( isset($_POST['_category_id']) ) {
+        $category_id = sanitize_text_field($_POST['_category_id']);
+        $data = array(
+            'ID'           => $category_id,
+            'post_title'   => sanitize_text_field($_POST['_category_title']),
+            'post_content' => sanitize_text_field($_POST['_category_content']),
+        );
+        wp_update_post( $data );
+        //update_post_meta($category_id, 'site_id', $site_id);
     } else {
-        // Set up the new post data
-        $current_user_id = get_current_user_id();
-        $site_title = sanitize_text_field($_POST['_site_title']);
         $new_post = array(
-            'post_title'    => $site_title,
+            'post_title'    => 'New category',
             'post_content'  => 'Your post content goes here.',
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
-            'post_type'     => 'site',
+            'post_type'     => 'doc-category',
         );    
         $post_id = wp_insert_post($new_post);
-        update_user_meta( $current_user_id, 'site_id', $post_id );
+        update_post_meta($post_id, 'site_id', $site_id);
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_site_dialog_data', 'set_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_site_dialog_data', 'set_site_dialog_data' );
+add_action( 'wp_ajax_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
+
+function del_doc_category_dialog_data() {
+    // Delete the post
+    $response = wp_delete_post($_POST['_category_id'], true);
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
