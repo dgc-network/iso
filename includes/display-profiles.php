@@ -627,8 +627,8 @@ function display_doc_category_dialog() {
 function get_doc_category_dialog_data() {
     $response = array();
     if( isset($_POST['_category_id']) ) {
-        //$category_id = sanitize_text_field($_POST['_category_id']);
-        $response["job_number"] = get_post_meta($job_id, 'job_number', true);
+        $category_id = sanitize_text_field($_POST['_category_id']);
+        //$response["job_number"] = get_post_meta($job_id, 'job_number', true);
         $response["category_title"] = get_the_title($category_id);
         $response["category_content"] = get_post_field('post_content', $category_id);
         //$response["department"] = get_post_meta($job_id, 'department', true);
