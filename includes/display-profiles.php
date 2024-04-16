@@ -518,7 +518,7 @@ function display_doc_category_list() {
         // Check if the user is administrator
         ?>
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
+        <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
         <fieldset>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -628,10 +628,8 @@ function get_doc_category_dialog_data() {
     $response = array();
     if( isset($_POST['_category_id']) ) {
         $category_id = sanitize_text_field($_POST['_category_id']);
-        //$response["job_number"] = get_post_meta($job_id, 'job_number', true);
         $response["category_title"] = get_the_title($category_id);
         $response["category_content"] = get_post_field('post_content', $category_id);
-        //$response["department"] = get_post_meta($job_id, 'department', true);
     }
     wp_send_json($response);
 }
@@ -639,6 +637,9 @@ add_action( 'wp_ajax_get_doc_category_dialog_data', 'get_doc_category_dialog_dat
 add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
 
 function set_doc_category_dialog_data() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+
     if( isset($_POST['_category_id']) ) {
         $category_id = sanitize_text_field($_POST['_category_id']);
         $data = array(
@@ -647,10 +648,8 @@ function set_doc_category_dialog_data() {
             'post_content' => sanitize_text_field($_POST['_category_content']),
         );
         wp_update_post( $data );
-        update_post_meta($category_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+        update_post_meta($category_id, 'site_id', $site_id);
     } else {
-        $current_user_id = get_current_user_id();
-        $site_id = get_user_meta($current_user_id, 'site_id', true);
         $new_post = array(
             'post_title'    => 'New category',
             'post_content'  => 'Your post content goes here.',
