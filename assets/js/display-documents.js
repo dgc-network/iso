@@ -274,7 +274,8 @@ jQuery(document).ready(function($) {
                         data: ajaxData,
                         success: function (response) {
                             //window.location.replace("/display-documents/");
-                            window.location.replace($("#previous-page").val());
+                            //window.location.replace($("#previous-page").val());
+                            window.location.replace(window.location.href);
                         },
                         error: function(error){
                             console.error(error);
@@ -295,7 +296,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 //window.location.replace("/display-documents/");
-                                window.location.replace($("#previous-page").val());
+                                //window.location.replace($("#previous-page").val());
+                                window.location.replace(window.location.href);
                             },
                             error: function(error){
                                 console.error(error);
@@ -430,7 +432,8 @@ jQuery(document).ready(function($) {
                     },
                     success: function(response) {
                         if (response.success) {
-                            window.location.replace("/display-documents/");
+                            //window.location.replace("/display-documents/");
+                            window.location.replace(window.location.href);
                         } else {
                             console.error('Error updating:', response.error);
                             alert('Error updating. Please try again.');
