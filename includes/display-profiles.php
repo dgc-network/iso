@@ -28,7 +28,8 @@ function profiles_shortcode() {
         if ($_GET['_initial']=='true') echo display_site_profile(true);
         if ($_GET['_select_profile']=='1') echo display_site_profile();
         if ($_GET['_select_profile']=='2') echo display_site_job_list();
-        if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&!isset($_GET['_initial'])) echo display_my_profile();
+        if ($_GET['_select_profile']=='3') echo display_doc_category_list();
+        if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo display_my_profile();
         echo '</div>';
     } else {
         user_did_not_login_yet();
@@ -502,6 +503,120 @@ function del_site_user_dialog_data() {
 add_action('wp_ajax_del_site_user_dialog_data', 'del_site_user_dialog_data');
 add_action('wp_ajax_nopriv_del_site_user_dialog_data', 'del_site_user_dialog_data');
 
+// doc-category
+function display_doc_category_list() {
+    ob_start();
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    $user_data = get_userdata($current_user_id);
+
+    if ($is_site_admin==1 || current_user_can('administrator')) {
+        // Check if the user is administrator
+        ?>
+        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+        <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
+        <fieldset>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <select id="select-profile">
+                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                        <option value="3" selected><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        <option value="4">...</option>
+                    </select>
+                </div>
+                <div style="text-align: right">
+                </div>
+            </div>
+
+            <fieldset>
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th>Category</th>
+                    <th>Description</th>
+                </thead>
+                <tbody>
+                <?php
+                //$query = retrieve_doc_category_data();
+                $args = array(
+                    'post_type'      => 'doc-category',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+            
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        //$job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                        //$department = get_post_meta(get_the_ID(), 'department', true);
+                        ?>
+                        <tr id="edit-doc-category-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td><?php the_content();?></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <input type ="button" id="new-doc-category" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            </fieldset>
+
+        </fieldset>
+        <?php display_doc_category_dialog();?>
+
+
+        <?php
+    } else {
+        ?>
+        <p>You do not have permission to access this page.</p>
+        <?php
+    }
+    $html = ob_get_clean();
+    return $html;
+}
+
+function retrieve_doc_category_data() {
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    //$is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+    //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+
+    $args = array(
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,        
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );
+
+    $query = new WP_Query($args);
+    return $query;
+}
+
+function display_doc_category_dialog() {
+    ?>
+    <div id="doc-category-dialog" title="Category dialog" style="display:none;">
+    <fieldset>
+        <input type="hidden" id="job-id" />
+        <label for="doc-category">Category:</label>
+        <input type="text" id="doc-category" class="text ui-widget-content ui-corner-all" />
+        <label for="category-description">Description:</label>
+        <textarea id="category-description" rows="3" style="width:100%;"></textarea>
+    </fieldset>
+    </div>
+    <?php
+}
+
+
+// Site job
 function display_site_job_list($initial=false) {
     ob_start();
     $current_user_id = get_current_user_id();
@@ -602,35 +717,7 @@ function retrieve_site_job_list_data($site_id = 0) {
     $query = new WP_Query($args);
     return $query;
 }
-/*
-function retrieve_site_job_list_data($site_id = 0) {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
 
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            ),
-        ),
-        'meta_key'       => 'job_number', // Meta key for sorting
-        'orderby'        => 'meta_value', // Sort by meta value
-        'order'          => 'ASC', // Sorting order (ascending)
-    );
-
-    if (!current_user_can('administrator') && !($is_site_admin==1)) {
-        $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
-    }
-
-    $query = new WP_Query($args);
-    return $query;
-}
-*/
 function get_site_job_list_data() {
     $response = array('html_contain' => display_site_job_list());
     wp_send_json($response);
