@@ -786,11 +786,14 @@ function select_start_job_option_data($selected_option=0) {
 }
 
 function select_doc_category_option_data($selected_option=0) {
+/*    
     $args = array(
         'post_type'      => 'doc-category',
         'posts_per_page' => -1,
     );
     $query = new WP_Query($args);
+*/    
+    $query = retrieve_doc_category_data();
 
     $options = '<option value="">Select category</option>';
     while ($query->have_posts()) : $query->the_post();
