@@ -424,7 +424,7 @@ function select_doc_report_start_setting_option($selected_option=0) {
 }
 
 function get_document_dialog_data() {
-    set_previous_page_cookie();
+    //set_previous_page_cookie();
     $result = array();
     if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
