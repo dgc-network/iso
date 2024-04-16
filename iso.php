@@ -582,7 +582,7 @@ add_action('init', 'set_previous_page_cookie');
 function store_current_page_url() {
     $_SESSION['previous_page'] = esc_url( $_SERVER['REQUEST_URI'] );
 }
-add_action( 'wp_loaded', 'store_current_page_url' );
+//add_action( 'wp_loaded', 'store_current_page_url' );
 
 // Function to retrieve the stored previous page URL
 function get_previous_page_url() {
