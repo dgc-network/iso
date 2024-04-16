@@ -568,7 +568,7 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
-
+/*
 // Function to set a cookie with the current page URL
 function set_previous_page_cookie() {
     if (!isset($_COOKIE['previous_page'])) {
@@ -577,6 +577,12 @@ function set_previous_page_cookie() {
     }
 }
 add_action('init', 'set_previous_page_cookie');
+*/
+// Function to store the current page URL in session
+function store_current_page_url() {
+    $_SESSION['previous_page'] = esc_url( $_SERVER['REQUEST_URI'] );
+}
+add_action( 'wp_loaded', 'store_current_page_url' );
 
 // Function to retrieve the stored previous page URL
 function get_previous_page_url() {
