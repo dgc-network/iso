@@ -586,9 +586,18 @@ function store_current_page_url() {
 
 // Function to retrieve the stored previous page URL
 function get_previous_page_url() {
+    if (isset($_SESSION['previous_page'])) {
+        return esc_url($_SESSION['previous_page']);
+    } else {
+        return home_url('/'); // Default to home page if cookie doesn't exist
+    }
+}
+/*
+function get_previous_page_url() {
     if (isset($_COOKIE['previous_page'])) {
         return esc_url($_COOKIE['previous_page']);
     } else {
         return home_url('/'); // Default to home page if cookie doesn't exist
     }
 }
+*/
