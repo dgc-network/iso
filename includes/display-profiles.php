@@ -542,13 +542,14 @@ function display_doc_category_list() {
                 </thead>
                 <tbody>
                 <?php
-                //$query = retrieve_doc_category_data();
+                $query = retrieve_doc_category_data();
+/*                
                 $args = array(
                     'post_type'      => 'doc-category',
                     'posts_per_page' => -1,
                 );
                 $query = new WP_Query($args);
-            
+*/            
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         //$job_number = get_post_meta(get_the_ID(), 'job_number', true);
