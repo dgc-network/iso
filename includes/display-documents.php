@@ -334,6 +334,7 @@ function retrieve_document_data() {
 
 function display_document_dialog($doc_id=false) {
     if ($doc_id) {
+        //$previous_page = get_previous_page_url();
         $doc_number = get_post_meta($doc_id, 'doc_number', true);
         $doc_title = get_post_meta($doc_id, 'doc_title', true);
         $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -354,9 +355,11 @@ function display_document_dialog($doc_id=false) {
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
             </div>
-            <div style="text-align:right; display:flex;">        
+            <div style="text-align:right; display:flex;">
+
             </div>
         </div>
+        <input type="hidden" id="previous-page" value="<?php echo get_previous_page_url();?>" />
         <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
         <fieldset>
         <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -421,6 +424,7 @@ function select_doc_report_start_setting_option($selected_option=0) {
 }
 
 function get_document_dialog_data() {
+    set_previous_page_cookie();
     $result = array();
     if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
@@ -451,6 +455,7 @@ function get_document_dialog_data() {
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
+    //$result['previous_page'] = get_previous_page_url();
     wp_send_json($result);
 }
 add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
@@ -1083,6 +1088,7 @@ function display_doc_frame_contain($doc_id=false) {
         </div>
     </div>
 
+    <input type="hidden" id="previous-page" value="<?php echo get_previous_page_url();?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     
     <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
@@ -1118,6 +1124,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
         </div>
     </div>
 
+    <input type="hidden" id="previous-page" value="<?php echo get_previous_page_url();?>" />
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     
     <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>

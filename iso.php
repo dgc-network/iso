@@ -568,87 +568,21 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
-/*
-// Function to send Line user ID to WordPress
-function send_line_user_id_to_wordpress($line_user_id, $line_display_name) {
-    if (!is_user_logged_in()) {
 
-        // Retrieve user by meta field and meta value
-        $users = get_users(array(
-            'meta_key'    => 'line_user_id',
-            'meta_value'  => $user_identifier,
-            'number'      => 1, // Limit to 1 user
-            'count_total' => false // Improve performance
-        ));
-        
-        // Check if user is found
-        if (!empty($users)) {
-            $user = reset($users); // Get the first user
-            $user_id = $user->ID;
-            $site_id = get_user_meta($user_id, 'site_id', true);
-            $site_title = get_the_title($site_id);
-            $user_email = $user->user_email; // Retrieve user email
-        } else {
-            // User not found by Line user ID, initialize variables
-            $user_email = ''; 
-            $site_title = '';
-        }
-        
-        ?>
-        <div class="ui-widget">
-            <h2>User registration/login</h2>
-            <fieldset>
-                <label for="display-name">Name:</label>
-                <input type="text" id="display-name" value="<?php echo esc_attr($line_display_name);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email">Email:</label>
-                <input type="text" id="user-email" value="<?php echo esc_attr($user_email);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="site-id">Site:</label>
-                <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
-                <div id="site-hint" style="display:none; color:#999;"></div>
-                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-                <input type="hidden" id="log" value="<?php echo esc_attr($user->user_login);?>" />
-                <input type="hidden" id="pwd" value="<?php echo esc_attr($user->user_pass);?>" />
-                <hr>
-                <input type="submit" id="wp-login-submit" class="button button-primary" value="Submit" />
-            </fieldset>
-        </div>
-        <?php
+// Function to set a cookie with the current page URL
+function set_previous_page_cookie() {
+    if (!isset($_COOKIE['previous_page'])) {
+        // Set cookie with the current page URL
+        setcookie('previous_page', esc_url($_SERVER['REQUEST_URI']), time() + 3600, '/');
     }
 }
+add_action('init', 'set_previous_page_cookie');
 
-// Function to generate a random OTP
-function generate_otp() {
-    // Generate a random 6-digit OTP
-    return rand(100000, 999999);
-}
-
-// Function to verify OTP during login
-function verify_otp_login($user_login, $user) {
-    // Start the session to access stored OTP and expiration
-    session_start();
-
-    // Get submitted OTP
-    $submitted_otp = isset($_POST['otp']) ? intval($_POST['otp']) : 0;
-
-    // Get stored OTP and expiration timestamp from session
-    $stored_otp = isset($_SESSION['otp']) ? intval($_SESSION['otp']) : 0;
-    $expiration = isset($_SESSION['otp_expiration']) ? intval($_SESSION['otp_expiration']) : 0;
-
-    // Check if submitted OTP matches stored OTP and is within expiration time
-    if ($submitted_otp === $stored_otp && $expiration > time()) {
-        // OTP is valid, log the user in
-        wp_set_auth_cookie($user->ID, true);
-        // Clear OTP and expiration from session
-        unset($_SESSION['otp']);
-        unset($_SESSION['otp_expiration']);
-        // Redirect to home page or dashboard
-        wp_redirect(home_url());
-        exit;
+// Function to retrieve the stored previous page URL
+function get_previous_page_url() {
+    if (isset($_COOKIE['previous_page'])) {
+        return esc_url($_COOKIE['previous_page']);
     } else {
-        // Invalid OTP, display error message
-        $error = new WP_Error('invalid_otp', 'Invalid one-time password.');
-        return $error;
+        return home_url('/'); // Default to home page if cookie doesn't exist
     }
 }
-*/
-

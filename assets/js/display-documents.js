@@ -273,7 +273,8 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: ajaxData,
                         success: function (response) {
-                            window.location.replace("/display-documents/");
+                            //window.location.replace("/display-documents/");
+                            window.location.replace($("#previous-page").val());
                         },
                         error: function(error){
                             console.error(error);
@@ -293,7 +294,8 @@ jQuery(document).ready(function($) {
                                 '_doc_id': doc_id,
                             },
                             success: function (response) {
-                                window.location.replace("/display-documents/");
+                                //window.location.replace("/display-documents/");
+                                window.location.replace($("#previous-page").val());
                             },
                             error: function(error){
                                 console.error(error);
