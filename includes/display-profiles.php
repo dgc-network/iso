@@ -100,7 +100,8 @@ function display_my_profile() {
                         <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                         <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3">...</option>
+                        <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        <option value="4">...</option>
                     </select>
                 </div>
                 <div style="text-align: right">
@@ -212,7 +213,8 @@ function display_site_profile($initial=false) {
                         <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                         <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3">...</option>
+                        <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        <option value="4">...</option>
                     </select>
                 </div>
                 <div style="text-align: right">
@@ -601,19 +603,76 @@ function retrieve_doc_category_data() {
     return $query;
 }
 
+function get_doc_category_list_data() {
+    $response = array('html_contain' => display_doc_category_list());
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_doc_category_list_data', 'get_doc_category_list_data' );
+add_action( 'wp_ajax_nopriv_get_doc_category_list_data', 'get_doc_category_list_data' );
+
 function display_doc_category_dialog() {
     ?>
     <div id="doc-category-dialog" title="Category dialog" style="display:none;">
     <fieldset>
-        <input type="hidden" id="job-id" />
-        <label for="doc-category">Category:</label>
-        <input type="text" id="doc-category" class="text ui-widget-content ui-corner-all" />
-        <label for="category-description">Description:</label>
-        <textarea id="category-description" rows="3" style="width:100%;"></textarea>
+        <input type="hidden" id="category-id" />
+        <label for="category-title">Category:</label>
+        <input type="text" id="category-title" class="text ui-widget-content ui-corner-all" />
+        <label for="category-content">Description:</label>
+        <textarea id="category-content" rows="3" style="width:100%;"></textarea>
     </fieldset>
     </div>
     <?php
 }
+
+function get_doc_category_dialog_data() {
+    $response = array();
+    if( isset($_POST['_category_id']) ) {
+        //$category_id = sanitize_text_field($_POST['_category_id']);
+        $response["job_number"] = get_post_meta($job_id, 'job_number', true);
+        $response["category_title"] = get_the_title($category_id);
+        $response["category_content"] = get_post_field('post_content', $category_id);
+        //$response["department"] = get_post_meta($job_id, 'department', true);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
+
+function set_doc_category_dialog_data() {
+    if( isset($_POST['_category_id']) ) {
+        $category_id = sanitize_text_field($_POST['_category_id']);
+        $data = array(
+            'ID'           => $category_id,
+            'post_title'   => sanitize_text_field($_POST['_category_title']),
+            'post_content' => sanitize_text_field($_POST['_category_content']),
+        );
+        wp_update_post( $data );
+        update_post_meta($category_id, 'site_id', sanitize_text_field($_POST['_site_id']));
+    } else {
+        $current_user_id = get_current_user_id();
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
+        $new_post = array(
+            'post_title'    => 'New category',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'doc-category',
+        );    
+        $post_id = wp_insert_post($new_post);
+        update_post_meta($post_id, 'site_id', $site_id);
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
+
+function del_doc_category_dialog_data() {
+    // Delete the post
+    $response = wp_delete_post($_POST['_category_id'], true);
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
+add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );
 
 
 // Site job
@@ -637,7 +696,8 @@ function display_site_job_list($initial=false) {
                         <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                         <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
                         <option value="2" selected><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3">...</option>
+                        <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        <option value="4">...</option>
                     </select>
                 </div>
                 <div style="text-align: right">

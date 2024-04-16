@@ -73,6 +73,26 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function get_doc_category_list_data(){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_doc_category_list_data',
+            },
+            success: function (response) {
+                $("#result-container").html(response.html_contain);
+                //activate_doc_category_data();
+                activate_site_profile_data(site_id);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
     function activate_site_profile_data(site_id){
         $("#site-image-container").on("click", function() {
             $("#site-image-container").hide();
@@ -187,6 +207,24 @@ jQuery(document).ready(function($) {
             });    
         });
     
+        $("#new-doc-category").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_category_dialog_data',
+                },
+                success: function (response) {
+                    get_doc_category_list_data();
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
         $("#select-profile").on("change", function() {
             window.location.replace("?_select_profile="+$(this).val());
             $(this).val('');
@@ -271,6 +309,32 @@ jQuery(document).ready(function($) {
                     $("#job-content").val(response.job_content);
                     $("#department").val(response.department);
                     get_job_action_list_data(job_id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $('[id^="edit-doc-category-"]').on("click", function () {
+            const category_id = this.id.substring(18);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_doc_category_dialog_data',
+                    '_category_id': category_id,
+                },
+                success: function (response) {
+                    $("#doc-category-dialog").dialog('open');
+                    $("#category-id").val(category_id);
+                    //$("#job-number").val(response.job_number);
+                    $("#category-title").val(response.category_title);
+                    $("#category-content").val(response.category_content);
+                    //$("#department").val(response.department);
+                    //get_job_action_list_data(job_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -408,6 +472,58 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
                                 get_site_job_list_data(site_id);
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });
+    
+        $("#doc-category-dialog").dialog({
+            width: 450,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_doc_category_dialog_data',
+                            '_category_id': $("#category-id").val(),
+                            //'_job_number': $("#job-number").val(),
+                            '_category_title': $("#category-title").val(),
+                            '_category_content': $("#category-content").val(),
+                            //'_department': $("#department").val(),
+                        },
+                        success: function (response) {
+                            $("#doc-category-dialog").dialog('close');
+                            get_doc_category_list_data();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this doc category?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_doc_category_dialog_data',
+                                '_category_id': $("#category-id").val(),
+                            },
+                            success: function (response) {
+                                $("#doc-category-dialog").dialog('close');
+                                get_doc_category_list_data();
                             },
                             error: function (error) {
                                 console.error(error);
