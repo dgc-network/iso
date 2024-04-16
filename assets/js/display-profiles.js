@@ -375,7 +375,8 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
                             console.log(response);
-                            get_site_profile_data(site_id);
+                            //get_site_profile_data(site_id);
+                            get_site_profile_data();
                         },
                         error: function (error) {
                             console.error(error);
