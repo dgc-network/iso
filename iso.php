@@ -580,6 +580,9 @@ add_action('init', 'set_previous_page_cookie');
 */
 // Function to store the current page URL in session
 function store_current_page_url() {
+    if ( ! session_id() ) {
+        session_start();
+    }
     $_SESSION['previous_page'] = esc_url( $_SERVER['REQUEST_URI'] );
 }
 //add_action( 'wp_loaded', 'store_current_page_url' );
