@@ -578,8 +578,10 @@ function display_site_job_list($initial=false) {
     echo '<div class="pagination">';
     if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
     echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> < </a></span>';
-    
+    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+    echo '<span id="new-site-job" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</span>';
+
+/*    
     // Previous page link
     if ($current_page > 1) {
         //echo '<a class="prev page-numbers" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">&laquo; ' . __('Previous', 'textdomain') . '</a>';
@@ -590,7 +592,7 @@ function display_site_job_list($initial=false) {
     if ($current_page < $total_pages) {
         echo '<a class="next page-numbers" style="color:red;" href="' . esc_url(get_pagenum_link($current_page + 1)) . '">' . __('Next', 'textdomain') . ' &raquo;</a>';
     }
-    
+*/    
     echo '</div>';
             ?>
             </fieldset>
