@@ -244,8 +244,17 @@ function display_document_list() {
             </thead>
             <tbody>
             <?php
+            // Define the custom pagination parameters
+            $posts_per_page = get_option('operation_row_counts');
+            $current_page = max(1, get_query_var('paged')); // Get the current page number
+            //$query = retrieve_site_job_list_data($current_page);
+            $query = retrieve_document_data($current_page);
+            $total_posts = $query->found_posts;
+            $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+
+            
             //$query = retrieve_document_data($site_id);
-            $query = retrieve_document_data();
+            //$query = retrieve_document_data();
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = (int) get_the_ID();
@@ -271,12 +280,25 @@ function display_document_list() {
             </tbody>
         </table>
         <input type ="button" id="new-document" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <?php
+            // Display pagination links
+            echo '<div class="pagination">';
+            if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+            echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+            if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+            echo '</div>';
+        ?>
     </fieldset>
     </div>
     <?php
 }
 
-function retrieve_document_data() {
+function retrieve_document_data($current_page = 1) {
+    // Define the custom pagination parameters
+    $posts_per_page = get_option('operation_row_counts');
+    // Calculate the offset to retrieve the posts for the current page
+    $offset = ($current_page - 1) * $posts_per_page;
+
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $site_filter = array(
@@ -306,8 +328,10 @@ function retrieve_document_data() {
 
     $args = array(
         'post_type'      => 'document',
-        'posts_per_page' => 30,
-        'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $current_page,
+        //'posts_per_page' => 30,
+        //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
         'meta_query'     => array(
             'relation' => 'OR',
             array(

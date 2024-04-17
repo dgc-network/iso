@@ -545,14 +545,12 @@ function display_site_job_list($initial=false) {
                 <tbody>
                 <?php
                 // Define the custom pagination parameters
-                //$posts_per_page = 20; // Number of posts per page
                 $posts_per_page = get_option('operation_row_counts');
                 $current_page = max(1, get_query_var('paged')); // Get the current page number
                 $query = retrieve_site_job_list_data($current_page);
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
-            
-                //$query = retrieve_site_job_list_data($current_page);
+
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $job_number = get_post_meta(get_the_ID(), 'job_number', true);
@@ -572,28 +570,13 @@ function display_site_job_list($initial=false) {
                 </tbody>
             </table>
             <div id="new-site-job" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             <?php
-    
-    // Display pagination links
-    echo '<div class="pagination">';
-    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
-
-/*    
-    // Previous page link
-    if ($current_page > 1) {
-        //echo '<a class="prev page-numbers" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">&laquo; ' . __('Previous', 'textdomain') . '</a>';
-        echo '<a class="prev page-numbers" style="color:red;" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">' . __('Previous', 'textdomain') . '</a>';
-    }
-    
-    // Next page link
-    if ($current_page < $total_pages) {
-        echo '<a class="next page-numbers" style="color:red;" href="' . esc_url(get_pagenum_link($current_page + 1)) . '">' . __('Next', 'textdomain') . ' &raquo;</a>';
-    }
-*/    
-    echo '</div>';
+            // Display pagination links
+            echo '<div class="pagination">';
+            if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+            echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+            if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+            echo '</div>';
             ?>
             </fieldset>
 
@@ -614,39 +597,10 @@ function display_site_job_list($initial=false) {
 function retrieve_site_job_list_data($current_page = 1) {
 
     // Define the custom pagination parameters
-    //$posts_per_page = 20; // Number of posts per page
     $posts_per_page = get_option('operation_row_counts');
-    //$current_page = max(1, get_query_var('paged')); // Get the current page number
-    //$total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
-    //$total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
-    
     // Calculate the offset to retrieve the posts for the current page
     $offset = ($current_page - 1) * $posts_per_page;
-/*    
-    // Construct the custom WP_Query arguments
-    $args = array(
-        'post_type'      => 'job',
-        'posts_per_page' => $posts_per_page,
-        'paged'          => $current_page,
-        'offset'         => $offset,
-    );
-    
-    // Perform the query
-    $query = new WP_Query($args);
-    
-    // Display the posts
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-            // Display the document post content or any other relevant information
-            the_title();
-            the_content();
-        }
-        // Restore original post data
-        wp_reset_postdata();
-    }
-*/    
-    
+
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
