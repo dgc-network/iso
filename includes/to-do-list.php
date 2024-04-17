@@ -347,16 +347,16 @@ function display_todo_dialog($todo_id) {
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                 $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                if ($is_doc) {
-                    $field_value = get_post_meta($doc_id, $field_name, true);
-                } else {
+                if ($report_id) {
                     $field_value = get_post_meta($report_id, $field_name, true);
+                } else {
+                    $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                 }
                 switch (true) {
                     case ($field_type=='textarea'):
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                        <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disabled><?php echo esc_html($field_value);?></textarea>
+                        <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disable><?php echo esc_html($field_value);?></textarea>
                         <?php    
                         break;
     
@@ -371,7 +371,7 @@ function display_todo_dialog($todo_id) {
                     default:
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                        <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" disabled />
+                        <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all"  />
                         <?php
                         break;
                 }
@@ -409,47 +409,6 @@ function display_todo_dialog($todo_id) {
 
     }
     ?>
-    <?php //if ($is_site_admin){?>
-    <?php if (current_user_can('administrator')) {?>
-        <label for="todo-action-list"><?php echo '<b>'.get_the_title($todo_id).'</b>'.__( '待辦', 'your-text-domain' );?></label><br>
-        <fieldset>
-        <table style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $query = retrieve_todo_action_list_data($todo_id);
-                if ( $post_type === 'document' ) {
-                    $query = retrieve_job_action_list_data($todo_id);
-                }                
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        if ($is_site_admin) $edit_action = 'edit-action-';
-                        echo '<tr id="'.$edit_action.esc_attr(get_the_ID()).'">';
-                        echo '<td style="text-align:center;">'.get_the_title().'</td>';
-                        echo '<td>'.get_post_field('post_content', get_the_ID()).'</td>';
-                        if ($next_job>0) echo '<td style="text-align:center;">'.get_the_title($next_job).'</td>';
-                        if ($next_job==-1) echo '<td style="text-align:center;">'.__( '文件發行', 'your-text-domain' ).'</td>';
-                        if ($next_job==-2) echo '<td style="text-align:center;">'.__( '文件廢止', 'your-text-domain' ).'</td>';
-                        echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'next_leadtime', true)).'</td>';
-                        echo '</tr>';
-                    endwhile;
-                    wp_reset_postdata();
-                }
-                ?>
-            </tbody>
-        </table>
-        <div id="new-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-        </fieldset>
-    <?php }?>
-    <?php display_todo_action_dialog();?>
     <hr>
     <?php
     $query = retrieve_todo_action_list_data($todo_id);
