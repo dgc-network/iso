@@ -345,6 +345,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
+/*    
     $("#new-doc-field").on("click", function() {
         $.ajax({
             type: 'POST',
@@ -363,7 +364,7 @@ jQuery(document).ready(function($) {
             }
         });    
     });                                        
-
+*/
     function get_doc_field_list_data(doc_id=false, site_id=false) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',

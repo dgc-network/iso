@@ -202,7 +202,7 @@ function display_site_profile($initial=false) {
                 ?>
                 </tbody>
             </table>
-            <input type ="button" id="new-site-user" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             <?php display_new_user_dialog($site_id);?>
             <?php display_user_dialog($site_id);?>
@@ -981,7 +981,7 @@ function display_doc_category_list() {
                 ?>
                 </tbody>
             </table>
-            <input type ="button" id="new-doc-category" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+            <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
 
         </fieldset>

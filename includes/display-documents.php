@@ -275,7 +275,7 @@ function display_document_list() {
             ?>
             </tbody>
         </table>
-        <input type ="button" id="new-document" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <div id="new-document" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
         <?php
             // Display pagination links
             echo '<div class="pagination">';
@@ -882,7 +882,7 @@ function display_doc_field_list($doc_id=false, $site_id=false) {
                 ?>
             </tbody>
         </table>
-        <input type ="button" id="new-doc-field" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     </div>
     <?php display_doc_field_dialog();?>
@@ -1235,7 +1235,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                 ?>
             </tbody>
         </table>
-        <input type="button" id="new-doc-report" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
+        <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
     </fieldset>
     <?php
     $html = ob_get_clean();
