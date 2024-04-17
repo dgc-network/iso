@@ -332,7 +332,7 @@ function get_site_user_dialog_data() {
             $response["site_id"] = get_user_meta($user_id, 'site_id', true);
             // Get site job list data
             $site_id = get_user_meta($user_id, 'site_id', true);
-            $query = retrieve_site_job_list_data($site_id);
+            $query = retrieve_site_job_list_data(0);
             if ($query->have_posts()) {
                 $user_job_list = '';
                 while ($query->have_posts()) : $query->the_post();
@@ -627,6 +627,8 @@ function retrieve_site_job_list_data($current_page = 1) {
         $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
     }
 
+    if ($current_page==0) $args['posts_per_page'] = -1;
+
     $query = new WP_Query($args);
     return $query;
 }
@@ -811,8 +813,8 @@ function display_job_action_dialog(){
 function select_site_job_option_data($selected_option=0) {
     $options = '<option value="">Select job</option>';
     $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $query = retrieve_site_job_list_data($site_id);
+    //$site_id = get_user_meta($current_user_id, 'site_id', true);
+    $query = retrieve_site_job_list_data(0);
     while ($query->have_posts()) : $query->the_post();
         $job_number = get_post_meta(get_the_ID(), 'job_number', true);
         $job_title = get_the_title().'('.$job_number.')';
