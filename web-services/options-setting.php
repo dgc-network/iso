@@ -68,6 +68,16 @@ function web_service_register_settings() {
 
     // Register a field
     add_settings_field(
+        'operation_row_counts',
+        'Row counts',
+        'operation_row_counts_callback',
+        'web-service-settings',
+        'operation_settings_section'
+    );
+    register_setting('web-service-settings', 'operation_row_counts');
+    
+    // Register a field
+    add_settings_field(
         'operation_fee_rate',
         'Operation fee rate',
         'operation_fee_rate_callback',
@@ -79,7 +89,7 @@ function web_service_register_settings() {
     // Register a field
     add_settings_field(
         'operation_wallet_address',
-        'Operation wallet address',
+        'Wallet address',
         'operation_wallet_address_callback',
         'web-service-settings',
         'operation_settings_section'
@@ -145,6 +155,11 @@ function open_ai_api_key_callback() {
 
 function operation_settings_section_callback() {
     echo '<p>Settings for operation.</p>';
+}
+
+function operation_row_counts_callback() {
+    $value = get_option('operation_row_counts');
+    echo '<input type="text" id="operation_row_counts" name="operation_row_counts" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
 function operation_fee_rate_callback() {
