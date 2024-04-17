@@ -568,7 +568,8 @@ function display_site_job_list($initial=false) {
     // Define the custom pagination parameters
     $posts_per_page = 10; // Number of posts per page
     $current_page = max(1, get_query_var('paged')); // Get the current page number
-    $total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
+    //$total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
+    $total_posts = $query->found_posts;
     $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
     
     // Display pagination links
@@ -647,7 +648,7 @@ function retrieve_site_job_list_data($current_page = 1) {
         'post_type'      => 'job',
         'posts_per_page' => $posts_per_page,
         'paged'          => $current_page,
-        'offset'         => $offset,
+        //'offset'         => $offset,
         //'posts_per_page' => -1,
         'meta_query'     => array(
             array(
