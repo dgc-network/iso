@@ -603,13 +603,13 @@ function display_site_job_list($initial=false) {
     return $html;
 }
 
-function retrieve_site_job_list_data($site_id = 0) {
+function retrieve_site_job_list_data($current_page = 1) {
 
     // Define the custom pagination parameters
     $posts_per_page = 10; // Number of posts per page
-    $current_page = max(1, get_query_var('paged')); // Get the current page number
-    $total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
-    $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+    //$current_page = max(1, get_query_var('paged')); // Get the current page number
+    //$total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
+    //$total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
     
     // Calculate the offset to retrieve the posts for the current page
     $offset = ($current_page - 1) * $posts_per_page;
