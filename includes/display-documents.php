@@ -247,14 +247,10 @@ function display_document_list() {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
             $current_page = max(1, get_query_var('paged')); // Get the current page number
-            //$query = retrieve_site_job_list_data($current_page);
             $query = retrieve_document_data($current_page);
             $total_posts = $query->found_posts;
             $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
 
-            
-            //$query = retrieve_document_data($site_id);
-            //$query = retrieve_document_data();
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = (int) get_the_ID();
