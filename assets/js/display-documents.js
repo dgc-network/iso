@@ -261,12 +261,12 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_title'] = $("#doc-title").val();
                     ajaxData['_doc_revision'] = $("#doc-revision").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
+                    ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
                     ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
-                    ajaxData['_doc_report_start_job'] = $("#doc-report-start-job").val();
-                    ajaxData['_start_job'] = $("#start-job").val();
+                    //ajaxData['_doc_report_start_job'] = $("#doc-report-start-job").val();
                             
                     $.ajax({
                         type: 'POST',

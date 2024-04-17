@@ -148,7 +148,7 @@ function display_to_do_list() {
                         $job_id = get_post_meta(get_the_ID(), 'start_job', true);
                         $todo_title = get_the_title($job_id);
                         $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
-                        $todo_id = get_the_ID();
+                        //$todo_id = get_the_ID();
                     }
 
                     $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -257,8 +257,10 @@ function retrieve_todo_list_data($current_page = 1){
         // Define the WP_Query arguments
         $args = array(
             'post_type'      => 'todo',
-            'posts_per_page' => 30,
-            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+            'posts_per_page' => $posts_per_page,
+            'paged'          => $current_page,
+            //'posts_per_page' => 30,
+            //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
             'meta_query'     => array(
                 'relation' => 'AND',
                 array(
