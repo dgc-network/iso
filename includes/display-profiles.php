@@ -544,7 +544,15 @@ function display_site_job_list($initial=false) {
                 </thead>
                 <tbody>
                 <?php
-                $query = retrieve_site_job_list_data($site_id);
+                    // Define the custom pagination parameters
+    $posts_per_page = 10; // Number of posts per page
+    $current_page = max(1, get_query_var('paged')); // Get the current page number
+    //$total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
+    $query = retrieve_site_job_list_data($current_page);
+    $total_posts = $query->found_posts;
+    $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+
+                //$query = retrieve_site_job_list_data($current_page);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $job_number = get_post_meta(get_the_ID(), 'job_number', true);
@@ -565,12 +573,6 @@ function display_site_job_list($initial=false) {
             </table>
             <input type ="button" id="new-site-job" value="+" style="width:100%; margin:3px; border-radius:5px; font-size:small;" />
             <?php
-    // Define the custom pagination parameters
-    $posts_per_page = 10; // Number of posts per page
-    $current_page = max(1, get_query_var('paged')); // Get the current page number
-    //$total_posts = wp_count_posts('job')->publish; // Get the total number of published "document" posts
-    $total_posts = $query->found_posts;
-    $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
     
     // Display pagination links
     echo '<div class="pagination">';
