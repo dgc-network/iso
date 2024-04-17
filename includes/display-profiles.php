@@ -580,12 +580,13 @@ function display_site_job_list($initial=false) {
     
     // Previous page link
     if ($current_page > 1) {
-        echo '<a class="prev page-numbers" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">&laquo; ' . __('Previous', 'textdomain') . '</a>';
+        //echo '<a class="prev page-numbers" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">&laquo; ' . __('Previous', 'textdomain') . '</a>';
+        echo '<a class="prev page-numbers" style="color:red;" href="' . esc_url(get_pagenum_link($current_page - 1)) . '">' . __('Previous', 'textdomain') . '</a>';
     }
     
     // Next page link
     if ($current_page < $total_pages) {
-        echo '<a class="next page-numbers" href="' . esc_url(get_pagenum_link($current_page + 1)) . '">' . __('Next', 'textdomain') . ' &raquo;</a>';
+        echo '<a class="next page-numbers" style="color:red;" href="' . esc_url(get_pagenum_link($current_page + 1)) . '">' . __('Next', 'textdomain') . ' &raquo;</a>';
     }
     
     echo '</div>';
