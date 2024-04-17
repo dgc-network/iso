@@ -663,6 +663,7 @@ function set_site_job_dialog_data() {
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
+        // new job
         $new_post = array(
             'post_title'    => 'New job',
             'post_content'  => 'Your post content goes here.',
@@ -670,9 +671,21 @@ function set_site_job_dialog_data() {
             'post_author'   => $current_user_id,
             'post_type'     => 'job',
         );    
-        $post_id = wp_insert_post($new_post);
-        update_post_meta($post_id, 'site_id', $site_id);
-        update_post_meta($post_id, 'job_number', '-');
+        $new_job_id = wp_insert_post($new_post);
+        update_post_meta($new_job_id, 'site_id', $site_id);
+        update_post_meta($new_job_id, 'job_number', '-');
+        // new action
+        $new_post = array(
+            'post_title'    => 'OK',
+            'post_content'  => 'Your post content goes here.',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'action',
+        );    
+        $new_action_id = wp_insert_post($new_post);
+        update_post_meta($new_action_id, 'job_id', $new_job_id);
+        update_post_meta($new_action_id, 'next_job', -1);
+        update_post_meta($new_action_id, 'next_leadtie', 86400);
     }
     wp_send_json($response);
 }
