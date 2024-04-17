@@ -162,12 +162,14 @@ jQuery(document).ready(function($) {
                         
                 if ($('#is-doc-report').val()==1) {
                     $("#doc-report-div").show();
+                    $("#doc-report-div1").show();
                 } else {
                     $("#doc-frame-div").show();
                 }
 
                 $("#doc-frame-label").on("click", function () {
                     $("#doc-report-div").toggle();
+                    $("#doc-report-div1").toggle();
                     $("#doc-frame-div").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
@@ -175,6 +177,7 @@ jQuery(document).ready(function($) {
         
                 $("#doc-field-label").on("click", function () {
                     $("#doc-report-div").toggle();
+                    $("#doc-report-div1").toggle();
                     $("#doc-frame-div").toggle();
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)

@@ -396,15 +396,15 @@ function display_document_dialog($doc_id=false) {
             <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
             <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
         </div>
         <div id="doc-report-div" style="display:none;">
             <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
             <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             <?php echo display_doc_field_list($doc_id);?>
-            
             <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
+        </div>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
+        <div id="doc-report-div1" style="display:none;">            
             <label for="doc-report-start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-start-setting"><?php echo select_doc_report_start_setting_option($doc_report_start_setting);?></select>
             <div id="doc-report-start-setting-div" style="display:inline;">
