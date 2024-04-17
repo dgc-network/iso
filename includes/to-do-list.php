@@ -306,15 +306,14 @@ function display_todo_dialog($todo_id) {
         $todo_id = get_post_meta($doc_id, 'start_job', true);
     }
     
-    $is_doc = false;
+    $is_doc_report = false;
     if ($doc_id) {
         $doc_number = get_post_meta($doc_id, 'doc_number', true);
         $doc_title = get_post_meta($doc_id, 'doc_title', true);
         $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
         $doc_category = get_post_meta($doc_id, 'doc_category', true);
-        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-        $is_doc = true;
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
     } else {
         $doc_id = get_post_meta($report_id, 'doc_id', true);
     }
@@ -335,36 +334,7 @@ function display_todo_dialog($todo_id) {
     <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
     <fieldset>
     <?php
-    if ($is_doc) {
-        // document_dialog data
-        ?>
-        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
-        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
-        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
-        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-        <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
-        <?php
-        if ($is_doc_report==1) {
-            ?>
-            <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
-            <?php
-        } else {
-            ?>
-            <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-            <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-            <?php
-        }
-        ?>
-        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-        <?php
-
-    } else {
+    if ($is_doc_report) {
         // doc_report_dialog data
         $params = array(
             'doc_id'     => $doc_id,
@@ -408,6 +378,35 @@ function display_todo_dialog($todo_id) {
             endwhile;
             wp_reset_postdata();
         }    
+    } else {
+        // document_dialog data
+        ?>
+        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+        <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+        <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+        <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
+        <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+        <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+        <?php
+        if ($is_doc_report==1) {
+            ?>
+            <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+            <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+            <?php
+        } else {
+            ?>
+            <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+            <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+            <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
+            <?php
+        }
+        ?>
+        <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+        <?php
+
     }
     ?>
     <?php //if ($is_site_admin){?>
