@@ -463,7 +463,8 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
                             //get_site_job_list_data(site_id);
-                            get_site_job_list_data();
+                            //get_site_job_list_data();
+                            window.location.replace(window.location.href);
                         },
                         error: function (error) {
                             console.error(error);
@@ -484,7 +485,8 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
                                 //get_site_job_list_data(site_id);
-                                get_site_job_list_data();
+                                //get_site_job_list_data();
+                                window.location.replace(window.location.href);
                             },
                             error: function (error) {
                                 console.error(error);
