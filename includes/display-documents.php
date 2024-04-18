@@ -108,6 +108,22 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
+    // Migrate meta key site_id from $_GET['_site_id_migration'] to specified site_id in document (2024-4-18)
+    if( isset($_GET['_site_id_migration']) ) {
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
+                update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
+                endwhile;
+            wp_reset_postdata();
+        endif;    
+    }
+
     // Migrate meta key doc_url to doc_frame in document (2024-3-16)
     if( isset($_GET['_doc_frame_migration']) ) {
         $args = array(
@@ -259,7 +275,7 @@ function display_document_list() {
                     ?>
                     <tr id="edit-document-<?php echo $doc_id;?>">
                         <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
-                        <td><?php echo esc_html($doc_title);?></td>
+                        <td><?php echo esc_html($doc_title.$site_id);?></td>
                         <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
                         <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
                     </tr>

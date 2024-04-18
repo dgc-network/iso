@@ -552,7 +552,9 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
-
+        //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
+        if ($report_id) update_post_meta( $report_id, 'todo_status', $todo_id);
+    
         $params = array(
             'action_id' => $action_id,
             'doc_id'    => $doc_id,
@@ -599,8 +601,8 @@ function set_next_todo_and_actions($args = array()) {
     if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
     if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
     update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-    if ($doc_id) update_post_meta( $doc_id, 'todo_status', $new_todo_id);
-    if ($report_id) update_post_meta( $report_id, 'todo_status', $new_todo_id);
+    //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $new_todo_id);
+    //if ($report_id) update_post_meta( $report_id, 'todo_status', $new_todo_id);
 
     if ($next_job==-1 || $next_job==-2) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
