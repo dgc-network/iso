@@ -108,20 +108,32 @@ add_action('init', 'register_doc_category_post_type');
 
 // Shortcode to display documents
 function display_documents_shortcode() {
-    // Migrate meta key site_id from $_GET['_site_id_migration'] to specified site_id in document (2024-4-18)
+    // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
     if( isset($_GET['_site_id_migration']) ) {
+        // Query documents with the current meta key 'site_id' set to 8699
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'     => 'site_id',
+                    'value'   => '8699',
+                    'compare' => '=',
+                ),
+            ),
         );
         $query = new WP_Query($args);
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
-                update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
-                endwhile;
+        
+        // Loop through each document post and update its meta value
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                // Update the meta value from 8699 to 8698
+                update_post_meta(get_the_ID(), 'site_id', '8698', '8699');
+            }
+            // Reset post data
             wp_reset_postdata();
-        endif;    
+        }
     }
 
     // Migrate meta key doc_url to doc_frame in document (2024-3-16)
