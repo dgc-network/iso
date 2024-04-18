@@ -92,7 +92,7 @@ function display_my_profile() {
             </fieldset>
             <label for="site-title"> Site: </label>
             <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id).$site_id;?>" class="text ui-widget-content ui-corner-all" disabled />
+            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
