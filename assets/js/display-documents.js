@@ -347,51 +347,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // doc-field scripts
-/*    
-    $("#new-doc-field").on("click", function() {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_doc_field_dialog_data',
-                '_site_id': $("#site-id").val(),
-            },
-            success: function (response) {
-                get_doc_field_list_data(false, $("#site-id").val());
-            },
-            error: function(error){
-                console.error(error);                    
-                alert(error);
-            }
-        });    
-    });                                        
-*/
-    function get_doc_field_list_data(doc_id=false, site_id=false) {
-        const ajaxData = {
-            'action': 'get_doc_field_list_data',
-        };
-    
-        if (doc_id) ajaxData['_doc_id'] = doc_id;
-        if (site_id) ajaxData['_site_id'] = site_id;
-    
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: 'json',
-            data: ajaxData,
-            success: function (response) {
-                $('#fields-container').html(response.html_contain);
-                activate_doc_field_list_data(doc_id, site_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-    
     function activate_published_document_data(doc_id){
         $("#share-document").on("click", function() {
             var homeAddress = window.location.origin;
@@ -448,6 +403,31 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // doc-field scripts
+    function get_doc_field_list_data(doc_id=false, site_id=false) {
+        const ajaxData = {
+            'action': 'get_doc_field_list_data',
+        };
+    
+        if (doc_id) ajaxData['_doc_id'] = doc_id;
+        if (site_id) ajaxData['_site_id'] = site_id;
+    
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: 'json',
+            data: ajaxData,
+            success: function (response) {
+                $('#fields-container').html(response.html_contain);
+                activate_doc_field_list_data(doc_id, site_id);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+    
     function activate_doc_field_list_data(doc_id=false, site_id=false){
         $("#new-doc-field").on("click", function() {
             $.ajax({
