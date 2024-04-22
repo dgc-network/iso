@@ -23,6 +23,12 @@ jQuery(document).ready(function($) {
     activate_todo_dialog_data();
 
     function activate_todo_dialog_data(){
+        $(".datepicker").datepicker({
+            onSelect: function(dateText, inst) {
+                $(this).val(dateText);
+            }
+        });
+    
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
             $.ajax({
