@@ -462,20 +462,34 @@ function set_todo_dialog_data() {
             $todo_id = wp_insert_post($new_post);
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
-            if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+            //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
         }
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
+
+        $doc_report_ids = set_new_doc_report_by_action_id($action_id);
+        // Assuming $doc_report_ids is an array containing report IDs
+        foreach ($doc_report_ids as $report_id) {
+            // Update 'todo_status' meta with $todo_id for each report
+            update_post_meta($report_id, 'todo_status', $todo_id);
+            
+            // Retrieve 'doc_id' associated with the report
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            
+            // Update 'todo_status' meta with -1 for the associated document
+            update_post_meta($doc_id, 'todo_status', -1);
+        }
+/*        
         $report_id = get_post_meta($todo_id, 'report_id', true);
         if ($report_id) {
             update_post_meta( $report_id, 'todo_status', $todo_id);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             update_post_meta( $doc_id, 'todo_status', -1);
         }
-
+*/
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
@@ -507,7 +521,6 @@ function set_next_todo_and_actions($args = array()) {
         }
 */        
         $todo_title = get_the_title($next_job);
-        set_new_doc_report_by_action_id($action_id);
     }
 
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
@@ -561,13 +574,13 @@ function set_next_todo_and_actions($args = array()) {
 }
 
 function set_new_doc_report_by_action_id($action_id) {
-    // set next_doc_report from next_job
+    $doc_report_ids = array();
+    // Question: How to get the right doc_id from next_job?
     $next_job = get_post_meta($action_id, 'next_job', true);
     $todo_id = get_post_meta($action_id, 'todo_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     $doc_id = get_post_meta($report_id, 'doc_id', true);
 
-    // Question: How to get the right doc_id of next_job?
     if ($report_id) {
         $args = array(
             'post_type'      => 'document',
@@ -592,6 +605,9 @@ function set_new_doc_report_by_action_id($action_id) {
                     'post_type'     => 'doc-report',
                 );    
                 $new_report_id = wp_insert_post($new_post);
+                // Assuming $doc_report_ids is already declared as an array
+                $doc_report_ids[] = $new_report_id;
+
                 update_post_meta( $new_report_id, 'doc_id', get_the_ID());
                 // Question: How to insert the data from the previous doc-report?
                 // Step 1: Retrieve the doc_id from the "doc-report" post
@@ -637,6 +653,7 @@ function set_new_doc_report_by_action_id($action_id) {
             wp_reset_postdata();
         }
     }
+    return $doc_report_ids;
 }
 
 function get_users_by_job_id($job_id=0) {
