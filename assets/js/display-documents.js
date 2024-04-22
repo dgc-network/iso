@@ -658,9 +658,9 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function(response) {
-                    if (window.confirm("Are you sure you want to proceed the next doc?")) {
+                    if (window.confirm("Are you sure you want to proceed the todo for the doc-report?")) {
                         const ajaxData = {
-                            'action': 'set_next_doc_report_data',
+                            'action': 'set_todo_in_doc_report',
                         };
                         ajaxData['_action_id'] = action_id;
                         ajaxData['_report_id'] = $("#report-id").val();

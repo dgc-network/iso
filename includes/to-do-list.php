@@ -447,13 +447,12 @@ function set_todo_dialog_data() {
         // action button is clicked, current todo update
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        $report_id = sanitize_text_field($_POST['_report_id']);
         $todo_id = get_post_meta($action_id, 'todo_id', true);
-        // Check if the meta key exists
+        // Create new todo if the meta key not 'todo_id' exists
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
-            // Insert the To-do list for signature
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $report_id = sanitize_text_field($_POST['_report_id']);
             $new_post = array(
                 'post_title'    => get_the_title($job_id),
                 'post_status'   => 'publish',
@@ -464,101 +463,24 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
-        } else {
-            if ( $report_id ) {
-                $next_job = get_post_meta($todo_id, 'next_job', true);
-                // Question: How to get the right doc_id of next_job?
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => 'start_job',
-                            'value'   => $next_job,
-                            'compare' => '=',
-                        ),
-                    ),
-                );
-                
-                $query = new WP_Query($args);
-                
-                // Check if there are posts found
-                if ($query->have_posts()) {
-                    // Start the loop
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        // Insert the Doc-report list for next_job
-                        $new_post = array(
-                            //'post_title'    => get_the_title($job_id),
-                            'post_title'    => 'New doc-report',
-                            'post_status'   => 'publish',
-                            'post_author'   => $current_user_id,
-                            'post_type'     => 'doc-report',
-                        );    
-                        $new_report_id = wp_insert_post($new_post);
-                        update_post_meta( $new_report_id, 'doc_id', get_the_ID());
-                        // Question: How to insert the data from the previous doc-report?
-                        // Step 1: Retrieve the doc_id from the "doc-report" post
-                        $doc_id = get_post_meta($report_id, 'doc_id', true);
-
-                        // Step 2: Retrieve all meta keys from the "doc-report" post
-                        $meta_keys_report = get_post_meta($report_id);
-                        
-                        // Step 3: Loop through the meta keys to find the matching "field_name"
-                        foreach ($meta_keys_report as $meta_key => $meta_value) {
-                            // Check if the meta key starts with 'your_prefix' (replace 'your_prefix' with the actual prefix used for field names)
-                            //if (strpos($meta_key, 'your_prefix') === 0) {
-                                // Step 4: Check if there is a corresponding "doc-field" post with the doc_id and field_name
-                                $args_doc_field = array(
-                                    'post_type' => 'doc-field',
-                                    'meta_query' => array(
-                                        'relation' => 'AND',
-                                        array(
-                                            'key' => 'doc_id',
-                                            'value' => $doc_id,
-                                            'compare' => '=',
-                                        ),
-                                        array(
-                                            'key' => 'field_name',
-                                            'value' => $meta_key,
-                                            'compare' => '=',
-                                        ),
-                                    ),
-                                );
-                        
-                                $query_doc_field = new WP_Query($args_doc_field);
-                        
-                                if ($query_doc_field->have_posts()) {
-                                    // Step 5: Retrieve the meta value associated with the field_name
-                                    $query_doc_field->the_post();
-                                    //$meta_value_field = get_post_meta(get_the_ID(), 'field_value', true); // Assuming 'field_value' is the meta key for the value
-                                    //$meta_value = get_post_meta($report_id, $meta_key, true);
-                        
-                                    // Step 6: Update the "doc-report" post with the retrieved meta value
-                                    update_post_meta($new_report_id, $meta_key, $meta_value);
-                        
-                                    // Reset post data
-                                    wp_reset_postdata();
-                                }
-                            //}
-                        }
-                    }
-                    // Restore original post data
-                    wp_reset_postdata();
-                }                    
-            }
-    
         }
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
-        //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
-        if ($report_id) update_post_meta( $report_id, 'todo_status', $todo_id);
-    
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
+        $report_id = get_post_meta($todo_id, 'report_id', true);
+        if ($report_id) {
+            update_post_meta( $report_id, 'todo_status', $todo_id);
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            update_post_meta( $doc_id, 'todo_status', -1);
+        }
+
+        // set next todo and actions
         $params = array(
             'action_id' => $action_id,
-            'doc_id'    => $doc_id,
-            'report_id' => $report_id,
+            //'doc_id'    => $doc_id,
+            //'report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -577,13 +499,16 @@ function set_next_todo_and_actions($args = array()) {
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
         $doc_id        = get_post_meta($todo_id, 'doc_id', true);
         $report_id     = get_post_meta($todo_id, 'report_id', true);
+/*        
         if (!$todo_id) {
             $todo_id = get_post_meta($action_id, 'job_id', true);
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
         }
+*/        
+        $todo_title = get_the_title($next_job);
+        set_new_doc_report_by_action_id($action_id);
     }
-    $todo_title = get_the_title($next_job);
 
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
@@ -601,8 +526,6 @@ function set_next_todo_and_actions($args = array()) {
     if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
     if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
     update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-    //if ($doc_id) update_post_meta( $doc_id, 'todo_status', $new_todo_id);
-    //if ($report_id) update_post_meta( $report_id, 'todo_status', $new_todo_id);
 
     if ($next_job==-1 || $next_job==-2) {
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
@@ -637,6 +560,85 @@ function set_next_todo_and_actions($args = array()) {
     }
 }
 
+function set_new_doc_report_by_action_id($action_id) {
+    // set next_doc_report from next_job
+    $next_job = get_post_meta($action_id, 'next_job', true);
+    $todo_id = get_post_meta($action_id, 'todo_id', true);
+    $report_id = get_post_meta($todo_id, 'report_id', true);
+    $doc_id = get_post_meta($report_id, 'doc_id', true);
+
+    // Question: How to get the right doc_id of next_job?
+    if ($report_id) {
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array(
+                    'key'     => 'start_job',
+                    'value'   => $next_job,
+                    'compare' => '=',
+                ),
+            ),
+        );                
+        $query = new WP_Query($args);
+        
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $new_post = array(
+                    'post_title'    => 'New doc-report',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'doc-report',
+                );    
+                $new_report_id = wp_insert_post($new_post);
+                update_post_meta( $new_report_id, 'doc_id', get_the_ID());
+                // Question: How to insert the data from the previous doc-report?
+                // Step 1: Retrieve the doc_id from the "doc-report" post
+    
+                // Step 2: Retrieve all meta keys from the "doc-report" post
+                $meta_keys_report = get_post_meta($report_id);
+                
+                // Step 3: Loop through the meta keys to find the matching "field_name"
+                foreach ($meta_keys_report as $meta_key => $meta_value) {
+                    // Check if the meta key starts with 'your_prefix' (replace 'your_prefix' with the actual prefix used for field names)
+                    //if (strpos($meta_key, 'your_prefix') === 0) {
+                        // Step 4: Check if there is a corresponding "doc-field" post with the doc_id and field_name
+                        $args_doc_field = array(
+                            'post_type' => 'doc-field',
+                            'meta_query' => array(
+                                'relation' => 'AND',
+                                array(
+                                    'key' => 'doc_id',
+                                    'value' => $doc_id,
+                                    'compare' => '=',
+                                ),
+                                array(
+                                    'key' => 'field_name',
+                                    'value' => $meta_key,
+                                    'compare' => '=',
+                                ),
+                            ),
+                        );                        
+                        $query_doc_field = new WP_Query($args_doc_field);
+                
+                        if ($query_doc_field->have_posts()) {
+                            // Step 5: Retrieve the meta value associated with the field_name
+                            $query_doc_field->the_post();
+                            // Step 6: Update the "doc-report" post with the retrieved meta value
+                            update_post_meta($new_report_id, $meta_key, $meta_value);            
+                            // Reset post data
+                            wp_reset_postdata();
+                        }
+                    //}
+                }
+            }
+            // Restore original post data
+            wp_reset_postdata();
+        }
+    }
+}
+
 function get_users_by_job_id($job_id=0) {
     // Set up the user query arguments
     $args = array(
@@ -655,21 +657,33 @@ function get_users_by_job_id($job_id=0) {
 
 // Notice the persons in charge the job
 function notice_the_responsible_persons($todo_id=0) {
-    $line_bot_api = new line_bot_api();
     $todo_title = get_the_title($todo_id);
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    $job_id = get_post_meta($todo_id, 'job_id', true);
     $todo_due = get_post_meta($todo_id, 'todo_due', true);
     $due_date = wp_date( get_option('date_format'), $todo_due );
     $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    $post_type = get_post_type( $todo_id );
+    //$post_type = get_post_type( $todo_id );
+    //$job_id = get_post_meta($todo_id, 'job_id', true);
     //if ($post_type=='job') $job_id = $todo_id;
-    $users = get_users_by_job_id($job_id);
+    //$users = get_users_by_job_id($job_id);
+
+    $line_bot_api = new line_bot_api();
+    $args = array(
+        'meta_query'     => array(
+            array(
+                'key'     => 'user_job_ids',
+                'value'   => $job_id,
+                'compare' => 'LIKE', // Check if $job_id exists in the array
+            ),
+        ),
+    );
+    $query = new WP_User_Query($args);
+    $users = $query->get_results();
     foreach ($users as $user) {
         $params = [
             'display_name' => $user->display_name,
@@ -701,7 +715,6 @@ function get_users_in_site($site_id=0) {
 
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0,$job_id=0) {
-    $line_bot_api = new line_bot_api();
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -715,7 +728,19 @@ function notice_the_persons_in_site($todo_id=0,$job_id=0) {
     if ($job_id==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
     if ($job_id==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
-    $users = get_users_in_site($site_id);
+    //$users = get_users_in_site($site_id);
+
+    $line_bot_api = new line_bot_api();
+    $args = array(
+        'meta_query'     => array(
+            array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            ),
+        ),
+    );
+    $query = new WP_User_Query($args);
+    $users = $query->get_results();
     foreach ($users as $user) {
         $params = [
             'display_name' => $user->display_name,
