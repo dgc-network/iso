@@ -253,26 +253,6 @@ function retrieve_todo_list_data($current_page = 1){
                         ),
                     ),
                 ),
-/*                
-                array(
-                    'relation' => 'OR',
-                    array(
-                        'key'     => 'todo_status',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                    array(
-                        'key'     => 'todo_status',
-                        'value'   => -1,
-                        'compare' => '=',
-                        //'type'    => 'NUMERIC', // Specify the type if the value is numeric
-                    ),
-                ),
-/*                
-                array(
-                    'key'     => 'todo_status',
-                    'compare' => 'NOT EXISTS',
-                ),
-*/                
             ),
         );
 
@@ -497,6 +477,8 @@ function get_todo_dialog_data() {
     if (isset($_POST['_todo_id'])) {
         $todo_id = sanitize_text_field($_POST['_todo_id']);
         $result['html_contain'] = display_todo_dialog($todo_id);
+        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        $result['doc_fields'] = display_doc_field_keys($doc_id);
     } else {
         $result['html_contain'] = 'Invalid AJAX request!';
     }
@@ -526,6 +508,33 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+
+            // New a doc-report if is_doc_report==1
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            if ($is_doc_report==1){
+                $new_post = array(
+                    'post_title'    => 'New doc-report',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'doc-report',
+                );    
+                $new_report_id = wp_insert_post($new_post);
+                update_post_meta( $new_report_id, 'doc_id', $doc_id);
+                update_post_meta( $new_report_id, 'todo_status', $todo_id);
+                // Update the Document data
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
+                $query = retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $field_value = sanitize_text_field($_POST[$field_name]);
+                        update_post_meta( $new_report_id, $field_name, $field_value);
+                    endwhile;
+                    wp_reset_postdata();
+                }            
+            }
         }
         // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
@@ -533,8 +542,11 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_time', time());
 
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        $report_id = get_post_meta($todo_id, 'report_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
-
+        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+        if ($is_doc_report==1) update_post_meta( $doc_id, 'todo_status', -1);
+/*
         //$doc_report_ids = set_doc_report_by_action_id($action_id);
         $doc_report_ids = set_doc_report_by_action_id($todo_id);
         foreach ($doc_report_ids as $report_id) {
@@ -545,7 +557,7 @@ function set_todo_dialog_data() {
             // Update 'todo_status' meta with -1 for the associated document
             update_post_meta($doc_id, 'todo_status', -1);
         }
-
+*/
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
@@ -618,6 +630,32 @@ function set_next_todo_and_actions($args = array()) {
             wp_reset_postdata();
         }
     }
+}
+
+function get_document_by_job_id($job_id) {
+    $doc_ids = array();
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'     => 'start_job',
+                //'value'   => $next_job,
+                'value'   => $job_id,
+                'compare' => '=',
+            ),
+        ),
+    );                
+    $query = new WP_Query($args);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $doc_ids[] = get_the_ID();
+
+        }
+        wp_reset_postdata();
+    }
+    return $doc_ids;
 }
 
 //function set_doc_report_by_action_id($action_id) {

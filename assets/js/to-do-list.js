@@ -20,9 +20,9 @@ jQuery(document).ready(function($) {
         get_todo_dialog_data(todo_id)
     });            
 
-    activate_todo_dialog_data();
+    //activate_todo_dialog_data(response);
 
-    function activate_todo_dialog_data(){
+    function activate_todo_dialog_data(response){
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
@@ -31,6 +31,29 @@ jQuery(document).ready(function($) {
     
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
+
+            const ajaxData = {
+                'action': 'set_todo_dialog_data',
+            };
+            ajaxData['_action_id'] = action_id;
+            ajaxData['_doc_id'] = $("#doc-id").val();
+            ajaxData['_report_id'] = $("#report-id").val();
+        
+            $.each(response.doc_fields, function(index, value) {
+                const field_name_tag = '#' + value.field_name;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_tag).val();
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+/*
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -41,8 +64,8 @@ jQuery(document).ready(function($) {
                     '_doc_id': $("#doc-id").val(),
                     '_report_id': $("#report-id").val(),
                 },
+*/                
                 success: function (response) {
-                    //window.location.replace("/to-do-list/");
                     window.location.replace(window.location.href);
                 },
                 error: function(error){
@@ -161,7 +184,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data();
+                activate_todo_dialog_data(response);
             },
             error: function (error) {
                 console.log(error);
