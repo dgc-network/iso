@@ -234,9 +234,24 @@ function retrieve_todo_list_data($current_page = 1){
                     'compare' => 'IN',
                 ),
                 array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => 'todo_status',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'todo_status',
+                        'value'   => -1,
+                        'compare' => '=',
+                        //'type'    => 'NUMERIC', // Specify the type if the value is numeric
+                    ),
+                ),
+/*                
+                array(
                     'key'     => 'todo_status',
                     'compare' => 'NOT EXISTS',
                 ),
+*/                
             ),
         );
 

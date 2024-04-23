@@ -100,7 +100,7 @@ function register_doc_category_post_type() {
         'rewrite'       => array('slug' => 'doc-categories'),
         'supports'      => array('title', 'editor', 'custom-fields'),
         'has_archive'   => true,
-        //'show_in_menu'  => false,
+        'show_in_menu'  => false,
     );
     register_post_type( 'doc-category', $args );
 }
