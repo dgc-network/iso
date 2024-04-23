@@ -552,11 +552,12 @@ function display_site_job_list($initial=false) {
                     while ($query->have_posts()) : $query->the_post();
                         $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                         $department = get_post_meta(get_the_ID(), 'department', true);
+                        $content = get_the_content();
                         ?>
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                             <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php the_content();?></td>
+                            <td><?php echo esc_html(substr($content, 0, 25));?></td>
                             <td style="text-align:center;"><?php echo esc_html($department);?></td>
                         </tr>
                         <?php 
