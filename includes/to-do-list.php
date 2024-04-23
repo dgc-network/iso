@@ -240,6 +240,27 @@ function retrieve_todo_list_data($current_page = 1){
                         'compare' => 'NOT EXISTS',
                     ),
                     array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'todo_status',
+                            'value'   => -1,
+                            'compare' => '=',
+                        ),
+                        array(
+                            'key'     => 'is_doc_report',
+                            'value'   => 1,
+                            'compare' => '=',
+                        ),
+                    ),
+                ),
+/*                
+                array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => 'todo_status',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
                         'key'     => 'todo_status',
                         'value'   => -1,
                         'compare' => '=',
