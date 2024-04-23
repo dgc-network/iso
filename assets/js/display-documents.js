@@ -381,6 +381,23 @@ jQuery(document).ready(function($) {
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'reset_document_todo_status',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        window.location.replace(window.location.href);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+/*
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
                         //action: 'set_doc_unpublished_data',
@@ -400,6 +417,7 @@ jQuery(document).ready(function($) {
                         alert('AJAX request failed. Please try again.');
                     }
                 });
+*/                
             }    
         });
     }
