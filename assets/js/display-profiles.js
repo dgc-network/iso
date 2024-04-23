@@ -31,10 +31,8 @@ jQuery(document).ready(function($) {
         });            
     });
 
-    //activate_site_profile_data($("#site-id").val())
     activate_site_profile_data()
 
-    //function get_site_profile_data(site_id){
     function get_site_profile_data(){
         $.ajax({
             type: 'POST',
@@ -46,7 +44,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
-                //activate_site_profile_data(site_id);
                 activate_site_profile_data();
             },
             error: function (error) {
@@ -56,7 +53,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    //function get_site_job_list_data(site_id){
     function get_site_job_list_data(){
         $.ajax({
             type: 'POST',
@@ -64,11 +60,9 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'get_site_job_list_data',
-                //'_site_id': site_id,
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
-                //activate_site_profile_data(site_id);
                 activate_site_profile_data();
             },
             error: function (error) {
@@ -88,8 +82,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
-                //activate_doc_category_data();
-                //activate_site_profile_data(site_id);
                 activate_site_profile_data();
             },
             error: function (error) {
@@ -99,7 +91,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-    //function activate_site_profile_data(site_id){
     function activate_site_profile_data(){
         $("#site-image-container").on("click", function() {
             $("#site-image-container").hide();
@@ -116,8 +107,8 @@ jQuery(document).ready(function($) {
             }
         });
     
+        // Show the site-hint when the user starts typing
         $('#site-title').on('input', function() {
-            // Show the site-hint when the user starts typing
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -202,10 +193,8 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_site_job_dialog_data',
-                    //'_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
-                    //get_site_job_list_data(site_id);
                     get_site_job_list_data();
                 },
                 error: function(error){
@@ -273,7 +262,6 @@ jQuery(document).ready(function($) {
                                     'action': 'set_user_job_data',
                                     _job_id : job_id,
                                     _user_id : user_id,
-                                    //_is_user_job : $(this).is(":checked") ? 1 : 0,
                                     _is_user_job : $("#myCheckbox-"+job_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
@@ -338,11 +326,8 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-category-dialog").dialog('open');
                     $("#category-id").val(category_id);
-                    //$("#job-number").val(response.job_number);
                     $("#category-title").val(response.category_title);
                     $("#category-content").val(response.category_content);
-                    //$("#department").val(response.department);
-                    //get_job_action_list_data(job_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -363,19 +348,16 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_site_user_dialog_data',
-                            //'_user_id': $("#user-id").val(),
                             '_display_name': $("#new-display-name").val(),
                             '_user_email': $("#new-user-email").val(),
                             '_job_title': $("#new-job-title").val(),
                             '_job_content': $("#new-job-content").val(),
                             '_is_site_admin': $('#new-is-site-admin').is(":checked") ? 1 : 0,
-                            //'_select_site': $("#new-select-site").val(),
                             '_site_id': $("#new-site-id").val(),
                         },
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
                             console.log(response);
-                            //get_site_profile_data(site_id);
                             get_site_profile_data();
                         },
                         error: function (error) {
@@ -407,7 +389,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-user-dialog").dialog('close');
-                            //get_site_profile_data(site_id);
                             get_site_profile_data();
                         },
                         error: function (error) {
@@ -429,7 +410,6 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#site-user-dialog").dialog('close');
                                 console.log(response);
-                                //get_site_profile_data(site_id);
                                 get_site_profile_data();
                             },
                             error: function (error) {
@@ -462,8 +442,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
-                            //get_site_job_list_data(site_id);
-                            //get_site_job_list_data();
                             window.location.replace(window.location.href);
                         },
                         error: function (error) {
@@ -484,8 +462,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
-                                //get_site_job_list_data(site_id);
-                                //get_site_job_list_data();
                                 window.location.replace(window.location.href);
                             },
                             error: function (error) {
@@ -549,7 +525,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // Site job actions template
+    // Site job actions
     $("#new-job-action").on("click", function() {
         jQuery.ajax({
             type: 'POST',
@@ -601,7 +577,6 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'get_job_action_dialog_data',
                             '_action_id': job_id,
-                            //'_site_id': $("#site-id").val(),
                         },
                         success: function (response) {
                             $("#job-action-dialog").dialog('open');

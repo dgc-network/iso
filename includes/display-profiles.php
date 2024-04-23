@@ -137,8 +137,8 @@ function display_site_profile($initial=false) {
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $user_data = get_userdata($current_user_id);
 
+    // Check if the user is administrator or initial...
     if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
-        // Check if the user is administrator
         ?>
         <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
         <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
@@ -171,7 +171,6 @@ function display_site_profile($initial=false) {
                 <?php
 
                 $users = get_users(); // Initialize with all users
-
                 // If the current user is not an administrator, filter by site_id
                 if (!current_user_can('administrator')) {
                     $meta_query_args = array(
@@ -183,12 +182,10 @@ function display_site_profile($initial=false) {
                     );
                     $users = get_users(array('meta_query' => $meta_query_args));
                 }
-
                 // Loop through the users
                 foreach ($users as $user) {
                     $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
                     $user_site = get_user_meta($user->ID, 'site_id', true);
-
                     $is_other_site = ($user_site == $site_id) ? '' : '*';
                     $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
                     ?>
