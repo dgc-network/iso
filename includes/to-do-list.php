@@ -499,7 +499,7 @@ function set_todo_dialog_data() {
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
 
-        $doc_report_ids = set_new_doc_report_by_action_id($action_id);
+        $doc_report_ids = set_doc_report_by_action_id($action_id);
         foreach ($doc_report_ids as $report_id) {
             // Update 'todo_status' meta with $todo_id for each report
             update_post_meta($report_id, 'todo_status', $todo_id);            
@@ -583,11 +583,12 @@ function set_next_todo_and_actions($args = array()) {
     }
 }
 
-function set_new_doc_report_by_action_id($action_id) {
+function set_doc_report_by_action_id($action_id) {
     $doc_report_ids = array();
     // Question: How to get the right doc_id from next_job?
     $next_job = get_post_meta($action_id, 'next_job', true);
     $todo_id = get_post_meta($action_id, 'todo_id', true);
+    $job_id = get_post_meta($todo_id, 'job_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     $doc_id = get_post_meta($report_id, 'doc_id', true);
 
@@ -598,7 +599,8 @@ function set_new_doc_report_by_action_id($action_id) {
             'meta_query'     => array(
                 array(
                     'key'     => 'start_job',
-                    'value'   => $next_job,
+                    //'value'   => $next_job,
+                    'value'   => $job_id,
                     'compare' => '=',
                 ),
             ),
