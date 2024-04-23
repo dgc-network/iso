@@ -557,7 +557,7 @@ function display_site_job_list($initial=false) {
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                             <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php echo substr($content, 0, 30);?></td>
+                            <td><?php echo substr($content, 0, 50);?></td>
                             <td style="text-align:center;"><?php echo esc_html($department);?></td>
                         </tr>
                         <?php 
