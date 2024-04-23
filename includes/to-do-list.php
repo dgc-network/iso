@@ -496,6 +496,7 @@ function set_todo_dialog_data() {
         // Create new todo if the meta key 'todo_id' does not exist
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
+            $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
             $new_post = array(
@@ -508,6 +509,7 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+            update_post_meta( $action_id, 'todo_id', $todo_id);
 
             // New a doc-report if is_doc_report==1
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -520,7 +522,7 @@ function set_todo_dialog_data() {
                 );    
                 $new_report_id = wp_insert_post($new_post);
                 update_post_meta( $new_report_id, 'doc_id', $doc_id);
-                update_post_meta( $new_report_id, 'todo_status', $todo_id);
+                update_post_meta( $new_report_id, 'todo_status', $next_job);
                 // Update the Document data
                 $params = array(
                     'doc_id'     => $doc_id,
@@ -542,22 +544,11 @@ function set_todo_dialog_data() {
         update_post_meta( $todo_id, 'submit_time', time());
 
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        $report_id = get_post_meta($todo_id, 'report_id', true);
+        //$report_id = get_post_meta($todo_id, 'report_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         if ($is_doc_report==1) update_post_meta( $doc_id, 'todo_status', -1);
-/*
-        //$doc_report_ids = set_doc_report_by_action_id($action_id);
-        $doc_report_ids = set_doc_report_by_action_id($todo_id);
-        foreach ($doc_report_ids as $report_id) {
-            // Update 'todo_status' meta with $todo_id for each report
-            update_post_meta($report_id, 'todo_status', $todo_id);            
-            // Retrieve 'doc_id' associated with the report
-            $doc_id = get_post_meta($report_id, 'doc_id', true);            
-            // Update 'todo_status' meta with -1 for the associated document
-            update_post_meta($doc_id, 'todo_status', -1);
-        }
-*/
+
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
@@ -585,7 +576,7 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
     
-    // Insert the To-do list for next_job
+    // New a To-do for next_job
     $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
