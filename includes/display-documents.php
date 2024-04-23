@@ -279,6 +279,8 @@ function display_document_list() {
                     $doc_id = (int) get_the_ID();
                     $doc_number = get_post_meta($doc_id, 'doc_number', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                    if ($is_doc_report==1) $doc_title = '*'.$doc_title;
                     $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                     $todo_id = get_post_meta($doc_id, 'todo_status', true);
                     $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
