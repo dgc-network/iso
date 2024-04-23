@@ -568,9 +568,14 @@ function set_next_todo_and_actions($args = array()) {
         $next_job      = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
-        $doc_id        = get_post_meta($todo_id, 'doc_id', true);
-        $report_id     = get_post_meta($todo_id, 'report_id', true);
-        $todo_title = get_the_title($next_job);
+        $todo_title    = get_the_title($next_job);
+        $report_id     = get_post_meta($todo_id, 'report_id', true);    
+        $doc_ids       = get_document_for_job($next_job);
+        if ($doc_ids) {
+            $doc_id = $doc_ids[0];
+        } else {
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        }
     }
 
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
@@ -623,7 +628,7 @@ function set_next_todo_and_actions($args = array()) {
     }
 }
 
-function get_document_by_job_id($job_id) {
+function get_document_for_job($job_id) {
     $doc_ids = array();
     $args = array(
         'post_type'      => 'document',
