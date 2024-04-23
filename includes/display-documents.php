@@ -540,7 +540,7 @@ function del_document_dialog_data() {
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_document_dialog_data', 'del_document_dialog_data' );
 
-// document additional stuffs
+// document misc
 function reset_document_todo_status() {
     $response = array();
     if( isset($_POST['_doc_id']) ) {
@@ -584,11 +584,9 @@ function display_iso_document_statement($doc_id){
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     $doc_number = get_post_meta($doc_id, 'doc_number', true);
     $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-    //$doc_site = get_post_meta($doc_id, 'site_id', true);
     $category_id = get_post_meta($doc_id, 'doc_category', true);
     $doc_category = get_the_title( $category_id );
     $count_category = count_doc_category($category_id);
-    //$count_category = count_doc_category($category_id, $doc_site);
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta($site_id, 'image_url', true);
@@ -741,7 +739,7 @@ add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document'
 function get_shared_document($doc_id){
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
-    // Insert the post into the database
+    // Create the post
     $new_post = array(
         'post_title'    => 'No title',
         'post_content'  => 'Your post content goes here.',
@@ -796,7 +794,7 @@ function get_shared_document($doc_id){
         }    
     }
 }
-
+/*
 function set_doc_unpublished_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
@@ -812,25 +810,6 @@ function set_doc_unpublished_data() {
 }
 add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
 add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
-
-
-/*
-function select_start_job_option_data($selected_option=0) {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $user_job_ids_array = get_user_meta($current_user_id, 'user_job_ids', true);
-    $options = '<option value="0">Select job</option>';
-    foreach ($user_job_ids_array as $job_id) {
-        $job_site = get_post_meta($job_id, 'site_id', true);
-        $job_number = get_post_meta($job_id, 'job_number', true);
-        $job_title = get_the_title($job_id).'('.$job_number.')';
-        if ($job_site==$site_id) {
-            $selected = ($selected_option == $job_id) ? 'selected' : '';
-            $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';    
-        }
-    }
-    return $options;
-}
 */
 function select_doc_category_option_data($selected_option=0) {
     $query = retrieve_doc_category_data();
@@ -1021,7 +1000,7 @@ add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', 'get_doc_field_dialog_da
 
 function set_doc_field_dialog_data() {
     if( isset($_POST['_field_id']) ) {
-        // Update the post into the database
+        // Update the post
         $field_id = sanitize_text_field($_POST['_field_id']);
         update_post_meta( $field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
         update_post_meta( $field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
@@ -1030,7 +1009,7 @@ function set_doc_field_dialog_data() {
         update_post_meta( $field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
         update_post_meta( $field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
     } else {
-        // Insert the post into the database
+        // Create the post
         $current_user_id = get_current_user_id();
         $new_post = array(
             'post_status'   => 'publish',
@@ -1069,8 +1048,7 @@ function set_sorted_field_id_data() {
         $response = array('success' => true);
     }
 
-    echo json_encode($response);
-    wp_die();
+    wp_send_json($response);
 }
 add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
 add_action('wp_ajax_nopriv_set_sorted_field_id_data', 'set_sorted_field_id_data');
@@ -1523,7 +1501,7 @@ function set_doc_report_dialog_data() {
             wp_reset_postdata();
         }
     } else {
-        // Insert the post into the database
+        // Create the post
         $current_user_id = get_current_user_id();
         $new_post = array(
             'post_status'   => 'publish',
@@ -1553,7 +1531,7 @@ function set_doc_report_dialog_data() {
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
-function set_todo_in_doc_report() {
+function set_todo_for_doc_report() {
     if ( isset($_POST['_action_id']) && isset($_POST['_report_id']) ) {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
@@ -1577,87 +1555,13 @@ function set_todo_in_doc_report() {
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
-            //'doc_id'    => $doc_id,
-            //'report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
-/*
-        // Insert the To-do list for next_job
-        $next_job      = get_post_meta($action_id, 'next_job', true);
-        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-        $new_post = array(
-            'post_title'    => get_the_title($next_job),
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'todo',
-        );    
-        $new_todo_id = wp_insert_post($new_post);
-        update_post_meta( $new_todo_id, 'job_id', $next_job);
-        update_post_meta( $new_todo_id, 'report_id', $report_id); //??
-        update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
-        update_post_meta( $report_id, 'todo_status', $new_todo_id);    
-        notice_the_responsible_persons($new_todo_id);
-
-        // Insert the Action list for next_job
-        $query = retrieve_job_action_list_data($next_job);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $new_post = array(
-                    'post_title'    => get_the_title(),
-                    'post_content'  => get_post_field('post_content', get_the_ID()),
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'action',
-                );    
-                $new_action_id = wp_insert_post($new_post);
-                $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-                update_post_meta( $new_action_id, 'next_job', $new_next_job);
-                update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-            endwhile;
-            wp_reset_postdata();
-        }
-*/        
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_todo_in_doc_report', 'set_todo_in_doc_report' );
-add_action( 'wp_ajax_nopriv_set_todo_in_doc_report', 'set_todo_in_doc_report' );
-
-function duplicate_doc_report_dialog_data() {
-    if( isset($_POST['_report_id']) ) {
-        // Insert the post into the database
-        $current_user_id = get_current_user_id();
-        $new_post = array(
-            'post_status'   => 'publish',
-            'post_author'   => $current_user_id,
-            'post_type'     => 'doc-report',
-        );    
-        $post_id = wp_insert_post($new_post);
-        $report_id = sanitize_text_field($_POST['_report_id']);
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
-        $start_job = get_post_meta($report_id, 'start_job', true);
-        update_post_meta( $post_id, 'doc_id', $doc_id);
-        update_post_meta( $post_id, 'start_job', $start_job);
-
-        $params = array(
-            'doc_id'     => $doc_id,
-        );                
-        $query = retrieve_doc_field_data($params);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $field_value = sanitize_text_field($_POST[$field_name]);
-                update_post_meta( $post_id, $field_name, $field_value);
-            endwhile;
-            wp_reset_postdata();
-        }
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
-add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
+add_action( 'wp_ajax_set_todo_for_doc_report', 'set_todo_for_doc_report' );
+add_action( 'wp_ajax_nopriv_set_todo_for_doc_report', 'set_todo_for_doc_report' );
 
 function get_doc_report_list_data() {
     $result = array();
@@ -1702,3 +1606,38 @@ function del_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
+
+function duplicate_doc_report_dialog_data() {
+    if( isset($_POST['_report_id']) ) {
+        // Create the post
+        $current_user_id = get_current_user_id();
+        $new_post = array(
+            'post_status'   => 'publish',
+            'post_author'   => $current_user_id,
+            'post_type'     => 'doc-report',
+        );    
+        $post_id = wp_insert_post($new_post);
+        $report_id = sanitize_text_field($_POST['_report_id']);
+        $doc_id = get_post_meta($report_id, 'doc_id', true);
+        $start_job = get_post_meta($report_id, 'start_job', true);
+        update_post_meta( $post_id, 'doc_id', $doc_id);
+        update_post_meta( $post_id, 'start_job', $start_job);
+
+        $params = array(
+            'doc_id'     => $doc_id,
+        );                
+        $query = retrieve_doc_field_data($params);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) : $query->the_post();
+                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                $field_value = sanitize_text_field($_POST[$field_name]);
+                update_post_meta( $post_id, $field_name, $field_value);
+            endwhile;
+            wp_reset_postdata();
+        }
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
+add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', 'duplicate_doc_report_dialog_data' );
+

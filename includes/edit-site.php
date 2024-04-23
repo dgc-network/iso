@@ -255,7 +255,7 @@ function import_sites_from_encona_csv() {
             // Add any additional post data here
         );
 
-        // Insert the post
+        // Create the post
         $post_id = wp_insert_post($post_data);
 
         // Add custom fields (metadata)
@@ -308,7 +308,7 @@ function import_sites_from_csv() {
             // Add any additional post data here
         );
 
-        // Insert the post
+        // Create the post
         $post_id = wp_insert_post($post_data);
 
         // Add custom fields (metadata)

@@ -444,11 +444,11 @@ add_action('wp_ajax_nopriv_get_todo_dialog_data', 'get_todo_dialog_data');
 
 function set_todo_dialog_data() {
     if( isset($_POST['_action_id']) ) {
-        // action button is clicked, current todo update
+        // action button is clicked
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = get_post_meta($action_id, 'todo_id', true);
-        // Create new todo if the meta key not 'todo_id' exists
+        // Create new todo if the meta key 'todo_id' does not exist
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
             $doc_id = sanitize_text_field($_POST['_doc_id']);
@@ -464,37 +464,27 @@ function set_todo_dialog_data() {
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
         }
+        // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
+
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
 
         $doc_report_ids = set_new_doc_report_by_action_id($action_id);
-        // Assuming $doc_report_ids is an array containing report IDs
         foreach ($doc_report_ids as $report_id) {
             // Update 'todo_status' meta with $todo_id for each report
-            update_post_meta($report_id, 'todo_status', $todo_id);
-            
+            update_post_meta($report_id, 'todo_status', $todo_id);            
             // Retrieve 'doc_id' associated with the report
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            
+            $doc_id = get_post_meta($report_id, 'doc_id', true);            
             // Update 'todo_status' meta with -1 for the associated document
             update_post_meta($doc_id, 'todo_status', -1);
         }
-/*        
-        $report_id = get_post_meta($todo_id, 'report_id', true);
-        if ($report_id) {
-            update_post_meta( $report_id, 'todo_status', $todo_id);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            update_post_meta( $doc_id, 'todo_status', -1);
-        }
-*/
+
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
-            //'doc_id'    => $doc_id,
-            //'report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -513,13 +503,6 @@ function set_next_todo_and_actions($args = array()) {
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
         $doc_id        = get_post_meta($todo_id, 'doc_id', true);
         $report_id     = get_post_meta($todo_id, 'report_id', true);
-/*        
-        if (!$todo_id) {
-            $todo_id = get_post_meta($action_id, 'job_id', true);
-            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-            $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
-        }
-*/        
         $todo_title = get_the_title($next_job);
     }
 
@@ -550,7 +533,7 @@ function set_next_todo_and_actions($args = array()) {
 
     if ($next_job>0) {
         notice_the_responsible_persons($new_todo_id);
-        // Insert the Action list for next_job
+        // Create the Action list for next_job
         $query = retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
@@ -655,7 +638,7 @@ function set_new_doc_report_by_action_id($action_id) {
     }
     return $doc_report_ids;
 }
-
+/*
 function get_users_by_job_id($job_id=0) {
     // Set up the user query arguments
     $args = array(
@@ -671,7 +654,7 @@ function get_users_by_job_id($job_id=0) {
     $users = $query->get_results();
     return $users;
 }
-
+*/
 // Notice the persons in charge the job
 function notice_the_responsible_persons($todo_id=0) {
     $todo_title = get_the_title($todo_id);
@@ -684,10 +667,6 @@ function notice_the_responsible_persons($todo_id=0) {
     $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
     $text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
-    //$post_type = get_post_type( $todo_id );
-    //$job_id = get_post_meta($todo_id, 'job_id', true);
-    //if ($post_type=='job') $job_id = $todo_id;
-    //$users = get_users_by_job_id($job_id);
 
     $line_bot_api = new line_bot_api();
     $args = array(
@@ -695,7 +674,7 @@ function notice_the_responsible_persons($todo_id=0) {
             array(
                 'key'     => 'user_job_ids',
                 'value'   => $job_id,
-                'compare' => 'LIKE', // Check if $job_id exists in the array
+                'compare' => 'LIKE',
             ),
         ),
     );
@@ -714,7 +693,7 @@ function notice_the_responsible_persons($todo_id=0) {
         ]);
     }
 }
-
+/*
 function get_users_in_site($site_id=0) {
     // Set up the user query arguments
     $args = array(
@@ -729,7 +708,7 @@ function get_users_in_site($site_id=0) {
     $users = $query->get_results();
     return $users;
 }
-
+*/
 // Notice the persons in site
 function notice_the_persons_in_site($todo_id=0,$job_id=0) {
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -824,7 +803,7 @@ add_action( 'wp_ajax_nopriv_get_todo_action_dialog_data', 'get_todo_action_dialo
 
 function set_todo_action_dialog_data() {
     if( isset($_POST['_action_id']) ) {
-        // Update the post into the database
+        // Update the post
         $data = array(
             'ID'         => $_POST['_action_id'],
             'post_title' => $_POST['_action_title'],
@@ -836,7 +815,7 @@ function set_todo_action_dialog_data() {
         );
         wp_update_post( $data );
     } else {
-        // Insert the post into the database
+        // Create the post
         $current_user_id = get_current_user_id();
         $new_post = array(
             'post_title'    => 'New action',

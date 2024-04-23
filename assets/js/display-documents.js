@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    activate_doc_field_list_data(false, $("#site-id").val());
+    //activate_doc_field_list_data(false, $("#site-id").val());
     activate_doc_report_list_data($("#doc-id").val());
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -383,7 +383,8 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
-                        action: 'set_doc_unpublished_data',
+                        //action: 'set_doc_unpublished_data',
+                        action: 'reset_document_todo_status',                        
                         _doc_id: doc_id,
                     },
                     success: function(response) {
@@ -573,7 +574,7 @@ jQuery(document).ready(function($) {
     
         activate_published_document_data(doc_id);
 
-        activate_doc_field_list_data(doc_id);
+        //activate_doc_field_list_data(doc_id);
         
         $("#new-doc-report").on("click", function() {
             $.ajax({
@@ -660,7 +661,7 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     if (window.confirm("Are you sure you want to proceed the todo for the doc-report?")) {
                         const ajaxData = {
-                            'action': 'set_todo_in_doc_report',
+                            'action': 'set_todo_for_doc_report',
                         };
                         ajaxData['_action_id'] = action_id;
                         ajaxData['_report_id'] = $("#report-id").val();
