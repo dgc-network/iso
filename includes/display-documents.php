@@ -983,8 +983,6 @@ function display_doc_field_dialog(){
             <option value="radio"><?php echo __( '多選一', 'your-text-domain' );?></option>
             <option value="textarea"><?php echo __( '文字區域', 'your-text-domain' );?></option>
         </select>
-        <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
-        <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
         <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all">
             <option value="left"><?php echo __( '靠左', 'your-text-domain' );?></option>
@@ -992,6 +990,8 @@ function display_doc_field_dialog(){
             <option value="right"><?php echo __( '靠右', 'your-text-domain' );?></option>
             <option value=""></option>
         </select>
+        <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
+        <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
         <label for="order-field"><?php echo __( '排列順序：', 'your-text-domain' );?></label>
         <select id="order-field" class="text ui-widget-content ui-corner-all">
             <option value="ASC"><?php echo __( '由小到大', 'your-text-domain' );?></option>
