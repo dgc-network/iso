@@ -462,7 +462,7 @@ function set_todo_dialog_data() {
             $todo_id = wp_insert_post($new_post);
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
-            //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+            if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
         }
         // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
@@ -564,7 +564,7 @@ function set_new_doc_report_by_action_id($action_id) {
     $report_id = get_post_meta($todo_id, 'report_id', true);
     $doc_id = get_post_meta($report_id, 'doc_id', true);
 
-    if ($report_id) {
+    //if ($report_id) {
         $args = array(
             'post_type'      => 'document',
             'posts_per_page' => -1,
@@ -590,9 +590,10 @@ function set_new_doc_report_by_action_id($action_id) {
                 $new_report_id = wp_insert_post($new_post);
                 // Assuming $doc_report_ids is already declared as an array
                 $doc_report_ids[] = $new_report_id;
-
                 update_post_meta( $new_report_id, 'doc_id', get_the_ID());
-                // Question: How to insert the data from the previous doc-report?
+
+/*
+                // Question: How to create the data from the previous doc-report?
                 // Step 1: Retrieve the doc_id from the "doc-report" post
     
                 // Step 2: Retrieve all meta keys from the "doc-report" post
@@ -631,11 +632,13 @@ function set_new_doc_report_by_action_id($action_id) {
                         }
                     //}
                 }
+*/
+
             }
             // Restore original post data
             wp_reset_postdata();
         }
-    }
+    //}
     return $doc_report_ids;
 }
 /*
