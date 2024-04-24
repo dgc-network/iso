@@ -221,7 +221,6 @@ function retrieve_todo_list_data($current_page = 1){
             'post_type'      => 'document',
             'posts_per_page' => $posts_per_page,
             'paged'          => $current_page,
-            //'posts_per_page' => -1,
             'meta_query'     => array(
                 'relation' => 'AND',
                 array(
@@ -276,8 +275,6 @@ function retrieve_todo_list_data($current_page = 1){
             'post_type'      => 'todo',
             'posts_per_page' => $posts_per_page,
             'paged'          => $current_page,
-            //'posts_per_page' => 30,
-            //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
             'meta_query'     => array(
                 'relation' => 'AND',
                 array(
@@ -450,7 +447,6 @@ function display_todo_dialog($todo_id) {
         ?>
         <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
         <?php
-
     }
     ?>
     <hr>
@@ -512,43 +508,42 @@ function set_todo_dialog_data() {
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
             update_post_meta( $action_id, 'todo_id', $todo_id);
 
-            // New a doc-report if is_doc_report==1
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report==1){
-                $new_post = array(
-                    'post_title'    => 'New doc-report',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'doc-report',
-                );    
-                $new_report_id = wp_insert_post($new_post);
-                update_post_meta( $new_report_id, 'doc_id', $doc_id);
-                update_post_meta( $new_report_id, 'todo_status', $next_job);
-                // Update the Document data
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = sanitize_text_field($_POST[$field_name]);
-                        update_post_meta( $new_report_id, $field_name, $field_value);
-                    endwhile;
-                    wp_reset_postdata();
-                }            
-            }
         }
         // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
-
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
         //$report_id = get_post_meta($todo_id, 'report_id', true);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
+
+        // New a doc-report if is_doc_report==1
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        if ($is_doc_report==1) update_post_meta( $doc_id, 'todo_status', -1);
+        if ($is_doc_report==1){
+            $new_post = array(
+                'post_title'    => 'New doc-report',
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'doc-report',
+            );    
+            $new_report_id = wp_insert_post($new_post);
+            update_post_meta( $new_report_id, 'doc_id', $doc_id);
+            update_post_meta( $new_report_id, 'todo_status', $next_job);
+            update_post_meta( $doc_id, 'todo_status', -1);
+            // Update the Document data
+            $params = array(
+                'doc_id'     => $doc_id,
+            );                
+            $query = retrieve_doc_field_data($params);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    $field_value = sanitize_text_field($_POST[$field_name]);
+                    update_post_meta( $new_report_id, $field_name, $field_value);
+                endwhile;
+                wp_reset_postdata();
+            }            
+        }
 
         // set next todo and actions
         $params = array(
