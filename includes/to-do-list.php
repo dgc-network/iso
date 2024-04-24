@@ -125,51 +125,45 @@ function display_to_do_list() {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
             $current_page = max(1, get_query_var('paged')); // Get the current page number
-            //$query = retrieve_document_data($current_page);
             $query = retrieve_todo_list_data($current_page);
             $total_posts = $query->found_posts;
             $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
 
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-
-                    //$job_id = get_post_meta(get_the_ID(), 'job_id', true);
                     $todo_id = get_the_ID();
                     $todo_title = get_the_title();
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
+                    if ($todo_due < time()) $todo_due_color='color:red;';
+                    $todo_due = wp_date(get_option('date_format'));
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                    
-                    if (!empty($report_id)) {
-                        $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    }
+                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                     
                     if (empty($doc_id)) {
                         $doc_id = get_the_ID();
                         $job_id = get_post_meta(get_the_ID(), 'start_job', true);
                         $todo_title = get_the_title($job_id);
                         $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
-                        //$todo_id = get_the_ID();
                     }
 
                     $doc_number = get_post_meta($doc_id, 'doc_number', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    $doc_title .= '('.$doc_number.')';
-                    
-                    if (!empty($report_id)) {
-                        $doc_title .= '(Report#' . $report_id . ')';
-                    }
+                    $doc_title .= '('.$doc_number.')';                    
+                    if ($report_id) $doc_title .= '(Report#' . $report_id . ')';
                     
                     ?>
-                        <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
-                            <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
-                            <td><?php echo esc_html($doc_title); ?></td>
-                            <?php if ($todo_due < time()) { ?>
-                                <td style="text-align:center; color:red;">
-                            <?php } else { ?>
-                                <td style="text-align:center;"><?php } ?>
-                            <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
-                        </tr>
+                    <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
+                        <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
+                        <td><?php echo esc_html($doc_title); ?></td>
+                        <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+                        <?php if ($todo_due < time()) { ?>
+                            <td style="text-align:center; color:red;">
+                        <?php } else { ?>                                
+                            <td style="text-align:center;">
+                        <?php } ?>
+                        <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
+                    </tr>
                     <?php
                 endwhile;
                 wp_reset_postdata();
@@ -178,13 +172,13 @@ function display_to_do_list() {
             </tbody>
         </table>
         <?php
-            // Display pagination links
-            echo '<div class="pagination">';
-            if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-            echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-            if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
-            echo '</div>';
-        ?>
+        // Display pagination links
+        echo '<div class="pagination">';
+        if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+        if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+        echo '</div>';
+         ?>
     </fieldset>
     </div>
     <?php
