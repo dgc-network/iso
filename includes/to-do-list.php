@@ -322,7 +322,7 @@ function display_todo_dialog($todo_id) {
     $doc_category = get_post_meta($doc_id, 'doc_category', true);
     $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-    //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+    if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
 
     $current_user_id = get_current_user_id();
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
@@ -539,7 +539,7 @@ function set_todo_dialog_data() {
         $params = array(
             'action_id' => $action_id,
             'todo_id' => $todo_id,
-            'report_id' => $new_report_id,
+            'prev_report_id' => $new_report_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -559,7 +559,7 @@ function set_next_todo_and_actions($args = array()) {
         if (!$todo_id) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
         $todo_title    = get_the_title($next_job);
         $report_id     = get_post_meta($todo_id, 'report_id', true);    
-        if (!$report_id) $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+        $prev_report_id = isset($args['report_id']) ? $args['report_id'] : 0;
         $doc_ids       = get_document_for_job($next_job);
         if ($doc_ids) {
             $doc_id = $doc_ids[0];
@@ -583,6 +583,7 @@ function set_next_todo_and_actions($args = array()) {
     update_post_meta( $new_todo_id, 'job_id', $next_job);
     if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
     if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
+    if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id);
     update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
 
     if ($next_job==-1 || $next_job==-2) {

@@ -1541,7 +1541,7 @@ function set_todo_for_doc_report() {
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
-            'report_id' => $report_id,
+            'prev_report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
     }
