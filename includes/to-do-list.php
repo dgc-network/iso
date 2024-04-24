@@ -152,7 +152,7 @@ function display_to_do_list() {
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                     if ($is_doc_report==1) {
-                        $doc_title .= '(New report)';
+                        $doc_title .= '(#New report)';
                     } else {
                         $doc_title .= '('.$doc_number.')';
                     }
@@ -314,25 +314,20 @@ function display_todo_dialog($todo_id) {
         $todo_id = get_post_meta($doc_id, 'start_job', true);
     }
     
-    $is_doc_report = false;
-    if ($doc_id) {
-        $doc_number = get_post_meta($doc_id, 'doc_number', true);
-        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-        $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-        $doc_category = get_post_meta($doc_id, 'doc_category', true);
-        $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-    } else {
-        $doc_id = get_post_meta($report_id, 'doc_id', true);
-    }
-
     if (!$doc_id) return 'post type is '.$post_type.'. doc_id is empty!';
+
+    $doc_number = get_post_meta($doc_id, 'doc_number', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $doc_category = get_post_meta($doc_id, 'doc_category', true);
+    $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+    //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
 
     $current_user_id = get_current_user_id();
     $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $image_url = get_post_meta($site_id, 'image_url', true);
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
 
     ob_start();
     ?>
@@ -544,6 +539,7 @@ function set_todo_dialog_data() {
         $params = array(
             'action_id' => $action_id,
             'todo_id' => $todo_id,
+            'report_id' => $new_report_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -563,6 +559,7 @@ function set_next_todo_and_actions($args = array()) {
         if (!$todo_id) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
         $todo_title    = get_the_title($next_job);
         $report_id     = get_post_meta($todo_id, 'report_id', true);    
+        if (!$report_id) $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
         $doc_ids       = get_document_for_job($next_job);
         if ($doc_ids) {
             $doc_id = $doc_ids[0];
@@ -574,7 +571,7 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
     
-    // New a To-do for next_job
+    // Create a new To-do for next_job
     $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
