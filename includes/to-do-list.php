@@ -62,6 +62,7 @@ function to_do_list_shortcode() {
         if (isset($_GET['_search'])) display_to_do_list();
 
         if (isset($_GET['_id'])) {
+            $todo_id = sanitize_text_field($_GET['_id']);
             echo '<div class="ui-widget" id="result-container">';
             echo display_todo_dialog($todo_id);
             echo '</div>';
