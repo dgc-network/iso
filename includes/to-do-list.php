@@ -559,7 +559,7 @@ function set_next_todo_and_actions($args = array()) {
         if (!$todo_id) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
         $todo_title    = get_the_title($next_job);
         $report_id     = get_post_meta($todo_id, 'report_id', true);    
-        $prev_report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+        $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
         $doc_ids       = get_document_for_job($next_job);
         if ($doc_ids) {
             $doc_id = $doc_ids[0];
