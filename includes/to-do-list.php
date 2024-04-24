@@ -135,7 +135,7 @@ function display_to_do_list() {
                     $todo_title = get_the_title();
                     $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
                     if ($todo_due < time()) $todo_due_color='color:red;';
-                    $todo_due = wp_date(get_option('date_format'));
+                    $todo_due = wp_date(get_option('date_format'), $todo_due);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                     $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
                     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -145,6 +145,7 @@ function display_to_do_list() {
                         $job_id = get_post_meta(get_the_ID(), 'start_job', true);
                         $todo_title = get_the_title($job_id);
                         $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
+                        if ($todo_due==-1) $todo_due='發行';
                     }
 
                     $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -157,12 +158,6 @@ function display_to_do_list() {
                         <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
                         <td><?php echo esc_html($doc_title); ?></td>
                         <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
-                        <?php if ($todo_due < time()) { ?>
-                            <td style="text-align:center; color:red;">
-                        <?php } else { ?>                                
-                            <td style="text-align:center;">
-                        <?php } ?>
-                        <?php echo wp_date(get_option('date_format'), $todo_due);?></td>
                     </tr>
                     <?php
                 endwhile;
