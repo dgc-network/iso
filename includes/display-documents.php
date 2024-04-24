@@ -1521,6 +1521,7 @@ function set_todo_for_doc_report() {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
+        $doc_id = sanitize_text_field($_POST['_doc_id']);
 
         // Create the new To-do for current job_id
         $job_id = get_post_meta($action_id, 'job_id', true);
@@ -1533,6 +1534,7 @@ function set_todo_for_doc_report() {
         $todo_id = wp_insert_post($new_post);
         update_post_meta( $todo_id, 'job_id', $job_id);
         update_post_meta( $todo_id, 'report_id', $report_id);
+        update_post_meta( $todo_id, 'doc_id', $doc_id);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());

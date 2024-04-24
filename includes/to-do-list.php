@@ -316,7 +316,7 @@ function display_todo_dialog($todo_id) {
     if ( $post_type === 'todo' ) {
         $report_id = get_post_meta($todo_id, 'report_id', true);
         $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+        //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     }
     
     if ( $post_type === 'document' ) {

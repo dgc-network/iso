@@ -683,6 +683,7 @@ jQuery(document).ready(function($) {
                         };
                         ajaxData['_action_id'] = action_id;
                         ajaxData['_report_id'] = $("#report-id").val();
+                        ajaxData['_doc_id'] = $("#doc-id").val();
                             
                         $.ajax({
                             type: 'POST',
