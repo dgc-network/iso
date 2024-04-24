@@ -478,6 +478,7 @@ function set_todo_dialog_data() {
         // action button is clicked
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
+        delete_post_meta($action_id, 'todo_id');
         $todo_id = get_post_meta($action_id, 'todo_id', true);
         // Create new todo if the meta key 'todo_id' does not exist
         if ( empty( $todo_id ) ) {
@@ -495,7 +496,7 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
-
+/*
             if ($next_job>0) {
                 //notice_the_responsible_persons($new_todo_id);
                 // Create the Action list for next_job
@@ -519,7 +520,7 @@ function set_todo_dialog_data() {
                     wp_reset_postdata();
                 }
             }
-        
+*/        
             //update_post_meta( $action_id, 'todo_id', $todo_id);
 
         }
