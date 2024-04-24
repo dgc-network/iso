@@ -568,3 +568,63 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
+
+//use the WP-Cron system
+function my_daily_process() {
+    // Your code here to execute once per day
+}
+
+add_action('wp', 'schedule_my_daily_process');
+function schedule_my_daily_process() {
+    if (!wp_next_scheduled('my_daily_process_hook')) {
+        wp_schedule_event(time(), 'daily', 'my_daily_process_hook');
+    }
+}
+add_action('my_daily_process_hook', 'my_daily_process');
+
+// Schedule event to run weekly
+if (!wp_next_scheduled('my_weekly_process_hook')) {
+    wp_schedule_event(time(), 'weekly', 'my_weekly_process_hook');
+}
+
+// Define the action for the scheduled event
+add_action('my_weekly_process_hook', 'my_weekly_process');
+
+// Function to execute weekly process
+function my_weekly_process() {
+    // Your code here for weekly process
+}
+
+// Schedule event to run monthly
+if (!wp_next_scheduled('my_monthly_process_hook')) {
+    wp_schedule_event(time(), 'monthly', 'my_monthly_process_hook');
+}
+
+// Define the action for the scheduled event
+add_action('my_monthly_process_hook', 'my_monthly_process');
+
+// Function to execute monthly process
+function my_monthly_process() {
+    // Your code here for monthly process
+}
+
+// Schedule event to run yearly
+if (!wp_next_scheduled('my_yearly_process_hook')) {
+    wp_schedule_event(time(), 'yearly', 'my_yearly_process_hook');
+}
+
+// Define the action for the scheduled event
+add_action('my_yearly_process_hook', 'my_yearly_process');
+
+// Function to execute yearly process
+function my_yearly_process() {
+    // Your code here for yearly process
+}
+
+// Get Unix timestamp for tomorrow at 2:00 PM
+$start_time = strtotime('tomorrow 14:00');
+
+// Schedule event to run weekly starting from tomorrow at 2:00 PM
+if (!wp_next_scheduled('my_weekly_process_hook')) {
+    wp_schedule_event($start_time, 'weekly', 'my_weekly_process_hook');
+}
