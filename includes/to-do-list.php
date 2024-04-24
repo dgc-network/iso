@@ -495,7 +495,32 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
-            update_post_meta( $action_id, 'todo_id', $todo_id);
+
+            if ($next_job>0) {
+                //notice_the_responsible_persons($new_todo_id);
+                // Create the Action list for next_job
+                $query = retrieve_job_action_list_data($next_job);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $new_post = array(
+                            'post_title'    => get_the_title(),
+                            'post_content'  => get_post_field('post_content', get_the_ID()),
+                            'post_status'   => 'publish',
+                            'post_author'   => $current_user_id,
+                            'post_type'     => 'action',
+                        );    
+                        $new_action_id = wp_insert_post($new_post);
+                        $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
+                        update_post_meta( $new_action_id, 'next_job', $new_next_job);
+                        update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
+                    endwhile;
+                    wp_reset_postdata();
+                }
+            }
+        
+            //update_post_meta( $action_id, 'todo_id', $todo_id);
 
         }
         // Update current todo
@@ -537,6 +562,7 @@ function set_todo_dialog_data() {
         // set next todo and actions
         $params = array(
             'action_id' => $action_id,
+            'todo_id' => $todo_id,
         );        
         set_next_todo_and_actions($params);
     }
@@ -553,6 +579,7 @@ function set_next_todo_and_actions($args = array()) {
         $next_job      = get_post_meta($action_id, 'next_job', true);
         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
         $todo_id       = get_post_meta($action_id, 'todo_id', true);
+        if (!$todo_id) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
         $todo_title    = get_the_title($next_job);
         $report_id     = get_post_meta($todo_id, 'report_id', true);    
         $doc_ids       = get_document_for_job($next_job);

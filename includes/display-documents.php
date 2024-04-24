@@ -794,23 +794,7 @@ function get_shared_document($doc_id){
         }    
     }
 }
-/*
-function set_doc_unpublished_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
 
-    if (isset($_POST['_doc_id'])) {
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        // Delete the specified meta key
-        delete_post_meta($doc_id, 'todo_status');
-        $response = array('success' => true);
-    }
-
-    echo json_encode($response);
-    wp_die();
-}
-add_action('wp_ajax_set_doc_unpublished_data', 'set_doc_unpublished_data');
-add_action('wp_ajax_nopriv_set_doc_unpublished_data', 'set_doc_unpublished_data');
-*/
 function select_doc_category_option_data($selected_option=0) {
     $query = retrieve_doc_category_data();
     $options = '<option value="">Select category</option>';
@@ -1537,7 +1521,7 @@ function set_todo_for_doc_report() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
 
-        // Insert the To-do list for current job_id
+        // Create the new To-do for current job_id
         $job_id = get_post_meta($action_id, 'job_id', true);
         $new_post = array(
             'post_title'    => get_the_title($job_id),
@@ -1551,6 +1535,8 @@ function set_todo_for_doc_report() {
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
+        $next_job = get_post_meta($action_id, 'next_job', true);
+        update_post_meta( $report_id, 'todo_status', $next_job);
 
         // set next todo and actions
         $params = array(
