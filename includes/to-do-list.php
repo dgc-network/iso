@@ -150,7 +150,12 @@ function display_to_do_list() {
 
                     $doc_number = get_post_meta($doc_id, 'doc_number', true);
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    $doc_title .= '('.$doc_number.')';                    
+                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                    if ($is_doc_report==1) {
+                        $doc_title .= '(New report)';
+                    } else {
+                        $doc_title .= '('.$doc_number.')';
+                    }
                     if ($report_id) $doc_title .= '(Report#' . $report_id . ')';
                     
                     ?>
@@ -478,16 +483,18 @@ function set_todo_dialog_data() {
         // action button is clicked
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
-        delete_post_meta($action_id, 'todo_id');
+        //delete_post_meta($action_id, 'todo_id');
         $todo_id = get_post_meta($action_id, 'todo_id', true);
         // Create new todo if the meta key 'todo_id' does not exist
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
+            $todo_title = get_the_title($job_id);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
+            if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
             $new_post = array(
-                'post_title'    => get_the_title($job_id),
+                'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
                 'post_type'     => 'todo',
@@ -496,33 +503,6 @@ function set_todo_dialog_data() {
             update_post_meta( $todo_id, 'job_id', $job_id);
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
-/*
-            if ($next_job>0) {
-                //notice_the_responsible_persons($new_todo_id);
-                // Create the Action list for next_job
-                $query = retrieve_job_action_list_data($next_job);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $new_post = array(
-                            'post_title'    => get_the_title(),
-                            'post_content'  => get_post_field('post_content', get_the_ID()),
-                            'post_status'   => 'publish',
-                            'post_author'   => $current_user_id,
-                            'post_type'     => 'action',
-                        );    
-                        $new_action_id = wp_insert_post($new_post);
-                        $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                        update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
-                        update_post_meta( $new_action_id, 'next_job', $new_next_job);
-                        update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
-                    endwhile;
-                    wp_reset_postdata();
-                }
-            }
-*/        
-            //update_post_meta( $action_id, 'todo_id', $todo_id);
-
         }
         // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
