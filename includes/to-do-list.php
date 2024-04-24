@@ -450,9 +450,10 @@ function display_todo_dialog($todo_id) {
     ?>
     <hr>
     <?php
-    $query = retrieve_todo_action_list_data($todo_id);
     if ( $post_type === 'document' ) {
         $query = retrieve_job_action_list_data($todo_id);
+    } else {
+        $query = retrieve_todo_action_list_data($todo_id);
     }
     
     if ($query->have_posts()) {
@@ -461,6 +462,8 @@ function display_todo_dialog($todo_id) {
         endwhile;
         wp_reset_postdata();
     }
+
+    if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button--1" value="文件發行" style="margin:5px;" />';
     ?>
     </fieldset>
     <?php
@@ -497,6 +500,7 @@ function set_todo_dialog_data() {
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
             if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+            if ($action_id==-1) $todo_title = '文件發行';
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
@@ -570,11 +574,18 @@ function set_next_todo_and_actions($args = array()) {
         $report_id     = get_post_meta($todo_id, 'report_id', true);    
         $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
         $doc_ids       = get_document_for_job($next_job);
+        if (is_array($doc_ids) && !empty($doc_ids)) {
+            $doc_id = $doc_ids[0];
+        } else {
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+        }
+/*        
         if ($doc_ids==array()) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
         } else {
             $doc_id = $doc_ids[0];
         }
+*/        
     }
 
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
