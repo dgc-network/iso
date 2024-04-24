@@ -1522,9 +1522,9 @@ function set_todo_for_doc_report() {
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = sanitize_text_field($_POST['_doc_id']);
+        $job_id = get_post_meta($action_id, 'job_id', true);
 
         // Create the new To-do for current job_id
-        $job_id = get_post_meta($action_id, 'job_id', true);
         $new_post = array(
             'post_title'    => get_the_title($job_id),
             'post_status'   => 'publish',
