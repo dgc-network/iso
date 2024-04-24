@@ -144,6 +144,7 @@ function display_to_do_list() {
                         $doc_id = get_the_ID();
                         $job_id = get_post_meta(get_the_ID(), 'start_job', true);
                         $todo_title = get_the_title($job_id);
+                        if ($job_id==-1) $todo_title='文件發行';
                         $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
                         if ($todo_due==-1) $todo_due='發行';
                     }
