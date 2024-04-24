@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
         get_todo_dialog_data(todo_id)
     });            
 
-    //activate_todo_dialog_data(response);
+    activate_todo_dialog_data(response);
 
     function activate_todo_dialog_data(response){
         $(".datepicker").datepicker({
