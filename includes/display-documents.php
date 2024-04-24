@@ -1446,7 +1446,8 @@ function display_doc_report_dialog($report_id=false) {
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                $job_title = get_the_title().':'.get_the_title($next_job);
+                //$job_title = get_the_title().':'.get_the_title($next_job);
+                $job_title = get_the_title();
                 echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.$job_title.'" style="margin:5px;" />';
             endwhile;
             wp_reset_postdata();
