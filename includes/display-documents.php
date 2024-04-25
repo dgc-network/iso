@@ -1331,9 +1331,10 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 function display_doc_report_dialog($report_id=false) {
 
     $todo_status = get_post_meta($report_id, 'todo_status', true);
-    $start_job = get_post_meta($report_id, 'start_job', true);
+    //$start_job = get_post_meta($report_id, 'start_job', true);
 
     $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $start_job = get_post_meta($doc_id, 'start_job', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')';
 
@@ -1452,6 +1453,7 @@ function display_doc_report_dialog($report_id=false) {
             endwhile;
             wp_reset_postdata();
         }
+        if ($start_job==-1) echo '<input type="button" id="doc-report-dialog-button--1" value="OK" style="margin:5px;" />';
         ?>
         </div>
         <div style="text-align:right; display:flex;">
@@ -1523,21 +1525,25 @@ function set_todo_for_doc_report() {
         $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $job_id = get_post_meta($action_id, 'job_id', true);
+        $todo_title = get_the_title($job_id);
+        if ($action==-1) $todo_title = '文件發行';
 
         // Create the new To-do for current job_id
         $new_post = array(
-            'post_title'    => get_the_title($job_id),
+            'post_title'    => $todo_title,
             'post_status'   => 'publish',
             'post_author'   => $current_user_id,
             'post_type'     => 'todo',
         );    
-        $todo_id = wp_insert_post($new_post);
+        $todo_id = wp_insert_post($new_post);    
+
         update_post_meta( $todo_id, 'job_id', $job_id);
         update_post_meta( $todo_id, 'report_id', $report_id);
         update_post_meta( $todo_id, 'doc_id', $doc_id);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());
+
         $next_job = get_post_meta($action_id, 'next_job', true);
         update_post_meta( $report_id, 'todo_status', $next_job);
 

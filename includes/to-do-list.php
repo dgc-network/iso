@@ -360,6 +360,7 @@ function display_todo_dialog($todo_id) {
                 $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                 $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                 if ($report_id) {
                     $field_value = get_post_meta($report_id, $field_name, true);
                 } else {
@@ -463,7 +464,7 @@ function display_todo_dialog($todo_id) {
         wp_reset_postdata();
     }
 
-    if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button--1" value="文件發行" style="margin:5px;" />';
+    if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button--1" value="OK" style="margin:5px;" />';
     ?>
     </fieldset>
     <?php

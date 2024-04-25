@@ -677,7 +677,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function(response) {
-                    if (window.confirm("Are you sure you want to proceed the todo for the doc-report?")) {
+                    if (window.confirm("Proceed the todo for this doc-report?")) {
                         const ajaxData = {
                             'action': 'set_todo_for_doc_report',
                         };
