@@ -673,6 +673,7 @@ add_action( 'wp_ajax_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', 'get_site_job_dialog_data' );
 
 function set_site_job_dialog_data() {
+    $response = array();
     if( isset($_POST['_job_id']) ) {
         $job_id = sanitize_text_field($_POST['_job_id']);
         $data = array(
@@ -716,8 +717,8 @@ add_action( 'wp_ajax_set_site_job_dialog_data', 'set_site_job_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', 'set_site_job_dialog_data' );
 
 function del_site_job_dialog_data() {
-    // Delete the post
-    $response = wp_delete_post($_POST['_job_id'], true);
+    $response = array();
+    wp_delete_post($_POST['_job_id'], true);
     wp_send_json($response);
 }
 add_action( 'wp_ajax_del_site_job_dialog_data', 'del_site_job_dialog_data' );
@@ -849,6 +850,7 @@ add_action( 'wp_ajax_get_job_action_dialog_data', 'get_job_action_dialog_data' )
 add_action( 'wp_ajax_nopriv_get_job_action_dialog_data', 'get_job_action_dialog_data' );
 
 function set_job_action_dialog_data() {
+    $response = array();
     if( isset($_POST['_action_id']) ) {
         $data = array(
             'ID'         => $_POST['_action_id'],
@@ -879,8 +881,8 @@ add_action( 'wp_ajax_set_job_action_dialog_data', 'set_job_action_dialog_data' )
 add_action( 'wp_ajax_nopriv_set_job_action_dialog_data', 'set_job_action_dialog_data' );
 
 function del_job_action_dialog_data() {
-    // Delete the post
-    $response = wp_delete_post($_POST['_action_id'], true);
+    $response = array();
+    wp_delete_post($_POST['_action_id'], true);
     wp_send_json($response);
 }
 add_action( 'wp_ajax_del_job_action_dialog_data', 'del_job_action_dialog_data' );
@@ -1049,9 +1051,7 @@ add_action( 'wp_ajax_get_doc_category_dialog_data', 'get_doc_category_dialog_dat
 add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', 'get_doc_category_dialog_data' );
 
 function set_doc_category_dialog_data() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-
+    $response = array();
     if( isset($_POST['_category_id']) ) {
         $category_id = sanitize_text_field($_POST['_category_id']);
         $data = array(
@@ -1060,8 +1060,9 @@ function set_doc_category_dialog_data() {
             'post_content' => sanitize_text_field($_POST['_category_content']),
         );
         wp_update_post( $data );
-        //update_post_meta($category_id, 'site_id', $site_id);
     } else {
+        $current_user_id = get_current_user_id();
+        $site_id = get_user_meta($current_user_id, 'site_id', true);
         $new_post = array(
             'post_title'    => 'New category',
             'post_content'  => 'Your post content goes here.',
@@ -1078,8 +1079,8 @@ add_action( 'wp_ajax_set_doc_category_dialog_data', 'set_doc_category_dialog_dat
 add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', 'set_doc_category_dialog_data' );
 
 function del_doc_category_dialog_data() {
-    // Delete the post
-    $response = wp_delete_post($_POST['_category_id'], true);
+    $response = array();
+    wp_delete_post($_POST['_category_id'], true);
     wp_send_json($response);
 }
 add_action( 'wp_ajax_del_doc_category_dialog_data', 'del_doc_category_dialog_data' );

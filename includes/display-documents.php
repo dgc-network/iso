@@ -500,6 +500,7 @@ add_action('wp_ajax_get_document_dialog_data', 'get_document_dialog_data');
 add_action('wp_ajax_nopriv_get_document_dialog_data', 'get_document_dialog_data');
 
 function set_document_dialog_data() {
+    $response = array();
     if( isset($_POST['_doc_id']) ) {
         // Update the Document data
         $doc_id = sanitize_text_field($_POST['_doc_id']);
@@ -534,7 +535,8 @@ add_action( 'wp_ajax_set_document_dialog_data', 'set_document_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_document_dialog_data', 'set_document_dialog_data' );
 
 function del_document_dialog_data() {
-    $response = wp_delete_post($_POST['_doc_id'], true);
+    $response = array();
+    wp_delete_post($_POST['_doc_id'], true);
     wp_send_json($response);
 }
 add_action( 'wp_ajax_del_document_dialog_data', 'del_document_dialog_data' );
@@ -983,6 +985,7 @@ add_action( 'wp_ajax_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', 'get_doc_field_dialog_data' );
 
 function set_doc_field_dialog_data() {
+    $response = array();
     if( isset($_POST['_field_id']) ) {
         // Update the post
         $field_id = sanitize_text_field($_POST['_field_id']);
@@ -1015,15 +1018,15 @@ add_action( 'wp_ajax_set_doc_field_dialog_data', 'set_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_field_dialog_data', 'set_doc_field_dialog_data' );
 
 function del_doc_field_dialog_data() {
-    $result = wp_delete_post($_POST['_field_id'], true);
-    wp_send_json($result);
+    $response = array();
+    wp_delete_post($_POST['_field_id'], true);
+    wp_send_json($response);
 }
 add_action( 'wp_ajax_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', 'del_doc_field_dialog_data' );
 
 function set_sorted_field_id_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
-
     if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
         $field_id_array = array_map('absint', $_POST['_field_id_array']);        
         foreach ($field_id_array as $index => $field_id) {
@@ -1031,7 +1034,6 @@ function set_sorted_field_id_data() {
         }
         $response = array('success' => true);
     }
-
     wp_send_json($response);
 }
 add_action('wp_ajax_set_sorted_field_id_data', 'set_sorted_field_id_data');
@@ -1597,8 +1599,9 @@ add_action('wp_ajax_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
 add_action('wp_ajax_nopriv_get_doc_report_dialog_data', 'get_doc_report_dialog_data');
 
 function del_doc_report_dialog_data() {
-    $result = wp_delete_post($_POST['_report_id'], true);
-    wp_send_json($result);
+    $response = array();
+    wp_delete_post($_POST['_report_id'], true);
+    wp_send_json($response);
 }
 add_action( 'wp_ajax_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', 'del_doc_report_dialog_data' );
