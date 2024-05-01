@@ -510,10 +510,14 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'doc_report_frequence_setting', sanitize_text_field($_POST['_doc_report_frequence_setting']));
+        // Get the timezone offset from WordPress settings
+        $timezone_offset = get_option('gmt_offset');
+        // Convert the timezone offset to seconds
+        $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
         $doc_report_frequence_start_date = sanitize_text_field($_POST['_doc_report_frequence_start_date']);
         $doc_report_frequence_start_time = sanitize_text_field($_POST['_doc_report_frequence_start_time']);
         $doc_report_frequence_ = strtotime($doc_report_frequence_start_date.' '.$doc_report_frequence_start_time);
-        update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence_);
+        update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence_+$offset_seconds);
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
