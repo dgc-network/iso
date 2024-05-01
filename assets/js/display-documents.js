@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
                 });
-        
+/*        
                 if ($("#doc-report-frequence-setting").val()>0) {
                     $("#doc-report-frequence-setting-div").show();
                     if ($("#doc-report-frequence-setting").val()=="1") {
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
                         }
                     }
                 });
-                
+*/                
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
@@ -260,6 +260,7 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
+                    ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
                     ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
                             
                     $.ajax({

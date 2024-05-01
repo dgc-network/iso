@@ -433,8 +433,8 @@ function display_document_dialog($doc_id=false) {
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
         <div id="doc-report-div1" style="display:none;">            
             <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-            <input type="date" id="doc-report-frequence-start-date" value="<?php echo $doc_report_frequence_start_time;?>" />
-            <input type="time" id="doc-report-frequence-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+            <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date(get_option('date_format'), $doc_report_frequence_start_time);?>" />
+            <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date(get_option('time_format'), $doc_report_frequence_start_time);?>" /><br>
             <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-frequence-setting"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
         </div>
@@ -510,7 +510,10 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
         update_post_meta( $doc_id, 'doc_report_frequence_setting', sanitize_text_field($_POST['_doc_report_frequence_setting']));
-        update_post_meta( $doc_id, 'doc_report_frequence_start_time', sanitize_text_field($_POST['_doc_report_frequence_start_time']));
+        $doc_report_frequence_start_date = sanitize_text_field($_POST['_doc_report_frequence_start_date']);
+        $doc_report_frequence_start_time = sanitize_text_field($_POST['_doc_report_frequence_start_time']);
+        $doc_report_frequence_start = strtotime($doc_report_frequence_start_date.' '.$doc_report_frequence_start_time);
+        update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence_start);
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -525,7 +528,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'site_id', $site_id);
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
-        update_post_meta( $post_id, 'doc_report_frequence_start_time', 1);
+        update_post_meta( $post_id, 'doc_report_frequence_start_time', time());
     }
     wp_send_json($response);
 }
