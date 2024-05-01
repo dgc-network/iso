@@ -1157,7 +1157,12 @@ function my_custom_post_event_callback($params) {
     // Add your code to programmatically add a post here
     set_next_todo_and_actions($params);
 }
-add_action($hook_name, 'my_custom_post_event_callback');
+//add_action($hook_name, 'my_custom_post_event_callback');
+
+// Add the action with the dynamic hook name
+add_action('init', function () use ($hook_name) {
+    add_action($hook_name, 'my_custom_post_event_callback');
+});
 /*
 //add_action('wp_ajax_schedule_post_event', 'schedule_post_event_callback');
 function schedule_post_event_callback($args) {
