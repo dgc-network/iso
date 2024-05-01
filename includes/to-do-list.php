@@ -398,10 +398,17 @@ function display_todo_dialog($todo_id) {
                     case ($field_type=='date'):
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                        <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all datepicker" />
+                        <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                         <?php
                         break;
         
+                    case ($field_type=='time'):
+                        ?>
+                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                        <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                        <?php
+                        break;
+            
                     case ($field_type=='number'):
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
@@ -1117,10 +1124,6 @@ function schedule_post_event_callback($args) {
     // Concatenate the prefix with the start time
     $hook_name = $hook_prefix . $start_time;
     
-    // To remove the scheduled event, use the same unique hook name
-    wp_clear_scheduled_hook('my_custom_post_event');
-    wp_clear_scheduled_hook($hook_name);
-
     // Schedule the event based on the selected interval
     switch ($interval) {
         case 'twice_daily':
