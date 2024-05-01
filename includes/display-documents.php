@@ -448,19 +448,6 @@ function display_document_dialog($doc_id=false) {
     }
 }
 
-function select_doc_report_frequence_setting_option($selected_option=0) {
-    $options = '<option value="0">'.__( 'None', 'your-text-domain' ).'</option>';
-    $selected = ($selected_option == "1") ? 'selected' : '';
-    $options .= '<option value="1" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "2") ? 'selected' : '';
-    $options .= '<option value="2" '.$selected.' />' . __( '每月', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "3") ? 'selected' : '';
-    $options .= '<option value="3" '.$selected.' />' . __( '每週', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "4") ? 'selected' : '';
-    $options .= '<option value="4" '.$selected.' />' . __( '每日', 'your-text-domain' ) . '</option>';
-    return $options;
-}
-
 function get_document_dialog_data() {
     $result = array();
     if (isset($_POST['_doc_id'])) {
@@ -506,10 +493,12 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
         update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
         update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
-        update_post_meta( $doc_id, 'start_job', sanitize_text_field($_POST['_start_job']));
+        $start_job = sanitize_text_field($_POST['_start_job']);
+        update_post_meta( $doc_id, 'start_job', $start_job );
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        update_post_meta( $doc_id, 'doc_report_frequence_setting', sanitize_text_field($_POST['_doc_report_frequence_setting']));
+        $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
+        update_post_meta( $doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);
         // Get the timezone offset from WordPress settings
         $timezone_offset = get_option('gmt_offset');
         // Convert the timezone offset to seconds
@@ -518,6 +507,13 @@ function set_document_dialog_data() {
         $doc_report_frequence_start_time = sanitize_text_field($_POST['_doc_report_frequence_start_time']);
         $doc_report_frequence = strtotime($doc_report_frequence_start_date.' '.$doc_report_frequence_start_time);
         update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence-$offset_seconds);
+        $params = array(
+            'interval' => $doc_report_frequence_setting,
+            'start_time' => $doc_report_frequence-$offset_seconds,
+            'start_job' => $start_job,
+            'doc_id' => $doc_id,
+        );            
+        if ($doc_report_frequence_setting) schedule_post_event_callback($params);
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1338,8 +1334,6 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
 function display_doc_report_dialog($report_id=false) {
 
     $todo_status = get_post_meta($report_id, 'todo_status', true);
-    //$start_job = get_post_meta($report_id, 'start_job', true);
-
     $doc_id = get_post_meta($report_id, 'doc_id', true);
     $start_job = get_post_meta($doc_id, 'start_job', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -1453,10 +1447,9 @@ function display_doc_report_dialog($report_id=false) {
         $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
-                $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                //$job_title = get_the_title().':'.get_the_title($next_job);
-                $job_title = get_the_title();
-                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.$job_title.'" style="margin:5px;" />';
+                //$next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                //$job_title = get_the_title();
+                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
             endwhile;
             wp_reset_postdata();
         }
@@ -1479,7 +1472,7 @@ function display_doc_report_dialog($report_id=false) {
 
 function set_doc_report_dialog_data() {
     if( isset($_POST['_report_id']) ) {
-        // Update the Document data
+        // Update the post
         $report_id = sanitize_text_field($_POST['_report_id']);
         $doc_id = get_post_meta($report_id, 'doc_id', true);
         $params = array(
@@ -1530,7 +1523,7 @@ function set_todo_for_doc_report() {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
+        //$doc_id = sanitize_text_field($_POST['_doc_id']);
         $job_id = get_post_meta($action_id, 'job_id', true);
         $todo_title = get_the_title($job_id);
         if ($action==-1) $todo_title = '文件發行';
@@ -1546,7 +1539,7 @@ function set_todo_for_doc_report() {
 
         update_post_meta( $todo_id, 'job_id', $job_id);
         update_post_meta( $todo_id, 'report_id', $report_id);
-        update_post_meta( $todo_id, 'doc_id', $doc_id);
+        //update_post_meta( $todo_id, 'doc_id', $doc_id);
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
         update_post_meta( $todo_id, 'submit_time', time());

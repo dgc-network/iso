@@ -534,7 +534,7 @@ function set_todo_dialog_data() {
             update_post_meta( $new_report_id, 'doc_id', $doc_id);
             update_post_meta( $new_report_id, 'todo_status', $next_job);
             update_post_meta( $doc_id, 'todo_status', -1);
-            // Update the Document data
+            // Update the post
             $params = array(
                 'doc_id'     => $doc_id,
             );                
@@ -563,6 +563,9 @@ add_action( 'wp_ajax_set_todo_dialog_data', 'set_todo_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
+    // 1. come from set_todo_dialog_data(), create a next_todo base on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
+    // 2. come from set_todo_for_doc_report(), create a next_todo base on the $args['action_id'] and $args['prev_report_id']
+    // 3. come from set_document_dialog_data(), create a next_todo base on the $args['start_job'] and $args['doc_id']
 
     $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
 
@@ -580,17 +583,16 @@ function set_next_todo_and_actions($args = array()) {
         } else {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
         }
-/*        
-        if ($doc_ids==array()) {
-            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-        } else {
-            $doc_id = $doc_ids[0];
-        }
-*/        
     }
 
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
+
+    if (!$action_id) {
+        $next_job = isset($args['start_job']) ? $args['start_job'] : 0;
+        $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+        $next_leadtime = 0;
+    }
     
     // Create a new To-do for next_job
     $current_user_id = get_current_user_id();
@@ -905,7 +907,7 @@ function retrieve_signature_record_data($doc_id=false, $report_id=false){
     $query = new WP_Query($args);
     return $query;
 }
-
+/*
 // Get Unix timestamp for tomorrow at 2:00 PM
 $start_time = strtotime('tomorrow 14:00');
 
@@ -1089,55 +1091,58 @@ function create_monthly_post() {
 function create_yearly_post() {
     // Create yearly post here
 }
+*/
+function select_doc_report_frequence_setting_option($selected_option=0) {
+    $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
+    $selected = ($selected_option == "yearly") ? 'selected' : '';
+    $options .= '<option value="yearly" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "monthly") ? 'selected' : '';
+    $options .= '<option value="monthly" '.$selected.' />' . __( '每月', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "weekly") ? 'selected' : '';
+    $options .= '<option value="weekly" '.$selected.' />' . __( '每週', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option == "daily") ? 'selected' : '';
+    $options .= '<option value="daily" '.$selected.' />' . __( '每日', 'your-text-domain' ) . '</option>';
+    return $options;
+}
 
-add_action('wp_ajax_schedule_post_event', 'schedule_post_event_callback');
-function schedule_post_event_callback() {
-    // Verify nonce if needed
-    // if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'my_nonce' ) ) {
-    //     wp_send_json_error( 'Nonce verification failed' );
-    // }
+//add_action('wp_ajax_schedule_post_event', 'schedule_post_event_callback');
+function schedule_post_event_callback($args) {
 
-    // Get the selected interval from the AJAX request
-    $interval = isset($_POST['schedule-interval']) ? sanitize_text_field($_POST['schedule-interval']) : '';
+    $interval = $args['interval'];
+    $start_time = $args['start_time'];
 
     // Schedule the event based on the selected interval
     switch ($interval) {
         case 'twice_daily':
-            wp_schedule_event(time(), 'twice_daily', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'twice_daily', 'my_custom_post_event', array($args));
             break;
         case 'daily':
-            wp_schedule_event(time(), 'daily', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'daily', 'my_custom_post_event', array($args));
             break;
         case 'weekly':
-            wp_schedule_event(time(), 'weekly', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'weekly', 'my_custom_post_event', array($args));
             break;
         case 'biweekly':
             // Calculate interval for every 2 weeks (14 days)
-            wp_schedule_event(time(), 'biweekly', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'biweekly', 'my_custom_post_event', array($args));
             break;
         case 'monthly':
-            wp_schedule_event(time(), 'monthly', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'monthly', 'my_custom_post_event', array($args));
             break;
         case 'yearly':
-            wp_schedule_event(time(), 'yearly', 'my_custom_post_event');
+            wp_schedule_event($start_time, 'yearly', 'my_custom_post_event', array($args));
             break;
         default:
-            wp_send_json_error('Invalid interval');
+            //wp_send_json_error('Invalid interval');
     }
 
-    wp_send_json_success('Post scheduled successfully');
+    //wp_send_json_success('Post scheduled successfully');
 }
 
 // Callback function to add post when scheduled event is triggered
-function my_custom_post_event_callback() {
+function my_custom_post_event_callback($params) {
     // Add your code to programmatically add a post here
-    // For example:
-    $post_data = array(
-        'post_title' => 'New Scheduled Post',
-        'post_content' => 'This is the content of the scheduled post.',
-        'post_status' => 'publish',
-        'post_author' => 1 // Change author ID as needed
-    );
-    wp_insert_post($post_data);
+    set_next_todo_and_actions($params);
+
 }
 add_action('my_custom_post_event', 'my_custom_post_event_callback');
