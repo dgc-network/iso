@@ -513,7 +513,8 @@ function set_document_dialog_data() {
             'start_job' => $start_job,
             'doc_id' => $doc_id,
         );            
-        if ($doc_report_frequence_setting) schedule_post_event_callback($params);
+        global $hook_name;
+        if ($doc_report_frequence_setting) $hook_name=schedule_post_event_callback($params);
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
