@@ -1124,7 +1124,7 @@ function schedule_post_event_callback($args) {
     
     // To remove the scheduled event, use the same unique hook name
     //wp_clear_scheduled_hook('my_custom_post_event');
-    wp_clear_scheduled_hook($hook_name);
+    //wp_clear_scheduled_hook($hook_name);
 
     // Schedule the event based on the selected interval
     switch ($interval) {
