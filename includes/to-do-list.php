@@ -568,6 +568,7 @@ function set_next_todo_and_actions($args = array()) {
     // 3. come from set_document_dialog_data(), create a next_todo base on the $args['start_job'] and $args['doc_id']
 
     $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
+    $current_user_id = get_current_user_id();
 
     if ($action_id > 0) {
         $next_job      = get_post_meta($action_id, 'next_job', true);
@@ -588,14 +589,15 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
     if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
 
-    if (!$action_id) {
+    if ($action_id==0) {
         $next_job = isset($args['start_job']) ? $args['start_job'] : 0;
+        $todo_title = get_the_title($next_job);
         $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
         $next_leadtime = 0;
+        $current_user_id = 1;
     }
     
     // Create a new To-do for next_job
-    $current_user_id = get_current_user_id();
     $new_post = array(
         'post_title'    => $todo_title,
         'post_status'   => 'publish',
@@ -1111,26 +1113,36 @@ function schedule_post_event_callback($args) {
     $interval = $args['interval'];
     $start_time = $args['start_time'];
 
+    // Define the prefix for the hook name
+    $hook_prefix = 'my_custom_post_event_';
+
+    // Concatenate the prefix with the start time
+    $hook_name = $hook_prefix . $start_time;
+    
+    // To remove the scheduled event, use the same unique hook name
+    wp_clear_scheduled_hook('my_custom_post_event');
+    wp_clear_scheduled_hook($hook_name);
+
     // Schedule the event based on the selected interval
     switch ($interval) {
         case 'twice_daily':
-            wp_schedule_event($start_time, 'twice_daily', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
             break;
         case 'daily':
-            wp_schedule_event($start_time, 'daily', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
             break;
         case 'weekly':
-            wp_schedule_event($start_time, 'weekly', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
             break;
         case 'biweekly':
             // Calculate interval for every 2 weeks (14 days)
-            wp_schedule_event($start_time, 'biweekly', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
             break;
         case 'monthly':
-            wp_schedule_event($start_time, 'monthly', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
             break;
         case 'yearly':
-            wp_schedule_event($start_time, 'yearly', 'my_custom_post_event', array($args));
+            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
             break;
         default:
             //wp_send_json_error('Invalid interval');
@@ -1145,4 +1157,5 @@ function my_custom_post_event_callback($params) {
     set_next_todo_and_actions($params);
 
 }
-add_action('my_custom_post_event', 'my_custom_post_event_callback');
+//add_action('my_custom_post_event', 'my_custom_post_event_callback');
+add_action($hook_name, 'my_custom_post_event_callback');
