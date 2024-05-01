@@ -53,18 +53,6 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: ajaxData,
-/*
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_todo_dialog_data',
-                    '_action_id': action_id,
-                    '_doc_id': $("#doc-id").val(),
-                    '_report_id': $("#report-id").val(),
-                },
-*/                
                 success: function (response) {
                     window.location.replace(window.location.href);
                 },
@@ -173,7 +161,6 @@ jQuery(document).ready(function($) {
     }
 
     function get_todo_dialog_data(todo_id){
-        // AJAX request
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -191,5 +178,4 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
 })

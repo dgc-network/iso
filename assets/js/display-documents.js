@@ -51,7 +51,6 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    //window.location.replace("/display-profiles/?_initial=true");
                     window.location.replace(window.location.href);
                 },
                 error: function(error){
@@ -83,7 +82,6 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    //activate_doc_field_list_data(false, $("#site-id").val());
     activate_doc_report_list_data($("#doc-id").val());
 
     $('[id^="edit-document-"]').on("click", function () {
@@ -98,7 +96,6 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_document_dialog_data',
-                //'_site_id': $("#site-id").val(),
             },
             success: function (response) {
                 window.location.replace(window.location.href);
@@ -125,11 +122,9 @@ jQuery(document).ready(function($) {
                 } else {
                     $('#result-container').html(response.html_contain);
                     $('#is-doc-report').val(response.is_doc_report);
-                    $('#doc-report-start-setting').val(response.doc_report_start_setting);
+                    $('#doc-report-frequence-setting').val(response.doc_report_frequence_setting);
                 }
                 $("#doc-id").val(doc_id);
-
-                //activate_published_document_data(doc_id);
 
                 $(".datepicker").datepicker({
                     onSelect: function(dateText, inst) {
@@ -137,7 +132,6 @@ jQuery(document).ready(function($) {
                     }
                 });
             
-                //activate_document_dialog_data(doc_id);
                 $('[id^="reset-document-"]').on("click", function () {
                     const doc_id = this.id.substring(15);
                     if (window.confirm("Are you sure you want to reset this document status?")) {
@@ -183,78 +177,76 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                 });
         
-                if ($("#doc-report-start-setting").val()>0) {
-                    $("#doc-report-start-setting-div").show();
-                    if ($("#doc-report-start-setting").val()=="1") {
-                        $("#doc-report-period-time-label1").text("每年");
-                        $("#doc-report-period-time-label2").text("月");
-                        $("#doc-report-period-time-label3").text("1 日");
-                        $("#doc-report-period-time").attr("min", 1);
-                        $("#doc-report-period-time").attr("max", 12);
+                if ($("#doc-report-frequence-setting").val()>0) {
+                    $("#doc-report-frequence-setting-div").show();
+                    if ($("#doc-report-frequence-setting").val()=="1") {
+                        $("#doc-report-frequence-start-time-label1").text("每年");
+                        $("#doc-report-frequence-start-time-label2").text("月");
+                        $("#doc-report-frequence-start-time-label3").text("1 日");
+                        $("#doc-report-frequence-start-time").attr("min", 1);
+                        $("#doc-report-frequence-start-time").attr("max", 12);
                     }
-                    if ($("#doc-report-start-setting").val()=="2") {
-                        $("#doc-report-period-time-label1").text("每月");
-                        $("#doc-report-period-time-label2").text("日");
-                        $("#doc-report-period-time-label3").text("");
-                        $("#doc-report-period-time").attr("min", 1);
-                        $("#doc-report-period-time").attr("max", 30);
+                    if ($("#doc-report-frequence-setting").val()=="2") {
+                        $("#doc-report-frequence-start-time-label1").text("每月");
+                        $("#doc-report-frequence-start-time-label2").text("日");
+                        $("#doc-report-frequence-start-time-label3").text("");
+                        $("#doc-report-frequence-start-time").attr("min", 1);
+                        $("#doc-report-frequence-start-time").attr("max", 30);
                     }
-                    if ($("#doc-report-start-setting").val()=="3") {
-                        $("#doc-report-period-time-label1").text("每週");
-                        $("#doc-report-period-time-label2").text("");
-                        $("#doc-report-period-time-label3").text("");
-                        $("#doc-report-period-time").attr("min", 1);
-                        $("#doc-report-period-time").attr("max", 7);
+                    if ($("#doc-report-frequence-setting").val()=="3") {
+                        $("#doc-report-frequence-start-time-label1").text("每週");
+                        $("#doc-report-frequence-start-time-label2").text("");
+                        $("#doc-report-frequence-start-time-label3").text("");
+                        $("#doc-report-frequence-start-time").attr("min", 1);
+                        $("#doc-report-frequence-start-time").attr("max", 7);
                     }
-                    if ($("#doc-report-start-setting").val()=="4") {
-                        $("#doc-report-period-time-label1").text("每日");
-                        $("#doc-report-period-time-label2").text("時");
-                        $("#doc-report-period-time-label3").text("0 分");
-                        $("#doc-report-period-time").attr("min", 1);
-                        $("#doc-report-period-time").attr("max", 24);
+                    if ($("#doc-report-frequence-setting").val()=="4") {
+                        $("#doc-report-frequence-start-time-label1").text("每日");
+                        $("#doc-report-frequence-start-time-label2").text("時");
+                        $("#doc-report-frequence-start-time-label3").text("0 分");
+                        $("#doc-report-frequence-start-time").attr("min", 1);
+                        $("#doc-report-frequence-start-time").attr("max", 24);
                     }
                 } else {
-                    $("#doc-report-start-setting-div").hide();
+                    $("#doc-report-frequence-setting-div").hide();
                 }
 
-                $("#doc-report-start-setting").on("change", function() {            
+                $("#doc-report-frequence-setting").on("change", function() {            
                     if ($(this).val()=="0") {
-                        $("#doc-report-start-setting-div").hide();
+                        $("#doc-report-frequence-setting-div").hide();
                     } else {                
-                        $("#doc-report-start-setting-div").show();
+                        $("#doc-report-frequence-setting-div").show();
                         if ($(this).val()=="1") {
-                            $("#doc-report-period-time-label1").text("每年");
-                            $("#doc-report-period-time-label2").text("月");
-                            $("#doc-report-period-time-label3").text("1 日");
-                            $("#doc-report-period-time").attr("min", 1);
-                            $("#doc-report-period-time").attr("max", 12);
+                            $("#doc-report-frequence-start-time-label1").text("每年");
+                            $("#doc-report-frequence-start-time-label2").text("月");
+                            $("#doc-report-frequence-start-time-label3").text("1 日");
+                            $("#doc-report-frequence-start-time").attr("min", 1);
+                            $("#doc-report-frequence-start-time").attr("max", 12);
                         }
                         if ($(this).val()=="2") {
-                            $("#doc-report-period-time-label1").text("每月");
-                            $("#doc-report-period-time-label2").text("日");
-                            $("#doc-report-period-time-label3").text("");
-                            $("#doc-report-period-time").attr("min", 1);
-                            $("#doc-report-period-time").attr("max", 30);
+                            $("#doc-report-frequence-start-time-label1").text("每月");
+                            $("#doc-report-frequence-start-time-label2").text("日");
+                            $("#doc-report-frequence-start-time-label3").text("");
+                            $("#doc-report-frequence-start-time").attr("min", 1);
+                            $("#doc-report-frequence-start-time").attr("max", 30);
                         }
                         if ($(this).val()=="3") {
-                            $("#doc-report-period-time-label1").text("每週");
-                            $("#doc-report-period-time-label2").text("");
-                            $("#doc-report-period-time-label3").text("");
-                            $("#doc-report-period-time").attr("min", 1);
-                            $("#doc-report-period-time").attr("max", 7);
+                            $("#doc-report-frequence-start-time-label1").text("每週");
+                            $("#doc-report-frequence-start-time-label2").text("");
+                            $("#doc-report-frequence-start-time-label3").text("");
+                            $("#doc-report-frequence-start-time").attr("min", 1);
+                            $("#doc-report-frequence-start-time").attr("max", 7);
                         }
                         if ($(this).val()=="4") {
-                            $("#doc-report-period-time-label1").text("每日");
-                            $("#doc-report-period-time-label2").text("時");
-                            $("#doc-report-period-time-label3").text("0 分");
-                            $("#doc-report-period-time").attr("min", 1);
-                            $("#doc-report-period-time").attr("max", 24);
+                            $("#doc-report-frequence-start-time-label1").text("每日");
+                            $("#doc-report-frequence-start-time-label2").text("時");
+                            $("#doc-report-frequence-start-time-label3").text("0 分");
+                            $("#doc-report-frequence-start-time").attr("min", 1);
+                            $("#doc-report-frequence-start-time").attr("max", 24);
                         }
                     }
                 });
                 
-                //activate_doc_action_list_data(doc_id);
-                                
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
@@ -267,9 +259,8 @@ jQuery(document).ready(function($) {
                     ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
-                    ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
-                    //ajaxData['_doc_report_start_job'] = $("#doc-report-start-job").val();
+                    ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
+                    ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
                             
                     $.ajax({
                         type: 'POST',
@@ -330,7 +321,6 @@ jQuery(document).ready(function($) {
                         }
                     });
                 });
-
 
                 // doc-field scripts
                 activate_doc_field_list_data(doc_id);
@@ -394,30 +384,6 @@ jQuery(document).ready(function($) {
                         alert(error);
                     }
                 });
-/*
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: 'json',
-                    data: {
-                        //action: 'set_doc_unpublished_data',
-                        action: 'reset_document_todo_status',                        
-                        _doc_id: doc_id,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.replace(window.location.href);
-                        } else {
-                            console.error('Error updating:', response.error);
-                            alert('Error updating. Please try again.');
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        console.error('AJAX request failed:', errorThrown);
-                        alert('AJAX request failed. Please try again.');
-                    }
-                });
-*/                
             }    
         });
     }
@@ -592,8 +558,6 @@ jQuery(document).ready(function($) {
     
         activate_published_document_data(doc_id);
 
-        //activate_doc_field_list_data(doc_id);
-        
         $("#new-doc-report").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -698,49 +662,7 @@ jQuery(document).ready(function($) {
                                 alert(error);
                             }
                         });
-                    }
-        
-                    get_doc_report_list_data($("#doc-id").val());
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.error('AJAX request failed:', errorThrown);
-                    alert('AJAX request failed. Please try again.');
-                }
-            });
-
-
-        });
-
-/*
-        $('[id^="save-doc-report-"]').on("click", function() {
-            const report_id = this.id.substring(16);
-            const ajaxData = {
-                'action': 'set_doc_report_dialog_data',
-                '_report_id': report_id
-            };
-        
-            $.each(response.doc_fields, function(index, value) {
-                const field_name_tag = '#' + value.field_name;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
-                }
-            });
-        
-            //ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
-            //ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
-            //ajaxData['_start_job'] = $("#start-job").val();
-            //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-            //ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
-            //ajaxData['_next_doc_report'] = $("#next-doc-report").val();
-        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function(response) {
+                    }        
                     get_doc_report_list_data($("#doc-id").val());
                 },
                 error: function(xhr, textStatus, errorThrown) {
@@ -749,7 +671,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-*/        
+
         $('[id^="del-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to delete this record?")) {
@@ -792,12 +714,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-            //ajaxData['_doc_report_start_setting'] = $("#doc-report-start-setting").val();
-            //ajaxData['_doc_report_period_time'] = $("#doc-report-period-time").val();
             ajaxData['_start_job'] = $("#start-job").val();
-            //ajaxData['_start_leadtime'] = $("#start-leadtime").val();
-            //ajaxData['_prev_doc_report'] = $("#prev-doc-report").val();
-            //ajaxData['_next_doc_report'] = $("#next-doc-report").val();
                     
             $.ajax({
                 type: 'POST',
@@ -813,7 +730,6 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
     }
     
     function get_doc_report_dialog_data(report_id){
@@ -839,5 +755,4 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
 });

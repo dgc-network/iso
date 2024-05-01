@@ -384,8 +384,8 @@ function display_document_dialog($doc_id=false) {
         $start_job = get_post_meta($doc_id, 'start_job', true);
         $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        $doc_report_start_setting = get_post_meta($doc_id, 'doc_report_start_setting', true);
-        $doc_report_period_time = get_post_meta($doc_id, 'doc_report_period_time', true);
+        $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+        $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
         $site_id = get_post_meta($doc_id, 'site_id', true);
         $image_url = get_post_meta($site_id, 'image_url', true);
 
@@ -432,13 +432,11 @@ function display_document_dialog($doc_id=false) {
         </div>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
         <div id="doc-report-div1" style="display:none;">            
-            <label for="doc-report-start-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
-            <select id="doc-report-start-setting"><?php echo select_doc_report_start_setting_option($doc_report_start_setting);?></select>
-            <div id="doc-report-start-setting-div" style="display:inline;">
-                <input type="number" id="doc-report-period-time" value="<?php echo $doc_report_period_time;?>" style="width:50px;" />
-                <label id="doc-report-period-time-label2"><?php echo __( '', 'your-text-domain' );?></label>
-                <label id="doc-report-period-time-label3"><?php echo __( '', 'your-text-domain' );?></label><br>
-            </div>
+            <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+            <input type="date" id="doc-report-frequence-start-date" value="<?php echo $doc_report_frequence_start_time;?>" />
+            <input type="time" id="doc-report-frequence-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+            <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
+            <select id="doc-report-frequence-setting"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
         </div>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
@@ -450,7 +448,7 @@ function display_document_dialog($doc_id=false) {
     }
 }
 
-function select_doc_report_start_setting_option($selected_option=0) {
+function select_doc_report_frequence_setting_option($selected_option=0) {
     $options = '<option value="0">'.__( 'None', 'your-text-domain' ).'</option>';
     $selected = ($selected_option == "1") ? 'selected' : '';
     $options .= '<option value="1" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
@@ -468,7 +466,7 @@ function get_document_dialog_data() {
     if (isset($_POST['_doc_id'])) {
         $doc_id = sanitize_text_field($_POST['_doc_id']);
         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        $doc_report_start_setting = get_post_meta($doc_id, 'doc_report_start_setting', true);
+        $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
         $todo_status = get_post_meta($doc_id, 'todo_status', true);
         if ($todo_status<1) {
             if ($todo_status==-1) {
@@ -480,7 +478,7 @@ function get_document_dialog_data() {
             } else {
                 $result['html_contain'] = display_document_dialog($doc_id);
                 $result['is_doc_report'] = $is_doc_report;
-                $result['doc_report_start_setting'] = $doc_report_start_setting;
+                $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;
             }
         } else {
             if (isset($_POST['_is_admin'])) {
@@ -511,8 +509,8 @@ function set_document_dialog_data() {
         update_post_meta( $doc_id, 'start_job', sanitize_text_field($_POST['_start_job']));
         update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
         update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-        update_post_meta( $doc_id, 'doc_report_start_setting', sanitize_text_field($_POST['_doc_report_start_setting']));
-        update_post_meta( $doc_id, 'doc_report_period_time', sanitize_text_field($_POST['_doc_report_period_time']));
+        update_post_meta( $doc_id, 'doc_report_frequence_setting', sanitize_text_field($_POST['_doc_report_frequence_setting']));
+        update_post_meta( $doc_id, 'doc_report_frequence_start_time', sanitize_text_field($_POST['_doc_report_frequence_start_time']));
     } else {
         $current_user_id = get_current_user_id();
         $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -527,7 +525,7 @@ function set_document_dialog_data() {
         update_post_meta( $post_id, 'site_id', $site_id);
         update_post_meta( $post_id, 'doc_number', '-');
         update_post_meta( $post_id, 'doc_revision', 'A');
-        update_post_meta( $post_id, 'doc_report_period_time', 1);
+        update_post_meta( $post_id, 'doc_report_frequence_start_time', 1);
     }
     wp_send_json($response);
 }

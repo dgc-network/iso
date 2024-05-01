@@ -906,3 +906,238 @@ function retrieve_signature_record_data($doc_id=false, $report_id=false){
     return $query;
 }
 
+// Get Unix timestamp for tomorrow at 2:00 PM
+$start_time = strtotime('tomorrow 14:00');
+
+// Schedule event to run weekly starting from tomorrow at 2:00 PM
+if (!wp_next_scheduled('my_weekly_process_hook')) {
+    wp_schedule_event($start_time, 'weekly', 'my_weekly_process_hook');
+}
+
+function add_post_record_twice_per_day() {
+    // Create a new post
+    $post_data = array(
+        'post_title'    => 'New Post Title',
+        'post_content'  => 'Post content goes here.',
+        'post_status'   => 'publish',
+        'post_author'   => 1, // Change this to the desired author ID
+        'post_type'     => 'post', // Change this to the desired post type
+    );
+
+    // Insert the post into the database
+    $post_id = wp_insert_post($post_data);
+
+    // You can perform additional actions if needed
+
+    // Log the action to a file or database
+    error_log("New post added with ID: $post_id");
+}
+
+// Schedule the task to run at 9 AM
+if ( ! wp_next_scheduled( 'add_post_record_twice_per_day_9am' ) ) {
+    wp_schedule_event( strtotime( 'today 9:00' ), 'daily', 'add_post_record_twice_per_day_9am' );
+}
+add_action( 'add_post_record_twice_per_day_9am', 'add_post_record_twice_per_day' );
+
+// Schedule the task to run at 3 PM
+if ( ! wp_next_scheduled( 'add_post_record_twice_per_day_3pm' ) ) {
+    wp_schedule_event( strtotime( 'today 15:00' ), 'daily', 'add_post_record_twice_per_day_3pm' );
+}
+add_action( 'add_post_record_twice_per_day_3pm', 'add_post_record_twice_per_day' );
+
+// Hook into WordPress initialization to schedule the event
+add_action('wp', 'schedule_biweekly_event');
+
+function schedule_biweekly_event() {
+    // Check if the event is already scheduled
+    if (!wp_next_scheduled('biweekly_post_event')) {
+        // Schedule the event to run every two weeks
+        wp_schedule_event(time(), 'biweekly', 'biweekly_post_event');
+    }
+}
+
+// Hook into the biweekly_post_event action
+add_action('biweekly_post_event', 'add_biweekly_post');
+
+function add_biweekly_post() {
+    // Create the post data
+    $post_data = array(
+        'post_title'   => 'Bi-Weekly Post', // Set your post title here
+        'post_content' => 'This is a bi-weekly post.', // Set your post content here
+        'post_status'  => 'publish',
+        'post_author'  => 1, // Set the author ID here
+        'post_type'    => 'post', // Set the post type here
+    );
+
+    // Insert the post into the database
+    $post_id = wp_insert_post($post_data);
+
+    // Optionally, you can perform additional actions after inserting the post
+    if ($post_id) {
+        // Post inserted successfully
+        // Perform additional actions if needed
+    } else {
+        // Error occurred while inserting the post
+        // Handle the error
+    }
+}
+
+// Add this code to your theme's functions.php file or custom plugin
+
+add_action('init', 'schedule_post_by_frequency');
+
+function schedule_post_by_frequency() {
+    if (isset($_POST['frequency'])) {
+        // Get the selected frequency from the form
+        $frequency = sanitize_text_field($_POST['frequency']);
+        
+        // Schedule the post creation based on the selected frequency
+        switch ($frequency) {
+            case 'twice_daily':
+                schedule_twice_daily_post();
+                break;
+            case 'daily':
+                schedule_daily_post();
+                break;
+            case 'weekly':
+                schedule_weekly_post();
+                break;
+            case 'biweekly':
+                schedule_biweekly_post();
+                break;
+            case 'monthly':
+                schedule_monthly_post();
+                break;
+            case 'yearly':
+                schedule_yearly_post();
+                break;
+            default:
+                // Handle invalid frequency
+                break;
+        }
+    }
+}
+
+// Schedule functions for different frequencies
+function schedule_twice_daily_post() {
+    // Schedule the first post for 9:00 AM
+    wp_schedule_single_event(strtotime('09:00:00'), 'twice_daily_post_event_1');
+
+    // Schedule the second post for 3:00 PM
+    wp_schedule_single_event(strtotime('15:00:00'), 'twice_daily_post_event_2');
+}
+
+function schedule_daily_post() {
+    // Schedule the post for 9:00 AM
+    wp_schedule_single_event(strtotime('09:00:00'), 'daily_post_event');
+}
+
+function schedule_weekly_post() {
+    // Schedule the post for every Monday at 9:00 AM
+    wp_schedule_single_event(strtotime('next monday 09:00:00'), 'weekly_post_event');
+}
+
+function schedule_biweekly_post() {
+    // Schedule the post for every other Monday at 9:00 AM
+    wp_schedule_single_event(strtotime('next monday 09:00:00'), 'biweekly_post_event');
+}
+
+function schedule_monthly_post() {
+    // Schedule the post for the first day of each month at 9:00 AM
+    wp_schedule_single_event(strtotime('first day of next month 09:00:00'), 'monthly_post_event');
+}
+
+function schedule_yearly_post() {
+    // Schedule the post for January 1st of each year at 9:00 AM
+    wp_schedule_single_event(strtotime('January 1st next year 09:00:00'), 'yearly_post_event');
+}
+
+// Add action hooks for scheduled events
+add_action('twice_daily_post_event_1', 'create_twice_daily_post_1');
+add_action('twice_daily_post_event_2', 'create_twice_daily_post_2');
+add_action('daily_post_event', 'create_daily_post');
+add_action('weekly_post_event', 'create_weekly_post');
+add_action('biweekly_post_event', 'create_biweekly_post');
+add_action('monthly_post_event', 'create_monthly_post');
+add_action('yearly_post_event', 'create_yearly_post');
+
+// Functions to create posts based on frequency
+function create_twice_daily_post_1() {
+    // Create post for the first time slot
+}
+
+function create_twice_daily_post_2() {
+    // Create post for the second time slot
+}
+
+function create_daily_post() {
+    // Create daily post here
+}
+
+function create_weekly_post() {
+    // Create weekly post here
+}
+
+function create_biweekly_post() {
+    // Create biweekly post here
+}
+
+function create_monthly_post() {
+    // Create monthly post here
+}
+
+function create_yearly_post() {
+    // Create yearly post here
+}
+
+add_action('wp_ajax_schedule_post_event', 'schedule_post_event_callback');
+function schedule_post_event_callback() {
+    // Verify nonce if needed
+    // if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'my_nonce' ) ) {
+    //     wp_send_json_error( 'Nonce verification failed' );
+    // }
+
+    // Get the selected interval from the AJAX request
+    $interval = isset($_POST['schedule-interval']) ? sanitize_text_field($_POST['schedule-interval']) : '';
+
+    // Schedule the event based on the selected interval
+    switch ($interval) {
+        case 'twice_daily':
+            wp_schedule_event(time(), 'twice_daily', 'my_custom_post_event');
+            break;
+        case 'daily':
+            wp_schedule_event(time(), 'daily', 'my_custom_post_event');
+            break;
+        case 'weekly':
+            wp_schedule_event(time(), 'weekly', 'my_custom_post_event');
+            break;
+        case 'biweekly':
+            // Calculate interval for every 2 weeks (14 days)
+            wp_schedule_event(time(), 'biweekly', 'my_custom_post_event');
+            break;
+        case 'monthly':
+            wp_schedule_event(time(), 'monthly', 'my_custom_post_event');
+            break;
+        case 'yearly':
+            wp_schedule_event(time(), 'yearly', 'my_custom_post_event');
+            break;
+        default:
+            wp_send_json_error('Invalid interval');
+    }
+
+    wp_send_json_success('Post scheduled successfully');
+}
+
+// Callback function to add post when scheduled event is triggered
+function my_custom_post_event_callback() {
+    // Add your code to programmatically add a post here
+    // For example:
+    $post_data = array(
+        'post_title' => 'New Scheduled Post',
+        'post_content' => 'This is the content of the scheduled post.',
+        'post_status' => 'publish',
+        'post_author' => 1 // Change author ID as needed
+    );
+    wp_insert_post($post_data);
+}
+add_action('my_custom_post_event', 'my_custom_post_event_callback');
