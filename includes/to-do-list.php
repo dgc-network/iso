@@ -1108,6 +1108,7 @@ function select_doc_report_frequence_setting_option($selected_option=0) {
 }
 
 // Define a global variable to hold the hook name
+global $hook_name;
 $hook_name = '';
 
 function schedule_post_event_callback($args) {
