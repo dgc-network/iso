@@ -1107,6 +1107,57 @@ function select_doc_report_frequence_setting_option($selected_option=0) {
     return $options;
 }
 
+// Define a global variable to hold the hook name
+$hook_name = '';
+
+function schedule_post_event_callback($args) {
+    global $hook_name;
+
+    $interval = $args['interval'];
+    $start_time = $args['start_time'];
+
+    // Define the prefix for the hook name
+    $hook_prefix = 'my_custom_post_event_';
+
+    // Concatenate the prefix with the start time
+    $hook_name = $hook_prefix . $start_time;
+    
+    // To remove the scheduled event, use the same unique hook name
+    //wp_clear_scheduled_hook('my_custom_post_event');
+    wp_clear_scheduled_hook($hook_name);
+
+    // Schedule the event based on the selected interval
+    switch ($interval) {
+        case 'twice_daily':
+            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+            break;
+        case 'daily':
+            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+            break;
+        case 'weekly':
+            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+            break;
+        case 'biweekly':
+            // Calculate interval for every 2 weeks (14 days)
+            wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+            break;
+        case 'monthly':
+            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+            break;
+        case 'yearly':
+            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+            break;
+        default:
+    }
+}
+
+// Callback function to add post when scheduled event is triggered
+function my_custom_post_event_callback($params) {
+    // Add your code to programmatically add a post here
+    set_next_todo_and_actions($params);
+}
+add_action($hook_name, 'my_custom_post_event_callback');
+/*
 //add_action('wp_ajax_schedule_post_event', 'schedule_post_event_callback');
 function schedule_post_event_callback($args) {
 
@@ -1159,3 +1210,4 @@ function my_custom_post_event_callback($params) {
 }
 //add_action('my_custom_post_event', 'my_custom_post_event_callback');
 add_action($hook_name, 'my_custom_post_event_callback');
+*/
