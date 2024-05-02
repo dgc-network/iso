@@ -936,10 +936,11 @@ function schedule_post_event_callback($args) {
     $start_time = $args['start_time'];
 
     // Retrieve the hook name from options or set a default value
-    $hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
+    //$hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
 
     // Concatenate the prefix with the start time
-    $hook_name .= $start_time;
+    //$hook_name .= $start_time;
+    $hook_name = 'my_custom_post_event_'.$start_time;
 
     // Schedule the event based on the selected interval
     switch ($interval) {
