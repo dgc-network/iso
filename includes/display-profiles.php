@@ -557,7 +557,18 @@ function display_site_job_list($initial=false) {
                         <tr id="edit-site-job-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                             <td style="text-align:center;"><?php the_title();?></td>
-                            <td><?php echo substr($content, 0, 60);?></td>
+                            <td>
+                                <?php
+                                $trimmed_content = substr($content, 0, 60);
+                                echo $trimmed_content;
+    
+                                // Check if the content length is greater than 60 characters
+                                if (strlen($content) > 60) {
+                                    echo '... ';
+                                    echo '<a href="#" class="see-more">See more</a>';
+                                }
+                                ?>
+                            </td>                            
                             <td style="text-align:center;"><?php echo esc_html($department);?></td>
                         </tr>
                         <?php 
@@ -608,8 +619,6 @@ function retrieve_site_job_list_data($current_page = 1) {
         'post_type'      => 'job',
         'posts_per_page' => $posts_per_page,
         'paged'          => $current_page,
-        //'offset'         => $offset,
-        //'posts_per_page' => -1,
         'meta_query'     => array(
             array(
                 'key'   => 'site_id',
