@@ -934,12 +934,10 @@ function select_doc_report_frequence_setting_option($selected_option = false) {
 function schedule_post_event_callback($args) {
     $interval = $args['interval'];
     $start_time = $args['start_time'];
+    $prev_start_time = $args['prev_start_time'];
 
-    // Retrieve the hook name from options or set a default value
-    //$hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
-
-    // Concatenate the prefix with the start time
-    //$hook_name .= $start_time;
+    $hook_name = 'my_custom_post_event_'.$prev_start_time;
+    wp_clear_scheduled_hook($hook_name);
     $hook_name = 'my_custom_post_event_'.$start_time;
 
     // Schedule the event based on the selected interval
@@ -966,10 +964,8 @@ function schedule_post_event_callback($args) {
         default:
             // Handle invalid interval
     }
-
     // Store the hook name in options
     update_option('my_custom_post_event_hook_name', $hook_name);
-
     // Return the hook name for later use
     return $hook_name;
 }
@@ -979,182 +975,7 @@ function my_custom_post_event_callback($params) {
     // Add your code to programmatically add a post here
     set_next_todo_and_actions($params);
 }
-
 // Retrieve the hook name from options
 $hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
-
 // Add the action with the dynamic hook name
 add_action($hook_name, 'my_custom_post_event_callback');
-/*
-function select_doc_report_frequence_setting_option($selected_option = false) {
-    $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
-    $selected = ($selected_option === "yearly") ? 'selected' : '';
-    $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option === "monthly") ? 'selected' : '';
-    $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option === "weekly") ? 'selected' : '';
-    $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option === "daily") ? 'selected' : '';
-    $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
-    return $options;
-}
-
-function schedule_post_event_callback($args) {
-    $interval = $args['interval'];
-    $start_time = $args['start_time'];
-
-    // Define the prefix for the hook name
-    $hook_prefix = 'my_custom_post_event_';
-
-    // Concatenate the prefix with the start time to create the hook name
-    $hook_name = $hook_prefix . $start_time;
-    
-    // Schedule the event based on the selected interval
-    switch ($interval) {
-        case 'twice_daily':
-            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($hook_name, $args));
-            break;
-        case 'daily':
-            wp_schedule_event($start_time, 'daily', $hook_name, array($hook_name, $args));
-            break;
-        case 'weekly':
-            wp_schedule_event($start_time, 'weekly', $hook_name, array($hook_name, $args));
-            break;
-        case 'biweekly':
-            // Calculate interval for every 2 weeks (14 days)
-            wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($hook_name, $args));
-            break;
-        case 'monthly':
-            wp_schedule_event($start_time, 'monthly', $hook_name, array($hook_name, $args));
-            break;
-        case 'yearly':
-            wp_schedule_event($start_time, 'yearly', $hook_name, array($hook_name, $args));
-            break;
-        default:
-            // Handle invalid interval
-    }
-
-    // Return the hook name for later use
-    return $hook_name;
-}
-
-// Callback function to add post when scheduled event is triggered
-function my_custom_post_event_callback($hook_name, $params) {
-    // Add your code to programmatically add a post here
-    set_next_todo_and_actions($params);
-}
-/*
-// Define a global variable to store the hook name
-global $hook_name;
-$hook_name = 'my_custom_post_event_';
-
-function schedule_post_event_callback($args) {
-    $interval = $args['interval'];
-    $start_time = $args['start_time'];
-
-    // Define the prefix for the hook name
-    //$hook_prefix = 'my_custom_post_event_';
-
-    // Concatenate the prefix with the start time
-    //$hook_name = $hook_prefix . $start_time;
-    //$hook_name .= $start_time;
-    
-    // Schedule the event based on the selected interval
-    switch ($interval) {
-        case 'twice_daily':
-            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-            break;
-        case 'daily':
-            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-            break;
-        case 'weekly':
-            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-            break;
-        case 'biweekly':
-            // Calculate interval for every 2 weeks (14 days)
-            wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
-            break;
-        case 'monthly':
-            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-            break;
-        case 'yearly':
-            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-            break;
-        default:
-            // Handle invalid interval
-    }
-
-    // Return the hook name for later use
-    return $hook_name;
-}
-
-// Callback function to add post when scheduled event is triggered
-function my_custom_post_event_callback($params) {
-    // Add your code to programmatically add a post here
-    set_next_todo_and_actions($params);
-}
-
-// Add the action with the dynamic hook name
-add_action($hook_name, 'my_custom_post_event_callback');
-/*
-function select_doc_report_frequence_setting_option($selected_option=false) {
-    $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
-    $selected = ($selected_option == "yearly") ? 'selected' : '';
-    $options .= '<option value="yearly" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "monthly") ? 'selected' : '';
-    $options .= '<option value="monthly" '.$selected.' />' . __( '每月', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "weekly") ? 'selected' : '';
-    $options .= '<option value="weekly" '.$selected.' />' . __( '每週', 'your-text-domain' ) . '</option>';
-    $selected = ($selected_option == "daily") ? 'selected' : '';
-    $options .= '<option value="daily" '.$selected.' />' . __( '每日', 'your-text-domain' ) . '</option>';
-    return $options;
-}
-
-// Define a global variable to store the hook name
-global $hook_name;
-function schedule_post_event_callback($args) {
-    $interval = $args['interval'];
-    $start_time = $args['start_time'];
-
-    // Define the prefix for the hook name
-    $hook_prefix = 'my_custom_post_event_';
-
-    // Concatenate the prefix with the start time
-    $hook_name = $hook_prefix . $start_time;
-    
-    // Schedule the event based on the selected interval
-    switch ($interval) {
-        case 'twice_daily':
-            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-            break;
-        case 'daily':
-            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-            break;
-        case 'weekly':
-            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-            break;
-        case 'biweekly':
-            // Calculate interval for every 2 weeks (14 days)
-            wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
-            break;
-        case 'monthly':
-            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-            break;
-        case 'yearly':
-            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-            break;
-        default:
-            // Handle invalid interval
-    }
-
-    // Return the hook name for later use
-    return $hook_name;
-}
-
-// Callback function to add post when scheduled event is triggered
-function my_custom_post_event_callback($params) {
-    // Add your code to programmatically add a post here
-    set_next_todo_and_actions($params);
-}
-add_action($hook_name, 'my_custom_post_event_callback');
-*/

@@ -176,77 +176,7 @@ jQuery(document).ready(function($) {
                     const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
                     $("#is-doc-report").val(is_doc_report)
                 });
-/*        
-                if ($("#doc-report-frequence-setting").val()>0) {
-                    $("#doc-report-frequence-setting-div").show();
-                    if ($("#doc-report-frequence-setting").val()=="1") {
-                        $("#doc-report-frequence-start-time-label1").text("每年");
-                        $("#doc-report-frequence-start-time-label2").text("月");
-                        $("#doc-report-frequence-start-time-label3").text("1 日");
-                        $("#doc-report-frequence-start-time").attr("min", 1);
-                        $("#doc-report-frequence-start-time").attr("max", 12);
-                    }
-                    if ($("#doc-report-frequence-setting").val()=="2") {
-                        $("#doc-report-frequence-start-time-label1").text("每月");
-                        $("#doc-report-frequence-start-time-label2").text("日");
-                        $("#doc-report-frequence-start-time-label3").text("");
-                        $("#doc-report-frequence-start-time").attr("min", 1);
-                        $("#doc-report-frequence-start-time").attr("max", 30);
-                    }
-                    if ($("#doc-report-frequence-setting").val()=="3") {
-                        $("#doc-report-frequence-start-time-label1").text("每週");
-                        $("#doc-report-frequence-start-time-label2").text("");
-                        $("#doc-report-frequence-start-time-label3").text("");
-                        $("#doc-report-frequence-start-time").attr("min", 1);
-                        $("#doc-report-frequence-start-time").attr("max", 7);
-                    }
-                    if ($("#doc-report-frequence-setting").val()=="4") {
-                        $("#doc-report-frequence-start-time-label1").text("每日");
-                        $("#doc-report-frequence-start-time-label2").text("時");
-                        $("#doc-report-frequence-start-time-label3").text("0 分");
-                        $("#doc-report-frequence-start-time").attr("min", 1);
-                        $("#doc-report-frequence-start-time").attr("max", 24);
-                    }
-                } else {
-                    $("#doc-report-frequence-setting-div").hide();
-                }
 
-                $("#doc-report-frequence-setting").on("change", function() {            
-                    if ($(this).val()=="0") {
-                        $("#doc-report-frequence-setting-div").hide();
-                    } else {                
-                        $("#doc-report-frequence-setting-div").show();
-                        if ($(this).val()=="1") {
-                            $("#doc-report-frequence-start-time-label1").text("每年");
-                            $("#doc-report-frequence-start-time-label2").text("月");
-                            $("#doc-report-frequence-start-time-label3").text("1 日");
-                            $("#doc-report-frequence-start-time").attr("min", 1);
-                            $("#doc-report-frequence-start-time").attr("max", 12);
-                        }
-                        if ($(this).val()=="2") {
-                            $("#doc-report-frequence-start-time-label1").text("每月");
-                            $("#doc-report-frequence-start-time-label2").text("日");
-                            $("#doc-report-frequence-start-time-label3").text("");
-                            $("#doc-report-frequence-start-time").attr("min", 1);
-                            $("#doc-report-frequence-start-time").attr("max", 30);
-                        }
-                        if ($(this).val()=="3") {
-                            $("#doc-report-frequence-start-time-label1").text("每週");
-                            $("#doc-report-frequence-start-time-label2").text("");
-                            $("#doc-report-frequence-start-time-label3").text("");
-                            $("#doc-report-frequence-start-time").attr("min", 1);
-                            $("#doc-report-frequence-start-time").attr("max", 7);
-                        }
-                        if ($(this).val()=="4") {
-                            $("#doc-report-frequence-start-time-label1").text("每日");
-                            $("#doc-report-frequence-start-time-label2").text("時");
-                            $("#doc-report-frequence-start-time-label3").text("0 分");
-                            $("#doc-report-frequence-start-time").attr("min", 1);
-                            $("#doc-report-frequence-start-time").attr("max", 24);
-                        }
-                    }
-                });
-*/                
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
@@ -262,6 +192,7 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
                     ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
                     ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
+                    ajaxData['_prev_start_time'] = $("#prev-start-time").val();
                             
                     $.ajax({
                         type: 'POST',

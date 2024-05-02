@@ -435,6 +435,7 @@ function display_document_dialog($doc_id=false) {
             <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
             <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
             <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" /><br>
+            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" /><br>
             <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-frequence-setting"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
         </div>
@@ -510,10 +511,10 @@ function set_document_dialog_data() {
         $params = array(
             'interval' => $doc_report_frequence_setting,
             'start_time' => $doc_report_frequence-$offset_seconds,
+            'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
             'start_job' => $start_job,
             'doc_id' => $doc_id,
         );            
-        global $hook_name;
         if ($doc_report_frequence_setting) $hook_name=schedule_post_event_callback($params);
     } else {
         $current_user_id = get_current_user_id();
