@@ -31,7 +31,7 @@ function register_todo_post_type() {
         'has_archive'        => true,
         'hierarchical'       => false,
         'menu_position'      => null,
-        'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
+        'supports'           => array( 'title', 'editor', 'custom-fields' ),
         //'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
@@ -49,7 +49,7 @@ function register_action_post_type() {
         'rewrite'       => array('slug' => 'actions'),
         'supports'      => array( 'title', 'editor', 'custom-fields' ),
         'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
+        'show_in_menu'  => false,
     );
     register_post_type( 'action', $args );
 }
@@ -600,6 +600,7 @@ function set_next_todo_and_actions($args = array()) {
         $next_job = isset($args['start_job']) ? $args['start_job'] : 0;
         $todo_title = get_the_title($next_job);
         $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+        update_post_meta( $doc_id, 'todo_status', -1);
         $next_leadtime = 0;
         $current_user_id = 1;
     }

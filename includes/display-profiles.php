@@ -565,7 +565,6 @@ function display_site_job_list($initial=false) {
                                 // Check if the content length is greater than 60 characters
                                 if (strlen($content) > 60) {
                                     echo '... ';
-                                    echo '<a href="#" class="see-more">See more</a>';
                                 }
                                 ?>
                             </td>                            
