@@ -918,7 +918,71 @@ function retrieve_signature_record_data($doc_id=false, $report_id=false){
 }
 
 // doc-report frequence setting
-function select_doc_report_frequence_setting_option($selected_option=0) {
+function select_doc_report_frequence_setting_option($selected_option = false) {
+    $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
+    $selected = ($selected_option === "yearly") ? 'selected' : '';
+    $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option === "monthly") ? 'selected' : '';
+    $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option === "weekly") ? 'selected' : '';
+    $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
+    $selected = ($selected_option === "daily") ? 'selected' : '';
+    $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
+    return $options;
+}
+
+// Define a global variable to store the hook name
+global $hook_name;
+
+function schedule_post_event_callback($args) {
+    $interval = $args['interval'];
+    $start_time = $args['start_time'];
+
+    // Define the prefix for the hook name
+    $hook_prefix = 'my_custom_post_event_';
+
+    // Concatenate the prefix with the start time
+    $hook_name = $hook_prefix . $start_time;
+    
+    // Schedule the event based on the selected interval
+    switch ($interval) {
+        case 'twice_daily':
+            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+            break;
+        case 'daily':
+            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+            break;
+        case 'weekly':
+            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+            break;
+        case 'biweekly':
+            // Calculate interval for every 2 weeks (14 days)
+            wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
+            break;
+        case 'monthly':
+            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+            break;
+        case 'yearly':
+            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+            break;
+        default:
+            // Handle invalid interval
+    }
+
+    // Return the hook name for later use
+    return $hook_name;
+}
+
+// Callback function to add post when scheduled event is triggered
+function my_custom_post_event_callback($params) {
+    // Add your code to programmatically add a post here
+    set_next_todo_and_actions($params);
+}
+
+// Add the action with the dynamic hook name
+add_action($hook_name, 'my_custom_post_event_callback');
+/*
+function select_doc_report_frequence_setting_option($selected_option=false) {
     $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
     $selected = ($selected_option == "yearly") ? 'selected' : '';
     $options .= '<option value="yearly" '.$selected.' />' . __( '每年', 'your-text-domain' ) . '</option>';
@@ -978,3 +1042,4 @@ function my_custom_post_event_callback($params) {
     set_next_todo_and_actions($params);
 }
 add_action($hook_name, 'my_custom_post_event_callback');
+*/
