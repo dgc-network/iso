@@ -944,7 +944,7 @@ function schedule_post_event_callback($args) {
 
     // Concatenate the prefix with the start time
     //$hook_name = $hook_prefix . $start_time;
-    $hook_name .= $start_time;
+    //$hook_name .= $start_time;
     
     // Schedule the event based on the selected interval
     switch ($interval) {
