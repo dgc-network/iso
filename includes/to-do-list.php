@@ -933,16 +933,18 @@ function select_doc_report_frequence_setting_option($selected_option = false) {
 
 // Define a global variable to store the hook name
 global $hook_name;
+$hook_name = 'my_custom_post_event_';
 
 function schedule_post_event_callback($args) {
     $interval = $args['interval'];
     $start_time = $args['start_time'];
 
     // Define the prefix for the hook name
-    $hook_prefix = 'my_custom_post_event_';
+    //$hook_prefix = 'my_custom_post_event_';
 
     // Concatenate the prefix with the start time
-    $hook_name = $hook_prefix . $start_time;
+    //$hook_name = $hook_prefix . $start_time;
+    $hook_name .= $start_time;
     
     // Schedule the event based on the selected interval
     switch ($interval) {
