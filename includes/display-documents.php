@@ -432,12 +432,14 @@ function display_document_dialog($doc_id=false) {
         </div>
         <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
         <div id="doc-report-div1" style="display:none;">            
-            <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-            <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-            <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" /><br>
-            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
             <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-frequence-setting"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+            <div id="frquence-start-time-div" style="display:none;">
+                <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
+                <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
+                <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+            </div>
         </div>
         <hr>
         <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />

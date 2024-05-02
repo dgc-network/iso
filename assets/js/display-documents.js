@@ -177,6 +177,11 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                 });
 
+                $("#doc-report-frequence-settingl").on("change", function () {
+                    if ($(this).val()) $("#frquence-start-time-div").show();
+                    else $("#frquence-start-time-div").hide();
+                });
+
                 $("#save-document-button").on("click", function() {
                     const ajaxData = {
                         'action': 'set_document_dialog_data',
