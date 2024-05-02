@@ -38,6 +38,44 @@ function register_todo_post_type() {
 }
 add_action('init', 'register_todo_post_type');
 
+function add_todo_settings_metabox() {
+    add_meta_box(
+        'todo_settings_id',
+        'Todo Settings',
+        'todo_settings_content',
+        'todo',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_todo_settings_metabox');
+
+function todo_settings_content($post) {
+    $job_id = esc_attr(get_post_meta($post->ID, 'job_id', true));
+    $doc_id = esc_attr(get_post_meta($post->ID, 'doc_id', true));
+    $report_id = esc_attr(get_post_meta($post->ID, 'report_id', true));
+    $todo_due = esc_attr(get_post_meta($post->ID, 'todo_due', true));
+    $submit_user = esc_attr(get_post_meta($post->ID, 'submit_user', true));
+    $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
+    $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
+    ?>
+    <label for="job_id"> job_id: </label>
+    <input type="text" id="job_id" name="job_id" value="<?php echo $job_id;?>" style="width:100%" >
+    <label for="doc_id"> doc_id: </label>
+    <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
+    <label for="report_id"> report_id: </label>
+    <input type="text" id="report_id" name="report_id" value="<?php echo $report_id;?>" style="width:100%" >
+    <label for="todo_due"> todo_due: </label>
+    <input type="text" id="todo_due" name="todo_due" value="<?php echo $todo_due;?>" style="width:100%" >
+    <label for="submit_user"> submit_user: </label>
+    <input type="text" id="submit_user" name="submit_user" value="<?php echo $submit_user;?>" style="width:100%" >
+    <label for="submit_action"> submit_action: </label>
+    <input type="text" id="submit_action" name="submit_action" value="<?php echo $submit_action;?>" style="width:100%" >
+    <label for="submit_time"> submit_time: </label>
+    <input type="text" id="submit_time" name="submit_time" value="<?php echo $submit_time;?>" style="width:100%" >
+    <?php
+}
+
 // Register action post type
 function register_action_post_type() {
     $labels = array(
@@ -468,7 +506,7 @@ function display_todo_dialog($todo_id) {
         wp_reset_postdata();
     }
 
-    if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button--1" value="OK" style="margin:5px;" />';
+    if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button-0" value="OK" style="margin:5px;" />';
     ?>
     </fieldset>
     <?php
@@ -497,6 +535,7 @@ function set_todo_dialog_data() {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $todo_id = get_post_meta($action_id, 'todo_id', true);
+
         // Create new todo if the meta key 'todo_id' does not exist
         if ( empty( $todo_id ) ) {
             $job_id = get_post_meta($action_id, 'job_id', true);
@@ -505,7 +544,7 @@ function set_todo_dialog_data() {
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
             if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-            if ($action_id==-1) $todo_title = '文件發行';
+            //if ($action_id==0) $todo_title = '文件發行';
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
@@ -517,6 +556,7 @@ function set_todo_dialog_data() {
             if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
             if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
         }
+
         // Update current todo
         update_post_meta( $todo_id, 'submit_user', $current_user_id);
         update_post_meta( $todo_id, 'submit_action', $action_id);
@@ -590,18 +630,18 @@ function set_next_todo_and_actions($args = array()) {
         }
     }
 
-    if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
-    if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
-
     if ($action_id==0) {
         $next_job = isset($args['start_job']) ? $args['start_job'] : 0;
         $todo_title = get_the_title($next_job);
         $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
         update_post_meta( $doc_id, 'todo_status', -1);
-        $next_leadtime = 0;
+        $next_leadtime = 86400;
         $current_user_id = 1;
     }
     
+    if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
+    if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
+
     // Create a new To-do for next_job
     $new_post = array(
         'post_title'    => $todo_title,
@@ -610,16 +650,17 @@ function set_next_todo_and_actions($args = array()) {
         'post_type'     => 'todo',
     );    
     $new_todo_id = wp_insert_post($new_post);
-    update_post_meta( $new_todo_id, 'job_id', $next_job);
-    if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id);
-    if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id);
-    if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id);
-    update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime);
+    update_post_meta( $new_todo_id, 'job_id', $next_job );
+    if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id );
+    if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
+    if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
+    update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
 
     if ($next_job==-1 || $next_job==-2) {
+        notice_the_persons_in_site($new_todo_id, $next_job);
         update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
+        update_post_meta( $new_todo_id, 'submit_action', $action_id);
         update_post_meta( $new_todo_id, 'submit_time', time());
-        notice_the_persons_in_site($new_todo_id,$next_job);
         if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
     }
@@ -721,10 +762,10 @@ function notice_the_persons_in_site($todo_id=0,$job_id=0) {
     $site_id = get_post_meta($doc_id, 'site_id', true);
     $doc_title = get_post_meta($doc_id, 'doc_title', true);
     if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
-    $todo_submit = get_post_meta($todo_id, 'submit_date', true);
-    $submit_date = wp_date( get_option('date_format'), $todo_submit );    
-    $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_date ).'.';
-    $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_date );
+    $todo_submit = get_post_meta($todo_id, 'submit_time', true);
+    $submit_time = wp_date( get_option('date_format'), $todo_submit );    
+    $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
+    $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );
     if ($job_id==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
     if ($job_id==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
     $link_uri = home_url().'/display-documents/?_id='.$doc_id;
