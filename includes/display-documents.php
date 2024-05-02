@@ -435,7 +435,7 @@ function display_document_dialog($doc_id=false) {
             <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
             <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
             <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" /><br>
-            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" /><br>
+            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
             <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label><br>
             <select id="doc-report-frequence-setting"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
         </div>
@@ -1527,12 +1527,12 @@ function set_doc_report_dialog_data() {
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 
-function set_todo_for_doc_report() {
+function set_todo_from_doc_report() {
     if ( isset($_POST['_action_id']) && isset($_POST['_report_id']) ) {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
-        //$doc_id = sanitize_text_field($_POST['_doc_id']);
+        //$todo_id = get_post_meta($report_id, 'todo_id', true);
         $job_id = get_post_meta($action_id, 'job_id', true);
         $todo_title = get_the_title($job_id);
         if ($action==-1) $todo_title = '文件發行';
@@ -1565,8 +1565,8 @@ function set_todo_for_doc_report() {
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_todo_for_doc_report', 'set_todo_for_doc_report' );
-add_action( 'wp_ajax_nopriv_set_todo_for_doc_report', 'set_todo_for_doc_report' );
+add_action( 'wp_ajax_set_todo_from_doc_report', 'set_todo_from_doc_report' );
+add_action( 'wp_ajax_nopriv_set_todo_from_doc_report', 'set_todo_from_doc_report' );
 
 function get_doc_report_list_data() {
     $result = array();

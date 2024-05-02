@@ -568,7 +568,7 @@ add_action( 'wp_ajax_nopriv_set_todo_dialog_data', 'set_todo_dialog_data' );
 
 function set_next_todo_and_actions($args = array()) {
     // 1. come from set_todo_dialog_data(), create a next_todo base on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
-    // 2. come from set_todo_for_doc_report(), create a next_todo base on the $args['action_id'] and $args['prev_report_id']
+    // 2. come from set_todo_from_doc_report(), create a next_todo base on the $args['action_id'] and $args['prev_report_id']
     // 3. come from set_document_dialog_data(), create a next_todo base on the $args['start_job'] and $args['doc_id']
 
     $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
