@@ -31,7 +31,7 @@ function register_todo_post_type() {
         'has_archive'        => true,
         'hierarchical'       => false,
         'menu_position'      => null,
-        'supports'           => array( 'title', 'editor', 'custom-fields' ),
+        'supports'           => array( 'title', 'custom-fields' ),
         //'show_in_menu'       => false, // Set this to false to hide from the admin menu
     );
     register_post_type('todo', $args);
@@ -718,6 +718,7 @@ function get_document_for_job($job_id) {
 // Notice the persons in charge the job
 function notice_the_responsible_persons($todo_id=0) {
     $todo_title = get_the_title($todo_id);
+    $job_id = get_post_meta($todo_id, 'job_id', true);
     $doc_id = get_post_meta($todo_id, 'doc_id', true);
     $report_id = get_post_meta($todo_id, 'report_id', true);
     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
