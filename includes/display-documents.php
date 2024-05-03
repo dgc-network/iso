@@ -1435,12 +1435,12 @@ function display_doc_report_dialog($report_id=false) {
     
                 case ($field_type=='radio'):
                     if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
-                    if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
-                    $field_value = get_post_meta($report_id, $field_name, true);
+                    //if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
+                    //$field_value = get_post_meta($report_id, $field_name, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     ?>                    
                     <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($default_value);?></label><br>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                     <?php
                     $prev_field_name=substr($field_name, 0, 5);
                     $x += 1;
