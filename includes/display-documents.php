@@ -7,8 +7,13 @@ if (!class_exists('display_documents')) {
     class display_documents {
         // Class constructor
         public function __construct() {
-            add_shortcode( 'display-documents', array( $this, 'display_shortcode' ) );
-            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
+            add_action( 'init', array( $this, 'register_document_post_type' ) );
+            add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
+            add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
+            add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
+            add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
+
             //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
             //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
         }
@@ -55,6 +60,105 @@ if (!class_exists('display_documents')) {
             }
         }
 
+        // Register document post type
+        function register_document_post_type() {
+            $labels = array(
+                'name'               => _x( 'Documents', 'post type general name', 'your-text-domain' ),
+                'singular_name'      => _x( 'Document', 'post type singular name', 'your-text-domain' ),
+                'add_new'            => _x( 'Add New Document', 'book', 'your-text-domain' ),
+                'add_new_item'       => __( 'Add New Document', 'your-text-domain' ),
+                'edit_item'          => __( 'Edit Document', 'your-text-domain' ),
+                'new_item'           => __( 'New Document', 'your-text-domain' ),
+                'all_items'          => __( 'All Documents', 'your-text-domain' ),
+                'view_item'          => __( 'View Document', 'your-text-domain' ),
+                'search_items'       => __( 'Search Documents', 'your-text-domain' ),
+                'not_found'          => __( 'No documents found', 'your-text-domain' ),
+                'not_found_in_trash' => __( 'No documents found in the Trash', 'your-text-domain' ),
+                'parent_item_colon'  => '',
+                'menu_name'          => 'Documents'
+            );
+        
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'supports'      => array( 'title', 'custom-fields' ),
+                'taxonomies'    => array( 'category', 'post_tag' ),
+                'has_archive'   => true,
+                'rewrite'       => array( 'slug' => 'documents' ),
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'document', $args );
+        }
+        
+        function add_document_settings_metabox() {
+            add_meta_box(
+                'document_settings_id',
+                'Document Settings',
+                array($this, 'document_settings_content'),
+                'document',
+                'normal',
+                'high'
+            );
+        }
+        
+        function document_settings_content($post) {
+            $doc_title = esc_attr(get_post_meta($post->ID, 'doc_title', true));
+            ?>
+            <label for="doc_title"> doc_title: </label>
+            <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
+            <?php
+        }
+        
+        // Register doc report post type
+        function register_doc_report_post_type() {
+            $labels = array(
+                'menu_name'     => _x('doc-report', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'doc-reports'),
+                'supports'      => array('title', 'editor', 'custom-fields'),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'doc-report', $args );
+        }
+        
+        // Register doc field post type
+        function register_doc_field_post_type() {
+            $labels = array(
+                'menu_name'     => _x('doc-field', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'doc-fields'),
+                'supports'      => array('title', 'editor', 'custom-fields'),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'doc-field', $args );
+        }
+        
+        // Register doc category post type
+        function register_doc_category_post_type() {
+            $labels = array(
+                'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'doc-categories'),
+                'supports'      => array('title', 'editor', 'custom-fields'),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'doc-category', $args );
+        }
+        
+
+        
         // Data migration
         function data_migration() {
             // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
@@ -130,117 +234,11 @@ if (!class_exists('display_documents')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;    
-            }
-        
+            }        
         }
-        //add_shortcode('display-documents', 'display_documents_shortcode');
-        
-
     }
     $my_class = new display_documents();
 }
-// Register custom post type
-function register_document_post_type() {
-    $labels = array(
-        'name'               => _x( 'Documents', 'post type general name', 'your-text-domain' ),
-        'singular_name'      => _x( 'Document', 'post type singular name', 'your-text-domain' ),
-        'add_new'            => _x( 'Add New Document', 'book', 'your-text-domain' ),
-        'add_new_item'       => __( 'Add New Document', 'your-text-domain' ),
-        'edit_item'          => __( 'Edit Document', 'your-text-domain' ),
-        'new_item'           => __( 'New Document', 'your-text-domain' ),
-        'all_items'          => __( 'All Documents', 'your-text-domain' ),
-        'view_item'          => __( 'View Document', 'your-text-domain' ),
-        'search_items'       => __( 'Search Documents', 'your-text-domain' ),
-        'not_found'          => __( 'No documents found', 'your-text-domain' ),
-        'not_found_in_trash' => __( 'No documents found in the Trash', 'your-text-domain' ),
-        'parent_item_colon'  => '',
-        'menu_name'          => 'Documents'
-    );
-
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'supports'      => array( 'title', 'custom-fields' ),
-        'taxonomies'    => array( 'category', 'post_tag' ),
-        'has_archive'   => true,
-        'rewrite'       => array( 'slug' => 'documents' ),
-        'show_in_menu'  => false,
-    );
-    register_post_type( 'document', $args );
-}
-add_action('init', 'register_document_post_type');
-
-function add_document_settings_metabox() {
-    add_meta_box(
-        'document_settings_id',
-        'Document Settings',
-        'document_settings_content',
-        'document',
-        'normal',
-        'high'
-    );
-}
-add_action('add_meta_boxes', 'add_document_settings_metabox');
-
-function document_settings_content($post) {
-    //wp_nonce_field('site_settings_nonce', 'site_settings_nonce');
-    $doc_title = esc_attr(get_post_meta($post->ID, 'doc_title', true));
-    ?>
-    <label for="doc_title"> doc_title: </label>
-    <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
-    <?php
-}
-
-// Register doc report post type
-function register_doc_report_post_type() {
-    $labels = array(
-        'menu_name'     => _x('doc-report', 'admin menu', 'textdomain'),
-    );
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'rewrite'       => array('slug' => 'doc-reports'),
-        'supports'      => array('title', 'editor', 'custom-fields'),
-        'has_archive'   => true,
-        'show_in_menu'  => false,
-    );
-    register_post_type( 'doc-report', $args );
-}
-add_action('init', 'register_doc_report_post_type');
-
-// Register doc field post type
-function register_doc_field_post_type() {
-    $labels = array(
-        'menu_name'     => _x('doc-field', 'admin menu', 'textdomain'),
-    );
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'rewrite'       => array('slug' => 'doc-fields'),
-        'supports'      => array('title', 'editor', 'custom-fields'),
-        'has_archive'   => true,
-        'show_in_menu'  => false,
-    );
-    register_post_type( 'doc-field', $args );
-}
-add_action('init', 'register_doc_field_post_type');
-
-// Register doc category post type
-function register_doc_category_post_type() {
-    $labels = array(
-        'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
-    );
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'rewrite'       => array('slug' => 'doc-categories'),
-        'supports'      => array('title', 'editor', 'custom-fields'),
-        'has_archive'   => true,
-        'show_in_menu'  => false,
-    );
-    register_post_type( 'doc-category', $args );
-}
-add_action('init', 'register_doc_category_post_type');
 
 function display_document_list() {
     if (isset($_GET['_is_admin'])) {
