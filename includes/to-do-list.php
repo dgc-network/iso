@@ -20,7 +20,7 @@ if (!class_exists('to_do_list')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
-                if (isset($_GET['_search'])) display_to_do_list();
+                //if (isset($_GET['_search'])) $this->display_to_do_list();
         
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
@@ -31,7 +31,8 @@ if (!class_exists('to_do_list')) {
         
                 if ($_GET['_select_todo']=='1') display_signature_record();
         
-                if ($_GET['_select_todo']!='1' && !isset($_GET['_search']) && !isset($_GET['_id'])) display_to_do_list();
+                //if ($_GET['_select_todo']!='1' && !isset($_GET['_search']) && !isset($_GET['_id'])) $this->display_to_do_list();
+                if ($_GET['_select_todo']!='1' && !isset($_GET['_id'])) $this->display_to_do_list();
         
             } else {
                 user_did_not_login_yet();
@@ -125,6 +126,114 @@ if (!class_exists('to_do_list')) {
             register_post_type( 'action', $args );
         }
         
+        function display_to_do_list() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $user_data = get_userdata( $current_user_id );
+            ?>
+            <div class="ui-widget" id="result-container">
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
+            <fieldset>
+                <div id="todo-setting-div" style="display:none">
+                <fieldset>
+                    <label for="display-name">Name : </label>
+                    <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <label for="site-title"> Site: </label>
+                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                </fieldset>
+                </div>
+            
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <select id="select-todo">
+                            <option value="0">To-do list</option>
+                            <option value="1">Signature record</option>
+                            <option value="2">...</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right">
+                        <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                        <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                    </div>
+                </div>
+        
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    // Define the custom pagination parameters
+                    $posts_per_page = get_option('operation_row_counts');
+                    $current_page = max(1, get_query_var('paged')); // Get the current page number
+                    $query = retrieve_todo_list_data($current_page);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+        
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $todo_id = get_the_ID();
+                            $todo_title = get_the_title();
+                            $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
+                            if ($todo_due < time()) $todo_due_color='color:red;';
+                            $todo_due = wp_date(get_option('date_format'), $todo_due);
+                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
+                            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                            
+                            if (empty($doc_id)) {
+                                $doc_id = get_the_ID();
+                                $job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                                $todo_title = get_the_title($job_id);
+                                if ($job_id==-1) $todo_title='文件發行';
+                                $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
+                                if ($todo_due==-1) $todo_due='發行';
+                            }
+        
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                            if ($is_doc_report==1) {
+                                $doc_title .= '(#New report)';
+                            } else {
+                                $doc_title .= '('.$doc_number.')';
+                            }
+                            if ($report_id) $doc_title .= '(Report#' . $report_id . ')';
+                            
+                            ?>
+                            <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
+                                <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
+                                <td><?php echo esc_html($doc_title); ?></td>
+                                <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+                            </tr>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php
+                // Display pagination links
+                echo '<div class="pagination">';
+                if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+                if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                echo '</div>';
+                ?>
+            </fieldset>
+            </div>
+            <?php
+        }
+        
+        
 
         // Data migration
         function data_migration() {
@@ -134,113 +243,6 @@ if (!class_exists('to_do_list')) {
 }
 
 // Shortcode to display To-do list on frontend
-
-function display_to_do_list() {
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    $user_data = get_userdata( $current_user_id );
-    ?>
-    <div class="ui-widget" id="result-container">
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
-    <fieldset>
-        <div id="todo-setting-div" style="display:none">
-        <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-            <label for="site-title"> Site: </label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-        </fieldset>
-        </div>
-    
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <div>
-                <select id="select-todo">
-                    <option value="0">To-do list</option>
-                    <option value="1">Signature record</option>
-                    <option value="2">...</option>
-                </select>
-            </div>
-            <div style="text-align: right">
-                <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-            </div>
-        </div>
-
-        <table class="ui-widget" style="width:100%;">
-            <thead>
-                <tr>
-                    <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
-            $current_page = max(1, get_query_var('paged')); // Get the current page number
-            $query = retrieve_todo_list_data($current_page);
-            $total_posts = $query->found_posts;
-            $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
-
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $todo_id = get_the_ID();
-                    $todo_title = get_the_title();
-                    $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-                    if ($todo_due < time()) $todo_due_color='color:red;';
-                    $todo_due = wp_date(get_option('date_format'), $todo_due);
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
-                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    
-                    if (empty($doc_id)) {
-                        $doc_id = get_the_ID();
-                        $job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                        $todo_title = get_the_title($job_id);
-                        if ($job_id==-1) $todo_title='文件發行';
-                        $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
-                        if ($todo_due==-1) $todo_due='發行';
-                    }
-
-                    $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                    if ($is_doc_report==1) {
-                        $doc_title .= '(#New report)';
-                    } else {
-                        $doc_title .= '('.$doc_number.')';
-                    }
-                    if ($report_id) $doc_title .= '(Report#' . $report_id . ')';
-                    
-                    ?>
-                    <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
-                        <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
-                        <td><?php echo esc_html($doc_title); ?></td>
-                        <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
-                    </tr>
-                    <?php
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            ?>
-            </tbody>
-        </table>
-        <?php
-        // Display pagination links
-        echo '<div class="pagination">';
-        if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-        if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
-        echo '</div>';
-        ?>
-    </fieldset>
-    </div>
-    <?php
-}
 
 function get_post_type_meta_keys($post_type) {
     global $wpdb;
