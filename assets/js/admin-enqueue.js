@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                 get_site_action_list($("#site-id").val());
             },
             error: function(error){
-                alert(error);
+                //alert(error);
             }
         });    
     });
@@ -92,7 +92,7 @@ jQuery(document).ready(function($) {
                         get_site_action_list($("#site-id").val());
                     },
                     error: function(error){
-                        alert(error);
+                        //alert(error);
                     }
                 });
             }
@@ -128,7 +128,7 @@ jQuery(document).ready(function($) {
                 activate_site_actions_data();
             },
             error: function(error){
-                alert(error);
+                //alert(error);
             }
         });
     }

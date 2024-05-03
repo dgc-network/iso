@@ -8,9 +8,13 @@ if (!class_exists('display_profiles')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
-            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
-            //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            add_action( 'init', array( $this, 'register_job_post_type' ) );
+
+            add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
+            add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
+            add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
+            add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
+
         }
 
         // Shortcode to display
@@ -18,232 +22,277 @@ if (!class_exists('display_profiles')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
-                if ($_GET['_initial']=='true') echo display_site_profile(true);
-                if ($_GET['_select_profile']=='1') echo display_site_profile();
+                if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
+                if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo display_doc_category_list();
-                if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo display_my_profile();
+                if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
                 echo '</div>';
             } else {
                 user_did_not_login_yet();
             }
         }
+
+        // Register job post type
+        function register_job_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'jobs'),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'job', $args );
+        }
+        
+        function display_my_profile() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            $user_data = get_userdata( $current_user_id );
+            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+            $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
+            ob_start();
+            ?>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
+            <fieldset>
+                <label for="display-name">Name : </label>
+                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="user-email">Email : </label>
+                <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th>My</th>
+                        <th>Job</th>
+                        <th>Description</th>
+                    </thead>
+                    <tbody>
+                    <?php    
+                    // Accessing elements of the array
+                    if (is_array($user_job_ids)) {
+                        foreach ($user_job_ids as $job_id) {
+                            $job_site = get_post_meta($job_id, 'site_id', true);
+                            $job_number = get_post_meta($job_id, 'job_number', true);
+                            $job_title = get_the_title($job_id);
+                            $job_title .= '('.$job_number.')';
+                            $job_content = get_post_field('post_content', $job_id);
+                            if ($job_site==$site_id) {
+                            ?>
+                            <tr>
+                                <td style="text-align:center;"><input type="checkbox" checked /></td>
+                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                                <td><?php echo wp_kses_post($job_content);?></td>
+                            </tr>
+                            <?php
+                            }
+                        }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+                </fieldset>
+                <label for="site-title"> Site: </label>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <hr>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <select id="select-profile">
+                            <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                            <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                            <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                            <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                        </select>
+                    </div>
+                    <div style="text-align: right">
+                        <button type="submit" id="my-profile-submit">Submit</button>
+                    </div>
+                </div>    
+            </fieldset>
+            <?php
+            $html = ob_get_clean();
+            return $html;
+        }
+        
+        function set_my_profile_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_display_name'])) {
+                $current_user_id = get_current_user_id();
+                wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
+                wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+        
+        function display_site_profile($initial=false) {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+            $user_data = get_userdata($current_user_id);
+        
+            // Check if the user is administrator or initial...
+            if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
+                ?>
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
+                <fieldset>
+                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                    <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
+                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                    <div id="site-hint" style="display:none; color:#999;"></div>
+        
+                    <div id="site-image-container">
+                        <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+                    </div>
+                    <div id="site-image-url" style="display:none;">
+                    <fieldset>
+                        <label for="image-url">Image URL:</label>
+                        <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+                        <button id="set-image-url" class="button">Set</button>
+                    </fieldset>
+                    </div>
+        
+                    <label for="site-members"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
+                    <fieldset style="margin-top:5px;">
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Admin</th>
+                        </thead>
+                        <tbody>
+                        <?php
+        
+                        $users = get_users(); // Initialize with all users
+                        // If the current user is not an administrator, filter by site_id
+                        if (!current_user_can('administrator')) {
+                            $meta_query_args = array(
+                                array(
+                                    'key'     => 'site_id',
+                                    'value'   => $site_id,
+                                    'compare' => '=',
+                                ),
+                            );
+                            $users = get_users(array('meta_query' => $meta_query_args));
+                        }
+                        // Loop through the users
+                        foreach ($users as $user) {
+                            $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
+                            $user_site = get_user_meta($user->ID, 'site_id', true);
+                            $is_other_site = ($user_site == $site_id) ? '' : '*';
+                            $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
+                            ?>
+                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
+                                <td style="text-align:center;"><?php echo $is_other_site.$user->display_name; ?></td>
+                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
+                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    </fieldset>
+                    <?php display_new_user_dialog($site_id);?>
+                    <?php $this->display_user_dialog($site_id);?>
+        
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div>
+                            <select id="select-profile">
+                                <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                                <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                                <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                                <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                                <option value="4">...</option>
+                            </select>
+                        </div>
+                        <div style="text-align: right">
+                            <button type="submit" id="site-profile-submit">Submit</button>
+                        </div>
+                    </div>
+        
+                </fieldset>
+                <?php
+            } else {
+                ?>
+                <p>You do not have permission to access this page.</p>
+                <?php
+            }
+            $html = ob_get_clean();
+            return $html;
+        }
+        
+        function get_site_profile_data() {
+            $response = array('html_contain' => $this->display_site_profile());
+            wp_send_json($response);
+        }
+        
+        function display_user_dialog($site_id) {
+            ?>
+            <div id="site-user-dialog" title="User dialog" style="display:none;">
+            <fieldset>
+                <input type="hidden" id="user-id" />
+                <label for="display-name">Name:</label>
+                <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
+                <label for="user-email">Email:</label>
+                <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
+                <input type="checkbox" id="is-site-admin" />
+                <label for="is-site-admin">Is site admin</label><br>
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th></th>
+                            <th>Job</th>
+                            <th>Description</th>
+                        </thead>
+                        <tbody id="user-job-list">
+                        </tbody>
+                    </table>
+                </fieldset>
+                <?php
+                if (current_user_can('administrator')) {
+                    ?>
+                    <label for="select-site">Site:</label>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
+                        <option value="">Select Site</option>
+                    <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                    }
+                    echo '</select>';
+                }
+                ?>
+            </fieldset>
+            </div>
+            <?php
+        }
+        
+        
+        
+
     }
     $my_class = new display_profiles();
 }
 
 
-// Register job post type
-function register_job_post_type() {
-    $labels = array(
-        'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
-    );
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'rewrite'       => array('slug' => 'jobs'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
-        'has_archive'   => true,
-        'show_in_menu'  => false, // Set this to false to hide from the admin menu
-    );
-    register_post_type( 'job', $args );
-}
-add_action('init', 'register_job_post_type');
-
 // Shortcode to display my jobs on frontend
-function display_my_profile() {
-    ob_start();
-    if (is_user_logged_in()) {
-        // Check if the user is logged in
-        $current_user_id = get_current_user_id();
-        $site_id = get_user_meta($current_user_id, 'site_id', true);
-        $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
-        $image_url = get_post_meta($site_id, 'image_url', true);
-        $user_data = get_userdata( $current_user_id );
-        $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-        $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
-        ?>
-        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
-        <fieldset>
-            <label for="display-name">Name : </label>
-            <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
-            <label for="user-email">Email : </label>
-            <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-            <fieldset style="margin-top:5px;">
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th>My</th>
-                    <th>Job</th>
-                    <th>Description</th>
-                </thead>
-                <tbody>
-                <?php
-
-                // Accessing elements of the array
-                if (is_array($user_job_ids)) {
-                    foreach ($user_job_ids as $job_id) {
-                        // Do something with each job ID
-                        $job_site = get_post_meta($job_id, 'site_id', true);
-                        $job_number = get_post_meta($job_id, 'job_number', true);
-                        $job_title = get_the_title($job_id);
-                        $job_title .= '('.$job_number.')';
-                        $job_content = get_post_field('post_content', $job_id);
-                        if ($job_site==$site_id) {
-                        ?>
-                        <tr id="my-job-list" data-job-id="<?php echo esc_attr($job_id);?>">
-                            <td style="text-align:center;"><input type="checkbox" checked /></td>
-                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                            <td><?php echo wp_kses_post($job_content);?></td>
-                        </tr>
-                        <?php
-                        }
-                    }
-                }
-                ?>
-                </tbody>
-            </table>
-            </fieldset>
-            <label for="site-title"> Site: </label>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-            <hr>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                        <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                        <option value="4">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                    <button type="submit" id="my-profile-submit">Submit</button>
-                </div>
-            </div>
-
-        </fieldset>
-        <?php
-    }
-    $html = ob_get_clean();
-    return $html;
-}
-
-function set_my_profile_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if (isset($_POST['_display_name'])) {
-        $current_user_id = get_current_user_id();
-        wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
-        wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
-        $response = array('success' => true);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_my_profile_data', 'set_my_profile_data' );
-add_action( 'wp_ajax_nopriv_set_my_profile_data', 'set_my_profile_data' );
-
-function display_site_profile($initial=false) {
-    ob_start();
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-    $user_data = get_userdata($current_user_id);
-
-    // Check if the user is administrator or initial...
-    if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
-        ?>
-        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-        <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
-        <fieldset>
-            <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-            <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
-            <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-            <div id="site-hint" style="display:none; color:#999;"></div>
-
-            <div id="site-image-container">
-                <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
-            </div>
-            <div id="site-image-url" style="display:none;">
-            <fieldset>
-                <label for="image-url">Image URL:</label>
-                <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
-                <button id="set-image-url" class="button">Set</button>
-            </fieldset>
-            </div>
-
-            <label for="site-members"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
-            <fieldset style="margin-top:5px;">
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Admin</th>
-                </thead>
-                <tbody>
-                <?php
-
-                $users = get_users(); // Initialize with all users
-                // If the current user is not an administrator, filter by site_id
-                if (!current_user_can('administrator')) {
-                    $meta_query_args = array(
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => $site_id,
-                            'compare' => '=',
-                        ),
-                    );
-                    $users = get_users(array('meta_query' => $meta_query_args));
-                }
-                // Loop through the users
-                foreach ($users as $user) {
-                    $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
-                    $user_site = get_user_meta($user->ID, 'site_id', true);
-                    $is_other_site = ($user_site == $site_id) ? '' : '*';
-                    $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
-                    ?>
-                    <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                        <td style="text-align:center;"><?php echo $is_other_site.$user->display_name; ?></td>
-                        <td style="text-align:center;"><?php echo $user->user_email; ?></td>
-                        <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
-                    </tr>
-                    <?php
-                }
-                ?>
-                </tbody>
-            </table>
-            <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            </fieldset>
-            <?php display_new_user_dialog($site_id);?>
-            <?php display_user_dialog($site_id);?>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <select id="select-profile">
-                        <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                        <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                        <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                        <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                        <option value="4">...</option>
-                    </select>
-                </div>
-                <div style="text-align: right">
-                    <button type="submit" id="site-profile-submit">Submit</button>
-                </div>
-            </div>
-
-        </fieldset>
-        <?php
-    } else {
-        ?>
-        <p>You do not have permission to access this page.</p>
-        <?php
-    }
-    $html = ob_get_clean();
-    return $html;
-}
-
 function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     // Check if the user is trying to view other users
     if (isset($args[0]) && $args[0] === 'list_users') {
@@ -257,13 +306,6 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     return $allcaps;
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-
-function get_site_profile_data() {
-    $response = array('html_contain' => display_site_profile());
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_site_profile_data', 'get_site_profile_data' );
-add_action( 'wp_ajax_nopriv_get_site_profile_data', 'get_site_profile_data' );
 
 function display_new_user_dialog($site_id) {
     ?>
@@ -279,52 +321,6 @@ function display_new_user_dialog($site_id) {
         <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
         <input type="checkbox" id="new-is-site-admin" />
         <label for="new-is-site-admin">Is site admin</label><br>
-    </fieldset>
-    </div>
-    <?php
-}
-
-function display_user_dialog($site_id) {
-    ?>
-    <div id="site-user-dialog" title="User dialog" style="display:none;">
-    <fieldset>
-        <input type="hidden" id="user-id" />
-        <label for="display-name">Name:</label>
-        <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
-        <label for="user-email">Email:</label>
-        <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
-        <input type="checkbox" id="is-site-admin" />
-        <label for="is-site-admin">Is site admin</label><br>
-        <fieldset>
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th></th>
-                    <th>Job</th>
-                    <th>Description</th>
-                </thead>
-                <tbody id="user-job-list">
-                </tbody>
-            </table>
-        </fieldset>
-        <?php
-        if (current_user_can('administrator')) {
-            ?>
-            <label for="select-site">Site:</label>
-            <select id="select-site" class="text ui-widget-content ui-corner-all" >
-                <option value="">Select Site</option>
-            <?php
-            $site_args = array(
-                'post_type'      => 'site',
-                'posts_per_page' => -1,
-            );
-            $sites = get_posts($site_args);    
-            foreach ($sites as $site) {
-                $selected = ($site_id == $site->ID) ? 'selected' : '';
-                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-            }
-            echo '</select>';
-        }
-        ?>
     </fieldset>
     </div>
     <?php

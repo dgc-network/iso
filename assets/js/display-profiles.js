@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });
     }
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });
     }
@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });
     }
@@ -145,14 +145,14 @@ jQuery(document).ready(function($) {
                             },
                             error: function (error) {
                                 console.error(error);
-                                alert(error);
+                                //alert(error);
                             }
                         });            
                     });            
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -177,7 +177,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });            
         });            
@@ -199,7 +199,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });    
         });
@@ -217,7 +217,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });    
         });
@@ -282,7 +282,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -308,7 +308,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -331,7 +331,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -357,12 +357,10 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#new-user-dialog").dialog('close');
-                            console.log(response);
                             get_site_profile_data();
                         },
                         error: function (error) {
                             console.error(error);
-                            alert(error);
                         }
                     });
                 },
@@ -393,7 +391,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function (error) {
                             console.error(error);
-                            alert(error);
+                            //alert(error);
                         }
                     });
                 },
@@ -409,12 +407,10 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#site-user-dialog").dialog('close');
-                                console.log(response);
                                 get_site_profile_data();
                             },
                             error: function (error) {
                                 console.error(error);
-                                alert(error);
                             }
                         });
                     }
@@ -446,7 +442,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function (error) {
                             console.error(error);
-                            alert(error);
+                            //alert(error);
                         }
                     });
                 },
@@ -466,7 +462,7 @@ jQuery(document).ready(function($) {
                             },
                             error: function (error) {
                                 console.error(error);
-                                alert(error);
+                                //alert(error);
                             }
                         });
                     }
@@ -496,7 +492,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function (error) {
                             console.error(error);
-                            alert(error);
+                            //alert(error);
                         }
                     });
                 },
@@ -516,7 +512,7 @@ jQuery(document).ready(function($) {
                             },
                             error: function (error) {
                                 console.error(error);
-                                alert(error);
+                                //alert(error);
                             }
                         });
                     }
@@ -540,7 +536,7 @@ jQuery(document).ready(function($) {
             },
             error: function(error){
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });    
     });
@@ -588,14 +584,14 @@ jQuery(document).ready(function($) {
                         },
                         error: function (error) {
                             console.error(error);
-                            alert(error);
+                            //alert(error);
                         }
                     });
                 });
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });
     }
@@ -624,7 +620,7 @@ jQuery(document).ready(function($) {
                     },
                     error: function (error) {
                         console.error(error);                    
-                        alert(error);
+                        //alert(error);
                     }
                 });            
             },
@@ -644,7 +640,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function(error){
                             console.error(error);
-                            alert(error);
+                            //alert(error);
                         }
                     });
                 }

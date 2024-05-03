@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });            
     });            
@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });            
     });            

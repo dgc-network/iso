@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
             },
             error: function(error){
                 console.error(error);
-                alert(error);
+                //alert(error);
             }
         });
     });
@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);                    
-                    alert(error);
+                    //alert(error);
                 }
             });    
         });
@@ -125,7 +125,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);                
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function (error) {
                             console.error(error);                    
-                            alert(error);
+                            //alert(error);
                         }
                     });            
                 },
@@ -174,7 +174,7 @@ jQuery(document).ready(function($) {
                             },
                             error: function(error){
                                 console.error(error);
-                                alert(error);
+                                //alert(error);
                             }
                         });
                     }
@@ -197,7 +197,7 @@ jQuery(document).ready(function($) {
                 activate_todo_dialog_data(response);
             },
             error: function (error) {
-                console.log(error);
+                console.error(error);
             }
         });
     }
