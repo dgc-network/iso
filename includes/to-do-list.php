@@ -421,7 +421,8 @@ if (!class_exists('to_do_list')) {
             <hr>
             <?php
             if ( $post_type === 'document' ) {
-                $query = retrieve_job_action_list_data($todo_id);
+                $display_profiles_class = new display_profiles();
+                $query = $display_profiles_class->retrieve_job_action_list_data($todo_id);
             } else {
                 $query = retrieve_todo_action_list_data($todo_id);
             }
@@ -615,7 +616,8 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job>0) {
         notice_the_responsible_persons($new_todo_id);
         // Create the Action list for next_job
-        $query = retrieve_job_action_list_data($next_job);
+        $display_profiles_class = new display_profiles();
+        $query = $display_profiles_class->retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $new_post = array(

@@ -391,6 +391,7 @@ function retrieve_document_data($current_page = 1) {
 
 function display_document_dialog($doc_id=false) {
     if ($doc_id) {
+        $display_profiles_class = new display_profiles();
         $doc_number = get_post_meta($doc_id, 'doc_number', true);
         $doc_title = get_post_meta($doc_id, 'doc_title', true);
         $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -444,7 +445,7 @@ function display_document_dialog($doc_id=false) {
             <?php echo display_doc_field_list($doc_id);?>
             <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
         </div>
-        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo select_site_job_option_data($start_job);?></select>
+        <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $display_profiles_class->select_site_job_option_data($start_job);?></select>
         <div id="doc-report-div1" style="display:none;">            
             <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
             <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
@@ -817,7 +818,8 @@ function get_shared_document($doc_id){
 }
 
 function select_doc_category_option_data($selected_option=0) {
-    $query = retrieve_doc_category_data();
+    $display_profiles_class = new display_profiles();
+    $query = $display_profiles_class->retrieve_doc_category_data();
     $options = '<option value="">Select category</option>';
     while ($query->have_posts()) : $query->the_post();
         $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1458,7 +1460,8 @@ function display_doc_report_dialog($report_id=false) {
         <div style="display:flex; justify-content:space-between; margin:5px;">
         <div>
         <?php
-        $query = retrieve_job_action_list_data($start_job);        
+        $display_profiles_class = new display_profiles();
+        $query = $display_profiles_class->retrieve_job_action_list_data($start_job);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';

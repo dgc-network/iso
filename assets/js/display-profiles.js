@@ -18,15 +18,10 @@ jQuery(document).ready(function($) {
                 '_user_email': $("#user-email").val(),
             },
             success: function (response) {
-                if (response.success) {
-                    alert("Success!");
-                } else {
-                    alert("Error: " + response.error);
-                }
+                console.log(response);
             },
             error: function (error) {
                 console.error(error);
-                alert("Error: Something went wrong!");
             }
         });            
     });
