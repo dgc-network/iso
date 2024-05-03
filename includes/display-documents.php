@@ -1179,7 +1179,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                     while ($query->have_posts()) : $query->the_post();
                         $report_id = get_the_ID();
                         echo '<tr id="edit-doc-report-'.$report_id.'">';
-                        // Reset the inner loop before using it again
                         $params = array(
                             'doc_id'     => $doc_id,
                             'is_listing'  => true,
@@ -1197,13 +1196,11 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                     echo '<input type="checkbox" '.$is_checked.' />';
                                 } elseif ($field_type=='radio') {
                                     echo '<input type="radio" '.$is_checked.' />';
-                                //    echo get_radio_checked_value($doc_id, $field_name, $report_id);
                                 } else {
                                     echo esc_html($field_value);
                                 }
                                 echo '</td>';
                             endwhile;                
-                            // Reset only the inner loop's data
                             wp_reset_postdata();
                         }
                         $todo_id = get_post_meta($report_id, 'todo_status', true);
@@ -1213,7 +1210,6 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                         echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                         echo '</tr>';
                     endwhile;                
-                    // Reset the main query's data
                     wp_reset_postdata();
                 }
                 ?>
@@ -1225,7 +1221,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     $html = ob_get_clean();
     return $html;
 }
-
+/*
 function get_radio_checked_value($doc_id, $field_name, $report_id) {
     // Define the query arguments
     $args = array(
@@ -1274,7 +1270,7 @@ function get_radio_checked_value($doc_id, $field_name, $report_id) {
         return false;
     }
 }
-
+*/
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
     $args = array(
         'post_type'      => 'doc-report',
@@ -1340,47 +1336,14 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     return $query;
 }
 
-function display_doc_report_dialog($report_id=false) {
-
-    $todo_status = get_post_meta($report_id, 'todo_status', true);
+function display_doc_field_result($report_id=false) {
     $doc_id = get_post_meta($report_id, 'doc_id', true);
-    $start_job = get_post_meta($doc_id, 'start_job', true);
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
-
-    $site_id = get_post_meta($doc_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    $signature_record_list = get_signature_record_list($site_id, false, $report_id);
-    $html_contain = $signature_record_list['html'];
-
     $params = array(
         'doc_id'     => $doc_id,
         'is_editing'  => true,
     );                
     $query = retrieve_doc_field_data($params);
 
-    ob_start();
-    ?>
-    <div style="display:flex; justify-content:space-between; margin:5px;">
-        <div>
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-        </div>
-        <div style="text-align:right; display:flex;">        
-        <?php if ($todo_status==-1){?>
-            <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製記錄', 'your-text-domain')?></button>
-            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-            <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-        <?php }?>
-        </div>
-    </div>
-
-    <div id="report-signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
-
-    <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
-    <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-    <fieldset>
-    <?php
     if ($query->have_posts()) {
         while ($query->have_posts()) : $query->the_post();
             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -1435,16 +1398,11 @@ function display_doc_report_dialog($report_id=false) {
                     break;
     
                 case ($field_type=='radio'):
-                    //if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
-                    //if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
-                    //$field_value = get_post_meta($report_id, $field_name, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     ?>                    
                     <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                     <?php
-                    //$prev_field_name=substr($field_name, 0, 5);
-                    //$x += 1;
                     break;
     
                 case ($field_type=='date'):
@@ -1478,6 +1436,144 @@ function display_doc_report_dialog($report_id=false) {
         endwhile;
         wp_reset_postdata();
     }
+}
+
+function display_doc_report_dialog($report_id=false) {
+
+    $todo_status = get_post_meta($report_id, 'todo_status', true);
+    $doc_id = get_post_meta($report_id, 'doc_id', true);
+    $start_job = get_post_meta($doc_id, 'start_job', true);
+    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+    if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+
+    $site_id = get_post_meta($doc_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    $signature_record_list = get_signature_record_list($site_id, false, $report_id);
+    $html_contain = $signature_record_list['html'];
+
+    ob_start();
+    ?>
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+        </div>
+        <div style="text-align:right; display:flex;">        
+        <?php if ($todo_status==-1){?>
+            <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製記錄', 'your-text-domain')?></button>
+            <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
+            <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+        <?php }?>
+        </div>
+    </div>
+
+    <div id="report-signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
+
+    <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
+    <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+    <fieldset>
+    <?php display_doc_field_result($report_id);?>
+    <?php
+/*    
+    $params = array(
+        'doc_id'     => $doc_id,
+        'is_editing'  => true,
+    );                
+    $query = retrieve_doc_field_data($params);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) : $query->the_post();
+            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+            $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+            if ($is_doc) {
+                $field_value = get_post_meta($doc_id, $field_name, true);
+            } else {
+                $field_value = get_post_meta($report_id, $field_name, true);
+            }
+            switch (true) {
+                case ($field_type=='video'):
+                    if (esc_url($field_value)) {
+                        echo '<div id="video-display">'.esc_html($field_value).'</div>';
+                        echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                    } else {
+                        echo '<div id="video-display" style="display:none;">'.esc_html($field_value).'</div>';
+                        echo '<textarea id="video-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                    }
+                    break;
+
+                case ($field_type=='image'):
+                    if (esc_url($field_value)) {
+                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
+                        echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                    } else {
+                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="display:none;" />';
+                        echo '<textarea id="image-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                    }
+                    break;
+
+                case ($field_type=='heading'):
+                    ?>
+                    <div><<?php echo esc_html($default_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($default_value);?>></div>
+                    <?php
+                    break;
+
+                case ($field_type=='textarea'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                    <?php    
+                    break;
+
+                case ($field_type=='checkbox'):
+                    $is_checked = ($field_value==1) ? 'checked' : '';
+                    ?>
+                    <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <?php
+                    break;
+    
+                case ($field_type=='radio'):
+                    $is_checked = ($field_value==1) ? 'checked' : '';
+                    ?>                    
+                    <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                    <?php
+                    break;
+    
+                case ($field_type=='date'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                    break;
+    
+                case ($field_type=='time'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                    break;
+        
+                case ($field_type=='number'):
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="number" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                    break;
+    
+                default:
+                    ?>
+                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                    break;
+            }
+        endwhile;
+        wp_reset_postdata();
+    }
+*/    
     ?>
         <input type="checkbox" id="proceed-to-todo" />
         <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
@@ -1491,8 +1587,6 @@ function display_doc_report_dialog($report_id=false) {
         $query = retrieve_job_action_list_data($start_job);        
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
-                //$next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                //$job_title = get_the_title();
                 echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
             endwhile;
             wp_reset_postdata();
