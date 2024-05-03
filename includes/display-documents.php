@@ -1415,7 +1415,7 @@ function display_doc_report_dialog($report_id=false) {
 
                 case ($field_type=='heading'):
                     ?>
-                    <div><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></div>
+                    <div><<?php echo esc_html($default_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($default_value);?>></div>
                     <?php
                     break;
 
