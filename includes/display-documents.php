@@ -1192,11 +1192,11 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta($report_id, $field_name, true);
                                 echo '<td style="text-align:'.$listing_style.';">';
-                                if ($field_type=='checkbox') {
+                                if ($field_type=='checkbox' || $field_type=='radio') {
                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                     echo '<input type="checkbox" '.$is_checked.' />';
-                                } elseif ($field_type=='radio') {
-                                    echo get_radio_checked_value($doc_id, $field_name, $report_id);
+                                //} elseif ($field_type=='radio') {
+                                //    echo get_radio_checked_value($doc_id, $field_name, $report_id);
                                 } else {
                                     echo esc_html($field_value);
                                 }
@@ -1528,6 +1528,9 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
+        $is_proceed_todo = sanitize_text_field($_POST['_is_proceed_todo']);
+        $action_id = sanitize_text_field($_POST['_action_id']);
+        if ($is_proceed_todo) set_todo_from_doc_report($action_id, $report_id);
     } else {
         // Create the post
         $current_user_id = get_current_user_id();
@@ -1558,13 +1561,17 @@ function set_doc_report_dialog_data() {
 }
 add_action( 'wp_ajax_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
 add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', 'set_doc_report_dialog_data' );
-
+/*
 function set_todo_from_doc_report() {
     if ( isset($_POST['_action_id']) && isset($_POST['_report_id']) ) {
         $current_user_id = get_current_user_id();
         $action_id = sanitize_text_field($_POST['_action_id']);
         $report_id = sanitize_text_field($_POST['_report_id']);
         //$todo_id = get_post_meta($report_id, 'todo_id', true);
+*/
+function set_todo_from_doc_report($action_id=false, $report_id=false) {
+
+        $current_user_id = get_current_user_id();
         $job_id = get_post_meta($action_id, 'job_id', true);
         $todo_title = get_the_title($job_id);
         if ($action==-1) $todo_title = '文件發行';
@@ -1594,12 +1601,14 @@ function set_todo_from_doc_report() {
             'prev_report_id' => $report_id,
         );        
         set_next_todo_and_actions($params);
+}
+/*
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_todo_from_doc_report', 'set_todo_from_doc_report' );
 add_action( 'wp_ajax_nopriv_set_todo_from_doc_report', 'set_todo_from_doc_report' );
-
+*/
 function get_doc_report_list_data() {
     $result = array();
     if (isset($_POST['_doc_id'])) {

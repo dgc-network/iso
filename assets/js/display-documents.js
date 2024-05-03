@@ -568,6 +568,7 @@ jQuery(document).ready(function($) {
             const ajaxData = {
                 'action': 'set_doc_report_dialog_data',
             };
+            ajaxData['_action_id'] = action_id;
             ajaxData['_report_id'] = $("#report-id").val();
         
             $.each(response.doc_fields, function(index, value) {
@@ -585,6 +586,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function(response) {
+/*
                     if (window.confirm("Proceed the todo for this doc-report?")) {
                         const ajaxData = {
                             'action': 'set_todo_from_doc_report',
@@ -606,7 +608,8 @@ jQuery(document).ready(function($) {
                                 alert(error);
                             }
                         });
-                    }        
+                    }
+*/                    
                     get_doc_report_list_data($("#doc-id").val());
                 },
                 error: function(xhr, textStatus, errorThrown) {
