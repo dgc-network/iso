@@ -946,12 +946,16 @@ function display_doc_field_dialog(){
         <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
         <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
         <select id="field-type" class="text ui-widget-content ui-corner-all">
-            <option value="text"><?php echo __( '文字型態', 'your-text-domain' );?></option>
-            <option value="number"><?php echo __( '數字型態', 'your-text-domain' );?></option>
-            <option value="date"><?php echo __( '日期型態', 'your-text-domain' );?></option>
+            <option value="text"><?php echo __( '文字', 'your-text-domain' );?></option>
+            <option value="number"><?php echo __( '數字', 'your-text-domain' );?></option>
+            <option value="date"><?php echo __( '日期', 'your-text-domain' );?></option>
+            <option value="time"><?php echo __( '時間', 'your-text-domain' );?></option>
             <option value="checkbox"><?php echo __( '檢查框', 'your-text-domain' );?></option>
             <option value="radio"><?php echo __( '多選一', 'your-text-domain' );?></option>
             <option value="textarea"><?php echo __( '文字區域', 'your-text-domain' );?></option>
+            <option value="heading"><?php echo __( '標題', 'your-text-domain' );?></option>
+            <option value="image"><?php echo __( '圖片', 'your-text-domain' );?></option>
+            <option value="video"><?php echo __( '影片', 'your-text-domain' );?></option>
         </select>
         <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
         <select id="listing-style" class="text ui-widget-content ui-corner-all">
@@ -1388,6 +1392,32 @@ function display_doc_report_dialog($report_id=false) {
                 $field_value = get_post_meta($report_id, $field_name, true);
             }
             switch (true) {
+                case ($field_type=='video'):
+                    if (esc_url($field_value)) {
+                        echo '<div id="video-display">'.esc_html($field_value).'</div>';
+                        echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                    } else {
+                        echo '<div id="video-display" style="display:none;">'.esc_html($field_value).'</div>';
+                        echo '<textarea id="video-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                    }
+                    break;
+
+                case ($field_type=='image'):
+                    if (esc_url($field_value)) {
+                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
+                        echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                    } else {
+                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="display:none;" />';
+                        echo '<textarea id="image-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                    }
+                    break;
+
+                case ($field_type=='heading'):
+                    ?>
+                    <p><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></p>
+                    <?php
+                    break;
+
                 case ($field_type=='textarea'):
                     ?>
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>

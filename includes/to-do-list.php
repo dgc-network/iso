@@ -402,13 +402,39 @@ function display_todo_dialog($todo_id) {
                     $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                 }
                 switch (true) {
+                    case ($field_type=='video'):
+                        if (esc_url($field_value)) {
+                            echo '<div id="video-display">'.esc_html($field_value).'</div>';
+                            echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                        } else {
+                            echo '<div id="video-display" style="display:none;">'.esc_html($field_value).'</div>';
+                            echo '<textarea id="video-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                        }
+                        break;
+
+                    case ($field_type=='image'):
+                        if (esc_url($field_value)) {
+                            echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
+                            echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                        } else {
+                            echo '<img id="image-display" src="'.esc_attr($field_value).'" style="display:none;" />';
+                            echo '<textarea id="image-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
+                        }
+                        break;
+
+                    case ($field_type=='heading'):
+                        ?>
+                        <p><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></p>
+                        <?php
+                        break;
+
                     case ($field_type=='textarea'):
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                         <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;" disable><?php echo esc_html($field_value);?></textarea>
                         <?php    
                         break;
-    
+
                     case ($field_type=='checkbox'):
                         $is_checked = ($field_value==1) ? 'checked' : '';
                         ?>
