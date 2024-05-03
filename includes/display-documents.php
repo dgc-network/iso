@@ -1191,11 +1191,12 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $field_value = get_post_meta($report_id, $field_name, true);
+                                $is_checked = ($field_value==1) ? 'checked' : '';
                                 echo '<td style="text-align:'.$listing_style.';">';
-                                if ($field_type=='checkbox' || $field_type=='radio') {
-                                    $is_checked = ($field_value==1) ? 'checked' : '';
+                                if ($field_type=='checkbox') {
                                     echo '<input type="checkbox" '.$is_checked.' />';
-                                //} elseif ($field_type=='radio') {
+                                } elseif ($field_type=='radio') {
+                                    echo '<input type="radio" '.$is_checked.' />';
                                 //    echo get_radio_checked_value($doc_id, $field_name, $report_id);
                                 } else {
                                     echo esc_html($field_value);
@@ -1414,7 +1415,7 @@ function display_doc_report_dialog($report_id=false) {
 
                 case ($field_type=='heading'):
                     ?>
-                    <p><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></p>
+                    <div><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></div>
                     <?php
                     break;
 

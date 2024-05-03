@@ -424,7 +424,7 @@ function display_todo_dialog($todo_id) {
 
                     case ($field_type=='heading'):
                         ?>
-                        <p><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></p>
+                        <div><<?php echo esc_html($field_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($field_value);?>></div>
                         <?php
                         break;
 
