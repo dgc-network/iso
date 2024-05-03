@@ -18,41 +18,38 @@ if (!class_exists('display_documents')) {
             $this->data_migration();
             // Check if the user is logged in
             if (is_user_logged_in()) {
-                $output = '';
-            
                 // Get shared document if shared doc ID is set
                 if (isset($_GET['_get_shared_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
                     get_shared_document($doc_id);
                 }
             
-                // Display document details if document ID is set
+                // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
                     $doc_id = sanitize_text_field($_GET['_id']);
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                    $output .= '<div class="ui-widget" id="result-container">';
+                    echo '<div class="ui-widget" id="result-container">';
                     if ($is_doc_report) {
-                        $output .= display_doc_report_list($doc_id);
+                        echo display_doc_report_list($doc_id);
                     } else {
-                        $output .= display_doc_frame_contain($doc_id);
+                        echo display_doc_frame_contain($doc_id);
                     }
-                    $output .= '</div>';
+                    echo '</div>';
                 }
             
-                // Display ISO document statement if initial ID is set
+                // Display ISO document statement if initial ID is existed
                 if (isset($_GET['_initial'])) {
                     $doc_id = sanitize_text_field($_GET['_initial']);
-                    $output .= '<div class="ui-widget" id="result-container">';
-                    $output .= display_iso_document_statement($doc_id);
-                    $output .= '</div>';
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo display_iso_document_statement($doc_id);
+                    echo '</div>';
                 }
             
-                // Display document list if no specific document IDs are set
+                // Display document list if no specific document IDs are existed
                 if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
-                    $output .= display_document_list();
+                    echo display_document_list();
                 }
             
-                echo $output;
             } else {
                 user_did_not_login_yet();
             }

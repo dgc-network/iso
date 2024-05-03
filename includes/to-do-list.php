@@ -3,6 +3,46 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (!class_exists('to_do_list')) {
+    class to_do_list {
+        // Class constructor
+        public function __construct() {
+            add_shortcode( 'to-do-list', array( $this, 'display_shortcode' ) );
+            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+        }
+
+        // Shortcode to display
+        function display_shortcode() {
+            $this->data_migration();
+            // Check if the user is logged in
+            if (is_user_logged_in()) {
+                if (isset($_GET['_search'])) display_to_do_list();
+        
+                if (isset($_GET['_id'])) {
+                    $todo_id = sanitize_text_field($_GET['_id']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo display_todo_dialog($todo_id);
+                    echo '</div>';
+                }
+        
+                if ($_GET['_select_todo']=='1') display_signature_record();
+        
+                if ($_GET['_select_todo']!='1' && !isset($_GET['_search']) && !isset($_GET['_id'])) display_to_do_list();
+        
+            } else {
+                user_did_not_login_yet();
+            }
+        }
+
+        // Data migration
+        function data_migration() {
+        }
+    }
+    $my_class = new to_do_list();
+}
+
 // Create a Custom Post Type
 function register_todo_post_type() {
     $labels = array(
@@ -94,27 +134,6 @@ function register_action_post_type() {
 add_action('init', 'register_action_post_type');
 
 // Shortcode to display To-do list on frontend
-function to_do_list_shortcode() {
-    // Check if the user is logged in
-    if (is_user_logged_in()) {
-        if (isset($_GET['_search'])) display_to_do_list();
-
-        if (isset($_GET['_id'])) {
-            $todo_id = sanitize_text_field($_GET['_id']);
-            echo '<div class="ui-widget" id="result-container">';
-            echo display_todo_dialog($todo_id);
-            echo '</div>';
-        }
-
-        if ($_GET['_select_todo']=='1') display_signature_record();
-
-        if ($_GET['_select_todo']!='1' && !isset($_GET['_search']) && !isset($_GET['_id'])) display_to_do_list();
-
-    } else {
-        user_did_not_login_yet();
-    }
-}
-add_shortcode('to-do-list', 'to_do_list_shortcode');
 
 function display_to_do_list() {
     $current_user_id = get_current_user_id();
