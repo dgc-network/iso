@@ -1479,7 +1479,7 @@ function display_doc_report_dialog($report_id=false) {
         wp_reset_postdata();
     }
     ?>
-        <input type="checkbox" id="proceed-to-todo" <?php echo $is_checked;?> />
+        <input type="checkbox" id="proceed-to-todo" />
         <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
     <hr>
     <?php
