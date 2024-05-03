@@ -8,9 +8,9 @@ if (!class_exists('display_documents')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'display-documents', array( $this, 'display_shortcode' ) );
-            add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
-            add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
         }
 
         // Shortcode to display
