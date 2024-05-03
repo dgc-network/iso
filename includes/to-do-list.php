@@ -8,14 +8,16 @@ if (!class_exists('to_do_list')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'to-do-list', array( $this, 'display_shortcode' ) );
-            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            add_action( 'init', array( $this, 'register_todo_post_type' ) );
+            add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
+            add_action( 'init', array( $this, 'register_action_post_type' ) );
+
             //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
             //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
         }
 
         // Shortcode to display
         function display_shortcode() {
-            $this->data_migration();
             // Check if the user is logged in
             if (is_user_logged_in()) {
                 if (isset($_GET['_search'])) display_to_do_list();
@@ -36,102 +38,100 @@ if (!class_exists('to_do_list')) {
             }
         }
 
+        // Create a todo Post Type
+        function register_todo_post_type() {
+            $labels = array(
+                'name'               => _x('To-Do Items', 'post type general name', 'textdomain'),
+                'singular_name'      => _x('To-Do Item', 'post type singular name', 'textdomain'),
+                'menu_name'          => _x('To-Do Items', 'admin menu', 'textdomain'),
+                'add_new'            => _x('Add New', 'to-do item', 'textdomain'),
+                'add_new_item'       => __('Add New To-Do Item', 'textdomain'),
+                'edit_item'          => __('Edit To-Do Item', 'textdomain'),
+                'new_item'           => __('New To-Do Item', 'textdomain'),
+                'view_item'          => __('View To-Do Item', 'textdomain'),
+                'search_items'       => __('Search To-Do Items', 'textdomain'),
+                'not_found'          => __('No to-do items found', 'textdomain'),
+                'not_found_in_trash' => __('No to-do items found in the Trash', 'textdomain'),
+            );
+        
+            $args = array(
+                'labels'             => $labels,
+                'public'             => true,
+                'publicly_queryable' => true,
+                'show_ui'            => true,
+                'show_in_menu'       => true,
+                'query_var'          => true,
+                'rewrite'            => array('slug' => 'todo'),
+                'capability_type'    => 'post',
+                'has_archive'        => true,
+                'hierarchical'       => false,
+                'menu_position'      => null,
+                'supports'           => array( 'title', 'custom-fields' ),
+                //'show_in_menu'       => false, // Set this to false to hide from the admin menu
+            );
+            register_post_type('todo', $args);
+        }
+        
+        function add_todo_settings_metabox() {
+            add_meta_box(
+                'todo_settings_id',
+                'Todo Settings',
+                array($this, 'todo_settings_content'),
+                'todo',
+                'normal',
+                'high'
+            );
+        }
+        
+        function todo_settings_content($post) {
+            $job_id = esc_attr(get_post_meta($post->ID, 'job_id', true));
+            $doc_id = esc_attr(get_post_meta($post->ID, 'doc_id', true));
+            $report_id = esc_attr(get_post_meta($post->ID, 'report_id', true));
+            $todo_due = esc_attr(get_post_meta($post->ID, 'todo_due', true));
+            $submit_user = esc_attr(get_post_meta($post->ID, 'submit_user', true));
+            $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
+            $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
+            ?>
+            <label for="job_id"> job_id: </label>
+            <input type="text" id="job_id" name="job_id" value="<?php echo $job_id;?>" style="width:100%" >
+            <label for="doc_id"> doc_id: </label>
+            <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
+            <label for="report_id"> report_id: </label>
+            <input type="text" id="report_id" name="report_id" value="<?php echo $report_id;?>" style="width:100%" >
+            <label for="todo_due"> todo_due: </label>
+            <input type="text" id="todo_due" name="todo_due" value="<?php echo $todo_due;?>" style="width:100%" >
+            <label for="submit_user"> submit_user: </label>
+            <input type="text" id="submit_user" name="submit_user" value="<?php echo $submit_user;?>" style="width:100%" >
+            <label for="submit_action"> submit_action: </label>
+            <input type="text" id="submit_action" name="submit_action" value="<?php echo $submit_action;?>" style="width:100%" >
+            <label for="submit_time"> submit_time: </label>
+            <input type="text" id="submit_time" name="submit_time" value="<?php echo $submit_time;?>" style="width:100%" >
+            <?php
+        }
+        
+        // Register action post type
+        function register_action_post_type() {
+            $labels = array(
+                'menu_name'          => _x('Actions', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'actions'),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'action', $args );
+        }
+        
+
         // Data migration
         function data_migration() {
         }
     }
     $my_class = new to_do_list();
 }
-
-// Create a Custom Post Type
-function register_todo_post_type() {
-    $labels = array(
-        'name'               => _x('To-Do Items', 'post type general name', 'textdomain'),
-        'singular_name'      => _x('To-Do Item', 'post type singular name', 'textdomain'),
-        'menu_name'          => _x('To-Do Items', 'admin menu', 'textdomain'),
-        'add_new'            => _x('Add New', 'to-do item', 'textdomain'),
-        'add_new_item'       => __('Add New To-Do Item', 'textdomain'),
-        'edit_item'          => __('Edit To-Do Item', 'textdomain'),
-        'new_item'           => __('New To-Do Item', 'textdomain'),
-        'view_item'          => __('View To-Do Item', 'textdomain'),
-        'search_items'       => __('Search To-Do Items', 'textdomain'),
-        'not_found'          => __('No to-do items found', 'textdomain'),
-        'not_found_in_trash' => __('No to-do items found in the Trash', 'textdomain'),
-    );
-
-    $args = array(
-        'labels'             => $labels,
-        'public'             => true,
-        'publicly_queryable' => true,
-        'show_ui'            => true,
-        'show_in_menu'       => true,
-        'query_var'          => true,
-        'rewrite'            => array('slug' => 'todo'),
-        'capability_type'    => 'post',
-        'has_archive'        => true,
-        'hierarchical'       => false,
-        'menu_position'      => null,
-        'supports'           => array( 'title', 'custom-fields' ),
-        //'show_in_menu'       => false, // Set this to false to hide from the admin menu
-    );
-    register_post_type('todo', $args);
-}
-add_action('init', 'register_todo_post_type');
-
-function add_todo_settings_metabox() {
-    add_meta_box(
-        'todo_settings_id',
-        'Todo Settings',
-        'todo_settings_content',
-        'todo',
-        'normal',
-        'high'
-    );
-}
-add_action('add_meta_boxes', 'add_todo_settings_metabox');
-
-function todo_settings_content($post) {
-    $job_id = esc_attr(get_post_meta($post->ID, 'job_id', true));
-    $doc_id = esc_attr(get_post_meta($post->ID, 'doc_id', true));
-    $report_id = esc_attr(get_post_meta($post->ID, 'report_id', true));
-    $todo_due = esc_attr(get_post_meta($post->ID, 'todo_due', true));
-    $submit_user = esc_attr(get_post_meta($post->ID, 'submit_user', true));
-    $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
-    $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
-    ?>
-    <label for="job_id"> job_id: </label>
-    <input type="text" id="job_id" name="job_id" value="<?php echo $job_id;?>" style="width:100%" >
-    <label for="doc_id"> doc_id: </label>
-    <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
-    <label for="report_id"> report_id: </label>
-    <input type="text" id="report_id" name="report_id" value="<?php echo $report_id;?>" style="width:100%" >
-    <label for="todo_due"> todo_due: </label>
-    <input type="text" id="todo_due" name="todo_due" value="<?php echo $todo_due;?>" style="width:100%" >
-    <label for="submit_user"> submit_user: </label>
-    <input type="text" id="submit_user" name="submit_user" value="<?php echo $submit_user;?>" style="width:100%" >
-    <label for="submit_action"> submit_action: </label>
-    <input type="text" id="submit_action" name="submit_action" value="<?php echo $submit_action;?>" style="width:100%" >
-    <label for="submit_time"> submit_time: </label>
-    <input type="text" id="submit_time" name="submit_time" value="<?php echo $submit_time;?>" style="width:100%" >
-    <?php
-}
-
-// Register action post type
-function register_action_post_type() {
-    $labels = array(
-        'menu_name'          => _x('Actions', 'admin menu', 'textdomain'),
-    );
-    $args = array(
-        'labels'        => $labels,
-        'public'        => true,
-        'rewrite'       => array('slug' => 'actions'),
-        'supports'      => array( 'title', 'editor', 'custom-fields' ),
-        'has_archive'   => true,
-        'show_in_menu'  => false,
-    );
-    register_post_type( 'action', $args );
-}
-add_action('init', 'register_action_post_type');
 
 // Shortcode to display To-do list on frontend
 

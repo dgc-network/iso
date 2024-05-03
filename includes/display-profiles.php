@@ -3,6 +3,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if (!class_exists('display_profiles')) {
+    class display_profiles {
+        // Class constructor
+        public function __construct() {
+            add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
+            //add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            //add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+        }
+
+        // Shortcode to display
+        function display_shortcode() {
+            // Check if the user is logged in
+            if (is_user_logged_in()) {
+                echo '<div class="ui-widget" id="result-container">';
+                if ($_GET['_initial']=='true') echo display_site_profile(true);
+                if ($_GET['_select_profile']=='1') echo display_site_profile();
+                if ($_GET['_select_profile']=='2') echo display_site_job_list();
+                if ($_GET['_select_profile']=='3') echo display_doc_category_list();
+                if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo display_my_profile();
+                echo '</div>';
+            } else {
+                user_did_not_login_yet();
+            }
+        }
+    }
+    $my_class = new display_profiles();
+}
+
+
 // Register job post type
 function register_job_post_type() {
     $labels = array(
@@ -21,22 +51,6 @@ function register_job_post_type() {
 add_action('init', 'register_job_post_type');
 
 // Shortcode to display my jobs on frontend
-function profiles_shortcode() {
-    // Check if the user is logged in
-    if (is_user_logged_in()) {
-        echo '<div class="ui-widget" id="result-container">';
-        if ($_GET['_initial']=='true') echo display_site_profile(true);
-        if ($_GET['_select_profile']=='1') echo display_site_profile();
-        if ($_GET['_select_profile']=='2') echo display_site_job_list();
-        if ($_GET['_select_profile']=='3') echo display_doc_category_list();
-        if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo display_my_profile();
-        echo '</div>';
-    } else {
-        user_did_not_login_yet();
-    }
-}
-add_shortcode('display-profiles', 'profiles_shortcode');
-
 function display_my_profile() {
     ob_start();
     if (is_user_logged_in()) {
