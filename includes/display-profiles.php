@@ -540,8 +540,9 @@ if (!class_exists('display_profiles')) {
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                     <td style="text-align:center;"><?php the_title();?></td>
-                                    <td>
+                                    <td width="50%"><?php echo esc_html($content);?>
                                         <?php
+                                        /*
                                         $trimmed_content = substr($content, 0, 60);
                                         echo $trimmed_content;
             
@@ -549,6 +550,7 @@ if (!class_exists('display_profiles')) {
                                         if (strlen($content) > 60) {
                                             echo '... ';
                                         }
+                                        */
                                         ?>
                                     </td>                            
                                     <td style="text-align:center;"><?php echo esc_html($department);?></td>
