@@ -570,6 +570,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
             ajaxData['_report_id'] = $("#report-id").val();
+            ajaxData['_proceed_to_todo'] = $("#proceed-to-todo").is(":checked") ? 1 : 0;
         
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;

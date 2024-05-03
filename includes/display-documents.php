@@ -1435,7 +1435,7 @@ function display_doc_report_dialog($report_id=false) {
                     break;
     
                 case ($field_type=='radio'):
-                    if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
+                    //if ($prev_field_name!=substr($field_name, 0, 5)) $x = 0;
                     //if ($x==0) echo '<label>'.esc_html($field_title).'</label><br>';
                     //$field_value = get_post_meta($report_id, $field_name, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
@@ -1443,8 +1443,8 @@ function display_doc_report_dialog($report_id=false) {
                     <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                     <?php
-                    $prev_field_name=substr($field_name, 0, 5);
-                    $x += 1;
+                    //$prev_field_name=substr($field_name, 0, 5);
+                    //$x += 1;
                     break;
     
                 case ($field_type=='date'):
@@ -1479,6 +1479,8 @@ function display_doc_report_dialog($report_id=false) {
         wp_reset_postdata();
     }
     ?>
+        <input type="checkbox" id="proceed-to-todo" <?php echo $is_checked;?> />
+        <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
     <hr>
     <?php
     if (!$todo_status){
@@ -1529,9 +1531,9 @@ function set_doc_report_dialog_data() {
             endwhile;
             wp_reset_postdata();
         }
-        $is_proceed_todo = sanitize_text_field($_POST['_is_proceed_todo']);
+        $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
         $action_id = sanitize_text_field($_POST['_action_id']);
-        if ($is_proceed_todo) set_todo_from_doc_report($action_id, $report_id);
+        if ($proceed_to_todo==1) set_todo_from_doc_report($action_id, $report_id);
     } else {
         // Create the post
         $current_user_id = get_current_user_id();
