@@ -384,7 +384,11 @@ function display_todo_dialog($todo_id) {
     <?php
     if ($is_doc_report) {
         // doc_report_dialog data
-        display_doc_field_result($report_id);
+        $params = array(
+            'doc_id'     => $doc_id,
+            'report_id'     => $report_id,
+        );                
+        display_doc_field_result($params);
 /*        
         $params = array(
             'doc_id'     => $doc_id,

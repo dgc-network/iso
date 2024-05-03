@@ -1336,8 +1336,11 @@ function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = fal
     return $query;
 }
 
-function display_doc_field_result($report_id=false) {
-    $doc_id = get_post_meta($report_id, 'doc_id', true);
+function display_doc_field_result($args) {
+
+    $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+    $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+
     $params = array(
         'doc_id'     => $doc_id,
         'is_editing'  => true,
@@ -1480,8 +1483,13 @@ function display_doc_report_dialog($report_id=false) {
     <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
     <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
     <fieldset>
-    <?php display_doc_field_result($report_id);?>
     <?php
+        $params = array(
+            'doc_id'     => $doc_id,
+            'report_id'     => $report_id,
+        );                
+        display_doc_field_result($params);
+
 /*    
     $params = array(
         'doc_id'     => $doc_id,
