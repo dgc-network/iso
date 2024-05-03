@@ -3,6 +3,145 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if (!class_exists('display_documents')) {
+    class display_documents {
+        // Class constructor
+        public function __construct() {
+            add_shortcode( 'display-documents', array( $this, 'display_shortcode' ) );
+            add_action( 'init', array( $this, 'register_curtain_agent_post_type' ) );
+            add_action( 'wp_ajax_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_curtain_agent_dialog_data', array( $this, 'get_curtain_agent_dialog_data' ) );
+        }
+
+        // Shortcode to display
+        function display_shortcode() {
+            $this->data_migration();
+            // Check if the user is logged in
+            if (is_user_logged_in()) {
+                $output = '';
+            
+                // Get shared document if shared doc ID is set
+                if (isset($_GET['_get_shared_doc_id'])) {
+                    $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
+                    get_shared_document($doc_id);
+                }
+            
+                // Display document details if document ID is set
+                if (isset($_GET['_id'])) {
+                    $doc_id = sanitize_text_field($_GET['_id']);
+                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                    $output .= '<div class="ui-widget" id="result-container">';
+                    if ($is_doc_report) {
+                        $output .= display_doc_report_list($doc_id);
+                    } else {
+                        $output .= display_doc_frame_contain($doc_id);
+                    }
+                    $output .= '</div>';
+                }
+            
+                // Display ISO document statement if initial ID is set
+                if (isset($_GET['_initial'])) {
+                    $doc_id = sanitize_text_field($_GET['_initial']);
+                    $output .= '<div class="ui-widget" id="result-container">';
+                    $output .= display_iso_document_statement($doc_id);
+                    $output .= '</div>';
+                }
+            
+                // Display document list if no specific document IDs are set
+                if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
+                    $output .= display_document_list();
+                }
+            
+                echo $output;
+            } else {
+                user_did_not_login_yet();
+            }
+        }
+
+        // Data migration
+        function data_migration() {
+            // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
+            if( isset($_GET['_site_id_migration']) ) {
+                // Query documents with the current meta key 'site_id' set to 8699
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => '8699',
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+                $query = new WP_Query($args);
+                
+                // Loop through each document post and update its meta value
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        // Update the meta value from 8699 to 8698
+                        update_post_meta(get_the_ID(), 'site_id', '8698', '8699');
+                    }
+                    // Reset post data
+                    wp_reset_postdata();
+                }
+            }
+        
+            // Migrate meta key doc_url to doc_frame in document (2024-3-16)
+            if( isset($_GET['_doc_frame_migration']) ) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
+                        update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
+                        endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }
+        
+            // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
+            if( isset($_GET['_field_type_migration']) ) {
+                $args = array(
+                    'post_type'      => 'doc-field',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                        update_post_meta(get_the_ID(), 'field_type', $field_type);
+                        endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }
+        
+            // Migrate the_title to meta doc_title in document (2024-1-15)
+            if( isset($_GET['_doc_title_migration']) ) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        update_post_meta( get_the_ID(), 'doc_title', get_the_title());
+                    endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }
+        
+        }
+        //add_shortcode('display-documents', 'display_documents_shortcode');
+        
+
+    }
+    $my_class = new display_documents();
+}
 // Register custom post type
 function register_document_post_type() {
     $labels = array(
@@ -105,126 +244,6 @@ function register_doc_category_post_type() {
     register_post_type( 'doc-category', $args );
 }
 add_action('init', 'register_doc_category_post_type');
-
-// Shortcode to display documents
-function display_documents_shortcode() {
-    // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
-    if( isset($_GET['_site_id_migration']) ) {
-        // Query documents with the current meta key 'site_id' set to 8699
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array(
-                    'key'     => 'site_id',
-                    'value'   => '8699',
-                    'compare' => '=',
-                ),
-            ),
-        );
-        $query = new WP_Query($args);
-        
-        // Loop through each document post and update its meta value
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                // Update the meta value from 8699 to 8698
-                update_post_meta(get_the_ID(), 'site_id', '8698', '8699');
-            }
-            // Reset post data
-            wp_reset_postdata();
-        }
-    }
-
-    // Migrate meta key doc_url to doc_frame in document (2024-3-16)
-    if( isset($_GET['_doc_frame_migration']) ) {
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-        );
-        $query = new WP_Query($args);
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
-                update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
-                endwhile;
-            wp_reset_postdata();
-        endif;    
-    }
-
-    // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
-    if( isset($_GET['_field_type_migration']) ) {
-        $args = array(
-            'post_type'      => 'doc-field',
-            'posts_per_page' => -1,
-        );
-        $query = new WP_Query($args);
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
-                update_post_meta(get_the_ID(), 'field_type', $field_type);
-                endwhile;
-            wp_reset_postdata();
-        endif;    
-    }
-
-    // Migrate the_title to meta doc_title in document (2024-1-15)
-    if( isset($_GET['_doc_title_migration']) ) {
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-        );
-        $query = new WP_Query($args);
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                update_post_meta( get_the_ID(), 'doc_title', get_the_title());
-            endwhile;
-            wp_reset_postdata();
-        endif;    
-    }
-
-    // Check if the user is logged in
-    if (is_user_logged_in()) {
-        $output = '';
-    
-        // Get shared document if shared doc ID is set
-        if (isset($_GET['_get_shared_doc_id'])) {
-            $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-            get_shared_document($doc_id);
-        }
-    
-        // Display document details if document ID is set
-        if (isset($_GET['_id'])) {
-            $doc_id = sanitize_text_field($_GET['_id']);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            $output .= '<div class="ui-widget" id="result-container">';
-            if ($is_doc_report) {
-                $output .= display_doc_report_list($doc_id);
-            } else {
-                $output .= display_doc_frame_contain($doc_id);
-            }
-            $output .= '</div>';
-        }
-    
-        // Display ISO document statement if initial ID is set
-        if (isset($_GET['_initial'])) {
-            $doc_id = sanitize_text_field($_GET['_initial']);
-            $output .= '<div class="ui-widget" id="result-container">';
-            $output .= display_iso_document_statement($doc_id);
-            $output .= '</div>';
-        }
-    
-        // Display document list if no specific document IDs are set
-        if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
-            $output .= display_document_list();
-        }
-    
-        echo $output;
-    } else {
-        user_did_not_login_yet();
-    }
-}
-add_shortcode('display-documents', 'display_documents_shortcode');
 
 function display_document_list() {
     if (isset($_GET['_is_admin'])) {
@@ -1221,56 +1240,7 @@ function display_doc_report_list($doc_id=false, $search_doc_report=false) {
     $html = ob_get_clean();
     return $html;
 }
-/*
-function get_radio_checked_value($doc_id, $field_name, $report_id) {
-    // Define the query arguments
-    $args = array(
-        'post_type'      => 'doc-field',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'doc_id',
-                'value'   => $doc_id,
-                'compare' => '='
-            ),
-            array(
-                'key'     => 'field_type',
-                'value'   => 'radio',
-                'compare' => '='
-            ),
-            array(
-                'key'     => 'field_name',
-                'value'   => substr($field_name, 0, 5),
-                'compare' => 'LIKE'
-            ),
-        ),
-    );
-    $query = new WP_Query($args);
 
-    // Check if there are any posts found
-    if ($query->have_posts()) {
-        $x = '';
-        while ($query->have_posts()) : $query->the_post();
-            $field_name     = get_post_meta(get_the_ID(), 'field_name', true);
-            $default_value  = get_post_meta(get_the_ID(), 'default_value', true);
-            $field_value    = get_post_meta($report_id, $field_name, true);
-            $x .= '('.$field_value.')'.$default_value;
-            if ($field_value == 1) {
-                return $default_value;
-            }
-        endwhile;
-
-        // Reset post data
-        wp_reset_postdata();
-
-        return $x.'Not found';
-    } else {
-        // If no matching post is found, return false or any default value
-        return false;
-    }
-}
-*/
 function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false) {
     $args = array(
         'post_type'      => 'doc-report',
@@ -1353,13 +1323,7 @@ function display_doc_field_result($args) {
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-/*
-            if ($is_doc) {
-                $field_value = get_post_meta($doc_id, $field_name, true);
-            } else {
-                $field_value = get_post_meta($report_id, $field_name, true);
-            }
-*/            
+
             if ($report_id) {
                 $field_value = get_post_meta($report_id, $field_name, true);
             } else {
@@ -1489,110 +1453,9 @@ function display_doc_report_dialog($report_id=false) {
             'report_id'     => $report_id,
         );                
         display_doc_field_result($params);
-
-/*    
-    $params = array(
-        'doc_id'     => $doc_id,
-        'is_editing'  => true,
-    );                
-    $query = retrieve_doc_field_data($params);
-
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-            $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-            if ($is_doc) {
-                $field_value = get_post_meta($doc_id, $field_name, true);
-            } else {
-                $field_value = get_post_meta($report_id, $field_name, true);
-            }
-            switch (true) {
-                case ($field_type=='video'):
-                    if (esc_url($field_value)) {
-                        echo '<div id="video-display">'.esc_html($field_value).'</div>';
-                        echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                    } else {
-                        echo '<div id="video-display" style="display:none;">'.esc_html($field_value).'</div>';
-                        echo '<textarea id="video-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
-                    }
-                    break;
-
-                case ($field_type=='image'):
-                    if (esc_url($field_value)) {
-                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
-                        echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                    } else {
-                        echo '<img id="image-display" src="'.esc_attr($field_value).'" style="display:none;" />';
-                        echo '<textarea id="image-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
-                    }
-                    break;
-
-                case ($field_type=='heading'):
-                    ?>
-                    <div><<?php echo esc_html($default_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($default_value);?>></div>
-                    <?php
-                    break;
-
-                case ($field_type=='textarea'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                    <?php    
-                    break;
-
-                case ($field_type=='checkbox'):
-                    $is_checked = ($field_value==1) ? 'checked' : '';
-                    ?>
-                    <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
-                    <?php
-                    break;
-    
-                case ($field_type=='radio'):
-                    $is_checked = ($field_value==1) ? 'checked' : '';
-                    ?>                    
-                    <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
-                    <?php
-                    break;
-    
-                case ($field_type=='date'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                    <?php
-                    break;
-    
-                case ($field_type=='time'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                    <?php
-                    break;
-        
-                case ($field_type=='number'):
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="number" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                    <?php
-                    break;
-    
-                default:
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                    <?php
-                    break;
-            }
-        endwhile;
-        wp_reset_postdata();
-    }
-*/    
     ?>
-        <input type="checkbox" id="proceed-to-todo" />
-        <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
+    <input type="checkbox" id="proceed-to-todo" />
+    <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
     <hr>
     <?php
     if (!$todo_status){
