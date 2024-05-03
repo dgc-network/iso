@@ -1350,11 +1350,19 @@ function display_doc_field_result($report_id=false) {
             $field_title = get_post_meta(get_the_ID(), 'field_title', true);
             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+/*
             if ($is_doc) {
                 $field_value = get_post_meta($doc_id, $field_name, true);
             } else {
                 $field_value = get_post_meta($report_id, $field_name, true);
             }
+*/            
+            if ($report_id) {
+                $field_value = get_post_meta($report_id, $field_name, true);
+            } else {
+                $field_value = get_post_meta(get_the_ID(), 'default_value', true);
+            }
+
             switch (true) {
                 case ($field_type=='video'):
                     if (esc_url($field_value)) {
