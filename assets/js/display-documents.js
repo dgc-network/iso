@@ -648,7 +648,8 @@ jQuery(document).ready(function($) {
             $("#report-signature-record-div").toggle()
         });
 
-        $(".video-display").on("click", function () {
+        $(".video-button").on("click", function () {
+            $(".video-display").toggle()
             $(".video-url").toggle()
         });
 
