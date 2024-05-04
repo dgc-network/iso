@@ -613,10 +613,6 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("#signature-record").on("click", function () {
-            $("#report-signature-record-div").toggle()
-        });
-
         $('[id^="duplicate-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(21);
             const ajaxData = {
@@ -647,6 +643,15 @@ jQuery(document).ready(function($) {
                 }
             });
         });
+
+        $("#signature-record").on("click", function () {
+            $("#report-signature-record-div").toggle()
+        });
+
+        $(".video-display").on("click", function () {
+            $(".video-url").toggle()
+        });
+
     }
     
     function get_doc_report_dialog_data(report_id){
