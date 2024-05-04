@@ -891,6 +891,9 @@ if (!class_exists('display_documents')) {
                 }
                 $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
                 $action_id = sanitize_text_field($_POST['_action_id']);
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
                 if ($proceed_to_todo==1) $this->set_todo_from_doc_report($action_id, $report_id);
             } else {
                 // Create the post
@@ -1580,9 +1583,11 @@ if (!class_exists('display_documents')) {
         function set_todo_from_doc_report($action_id=false, $report_id=false) {
         
             $current_user_id = get_current_user_id();
-            $job_id = get_post_meta($action_id, 'job_id', true);
-            $todo_title = get_the_title($job_id);
-            if ($action==-1) $todo_title = '文件發行';
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $start_job = get_post_meta($doc_id, 'start_job', true);
+            $todo_title = get_the_title($start_job);
+            //$job_id = get_post_meta($action_id, 'job_id', true);
+            //if ($action==-1) $todo_title = '文件發行';
         
             // Create the new To-do for current job_id
             $new_post = array(
@@ -1593,7 +1598,7 @@ if (!class_exists('display_documents')) {
             );    
             $todo_id = wp_insert_post($new_post);    
         
-            update_post_meta( $todo_id, 'job_id', $job_id);
+            update_post_meta( $todo_id, 'job_id', $start_job);
             update_post_meta( $todo_id, 'report_id', $report_id);
             //update_post_meta( $todo_id, 'doc_id', $doc_id);
             update_post_meta( $todo_id, 'submit_user', $current_user_id);
@@ -1602,6 +1607,7 @@ if (!class_exists('display_documents')) {
         
             $next_job = get_post_meta($action_id, 'next_job', true);
             update_post_meta( $report_id, 'todo_status', $next_job);
+            update_post_meta( $doc_id, 'todo_status', -1);
         
             // set next todo and actions
             $params = array(
