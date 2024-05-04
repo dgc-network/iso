@@ -883,7 +883,8 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = sanitize_text_field($_POST[$field_name]);
+                        //$field_value = sanitize_text_field($_POST[$field_name]);
+                        $field_value = $_POST[$field_name];
                         update_post_meta( $report_id, $field_name, $field_value);
                     endwhile;
                     wp_reset_postdata();
