@@ -1209,6 +1209,7 @@ if (!class_exists('display_documents')) {
         
                     switch (true) {
                         case ($field_type=='video'):
+                            $field_value = ($field_value) ? $field_value : get_option('video_default_url');
                             if (esc_url($field_value)) {
                                 echo '<div id="video-display">'.esc_html($field_value).'</div>';
                                 echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
@@ -1219,6 +1220,7 @@ if (!class_exists('display_documents')) {
                             break;
         
                         case ($field_type=='image'):
+                            $field_value = ($field_value) ? $field_value : get_option('image_default_url');
                             if (esc_url($field_value)) {
                                 echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
                                 echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
@@ -1229,6 +1231,7 @@ if (!class_exists('display_documents')) {
                             break;
         
                         case ($field_type=='heading'):
+                            $default_value = ($default_value) ? $default_value : 'b';
                             ?>
                             <div><<?php echo esc_html($default_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($default_value);?>></div>
                             <?php
