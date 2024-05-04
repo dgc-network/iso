@@ -44,7 +44,9 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
-            
+            add_action( 'wp_ajax_set_user_job_data', array( $this, 'set_user_job_data' ) );
+            add_action( 'wp_ajax_nopriv_set_user_job_data', array( $this, 'set_user_job_data' ) );
+                
         }
 
         // Shortcode to display
@@ -234,7 +236,7 @@ if (!class_exists('display_profiles')) {
                     </table>
                     <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     </fieldset>
-                    <?php display_new_user_dialog($site_id);?>
+                    <?php $this->display_new_user_dialog($site_id);?>
                     <?php $this->display_user_dialog($site_id);?>
         
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -330,7 +332,7 @@ if (!class_exists('display_profiles')) {
                     if ($query->have_posts()) {
                         $user_job_list = '';
                         while ($query->have_posts()) : $query->the_post();
-                            $user_job_checked = is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                            $user_job_checked = $this->is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
                             $user_job_list .= '<tr id="check-user-job-' . get_the_ID() . '">';
                             $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
                             $user_job_list .= '<td style="text-align:center;">' . get_the_title() . '</td>';
@@ -486,6 +488,69 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
+        function display_new_user_dialog($site_id) {
+            ?>
+            <div id="new-user-dialog" title="New user dialog" style="display:none;">
+            <fieldset>
+                <img src="<?php echo get_option('line_official_qr_code');?>">
+        <?php /*?>
+                <input type="hidden" id="new-site-id" value="<?php echo $site_id?>" />
+                <label for="new-display-name">Name:</label>
+                <input type="text" id="new-display-name" class="text ui-widget-content ui-corner-all" />
+                <label for="new-user-email">Email:</label>
+                <input type="text" id="new-user-email" class="text ui-widget-content ui-corner-all" />
+                <label for="new-job-title">Job:</label>
+                <input type="text" id="new-job-title" class="text ui-widget-content ui-corner-all" />
+                <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
+                <input type="checkbox" id="new-is-site-admin" />
+                <label for="new-is-site-admin">Is site admin</label><br>
+        <?php */?>
+            </fieldset>
+            </div>
+            <?php
+        }
+        
+        function is_user_job($job_id, $user_id=0) {
+            // Get the current user ID
+            if ($user_id==0) $user_id = get_current_user_id();    
+            // Get the user's job IDs as an array
+            $user_jobs = get_user_meta($user_id, 'user_job_ids', true);
+            // If $user_jobs is not an array, convert it to an array
+            if (!is_array($user_jobs)) {
+                $user_jobs = array();
+            }
+            // Check if the current user has the specified job ID in their metadata
+            return in_array($job_id, $user_jobs);
+        }
+        
+        function set_user_job_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_job_id'])) {
+                $job_id = sanitize_text_field($_POST['_job_id']);
+                $user_id = sanitize_text_field($_POST['_user_id']);
+                $is_user_job = sanitize_text_field($_POST['_is_user_job']);
+                
+                if (!isset($user_id)) $user_id = get_current_user_id();
+                $user_job_ids_array = get_user_meta($user_id, 'user_job_ids', true);
+                if (!is_array($user_job_ids_array)) $user_job_ids_array = array();
+                $job_exists = in_array($job_id, $user_job_ids_array);
+            
+                // Check the condition and update 'user_job_ids' accordingly
+                if ($is_user_job == 1 && !$job_exists) {
+                    // Add $job_id to 'user_job_ids'
+                    $user_job_ids_array[] = $job_id;
+                } elseif ($is_user_job != 1 && $job_exists) {
+                    // Remove $job_id from 'user_job_ids'
+                    $user_job_ids_array = array_diff($user_job_ids_array, array($job_id));
+                }
+        
+                // Update 'user_job_ids' meta value
+                update_user_meta( $user_id, 'user_job_ids', $user_job_ids_array);
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+                
         // Site job
         function display_site_job_list($initial=false) {
             ob_start();
@@ -1015,95 +1080,8 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
-        
-        
-
-        
-        
-        
-
     }
     $my_class = new display_profiles();
 }
 
-
-// Shortcode to display my jobs on frontend
-function allow_subscribers_to_view_users($allcaps, $caps, $args) {
-    // Check if the user is trying to view other users
-    if (isset($args[0]) && $args[0] === 'list_users') {
-        // Check if the user has the "subscriber" role
-        $user = wp_get_current_user();
-        if (in_array('subscriber', $user->roles)) {
-            // Allow subscribers to view users
-            $allcaps['list_users'] = true;
-        }
-    }
-    return $allcaps;
-}
-add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-
-function display_new_user_dialog($site_id) {
-    ?>
-    <div id="new-user-dialog" title="New user dialog" style="display:none;">
-    <fieldset>
-        <img src="<?php echo get_option('line_official_qr_code');?>">
-<?php /*?>
-        <input type="hidden" id="new-site-id" value="<?php echo $site_id?>" />
-        <label for="new-display-name">Name:</label>
-        <input type="text" id="new-display-name" class="text ui-widget-content ui-corner-all" />
-        <label for="new-user-email">Email:</label>
-        <input type="text" id="new-user-email" class="text ui-widget-content ui-corner-all" />
-        <label for="new-job-title">Job:</label>
-        <input type="text" id="new-job-title" class="text ui-widget-content ui-corner-all" />
-        <textarea id="new-job-content" rows="3" style="width:100%;"></textarea>
-        <input type="checkbox" id="new-is-site-admin" />
-        <label for="new-is-site-admin">Is site admin</label><br>
-<?php */?>
-    </fieldset>
-    </div>
-    <?php
-}
-
-function is_user_job($job_id, $user_id=0) {
-    // Get the current user ID
-    if ($user_id==0) $user_id = get_current_user_id();    
-    // Get the user's job IDs as an array
-    $user_jobs = get_user_meta($user_id, 'user_job_ids', true);
-    // If $user_jobs is not an array, convert it to an array
-    if (!is_array($user_jobs)) {
-        $user_jobs = array();
-    }
-    // Check if the current user has the specified job ID in their metadata
-    return in_array($job_id, $user_jobs);
-}
-
-function set_user_job_data() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if (isset($_POST['_job_id'])) {
-        $job_id = sanitize_text_field($_POST['_job_id']);
-        $user_id = sanitize_text_field($_POST['_user_id']);
-        $is_user_job = sanitize_text_field($_POST['_is_user_job']);
-        
-        if (!isset($user_id)) $user_id = get_current_user_id();
-        $user_job_ids_array = get_user_meta($user_id, 'user_job_ids', true);
-        if (!is_array($user_job_ids_array)) $user_job_ids_array = array();
-        $job_exists = in_array($job_id, $user_job_ids_array);
-    
-        // Check the condition and update 'user_job_ids' accordingly
-        if ($is_user_job == 1 && !$job_exists) {
-            // Add $job_id to 'user_job_ids'
-            $user_job_ids_array[] = $job_id;
-        } elseif ($is_user_job != 1 && $job_exists) {
-            // Remove $job_id from 'user_job_ids'
-            $user_job_ids_array = array_diff($user_job_ids_array, array($job_id));
-        }
-
-        // Update 'user_job_ids' meta value
-        update_user_meta( $user_id, 'user_job_ids', $user_job_ids_array);
-        $response = array('success' => true);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_user_job_data', 'set_user_job_data' );
-add_action( 'wp_ajax_nopriv_set_user_job_data', 'set_user_job_data' );
 

@@ -430,7 +430,7 @@ if (!class_exists('display_documents')) {
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
                 <div id="doc-report-div1" style="display:none;">            
                     <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                    <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                    <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $this->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
                     <div id="frquence-start-time-div" style="display:none;">
                         <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
                         <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
@@ -478,7 +478,7 @@ if (!class_exists('display_documents')) {
                     'start_job' => $start_job,
                     'doc_id' => $doc_id,
                 );            
-                if ($doc_report_frequence_setting) $hook_name=schedule_post_event_callback($params);
+                if ($doc_report_frequence_setting) $hook_name=$this->schedule_post_event_callback($params);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -513,7 +513,8 @@ if (!class_exists('display_documents')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $signature_record_list = get_signature_record_list($site_id, $doc_id);
+            $todo_class = new to_do_list();
+            $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
             $$html_contain = $signature_record_list['html'];
             ?>    
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -559,7 +560,8 @@ if (!class_exists('display_documents')) {
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $signature_record_list = get_signature_record_list($site_id, $doc_id);
+            $todo_class = new to_do_list();
+            $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
             $html_contain = $signature_record_list['html'];
             ob_start();
             ?>    
@@ -786,7 +788,8 @@ if (!class_exists('display_documents')) {
         
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $signature_record_list = get_signature_record_list($site_id, false, $report_id);
+            $todo_class = new to_do_list();
+            $signature_record_list = $todo_class->get_signature_record_list($site_id, false, $report_id);
             $html_contain = $signature_record_list['html'];
         
             ob_start();
@@ -1287,6 +1290,59 @@ if (!class_exists('display_documents')) {
             }
         }
         
+        // doc-report frequence setting
+        function select_doc_report_frequence_setting_option($selected_option = false) {
+            $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
+            $selected = ($selected_option === "yearly") ? 'selected' : '';
+            $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "monthly") ? 'selected' : '';
+            $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "weekly") ? 'selected' : '';
+            $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "daily") ? 'selected' : '';
+            $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
+            return $options;
+        }
+        
+        function schedule_post_event_callback($args) {
+            $interval = $args['interval'];
+            $start_time = $args['start_time'];
+            $prev_start_time = $args['prev_start_time'];
+        
+            $hook_name = 'my_custom_post_event_'.$prev_start_time;
+            wp_clear_scheduled_hook($hook_name);
+            $hook_name = 'my_custom_post_event_'.$start_time;
+        
+            // Schedule the event based on the selected interval
+            switch ($interval) {
+                case 'twice_daily':
+                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                    break;
+                case 'daily':
+                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                    break;
+                case 'weekly':
+                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                    break;
+                case 'biweekly':
+                    // Calculate interval for every 2 weeks (14 days)
+                    wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
+                    break;
+                case 'monthly':
+                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                    break;
+                case 'yearly':
+                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                    break;
+                default:
+                    // Handle invalid interval
+            }
+            // Store the hook name in options
+            update_option('my_custom_post_event_hook_name', $hook_name);
+            // Return the hook name for later use
+            return $hook_name;
+        }
+        
         // document misc
         function count_doc_category($doc_category){
             $current_user_id = get_current_user_id();
@@ -1556,7 +1612,8 @@ if (!class_exists('display_documents')) {
                 'action_id' => $action_id,
                 'prev_report_id' => $report_id,
             );        
-            set_next_todo_and_actions($params);
+            $todo_class = new to_do_list();
+            $todo_class->set_next_todo_and_actions($params);
         }
         
         function reset_document_todo_status() {
