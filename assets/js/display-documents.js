@@ -384,7 +384,7 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
-                        action: 'set_sorted_field_id_data',
+                        action: 'sort_doc_field_list_data',
                         _field_id_array: field_id_array,
                     },
                     success: function(response) {

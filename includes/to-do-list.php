@@ -338,6 +338,7 @@ if (!class_exists('to_do_list')) {
         }
         
         function display_todo_dialog($todo_id) {
+            $documents_class = new display_documents();
 
             // Get the post type of the post with the given ID
             $post_type = get_post_type( $todo_id );
@@ -387,9 +388,10 @@ if (!class_exists('to_do_list')) {
                     'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
-                display_doc_field_result($params);
+                $documents_class->display_doc_field_result($params);
             } else {
                 // document_dialog data
+                $profiles_class = new display_profiles();
                 ?>
                 <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
                 <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -398,13 +400,13 @@ if (!class_exists('to_do_list')) {
                 <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo select_doc_category_option_data($doc_category);?></select>
+                <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
                 <?php
                 if ($is_doc_report==1) {
                     ?>
                     <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <div id="doc-field-list-div"><?php echo display_doc_field_list($doc_id);?></div>
+                    <div id="doc-field-list-div"><?php echo $documents_class->display_doc_field_list($doc_id);?></div>
                     <?php
                 } else {
                     ?>
@@ -421,8 +423,8 @@ if (!class_exists('to_do_list')) {
             <hr>
             <?php
             if ( $post_type === 'document' ) {
-                $display_profiles_class = new display_profiles();
-                $query = $display_profiles_class->retrieve_job_action_list_data($todo_id);
+                $profiles_class = new display_profiles();
+                $query = $profiles_class->retrieve_job_action_list_data($todo_id);
             } else {
                 $query = retrieve_todo_action_list_data($todo_id);
             }
@@ -448,7 +450,8 @@ if (!class_exists('to_do_list')) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
                 $result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                $result['doc_fields'] = display_doc_field_keys($doc_id);
+                $documents_class = new display_documents();
+                $result['doc_fields'] = $documents_class->display_doc_field_keys($doc_id);
             } else {
                 $result['html_contain'] = 'Invalid AJAX request!';
             }
@@ -508,7 +511,8 @@ if (!class_exists('to_do_list')) {
                     $params = array(
                         'doc_id'     => $doc_id,
                     );                
-                    $query = retrieve_doc_field_data($params);
+                    $documents_class = new display_documents();
+                    $query = $documents_class->retrieve_doc_field_data($params);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -616,8 +620,8 @@ function set_next_todo_and_actions($args = array()) {
     if ($next_job>0) {
         notice_the_responsible_persons($new_todo_id);
         // Create the Action list for next_job
-        $display_profiles_class = new display_profiles();
-        $query = $display_profiles_class->retrieve_job_action_list_data($next_job);
+        $profiles_class = new display_profiles();
+        $query = $profiles_class->retrieve_job_action_list_data($next_job);
         if ($query->have_posts()) {
             while ($query->have_posts()) : $query->the_post();
                 $new_post = array(
