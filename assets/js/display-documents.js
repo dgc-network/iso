@@ -654,6 +654,12 @@ jQuery(document).ready(function($) {
             $(".video-display").empty().append($(".video-url").val())
         });
 
+        $(".image-button").on("click", function () {
+            $(".image-display").toggle()
+            $(".image-url").toggle()
+            $(".image-display").empty().append($(".image-url").val())
+        });
+
     }
     
     function get_doc_report_dialog_data(report_id){

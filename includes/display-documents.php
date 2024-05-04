@@ -1216,14 +1216,10 @@ if (!class_exists('display_documents')) {
                             break;
         
                         case ($field_type=='image'):
+                            echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
-                            if (esc_url($field_value)) {
-                                echo '<img id="image-display" src="'.esc_attr($field_value).'" style="'.'" />';
-                                echo '<textarea id="image-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                            } else {
-                                echo '<img id="image-display" src="'.esc_attr($field_value).'" style="display:none;" />';
-                                echo '<textarea id="image-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
-                            }
+                            echo '<img class="image-display" src="'.$field_value.'" style="'.'" />';
+                            echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
         
                         case ($field_type=='heading'):
