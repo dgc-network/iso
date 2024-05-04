@@ -651,6 +651,7 @@ jQuery(document).ready(function($) {
         $(".video-button").on("click", function () {
             $(".video-display").toggle()
             $(".video-url").toggle()
+            $(".video-display").empty().append($(".video-url").val())
         });
 
     }

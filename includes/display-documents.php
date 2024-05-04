@@ -1209,7 +1209,7 @@ if (!class_exists('display_documents')) {
         
                     switch (true) {
                         case ($field_type=='video'):
-                            echo '<label class="video-button custom-button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                            echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
                             echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
                             echo '<textarea class="video-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
