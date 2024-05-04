@@ -547,11 +547,12 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 $todo_id       = get_post_meta($action_id, 'todo_id', true);
-                if (!$todo_id) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-                $todo_title    = get_the_title($next_job);
+                if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
+                if ($next_job>0) $todo_title = get_the_title($next_job);
+                
                 $report_id     = get_post_meta($todo_id, 'report_id', true);
                 $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-                $doc_ids       = $this->get_document_for_job($next_job);
+                if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);
                 if (is_array($doc_ids) && !empty($doc_ids)) {
                     $doc_id = $doc_ids[0];
                 } else {

@@ -583,7 +583,8 @@ function get_post_type_meta_keys($post_type) {
 // Callback function to add post when scheduled event is triggered
 function my_custom_post_event_callback($params) {
     // Add your code to programmatically add a post here
-    $this->set_next_todo_and_actions($params);
+    $todo_class = new to_do_list();
+    $todo_class->set_next_todo_and_actions($params);
 }
 // Retrieve the hook name from options
 $hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
