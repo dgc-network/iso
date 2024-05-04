@@ -657,7 +657,7 @@ jQuery(document).ready(function($) {
         $(".image-button").on("click", function () {
             $(".image-display").toggle()
             $(".image-url").toggle()
-            $(".image-display").empty().append($(".image-url").val())
+            $(".image-display").attr("src", $(".image-url").val());
         });
 
     }

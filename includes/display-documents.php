@@ -1218,7 +1218,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='image'):
                             echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
-                            echo '<img class="image-display" src="'.$field_value.'" style="'.'" />';
+                            echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
                             echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
         
