@@ -580,30 +580,6 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function(response) {
-/*
-                    if (window.confirm("Proceed the todo for this doc-report?")) {
-                        const ajaxData = {
-                            'action': 'set_todo_from_doc_report',
-                        };
-                        ajaxData['_action_id'] = action_id;
-                        ajaxData['_report_id'] = $("#report-id").val();
-                        ajaxData['_doc_id'] = $("#doc-id").val();
-                            
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: ajaxData,
-                            success: function (response) {
-                                get_doc_report_list_data($("#doc-id").val());
-                            },
-                            error: function(error){
-                                console.error(error);
-                                //alert(error);
-                            }
-                        });
-                    }
-*/                    
                     get_doc_report_list_data($("#doc-id").val());
                 },
                 error: function(xhr, textStatus, errorThrown) {

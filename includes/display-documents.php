@@ -42,7 +42,12 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', array( $this, 'del_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
-                                                        
+            add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
+            add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
+            add_action( 'wp_ajax_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
+            add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
+            add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
+            add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
         }
 
         // Shortcode to display
@@ -53,7 +58,7 @@ if (!class_exists('display_documents')) {
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_get_shared_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-                    get_shared_document($doc_id);
+                    $this->get_shared_document($doc_id);
                 }
             
                 // Display document details if doc_id is existed
@@ -73,7 +78,7 @@ if (!class_exists('display_documents')) {
                 if (isset($_GET['_initial'])) {
                     $doc_id = sanitize_text_field($_GET['_initial']);
                     echo '<div class="ui-widget" id="result-container">';
-                    echo display_iso_document_statement($doc_id);
+                    echo $this->display_iso_document_statement($doc_id);
                     echo '</div>';
                 }
             
@@ -882,7 +887,7 @@ if (!class_exists('display_documents')) {
                 }
                 $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                if ($proceed_to_todo==1) set_todo_from_doc_report($action_id, $report_id);
+                if ($proceed_to_todo==1) $this->set_todo_from_doc_report($action_id, $report_id);
             } else {
                 // Create the post
                 $current_user_id = get_current_user_id();
@@ -1282,12 +1287,289 @@ if (!class_exists('display_documents')) {
             }
         }
         
+        // document misc
+        function count_doc_category($doc_category){
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
         
-
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'doc_category',
+                        'value'   => $doc_category,
+                        'compare' => '=',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                ),
+            );    
+            $query = new WP_Query($args);    
+            $count = $query->found_posts;
+            return $count;
+        }
         
-
-
+        function display_iso_document_statement($doc_id){
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $category_id = get_post_meta($doc_id, 'doc_category', true);
+            $doc_category = get_the_title( $category_id );
+            $count_category = $this->count_doc_category($category_id);
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            ob_start();
+            ?>    
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <span><?php echo esc_html($doc_number);?></span>
+                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                    <span><?php echo esc_html($doc_revision);?></span>            
+                </div>
+            </div>
         
+            <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+            <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
+            <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
+            <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
+            <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
+            <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
+        
+            <fieldset>
+                <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                <div id="site-hint" style="display:none; color:#999;"></div>
+        
+                <?php
+                $args = array(
+                    'post_type'      => 'doc-report',
+                    'posts_per_page' => -1,
+                    //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'doc_id',
+                            'value'   => $doc_id,
+                            'compare' => '='
+                        ),
+                    ),
+                    'orderby'    => 'meta_value',
+                    'meta_key'   => 'index',
+                    'order'      => 'ASC',
+                );
+                $query = new WP_Query($args);
+                        
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $report_id = get_the_ID();
+                        $index = get_post_meta($report_id, 'index', true);
+                        $description = get_post_meta($report_id, 'description', true);
+                        $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
+                        $is_url = get_post_meta($report_id, 'is_url', true);
+                        $is_bold = get_post_meta($report_id, 'is_bold', true);
+                        if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
+                        if ($is_url) {
+                            echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
+                        } else {
+                            if ($is_bold==1) echo '<b>';
+                            echo $description;
+                            if ($is_bold==1) echo '</b>';
+                            echo '<br>';
+                        }
+                    endwhile;                
+                    wp_reset_postdata();
+                }
+                ?>
+            </fieldset>
+            <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
+            <?php
+            $html = ob_get_clean();
+            return $html;
+        }
+        
+        function set_new_site_by_title() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_new_site_title'])) {
+                // Sanitize input values
+                $new_site_title = sanitize_text_field($_POST['_new_site_title']);
+                
+                // Check if a site with the same title already exists
+                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
+                
+                if ($existing_site) {
+                    // A site with the same title already exists
+                    $response['error'] = 'A site with the same title already exists.';
+                } else {
+                    // Insert the new site
+                    $current_user_id = get_current_user_id();
+                    $new_site_args = array(
+                        'post_title'    => $new_site_title,
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'site',
+                    );
+                    $new_site_id = wp_insert_post($new_site_args);
+                    
+                    if (is_wp_error($new_site_id)) {
+                        // Error occurred while inserting the site
+                        $response['error'] = $new_site_id->get_error_message();
+                    } else {
+                        // Successfully created a new site
+                        $response['new_site_id'] = $new_site_id;
+                        $response['success'] = 'Completed to create a new site';
+                    }
+                }
+            }
+            wp_send_json($response);
+        }
+        
+        function set_initial_iso_document() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+        
+            if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+                $doc_category = sanitize_text_field($_POST['_doc_category_id']);
+                $site_id = sanitize_text_field($_POST['_doc_site_id']);
+                // Retrieve documents based on doc_category_id and doc_site_id
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'doc_category',
+                            'value'   => $doc_category,
+                            'compare' => '=',
+                        ),
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => $site_id,
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+                
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                    $this->get_shared_document(get_the_ID());
+                    endwhile;
+                    wp_reset_postdata();
+                    $response = array('success' => true);
+                endif;
+            }
+            wp_send_json($response);
+        }
+        
+        function get_shared_document($doc_id){
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            // Create the post
+            $new_post = array(
+                'post_title'    => 'No title',
+                'post_content'  => 'Your post content goes here.',
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'document',
+            );    
+            $post_id = wp_insert_post($new_post);
+        
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            update_post_meta( $post_id, 'site_id', $site_id);
+            update_post_meta( $post_id, 'doc_title', $doc_title);
+            update_post_meta( $post_id, 'doc_number', $doc_number);
+            update_post_meta( $post_id, 'doc_revision', $doc_revision);
+            update_post_meta( $post_id, 'doc_category', $doc_category);
+            update_post_meta( $post_id, 'doc_frame', $doc_frame);
+            update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
+        
+            if ($is_doc_report==1){
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
+                $query = $this->retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        $new_post = array(
+                            'post_status'   => 'publish',
+                            'post_author'   => $current_user_id,
+                            'post_type'     => 'doc-field',
+                        );    
+                        $field_id = wp_insert_post($new_post);
+                        update_post_meta( $field_id, 'doc_id', $post_id);
+                        update_post_meta( $field_id, 'field_name', $field_name);
+                        update_post_meta( $field_id, 'field_title', $field_title);
+                        update_post_meta( $field_id, 'field_type', $field_type);
+                        update_post_meta( $field_id, 'default_value', $default_value);
+                        update_post_meta( $field_id, 'listing_style', $listing_style);
+                        update_post_meta( $field_id, 'sorting_key', $sorting_key);
+                    endwhile;
+                    wp_reset_postdata();
+                }    
+            }
+        }
+        
+        function set_todo_from_doc_report($action_id=false, $report_id=false) {
+        
+            $current_user_id = get_current_user_id();
+            $job_id = get_post_meta($action_id, 'job_id', true);
+            $todo_title = get_the_title($job_id);
+            if ($action==-1) $todo_title = '文件發行';
+        
+            // Create the new To-do for current job_id
+            $new_post = array(
+                'post_title'    => $todo_title,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'todo',
+            );    
+            $todo_id = wp_insert_post($new_post);    
+        
+            update_post_meta( $todo_id, 'job_id', $job_id);
+            update_post_meta( $todo_id, 'report_id', $report_id);
+            //update_post_meta( $todo_id, 'doc_id', $doc_id);
+            update_post_meta( $todo_id, 'submit_user', $current_user_id);
+            update_post_meta( $todo_id, 'submit_action', $action_id);
+            update_post_meta( $todo_id, 'submit_time', time());
+        
+            $next_job = get_post_meta($action_id, 'next_job', true);
+            update_post_meta( $report_id, 'todo_status', $next_job);
+        
+            // set next todo and actions
+            $params = array(
+                'action_id' => $action_id,
+                'prev_report_id' => $report_id,
+            );        
+            set_next_todo_and_actions($params);
+        }
+        
+        function reset_document_todo_status() {
+            $response = array();
+            if( isset($_POST['_doc_id']) ) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                delete_post_meta($doc_id, 'todo_status');
+                delete_post_meta($doc_id, 'due_date');
+                delete_post_meta($doc_id, 'start_job');
+            }
+            wp_send_json($response);
+        }
+                
         // Data migration
         function data_migration() {
             // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
@@ -1368,293 +1650,4 @@ if (!class_exists('display_documents')) {
     }
     $my_class = new display_documents();
 }
-
-// document misc
-function count_doc_category($doc_category){
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-
-    $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'doc_category',
-                'value'   => $doc_category,
-                'compare' => '=',
-            ),
-            array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            ),
-        ),
-    );    
-    $query = new WP_Query($args);    
-    $count = $query->found_posts;
-    return $count;
-}
-
-function display_iso_document_statement($doc_id){
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    $doc_number = get_post_meta($doc_id, 'doc_number', true);
-    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-    $category_id = get_post_meta($doc_id, 'doc_category', true);
-    $doc_category = get_the_title( $category_id );
-    $count_category = count_doc_category($category_id);
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    ob_start();
-    ?>    
-    <div style="display:flex; justify-content:space-between; margin:5px;">
-        <div>
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-            <span><?php echo esc_html($doc_number);?></span>
-            <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-            <span><?php echo esc_html($doc_revision);?></span>            
-        </div>
-    </div>
-
-    <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-    <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
-    <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
-    <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
-    <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
-    <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-
-    <fieldset>
-        <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
-        <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-        <div id="site-hint" style="display:none; color:#999;"></div>
-
-        <?php
-        $args = array(
-            'post_type'      => 'doc-report',
-            'posts_per_page' => -1,
-            //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
-            'meta_query'     => array(
-                array(
-                    'key'     => 'doc_id',
-                    'value'   => $doc_id,
-                    'compare' => '='
-                ),
-            ),
-            'orderby'    => 'meta_value',
-            'meta_key'   => 'index',
-            'order'      => 'ASC',
-        );
-        $query = new WP_Query($args);
-                
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $report_id = get_the_ID();
-                $index = get_post_meta($report_id, 'index', true);
-                $description = get_post_meta($report_id, 'description', true);
-                $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
-                $is_url = get_post_meta($report_id, 'is_url', true);
-                $is_bold = get_post_meta($report_id, 'is_bold', true);
-                if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
-                if ($is_url) {
-                    echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
-                } else {
-                    if ($is_bold==1) echo '<b>';
-                    echo $description;
-                    if ($is_bold==1) echo '</b>';
-                    echo '<br>';
-                }
-            endwhile;                
-            wp_reset_postdata();
-        }
-        ?>
-    </fieldset>
-    <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
-    <?php
-    $html = ob_get_clean();
-    return $html;
-}
-
-function set_new_site_by_title() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-    if (isset($_POST['_new_site_title'])) {
-        // Sanitize input values
-        $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-        
-        // Check if a site with the same title already exists
-        $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
-        
-        if ($existing_site) {
-            // A site with the same title already exists
-            $response['error'] = 'A site with the same title already exists.';
-        } else {
-            // Insert the new site
-            $current_user_id = get_current_user_id();
-            $new_site_args = array(
-                'post_title'    => $new_site_title,
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'site',
-            );
-            $new_site_id = wp_insert_post($new_site_args);
-            
-            if (is_wp_error($new_site_id)) {
-                // Error occurred while inserting the site
-                $response['error'] = $new_site_id->get_error_message();
-            } else {
-                // Successfully created a new site
-                $response['new_site_id'] = $new_site_id;
-                $response['success'] = 'Completed to create a new site';
-            }
-        }
-    }
-    wp_send_json($response);
-}
-add_action('wp_ajax_set_new_site_by_title', 'set_new_site_by_title');
-add_action('wp_ajax_nopriv_set_new_site_by_title', 'set_new_site_by_title');
-
-function set_initial_iso_document() {
-    $response = array('success' => false, 'error' => 'Invalid data format');
-
-    if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
-        $doc_category = sanitize_text_field($_POST['_doc_category_id']);
-        $site_id = sanitize_text_field($_POST['_doc_site_id']);
-        // Retrieve documents based on doc_category_id and doc_site_id
-        $args = array(
-            'post_type'      => 'document',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'doc_category',
-                    'value'   => $doc_category,
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '=',
-                ),
-            ),
-        );
-        
-        $query = new WP_Query($args);
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                get_shared_document(get_the_ID());
-            endwhile;
-            wp_reset_postdata();
-            $response = array('success' => true);
-        endif;
-    }
-    wp_send_json($response);
-}
-add_action('wp_ajax_set_initial_iso_document', 'set_initial_iso_document');
-add_action('wp_ajax_nopriv_set_initial_iso_document', 'set_initial_iso_document');
-
-function get_shared_document($doc_id){
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    // Create the post
-    $new_post = array(
-        'post_title'    => 'No title',
-        'post_content'  => 'Your post content goes here.',
-        'post_status'   => 'publish',
-        'post_author'   => $current_user_id,
-        'post_type'     => 'document',
-    );    
-    $post_id = wp_insert_post($new_post);
-
-    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-    $doc_number = get_post_meta($doc_id, 'doc_number', true);
-    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-    $doc_category = get_post_meta($doc_id, 'doc_category', true);
-    $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-    update_post_meta( $post_id, 'site_id', $site_id);
-    update_post_meta( $post_id, 'doc_title', $doc_title);
-    update_post_meta( $post_id, 'doc_number', $doc_number);
-    update_post_meta( $post_id, 'doc_revision', $doc_revision);
-    update_post_meta( $post_id, 'doc_category', $doc_category);
-    update_post_meta( $post_id, 'doc_frame', $doc_frame);
-    update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
-
-    if ($is_doc_report==1){
-        $params = array(
-            'doc_id'     => $doc_id,
-        );                
-        $query = $this->retrieve_doc_field_data($params);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) : $query->the_post();
-                $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                $field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
-                $new_post = array(
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'doc-field',
-                );    
-                $field_id = wp_insert_post($new_post);
-                update_post_meta( $field_id, 'doc_id', $post_id);
-                update_post_meta( $field_id, 'field_name', $field_name);
-                update_post_meta( $field_id, 'field_title', $field_title);
-                update_post_meta( $field_id, 'field_type', $field_type);
-                update_post_meta( $field_id, 'default_value', $default_value);
-                update_post_meta( $field_id, 'listing_style', $listing_style);
-                update_post_meta( $field_id, 'sorting_key', $sorting_key);
-            endwhile;
-            wp_reset_postdata();
-        }    
-    }
-}
-
-function set_todo_from_doc_report($action_id=false, $report_id=false) {
-
-    $current_user_id = get_current_user_id();
-    $job_id = get_post_meta($action_id, 'job_id', true);
-    $todo_title = get_the_title($job_id);
-    if ($action==-1) $todo_title = '文件發行';
-
-    // Create the new To-do for current job_id
-    $new_post = array(
-        'post_title'    => $todo_title,
-        'post_status'   => 'publish',
-        'post_author'   => $current_user_id,
-        'post_type'     => 'todo',
-    );    
-    $todo_id = wp_insert_post($new_post);    
-
-    update_post_meta( $todo_id, 'job_id', $job_id);
-    update_post_meta( $todo_id, 'report_id', $report_id);
-    //update_post_meta( $todo_id, 'doc_id', $doc_id);
-    update_post_meta( $todo_id, 'submit_user', $current_user_id);
-    update_post_meta( $todo_id, 'submit_action', $action_id);
-    update_post_meta( $todo_id, 'submit_time', time());
-
-    $next_job = get_post_meta($action_id, 'next_job', true);
-    update_post_meta( $report_id, 'todo_status', $next_job);
-
-    // set next todo and actions
-    $params = array(
-        'action_id' => $action_id,
-        'prev_report_id' => $report_id,
-    );        
-    set_next_todo_and_actions($params);
-}
-
-function reset_document_todo_status() {
-    $response = array();
-    if( isset($_POST['_doc_id']) ) {
-        $doc_id = sanitize_text_field($_POST['_doc_id']);
-        delete_post_meta($doc_id, 'todo_status');
-        delete_post_meta($doc_id, 'due_date');
-        delete_post_meta($doc_id, 'start_job');
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_reset_document_todo_status', 'reset_document_todo_status' );
-add_action( 'wp_ajax_nopriv_reset_document_todo_status', 'reset_document_todo_status' );
 
