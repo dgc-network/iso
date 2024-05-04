@@ -1211,7 +1211,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='video'):
                             echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
-                            echo '<div id="'.esc_attr($field_name.'_video').'">'.esc_url($field_value).'</div>';
+                            echo '<div id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
                             echo '<textarea id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
         
