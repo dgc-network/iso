@@ -1209,14 +1209,10 @@ if (!class_exists('display_documents')) {
         
                     switch (true) {
                         case ($field_type=='video'):
+                            echo '<label for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
-                            if (esc_url($field_value)) {
-                                echo '<div id="video-display">'.esc_html($field_value).'</div>';
-                                echo '<textarea id="video-url" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                            } else {
-                                echo '<div id="video-display" style="display:none;">'.esc_html($field_value).'</div>';
-                                echo '<textarea id="video-url" rows="3" style="width:100%;" >'.esc_html($field_value).'</textarea>';
-                            }
+                            echo '<div id="'.esc_attr($field_name.'_video').'">'.esc_url($field_value).'</div>';
+                            echo '<textarea id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
         
                         case ($field_type=='image'):
