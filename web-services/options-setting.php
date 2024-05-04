@@ -68,6 +68,26 @@ function web_service_register_settings() {
 
     // Register a field
     add_settings_field(
+        'default_video_url',
+        'Default video URL',
+        'default_video_url_callback',
+        'web-service-settings',
+        'operation_settings_section'
+    );
+    register_setting('web-service-settings', 'default_video_url');
+    
+    // Register a field
+    add_settings_field(
+        'default_image_url',
+        'Default image URL',
+        'default_image_url_callback',
+        'web-service-settings',
+        'operation_settings_section'
+    );
+    register_setting('web-service-settings', 'default_image_url');
+    
+    // Register a field
+    add_settings_field(
         'operation_row_counts',
         'Row counts',
         'operation_row_counts_callback',
@@ -155,6 +175,16 @@ function open_ai_api_key_callback() {
 
 function operation_settings_section_callback() {
     echo '<p>Settings for operation.</p>';
+}
+
+function default_video_url_callback() {
+    $value = get_option('default_video_url');
+    echo '<input type="text" id="default_video_url" name="default_video_url" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function default_image_url_callback() {
+    $value = get_option('default_image_url');
+    echo '<input type="text" id="default_image_url" name="default_image_url" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
 function operation_row_counts_callback() {
