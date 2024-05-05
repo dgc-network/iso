@@ -550,6 +550,7 @@ if (!class_exists('to_do_list')) {
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+                if (empty($next_leadtime)) $next_leadtime=86400;
                 $todo_id       = get_post_meta($action_id, 'todo_id', true);
                 if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
                 if ($next_job>0) $todo_title = get_the_title($next_job);
@@ -591,7 +592,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta( $new_todo_id, 'job_id', $next_job );
             if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id );
             if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
-            //if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
+            if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
         
             if ($next_job==-1 || $next_job==-2) {
