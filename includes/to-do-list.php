@@ -463,16 +463,16 @@ if (!class_exists('to_do_list')) {
                 // action button is clicked
                 $current_user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
+                $next_job = get_post_meta($action_id, 'next_job', true);
                 $todo_id = get_post_meta($action_id, 'todo_id', true);
         
                 // Create new todo if the meta key 'todo_id' does not exist
                 if ( empty( $todo_id ) ) {
                     $job_id = get_post_meta($action_id, 'job_id', true);
                     $todo_title = get_the_title($job_id);
-                    $next_job = get_post_meta($action_id, 'next_job', true);
                     $doc_id = sanitize_text_field($_POST['_doc_id']);
                     $report_id = sanitize_text_field($_POST['_report_id']);
-                    if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+                    //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
                     //if ($action_id==0) $todo_title = '文件發行';
                     $new_post = array(
                         'post_title'    => $todo_title,
@@ -529,7 +529,7 @@ if (!class_exists('to_do_list')) {
                     'todo_id' => $todo_id,
                     'prev_report_id' => $new_report_id,
                 );        
-                $this->set_next_todo_and_actions($params);
+                if ($next_job>0) $this->set_next_todo_and_actions($params);
             }
             wp_send_json($response);
         }
