@@ -595,7 +595,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
         
             if ($next_job==-1 || $next_job==-2) {
-                $this->notice_the_persons_in_site($new_todo_id, $next_job);
+                //$this->notice_the_persons_in_site($new_todo_id, $next_job);
                 update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
                 update_post_meta( $new_todo_id, 'submit_action', $action_id);
                 update_post_meta( $new_todo_id, 'submit_time', time());
