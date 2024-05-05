@@ -1615,7 +1615,7 @@ if (!class_exists('display_documents')) {
                 'prev_report_id' => $report_id,
             );        
             $todo_class = new to_do_list();
-            //$todo_class->set_next_todo_and_actions($params);
+            $todo_class->set_next_todo_and_actions($params);
         }
         
         function reset_document_todo_status() {

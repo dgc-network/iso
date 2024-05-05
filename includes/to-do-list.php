@@ -549,15 +549,17 @@ if (!class_exists('to_do_list')) {
                 $todo_id       = get_post_meta($action_id, 'todo_id', true);
                 if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
                 if ($next_job>0) $todo_title = get_the_title($next_job);
-                
-                $report_id     = get_post_meta($todo_id, 'report_id', true);
                 $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-                if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);
-                if (is_array($doc_ids) && !empty($doc_ids)) {
-                    $doc_id = $doc_ids[0];
-                } else {
-                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
-                    $doc_id = get_post_meta($report_id, 'doc_id', true);
+                
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $report_id = get_post_meta($todo_id, 'report_id', true);
+                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+
+                if (empty($doc_id)) {
+                    if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);
+                    if (is_array($doc_ids) && !empty($doc_ids)) {
+                        $doc_id = $doc_ids[0];
+                    }
                 }
             }
         
