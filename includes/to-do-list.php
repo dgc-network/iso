@@ -537,8 +537,12 @@ if (!class_exists('to_do_list')) {
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
             // 1. come from set_todo_dialog_data(), create a next_todo base on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
+            //    (1) for document from _search
+            //    (2) 
             // 2. come from set_todo_from_doc_report(), create a next_todo base on the $args['action_id'] and $args['prev_report_id']
+            //    (1) for new/save doc_report. 目前 next_job=-1 做完 new_todo_id 有問題 
             // 3. come from set_document_dialog_data(), create a next_todo base on the $args['start_job'] and $args['doc_id']
+            //    (1) for frquence doc_report
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $current_user_id = get_current_user_id();
@@ -553,6 +557,7 @@ if (!class_exists('to_do_list')) {
                 
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $report_id = get_post_meta($todo_id, 'report_id', true);
+                if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
 
                 if (empty($doc_id)) {
