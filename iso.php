@@ -171,7 +171,7 @@ function init_webhook_events() {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_get_shared_doc_id'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = '您可以點擊下方按鍵將文件「'.$doc_title.'」加入您的文件匣中。';
+                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }
                 }
                 
@@ -200,7 +200,7 @@ function init_webhook_events() {
                         if ($query) {
                             if ($query==-1) {
                                 $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
-                                $text_message = '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。';
+                                $text_message = __( '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。', 'your-text-domain' );
                                 // Encode the Chinese characters for inclusion in the URL
                                 $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
                                 
@@ -218,7 +218,7 @@ function init_webhook_events() {
                                 ]);
                             } else {
                                 if ( $query->have_posts() ) {
-                                    $text_message = '您可以點擊下方按鍵執行『'.$message['text'].'』相關作業。';
+                                    $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
                                     $link_uri = home_url().'/to-do-list/?_search='.urlencode($message['text']);
                                     $params = [
                                         'display_name' => $display_name,
@@ -259,13 +259,13 @@ function init_webhook_events() {
 }
 add_action( 'parse_request', 'init_webhook_events' );
 
-function get_keyword_matchmaking($keyword) {
+function get_keyword_matchmaking($search_query) {
 
-    if (strpos($keyword, '註冊') !== false) return -1;
-    if (strpos($keyword, '登入') !== false) return -1;
-    if (strpos($keyword, '登錄') !== false) return -1;
-    if (strpos($keyword, 'login') !== false) return -1;
-    if (strpos($keyword, 'Login') !== false) return -1;
+    if (strpos($search_query, '註冊') !== false) return -1;
+    if (strpos($search_query, '登入') !== false) return -1;
+    if (strpos($search_query, '登錄') !== false) return -1;
+    if (strpos($search_query, 'login') !== false) return -1;
+    if (strpos($search_query, 'Login') !== false) return -1;
 
     // WP_Query arguments
     $args = array(
@@ -286,7 +286,7 @@ function get_keyword_matchmaking($keyword) {
     foreach ($document_meta_keys as $meta_key) {
         $meta_query_all_keys[] = array(
             'key'     => $meta_key,
-            'value'   => $keyword,
+            'value'   => $search_query,
             'compare' => 'LIKE',
         );
     }
@@ -325,13 +325,13 @@ function proceed_to_registration_login($line_user_id, $display_name) {
     ob_start();
     ?>
     <div class="ui-widget">
-        <h2>User registration/login</h2>
+        <h2><?php echo __( 'User registration/login', 'your-text-domain' );?></h2>
         <fieldset>
-            <label for="display-name">Name:</label>
+            <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
             <input type="text" id="display-name" value="<?php echo esc_attr($display_name);?>" class="text ui-widget-content ui-corner-all" />
-            <label for="user-email">Email:</label>
+            <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
             <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
-            <label for="site-id">Site:</label>
+            <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
             <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
@@ -372,13 +372,13 @@ function user_did_not_login_yet() {
         $user_data = get_userdata( $user_id );
         ?>
         <div class="ui-widget">
-            <h2>User registration/login</h2>
+            <h2><?php echo __( 'User registration/login', 'your-text-domain' );?></h2>
             <fieldset>
-                <label for="display-name">Name:</label>
+                <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email">Email:</label>
+                <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="site-id">Site:</label>
+                <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
@@ -393,11 +393,11 @@ function user_did_not_login_yet() {
         ?>
         <div class="desktop-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for desktop users -->
-            <p>感謝您使用我們的系統</p>
-            <p>請輸入您的 Email 帳號</p>
+            <p><?php echo __( '感謝您使用我們的系統', 'your-text-domain' );?></p>
+            <p><?php echo __( '請輸入您的 Email 帳號', 'your-text-domain' );?></p>
             <input type="text" id="user-email-input" />
             <div id="otp-input-div" style="display:none;">
-            <p>請輸入傳送到您 Line 上的六位數字密碼</p>
+            <p><?php echo __( '請輸入傳送到您 Line 上的六位數字密碼', 'your-text-domain' );?></p>
             <input type="text" id="one-time-password-desktop-input" />
             <input type="hidden" id="line-user-id-input" />
             </div>
@@ -405,15 +405,15 @@ function user_did_not_login_yet() {
 
         <div class="mobile-content ui-widget" style="text-align:center; display:none;">
             <!-- Content for mobile users -->
-            <p>感謝您使用我們的系統</p>
-            <p>利用手機按或掃描下方QR code</p>
-            <p>加入我們的Line官方帳號,</p>
+            <p><?php echo __( '感謝您使用我們的系統', 'your-text-domain' );?></p>
+            <p><?php echo __( '利用手機按或掃描下方QR code', 'your-text-domain' );?></p>
+            <p><?php echo __( '加入我們的Line官方帳號,', 'your-text-domain' );?></p>
             <a href="<?php echo get_option('line_official_account');?>">
                 <img src="<?php echo get_option('line_official_qr_code');?>">
             </a>
-            <p>並請在聊天室中, 輸入</p>
-            <p>「我要註冊」或「我要登錄」,</p>
-            <p>啟動註冊/登入作業。</p>
+            <p><?php echo __( '並請在聊天室中, 輸入', 'your-text-domain' );?></p>
+            <p><?php echo __( '「我要註冊」或「我要登錄」,', 'your-text-domain' );?></p>
+            <p><?php echo __( '啟動註冊/登入作業。', 'your-text-domain' );?></p>
         </div>
         <?php
     }

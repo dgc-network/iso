@@ -335,6 +335,7 @@ jQuery(document).ready(function($) {
             width: 450,
             modal: true,
             autoOpen: false,
+/*            
             buttons: {
                 "Add": function () {
                     $.ajax({
@@ -360,6 +361,7 @@ jQuery(document).ready(function($) {
                     });
                 },
             }
+*/                
         });
     
         $("#site-user-dialog").dialog({

@@ -94,16 +94,16 @@ if (!class_exists('display_profiles')) {
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
             <fieldset>
-                <label for="display-name">Name : </label>
+                <label for="display-name"><?php echo __( 'Name: ', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email">Email : </label>
+                <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th>My</th>
-                        <th>Job</th>
-                        <th>Description</th>
+                        <th>#</th>
+                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
@@ -113,12 +113,12 @@ if (!class_exists('display_profiles')) {
                             $job_site = get_post_meta($job_id, 'site_id', true);
                             $job_number = get_post_meta($job_id, 'job_number', true);
                             $job_title = get_the_title($job_id);
-                            $job_title .= '('.$job_number.')';
+                            //$job_title .= '('.$job_number.')';
                             $job_content = get_post_field('post_content', $job_id);
                             if ($job_site==$site_id) {
                             ?>
                             <tr>
-                                <td style="text-align:center;"><input type="checkbox" checked /></td>
+                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
                             </tr>
@@ -130,7 +130,7 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 </fieldset>
-                <label for="site-title"> Site: </label>
+                <label for="site-title"><?php echo __( 'Site: ', 'your-text-domain' );?></label>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <hr>
@@ -188,7 +188,7 @@ if (!class_exists('display_profiles')) {
                     </div>
                     <div id="site-image-url" style="display:none;">
                     <fieldset>
-                        <label for="image-url">Image URL:</label>
+                        <label for="image-url"><?php echo __( 'Image URL:', 'your-text-domain' );?></label>
                         <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
                         <button id="set-image-url" class="button">Set</button>
                     </fieldset>
@@ -198,9 +198,9 @@ if (!class_exists('display_profiles')) {
                     <fieldset style="margin-top:5px;">
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Admin</th>
+                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -257,7 +257,7 @@ if (!class_exists('display_profiles')) {
                 <?php
             } else {
                 ?>
-                <p>You do not have permission to access this page.</p>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
             $html = ob_get_clean();
@@ -274,18 +274,18 @@ if (!class_exists('display_profiles')) {
             <div id="site-user-dialog" title="User dialog" style="display:none;">
             <fieldset>
                 <input type="hidden" id="user-id" />
-                <label for="display-name">Name:</label>
+                <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email">Email:</label>
+                <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
                 <input type="checkbox" id="is-site-admin" />
-                <label for="is-site-admin">Is site admin</label><br>
+                <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th></th>
-                            <th>Job</th>
-                            <th>Description</th>
+                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         </thead>
                         <tbody id="user-job-list">
                         </tbody>
@@ -294,9 +294,9 @@ if (!class_exists('display_profiles')) {
                 <?php
                 if (current_user_can('administrator')) {
                     ?>
-                    <label for="select-site">Site:</label>
+                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" >
-                        <option value="">Select Site</option>
+                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                     <?php
                     $site_args = array(
                         'post_type'      => 'site',
@@ -583,9 +583,8 @@ if (!class_exists('display_profiles')) {
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th>#</th>
-                            <th>Job</th>
-                            <th>Description</th>
-                            <th>Department</th>
+                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -606,7 +605,6 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td width="70%"><?php echo esc_html($content);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($department);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -630,7 +628,7 @@ if (!class_exists('display_profiles')) {
                 <?php
             } else {
                 ?>
-                <p>You do not have permission to access this page.</p>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
             $html = ob_get_clean();
@@ -943,8 +941,8 @@ if (!class_exists('display_profiles')) {
                     <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th>Category</th>
-                            <th>Description</th>
+                            <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -973,7 +971,7 @@ if (!class_exists('display_profiles')) {
                 <?php
             } else {
                 ?>
-                <p>You do not have permission to access this page.</p>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
             $html = ob_get_clean();
@@ -1007,9 +1005,9 @@ if (!class_exists('display_profiles')) {
             <div id="doc-category-dialog" title="Category dialog" style="display:none;">
             <fieldset>
                 <input type="hidden" id="category-id" />
-                <label for="category-title">Category:</label>
+                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" class="text ui-widget-content ui-corner-all" />
-                <label for="category-content">Description:</label>
+                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"></textarea>
             </fieldset>
             </div>

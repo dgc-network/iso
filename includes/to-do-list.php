@@ -472,7 +472,7 @@ if (!class_exists('to_do_list')) {
                     $todo_title = get_the_title($job_id);
                     $doc_id = sanitize_text_field($_POST['_doc_id']);
                     $report_id = sanitize_text_field($_POST['_report_id']);
-                    //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+                    if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
                     //if ($action_id==0) $todo_title = '文件發行';
                     $new_post = array(
                         'post_title'    => $todo_title,
@@ -536,12 +536,12 @@ if (!class_exists('to_do_list')) {
         
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
-            // 1. come from set_todo_dialog_data(), create a next_todo base on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
-            //    (1) for document from _search
-            //    (2) 
-            // 2. come from set_todo_from_doc_report(), create a next_todo base on the $args['action_id'] and $args['prev_report_id']
-            //    (1) for new/save doc_report. 目前 next_job=-1 做完 new_todo_id 有問題 
-            // 3. come from set_document_dialog_data(), create a next_todo base on the $args['start_job'] and $args['doc_id']
+            // 1. come from set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
+            //    (1) for document/doc_report from _id
+            //    (2) for document/doc_report from _search
+            // 2. come from set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
+            //    (1) for new/save doc_report.
+            // 3. come from my_custom_post_event_callback($params), create a next_todo based on the $args['start_job'] and $args['doc_id']
             //    (1) for frquence doc_report
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
