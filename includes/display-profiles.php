@@ -1069,7 +1069,7 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
     }
-    $my_class = new display_profiles();
+    $profiles_class = new display_profiles();
 }
 
 

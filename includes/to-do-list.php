@@ -201,7 +201,7 @@ if (!class_exists('to_do_list')) {
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             if ($is_doc_report==1) {
-                                $doc_title .= '(#New report)';
+                                //$doc_title .= '(#New report)';
                             } else {
                                 $doc_title .= '('.$doc_number.')';
                             }
@@ -901,6 +901,6 @@ if (!class_exists('to_do_list')) {
         function data_migration() {
         }
     }
-    $my_class = new to_do_list();
+    $todo_class = new to_do_list();
 }
 

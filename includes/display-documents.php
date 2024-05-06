@@ -1294,9 +1294,15 @@ if (!class_exists('display_documents')) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
             $selected = ($selected_option === "yearly") ? 'selected' : '';
             $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "monthly") ? 'selected' : '';
+            $selected = ($selected_option === "half-yearly") ? 'selected' : '';
+            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "bimonthly") ? 'selected' : '';
+            $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "weekly") ? 'selected' : '';
             $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "weekly") ? 'selected' : '';
+            $options .= '<option value="biweekly" '.$selected.'>' . __( '每二週', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "biweekly") ? 'selected' : '';
             $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "daily") ? 'selected' : '';
             $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
@@ -1330,6 +1336,79 @@ if (!class_exists('display_documents')) {
                 case 'monthly':
                     wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
                     break;
+                case 'bimonthly':
+                    // Calculate timestamp for next occurrence (every 2 months)
+                    $next_occurrence = strtotime('+2 months', strtotime($start_time));
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'half-yearly':
+                    // Calculate timestamp for next occurrence (every 6 months)
+                    $next_occurrence = strtotime('+6 months', strtotime($start_time));
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'yearly':
+                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                    break;
+                default:
+                    // Handle invalid interval
+            }
+        
+            // Store the hook name in options (outside switch statement)
+            update_option('my_custom_post_event_hook_name', $hook_name);
+        
+            // Return the hook name for later use
+            return $hook_name;
+        }
+
+        // Method for the callback function
+        public function my_custom_post_event_callback($params) {
+            // Add your code to programmatically add a post here
+            $todo_class = new to_do_list();
+            $todo_class->set_next_todo_and_actions($params);
+        }
+        
+        // Method to schedule the event and add the action
+        public function schedule_event_and_action() {
+            // Retrieve the hook name from options
+            $hook_name = get_option('my_custom_post_event_hook_name');
+            // Add the action with the dynamic hook name
+            add_action($hook_name, array($this, 'my_custom_post_event_callback'));
+        }
+    
+/*        
+        function schedule_post_event_callback($args) {
+            $interval = $args['interval'];
+            $start_time = $args['start_time'];
+            $prev_start_time = $args['prev_start_time'];
+        
+            $hook_name = 'my_custom_post_event_'.$prev_start_time;
+            wp_clear_scheduled_hook($hook_name);
+            $hook_name = 'my_custom_post_event_'.$start_time;
+        
+            // Schedule the event based on the selected interval
+            switch ($interval) {
+                case 'twice_daily':
+                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                    break;
+                case 'daily':
+                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                    break;
+                case 'weekly':
+                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                    break;
+                case 'biweekly':
+                    // Calculate interval for every 2 weeks (14 days)
+                    wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
+                    break;
+                case 'monthly':
+                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                    break;
+                case 'bimonthly':
+                    wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
+                    break;
+                case 'half-yearly':
+                    wp_schedule_event($start_time, 'half-yearly', $hook_name, array($args));
+                    break;
                 case 'yearly':
                     wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
                     break;
@@ -1341,7 +1420,7 @@ if (!class_exists('display_documents')) {
             // Return the hook name for later use
             return $hook_name;
         }
-        
+*/        
         // document misc
         function count_doc_category($doc_category){
             $current_user_id = get_current_user_id();
@@ -1707,6 +1786,8 @@ if (!class_exists('display_documents')) {
             }        
         }
     }
-    $my_class = new display_documents();
+    $documents_class = new display_documents();
+    // Call the method to schedule the event and add the action
+    $documents_class->schedule_event_and_action();
 }
 
