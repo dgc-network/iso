@@ -977,6 +977,7 @@ if (!class_exists('display_documents')) {
                 <table style="width:100%;">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th><?php echo __( 'Field', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Type', 'your-text-domain' );?></th>
@@ -992,6 +993,7 @@ if (!class_exists('display_documents')) {
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'sorting_key', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
