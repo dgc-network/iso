@@ -1024,7 +1024,8 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'doc-field',
                 'posts_per_page' => -1,
                 'meta_key'       => 'sorting_key',
-                'orderby'        => 'meta_value',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                //'orderby'        => 'meta_value',
                 'order'          => 'ASC',
             );
         
