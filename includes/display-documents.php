@@ -63,13 +63,19 @@ if (!class_exists('display_documents')) {
             
                 // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_id']);
-                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                    $_id = sanitize_text_field($_GET['_id']);
+                    $start_job = get_post_meta($_id, 'start_job', true);
                     echo '<div class="ui-widget" id="result-container">';
-                    if ($is_doc_report) {
-                        echo $this->display_doc_report_list($doc_id);
+                    if ($start_job) {
+                        $doc_id=$_id;
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        if ($is_doc_report) {
+                            echo $this->display_doc_report_list($doc_id);
+                        } else {
+                            echo $this->display_doc_frame_contain($doc_id);
+                        }    
                     } else {
-                        echo $this->display_doc_frame_contain($doc_id);
+                        echo 'display the report#'.$_id;
                     }
                     echo '</div>';
                 }

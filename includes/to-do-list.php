@@ -714,10 +714,12 @@ if (!class_exists('to_do_list')) {
             $todo_submit = get_post_meta($todo_id, 'submit_time', true);
             $submit_time = wp_date( get_option('date_format'), $todo_submit );    
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
+
             $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );
             if ($job_id==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
             if ($job_id==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
             $link_uri = home_url().'/display-documents/?_id='.$doc_id;
+            if ($report_id) $link_uri = home_url().'/display-documents/?_id='.$report_id;
         
             $line_bot_api = new line_bot_api();
             $args = array(
