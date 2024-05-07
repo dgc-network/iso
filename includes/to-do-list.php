@@ -26,9 +26,10 @@ if (!class_exists('to_do_list')) {
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
                     $submit_user = get_post_meta($todo_id, 'submit_user', true);
+                    $user = get_userdata($submit_user);
                     $submit_time = get_post_meta($todo_id, 'submit_time', true);
                     if ($submit_time) {
-                        echo 'Todo #'.$todo_id.'has been submitted by '.$submit_user.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
+                        echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
                     } else {
                         echo '<div class="ui-widget" id="result-container">';
                         echo $this->display_todo_dialog($todo_id);
