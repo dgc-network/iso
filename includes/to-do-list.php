@@ -25,9 +25,15 @@ if (!class_exists('to_do_list')) {
             if (is_user_logged_in()) {
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_todo_dialog($todo_id);
-                    echo '</div>';
+                    $submit_user = get_post_meta($todo_id, 'submit_user', true);
+                    $submit_time = get_post_meta($todo_id, 'submit_time', true);
+                    if ($submit_time) {
+                        echo 'Todo #'.$todo_id.'has been submitted by '.$submit_user.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
+                    } else {
+                        echo '<div class="ui-widget" id="result-container">';
+                        echo $this->display_todo_dialog($todo_id);
+                        echo '</div>';    
+                    }
                 }
         
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
@@ -351,7 +357,7 @@ if (!class_exists('to_do_list')) {
             if ( $post_type === 'todo' ) {
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             }
             
             if ( $post_type === 'document' ) {
@@ -560,6 +566,7 @@ if (!class_exists('to_do_list')) {
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
 
                 if (empty($doc_id)) {
                     if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);

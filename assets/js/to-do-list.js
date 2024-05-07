@@ -1,29 +1,6 @@
 // To-do list
 jQuery(document).ready(function($) {
-/*
-    $("#doc-report-frequence-setting").on( "change", function() {
-        const ajaxData = {
-            'action': 'set_todo_by_frequence_setting',
-        };
-        ajaxData['_frequence_setting'] = $(this).val();
-        ajaxData['_doc_id'] = $("#doc-id").val();
-        ajaxData['_report_id'] = $("#report-id").val();
-    
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: ajaxData,
-            success: function (response) {
-                window.location.replace(window.location.href);
-            },
-            error: function(error){
-                console.error(error);
-                //alert(error);
-            }
-        });
-    });
-*/
+
     $("#select-todo").on( "change", function() {
         window.location.replace("?_select_todo="+$(this).val());
         $(this).val('');
