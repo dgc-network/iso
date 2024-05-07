@@ -711,8 +711,8 @@ if (!class_exists('to_do_list')) {
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
-            $todo_submit = get_post_meta($todo_id, 'submit_time', true);
-            $submit_time = wp_date( get_option('date_format'), $todo_submit );    
+            $submit_time = get_post_meta($todo_id, 'submit_time', true);
+            //$submit_time = wp_date( get_option('date_format'), $todo_submit );    
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
             $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );
