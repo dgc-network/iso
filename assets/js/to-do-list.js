@@ -20,9 +20,10 @@ jQuery(document).ready(function($) {
         get_todo_dialog_data(todo_id)
     });            
 
-    activate_todo_dialog_data(response);
+    activate_todo_dialog_data($("#doc-fields").val());
 
-    function activate_todo_dialog_data(response){
+    //function activate_todo_dialog_data(response){
+    function activate_todo_dialog_data(doc_fields){
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
@@ -39,7 +40,8 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_id'] = $("#doc-id").val();
             ajaxData['_report_id'] = $("#report-id").val();
         
-            $.each(response.doc_fields, function(index, value) {
+            //$.each(response.doc_fields, function(index, value) {
+            $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
@@ -62,7 +64,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#new-action").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -158,6 +160,7 @@ jQuery(document).ready(function($) {
                 }
             }
         });
+*/        
     }
 
     function get_todo_dialog_data(todo_id){
@@ -171,7 +174,8 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 // Display the result
                 $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response);
+                //activate_todo_dialog_data(response);
+                activate_todo_dialog_data(response.doc_fields);
             },
             error: function (error) {
                 console.error(error);

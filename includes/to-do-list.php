@@ -31,6 +31,10 @@ if (!class_exists('to_do_list')) {
                     if ($submit_time) {
                         echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
                     } else {
+                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                        $documents_class = new display_documents();
+                        $doc_fields = $documents_class->display_doc_field_keys($doc_id);
+                        echo '<input type="hiddent" id="doc-fields" value="'.$doc_fields.'">';
                         echo '<div class="ui-widget" id="result-container">';
                         echo $this->display_todo_dialog($todo_id);
                         echo '</div>';    

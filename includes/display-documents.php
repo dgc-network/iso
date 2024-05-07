@@ -1384,52 +1384,6 @@ if (!class_exists('display_documents')) {
             add_action($hook_name, array($this, 'my_custom_post_event_callback'));
         }
     
-/*        
-        function schedule_post_event_callback($args) {
-            $interval = $args['interval'];
-            $start_time = $args['start_time'];
-            $prev_start_time = $args['prev_start_time'];
-        
-            $hook_name = 'my_custom_post_event_'.$prev_start_time;
-            wp_clear_scheduled_hook($hook_name);
-            $hook_name = 'my_custom_post_event_'.$start_time;
-        
-            // Schedule the event based on the selected interval
-            switch ($interval) {
-                case 'twice_daily':
-                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-                    break;
-                case 'daily':
-                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-                    break;
-                case 'weekly':
-                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-                    break;
-                case 'biweekly':
-                    // Calculate interval for every 2 weeks (14 days)
-                    wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
-                    break;
-                case 'monthly':
-                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-                    break;
-                case 'bimonthly':
-                    wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
-                    break;
-                case 'half-yearly':
-                    wp_schedule_event($start_time, 'half-yearly', $hook_name, array($args));
-                    break;
-                case 'yearly':
-                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-                    break;
-                default:
-                    // Handle invalid interval
-            }
-            // Store the hook name in options
-            update_option('my_custom_post_event_hook_name', $hook_name);
-            // Return the hook name for later use
-            return $hook_name;
-        }
-*/        
         // document misc
         function count_doc_category($doc_category){
             $current_user_id = get_current_user_id();
