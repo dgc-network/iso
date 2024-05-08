@@ -45,7 +45,7 @@ if (!class_exists('to_do_list')) {
                             echo $this->display_todo_dialog($todo_id);
                             echo '</div>';
                         } else {
-                            echo 'Todo #'.$todo_id.' is not a valided todo.';
+                            echo 'Todo #'.$todo_id.' is not a validaed todo.';
                         }
                     }
                 }
