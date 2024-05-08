@@ -34,7 +34,7 @@ if (!class_exists('to_do_list')) {
                         $doc_id = get_post_meta($todo_id, 'doc_id', true);
                         $documents_class = new display_documents();
                         $doc_fields = $documents_class->display_doc_field_keys($doc_id);
-                        echo '<input type="hiddent" id="doc-fields" value="'.$doc_fields.'">';
+                        echo '<input type="hidden" id="doc-fields" value="'.$doc_fields.'">';
                         echo '<div class="ui-widget" id="result-container">';
                         echo $this->display_todo_dialog($todo_id);
                         echo '</div>';    
