@@ -34,6 +34,8 @@ if (!class_exists('to_do_list')) {
                         $doc_id = get_post_meta($todo_id, 'doc_id', true);
                         $documents_class = new display_documents();
                         $doc_fields = $documents_class->display_doc_field_keys($doc_id);
+                        echo '<script>var docFields = ' . json_encode($doc_fields) . ';</script>';
+
                         // Convert the PHP array to a JSON string
                         $doc_fields_json = json_encode($doc_fields);
                         echo '<input type="hidden" id="doc-fields" value="'.$doc_fields_json.'">';
