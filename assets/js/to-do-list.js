@@ -20,9 +20,33 @@ jQuery(document).ready(function($) {
         get_todo_dialog_data(todo_id)
     });            
 
+    var docFieldsValue = $("#doc-fields").val();
+
+    // Check if docFieldsValue exists, is a non-empty string, and is a valid JSON array
+    if (docFieldsValue && docFieldsValue.trim() !== '') {
+        try {
+            var docFields = JSON.parse(docFieldsValue);
+    
+            // Check if docFields is an array and not empty
+            if (Array.isArray(docFields) && docFields.length > 0) {
+                // Now docFields is an array that you can use in your JavaScript code
+                activate_todo_dialog_data(docFields);
+            } else {
+                // Handle the case where docFields is not an array or is empty
+                console.error('Invalid or empty docFields:', docFields);
+            }
+        } catch (error) {
+            // Handle JSON parsing errors
+            console.error('Error parsing docFields:', error);
+        }
+    } else {
+        // Handle the case where docFieldsValue is not present or empty
+        console.error('No value found for docFields');
+    }
+    
     //var docFields = JSON.parse($("#doc-fields").val());
     // Now docFields is an array that you can use in your JavaScript code
-    activate_todo_dialog_data(JSON.parse($("#doc-fields").val()));
+    //activate_todo_dialog_data(JSON.parse($("#doc-fields").val()));
 
     //function activate_todo_dialog_data(response){
     function activate_todo_dialog_data(doc_fields){
