@@ -20,7 +20,9 @@ jQuery(document).ready(function($) {
         get_todo_dialog_data(todo_id)
     });            
 
-    activate_todo_dialog_data($("#doc-fields").val());
+    //var docFields = JSON.parse($("#doc-fields").val());
+    // Now docFields is an array that you can use in your JavaScript code
+    activate_todo_dialog_data(JSON.parse($("#doc-fields").val()));
 
     //function activate_todo_dialog_data(response){
     function activate_todo_dialog_data(doc_fields){
