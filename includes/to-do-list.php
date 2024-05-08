@@ -32,10 +32,10 @@ if (!class_exists('to_do_list')) {
                         echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
                     } else {
                         $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                        $report_id = get_post_meta($todo_id, 'doc_id', true);
+                        if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                         $documents_class = new display_documents();
                         $doc_fields = $documents_class->display_doc_field_keys($doc_id);
-                        echo '<script>var docFields = ' . json_encode($doc_fields) . ';</script>';
-
                         // Convert the PHP array to a JSON string
                         $doc_fields_json = json_encode($doc_fields);
                         echo '<input type="hidden" id="doc-fields" value="'.$doc_fields_json.'">';
