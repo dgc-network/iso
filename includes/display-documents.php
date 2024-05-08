@@ -531,7 +531,6 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
@@ -542,9 +541,16 @@ if (!class_exists('display_documents')) {
             <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
             
             <fieldset style="overflow-x:auto; white-space:nowrap;">
+                <div style="display:inline-block;"><?php echo $doc_frame;?></div>
+            </fieldset>
+            <div>
+                <input type="button" id="exit-button" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+            </div>
+
             <?php
             $html = ob_get_clean();
-            return $html.'<div style="display:inline-block;">'.$doc_frame.'</div></fieldset>';
+            return $html;
         }
         
         function get_doc_frame_contain() {
@@ -579,7 +585,6 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <button id="share-document" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件分享', 'your-text-domain')?></button>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
@@ -601,7 +606,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
                     </fieldset>
                 </div>        
-        
+
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <select id="select-doc-report-function">
@@ -613,7 +618,7 @@ if (!class_exists('display_documents')) {
                         <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
-        
+
                 <table style="width:100%;">
                     <thead>
                         <?php
@@ -684,14 +689,25 @@ if (!class_exists('display_documents')) {
                     </tbody>
                 </table>
                 <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <div class="pagination">
-                    <?php
-                    // Display pagination links
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
-                    ?>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <input type="button" id="exit-button" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+                    </div>
+                    <div style="text-align:right; display:flex;">
+                        <div class="pagination">
+                            <?php
+                            // Display pagination links
+                            if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+                            echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+                            if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                            ?>
+                        </div>
+                    </div>
                 </div>
+
+
             </fieldset>
             <?php
             $html = ob_get_clean();
@@ -842,8 +858,9 @@ if (!class_exists('display_documents')) {
                         echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
                     endwhile;
                     wp_reset_postdata();
+                } else {
+                    echo '<input type="button" id="doc-report-dialog-exit-button" value="Exit" style="margin:5px;" />';
                 }
-                if ($start_job==-1) echo '<input type="button" id="doc-report-dialog-button--1" value="OK" style="margin:5px;" />';
                 ?>
                 </div>
                 <div style="text-align:right; display:flex;">

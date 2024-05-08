@@ -329,6 +329,10 @@ jQuery(document).ready(function($) {
                 });
             }    
         });
+
+        $("#exit-button").on("click", function () {
+            window.location.replace(window.location.href);
+        });        
     }
 
     // doc-field scripts
@@ -645,6 +649,10 @@ jQuery(document).ready(function($) {
 
         $("#signature-record").on("click", function () {
             $("#report-signature-record-div").toggle()
+        });
+
+        $("#doc-report-dialog-exit-button").on("click", function () {
+            get_doc_report_list_data($("#doc-id").val());
         });
 
         $(".video-button").on("click", function () {
