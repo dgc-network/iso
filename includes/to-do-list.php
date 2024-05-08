@@ -35,22 +35,18 @@ if (!class_exists('to_do_list')) {
                         $report_id = get_post_meta($todo_id, 'doc_id', true);
                         if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                         $documents_class = new display_documents();
-                        $doc_fields = $documents_class->display_doc_field_keys($doc_id);
-                        // Convert the PHP array to a JSON string
-                        $doc_fields_json = json_encode($doc_fields);
-                        echo '<input type="hidden" id="doc-fields" value="'.$doc_fields_json.'">';
-                        echo '<div class="ui-widget" id="result-container">';
-                        echo $this->display_todo_dialog($todo_id);
-                        echo '</div>';
-/*                        
-                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                        $documents_class = new display_documents();
-                        $doc_fields = $documents_class->display_doc_field_keys($doc_id);
-                        echo '<input type="hidden" id="doc-fields" value="'.$doc_fields.'">';
-                        echo '<div class="ui-widget" id="result-container">';
-                        echo $this->display_todo_dialog($todo_id);
-                        echo '</div>';
-*/                            
+                        if ($doc_id) $doc_fields = $documents_class->display_doc_field_keys($doc_id);
+                        // Check if $doc_fields is already defined and is an array and not empty
+                        if (isset($doc_fields) && is_array($doc_fields) && !empty($doc_fields)) {
+                            // Convert the PHP array to a JSON string
+                            $doc_fields_json = json_encode($doc_fields);
+                            echo '<input type="hidden" id="doc-fields" value="'.$doc_fields_json.'">';
+                            echo '<div class="ui-widget" id="result-container">';
+                            echo $this->display_todo_dialog($todo_id);
+                            echo '</div>';
+                        } else {
+                            echo 'Todo #'.$todo_id.' is not a valided todo.';
+                        }
                     }
                 }
         
