@@ -1009,8 +1009,10 @@ if (!class_exists('display_documents')) {
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
+                                $order_field = get_post_meta(get_the_ID(), 'order_field', true);
+                                if ($order_field) $order_field='*';
                                 echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'sorting_key', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($order_field).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
