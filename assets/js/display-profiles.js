@@ -7,6 +7,11 @@ jQuery(document).ready(function($) {
         return pattern.test(str);
     }
     
+    $("#search-site-job").on( "change", function() {
+        window.location.replace("?_search="+$(this).val());
+        $(this).val('');
+    });
+
     $("#my-profile-submit").on("click", function () {
         $.ajax({
             type: 'POST',

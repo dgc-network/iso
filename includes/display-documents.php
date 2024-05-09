@@ -287,7 +287,7 @@ if (!class_exists('display_documents')) {
         function retrieve_document_data($current_page = 1) {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
-        
+
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_filter = array(
@@ -295,14 +295,14 @@ if (!class_exists('display_documents')) {
                 'value'   => $site_id,
                 'compare' => '=',
             );
-        
+
             $select_category = sanitize_text_field($_GET['_category']);
             $category_filter = array(
                 'key'     => 'doc_category',
                 'value'   => $select_category,
                 'compare' => '=',
             );
-        
+
             $search_query = sanitize_text_field($_GET['_search']);
             $number_filter = array(
                 'key'     => 'doc_number',
@@ -314,7 +314,7 @@ if (!class_exists('display_documents')) {
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             );
-        
+
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => $posts_per_page,
@@ -338,7 +338,7 @@ if (!class_exists('display_documents')) {
                 'meta_key'       => 'doc_number',
                 'order'          => 'ASC',
             );
-        
+
             $query = new WP_Query($args);
             return $query;
         }

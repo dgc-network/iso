@@ -576,6 +576,7 @@ if (!class_exists('display_profiles')) {
                             </select>
                         </div>
                         <div style="text-align: right">
+                            <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                         </div>
                     </div>
         
@@ -660,13 +661,16 @@ if (!class_exists('display_profiles')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-        
+
             if (!current_user_can('administrator') && !$is_site_admin) {
                 $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
             }
-        
+
             if ($current_page==0) $args['posts_per_page'] = -1;
-        
+
+            $search_query = sanitize_text_field($_GET['_search']);
+            if ($search_query) $args['s'] = $search_query;
+
             $query = new WP_Query($args);
             return $query;
         }
