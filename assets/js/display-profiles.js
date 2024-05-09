@@ -8,8 +8,32 @@ jQuery(document).ready(function($) {
     }
     
     $("#search-site-job").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
-        $(this).val('');
+
+        // Initialize an empty array to store query parameters
+        var queryParams = [];
+    
+        // Check the selected value for each select element and add it to the queryParams array
+        var profileValue = $("#select-profile").val();
+        if (profileValue) {
+            queryParams.push("_select_profile=" + profileValue);
+        }
+    
+        var siteJobValue = $("#search-site-job").val();
+        if (siteJobValue) {
+            queryParams.push("_search=" + siteJobValue);
+        }
+    
+        // Combine all query parameters into a single string
+        var queryString = queryParams.join("&");
+    
+        // Redirect to the new URL with all combined query parameters
+        window.location.href = "?" + queryString;
+    
+        // Clear the values of all select elements after redirection
+        $("#select-profile, #search-site-job").val('');
+    
+        //window.location.replace("?_search="+$(this).val());
+        //$(this).val('');
     });
 
     $("#my-profile-submit").on("click", function () {

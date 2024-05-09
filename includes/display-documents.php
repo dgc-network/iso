@@ -50,54 +50,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
         }
 
-        // Shortcode to display
-        function display_shortcode() {
-            $this->data_migration();
-            // Check if the user is logged in
-            if (is_user_logged_in()) {
-                // Get shared document if shared doc ID is existed
-                if (isset($_GET['_get_shared_doc_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-                    $this->get_shared_document($doc_id);
-                }
-            
-                // Display document details if doc_id is existed
-                if (isset($_GET['_id'])) {
-                    $_id = sanitize_text_field($_GET['_id']);
-                    $start_job = get_post_meta($_id, 'start_job', true);
-                    echo '<div class="ui-widget" id="result-container">';
-                    if ($start_job) {
-                        $doc_id=$_id;
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        if ($is_doc_report) {
-                            echo $this->display_doc_report_list($doc_id);
-                        } else {
-                            echo $this->display_doc_frame_contain($doc_id);
-                        }    
-                    } else {
-                        echo 'display the report#'.$_id;
-                    }
-                    echo '</div>';
-                }
-            
-                // Display ISO document statement if initial ID is existed
-                if (isset($_GET['_initial'])) {
-                    $doc_id = sanitize_text_field($_GET['_initial']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_iso_document_statement($doc_id);
-                    echo '</div>';
-                }
-            
-                // Display document list if no specific document IDs are existed
-                if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
-                    echo $this->display_document_list();
-                }
-            
-            } else {
-                user_did_not_login_yet();
-            }
-        }
-
         // Register document post type
         function register_document_post_type() {
             $labels = array(
@@ -195,6 +147,54 @@ if (!class_exists('display_documents')) {
             register_post_type( 'doc-category', $args );
         }
         
+        // Shortcode to display
+        function display_shortcode() {
+            $this->data_migration();
+            // Check if the user is logged in
+            if (is_user_logged_in()) {
+                // Get shared document if shared doc ID is existed
+                if (isset($_GET['_get_shared_doc_id'])) {
+                    $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
+                    $this->get_shared_document($doc_id);
+                }
+            
+                // Display document details if doc_id is existed
+                if (isset($_GET['_id'])) {
+                    $_id = sanitize_text_field($_GET['_id']);
+                    $start_job = get_post_meta($_id, 'start_job', true);
+                    echo '<div class="ui-widget" id="result-container">';
+                    if ($start_job) {
+                        $doc_id=$_id;
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        if ($is_doc_report) {
+                            echo $this->display_doc_report_list($doc_id);
+                        } else {
+                            echo $this->display_doc_frame_contain($doc_id);
+                        }    
+                    } else {
+                        echo 'display the report#'.$_id;
+                    }
+                    echo '</div>';
+                }
+            
+                // Display ISO document statement if initial ID is existed
+                if (isset($_GET['_initial'])) {
+                    $doc_id = sanitize_text_field($_GET['_initial']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_iso_document_statement($doc_id);
+                    echo '</div>';
+                }
+            
+                // Display document list if no specific document IDs are existed
+                if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
+                    echo $this->display_document_list();
+                }
+            
+            } else {
+                user_did_not_login_yet();
+            }
+        }
+
         function display_document_list() {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
