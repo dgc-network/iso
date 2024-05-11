@@ -23,7 +23,7 @@ function retrieve_chart_of_account() {
     $scope = 'https://YOUR_DYNAMICS365_URL/.default';
     $scope = "https://$dynamics_url/.default";
     $scope = 'https://api.businesscentral.dynamics.com/.default';
-    $scope = 'https://api.businesscentral.dynamics.com/Financials.ReadWrite.All';
+    //$scope = 'https://api.businesscentral.dynamics.com/Financials.ReadWrite.All';
 
 
     // Authorization endpoint
