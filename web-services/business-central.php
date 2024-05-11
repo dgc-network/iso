@@ -16,7 +16,7 @@ function retrieve_chart_of_account() {
     $client_secret = 'e7c9cbfd-4be0-4db4-a281-eebe5a79623d';
     $redirect_uri = 'YOUR_REDIRECT_URI';
     $redirect_uri = 'https://iso-helper.com';
-    $redirect_uri = 'https://aihome.tw';
+    $redirect_uri = 'https://login.microsoftonline.com/8fd48cfd-1156-4b3a-bc21-32e0e891eda9/oauth2/v2.0/authorize';
 
     $company = 'CRONUS%20USA%2C%20Inc.';
     $service = 'Chart_of_Accounts';
