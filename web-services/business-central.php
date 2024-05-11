@@ -14,7 +14,7 @@ function retrieve_chart_of_account() {
 
     $tenant_id = '8fd48cfd-1156-4b3a-bc21-32e0e891eda9';
     $client_id = '915093ab-a735-44e3-8d84-849d07590b0f';
-    $client_secret = 'c4784e77-91ef-4959-9528-01ce12e3facf';
+    $client_secret = '';
     $redirect_uri = 'https://businesscentral.dynamics.com/OauthLanding.htm';
     //$redirect_uri = 'https://iso-helper.com';
 
