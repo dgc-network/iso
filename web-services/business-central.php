@@ -16,7 +16,8 @@ function retrieve_chart_of_account() {
     $client_secret = 'e7c9cbfd-4be0-4db4-a281-eebe5a79623d';
     $redirect_uri = 'YOUR_REDIRECT_URI';
     $redirect_uri = 'https://iso-helper.com';
-    
+    $redirect_uri = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/token";
+
     $company = 'CRONUS%20USA%2C%20Inc.';
     $service = 'Chart_of_Accounts';
     $dynamics_url = "api.businesscentral.dynamics.com/v2.0/$tenant_id/Production/ODataV4/Company('".$company."')/$service";
