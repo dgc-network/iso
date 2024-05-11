@@ -670,6 +670,7 @@ if (!class_exists('display_profiles')) {
 
             $search_query = sanitize_text_field($_GET['_search']);
             if ($search_query) $args['s'] = $search_query;
+            if ($search_query) $args['paged'] = 1;
 
             $query = new WP_Query($args);
             return $query;
