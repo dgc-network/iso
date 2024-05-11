@@ -3,6 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+
 function retrieve_chart_of_account() {
     // OAuth 2.0 parameters
     $tenant_id = 'YOUR_TENANT_ID';
