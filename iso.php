@@ -80,6 +80,7 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
+require_once plugin_dir_path( __FILE__ ) . 'web-services/business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
