@@ -11,6 +11,19 @@ function retrieve_chart_of_account() {
     $redirect_uri = 'YOUR_REDIRECT_URI';
     $scope = 'https://YOUR_DYNAMICS365_URL/.default';
     
+    $tenant_id = '8fd48cfd-1156-4b3a-bc21-32e0e891eda9';
+    $client_id = '33611e2a-c08a-4849-b9a3-edf1dc4255e5';
+    $client_secret = 'e7c9cbfd-4be0-4db4-a281-eebe5a79623d';
+    $redirect_uri = 'YOUR_REDIRECT_URI';
+    $redirect_uri = 'https://iso-helper.com';
+    
+    $company = 'CRONUS%20USA%2C%20Inc.';
+    $service = 'Chart_of_Accounts';
+    $dynamics_url = "api.businesscentral.dynamics.com/v2.0/$tenant_id/Production/ODataV4/Company('".$company."')/$service";
+    $scope = 'https://YOUR_DYNAMICS365_URL/.default';
+    $scope = "https://$dynamics_url/.default";
+    
+
     // Authorization endpoint
     $authorize_url = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/authorize";
     
