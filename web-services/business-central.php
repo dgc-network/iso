@@ -3,7 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
 function retrieve_chart_of_account() {
     // OAuth 2.0 parameters
     $tenant_id = 'YOUR_TENANT_ID';
@@ -26,6 +25,11 @@ function retrieve_chart_of_account() {
     $scope = 'https://api.businesscentral.dynamics.com/.default';
     //$scope = 'https://api.businesscentral.dynamics.com/Financials.ReadWrite.All';
 
+    $tenant_id = get_option('tenant_id');
+    $client_id = get_option('client_id');
+    $client_secret = get_option('client_secret');
+    $redirect_uri = get_option('redirect_uri');
+    $scope = get_option('bc_scope');
 
     // Authorization endpoint
     $authorize_url = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/authorize";

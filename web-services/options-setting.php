@@ -12,7 +12,7 @@ function web_service_register_settings() {
         'web-service-settings'
     );
 
-    // Register a field
+    // Register fields for Line bot section
     add_settings_field(
         'line_bot_token_option',
         'Line bot Token',
@@ -48,7 +48,7 @@ function web_service_register_settings() {
         'web-service-settings'
     );
 
-    // Register a field
+    // Register fields for AI section
     add_settings_field(
         'open_ai_api_key',
         'API_KEY',
@@ -57,7 +57,61 @@ function web_service_register_settings() {
         'open_ai_settings_section'
     );
     register_setting('web-service-settings', 'open_ai_api_key');
-    
+
+    // Register Business Central section
+    add_settings_section(
+        'business_central_settings_section',
+        'Business Central Settings',
+        'business_central_settings_section_callback',
+        'web-service-settings'
+    );
+
+    // Register fields for Business Central section
+    add_settings_field(
+        'tenant_id',
+        'Tenant ID',
+        'tenant_id_callback',
+        'web-service-settings',
+        'business_central_settings_section'
+    );
+    register_setting('web-service-settings', 'tenant_id');
+
+    add_settings_field(
+        'client_id',
+        'Client ID',
+        'client_id_callback',
+        'web-service-settings',
+        'business_central_settings_section'
+    );
+    register_setting('web-service-settings', 'client_id');
+
+    add_settings_field(
+        'client_secret',
+        'Client Secret',
+        'client_secret_callback',
+        'web-service-settings',
+        'business_central_settings_section'
+    );
+    register_setting('web-service-settings', 'client_secret');
+
+    add_settings_field(
+        'redirect_uri',
+        'Redirect URI',
+        'redirect_uri_callback',
+        'web-service-settings',
+        'business_central_settings_section'
+    );
+    register_setting('web-service-settings', 'redirect_uri');
+
+    add_settings_field(
+        'bc_scope',
+        'Scope',
+        'bc_scope_callback',
+        'web-service-settings',
+        'business_central_settings_section'
+    );
+    register_setting('web-service-settings', 'bc_scope');
+
     // Register Operation section
     add_settings_section(
         'operation_settings_section',
@@ -66,7 +120,7 @@ function web_service_register_settings() {
         'web-service-settings'
     );
 
-    // Register a field
+    // Register fields for Operation section
     add_settings_field(
         'default_video_url',
         'Default video URL',
@@ -76,7 +130,6 @@ function web_service_register_settings() {
     );
     register_setting('web-service-settings', 'default_video_url');
     
-    // Register a field
     add_settings_field(
         'default_image_url',
         'Default image URL',
@@ -86,7 +139,6 @@ function web_service_register_settings() {
     );
     register_setting('web-service-settings', 'default_image_url');
     
-    // Register a field
     add_settings_field(
         'operation_row_counts',
         'Row counts',
@@ -96,7 +148,6 @@ function web_service_register_settings() {
     );
     register_setting('web-service-settings', 'operation_row_counts');
     
-    // Register a field
     add_settings_field(
         'operation_fee_rate',
         'Operation fee rate',
@@ -106,7 +157,6 @@ function web_service_register_settings() {
     );
     register_setting('web-service-settings', 'operation_fee_rate');
     
-    // Register a field
     add_settings_field(
         'operation_wallet_address',
         'Wallet address',
@@ -171,6 +221,35 @@ function open_ai_settings_section_callback() {
 function open_ai_api_key_callback() {
     $value = get_option('open_ai_api_key');
     echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function business_central_settings_section_callback() {
+    echo '<p>Settings for Business Central.</p>';
+}
+
+function tenant_id_callback() {
+    $value = get_option('tenant_id');
+    echo '<input type="text" id="tenant_id" name="tenant_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function client_id_callback() {
+    $value = get_option('client_id');
+    echo '<input type="text" id="client_id" name="client_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function client_secret_callback() {
+    $value = get_option('client_secret');
+    echo '<input type="text" id="client_secret" name="client_secret" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function redirect_uri_callback() {
+    $value = get_option('redirect_uri');
+    echo '<input type="text" id="redirect_uri" name="redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
+}
+
+function bc_scope_callback() {
+    $value = get_option('bc_scope');
+    echo '<input type="text" id="bc_scope" name="bc_scope" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
 function operation_settings_section_callback() {
