@@ -15,7 +15,7 @@ function retrieve_chart_of_account() {
     $client_id = '915093ab-a735-44e3-8d84-849d07590b0f';
     $client_secret = 'c4784e77-91ef-4959-9528-01ce12e3facf';
     $redirect_uri = 'https://businesscentral.dynamics.com/OauthLanding.htm';
-    $redirect_uri = 'https://iso-helper.com';
+    //$redirect_uri = 'https://iso-helper.com';
 
     $company = 'CRONUS%20USA%2C%20Inc.';
     $service = 'Chart_of_Accounts';
