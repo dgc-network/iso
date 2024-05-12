@@ -39,7 +39,7 @@ function retrieve_chart_of_account() {
         'client_id' => $client_id,
         'response_type' => 'code',
         'redirect_uri' => $redirect_uri,
-        'scope' => $scope,
+        //'scope' => $scope,
     );
     $authorization_url = add_query_arg($authorization_params, $authorize_url);
     
