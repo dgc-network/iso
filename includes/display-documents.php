@@ -428,14 +428,14 @@ if (!class_exists('display_documents')) {
                     <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                     <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
-                    <label for="next-job-setting"><?php echo __( '本文件的 Action 設定', 'your-text-domain' );?></label><br>
+                    <label for="next-job-setting"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
                 </div>
                 <div id="doc-report-div" style="display:none;">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                     <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-                    <label for="next-job-setting"><?php echo __( '表單上的 Action 設定', 'your-text-domain' );?></label><br>
+                    <label for="next-job-setting"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
                 </div>
                 <?php $this->display_doc_action_list($doc_id);?>
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
@@ -1761,6 +1761,112 @@ if (!class_exists('display_documents')) {
                 
         // Data migration
         function data_migration() {
+            // Migrate the title and content for document post from job post if job_number==doc_number and update the meta "doc_id"=$job_id if meta "job_id"==$job_id
+            // update the title="登錄" for each document post and add new action with the title="OK", meta "doc_id"=$doc_id, "next_job"=-1, "next_leadtime"=86400 if job_number!=doc_number
+            // 2024-5-13
+            // 1. It queries documents and iterates over each one.
+            // 2. For each document, it queries for a job post with a matching job number.
+            // 3. If a matching job post is found, it updates the document's title and content with the corresponding job's title and content.
+            // 4. It then checks if there are any existing action posts related to the job. If there are, it updates their doc_id meta to match the job's ID.
+            // 5.If no matching job post is found, it updates the document's title to "登錄" and creates a new action post with the title "OK" and specific meta values.
+            if (isset($_GET['_document_job_migration'])) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+            
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $doc_id = get_the_ID();
+                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            
+                        $job_args = array(
+                            'post_type'      => 'job',
+                            'posts_per_page' => 1,
+                            'meta_query'     => array(
+                                array(
+                                    'key'     => 'job_number',
+                                    'value'   => $doc_number,
+                                    'compare' => '=',
+                                ),
+                            ),
+                        );
+                        $job_query = new WP_Query($job_args);
+            
+                        if ($job_query->have_posts()) {
+                            while ($job_query->have_posts()) {
+                                $job_query->the_post();
+                                $job_id = get_the_ID();
+                                $job_title = get_the_title();
+                                $job_content = get_the_content();
+                            }
+                            // Restore global post data
+                            wp_reset_postdata();
+            
+                            // Update document post with job title and content
+                            $doc_post_args = array(
+                                'ID'           => $doc_id,
+                                'post_title'   => $job_title,
+                                'post_content' => $job_content,
+                            );
+                            wp_update_post($doc_post_args);
+
+                            $action_args = array(
+                                'post_type'      => 'action',
+                                'posts_per_page' => -1,
+                                'meta_query'     => array(
+                                    array(
+                                        'key'     => 'job_id',
+                                        'value'   => $job_id,
+                                        'compare' => '=',
+                                    ),
+                                ),
+                            );                        
+                            $action_query = new WP_Query($action_args);
+                            
+                            if ($action_query->have_posts()) {
+                                while ($action_query->have_posts()) {
+                                    $action_query->the_post();
+                                    update_post_meta(get_the_ID(), 'doc_id', $job_id);
+                                }                            
+                                wp_reset_postdata();                            
+                            }    
+
+                        } else {
+                            $doc_post_args = array(
+                                'ID'         => $doc_id,
+                                'post_title' => '登錄',
+                            );
+                            wp_update_post($doc_post_args);
+            
+                            // Set the post title
+                            $action_title = 'OK';
+            
+                            // Set the meta values
+                            $meta_values = array(
+                                'doc_id'        => $doc_id,
+                                'next_job'      => -1,
+                                'next_leadtime' => 86400,
+                            );
+            
+                            // Create the action post
+                            $action_post = array(
+                                'post_title'  => $action_title,
+                                'post_type'   => 'action', // Adjust the post type as needed
+                                'post_status' => 'publish',
+                                'meta_input'  => $meta_values,
+                            );
+                            // Insert the post into the database
+                            $action_post_id = wp_insert_post($action_post);
+                        }
+                    }
+                    // Reset post data
+                    wp_reset_postdata();
+                }
+            }
+            
             // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
             if( isset($_GET['_site_id_migration']) ) {
                 // Query documents with the current meta key 'site_id' set to 8699
