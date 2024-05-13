@@ -49,11 +49,13 @@ if (!class_exists('to_do_list')) {
                         }
                     }
                 }
-        
+
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
-        
+
+                if ($_GET['_select_todo']=='2') $this->existing_scheduled_events();
+
                 if ($_GET['_select_todo']!='1' && !isset($_GET['_id'])) $this->display_to_do_list();
-        
+
             } else {
                 user_did_not_login_yet();
             }
@@ -920,6 +922,30 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
                 
+        // existing_scheduled_events
+        function existing_scheduled_events() {
+            if (current_user_can('administrator')) {
+                // Get all available schedules
+                $schedules = wp_get_schedules();
+
+                // Loop through each schedule
+                foreach ($schedules as $schedule_name => $schedule) {
+                    // Get the next timestamp for the schedule
+                    $next_timestamp = wp_next_scheduled('your_event_hook_name', array());
+                
+                    // Output schedule information
+                    echo 'Schedule Name: ' . $schedule_name . '<br>';
+                    echo 'Interval: ' . $schedule['interval'] . '<br>';
+                    echo 'Display Name: ' . $schedule['display'] . '<br>';
+                    echo 'Next Timestamp: ' . date('Y-m-d H:i:s', $next_timestamp) . '<br>';
+                    echo '<br>';
+                }    
+            } else {
+                echo 'You do not have enought permission to display this.';
+            }
+            
+        }
+
         // Data migration
         function data_migration() {
         }

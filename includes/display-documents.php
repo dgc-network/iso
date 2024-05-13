@@ -489,7 +489,9 @@ if (!class_exists('display_documents')) {
                     'post_content' => $_POST['_job_content'],
                 );
                 wp_update_post($doc_post_args);
-                update_post_meta( $doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
+                $job_number = sanitize_text_field($_POST['_job_number']);
+                if ($job_number) update_post_meta( $doc_id, 'job_number', $job_number);
+                else update_post_meta( $doc_id, 'job_number', sanitize_text_field($_POST['_doc_number']));
                 update_post_meta( $doc_id, 'department', sanitize_text_field($_POST['_department']));
 
                 update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
