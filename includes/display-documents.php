@@ -48,6 +48,14 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
+            add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
+            add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );                                                                    
+            add_action( 'wp_ajax_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );                                                                    
+            add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
         }
 
         // Register document post type
@@ -1328,6 +1336,7 @@ if (!class_exists('display_documents')) {
         function display_doc_action_list($doc_id=false) {
             $profiles_class = new display_profiles();
             ?>
+            <div id="doc-action-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1351,7 +1360,7 @@ if (!class_exists('display_documents')) {
                         if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
-                        <tr id="edit-curtain-agent-<?php the_ID();?>">
+                        <tr id="edit-doc-action-<?php the_ID();?>">
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
@@ -1364,9 +1373,10 @@ if (!class_exists('display_documents')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-job-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
-            <?php $profiles_class->display_job_action_dialog();?>
+            </div>
+            <?php $this->display_doc_action_dialog();?>
             <?php
         }
             
@@ -1385,6 +1395,82 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
+        function get_doc_action_list_data() {
+            $response = array();
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $response['html_contain'] = $this->display_doc_action_list($doc_id);
+            }
+            wp_send_json($response);
+        }
+        
+        function display_doc_action_dialog($action_id=false){
+            $action_title = get_the_title($action_id);
+            $action_content = get_post_field('post_content', $action_id);
+            $next_job = get_post_meta($action_id, 'next_job', true);
+            $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+            ?>
+            <div id="doc-action-dialog" title="Action dialog">
+            <fieldset>
+                <input type="hidden" id="action-id" />
+                <label for="action-title">Title:</label>
+                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="action-content">Content:</label>
+                <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="next-job">Next job:</label>
+                <select id="next-job" value="<?php echo esc_attr($next_job);?>" class="text ui-widget-content ui-corner-all" ></select>
+                <label for="next-leadtime">Next leadtime:</label>
+                <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+            </div>
+            <?php
+        }
+        
+        function get_doc_action_dialog_data() {
+            $response = array();
+            if (isset($_POST['_action_id'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $response['html_contain'] = $this->display_doc_action_dialog($action_id);
+            }
+            wp_send_json($response);
+        }
+
+        function set_doc_action_dialog_data() {
+            $response = array();
+            if( isset($_POST['_action_id']) ) {
+                $data = array(
+                    'ID'         => $_POST['_action_id'],
+                    'post_title' => $_POST['_action_title'],
+                    'post_content' => $_POST['_action_content'],
+                    'meta_input' => array(
+                        'next_job'   => $_POST['_next_job'],
+                        'next_leadtime' => $_POST['_next_leadtime'],
+                    )
+                );
+                wp_update_post( $data );
+            } else {
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_title'    => 'New action',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'action',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+                update_post_meta( $post_id, 'next_leadtime', 86400);
+            }
+            wp_send_json($response);
+        }
+        
+        function del_doc_action_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_action_id'], true);
+            wp_send_json($response);
+        }
+        
+
 
         // doc-report frequence setting
         function select_doc_report_frequence_setting_option($selected_option = false) {
@@ -1841,9 +1927,6 @@ if (!class_exists('display_documents')) {
                             );
                             wp_update_post($doc_post_args);
             
-                            // Set the post title
-                            $action_title = 'OK';
-            
                             // Set the meta values
                             $meta_values = array(
                                 'doc_id'        => $doc_id,
@@ -1853,7 +1936,8 @@ if (!class_exists('display_documents')) {
             
                             // Create the action post
                             $action_post = array(
-                                'post_title'  => $action_title,
+                                'post_title'  => 'OK',
+                                'post_content'  => 'Your post content goes here.',
                                 'post_type'   => 'action', // Adjust the post type as needed
                                 'post_status' => 'publish',
                                 'meta_input'  => $meta_values,
