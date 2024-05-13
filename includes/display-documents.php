@@ -389,9 +389,12 @@ if (!class_exists('display_documents')) {
         
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
+            
             $job_title = get_the_title($doc_id);
             $job_content = get_the_content($doc_id);
+            $job_number = get_post_meta($doc_id, 'job_number', true);
             $department = get_post_meta($doc_id, 'department', true);
+
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -437,21 +440,26 @@ if (!class_exists('display_documents')) {
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                <label id="next-job-setting" class="button"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
+                <label id="next-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label><br>
             </div>
             <div id="doc-report-div" style="display:none;">
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-                <label id="next-job-setting" class="button"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
+                <label id="next-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
-            <?php echo $this->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
+                <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
+                <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $doc_content;?></textarea>
+                <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>
-            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
+            <?php echo $this->display_doc_action_list($doc_id);?>
             <div id="doc-report-div1" style="display:none;">            
                 <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                 <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $this->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
@@ -476,6 +484,15 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_doc_id']) ) {
                 // Update the Document data
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $doc_post_args = array(
+                    'ID'           => $doc_id,
+                    'post_title'   => sanitize_text_field($_POST['_job_title']),
+                    'post_content' => sanitize_text_field($_POST['_job_content']),
+                );
+                wp_update_post($doc_post_args);
+                update_post_meta( $doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
+                update_post_meta( $doc_id, 'department', sanitize_text_field($_POST['_department']));
+
                 update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
                 update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
                 update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));

@@ -217,6 +217,10 @@ jQuery(document).ready(function($) {
                         'action': 'set_document_dialog_data',
                     };
                     ajaxData['_doc_id'] = doc_id;
+                    ajaxData['_job_number'] = $("#job-number").val();
+                    ajaxData['_job_title'] = $("#job-title").val();
+                    ajaxData['_job_content'] = $("#job-content").val();
+                    ajaxData['_department'] = $("#department").val();
                     ajaxData['_doc_number'] = $("#doc-number").val();
                     ajaxData['_doc_title'] = $("#doc-title").val();
                     ajaxData['_doc_revision'] = $("#doc-revision").val();
