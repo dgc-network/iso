@@ -388,86 +388,87 @@ if (!class_exists('display_documents')) {
         }
         
         function display_document_dialog($doc_id=false) {
-            if ($doc_id) {
-                $profiles_class = new display_profiles();
-                $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-                $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                $start_job = get_post_meta($doc_id, 'start_job', true);
-                $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-                $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-                $site_id = get_post_meta($doc_id, 'site_id', true);
-                $image_url = get_post_meta($site_id, 'image_url', true);
-        
-                ob_start();
-                ?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-                        <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                    </div>
-                    <div style="text-align:right; display:flex;">
-        
-                    </div>
+            $profiles_class = new display_profiles();
+            $job_title = get_the_title($doc_id);
+            $job_content = get_the_content($doc_id);
+            $department = get_post_meta($doc_id, 'department', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $start_job = get_post_meta($doc_id, 'start_job', true);
+            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+            $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
+            $site_id = get_post_meta($doc_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+    
+            ob_start();
+            ?>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
-                <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-                <fieldset>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-                    </div>
-                    <div style="text-align:right; display:flex;">
-                        <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash button"></span>
-                    </div>
+                <div style="text-align:right; display:flex;">
+    
                 </div>
-                <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-                <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-                <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
-                <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-                <div id="doc-frame-div" style="display:none;">
-                    <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                    <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                    <label id="next-job-setting" class="button"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
+            </div>
+            <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+            <fieldset>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
                 </div>
-                <div id="doc-report-div" style="display:none;">
-                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-                    <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <?php echo $this->display_doc_field_list($doc_id);?>
-                    <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-                    <label id="next-job-setting" class="button"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
+                <div style="text-align:right; display:flex;">
+                    <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash button"></span>
                 </div>
-                <?php echo $this->display_doc_action_list($doc_id);?>
-                <div id="job-setting-div" style="display:none;">
-                    <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
-                    <input type="text" id="job-title" value="<?php echo esc_html($job-title);?>" class="text ui-widget-content ui-corner-all" />
+            </div>
+            <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
+            <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+            <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
+            <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+            <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+            <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
+            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+            <div id="doc-frame-div" style="display:none;">
+                <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+                <label id="next-job-setting" class="button"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
+            </div>
+            <div id="doc-report-div" style="display:none;">
+                <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+                <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <?php echo $this->display_doc_field_list($doc_id);?>
+                <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
+                <label id="next-job-setting" class="button"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
+            </div>
+            <?php echo $this->display_doc_action_list($doc_id);?>
+            <div id="job-setting-div" style="display:none;">
+                <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
+                <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
+            </div>
+            <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
+            <div id="doc-report-div1" style="display:none;">            
+                <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $this->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                <div id="frquence-start-time-div" style="display:none;">
+                    <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
+                    <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                 </div>
-                <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
-                <div id="doc-report-div1" style="display:none;">            
-                    <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                    <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $this->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
-                    <div id="frquence-start-time-div" style="display:none;">
-                        <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                        <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-                        <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
-                        <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
-                    </div>
-                </div>
-                <hr>
-                <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                </fieldset>
-                <?php
-                $html = ob_get_clean();
-                return $html;
-            }
+            </div>
+            <hr>
+            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            </fieldset>
+            <?php
+            $html = ob_get_clean();
+            return $html;
         }
         
         function set_document_dialog_data() {
@@ -1933,6 +1934,8 @@ if (!class_exists('display_documents')) {
                                 $job_id = get_the_ID();
                                 $job_title = get_the_title();
                                 $job_content = get_the_content();
+                                $job_number = get_post_meta($job_id, 'job_number', true);
+                                $department = get_post_meta($job_id, 'department', true);
                             }
                             // Restore global post data
                             wp_reset_postdata();
@@ -1944,6 +1947,8 @@ if (!class_exists('display_documents')) {
                                 'post_content' => $job_content,
                             );
                             wp_update_post($doc_post_args);
+                            update_post_meta($doc_id, 'job_number', $job_number);
+                            update_post_meta($doc_id, 'department', $department);
 
                             $action_args = array(
                                 'post_type'      => 'action',
