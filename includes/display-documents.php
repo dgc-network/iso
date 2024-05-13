@@ -1376,7 +1376,7 @@ if (!class_exists('display_documents')) {
             <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <?php //echo $this->display_doc_action_dialog();?>
+            <?php echo $this->display_doc_action_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;            
