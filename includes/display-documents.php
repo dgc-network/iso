@@ -169,9 +169,9 @@ if (!class_exists('display_documents')) {
                 // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
                     $_id = sanitize_text_field($_GET['_id']);
-                    $start_job = get_post_meta($_id, 'start_job', true);
+                    //$start_job = get_post_meta($_id, 'start_job', true);
                     echo '<div class="ui-widget" id="result-container">';
-                    if ($start_job) {
+                    //if ($start_job) {
                         $doc_id=$_id;
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($is_doc_report) {
@@ -179,9 +179,9 @@ if (!class_exists('display_documents')) {
                         } else {
                             echo $this->display_doc_frame_contain($doc_id);
                         }    
-                    } else {
-                        echo 'display the report#'.$_id;
-                    }
+                    //} else {
+                    //    echo 'display the report#'.$_id;
+                    //}
                     echo '</div>';
                 }
             
@@ -391,7 +391,8 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
 
             $job_title = get_the_title($doc_id);
-            $job_content = get_the_content($doc_id);
+            //$job_content = get_the_content($doc_id);
+            $job_content = get_post_field('post_content', $doc_id);
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $department = get_post_meta($doc_id, 'department', true);
 
@@ -399,7 +400,7 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $start_job = get_post_meta($doc_id, 'start_job', true);
+            //$start_job = get_post_meta($doc_id, 'start_job', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -498,8 +499,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
                 update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
                 update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
-                $start_job = sanitize_text_field($_POST['_start_job']);
-                update_post_meta( $doc_id, 'start_job', $start_job );
+                //$start_job = sanitize_text_field($_POST['_start_job']);
+                //update_post_meta( $doc_id, 'start_job', $start_job );
                 update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
                 $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
@@ -516,7 +517,7 @@ if (!class_exists('display_documents')) {
                     'interval' => $doc_report_frequence_setting,
                     'start_time' => $doc_report_frequence-$offset_seconds,
                     'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
-                    'start_job' => $start_job,
+                    //'start_job' => $start_job,
                     'doc_id' => $doc_id,
                 );            
                 if ($doc_report_frequence_setting) $hook_name=$this->schedule_post_event_callback($params);
@@ -839,7 +840,7 @@ if (!class_exists('display_documents')) {
 
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $start_job = get_post_meta($doc_id, 'start_job', true);
+            //$start_job = get_post_meta($doc_id, 'start_job', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($report_id) $doc_title .= '(Report#'.$report_id.')';
         
@@ -887,7 +888,8 @@ if (!class_exists('display_documents')) {
                 <div>
                 <?php
                 $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_job_action_list_data($start_job);
+                //$query = $profiles_class->retrieve_job_action_list_data($start_job);
+                $query = $this->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
@@ -963,9 +965,9 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $start_job = get_post_meta($doc_id, 'start_job', true);
+                //$start_job = get_post_meta($doc_id, 'start_job', true);
                 update_post_meta( $post_id, 'doc_id', $doc_id);
-                update_post_meta( $post_id, 'start_job', $start_job);
+                //update_post_meta( $post_id, 'start_job', $start_job);
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
@@ -1002,9 +1004,9 @@ if (!class_exists('display_documents')) {
                 $post_id = wp_insert_post($new_post);
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $start_job = get_post_meta($report_id, 'start_job', true);
+                //$start_job = get_post_meta($report_id, 'start_job', true);
                 update_post_meta( $post_id, 'doc_id', $doc_id);
-                update_post_meta( $post_id, 'start_job', $start_job);
+                //update_post_meta( $post_id, 'start_job', $start_job);
         
                 $params = array(
                     'doc_id'     => $doc_id,
@@ -1865,10 +1867,9 @@ if (!class_exists('display_documents')) {
         
             $current_user_id = get_current_user_id();
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $start_job = get_post_meta($doc_id, 'start_job', true);
-            $todo_title = get_the_title($start_job);
-            //$job_id = get_post_meta($action_id, 'job_id', true);
-            //if ($action==-1) $todo_title = '文件發行';
+            //$start_job = get_post_meta($doc_id, 'start_job', true);
+            //$todo_title = get_the_title($start_job);
+            $todo_title = get_the_title($doc_id);
         
             // Create the new To-do for current job_id
             $new_post = array(
@@ -1879,7 +1880,8 @@ if (!class_exists('display_documents')) {
             );    
             $todo_id = wp_insert_post($new_post);    
         
-            update_post_meta( $todo_id, 'job_id', $start_job);
+            //update_post_meta( $todo_id, 'job_id', $start_job);
+            update_post_meta( $todo_id, 'job_id', $doc_id);
             update_post_meta( $todo_id, 'report_id', $report_id);
             //update_post_meta( $todo_id, 'doc_id', $doc_id);
             update_post_meta( $todo_id, 'submit_user', $current_user_id);

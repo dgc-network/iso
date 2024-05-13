@@ -212,9 +212,11 @@ if (!class_exists('to_do_list')) {
                             
                             if (empty($doc_id)) {
                                 $doc_id = get_the_ID();
-                                $job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                                $todo_title = get_the_title($job_id);
-                                if ($job_id==-1) $todo_title='文件發行';
+                                //$job_id = get_post_meta(get_the_ID(), 'start_job', true);
+                                //$todo_title = get_the_title($job_id);
+                                $todo_title = get_the_title($doc_id);
+                                //if ($job_id==-1) $todo_title='發行';
+                                if ($doc_id==-1) $todo_title='發行';
                                 $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
                                 if ($todo_due==-1) $todo_due='發行';
                             }
@@ -272,6 +274,7 @@ if (!class_exists('to_do_list')) {
                     'post_type'      => 'document',
                     'posts_per_page' => $posts_per_page,
                     'paged'          => $current_page,
+                    'post__in'       => $user_job_ids, // Array of document post IDs
                     'meta_query'     => array(
                         'relation' => 'AND',
                         array(
@@ -279,6 +282,7 @@ if (!class_exists('to_do_list')) {
                             'value'   => $site_id,
                             'compare' => '=',
                         ),
+/*                            
                         array(
                             'relation' => 'OR',
                             array(
@@ -292,6 +296,7 @@ if (!class_exists('to_do_list')) {
                                 'compare' => '=',
                             ),
                         ),
+*/                            
                         array(
                             'relation' => 'OR',
                             array(
@@ -558,12 +563,12 @@ if (!class_exists('to_do_list')) {
         
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
-            // 1. come from set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
+            // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
             //    (1) for document/doc_report from _id
             //    (2) for document/doc_report from _search
-            // 2. come from set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
+            // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
             //    (1) for new/save doc_report.
-            // 3. come from my_custom_post_event_callback($params), create a next_todo based on the $args['start_job'] and $args['doc_id']
+            // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['start_job'] and $args['doc_id']
             //    (1) for frquence doc_report
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
@@ -578,22 +583,25 @@ if (!class_exists('to_do_list')) {
                 if ($next_job>0) $todo_title = get_the_title($next_job);
                 $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
                 
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                //$doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $doc_id = get_post_meta($todo_id, 'job_id', true);
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                 if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-
+/*
                 if (empty($doc_id)) {
                     if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);
                     if (is_array($doc_ids) && !empty($doc_ids)) {
                         $doc_id = $doc_ids[0];
                     }
                 }
+*/                
             }
         
             if ($action_id==0) {
-                $next_job = isset($args['start_job']) ? $args['start_job'] : 0;
+                //$next_job = isset($args['start_job']) ? $args['start_job'] : 0;
+                $next_job = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 $todo_title = get_the_title($next_job);
                 $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 update_post_meta( $doc_id, 'todo_status', -1);
@@ -601,8 +609,8 @@ if (!class_exists('to_do_list')) {
                 $current_user_id = 1;
             }
             
-            if ($next_job==-1) $todo_title = __( '文件發行', 'your-text-domain' );
-            if ($next_job==-2) $todo_title = __( '文件廢止', 'your-text-domain' );
+            if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
+            if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
         
             // Create a new To-do for next_job
             $new_post = array(
@@ -652,7 +660,7 @@ if (!class_exists('to_do_list')) {
                 }
             }
         }
-        
+/*        
         function get_document_for_job($job_id) {
             $doc_ids = array();
             $args = array(
@@ -677,7 +685,7 @@ if (!class_exists('to_do_list')) {
             }
             return $doc_ids;
         }
-        
+*/        
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
