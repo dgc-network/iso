@@ -5,9 +5,9 @@
  * Description: The leading documents management plugin for iso system by shortcode
  * Author: dgc.network
  * Author URI: https://dgc.network/
- * Version: 1.0.4
+ * Version: 1.0.5
  * Requires at least: 6.0
- * Tested up to: 6.5.2
+ * Tested up to: 6.5.3
  *
  * Text Domain: iso
  * Domain Path: /languages/
@@ -49,29 +49,29 @@ function admin_enqueue_scripts_and_styles() {
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function wp_enqueue_scripts_and_styles() {
+    $version = '1.0.5.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-    $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $version);
-    $version = '1.0.0.'.time(); // Update this version number when you make changes
+    //$version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_script('wp-enqueue-js', plugins_url('assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.1.'.time(); // Update this version number when you make changes
+    //$version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('display-profiles-js', plugins_url('assets/js/display-profiles.js', __FILE__), array('jquery'), $version);
     wp_localize_script('display-profiles-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.1.'.time(); // Update this version number when you make changes
+    //$version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('display-documents-js', plugins_url('assets/js/display-documents.js', __FILE__), array('jquery'), $version);
     wp_localize_script('display-documents-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-    $version = '1.0.1.'.time(); // Update this version number when you make changes
+    //$version = '1.0.1.'.time(); // Update this version number when you make changes
     wp_enqueue_script('to-do-list-js', plugins_url('assets/js/to-do-list.js', __FILE__), array('jquery'), $version);
     wp_localize_script('to-do-list-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),

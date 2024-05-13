@@ -202,7 +202,7 @@ if (!class_exists('display_documents')) {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
             $current_page = max(1, get_query_var('paged')); // Get the current page number
-            $query = $this->retrieve_document_data($current_page);
+            $query = $this->retrieve_document_list_data($current_page);
             $total_posts = $query->found_posts;
             $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
 
@@ -284,7 +284,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_data($current_page = 1) {
+        function retrieve_document_list_data($current_page = 1) {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
 
@@ -302,6 +302,7 @@ if (!class_exists('display_documents')) {
                 'value'   => $select_category,
                 'compare' => '=',
             );
+            if ($select_category) $current_page = 1;
 
             $search_query = sanitize_text_field($_GET['_search']);
             $number_filter = array(
@@ -314,6 +315,7 @@ if (!class_exists('display_documents')) {
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             );
+            if ($search_query) $current_page = 1;
 
             $args = array(
                 'post_type'      => 'document',
@@ -426,13 +428,16 @@ if (!class_exists('display_documents')) {
                     <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                     <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
+                    <label for="next-job-setting"><?php echo __( '本文件的 Action 設定', 'your-text-domain' );?></label><br>
                 </div>
                 <div id="doc-report-div" style="display:none;">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                     <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
+                    <label for="next-job-setting"><?php echo __( '表單上的 Action 設定', 'your-text-domain' );?></label><br>
                 </div>
+                <?php $profiles_class->display_job_action_list();?>
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
                 <div id="doc-report-div1" style="display:none;">            
                     <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>

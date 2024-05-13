@@ -15,7 +15,7 @@ function retrieve_chart_of_account() {
     $client_id = '915093ab-a735-44e3-8d84-849d07590b0f';
     $client_secret = '';
     $redirect_uri = 'https://businesscentral.dynamics.com/OauthLanding.htm';
-    //$redirect_uri = 'https://iso-helper.com';
+    $redirect_uri = 'https://businesscentral.dynamics.com/OAuthLanding.htm';
 
     $company = 'CRONUS%20USA%2C%20Inc.';
     $service = 'Chart_of_Accounts';
@@ -23,7 +23,8 @@ function retrieve_chart_of_account() {
     $scope = 'https://YOUR_DYNAMICS365_URL/.default';
     $scope = "https://$dynamics_url/.default";
     $scope = 'https://api.businesscentral.dynamics.com/.default';
-    //$scope = 'https://api.businesscentral.dynamics.com/Financials.ReadWrite.All';
+    $scope = 'https://api.businesscentral.dynamics.com/Financials.ReadWrite.All';
+    $scope = 'https://api.businesscentral.dynamics.com/API.ReadWrite.All';
 
     $tenant_id = get_option('tenant_id');
     $client_id = get_option('client_id');
