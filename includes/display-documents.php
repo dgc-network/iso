@@ -1376,7 +1376,7 @@ if (!class_exists('display_documents')) {
             <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <?php $this->display_doc_action_dialog();?>
+            <?php //echo $this->display_doc_action_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;            
@@ -1411,6 +1411,7 @@ if (!class_exists('display_documents')) {
             $action_content = get_post_field('post_content', $action_id);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+            ob_start();
             ?>
             <div id="doc-action-dialog" title="Action dialog">
             <fieldset>
@@ -1426,6 +1427,8 @@ if (!class_exists('display_documents')) {
             </fieldset>
             </div>
             <?php
+            $html = ob_get_clean();
+            return $html;            
         }
         
         function get_doc_action_dialog_data() {
@@ -1461,6 +1464,7 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+                update_post_meta( $post_id, 'next_job', -1);
                 update_post_meta( $post_id, 'next_leadtime', 86400);
             }
             wp_send_json($response);
