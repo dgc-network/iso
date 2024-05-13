@@ -1415,13 +1415,13 @@ if (!class_exists('display_documents')) {
             ?>
             <div id="doc-action-dialog" title="Action dialog">
             <fieldset>
-                <input type="hidden" id="action-id" />
+                <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <label for="action-title">Title:</label>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-content">Content:</label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="next-job">Next job:</label>
-                <select id="next-job" value="<?php echo esc_attr($next_job);?>" class="text ui-widget-content ui-corner-all" ></select>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
                 <label for="next-leadtime">Next leadtime:</label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -1444,12 +1444,12 @@ if (!class_exists('display_documents')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $data = array(
-                    'ID'         => $_POST['_action_id'],
-                    'post_title' => $_POST['_action_title'],
-                    'post_content' => $_POST['_action_content'],
+                    'ID'         => sanitize_text_field($_POST['__action_id_id']),
+                    'post_title' => sanitize_text_field($_POST['_action_title']),
+                    'post_content' => sanitize_text_field($_POST['_action_content']),
                     'meta_input' => array(
-                        'next_job'   => $_POST['_next_job'],
-                        'next_leadtime' => $_POST['_next_leadtime'],
+                        'next_job'   => sanitize_text_field($_POST['_next_job']),
+                        'next_leadtime' => sanitize_text_field($_POST['_next_leadtime']),
                     )
                 );
                 wp_update_post( $data );
@@ -1463,7 +1463,7 @@ if (!class_exists('display_documents')) {
                     'post_type'     => 'action',
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
                 update_post_meta( $post_id, 'next_job', -1);
                 update_post_meta( $post_id, 'next_leadtime', 86400);
             }
@@ -1476,8 +1476,45 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
+        function select_site_job_option_data($selected_option=0) {
+            $options = '<option value="">Select job</option>';
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'doc_number',
+                'order'          => 'ASC',
+            );
 
+            $query = new WP_Query($args);
 
+            $query = $this->retrieve_site_job_list_data(0);
+            while ($query->have_posts()) : $query->the_post();
+                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                $job_title = get_the_title().'('.$job_number.')';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            if ($selected_option==-1){
+                $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+            } else {
+                $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+            }
+            if ($selected_option==-2){
+                $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
+            } else {
+                $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
+            }
+            return $options;
+        }
+        
         // doc-report frequence setting
         function select_doc_report_frequence_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
