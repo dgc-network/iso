@@ -1865,6 +1865,13 @@ if (!class_exists('display_documents')) {
                     // Reset post data
                     wp_reset_postdata();
                 }
+                
+                // Get the current URL without any query parameters
+                $current_url = remove_query_arg( array_keys( $_GET ) );
+                // Redirect to the URL without any query parameters
+                wp_redirect( $current_url );
+                exit();
+                
             }
             
             // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
