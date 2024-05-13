@@ -176,10 +176,14 @@ jQuery(document).ready(function($) {
                     $("#is-doc-report").val(is_doc_report)
                 });
 
-                $("#next-job-setting").on("click", function () {
+                $("#doc-frame-job-setting").on("click", function () {
                     $("#job-setting-div").toggle();
                 });
-        
+
+                $("#doc-report-job-setting").on("click", function () {
+                    $("#job-setting-div").toggle();
+                });
+
                 if ($("#doc-report-frequence-setting").val()) {
                     $("#frquence-start-time-div").show();
                 }

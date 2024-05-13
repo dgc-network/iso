@@ -440,14 +440,13 @@ if (!class_exists('display_documents')) {
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                <label id="next-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label><br>
+                <label id="doc-frame-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label><br>
             </div>
             <div id="doc-report-div" style="display:none;">
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
-                <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-                <label id="next-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
+                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
             <?php echo $this->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
@@ -456,7 +455,7 @@ if (!class_exists('display_documents')) {
                 <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $doc_content;?></textarea>
+                <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
                 <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>
