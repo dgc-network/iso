@@ -1494,10 +1494,10 @@ if (!class_exists('display_documents')) {
 
             $query = new WP_Query($args);
 
-            $query = $this->retrieve_site_job_list_data(0);
+            //$query = $this->retrieve_site_job_list_data(0);
             while ($query->have_posts()) : $query->the_post();
-                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                $job_title = get_the_title().'('.$job_number.')';
+                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                $job_title = get_the_title().'('.$doc_number.')';
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;

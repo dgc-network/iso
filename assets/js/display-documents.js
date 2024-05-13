@@ -235,7 +235,7 @@ jQuery(document).ready(function($) {
                         },
                         error: function(error){
                             console.error(error);
-                            //alert(error);
+                            alert(error);
                         }
                     });
                 });
@@ -255,7 +255,7 @@ jQuery(document).ready(function($) {
                             },
                             error: function(error){
                                 console.error(error);
-                                //alert(error);
+                                alert(error);
                             }
                         });
                     }
@@ -296,6 +296,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
+                alert(error);
             }
         });
     }
@@ -548,7 +549,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            get_doc_action_list_data($("#doc-id").val());
+                            get_doc_action_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -568,7 +569,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                get_doc_action_list_data($("#doc-id").val());
+                                get_doc_action_list_data(doc_id);
+                                //get_doc_action_list_data($("#doc-id").val());
                             },
                             error: function(error){
                                 console.error(error);
