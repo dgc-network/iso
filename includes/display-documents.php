@@ -455,7 +455,7 @@ if (!class_exists('display_documents')) {
                 <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
+                <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
                 <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>
