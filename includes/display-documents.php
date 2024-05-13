@@ -437,7 +437,7 @@ if (!class_exists('display_documents')) {
                     <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
                     <label for="next-job-setting"><?php echo __( '表單上的 Action 設定', 'your-text-domain' );?></label><br>
                 </div>
-                <?php $profiles_class->display_job_action_list();?>
+                <?php $this->display_doc_action_list($doc_id);?>
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
                 <div id="doc-report-div1" style="display:none;">            
                     <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
@@ -1324,6 +1324,68 @@ if (!class_exists('display_documents')) {
             }
         }
         
+        // doc-action
+        function display_doc_action_list($doc_id=false) {
+            $profiles_class = new display_profiles();
+            ?>
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_doc_action_list_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                        if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        ?>
+                        <tr id="edit-curtain-agent-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                            <td><?php echo esc_html($action_content);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="new-job-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            <?php $profiles_class->display_job_action_dialog();?>
+            <?php
+        }
+            
+        function retrieve_doc_action_list_data($doc_id=false) {
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+        
+
         // doc-report frequence setting
         function select_doc_report_frequence_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';

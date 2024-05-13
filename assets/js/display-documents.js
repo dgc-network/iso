@@ -180,6 +180,26 @@ jQuery(document).ready(function($) {
                     $("#frquence-start-time-div").show();
                 }
 
+                $("#new-job-action").on("click", function() {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_job_action_dialog_data',
+                            //'_job_id': $("#job-id").val(),
+                            '_job_id': $("#doc-id").val(),
+                        },
+                        success: function (response) {
+                            get_job_action_list_data($("#doc-id").val());
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });    
+                });
+                        
                 $("#doc-report-frequence-setting").on("change", function () {
                     if ($(this).val()) {
                         $("#frquence-start-time-div").show();
