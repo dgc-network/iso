@@ -1789,7 +1789,7 @@ if (!class_exists('display_documents')) {
                                 array(
                                     'key'     => 'job_number',
                                     'value'   => $doc_number,
-                                    'compare' => '=',
+                                    'compare' => 'LIKE',
                                 ),
                             ),
                         );
@@ -1865,7 +1865,7 @@ if (!class_exists('display_documents')) {
                     // Reset post data
                     wp_reset_postdata();
                 }
-                
+
                 // Get the current URL without any query parameters
                 $current_url = remove_query_arg( array_keys( $_GET ) );
                 // Redirect to the URL without any query parameters
