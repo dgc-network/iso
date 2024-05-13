@@ -1789,7 +1789,7 @@ if (!class_exists('display_documents')) {
                                 array(
                                     'key'     => 'job_number',
                                     'value'   => $doc_number,
-                                    'compare' => 'LIKE',
+                                    'compare' => '=',
                                 ),
                             ),
                         );
@@ -1829,7 +1829,7 @@ if (!class_exists('display_documents')) {
                             if ($action_query->have_posts()) {
                                 while ($action_query->have_posts()) {
                                     $action_query->the_post();
-                                    update_post_meta(get_the_ID(), 'doc_id', $job_id);
+                                    update_post_meta(get_the_ID(), 'doc_id', $doc_id);
                                 }                            
                                 wp_reset_postdata();                            
                             }    
