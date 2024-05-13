@@ -1496,8 +1496,8 @@ if (!class_exists('display_documents')) {
 
             //$query = $this->retrieve_site_job_list_data(0);
             while ($query->have_posts()) : $query->the_post();
-                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                $job_title = get_the_title().'('.$doc_number.')';
+                $job_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                $job_title = get_the_title().'('.$job_number.')';
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
