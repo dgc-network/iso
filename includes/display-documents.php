@@ -435,17 +435,20 @@ if (!class_exists('display_documents')) {
                     <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                     <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                    <label for="start-job"><?php echo __( '本文件的起始職務', 'your-text-domain' );?></label><br>
-                    <label for="next-job-setting"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
+                    <label id="next-job-setting" class="button"><?php echo __( '本文件的Action設定', 'your-text-domain' );?></label><br>
                 </div>
                 <div id="doc-report-div" style="display:none;">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                     <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
-                    <label for="next-job-setting"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
+                    <label id="next-job-setting" class="button"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
                 </div>
                 <?php echo $this->display_doc_action_list($doc_id);?>
+                <div id="job-setting-div" style="display:none;">
+                    <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
+                    <input type="text" id="job-title" value="<?php echo esc_html($job-title);?>" class="text ui-widget-content ui-corner-all" />
+                </div>
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
                 <div id="doc-report-div1" style="display:none;">            
                     <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
@@ -1444,7 +1447,7 @@ if (!class_exists('display_documents')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $data = array(
-                    'ID'         => sanitize_text_field($_POST['__action_id_id']),
+                    'ID'         => sanitize_text_field($_POST['_action_id']),
                     'post_title' => sanitize_text_field($_POST['_action_title']),
                     'post_content' => sanitize_text_field($_POST['_action_content']),
                     'meta_input' => array(
