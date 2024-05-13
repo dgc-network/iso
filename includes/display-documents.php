@@ -445,7 +445,7 @@ if (!class_exists('display_documents')) {
                     <label for="start-job"><?php echo __( '表單上的起始職務', 'your-text-domain' );?></label><br>
                     <label for="next-job-setting"><?php echo __( '表單上的Action設定', 'your-text-domain' );?></label><br>
                 </div>
-                <?php $this->display_doc_action_list($doc_id);?>
+                <?php echo $this->display_doc_action_list($doc_id);?>
                 <select id="start-job" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_job_option_data($start_job);?></select>
                 <div id="doc-report-div1" style="display:none;">            
                     <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
@@ -1334,7 +1334,7 @@ if (!class_exists('display_documents')) {
         
         // doc-action
         function display_doc_action_list($doc_id=false) {
-            $profiles_class = new display_profiles();
+            ob_start();
             ?>
             <div id="doc-action-list">
             <fieldset>
@@ -1378,6 +1378,8 @@ if (!class_exists('display_documents')) {
             </div>
             <?php $this->display_doc_action_dialog();?>
             <?php
+            $html = ob_get_clean();
+            return $html;            
         }
             
         function retrieve_doc_action_list_data($doc_id=false) {

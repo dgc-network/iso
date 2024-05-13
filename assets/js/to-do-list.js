@@ -41,14 +41,9 @@ jQuery(document).ready(function($) {
         }
     } else {
         // Handle the case where docFieldsValue is not present or empty
-        console.error('No value found for docFields');
+        //console.error('No value found for docFields');
     }
     
-    //var docFields = JSON.parse($("#doc-fields").val());
-    // Now docFields is an array that you can use in your JavaScript code
-    //activate_todo_dialog_data(JSON.parse($("#doc-fields").val()));
-
-    //function activate_todo_dialog_data(response){
     function activate_todo_dialog_data(doc_fields){
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
