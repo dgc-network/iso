@@ -1491,7 +1491,7 @@ if (!class_exists('display_documents')) {
                     'value' => $site_id,
                 ),
                 'orderby'        => 'meta_value',
-                'meta_key'       => 'doc_number',
+                'meta_key'       => 'job_number',
                 'order'          => 'ASC',
             );
 

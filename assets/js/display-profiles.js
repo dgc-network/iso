@@ -332,14 +332,26 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
-                    activate_doc_action_list_data(doc_id)
-                    
-                    //$("#job-id").val(job_id);
-                    //$("#job-number").val(response.job_number);
-                    //$("#job-title").val(response.job_title);
-                    //$("#job-content").val(response.job_content);
-                    //$("#department").val(response.department);
-                    //get_job_action_list_data(job_id);
+
+                    $("#new-doc-action").on("click", function() {
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'set_doc_action_dialog_data',
+                                '_doc_id': doc_id,
+                            },
+                            success: function (response) {
+                                get_doc_action_list_data(doc_id);
+                            },
+                            error: function(error){
+                                console.error(error);
+                                alert(error);
+                            }
+                        });    
+                    });
+                    activate_doc_action_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
