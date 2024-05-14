@@ -259,8 +259,8 @@ if (!class_exists('display_profiles')) {
                     </table>
                     <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     </fieldset>
-                    <?php $this->display_new_user_dialog($site_id);?>
-                    <?php $this->display_user_dialog($site_id);?>
+                    <?php $this->display_new_user_dialog();?>
+                    <?php echo $this->display_user_dialog();?>
         
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
@@ -292,30 +292,53 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
-        function display_user_dialog($site_id) {
+        function display_user_dialog($user_id=false) {
+            $current_user = get_userdata($user_id);
+            $is_site_admin = get_user_meta($user_id, 'is_site_admin', true);
+            if ($is_site_admin==1) $is_admin_checked='enabled';
+            ob_start();
             ?>
             <div id="site-user-dialog" title="User dialog" style="display:none;">
             <fieldset>
-                <input type="hidden" id="user-id" />
+                <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <input type="text" id="display-name" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
-                <input type="text" id="user-email" class="text ui-widget-content ui-corner-all" />
-                <input type="checkbox" id="is-site-admin" />
+                <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="checkbox" id="is-site-admin" $is_admin_checked />
                 <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th></th>
+                            <th>#</th>
                             <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         </thead>
                         <tbody id="user-job-list">
+                            <?php
+                            $query = $this->retrieve_site_job_list_data(0);
+                            if ($query->have_posts()) {
+                                while ($query->have_posts()) : $query->the_post();
+                                    //$user_job_checked = $this->is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                                    $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
+                                    $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                                    echo '<tr id="check-user-job-' . get_the_ID() . '">';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                    echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
+                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                    //$user_job_list .= '<td>' . get_the_content() . '</td>';
+                                    echo '</tr>';
+                                endwhile;
+                                wp_reset_postdata();
+                            }        
+                            ?>
                         </tbody>
                     </table>
                 </fieldset>
                 <?php
                 if (current_user_can('administrator')) {
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
                     ?>
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" >
@@ -336,6 +359,8 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <?php
+            $html = ob_get_clean();
+            return $html;            
         }
         
         function get_site_user_dialog_data() {
@@ -513,7 +538,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
-        function display_new_user_dialog($site_id) {
+        function display_new_user_dialog($site_id=false) {
             ?>
             <div id="new-user-dialog" title="New user dialog" style="display:none;">
             <fieldset>
