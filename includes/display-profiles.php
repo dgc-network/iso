@@ -319,14 +319,12 @@ if (!class_exists('display_profiles')) {
                             $query = $this->retrieve_site_job_list_data(0);
                             if ($query->have_posts()) {
                                 while ($query->have_posts()) : $query->the_post();
-                                    //$user_job_checked = $this->is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
                                     $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
                                     $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                                     echo '<tr id="check-user-job-' . get_the_ID() . '">';
-                                    echo '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                    echo '<td style="text-align:center;"><input type="checkbox" ' . $user_job_checked . ' /></td>';
                                     echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
                                     echo '<td style="text-align:center;">' . get_the_title() . '</td>';
-                                    //$user_job_list .= '<td>' . get_the_content() . '</td>';
                                     echo '</tr>';
                                 endwhile;
                                 wp_reset_postdata();
@@ -367,6 +365,8 @@ if (!class_exists('display_profiles')) {
             $response = array();
             if (isset($_POST['_user_id'])) {
                 $user_id = (int)$_POST['_user_id'];
+                $response = array('html_contain' => $this->display_new_user_dialog($user_id));
+/*
                 // Get user data
                 $current_user = get_userdata($user_id);
                 if ($current_user) {
@@ -398,6 +398,7 @@ if (!class_exists('display_profiles')) {
                 }
             } else {
                 $response["error"] = 'User ID not provided in the request.';
+*/                
             }
             wp_send_json($response);
         }

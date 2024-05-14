@@ -262,14 +262,16 @@ jQuery(document).ready(function($) {
                     '_user_id': user_id,
                 },
                 success: function (response) {
+                    $("#site-user-dialog").html(response.html_contain);
                     $("#site-user-dialog").dialog('open');
+/*                    
                     $("#user-id").val(user_id);
                     $("#display-name").val(response.display_name);
                     $("#user-email").val(response.user_email);
                     $('#is-site-admin').prop('checked', response.is_site_admin == 1);
                     $("#select-site").val(response.site_id);
                     $("#user-job-list").html(response.user_job_list);
-
+*/
                     $('[id^="check-user-job-"]').on("click", function () {
                         const job_id = this.id.substring(15);
                         const doc_id = this.id.substring(15);
