@@ -376,10 +376,10 @@ if (!class_exists('to_do_list')) {
             
             if ( $post_type === 'document' ) {
                 $doc_id = $todo_id;
-                $todo_id = get_post_meta($doc_id, 'start_job', true);
+                //$todo_id = get_post_meta($doc_id, 'start_job', true);
             }
             
-            if (!$doc_id) return 'post type is '.$post_type.'. doc_id is empty!';
+            if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
         
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -421,7 +421,12 @@ if (!class_exists('to_do_list')) {
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
                 <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
+                <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
+
                 <?php
+/*                
                 if ($is_doc_report==1) {
                     ?>
                     <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
@@ -435,6 +440,7 @@ if (!class_exists('to_do_list')) {
                     <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
                     <?php
                 }
+*/                
                 ?>
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
                 <?php
@@ -443,8 +449,10 @@ if (!class_exists('to_do_list')) {
             <hr>
             <?php
             if ( $post_type === 'document' ) {
-                $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_job_action_list_data($todo_id);
+                //$profiles_class = new display_profiles();
+                //$query = $profiles_class->retrieve_job_action_list_data($todo_id);
+                $documents_class = new display_documents();
+                $query = $documents_class->retrieve_doc_action_list_data($todo_id);
             } else {
                 $query = $this->retrieve_todo_action_list_data($todo_id);
             }
@@ -454,6 +462,8 @@ if (!class_exists('to_do_list')) {
                     echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
                 endwhile;
                 wp_reset_postdata();
+            } else {
+                echo '<input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
             }
         
             if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button-0" value="OK" style="margin:5px;" />';

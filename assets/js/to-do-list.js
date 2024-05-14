@@ -50,7 +50,11 @@ jQuery(document).ready(function($) {
                 $(this).val(dateText);
             }
         });
-    
+
+        $("todo-dialog-exit").on("click", function () {
+            window.location.replace(window.location.href);
+        });
+
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
 
@@ -81,7 +85,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);
-                    //alert(error);
+                    alert(error);
                 }
             });
         });
