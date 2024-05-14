@@ -580,18 +580,7 @@ function get_post_type_meta_keys($post_type) {
     ", $post_type);
     return $wpdb->get_col($query);
 }
-/*
-// Callback function to add post when scheduled event is triggered
-function my_custom_post_event_callback($params) {
-    // Add your code to programmatically add a post here
-    $todo_class = new to_do_list();
-    $todo_class->set_next_todo_and_actions($params);
-}
-// Retrieve the hook name from options
-$hook_name = get_option('my_custom_post_event_hook_name', 'my_custom_post_event_');
-// Add the action with the dynamic hook name
-add_action($hook_name, 'my_custom_post_event_callback');
-*/
+
 function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     // Check if the user is trying to view other users
     if (isset($args[0]) && $args[0] === 'list_users') {
