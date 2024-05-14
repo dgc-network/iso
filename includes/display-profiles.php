@@ -260,7 +260,7 @@ if (!class_exists('display_profiles')) {
                     <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     </fieldset>
                     <?php $this->display_new_user_dialog();?>
-                    <?php echo $this->display_user_dialog();?>
+                    <?php echo $this->display_site_user_dialog();?>
         
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
@@ -292,7 +292,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
-        function display_user_dialog($user_id=false) {
+        function display_site_user_dialog($user_id=false) {
             $current_user = get_userdata($user_id);
             $is_site_admin = get_user_meta($user_id, 'is_site_admin', true);
             if ($is_site_admin==1) $is_admin_checked='enabled';
@@ -365,7 +365,7 @@ if (!class_exists('display_profiles')) {
             $response = array();
             if (isset($_POST['_user_id'])) {
                 $user_id = (int)$_POST['_user_id'];
-                $response = array('html_contain' => $this->display_new_user_dialog($user_id));
+                $response = array('html_contain' => $this->display_site_user_dialog($user_id));
 /*
                 // Get user data
                 $current_user = get_userdata($user_id);
