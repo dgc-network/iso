@@ -207,7 +207,7 @@ jQuery(document).ready(function($) {
                     });    
                 });
                 activate_doc_action_list_data(doc_id);
-                        
+
                 $("#doc-report-frequence-setting").on("change", function () {
                     if ($(this).val()) {
                         $("#frquence-start-time-div").show();
