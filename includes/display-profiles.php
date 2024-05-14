@@ -355,7 +355,8 @@ if (!class_exists('display_profiles')) {
                     if ($query->have_posts()) {
                         $user_job_list = '';
                         while ($query->have_posts()) : $query->the_post();
-                            $user_job_checked = $this->is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                            //$user_job_checked = $this->is_user_job(get_the_ID(), $user_id) ? 'checked' : '';
+                            $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
                             $user_job_list .= '<tr id="check-user-job-' . get_the_ID() . '">';
                             $user_job_list .= '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
                             $user_job_list .= '<td style="text-align:center;">' . get_the_title() . '</td>';
@@ -752,9 +753,20 @@ if (!class_exists('display_profiles')) {
 
             // Check if $query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
-                // Remove the meta query for 'job_number'
-                unset($args['meta_query']['job_number']);
-                if ($search_query) $args['s'] = $search_query;
+                // Loop through meta query array to find and remove 'job_number'
+                foreach ($args['meta_query'] as $key => $meta_query) {
+                    if (isset($meta_query['key']) && $meta_query['key'] === 'job_number') {
+                        unset($args['meta_query'][$key]);
+                        break; // Stop looping once 'job_number' is found and removed
+                    }
+                }
+            
+                // Set the search query parameter
+                $args['s'] = $search_query;
+            
+                // Reset pagination to page 1
+                $args['paged'] = 1;
+
                 $query = new WP_Query($args);
             }
             
