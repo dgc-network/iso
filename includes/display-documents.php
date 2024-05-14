@@ -1914,6 +1914,64 @@ if (!class_exists('display_documents')) {
                 
         // Data migration
         function data_migration() {
+            // 2024-5-14 To update the document posts based on the job posts and then 
+            // redirect back to the same page without the query parameters.
+            if (isset($_GET['_job_number_migration'])) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+            
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $doc_id = get_the_ID();
+                        $start_job = get_post_meta($doc_id, 'start_job', true);
+                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            
+                        $job_args = array(
+                            'post_type'      => 'job',
+                            'posts_per_page' => 1,
+                            'post__in'       => array($start_job), // Specify the job ID to retrieve
+                        );
+                        $job_query = new WP_Query($job_args);
+            
+                        if ($job_query->have_posts()) {
+                            while ($job_query->have_posts()) {
+                                $job_query->the_post();
+                                $job_id = get_the_ID();
+                                $job_title = get_the_title();
+                                $job_content = get_the_content();
+                                $job_number = get_post_meta($job_id, 'job_number', true);
+                                $department = get_post_meta($job_id, 'department', true);
+                            }
+                            // Restore global post data
+                            wp_reset_postdata();
+            
+                            // Update document post with job title and content
+                            $doc_post_args = array(
+                                'ID'           => $doc_id,
+                                'post_title'   => $job_title,
+                                'post_content' => $job_content,
+                            );
+                            wp_update_post($doc_post_args);
+                            update_post_meta($doc_id, 'job_number', $job_number);
+                            update_post_meta($doc_id, 'department', $department);
+
+                        } else {
+                            update_post_meta($doc_id, 'job_number', $doc_number);
+
+                        }
+                    }
+                }
+                // Get the current URL without any query parameters
+                $current_url = remove_query_arg( array_keys( $_GET ) );
+                // Redirect to the URL without any query parameters
+                wp_redirect( $current_url );
+                exit();                
+            }
+
             // Migrate the title and content for document post from job post if job_number==doc_number and update the meta "doc_id"=$job_id if meta "job_id"==$job_id
             // update the title="登錄" for each document post and add new action with the title="OK", meta "doc_id"=$doc_id, "next_job"=-1, "next_leadtime"=86400 if job_number!=doc_number
             // 2024-5-13
@@ -2026,7 +2084,7 @@ if (!class_exists('display_documents')) {
                 // Redirect to the URL without any query parameters
                 wp_redirect( $current_url );
                 exit();
-                
+
             }
             
             // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
