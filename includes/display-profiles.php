@@ -298,7 +298,7 @@ if (!class_exists('display_profiles')) {
             if ($is_site_admin==1) $is_admin_checked='enabled';
             ob_start();
             ?>
-            <div id="site-user-dialog" title="User dialog" style="display:none;">
+            <div id="site-user-dialog" title="User dialog">
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
