@@ -311,10 +311,10 @@ if (!class_exists('display_profiles')) {
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th></th>
-                            <th>#</th>
                             <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         </thead>
-                        <tbody id="user-job-list">
+                        <tbody>
                             <?php
                             $query = $this->retrieve_site_job_list_data(0);
                             if ($query->have_posts()) {
