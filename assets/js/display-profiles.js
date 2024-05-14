@@ -316,27 +316,30 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-site-job-"]').on("click", function () {
-            const job_id = this.id.substring(14);
+            //const job_id = this.id.substring(14);
+            const doc_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_site_job_dialog_data',
-                    '_job_id': job_id,
+                    //'_job_id': job_id,
+                    '_doc_id': doc_id,
                 },
                 success: function (response) {
+                    $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
-                    $("#job-id").val(job_id);
-                    $("#job-number").val(response.job_number);
-                    $("#job-title").val(response.job_title);
-                    $("#job-content").val(response.job_content);
-                    $("#department").val(response.department);
-                    get_job_action_list_data(job_id);
+                    //$("#job-id").val(job_id);
+                    //$("#job-number").val(response.job_number);
+                    //$("#job-title").val(response.job_title);
+                    //$("#job-content").val(response.job_content);
+                    //$("#department").val(response.department);
+                    //get_job_action_list_data(job_id);
                 },
                 error: function (error) {
                     console.error(error);
-                    //alert(error);
+                    alert(error);
                 }
             });
         });
