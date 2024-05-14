@@ -774,9 +774,8 @@ if (!class_exists('display_profiles')) {
             $department = get_post_meta($doc_id, 'department', true);
             ob_start();
             ?>
-            <div id="site-job-dialog" title="Job dialog" style="display:none;">
+            <div id="site-job-dialog" title="Job dialog">
             <fieldset>
-                <input type="hidden" id="job-id" />
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <label for="job-number">Number:</label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
