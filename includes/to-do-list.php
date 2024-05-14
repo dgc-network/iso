@@ -224,13 +224,8 @@ if (!class_exists('to_do_list')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            if ($is_doc_report==1) {
-                                //$doc_title .= '(#New report)';
-                            } else {
-                                $doc_title .= '('.$doc_number.')';
-                            }
-                            if ($report_id) $doc_title .= '(Report#' . $report_id . ')';
-                            
+                            if ($is_doc_report!=1) $doc_title .= '('.$doc_number.')';
+                            if ($report_id) $doc_title .= '(Report#' . $report_id . ')';                            
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
@@ -263,13 +258,10 @@ if (!class_exists('to_do_list')) {
         
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_job_ids)) {
-                $user_job_ids = array();
-            }        
-            $search_query = sanitize_text_field($_GET['_search']);
-        
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            $search_query = sanitize_text_field($_GET['_search']);        
             if ($search_query) {
                 $args = array(
                     'post_type'      => 'document',
@@ -356,7 +348,7 @@ if (!class_exists('to_do_list')) {
                 // Add a new meta query to filter by job_id
                 $args['meta_query'][] = array(
                     'key'     => 'job_id',
-                    'value'   => $user_job_ids, // Value is the array of user job IDs
+                    'value'   => $user_doc_ids, // Value is the array of user doc IDs
                     'compare' => 'IN',
                 );        
             }
