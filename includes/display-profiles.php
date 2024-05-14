@@ -823,7 +823,7 @@ if (!class_exists('display_profiles')) {
                 <textarea id="job-content" rows="3" style="width:100%;"><?php echo esc_attr($job_content);?></textarea>
                 <div class="separator"></div>
                 <?php //$this->display_job_action_list();?>
-                <?php $documents_class->display_doc_action_list($doc_id);?>
+                <?php echo $documents_class->display_doc_action_list($doc_id);?>
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
