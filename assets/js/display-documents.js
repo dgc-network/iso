@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
                             },
                             error: function(error){
                                 console.error(error);
-                                //alert(error);
+                                alert(error);
                             }
                         });
                     }
@@ -229,7 +229,6 @@ jQuery(document).ready(function($) {
                     ajaxData['_doc_title'] = $("#doc-title").val();
                     ajaxData['_doc_revision'] = $("#doc-revision").val();
                     ajaxData['_doc_category'] = $("#doc-category").val();
-                    //ajaxData['_start_job'] = $("#start-job").val();
                     ajaxData['_doc_frame'] = $("#doc-frame").val();
                     ajaxData['_is_doc_report'] = $("#is-doc-report").val();
                     ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
@@ -357,7 +356,7 @@ jQuery(document).ready(function($) {
                     },
                     error: function(error){
                         console.error(error);
-                        //alert(error);
+                        alert(error);
                     }
                 });
             }    
@@ -676,7 +675,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                //alert(error);
+                alert(error);
             }
         });
     }
@@ -739,7 +738,7 @@ jQuery(document).ready(function($) {
                     },
                     error: function(error){
                         console.error(error);
-                        //alert(error);
+                        alert(error);
                     }
                 });
             }
@@ -759,7 +758,6 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-            //ajaxData['_start_job'] = $("#start-job").val();
                     
             $.ajax({
                 type: 'POST',
@@ -771,7 +769,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);
-                    //alert(error);
+                    alert(error);
                 }
             });
         });

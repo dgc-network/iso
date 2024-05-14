@@ -513,7 +513,6 @@ if (!class_exists('to_do_list')) {
                         'post_type'     => 'todo',
                     );    
                     $todo_id = wp_insert_post($new_post);
-                    //update_post_meta( $todo_id, 'job_id', $job_id);
                     update_post_meta( $todo_id, 'job_id', $doc_id);
                     if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
                     if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
@@ -523,9 +522,7 @@ if (!class_exists('to_do_list')) {
                 update_post_meta( $todo_id, 'submit_user', $current_user_id);
                 update_post_meta( $todo_id, 'submit_action', $action_id);
                 update_post_meta( $todo_id, 'submit_time', time());
-                //$doc_id = get_post_meta($todo_id, 'doc_id', true);
-                //$report_id = get_post_meta($todo_id, 'report_id', true);
-                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $todo_id);
+                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         
                 // Create a new doc-report if is_doc_report==1
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -574,7 +571,7 @@ if (!class_exists('to_do_list')) {
             //    (2) for document/doc_report from _search
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
             //    (1) for new/save doc_report.
-            // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['start_job'] and $args['doc_id']
+            // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['doc_id']
             //    (1) for frquence doc_report
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
@@ -590,26 +587,16 @@ if (!class_exists('to_do_list')) {
                 $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
                 
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                //$doc_id = get_post_meta($todo_id, 'job_id', true);
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                 if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-/*
-                if (empty($doc_id)) {
-                    if ($next_job>0) $doc_ids = $this->get_document_for_job($next_job);
-                    if (is_array($doc_ids) && !empty($doc_ids)) {
-                        $doc_id = $doc_ids[0];
-                    }
-                }
-*/                
             }
         
-            if ($action_id==0) {
-                //$next_job = isset($args['start_job']) ? $args['start_job'] : 0;
-                $next_job = isset($args['doc_id']) ? $args['doc_id'] : 0;
-                $todo_title = get_the_title($next_job);
+            if ($action_id==0) {  // for frquence doc_report to generate a new todo
                 $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+                $next_job = $doc_id;
+                $todo_title = get_the_title($next_job);
                 update_post_meta( $doc_id, 'todo_status', -1);
                 $next_leadtime = 86400;
                 $current_user_id = 1;
@@ -644,8 +631,6 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) {
                 $this->notice_the_responsible_persons($new_todo_id);
                 // Create the Action list for next_job
-                //$profiles_class = new display_profiles();
-                //$query = $profiles_class->retrieve_job_action_list_data($next_job);
                 $documents_class = new display_documents();
                 $query = $documents_class->retrieve_doc_action_list_data($next_job);
                 if ($query->have_posts()) {
@@ -668,32 +653,7 @@ if (!class_exists('to_do_list')) {
                 }
             }
         }
-/*        
-        function get_document_for_job($job_id) {
-            $doc_ids = array();
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'start_job',
-                        'value'   => $job_id,
-                        'compare' => '=',
-                    ),
-                ),
-            );                
-            $query = new WP_Query($args);
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $doc_ids[] = get_the_ID();
-        
-                }
-                wp_reset_postdata();
-            }
-            return $doc_ids;
-        }
-*/        
+
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
@@ -743,7 +703,6 @@ if (!class_exists('to_do_list')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
-            //$submit_time = wp_date( get_option('date_format'), $todo_submit );    
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
             $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );

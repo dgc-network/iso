@@ -160,6 +160,7 @@ if (!class_exists('display_documents')) {
             $this->data_migration();
             // Check if the user is logged in
             if (is_user_logged_in()) {
+
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_get_shared_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
@@ -168,20 +169,14 @@ if (!class_exists('display_documents')) {
             
                 // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
-                    $_id = sanitize_text_field($_GET['_id']);
-                    //$start_job = get_post_meta($_id, 'start_job', true);
+                    $doc_id = sanitize_text_field($_GET['_id']);
                     echo '<div class="ui-widget" id="result-container">';
-                    //if ($start_job) {
-                        $doc_id=$_id;
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        if ($is_doc_report) {
-                            echo $this->display_doc_report_list($doc_id);
-                        } else {
-                            echo $this->display_doc_frame_contain($doc_id);
-                        }    
-                    //} else {
-                    //    echo 'display the report#'.$_id;
-                    //}
+                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                    if ($is_doc_report) {
+                        echo $this->display_doc_report_list($doc_id);
+                    } else {
+                        echo $this->display_doc_frame_contain($doc_id);
+                    }    
                     echo '</div>';
                 }
             
@@ -391,7 +386,6 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
 
             $job_title = get_the_title($doc_id);
-            //$job_content = get_the_content($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $department = get_post_meta($doc_id, 'department', true);
@@ -400,7 +394,6 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            //$start_job = get_post_meta($doc_id, 'start_job', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -499,10 +492,9 @@ if (!class_exists('display_documents')) {
                 update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
                 update_post_meta( $doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
                 update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
-                //$start_job = sanitize_text_field($_POST['_start_job']);
-                //update_post_meta( $doc_id, 'start_job', $start_job );
                 update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
+
                 $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
                 update_post_meta( $doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);
                 // Get the timezone offset from WordPress settings
@@ -517,7 +509,6 @@ if (!class_exists('display_documents')) {
                     'interval' => $doc_report_frequence_setting,
                     'start_time' => $doc_report_frequence-$offset_seconds,
                     'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
-                    //'start_job' => $start_job,
                     'doc_id' => $doc_id,
                 );            
                 if ($doc_report_frequence_setting) $hook_name=$this->schedule_post_event_callback($params);
@@ -756,8 +747,6 @@ if (!class_exists('display_documents')) {
         
             $args = array(
                 'post_type'      => 'doc-report',
-                //'posts_per_page' => 30,
-                //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
                 'posts_per_page' => $posts_per_page,
                 'paged'          => $current_page,
                 'meta_query'     => array(
@@ -840,7 +829,6 @@ if (!class_exists('display_documents')) {
 
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            //$start_job = get_post_meta($doc_id, 'start_job', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($report_id) $doc_title .= '(Report#'.$report_id.')';
         
@@ -888,7 +876,6 @@ if (!class_exists('display_documents')) {
                 <div>
                 <?php
                 $profiles_class = new display_profiles();
-                //$query = $profiles_class->retrieve_job_action_list_data($start_job);
                 $query = $this->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -925,8 +912,6 @@ if (!class_exists('display_documents')) {
                     $result['doc_id'] = $doc_id;
                     $result['doc_fields'] = $this->display_doc_field_keys($doc_id);
                 }
-            } else {
-                $result['html_contain'] = 'Invalid AJAX request!';
             }
             wp_send_json($result);
         }
@@ -943,7 +928,6 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        //$field_value = sanitize_text_field($_POST[$field_name]);
                         $field_value = $_POST[$field_name];
                         update_post_meta( $report_id, $field_name, $field_value);
                     endwhile;
@@ -965,9 +949,7 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
-                //$start_job = get_post_meta($doc_id, 'start_job', true);
                 update_post_meta( $post_id, 'doc_id', $doc_id);
-                //update_post_meta( $post_id, 'start_job', $start_job);
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
@@ -1004,9 +986,7 @@ if (!class_exists('display_documents')) {
                 $post_id = wp_insert_post($new_post);
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                //$start_job = get_post_meta($report_id, 'start_job', true);
                 update_post_meta( $post_id, 'doc_id', $doc_id);
-                //update_post_meta( $post_id, 'start_job', $start_job);
         
                 $params = array(
                     'doc_id'     => $doc_id,
@@ -1083,7 +1063,6 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => -1,
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
-                //'orderby'        => 'meta_value',
                 'order'          => 'ASC',
             );
         
@@ -1689,7 +1668,6 @@ if (!class_exists('display_documents')) {
                 $args = array(
                     'post_type'      => 'doc-report',
                     'posts_per_page' => -1,
-                    //'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1,
                     'meta_query'     => array(
                         array(
                             'key'     => 'doc_id',
@@ -1972,9 +1950,9 @@ if (!class_exists('display_documents')) {
                 exit();                
             }
 
+            // 2024-5-13
             // Migrate the title and content for document post from job post if job_number==doc_number and update the meta "doc_id"=$job_id if meta "job_id"==$job_id
             // update the title="登錄" for each document post and add new action with the title="OK", meta "doc_id"=$doc_id, "next_job"=-1, "next_leadtime"=86400 if job_number!=doc_number
-            // 2024-5-13
             // 1. It queries documents and iterates over each one.
             // 2. For each document, it queries for a job post with a matching job number.
             // 3. If a matching job post is found, it updates the document's title and content with the corresponding job's title and content.
