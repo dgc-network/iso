@@ -712,6 +712,7 @@ if (!class_exists('display_profiles')) {
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (empty($user_doc_ids)) $user_doc_ids=array();
         
             $args = array(
                 //'post_type'      => 'job',
