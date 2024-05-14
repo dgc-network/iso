@@ -322,7 +322,7 @@ if (!class_exists('display_profiles')) {
                                     $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
                                     $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                                     echo '<tr id="check-user-job-' . get_the_ID() . '">';
-                                    echo '<td style="text-align:center;"><input type="checkbox" ' . $user_job_checked . ' /></td>';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="myCheckbox-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
                                     echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
                                     echo '<td style="text-align:center;">' . get_the_title() . '</td>';
                                     echo '</tr>';
