@@ -152,7 +152,7 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $user_data = get_userdata( $current_user_id );
+            $current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -161,7 +161,7 @@ if (!class_exists('to_do_list')) {
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
-                    <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <label for="site-title"> Site: </label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
@@ -263,7 +263,8 @@ if (!class_exists('to_do_list')) {
         
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_job_ids)) {
                 $user_job_ids = array();
             }        
@@ -274,7 +275,7 @@ if (!class_exists('to_do_list')) {
                     'post_type'      => 'document',
                     'posts_per_page' => $posts_per_page,
                     'paged'          => $current_page,
-                    'post__in'       => $user_job_ids, // Array of document post IDs
+                    'post__in'       => $user_doc_ids, // Array of document post IDs
                     'meta_query'     => array(
                         'relation' => 'AND',
                         array(
@@ -789,7 +790,7 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $user_data = get_userdata( $current_user_id );
+            $current_user = get_userdata( $current_user_id );
             $signature_record_list = $this->get_signature_record_list($site_id);
             $$html_contain = $signature_record_list['html'];
             $x_value = $signature_record_list['x'];
@@ -801,7 +802,7 @@ if (!class_exists('to_do_list')) {
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
-                    <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <label for="site-title"> Site: </label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
@@ -865,7 +866,7 @@ if (!class_exists('to_do_list')) {
                             $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
         
                             if ($todo_site==$site_id) { // Aditional condition to filter the data
-                                $user_data = get_userdata( $submit_user );
+                                $current_user = get_userdata( $submit_user );
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                     <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
@@ -873,7 +874,7 @@ if (!class_exists('to_do_list')) {
                                     <td><?php echo esc_html($doc_title);?></td>
                                     <?php };?>
                                     <td style="text-align:center;"><?php esc_html(the_title());?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($current_user->display_name);?></td>
                                     <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
                                     <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 </tr>

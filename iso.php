@@ -322,7 +322,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
         $site_id = get_user_meta($user_id, 'site_id', true);
         $site_title = get_the_title($site_id);
     }
-    $user_data = get_userdata( $user_id );
+    $current_user = get_userdata( $user_id );
     ob_start();
     ?>
     <div class="ui-widget">
@@ -331,7 +331,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
             <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
             <input type="text" id="display-name" value="<?php echo esc_attr($display_name);?>" class="text ui-widget-content ui-corner-all" />
             <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
-            <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
+            <input type="text" id="user-email" value="<?php echo esc_attr($current_user->user_email);?>" class="text ui-widget-content ui-corner-all" />
             <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
             <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
             <div id="site-hint" style="display:none; color:#999;"></div>
@@ -370,7 +370,7 @@ function user_did_not_login_yet() {
             $site_title = get_the_title($site_id);
         }
         //$user = get_user_by( 'ID', $user_id );
-        $user_data = get_userdata( $user_id );
+        $current_user = get_userdata( $user_id );
         ?>
         <div class="ui-widget">
             <h2><?php echo __( 'User registration/login', 'your-text-domain' );?></h2>
@@ -378,7 +378,7 @@ function user_did_not_login_yet() {
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
-                <input type="text" id="user-email" value="<?php echo esc_attr($user_data->user_email);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo esc_attr($current_user->user_email);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
@@ -497,10 +497,10 @@ function one_time_password_desktop_submit() {
 
             if ($user_id) {
                 // Do something with $user_id
-                $user_data = get_userdata( $user_id );
+                $current_user = get_userdata( $user_id );
 
                 $credentials = array(
-                    'user_login'    => $user_data->user_login,
+                    'user_login'    => $current_user->user_login,
                     'user_password' => $line_user_id,
                     'remember'      => true,
                 );
@@ -511,7 +511,7 @@ function one_time_password_desktop_submit() {
                     // Login successful
                     wp_set_current_user($user_id);
                     wp_set_auth_cookie($user_id);
-                    do_action('wp_login', $user_data->user_login);
+                    do_action('wp_login', $current_user->user_login);
 
                     $response = array('success' => true);
                 } else {
@@ -551,7 +551,7 @@ function wp_login_submit() {
             wp_set_auth_cookie($user->ID);
             do_action('wp_login', $user->user_login);
 
-            $user_data = wp_update_user( array( 
+            $current_user = wp_update_user( array( 
                 'ID' => $user->ID, 
                 'display_name' => sanitize_text_field($_POST['_display_name']),
                 'user_email' => sanitize_text_field($_POST['_user_email']),

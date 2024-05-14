@@ -272,6 +272,7 @@ jQuery(document).ready(function($) {
 
                     $('[id^="check-user-job-"]').on("click", function () {
                         const job_id = this.id.substring(15);
+                        const doc_id = this.id.substring(15);
                         // Toggle the checkbox state
                         $("#myCheckbox-"+job_id).prop("checked", function(i, value) {
                             return !value;
@@ -283,10 +284,13 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_user_job_data',
-                                    _job_id : job_id,
+                                    //'action': 'set_user_job_data',
+                                    'action': 'set_user_doc_data',
+                                    //_job_id : job_id,
+                                    _doc_id : doc_id,
                                     _user_id : user_id,
-                                    _is_user_job : $("#myCheckbox-"+job_id).is(":checked") ? 1 : 0,
+                                    //_is_user_job : $("#myCheckbox-"+job_id).is(":checked") ? 1 : 0,
+                                    _is_user_doc : $("#myCheckbox-"+doc_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     if (response.success) {

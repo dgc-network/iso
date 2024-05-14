@@ -44,8 +44,10 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_set_user_job_data', array( $this, 'set_user_job_data' ) );
-            add_action( 'wp_ajax_nopriv_set_user_job_data', array( $this, 'set_user_job_data' ) );
+            //add_action( 'wp_ajax_set_user_job_data', array( $this, 'set_user_job_data' ) );
+            //add_action( 'wp_ajax_nopriv_set_user_job_data', array( $this, 'set_user_job_data' ) );
+            add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
+            add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
                 
         }
 
@@ -86,8 +88,9 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
-            $user_data = get_userdata( $current_user_id );
+            //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            $current_user = get_userdata( $current_user_id );
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
             ob_start();
@@ -96,9 +99,9 @@ if (!class_exists('display_profiles')) {
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
             <fieldset>
                 <label for="display-name"><?php echo __( 'Name: ', 'your-text-domain' );?></label>
-                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
-                <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -109,6 +112,24 @@ if (!class_exists('display_profiles')) {
                     <tbody>
                     <?php    
                     // Accessing elements of the array
+                    if (is_array($user_doc_ids)) {
+                        foreach ($user_doc_ids as $doc_id) {
+                            $job_number = get_post_meta($doc_id, 'job_number', true);
+                            $job_title = get_the_title($doc_id);
+                            $job_content = get_post_field('post_content', $doc_id);
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            if ($doc_site==$site_id) {
+                            ?>
+                            <tr>
+                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                                <td width="70%"><?php echo wp_kses_post($job_content);?></td>
+                            </tr>
+                            <?php
+                            }
+                        }
+                    }
+/*
                     if (is_array($user_job_ids)) {
                         foreach ($user_job_ids as $job_id) {
                             $job_site = get_post_meta($job_id, 'site_id', true);
@@ -127,6 +148,7 @@ if (!class_exists('display_profiles')) {
                             }
                         }
                     }
+*/                    
                     ?>
                     </tbody>
                 </table>
@@ -171,7 +193,7 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $user_data = get_userdata($current_user_id);
+            $current_user = get_userdata($current_user_id);
         
             // Check if the user is administrator or initial...
             if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
@@ -321,10 +343,10 @@ if (!class_exists('display_profiles')) {
             if (isset($_POST['_user_id'])) {
                 $user_id = (int)$_POST['_user_id'];
                 // Get user data
-                $user_data = get_userdata($user_id);
-                if ($user_data) {
-                    $response["display_name"] = $user_data->display_name;
-                    $response["user_email"] = $user_data->user_email;
+                $current_user = get_userdata($user_id);
+                if ($current_user) {
+                    $response["display_name"] = $current_user->display_name;
+                    $response["user_email"] = $current_user->user_email;
                     $response["is_site_admin"] = get_user_meta($user_id, 'is_site_admin', true);
                     $response["site_id"] = get_user_meta($user_id, 'site_id', true);
                     // Get site job list data
@@ -358,13 +380,13 @@ if (!class_exists('display_profiles')) {
             $response = array();            
             if (isset($_POST['_user_id'])) {
                 $user_id = absint($_POST['_user_id']);
-                $user_data = array(
+                $current_user = array(
                     'ID'           => $user_id,
                     'display_name' => sanitize_text_field($_POST['_display_name']),
                     'user_email'   => sanitize_email($_POST['_user_email']),
                 );        
                 // Update user data
-                $result = wp_update_user($user_data);
+                $result = wp_update_user($current_user);
         
                 if (is_wp_error($result)) {
                     $response['error'] = $result->get_error_message();
@@ -374,9 +396,10 @@ if (!class_exists('display_profiles')) {
                     update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
                     $response = array('success' => true);
                 }
+/*                
             } else {
                 // If $_POST['_user_id'] is not present, add a new user
-                $user_data = array(
+                $current_user = array(
                     //'user_login'    => sanitize_user($_POST['_user_login']),
                     'user_login'    => sanitize_email($_POST['_user_email']),
                     'user_email'    => sanitize_email($_POST['_user_email']),
@@ -386,7 +409,7 @@ if (!class_exists('display_profiles')) {
                     'role'          => 'subscriber', // Adjust role as needed
                 );
         
-                $user_id = wp_insert_user($user_data);
+                $user_id = wp_insert_user($current_user);
         
                 if (is_wp_error($user_id)) {
                     $response['error'] = $user_id->get_error_message();
@@ -412,7 +435,7 @@ if (!class_exists('display_profiles')) {
                             AND $wpdb->postmeta.meta_value = %s
                             LIMIT 1
                         ", $job_title, $site_id);
-                        
+
                         // Execute SQL query
                         $existing_post_id = $wpdb->get_var($query);
                         
@@ -456,6 +479,7 @@ if (!class_exists('display_profiles')) {
                         }
                     }
                 }
+*/                
             }            
             wp_send_json($response);
         }
@@ -475,7 +499,6 @@ if (!class_exists('display_profiles')) {
                         $response['error'] = $result->get_error_message();
                     } else {
                         // If the user is successfully deleted, set success to true in the response
-                        //$response['success'] = true;
                         $response = array('success' => true);
                     }
                 } else {
@@ -510,7 +533,7 @@ if (!class_exists('display_profiles')) {
             </div>
             <?php
         }
-        
+/*        
         function is_user_job($job_id, $user_id=0) {
             // Get the current user ID
             if ($user_id==0) $user_id = get_current_user_id();    
@@ -523,7 +546,48 @@ if (!class_exists('display_profiles')) {
             // Check if the current user has the specified job ID in their metadata
             return in_array($job_id, $user_jobs);
         }
+*/
+        function is_user_doc($doc_id=false, $user_id=false) {
+            // Get the current user ID
+            if (!$user_id) $user_id = get_current_user_id();    
+            // Get the user's doc IDs as an array
+            $user_docs = get_user_meta($user_id, 'user_doc_ids', true);
+            // If $user_docs is not an array, convert it to an array
+            if (!is_array($user_docs)) {
+                $user_docs = array();
+            }
+            // Check if the current user has the specified doc ID in their metadata
+            return in_array($doc_id, $user_docs);
+        }
+
+        function set_user_doc_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $user_id = sanitize_text_field($_POST['_user_id']);
+                $is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
+                
+                if (!isset($user_id)) $user_id = get_current_user_id();
+                $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
+                if (!is_array($user_doc_ids)) $user_doc_ids = array();
+                $doc_exists = in_array($doc_id, $user_doc_ids);
+            
+                // Check the condition and update 'user_doc_ids' accordingly
+                if ($is_user_doc == 1 && !$doc_exists) {
+                    // Add $doc_id to 'user_doc_ids'
+                    $user_doc_ids[] = $doc_id;
+                } elseif ($is_user_doc != 1 && $doc_exists) {
+                    // Remove $doc_id from 'user_doc_ids'
+                    $user_doc_ids = array_diff($user_doc_ids, array($doc_id));
+                }
         
+                // Update 'user_doc_ids' meta value
+                update_user_meta( $user_id, 'user_doc_ids', $user_doc_ids);
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+/*
         function set_user_job_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_job_id'])) {
@@ -551,7 +615,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-                
+*/
         // Site job
         function display_site_job_list($initial=false) {
             ob_start();
@@ -559,7 +623,7 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $user_data = get_userdata($current_user_id);
+            $current_user = get_userdata($current_user_id);
         
             // Check if the user is administrator
             if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
@@ -628,7 +692,7 @@ if (!class_exists('display_profiles')) {
                     </div>
                     </fieldset>        
                 </fieldset>
-                <?php $this->display_site_job_dialog();?>                
+                <?php echo $this->display_site_job_dialog();?>                
                 <?php
             } else {
                 ?>
@@ -646,10 +710,12 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            //$user_job_ids = get_user_meta($current_user_id, 'user_job_ids', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
         
             $args = array(
-                'post_type'      => 'job',
+                //'post_type'      => 'job',
+                'post_type'      => 'document',
                 'posts_per_page' => $posts_per_page,
                 'paged'          => $current_page,
                 'meta_query'     => array(
@@ -664,16 +730,33 @@ if (!class_exists('display_profiles')) {
             );
 
             if (!current_user_can('administrator') && !$is_site_admin) {
-                $args['post__in'] = $user_job_ids; // Value is the array of job post IDs
+                //$args['post__in'] = $user_job_ids; // Value is the array of job post IDs
+                $args['post__in'] = $user_doc_ids; // Value is the array of job post IDs
             }
 
             if ($current_page==0) $args['posts_per_page'] = -1;
 
             $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $args['s'] = $search_query;
             if ($search_query) $args['paged'] = 1;
 
+            if ($search_query) {
+                $args['meta_query'][] = array(
+                    'key'     => 'job_number',
+                    'value'   => $search_query,
+                    'compare' => '=',
+                );
+            }
+            
             $query = new WP_Query($args);
+
+            // Check if $query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the meta query for 'job_number'
+                unset($args['meta_query']['job_number']);
+                if ($search_query) $args['s'] = $search_query;
+                $query = new WP_Query($args);
+            }
+            
             return $query;
         }
         
@@ -682,28 +765,43 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
-        function display_site_job_dialog() {
+        function display_site_job_dialog($doc_id=false) {
+            $documents_class = new display_documents();
+            $job_number = get_post_meta($doc_id, 'job_number', true);
+            $job_title = get_the_title($doc_id);
+            $job_content = get_post_field('post_content', $doc_id);
+            $department = get_post_meta($doc_id, 'department', true);
+            ob_start();
             ?>
             <div id="site-job-dialog" title="Job dialog" style="display:none;">
             <fieldset>
                 <input type="hidden" id="job-id" />
+                <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <label for="job-number">Number:</label>
-                <input type="text" id="job-number" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title">Title:</label>
-                <input type="text" id="job-title" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-content">Content:</label>
-                <textarea id="job-content" rows="3" style="width:100%;"></textarea>
+                <textarea id="job-content" rows="3" style="width:100%;"><?php echo esc_attr($job_content);?></textarea>
                 <div class="separator"></div>
-                <?php $this->display_job_action_list();?>
+                <?php //$this->display_job_action_list();?>
+                <?php $documents_class->display_doc_action_list($doc_id);?>
                 <label for="department">Department:</label>
-                <input type="text" id="department" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             </div>
             <?php
+            $html = ob_get_clean();
+            return $html;            
         }
         
         function get_site_job_dialog_data() {
             $response = array();
+            if( isset($_POST['_doc_id']) ) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $response = array('html_contain' => $this->display_site_job_dialog($doc_id));
+            }
+/*
             if( isset($_POST['_job_id']) ) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
                 $response["job_number"] = get_post_meta($job_id, 'job_number', true);
@@ -711,21 +809,28 @@ if (!class_exists('display_profiles')) {
                 $response["job_content"] = get_post_field('post_content', $job_id);
                 $response["department"] = get_post_meta($job_id, 'department', true);
             }
+*/
             wp_send_json($response);
         }
         
         function set_site_job_dialog_data() {
             $response = array();
-            if( isset($_POST['_job_id']) ) {
-                $job_id = sanitize_text_field($_POST['_job_id']);
+            if( isset($_POST['_doc_id']) ) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+
+            //if( isset($_POST['_job_id']) ) {
+            //    $job_id = sanitize_text_field($_POST['_job_id']);
                 $data = array(
-                    'ID'           => $job_id,
+                    //'ID'           => $job_id,
+                    'ID'           => $doc_id,
                     'post_title'   => sanitize_text_field($_POST['_job_title']),
                     'post_content' => sanitize_text_field($_POST['_job_content']),
                 );
                 wp_update_post( $data );
-                update_post_meta($job_id, 'job_number', sanitize_text_field($_POST['_job_number']));
-                update_post_meta($job_id, 'department', sanitize_text_field($_POST['_department']));
+                //update_post_meta($job_id, 'job_number', sanitize_text_field($_POST['_job_number']));
+                //update_post_meta($job_id, 'department', sanitize_text_field($_POST['_department']));
+                update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
+                update_post_meta($doc_id, 'department', sanitize_text_field($_POST['_department']));
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -735,7 +840,8 @@ if (!class_exists('display_profiles')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'job',
+                    //'post_type'     => 'job',
+                    'post_type'     => 'document',
                 );    
                 $new_job_id = wp_insert_post($new_post);
                 update_post_meta($new_job_id, 'site_id', $site_id);
@@ -749,7 +855,8 @@ if (!class_exists('display_profiles')) {
                     'post_type'     => 'action',
                 );    
                 $new_action_id = wp_insert_post($new_post);
-                update_post_meta($new_action_id, 'job_id', $new_job_id);
+                //update_post_meta($new_action_id, 'job_id', $new_job_id);
+                update_post_meta($new_action_id, 'doc_id', $new_job_id);
                 update_post_meta($new_action_id, 'next_job', -1);
                 update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
@@ -758,7 +865,11 @@ if (!class_exists('display_profiles')) {
         
         function del_site_job_dialog_data() {
             $response = array();
-            wp_delete_post($_POST['_job_id'], true);
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            if ($doc_title) echo 'You cannot delete this document';
+            else wp_delete_post($doc_id, true);
+            //wp_delete_post($_POST['_job_id'], true);
             wp_send_json($response);
         }
         
@@ -925,7 +1036,7 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $user_data = get_userdata($current_user_id);
+            $current_user = get_userdata($current_user_id);
         
             if ($is_site_admin==1 || current_user_can('administrator')) {
                 // Check if the user is administrator
