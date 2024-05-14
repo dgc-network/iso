@@ -918,6 +918,9 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'EXISTS',
                     ),
                 ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
             );
         
             if ($doc_id) {
