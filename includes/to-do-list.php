@@ -493,10 +493,10 @@ if (!class_exists('to_do_list')) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $next_job = get_post_meta($action_id, 'next_job', true);
                 $todo_id = get_post_meta($action_id, 'todo_id', true);
-                $doc_id = get_post_meta($action_id, 'doc_id', true);
         
                 // Create new todo if the meta key 'todo_id' does not exist
                 if ( empty( $todo_id ) ) {
+                    $doc_id = get_post_meta($action_id, 'doc_id', true);
                     $todo_title = get_the_title($doc_id);
                     $report_id = sanitize_text_field($_POST['_report_id']);
                     if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
@@ -516,6 +516,7 @@ if (!class_exists('to_do_list')) {
                 update_post_meta( $todo_id, 'submit_user', $current_user_id);
                 update_post_meta( $todo_id, 'submit_action', $action_id);
                 update_post_meta( $todo_id, 'submit_time', time());
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
         
                 // Create a new doc-report if is_doc_report==1
