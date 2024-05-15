@@ -1861,8 +1861,6 @@ if (!class_exists('display_documents')) {
         
             $current_user_id = get_current_user_id();
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            //$start_job = get_post_meta($doc_id, 'start_job', true);
-            //$todo_title = get_the_title($start_job);
             $todo_title = get_the_title($doc_id);
         
             // Create the new To-do for current job_id
@@ -1874,10 +1872,7 @@ if (!class_exists('display_documents')) {
             );    
             $todo_id = wp_insert_post($new_post);    
         
-            //update_post_meta( $todo_id, 'job_id', $start_job);
-            update_post_meta( $todo_id, 'job_id', $doc_id);
             update_post_meta( $todo_id, 'report_id', $report_id);
-            //update_post_meta( $todo_id, 'doc_id', $doc_id);
             update_post_meta( $todo_id, 'submit_user', $current_user_id);
             update_post_meta( $todo_id, 'submit_action', $action_id);
             update_post_meta( $todo_id, 'submit_time', time());
