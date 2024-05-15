@@ -820,8 +820,6 @@ if (!class_exists('display_documents')) {
                 } else {
                     $result['html_contain'] = $this->display_doc_report_list($doc_id);
                 }
-            } else {
-                $result['html_contain'] = 'Invalid AJAX request!';
             }
             wp_send_json($result);
         }
@@ -848,6 +846,7 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">        
                 <?php if ($todo_status){?>
+                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 <?php }?>
                 </div>
