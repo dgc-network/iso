@@ -499,7 +499,8 @@ if (!class_exists('display_profiles')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                                 $department = get_post_meta(get_the_ID(), 'department', true);
-                                $content = get_the_content();
+                                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                                $content = get_the_content().'('.$doc_number.')';
                                 ?>
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
