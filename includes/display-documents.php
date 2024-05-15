@@ -580,8 +580,8 @@ if (!class_exists('display_documents')) {
             
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
-            <fieldset style="overflow-x:auto; white-space:nowrap; width: 100%;">
-                <div style="width: 100%; min-width: 100%;"><?php echo $doc_frame; ?></div>
+            <fieldset style="overflow-x:auto; white-space:nowrap;">
+                <?php echo $doc_frame; ?>
             </fieldset>
 
             <div>
