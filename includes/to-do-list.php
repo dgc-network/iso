@@ -53,6 +53,7 @@ if (!class_exists('to_do_list')) {
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
 
                 if ($_GET['_select_todo']=='2') $this->list_all_scheduled_events();
+                if ($_GET['_select_todo']=='3') $this->remove_my_custom_scheduled_events();
 
                 if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_to_do_list();
 
@@ -212,11 +213,7 @@ if (!class_exists('to_do_list')) {
                             
                             if (empty($doc_id)) {
                                 $doc_id = get_the_ID();
-                                //$job_id = get_post_meta(get_the_ID(), 'start_job', true);
-                                //$todo_title = get_the_title($job_id);
                                 $todo_title = get_the_title($doc_id);
-                                //if ($job_id==-1) $todo_title='發行';
-                                //if ($doc_id==-1) $todo_title='發行';
                                 $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
                                 if ($todo_due==-1) $todo_due='發行';
                             }
@@ -275,21 +272,6 @@ if (!class_exists('to_do_list')) {
                             'value'   => $site_id,
                             'compare' => '=',
                         ),
-/*                            
-                        array(
-                            'relation' => 'OR',
-                            array(
-                                'key'     => 'start_job',
-                                'value'   => $user_job_ids, // User's job IDs
-                                'compare' => 'IN',
-                            ),
-                            array(
-                                'key'     => 'start_job',
-                                'value'   => -1,
-                                'compare' => '=',
-                            ),
-                        ),
-*/                            
                         array(
                             'relation' => 'OR',
                             array(
@@ -914,6 +896,40 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
                 
+        function remove_my_custom_scheduled_events() {
+            if (current_user_can('administrator')) {
+                // Get all scheduled events
+                $cron_array = _get_cron_array();
+        
+                // Check if there are any scheduled events
+                if (empty($cron_array)) {
+                    echo 'No scheduled events found.';
+                    return;
+                }
+        
+                // Loop through the scheduled events
+                foreach ($cron_array as $timestamp => $cron) {
+                    foreach ($cron as $hook_name => $events) {
+                        if (strpos($hook_name, 'my_') === 0) { // Check if hook name starts with 'my_'
+                            foreach ($events as $event) {
+                                // Unschedule the event
+                                wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                            }
+                        }
+                    }
+                }
+        
+                echo 'Removed all scheduled events with hook names starting with "my_".';
+            } else {
+                echo 'You do not have enough permission to perform this action.';
+            }
+        }
+/*        
+        // Add a menu item in the WordPress admin panel to remove the scheduled events
+        add_action('admin_menu', function() {
+            add_menu_page('Remove My Events', 'Remove My Events', 'administrator', 'remove-my-events', 'remove_my_custom_scheduled_events');
+        });
+*/        
         function list_all_scheduled_events() {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
@@ -947,62 +963,7 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to display this.';
             }
         }
-/*        
-        // Add a menu item in the WordPress admin panel to display the scheduled events
-        add_action('admin_menu', function() {
-            add_menu_page('Scheduled Events', 'Scheduled Events', 'administrator', 'scheduled-events', 'list_all_scheduled_events');
-        });
-        
-        // Function to list all scheduled events for a specific hook
-        function existing_scheduled_events() {
-            if (current_user_can('administrator')) {
-                // Get all scheduled events
-                $scheduled_events = _get_cron_array();
-        
-                // Check if there are any scheduled events
-                if ($scheduled_events) {
-                    echo '<h3>Scheduled Events for Hook: your_event_hook_name</h3>';
-                    foreach ($scheduled_events as $timestamp => $cron) {
-                        // Check if the hook exists in the current timestamp
-                        if (isset($cron['your_event_hook_name'])) {
-                            foreach ($cron['your_event_hook_name'] as $event) {
-                                echo 'Timestamp: ' . date('Y-m-d H:i:s', $timestamp) . '<br>';
-                                echo 'Recurrence: ' . (isset($event['schedule']) ? $event['schedule'] : 'Single Event') . '<br>';
-                                echo '<br>';
-                            }
-                        }
-                    }
-                } else {
-                    echo 'No scheduled events found.';
-                }
-            } else {
-                echo 'You do not have enough permission to display this.';
-            }
-        }
-/*        
-        // existing_scheduled_events
-        function existing_scheduled_events() {
-            if (current_user_can('administrator')) {
-                // Get all available schedules
-                $schedules = wp_get_schedules();
 
-                // Loop through each schedule
-                foreach ($schedules as $schedule_name => $schedule) {
-                    // Get the next timestamp for the schedule
-                    $next_timestamp = wp_next_scheduled('your_event_hook_name', array());
-                
-                    // Output schedule information
-                    echo 'Schedule Name: ' . $schedule_name . '<br>';
-                    echo 'Interval: ' . $schedule['interval'] . '<br>';
-                    echo 'Display Name: ' . $schedule['display'] . '<br>';
-                    echo 'Next Timestamp: ' . date('Y-m-d H:i:s', $next_timestamp) . '<br>';
-                    echo '<br>';
-                }    
-            } else {
-                echo 'You do not have enought permission to display this.';
-            }            
-        }
-*/
         // Data migration
         function data_migration() {
         }
