@@ -360,16 +360,24 @@ if (!class_exists('display_documents')) {
                 $profiles_class = new display_profiles();
                 $is_user_doc = $profiles_class->is_user_doc($doc_id, $current_user_id);
                 if ($todo_status<1) {
-                    if ($todo_status==-1 || !$is_user_doc || $is_site_admin!=1) {
+                    if ($todo_status==-1) {
                         if ($is_doc_report) {
                             $result['html_contain'] = $this->display_doc_report_list($doc_id);
                         } else {
                             $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
                         }
                     } else {
-                        $result['html_contain'] = $this->display_document_dialog($doc_id);
-                        $result['is_doc_report'] = $is_doc_report;
-                        $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;    
+                        if ($is_user_doc || $is_site_admin==1) {
+                            $result['html_contain'] = $this->display_document_dialog($doc_id);
+                            $result['is_doc_report'] = $is_doc_report;
+                            $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                        } else {
+                            if ($is_doc_report) {
+                                $result['html_contain'] = $this->display_doc_report_list($doc_id);
+                            } else {
+                                $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                            }    
+                        }
                     }
                 } else {
                     if (isset($_POST['_is_admin'])) {
@@ -568,13 +576,14 @@ if (!class_exists('display_documents')) {
                 </div>
             </div>
         
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-            
             <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
             
-            <fieldset style="overflow-x:auto; white-space:nowrap;">
-                <div style="display:inline-block;"><?php echo $doc_frame;?></div>
+            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+
+            <fieldset style="overflow-x:auto; white-space:nowrap; width: 100%;">
+                <div style="width: 100%; min-width: 100%;"><?php echo $doc_frame; ?></div>
             </fieldset>
+
             <div>
                 <input type="button" id="exit-button" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
