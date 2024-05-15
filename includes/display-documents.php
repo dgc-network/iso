@@ -305,7 +305,7 @@ if (!class_exists('display_documents')) {
                 'value'   => $select_category,
                 'compare' => '=',
             );
-            if ($select_category) $current_page = 1;
+            //if ($select_category) $current_page = 1;
 
             $search_query = sanitize_text_field($_GET['_search']);
             $number_filter = array(
