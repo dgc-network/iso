@@ -608,7 +608,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
-            update_post_meta( $new_todo_id, 'job_id', $next_job );
+            //update_post_meta( $new_todo_id, 'job_id', $next_job );
             if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id );
             if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
@@ -652,11 +652,12 @@ if (!class_exists('to_do_list')) {
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
-            $job_id = get_post_meta($todo_id, 'job_id', true);
+            //$job_id = get_post_meta($todo_id, 'job_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            if ($report_id) $doc_title .= '(Report#'.$report_id.')';
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
             $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
@@ -667,8 +668,8 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'meta_query'     => array(
                     array(
-                        'key'     => 'user_job_ids',
-                        'value'   => $job_id,
+                        'key'     => 'user_doc_ids',
+                        'value'   => $doc_id,
                         'compare' => 'LIKE',
                     ),
                 ),
@@ -808,7 +809,12 @@ if (!class_exists('to_do_list')) {
                     </thead>
                     <tbody>
                     <?php
-                    $query = $this->retrieve_signature_record_data($doc, $report);
+                    // Define the custom pagination parameters
+                    $posts_per_page = get_option('operation_row_counts');
+                    $current_page = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_signature_record_data($doc, $report, $current_page);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
                     $x = 0;
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
@@ -823,8 +829,8 @@ if (!class_exists('to_do_list')) {
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                             $next_job = get_post_meta($submit_action, 'next_job', true);
-                            $job_title = ($next_job==-1) ? __( '文件發行', 'your-text-domain' ) : get_the_title($next_job);
-                            $job_title = ($next_job==-2) ? __( '文件廢止', 'your-text-domain' ) : $job_title;
+                            $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
+                            $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
         
                             if ($todo_site==$site_id) { // Aditional condition to filter the data
                                 $current_user = get_userdata( $submit_user );
@@ -848,12 +854,21 @@ if (!class_exists('to_do_list')) {
                     ?>
                     </tbody>
                 </table>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
             <?php
             $html = ob_get_clean();
             // Return an array containing both HTML content and $x
             return array(
                 'html' => $html,
-                'x'    => $x,
+                //'x'    => $x,
+                'x'    => $total_posts,                
             );
         }
         

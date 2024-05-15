@@ -367,7 +367,7 @@ if (!class_exists('display_documents')) {
                             $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
                         }
                     } else {
-                        if ($is_user_doc || $is_site_admin==1) {
+                        if ($is_user_doc || $is_site_admin==1 || current_user_can('administrator')) {
                             $result['html_contain'] = $this->display_document_dialog($doc_id);
                             $result['is_doc_report'] = $is_doc_report;
                             $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;
