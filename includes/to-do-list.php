@@ -482,8 +482,6 @@ if (!class_exists('to_do_list')) {
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->display_doc_field_keys($doc_id);
-            //} else {
-            //    $result['html_contain'] = 'Invalid AJAX request!';
             }
             wp_send_json($result);
         }
@@ -495,17 +493,13 @@ if (!class_exists('to_do_list')) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $next_job = get_post_meta($action_id, 'next_job', true);
                 $todo_id = get_post_meta($action_id, 'todo_id', true);
+                $doc_id = get_post_meta($action_id, 'doc_id', true);
         
                 // Create new todo if the meta key 'todo_id' does not exist
                 if ( empty( $todo_id ) ) {
-                    //$job_id = get_post_meta($action_id, 'job_id', true);
-                    //$todo_title = get_the_title($job_id);
-                    $doc_id = get_post_meta($action_id, 'doc_id', true);
                     $todo_title = get_the_title($doc_id);
-                    //$doc_id = sanitize_text_field($_POST['_doc_id']);
                     $report_id = sanitize_text_field($_POST['_report_id']);
                     if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-                    //if ($action_id==0) $todo_title = '文件發行';
                     $new_post = array(
                         'post_title'    => $todo_title,
                         'post_status'   => 'publish',

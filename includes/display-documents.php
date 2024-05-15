@@ -576,7 +576,9 @@ if (!class_exists('display_documents')) {
                 </div>
             </div>
         
-            <div id="signature-record-div" style="display:none;"><fieldset><?php echo $$html_contain;?></fieldset></div>
+            <div id="signature-record-div" style="display:none;">
+                <fieldset><?php echo $$html_contain;?></fieldset>
+            </div>
             
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
