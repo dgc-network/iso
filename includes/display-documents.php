@@ -30,8 +30,8 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', array( $this, 'set_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
-            add_action( 'wp_ajax_duplicate_doc_report_dialog_data', array( $this, 'duplicate_doc_report_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_duplicate_doc_report_dialog_data', array( $this, 'duplicate_doc_report_dialog_data' ) );
+            add_action( 'wp_ajax_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
+            add_action( 'wp_ajax_nopriv_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
             add_action( 'wp_ajax_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
             add_action( 'wp_ajax_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
@@ -977,7 +977,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function duplicate_doc_report_dialog_data() {
+        function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
                 $current_user_id = get_current_user_id();
@@ -1884,6 +1884,12 @@ if (!class_exists('display_documents')) {
         
         function reset_document_todo_status() {
             $response = array();
+            if( isset($_POST['_report_id']) ) {
+                $report_id = sanitize_text_field($_POST['_report_id']);
+                delete_post_meta($report_id, 'todo_status');
+                //delete_post_meta($doc_id, 'due_date');
+                //delete_post_meta($doc_id, 'start_job');
+            }
             if( isset($_POST['_doc_id']) ) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 delete_post_meta($doc_id, 'todo_status');

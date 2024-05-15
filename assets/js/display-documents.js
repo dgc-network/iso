@@ -747,7 +747,56 @@ jQuery(document).ready(function($) {
         $('[id^="duplicate-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(21);
             const ajaxData = {
-                'action': 'duplicate_doc_report_dialog_data',
+                'action': 'duplicate_doc_report_data',
+            };
+            ajaxData['_report_id'] = report_id;
+            $.each(response.doc_fields, function (index, value) {
+                const field_name_tag = '#' + value.field_name;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_tag).val();
+                }
+            });
+                    
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function (response) {
+                    get_doc_report_list_data($("#doc-id").val());
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("doc-report-unpublished").on("click", function () {
+            const report_id = this.id.substring(21);
+            if (window.confirm("Are you sure you want to unpublish this doc-report?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'reset_document_todo_status',
+                        '_report_id': report_id,
+                    },
+                    success: function (response) {
+                        window.location.replace(window.location.href);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }    
+
+            const ajaxData = {
+                'action': 'duplicate_doc_report_data',
             };
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
