@@ -271,7 +271,7 @@ if (!class_exists('display_profiles')) {
         function display_site_user_dialog($user_id=false) {
             $current_user = get_userdata($user_id);
             $is_site_admin = get_user_meta($user_id, 'is_site_admin', true);
-            if ($is_site_admin==1) $is_admin_checked='enabled';
+            $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
             ob_start();
             ?>
             <div id="site-user-dialog" title="User dialog">
