@@ -977,7 +977,7 @@ if (!class_exists('to_do_list')) {
                 }
         
                 echo '<h3>Scheduled Events</h3>';
-                echo '<table border="1" cellpadding="10" cellspacing="0" class="ui-widget" style="width:100%;">';
+                echo '<table border="1" cellpadding="10" cellspacing="0">';
                 echo '<tr><th>Hook Name</th><th>Next Run (UTC)</th><th>Arguments</th></tr>';
         
                 // Loop through the scheduled events
