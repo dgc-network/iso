@@ -13,6 +13,7 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
+            add_filter( 'cron_schedules', array( $this, 'your_custom_cron_schedules' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -516,10 +517,10 @@ if (!class_exists('display_documents')) {
                 $doc_report_frequence_start_date = sanitize_text_field($_POST['_doc_report_frequence_start_date']);
                 $doc_report_frequence_start_time = sanitize_text_field($_POST['_doc_report_frequence_start_time']);
                 $doc_report_frequence = strtotime($doc_report_frequence_start_date.' '.$doc_report_frequence_start_time);
-                update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence-$offset_seconds);
+                update_post_meta( $doc_id, 'doc_report_frequence_start_time', $doc_report_frequence - $offset_seconds);
                 $params = array(
                     'interval' => $doc_report_frequence_setting,
-                    'start_time' => $doc_report_frequence-$offset_seconds,
+                    'start_time' => $doc_report_frequence - $offset_seconds,
                     'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
                     'doc_id' => $doc_id,
                 );            
@@ -1557,6 +1558,81 @@ if (!class_exists('display_documents')) {
         function schedule_post_event_callback($args) {
             $interval = $args['interval'];
             $start_time = $args['start_time'];
+            $prev_start_time = isset($args['prev_start_time']) ? $args['prev_start_time'] : null;
+        
+            // Clear the previous scheduled event if it exists
+            if ($prev_start_time) {
+                $prev_hook_name = 'my_custom_post_event_' . $prev_start_time;
+                wp_clear_scheduled_hook($prev_hook_name);
+            }
+        
+            $hook_name = 'my_custom_post_event_' . $start_time;
+        
+            // Schedule the event based on the selected interval
+            switch ($interval) {
+                case 'twice_daily':
+                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                    break;
+                case 'daily':
+                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                    break;
+                case 'weekly':
+                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                    break;
+                case 'biweekly':
+                    // Calculate interval for every 2 weeks (14 days)
+                    wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                    break;
+                case 'monthly':
+                    // Use a custom interval for monthly scheduling
+                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                    break;
+                case 'bimonthly':
+                    // Calculate timestamp for next occurrence (every 2 months)
+                    $next_occurrence = strtotime('+2 months', $start_time);
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'half-yearly':
+                    // Calculate timestamp for next occurrence (every 6 months)
+                    $next_occurrence = strtotime('+6 months', $start_time);
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'yearly':
+                    // Use a custom interval for yearly scheduling
+                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                    break;
+                default:
+                    // Handle invalid interval
+                    return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+            }
+        
+            // Store the hook name in options (outside switch statement)
+            update_option('my_custom_post_event_hook_name', $hook_name);
+        
+            // Return the hook name for later use
+            return $hook_name;
+        }
+
+        function your_custom_cron_schedules($schedules) {
+            $schedules['biweekly'] = array(
+                'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
+                'display'  => __('Every Two Weeks'),
+            );
+            $schedules['monthly'] = array(
+                'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
+                'display'  => __('Monthly'),
+            );
+            $schedules['yearly'] = array(
+                'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
+                'display'  => __('Yearly'),
+            );
+            return $schedules;
+        }
+        
+/*        
+        function schedule_post_event_callback($args) {
+            $interval = $args['interval'];
+            $start_time = $args['start_time'];
             $prev_start_time = $args['prev_start_time'];
         
             $hook_name = 'my_custom_post_event_'.$prev_start_time;
@@ -1604,7 +1680,7 @@ if (!class_exists('display_documents')) {
             // Return the hook name for later use
             return $hook_name;
         }
-
+*/
         // Method for the callback function
         public function my_custom_post_event_callback($params) {
             // Add your code to programmatically add a post here
