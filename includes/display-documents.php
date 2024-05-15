@@ -356,10 +356,11 @@ if (!class_exists('display_documents')) {
                 $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                 $todo_status = get_post_meta($doc_id, 'todo_status', true);
                 $current_user_id = get_current_user_id();
+                $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
                 $profiles_class = new display_profiles();
                 $is_user_doc = $profiles_class->is_user_doc($doc_id, $current_user_id);
                 if ($todo_status<1) {
-                    if ($todo_status==-1 || !$is_user_doc) {
+                    if ($todo_status==-1 || !$is_user_doc || $is_site_admin!=1) {
                         if ($is_doc_report) {
                             $result['html_contain'] = $this->display_doc_report_list($doc_id);
                         } else {
