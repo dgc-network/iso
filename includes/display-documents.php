@@ -355,8 +355,11 @@ if (!class_exists('display_documents')) {
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                 $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                 $todo_status = get_post_meta($doc_id, 'todo_status', true);
+                $current_user_id = get_current_user_id();
+                $profiles_class = new display_profiles();
+                $is_user_doc = $profiles_class->is_user_doc($doc_id, $current_user_id);
                 if ($todo_status<1) {
-                    if ($todo_status==-1) {
+                    if ($todo_status==-1 || !$is_user_doc) {
                         if ($is_doc_report) {
                             $result['html_contain'] = $this->display_doc_report_list($doc_id);
                         } else {
@@ -365,7 +368,7 @@ if (!class_exists('display_documents')) {
                     } else {
                         $result['html_contain'] = $this->display_document_dialog($doc_id);
                         $result['is_doc_report'] = $is_doc_report;
-                        $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                        $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;    
                     }
                 } else {
                     if (isset($_POST['_is_admin'])) {
