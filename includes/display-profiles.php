@@ -88,8 +88,8 @@ if (!class_exists('display_profiles')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             $current_user = get_userdata( $current_user_id );
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
+            //$is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+            //$site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
             ob_start();
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -281,7 +281,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <input type="checkbox" id="is-site-admin" $is_admin_checked />
+                <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
                 <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
