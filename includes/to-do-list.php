@@ -872,10 +872,14 @@ if (!class_exists('to_do_list')) {
             );
         }
         
-        function retrieve_signature_record_data($doc_id=false, $report_id=false){
+        function retrieve_signature_record_data($doc_id=false, $report_id=false, $current_page=1){
+            // Define the custom pagination parameters
+            $posts_per_page = get_option('operation_row_counts');
             $args = array(
                 'post_type'      => 'todo',
-                'posts_per_page' => -1,
+                'posts_per_page' => $posts_per_page,
+                'paged'          => $current_page,
+                //'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
