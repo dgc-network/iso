@@ -778,7 +778,7 @@ jQuery(document).ready(function($) {
             $("#report-signature-record-div").toggle()
         });
 
-        $("#doc-report-dialog-exit-button").on("click", function () {
+        $("#doc-report-dialog-exit").on("click", function () {
             get_doc_report_list_data($("#doc-id").val());
         });
 

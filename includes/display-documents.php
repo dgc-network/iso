@@ -848,8 +848,6 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">        
                 <?php if ($todo_status){?>
-                    <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製記錄', 'your-text-domain')?></button>
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 <?php }?>
                 </div>
@@ -871,7 +869,7 @@ if (!class_exists('display_documents')) {
             <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
             <hr>
             <?php
-            if (!$todo_status){
+            if (empty($todo_status)){
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -883,15 +881,19 @@ if (!class_exists('display_documents')) {
                         echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
                     endwhile;
                     wp_reset_postdata();
-                } else {
-                    echo '<input type="button" id="doc-report-dialog-exit-button" value="Exit" style="margin:5px;" />';
                 }
                 ?>
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
+                </div>
+                <?php
+            } else {
+                ?>
+                <div>
+                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
+                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 <?php
             }
