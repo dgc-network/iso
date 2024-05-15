@@ -524,6 +524,7 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta( $post_id, 'site_id', $site_id);
+                update_post_meta( $post_id, 'job_number', '-');
                 update_post_meta( $post_id, 'doc_number', '-');
                 update_post_meta( $post_id, 'doc_revision', 'A');
                 update_post_meta( $post_id, 'doc_report_frequence_start_time', time());
