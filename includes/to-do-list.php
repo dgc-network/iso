@@ -53,8 +53,12 @@ if (!class_exists('to_do_list')) {
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
 
                 if ($_GET['_select_todo']=='2') $this->list_all_scheduled_events();
-                if ($_GET['_select_todo']=='3') $this->remove_my_custom_scheduled_events();
-                if ($_GET['_select_todo']=='4') $this->remove_empty_hook_scheduled_events();
+                if (isset($_GET['_remove_my_custom_scheduled_events'])) {
+                    $this->remove_my_custom_scheduled_events($_GET['_remove_my_custom_scheduled_events']);
+                    $this->list_all_scheduled_events();
+                    exit;
+                }
+                //if ($_GET['_select_todo']=='4') $this->remove_empty_hook_scheduled_events();
 
                 if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_to_do_list();
 
@@ -896,7 +900,7 @@ if (!class_exists('to_do_list')) {
             $query = new WP_Query($args);
             return $query;
         }
-                
+/*                
         function remove_empty_hook_scheduled_events() {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
@@ -931,7 +935,7 @@ if (!class_exists('to_do_list')) {
             add_menu_page('Remove Empty Hook Events', 'Remove Empty Hook Events', 'administrator', 'remove-empty-hook-events', 'remove_empty_hook_scheduled_events');
         });
 */        
-        function remove_my_custom_scheduled_events() {
+        function remove_my_custom_scheduled_events($remove_name='my_') {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
                 $cron_array = _get_cron_array();
@@ -945,7 +949,7 @@ if (!class_exists('to_do_list')) {
                 // Loop through the scheduled events
                 foreach ($cron_array as $timestamp => $cron) {
                     foreach ($cron as $hook_name => $events) {
-                        if (strpos($hook_name, 'my_') === 0) { // Check if hook name starts with 'my_'
+                        if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) { // Check if hook name starts with 'my_'
                             foreach ($events as $event) {
                                 // Unschedule the event
                                 wp_unschedule_event($timestamp, $hook_name, $event['args']);
@@ -959,12 +963,7 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to perform this action.';
             }
         }
-/*        
-        // Add a menu item in the WordPress admin panel to remove the scheduled events
-        add_action('admin_menu', function() {
-            add_menu_page('Remove My Events', 'Remove My Events', 'administrator', 'remove-my-events', 'remove_my_custom_scheduled_events');
-        });
-*/        
+
         function list_all_scheduled_events() {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
