@@ -847,7 +847,7 @@ if (!class_exists('display_documents')) {
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">        
-                <?php if ($todo_status==-1){?>
+                <?php if ($todo_status){?>
                     <button id="duplicate-doc-report-<?php echo $report_id;?>" style="margin-right:5px; font-size:small;" class="button"><?php echo __('複製記錄', 'your-text-domain')?></button>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
