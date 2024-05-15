@@ -914,6 +914,33 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
                 
+        // Function to list all scheduled events for a specific hook
+        function existing_scheduled_events() {
+            if (current_user_can('administrator')) {
+                // Get all scheduled events
+                $scheduled_events = _get_cron_array();
+        
+                // Check if there are any scheduled events
+                if ($scheduled_events) {
+                    echo '<h3>Scheduled Events for Hook: your_event_hook_name</h3>';
+                    foreach ($scheduled_events as $timestamp => $cron) {
+                        // Check if the hook exists in the current timestamp
+                        if (isset($cron['your_event_hook_name'])) {
+                            foreach ($cron['your_event_hook_name'] as $event) {
+                                echo 'Timestamp: ' . date('Y-m-d H:i:s', $timestamp) . '<br>';
+                                echo 'Recurrence: ' . (isset($event['schedule']) ? $event['schedule'] : 'Single Event') . '<br>';
+                                echo '<br>';
+                            }
+                        }
+                    }
+                } else {
+                    echo 'No scheduled events found.';
+                }
+            } else {
+                echo 'You do not have enough permission to display this.';
+            }
+        }
+/*        
         // existing_scheduled_events
         function existing_scheduled_events() {
             if (current_user_can('administrator')) {
@@ -934,10 +961,9 @@ if (!class_exists('to_do_list')) {
                 }    
             } else {
                 echo 'You do not have enought permission to display this.';
-            }
-            
+            }            
         }
-
+*/
         // Data migration
         function data_migration() {
         }
