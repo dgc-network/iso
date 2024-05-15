@@ -52,9 +52,9 @@ if (!class_exists('to_do_list')) {
 
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
 
-                if ($_GET['_select_todo']=='2') $this->existing_scheduled_events();
+                if ($_GET['_select_todo']=='2') $this->list_all_scheduled_events();
 
-                if ($_GET['_select_todo']!='1' && !isset($_GET['_id'])) $this->display_to_do_list();
+                if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_to_do_list();
 
             } else {
                 user_did_not_login_yet();
@@ -914,6 +914,45 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
                 
+        function list_all_scheduled_events() {
+            if (current_user_can('administrator')) {
+                // Get all scheduled events
+                $cron_array = _get_cron_array();
+        
+                // Check if there are any scheduled events
+                if (empty($cron_array)) {
+                    echo 'No scheduled events found.';
+                    return;
+                }
+        
+                echo '<h3>Scheduled Events</h3>';
+                echo '<table border="1" cellpadding="10" cellspacing="0">';
+                echo '<tr><th>Hook Name</th><th>Next Run (UTC)</th><th>Arguments</th></tr>';
+        
+                // Loop through the scheduled events
+                foreach ($cron_array as $timestamp => $cron) {
+                    foreach ($cron as $hook_name => $events) {
+                        foreach ($events as $event) {
+                            echo '<tr>';
+                            echo '<td>' . esc_html($hook_name) . '</td>';
+                            echo '<td>' . date('Y-m-d H:i:s', $timestamp) . '</td>';
+                            echo '<td>' . json_encode($event['args']) . '</td>';
+                            echo '</tr>';
+                        }
+                    }
+                }
+        
+                echo '</table>';
+            } else {
+                echo 'You do not have enough permission to display this.';
+            }
+        }
+/*        
+        // Add a menu item in the WordPress admin panel to display the scheduled events
+        add_action('admin_menu', function() {
+            add_menu_page('Scheduled Events', 'Scheduled Events', 'administrator', 'scheduled-events', 'list_all_scheduled_events');
+        });
+        
         // Function to list all scheduled events for a specific hook
         function existing_scheduled_events() {
             if (current_user_can('administrator')) {
