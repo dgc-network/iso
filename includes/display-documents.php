@@ -459,7 +459,7 @@ if (!class_exists('display_documents')) {
             <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
                 <div class="mermaid">
                 sequenceDiagram
-                    participant <?php echo 'Rover';?>
+                    participant <?php echo $job_title;?> 
                     participant Bob
                     Alice->>John: Hello John, how are you?
                     loop Healthcheck
