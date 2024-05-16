@@ -741,7 +741,33 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;            
         }
-            
+
+        function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
+            $meta_query = array(
+                'relation' => 'OR', // Default to OR for flexible addition of conditions
+                array(
+                    'key'   => 'doc_id',
+                    'value' => $doc_id,
+                ),
+            );
+        
+            if ($nest) {
+                $meta_query[] = array(
+                    'key'   => 'next_job',
+                    'value' => $doc_id,
+                );
+            }
+        
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => $meta_query,
+            );
+        
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*        
         function retrieve_doc_action_list_data($doc_id=false, $nest=false) {
             $args = array(
                 'post_type'      => 'action',
@@ -756,7 +782,7 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             return $query;
         }
-        
+*/
         function get_doc_action_list_data() {
             $response = array();
             if (isset($_POST['_doc_id'])) {
