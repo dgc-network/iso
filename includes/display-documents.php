@@ -163,7 +163,9 @@ if (!class_exists('display_documents')) {
                 // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
                     $doc_id = sanitize_text_field($_GET['_id']);
+                    echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_document_dialog($doc_id);
+                    echo '</div>';
 /*
                     echo '<div class="ui-widget" id="result-container">';
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -231,21 +233,6 @@ if (!class_exists('display_documents')) {
                         <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
-        
-<div class="mermaid">
-sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
-</div>
-
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -469,24 +456,21 @@ sequenceDiagram
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
-
-<div class="mermaid">
-sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
-</div>
-
-<div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained"><pre><code><div class="mermaid">
-</div></code></pre>
-</div>
+            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
+                <div class="mermaid">
+                sequenceDiagram
+                    participant Alice
+                    participant Bob
+                    Alice->>John: Hello John, how are you?
+                    loop Healthcheck
+                        John->>John: Fight against hypochondria
+                    end
+                    Note right of John: Rational thoughts <br/>prevail!
+                    John-->>Alice: Great!
+                    John->>Bob: How about you?
+                    Bob-->>John: Jolly good!
+                </div>
+            </div>
             <?php echo $profiles_class->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
