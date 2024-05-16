@@ -453,6 +453,7 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
             <div class="wp-block-wp-mermaid-block mermaid">
+                [mermaid]
                 sequenceDiagram
                     文件1->>文件2: 同意
                     文件1->>文件3: 退回
@@ -466,6 +467,7 @@ if (!class_exists('display_documents')) {
                     John-->>Alice: Great!
                     John->>Bob: How about you?
                     Bob-->>John: Jolly good!
+                [/mermaid]
             </div>
             <?php echo $profiles_class->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
