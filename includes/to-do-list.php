@@ -170,7 +170,7 @@ if (!class_exists('to_do_list')) {
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
                 </fieldset>
                 </div>
-            
+
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <select id="select-todo">
@@ -184,7 +184,7 @@ if (!class_exists('to_do_list')) {
                         <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
-        
+
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -239,12 +239,12 @@ if (!class_exists('to_do_list')) {
                     </tbody>
                 </table>
                 <?php
-                // Display pagination links
-                echo '<div class="pagination">';
-                if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
-                echo '</div>';
+                    // Display pagination links
+                    echo '<div class="pagination">';
+                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    echo '</div>';
                 ?>
             </fieldset>
             </div>
@@ -347,8 +347,6 @@ if (!class_exists('to_do_list')) {
         }
         
         function display_todo_dialog($todo_id) {
-            $documents_class = new display_documents();
-
             // Get the post type of the post with the given ID
             $post_type = get_post_type( $todo_id );
         
@@ -365,7 +363,6 @@ if (!class_exists('to_do_list')) {
             
             if ( $post_type === 'document' ) {
                 $doc_id = $todo_id;
-                //$todo_id = get_post_meta($doc_id, 'start_job', true);
             }
             
             if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
@@ -389,6 +386,7 @@ if (!class_exists('to_do_list')) {
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
             <fieldset>
             <?php
             if ($is_doc_report) {
@@ -413,50 +411,32 @@ if (!class_exists('to_do_list')) {
                 <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-
-                <?php
-/*                
-                if ($is_doc_report==1) {
-                    ?>
-                    <label for="doc-report"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-                    <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <div id="doc-field-list-div"><?php echo $documents_class->display_doc_field_list($doc_id);?></div>
-                    <?php
-                } else {
-                    ?>
-                    <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                    <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-                    <?php
-                }
-*/                
-                ?>
-                <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
                 <?php
             }
             ?>
             <hr>
-            <?php
-            if ( $post_type === 'document' ) {
-                //$profiles_class = new display_profiles();
-                //$query = $profiles_class->retrieve_job_action_list_data($todo_id);
-                $documents_class = new display_documents();
-                $query = $documents_class->retrieve_doc_action_list_data($todo_id);
-            } else {
-                $query = $this->retrieve_todo_action_list_data($todo_id);
-            }
-            
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-                endwhile;
-                wp_reset_postdata();
-            } else {
-                echo '<input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
-            }
-        
-            if ($todo_id==-1) echo '<input type="button" id="todo-dialog-button-0" value="OK" style="margin:5px;" />';
-            ?>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                <?php
+                    if ( $post_type === 'todo' ) {
+                        $query = $this->retrieve_todo_action_list_data($todo_id);
+                    }
+                    if ( $post_type === 'document' ) {
+                        $documents_class = new display_documents();
+                        $query = $documents_class->retrieve_doc_action_list_data($todo_id);
+                    }                    
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                        endwhile;
+                        wp_reset_postdata();
+                    }
+                ?>        
+                </div>
+                <div style="text-align: right">
+                    <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />
+                </div>
+            </div>
             </fieldset>
             <?php
             $html = ob_get_clean();
