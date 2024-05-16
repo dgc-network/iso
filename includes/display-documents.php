@@ -452,31 +452,23 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
-            <div class="mermaid">
-            graph TD;
-                A-->B;
-                A-->C;
-                B-->D;
-                C-->D;
-            </div>
-            <div class="wp-block-wp-mermaid-block mermaid">
 
-                [mermaid]
-                sequenceDiagram
-                    文件1->>文件2: 同意
-                    文件1->>文件3: 退回
-                    participant Alice
-                    participant Bob
-                    Alice->>John: Hello John, how are you?
-                    loop Healthcheck
-                        John->>John: Fight against hypochondria
-                    end
-                    Note right of John: Rational thoughts &lt;br/>prevail!
-                    John-->>Alice: Great!
-                    John->>Bob: How about you?
-                    Bob-->>John: Jolly good!
-                [/mermaid]
-            </div>
+            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained"><pre><code><div class="mermaid">
+
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts <br/>prevail!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
+
+</div></code></pre>
+</div>
             <?php echo $profiles_class->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
