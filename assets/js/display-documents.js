@@ -106,6 +106,176 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    activate_document_dialog_data($("#doc-id").val())
+
+    function activate_document_dialog_data(doc_id){
+        $('[id^="reset-document-"]').on("click", function () {
+            const doc_id = this.id.substring(15);
+            if (window.confirm("Are you sure you want to reset this document status?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'reset_document_todo_status',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        window.location.replace(window.location.href);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });            
+                
+        if ($('#is-doc-report').val()==1) {
+            $("#doc-report-div").show();
+            $("#doc-report-div1").show();
+        } else {
+            $("#doc-frame-div").show();
+        }
+
+        $("#doc-frame-label").on("click", function () {
+            $("#doc-report-div").toggle();
+            $("#doc-report-div1").toggle();
+            $("#doc-frame-div").toggle();
+            const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+            $("#is-doc-report").val(is_doc_report)
+        });
+
+        $("#doc-field-label").on("click", function () {
+            $("#doc-report-div").toggle();
+            $("#doc-report-div1").toggle();
+            $("#doc-frame-div").toggle();
+            const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
+            $("#is-doc-report").val(is_doc_report)
+        });
+
+        $("#doc-frame-job-setting").on("click", function () {
+            $("#job-setting-div").toggle();
+        });
+
+        $("#doc-report-job-setting").on("click", function () {
+            $("#job-setting-div").toggle();
+        });
+
+        if ($("#doc-report-frequence-setting").val()) {
+            $("#frquence-start-time-div").show();
+        }
+
+        $("#new-doc-action").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_action_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_action_list_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+        activate_doc_action_list_data(doc_id);
+
+        $("#doc-report-frequence-setting").on("change", function () {
+            if ($(this).val()) {
+                $("#frquence-start-time-div").show();
+            } else {
+                $("#frquence-start-time-div").hide();
+            }
+        });
+
+        $("#save-document-button").on("click", function() {
+            const ajaxData = {
+                'action': 'set_document_dialog_data',
+            };
+            ajaxData['_doc_id'] = doc_id;
+            ajaxData['_job_number'] = $("#job-number").val();
+            ajaxData['_job_title'] = $("#job-title").val();
+            ajaxData['_job_content'] = $("#job-content").val();
+            ajaxData['_department'] = $("#department").val();
+            ajaxData['_doc_number'] = $("#doc-number").val();
+            ajaxData['_doc_title'] = $("#doc-title").val();
+            ajaxData['_doc_revision'] = $("#doc-revision").val();
+            ajaxData['_doc_category'] = $("#doc-category").val();
+            ajaxData['_doc_frame'] = $("#doc-frame").val();
+            ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+            ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
+            ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
+            ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
+            ajaxData['_prev_start_time'] = $("#prev-start-time").val();
+                    
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function (response) {
+                    window.location.replace(window.location.href);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#del-document-button").on("click", function() {
+            if (window.confirm("Are you sure you want to delete this document?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_document_dialog_data',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        window.location.replace(window.location.href);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        $("#doc-report-preview").on("click", function () {
+            get_doc_report_list_data(doc_id);
+        });
+    
+        $("#doc-frame-preview").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: {
+                    action: 'get_doc_frame_contain',
+                    _doc_id: doc_id,
+                },
+                success: function(response) {
+                    $('#result-container').html(response.html_contain);
+                    activate_published_document_data(doc_id);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', errorThrown);
+                    alert('AJAX request failed. Please try again.');
+                }
+            });
+        });
+
+    }
+
     function get_document_dialog_data(doc_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -132,13 +302,23 @@ jQuery(document).ready(function($) {
                     }
                 });
 */
-                window.location.replace('?_id='+doc_id);
                 
                 
-                if (response.is_doc_report==1) window.location.replace('?_doc_report='+doc_id);
-                if (response.is_doc_frame==1) window.location.replace('?_doc_frame='+doc_id);
+                if (response.todo_status>0) {
+                    alert("The document is in To-do process. Please wait for publishing.");
+                } else {
+                    if (response.todo_status==-1) {
+                        if (response.is_doc_report==1) {
+                            window.location.replace('?_doc_report='+doc_id);
+                        } else {
+                            window.location.replace('?_doc_frame='+doc_id);
+                        }
+                    } else {
+                        window.location.replace('?_id='+doc_id);
+                    }
+                }
 
-
+                //activate_document_dialog_data(doc_id)
 
                 $('[id^="reset-document-"]').on("click", function () {
                     const doc_id = this.id.substring(15);
