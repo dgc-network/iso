@@ -507,11 +507,13 @@ if (!class_exists('display_documents')) {
                 sequenceDiagram
                 <?php
                 //$this->display_mermaid_drawing($doc_id);
-                $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $action_title = get_the_title();
                         $action_content = get_post_field('post_content', get_the_ID());
+                        $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                        $current_job_title = get_the_title($current_job);
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                         $next_job_title = get_the_title($next_job);
                         //if ($next_job>0) echo $this->display_mermaid_drawing($next_job);
@@ -519,7 +521,7 @@ if (!class_exists('display_documents')) {
                         if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
-                        <?php echo $job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
+                        <?php echo $current_job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
                         <?php
                     endwhile;
                     wp_reset_postdata();

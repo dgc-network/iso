@@ -742,7 +742,7 @@ if (!class_exists('display_profiles')) {
             return $html;            
         }
             
-        function retrieve_doc_action_list_data($doc_id=false) {
+        function retrieve_doc_action_list_data($doc_id=false, $nest=false) {
             $args = array(
                 'post_type'      => 'action',
                 'posts_per_page' => -1,
