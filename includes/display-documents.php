@@ -460,7 +460,7 @@ if (!class_exists('display_documents')) {
                 <div class="mermaid">
                 sequenceDiagram
                 <?php
-                    $query = $this->retrieve_doc_action_list_data($doc_id);
+                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $action_title = get_the_title();
