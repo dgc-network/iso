@@ -13,7 +13,7 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            add_action('wp_footer', array( $this, 'add_mermaid_js'));
+            add_action( 'wp_footer', array( $this, 'add_mermaid_js' ));
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -49,6 +49,11 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
+        }
+
+        function add_mermaid_js() {
+            echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
+            echo '<script>mermaid.initialize({startOnLoad:true});</script>';
         }
 
         // Register document post type
@@ -166,16 +171,6 @@ if (!class_exists('display_documents')) {
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_document_dialog($doc_id);
                     echo '</div>';
-/*
-                    echo '<div class="ui-widget" id="result-container">';
-                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                    if ($is_doc_report) {
-                        echo $this->display_doc_report_list($doc_id);
-                    } else {
-                        echo $this->display_doc_frame_contain($doc_id);
-                    }    
-                    echo '</div>';
-*/
                 }
             
                 // Display ISO document statement if initial ID is existed
@@ -203,7 +198,7 @@ if (!class_exists('display_documents')) {
                 }
 
                 // Display document list if no specific document IDs are existed
-                if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
+                if (!isset($_GET['_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_initial'])) {
                     echo $this->display_document_list();
                 }
             
@@ -376,69 +371,8 @@ if (!class_exists('display_documents')) {
                 $response['todo_status'] = $todo_status;
                 $response['is_site_admin'] = $is_site_admin;
                 $response['is_user_doc'] = $is_user_doc;
-
-/*
-                if ($todo_status<1) {
-                    if ($todo_status==-1) {
-                        if ($is_doc_report) {
-                            $response['html_contain'] = $this->display_doc_report_list($doc_id);
-                        } else {
-                            $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
-                        }
-                    } else {
-                        if ($is_user_doc || $is_site_admin==1 || current_user_can('administrator')) {
-                            $response['html_contain'] = $this->display_document_dialog($doc_id);
-                            $response['is_doc_report'] = $is_doc_report;
-                            $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
-                        } else {
-                            if ($is_doc_report) {
-                                $response['html_contain'] = $this->display_doc_report_list($doc_id);
-                            } else {
-                                $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
-                            }    
-                        }
-                    }
-                } else {
-                    if (isset($_POST['_is_admin'])) {
-                        $is_admin = sanitize_text_field($_POST['_is_admin']);
-                        if (current_user_can('administrator') && $is_admin=="1") {
-                            $response['html_contain'] = $this->display_document_dialog($doc_id);
-                        }
-                    }        
-                }
-*/                
             }
             wp_send_json($response);
-        }
-        
-        function add_mermaid_js() {
-            echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
-            echo '<script>mermaid.initialize({startOnLoad:true});</script>';
-        }
-        
-        function display_mermaid_drawing($doc_id=false) {
-            ob_start();
-            $profiles_class = new display_profiles();
-            $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $action_title = get_the_title();
-                    $action_content = get_post_field('post_content', get_the_ID());
-                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                    $next_job_title = get_the_title($next_job);
-                    //if ($next_job>0) $this->display_mermaid_drawing($next_job);
-                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
-                    $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                    ?>
-                    <?php echo $job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
-                    <?php
-                endwhile;
-                wp_reset_postdata();
-            endif;    
-            $html = ob_get_clean();
-            return $html;
-
         }
         
         function display_document_dialog($doc_id=false) {
@@ -506,7 +440,6 @@ if (!class_exists('display_documents')) {
                 <div class="mermaid">
                 sequenceDiagram
                 <?php
-                //$this->display_mermaid_drawing($doc_id);
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -516,7 +449,6 @@ if (!class_exists('display_documents')) {
                         $current_job_title = get_the_title($current_job);
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                         $next_job_title = get_the_title($next_job);
-                        //if ($next_job>0) echo $this->display_mermaid_drawing($next_job);
                         if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
                         if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);

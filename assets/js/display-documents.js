@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(error){
                     console.error(error);                    
-                    //alert(error);
+                    alert(error);
                 }
             });    
     
@@ -569,7 +569,16 @@ jQuery(document).ready(function($) {
                         '_doc_id': doc_id,
                     },
                     success: function (response) {
-                        window.location.replace(window.location.href);
+                        //window.location.replace(window.location.href);
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);                    
+                        // Get the base URL without parameters
+                        var baseUrl = url.origin + url.pathname;                    
+                        // Reload the page with the base URL
+                        window.location.replace(baseUrl);
+
                     },
                     error: function(error){
                         console.error(error);
@@ -580,7 +589,16 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-button").on("click", function () {
-            window.location.replace(window.location.href);
+            //window.location.replace(window.location.href);
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);                    
+            // Get the base URL without parameters
+            var baseUrl = url.origin + url.pathname;                    
+            // Reload the page with the base URL
+            window.location.replace(baseUrl);
+
         });        
     }
 
@@ -1003,7 +1021,16 @@ jQuery(document).ready(function($) {
                         '_report_id': report_id,
                     },
                     success: function (response) {
-                        window.location.replace(window.location.href);
+                        //window.location.replace(window.location.href);
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);                    
+                        // Get the base URL without parameters
+                        var baseUrl = url.origin + url.pathname;                    
+                        // Reload the page with the base URL
+                        window.location.replace(baseUrl);
+            
                     },
                     error: function(error){
                         console.error(error);

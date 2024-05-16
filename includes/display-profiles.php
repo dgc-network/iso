@@ -46,7 +46,7 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
-                
+
         }
 
         // Shortcode to display
@@ -81,7 +81,7 @@ if (!class_exists('display_profiles')) {
             );
             register_post_type( 'job', $args );
         }
-        
+
         function display_my_profile() {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
@@ -150,7 +150,7 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;
         }
-        
+
         function set_my_profile_data() {
             $response = array();
             if (isset($_POST['_display_name'])) {
@@ -161,7 +161,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -179,7 +179,7 @@ if (!class_exists('display_profiles')) {
                     <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                     <div id="site-hint" style="display:none; color:#999;"></div>
-        
+
                     <div id="site-image-container">
                         <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
                     </div>
@@ -190,7 +190,7 @@ if (!class_exists('display_profiles')) {
                         <button id="set-image-url" class="button">Set</button>
                     </fieldset>
                     </div>
-        
+
                     <label for="site-members"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
                     <fieldset style="margin-top:5px;">
                     <table class="ui-widget" style="width:100%;">
@@ -200,8 +200,7 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
-                        <?php
-        
+                        <?php        
                         $users = get_users(); // Initialize with all users
                         // If the current user is not an administrator, filter by site_id
                         if (!current_user_can('administrator')) {
@@ -235,7 +234,7 @@ if (!class_exists('display_profiles')) {
                     </fieldset>
                     <?php $this->display_new_user_dialog();?>
                     <?php echo $this->display_site_user_dialog();?>
-        
+
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
                             <select id="select-profile">
@@ -248,8 +247,7 @@ if (!class_exists('display_profiles')) {
                         <div style="text-align: right">
                             <button type="submit" id="site-profile-submit">Submit</button>
                         </div>
-                    </div>
-        
+                    </div>        
                 </fieldset>
                 <?php
             } else {
@@ -260,12 +258,12 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;
         }
-        
+
         function get_site_profile_data() {
             $response = array('html_contain' => $this->display_site_profile());
             wp_send_json($response);
         }
-        
+
         function display_site_user_dialog($user_id=false) {
             $current_user = get_userdata($user_id);
             $is_site_admin = get_user_meta($user_id, 'is_site_admin', true);
@@ -334,7 +332,7 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;            
         }
-        
+
         function get_site_user_dialog_data() {
             $response = array();
             if (isset($_POST['_user_id'])) {
@@ -343,7 +341,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function set_site_user_dialog_data() {
             $response = array();            
             if (isset($_POST['_user_id'])) {
@@ -355,7 +353,7 @@ if (!class_exists('display_profiles')) {
                 );        
                 // Update user data
                 $result = wp_update_user($current_user);
-        
+
                 if (is_wp_error($result)) {
                     $response['error'] = $result->get_error_message();
                 } else {
@@ -367,17 +365,16 @@ if (!class_exists('display_profiles')) {
             }            
             wp_send_json($response);
         }
-        
+
         function del_site_user_dialog_data() {
             $response = array();
             if (isset($_POST['_user_id'])) {
                 $user_id = absint($_POST['_user_id']);
-        
                 // Check if the user ID is valid
                 if ($user_id > 0) {
                     // Attempt to delete the user
                     $result = wp_delete_user($user_id, true);
-        
+
                     if (is_wp_error($result)) {
                         // If an error occurs while deleting the user, set the error message in the response
                         $response['error'] = $result->get_error_message();
@@ -395,7 +392,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function display_new_user_dialog($site_id=false) {
             ?>
             <div id="new-user-dialog" title="New user dialog" style="display:none;">
@@ -423,12 +420,12 @@ if (!class_exists('display_profiles')) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $user_id = sanitize_text_field($_POST['_user_id']);
                 $is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
-                
+
                 if (!isset($user_id)) $user_id = get_current_user_id();
                 $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
                 if (!is_array($user_doc_ids)) $user_doc_ids = array();
                 $doc_exists = in_array($doc_id, $user_doc_ids);
-            
+
                 // Check the condition and update 'user_doc_ids' accordingly
                 if ($is_user_doc == 1 && !$doc_exists) {
                     // Add $doc_id to 'user_doc_ids'
@@ -436,8 +433,7 @@ if (!class_exists('display_profiles')) {
                 } elseif ($is_user_doc != 1 && $doc_exists) {
                     // Remove $doc_id from 'user_doc_ids'
                     $user_doc_ids = array_diff($user_doc_ids, array($doc_id));
-                }
-        
+                }        
                 // Update 'user_doc_ids' meta value
                 update_user_meta( $user_id, 'user_doc_ids', $user_doc_ids);
                 $response = array('success' => true);
@@ -453,7 +449,7 @@ if (!class_exists('display_profiles')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             $current_user = get_userdata($current_user_id);
-        
+
             // Check if the user is administrator
             if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
                 ?>
@@ -490,7 +486,7 @@ if (!class_exists('display_profiles')) {
                         $query = $this->retrieve_site_job_list_data($current_page);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
-        
+
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $job_number = get_post_meta(get_the_ID(), 'job_number', true);
@@ -532,17 +528,17 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;
         }
-        
+
         function retrieve_site_job_list_data($current_page = 1) {
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
-        
+
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (empty($user_doc_ids)) $user_doc_ids=array();
-        
+
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => $posts_per_page,
@@ -574,7 +570,7 @@ if (!class_exists('display_profiles')) {
                     'compare' => '=',
                 );
             }
-            
+
             $query = new WP_Query($args);
 
             // Check if $query is empty and search query is not empty
@@ -585,25 +581,22 @@ if (!class_exists('display_profiles')) {
                         unset($args['meta_query'][$key]);
                         break; // Stop looping once 'job_number' is found and removed
                     }
-                }
-            
+                }            
                 // Set the search query parameter
-                $args['s'] = $search_query;
-            
+                $args['s'] = $search_query;            
                 // Reset pagination to page 1
                 $args['paged'] = 1;
-
                 $query = new WP_Query($args);
             }
-            
+
             return $query;
         }
-        
+
         function get_site_job_list_data() {
             $response = array('html_contain' => $this->display_site_job_list());
             wp_send_json($response);
         }
-        
+
         function display_site_job_dialog($doc_id=false) {
             $documents_class = new display_documents();
             $job_number = get_post_meta($doc_id, 'job_number', true);
@@ -631,7 +624,7 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;            
         }
-        
+
         function get_site_job_dialog_data() {
             $response = array();
             if( isset($_POST['_doc_id']) ) {
@@ -640,7 +633,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function set_site_job_dialog_data() {
             $response = array();
             if( isset($_POST['_doc_id']) ) {
@@ -682,7 +675,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function del_site_job_dialog_data() {
             $response = array();
             $doc_id = sanitize_text_field($_POST['_doc_id']);
@@ -753,15 +746,13 @@ if (!class_exists('display_profiles')) {
                         'value' => $doc_id,
                     ),
                 ),
-            );
-        
+            );        
             // Perform the initial query
             $query = new WP_Query($args);
-        
+
             if ($nest) {
                 // Retrieve the IDs of the posts from the initial query
-                $initial_ids = wp_list_pluck($query->posts, 'ID');
-            
+                $initial_ids = wp_list_pluck($query->posts, 'ID');            
                 // Retrieve the meta values of "next_job" for the posts from the initial query
                 $next_jobs = array();
                 foreach ($initial_ids as $post_id) {
@@ -769,8 +760,7 @@ if (!class_exists('display_profiles')) {
                     if (!empty($next_job)) {
                         $next_jobs[] = $next_job;
                     }
-                }
-            
+                }            
                 // Additional query arguments to find posts with doc_id equal to next_job of initial results
                 $additional_args = array(
                     'post_type'      => 'action',
@@ -782,89 +772,18 @@ if (!class_exists('display_profiles')) {
                             'compare' => 'IN',
                         ),
                     ),
-                );
-            
+                );            
                 // Perform the additional query
-                $additional_query = new WP_Query($additional_args);
-            
+                $additional_query = new WP_Query($additional_args);            
                 // Combine the results
-                $combined_posts = array_merge($query->posts, $additional_query->posts);
-            
+                $combined_posts = array_merge($query->posts, $additional_query->posts);            
                 // Create a new WP_Query object with the combined results
                 $query = new WP_Query(array('post__in' => wp_list_pluck($combined_posts, 'ID'), 'post_type' => 'action', 'posts_per_page' => -1));
             }
-/*            
-            if ($nest) {
-                // Retrieve the IDs of the posts from the initial query
-                $initial_ids = wp_list_pluck($query->posts, 'ID');
-        
-                // Additional query arguments to find posts with doc_id equal to next_job of initial results
-                $additional_args = array(
-                    'post_type'      => 'action',
-                    'posts_per_page' => -1,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => 'doc_id',
-                            'value'   => $initial_ids,
-                            'compare' => 'IN',
-                        ),
-                    ),
-                );
-        
-                // Perform the additional query
-                $additional_query = new WP_Query($additional_args);
-        
-                // Combine the results
-                $combined_posts = array_merge($query->posts, $additional_query->posts);
-        
-                // Create a new WP_Query object with the combined results
-                $query = new WP_Query(array('post__in' => wp_list_pluck($combined_posts, 'ID'), 'post_type' => 'action', 'posts_per_page' => -1));
-            }
-*/        
+
             return $query;
         }
-/*        
-        function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
-            $meta_query = array(
-                'relation' => 'OR', // Default to OR for flexible addition of conditions
-                array(
-                    'key'   => 'doc_id',
-                    'value' => $doc_id,
-                ),
-            );
-        
-            if ($nest) {
-                $meta_query[] = array(
-                    'key'   => 'next_job',
-                    'value' => $doc_id,
-                );
-            }
-        
-            $args = array(
-                'post_type'      => 'action',
-                'posts_per_page' => -1,
-                'meta_query'     => $meta_query,
-            );
-        
-            $query = new WP_Query($args);
-            return $query;
-        }
-/*        
-        function retrieve_doc_action_list_data($doc_id=false, $nest=false) {
-            $args = array(
-                'post_type'      => 'action',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'doc_id',
-                        'value' => $doc_id,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-*/
+
         function get_doc_action_list_data() {
             $response = array();
             if (isset($_POST['_doc_id'])) {
@@ -873,7 +792,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function display_doc_action_dialog($action_id=false){
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
@@ -898,7 +817,7 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;            
         }
-        
+
         function get_doc_action_dialog_data() {
             $response = array();
             if (isset($_POST['_action_id'])) {
@@ -937,13 +856,13 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function del_doc_action_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_action_id'], true);
             wp_send_json($response);
         }
-        
+
         function select_site_job_option_data($selected_option=0) {
             $options = '<option value="">Select job</option>';
             $current_user_id = get_current_user_id();
@@ -981,7 +900,7 @@ if (!class_exists('display_profiles')) {
             }
             return $options;
         }
-                
+
         // doc-category
         function display_doc_category_list() {
             ob_start();
@@ -990,7 +909,7 @@ if (!class_exists('display_profiles')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             $current_user = get_userdata($current_user_id);
-        
+
             if ($is_site_admin==1 || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
@@ -1009,7 +928,7 @@ if (!class_exists('display_profiles')) {
                         <div style="text-align: right">
                         </div>
                     </div>
-        
+
                     <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
@@ -1034,12 +953,9 @@ if (!class_exists('display_profiles')) {
                         </tbody>
                     </table>
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    </fieldset>
-        
+                    </fieldset>        
                 </fieldset>
                 <?php $this->display_doc_category_dialog();?>
-        
-        
                 <?php
             } else {
                 ?>
@@ -1049,7 +965,7 @@ if (!class_exists('display_profiles')) {
             $html = ob_get_clean();
             return $html;
         }
-        
+
         function retrieve_doc_category_data() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1066,12 +982,12 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             return $query;
         }
-        
+
         function get_doc_category_list_data() {
             $response = array('html_contain' => $this->display_doc_category_list());
             wp_send_json($response);
         }
-        
+
         function display_doc_category_dialog() {
             ?>
             <div id="doc-category-dialog" title="Category dialog" style="display:none;">
@@ -1085,7 +1001,7 @@ if (!class_exists('display_profiles')) {
             </div>
             <?php
         }
-        
+
         function get_doc_category_dialog_data() {
             $response = array();
             if( isset($_POST['_category_id']) ) {
@@ -1095,7 +1011,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function set_doc_category_dialog_data() {
             $response = array();
             if( isset($_POST['_category_id']) ) {
@@ -1121,13 +1037,13 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+
         function del_doc_category_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_category_id'], true);
             wp_send_json($response);
         }
-        
+
         function select_doc_category_option_data($selected_option=0) {
             $query = $this->retrieve_doc_category_data();
             $options = '<option value="">Select category</option>';
