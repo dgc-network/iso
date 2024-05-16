@@ -13,7 +13,6 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            add_filter( 'cron_schedules', array( $this, 'your_custom_cron_schedules' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -49,14 +48,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
-            add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
-            add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );                                                                    
-            add_action( 'wp_ajax_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );                                                                    
-            add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
         }
 
         // Register document post type
@@ -306,7 +297,6 @@ if (!class_exists('display_documents')) {
                 'value'   => $select_category,
                 'compare' => '=',
             );
-            //if ($select_category) $current_page = 1;
 
             $search_query = sanitize_text_field($_GET['_search']);
             $number_filter = array(
@@ -397,6 +387,7 @@ if (!class_exists('display_documents')) {
         
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
+            $todo_class = new to_do_list();
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -455,7 +446,7 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
-            <?php echo $this->display_doc_action_list($doc_id);?>
+            <?php echo $profiles_class->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
@@ -468,7 +459,7 @@ if (!class_exists('display_documents')) {
             </div>
             <div id="doc-report-div1" style="display:none;">            
                 <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $this->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
                 <div id="frquence-start-time-div" style="display:none;">
                     <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
                     <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
@@ -524,7 +515,8 @@ if (!class_exists('display_documents')) {
                     'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
                     'doc_id' => $doc_id,
                 );            
-                if ($doc_report_frequence_setting) $hook_name=$this->schedule_post_event_callback($params);
+                $todo_class = new to_do_list();
+                if ($doc_report_frequence_setting) $hook_name=$todo_class->schedule_post_event_callback($params);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -890,7 +882,7 @@ if (!class_exists('display_documents')) {
                 <div>
                 <?php
                 $profiles_class = new display_profiles();
-                $query = $this->retrieve_doc_action_list_data($doc_id);
+                $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
@@ -1047,9 +1039,9 @@ if (!class_exists('display_documents')) {
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $order_field = get_post_meta(get_the_ID(), 'order_field', true);
-                                if ($order_field) $order_field='*';
+                                if ($order_field) $order_field='checked';
                                 echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html($order_field).'</td>';
+                                echo '<td style="text-align:center;"><input type="radio" '.$order_field.' ></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
@@ -1174,7 +1166,7 @@ if (!class_exists('display_documents')) {
         function get_doc_field_dialog_data() {
             $response = array();
             if( isset($_POST['_field_id']) ) {
-                $field_id = (int)sanitize_text_field($_POST['_field_id']);
+                $field_id = sanitize_text_field($_POST['_field_id']);
                 $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
                 $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
                 $response["field_type"] = get_post_meta($field_id, 'field_type', true);
@@ -1353,299 +1345,6 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        // doc-action
-        function display_doc_action_list($doc_id=false) {
-            ob_start();
-            ?>
-            <div id="doc-action-list">
-            <fieldset>
-            <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                $query = $this->retrieve_doc_action_list_data($doc_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $next_job_title = get_the_title($next_job);
-                        if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                        if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
-                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                        ?>
-                        <tr id="edit-doc-action-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
-                            <td><?php echo esc_html($action_content);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
-                        </tr>
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-            <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            </fieldset>
-            </div>
-            <?php echo $this->display_doc_action_dialog();?>
-            <?php
-            $html = ob_get_clean();
-            return $html;            
-        }
-            
-        function retrieve_doc_action_list_data($doc_id=false) {
-            $args = array(
-                'post_type'      => 'action',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'doc_id',
-                        'value' => $doc_id,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-        
-        function get_doc_action_list_data() {
-            $response = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $response['html_contain'] = $this->display_doc_action_list($doc_id);
-            }
-            wp_send_json($response);
-        }
-        
-        function display_doc_action_dialog($action_id=false){
-            $action_title = get_the_title($action_id);
-            $action_content = get_post_field('post_content', $action_id);
-            $next_job = get_post_meta($action_id, 'next_job', true);
-            $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-            ob_start();
-            ?>
-            <div id="doc-action-dialog" title="Action dialog">
-            <fieldset>
-                <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
-                <label for="action-title">Title:</label>
-                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="action-content">Content:</label>
-                <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="next-job">Next job:</label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
-                <label for="next-leadtime">Next leadtime:</label>
-                <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            </div>
-            <?php
-            $html = ob_get_clean();
-            return $html;            
-        }
-        
-        function get_doc_action_dialog_data() {
-            $response = array();
-            if (isset($_POST['_action_id'])) {
-                $action_id = sanitize_text_field($_POST['_action_id']);
-                $response['html_contain'] = $this->display_doc_action_dialog($action_id);
-            }
-            wp_send_json($response);
-        }
-
-        function set_doc_action_dialog_data() {
-            $response = array();
-            if( isset($_POST['_action_id']) ) {
-                $data = array(
-                    'ID'         => sanitize_text_field($_POST['_action_id']),
-                    'post_title' => sanitize_text_field($_POST['_action_title']),
-                    'post_content' => sanitize_text_field($_POST['_action_content']),
-                    'meta_input' => array(
-                        'next_job'   => sanitize_text_field($_POST['_next_job']),
-                        'next_leadtime' => sanitize_text_field($_POST['_next_leadtime']),
-                    )
-                );
-                wp_update_post( $data );
-            } else {
-                $current_user_id = get_current_user_id();
-                $new_post = array(
-                    'post_title'    => 'New action',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'action',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
-                update_post_meta( $post_id, 'next_job', -1);
-                update_post_meta( $post_id, 'next_leadtime', 86400);
-            }
-            wp_send_json($response);
-        }
-        
-        function del_doc_action_dialog_data() {
-            $response = array();
-            wp_delete_post($_POST['_action_id'], true);
-            wp_send_json($response);
-        }
-        
-        function select_site_job_option_data($selected_option=0) {
-            $options = '<option value="">Select job</option>';
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
-                ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'job_number',
-                'order'          => 'ASC',
-            );
-
-            $query = new WP_Query($args);
-
-            while ($query->have_posts()) : $query->the_post();
-                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                $job_title = get_the_title().'('.$job_number.')';
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            if ($selected_option==-1){
-                $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
-            } else {
-                $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
-            }
-            if ($selected_option==-2){
-                $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
-            } else {
-                $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
-            }
-            return $options;
-        }
-        
-        // doc-report frequence setting
-        function select_doc_report_frequence_setting_option($selected_option = false) {
-            $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
-            $selected = ($selected_option === "yearly") ? 'selected' : '';
-            $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "half-yearly") ? 'selected' : '';
-            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "bimonthly") ? 'selected' : '';
-            $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "weekly") ? 'selected' : '';
-            $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "weekly") ? 'selected' : '';
-            $options .= '<option value="biweekly" '.$selected.'>' . __( '每二週', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "biweekly") ? 'selected' : '';
-            $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "daily") ? 'selected' : '';
-            $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
-            return $options;
-        }
-        
-        function schedule_post_event_callback($args) {
-            $interval = $args['interval'];
-            $start_time = $args['start_time'];
-            $prev_start_time = isset($args['prev_start_time']) ? $args['prev_start_time'] : null;
-        
-            // Clear the previous scheduled event if it exists
-            if ($prev_start_time) {
-                $prev_hook_name = 'my_custom_post_event_' . $prev_start_time;
-                //wp_clear_scheduled_hook($prev_hook_name);
-                $todo_class = new to_do_list();
-                $todo_class->remove_my_custom_scheduled_events($prev_hook_name);
-            }
-        
-            $hook_name = 'my_custom_post_event_' . $start_time;
-        
-            // Schedule the event based on the selected interval
-            switch ($interval) {
-                case 'twice_daily':
-                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-                    break;
-                case 'daily':
-                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-                    break;
-                case 'weekly':
-                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-                    break;
-                case 'biweekly':
-                    // Calculate interval for every 2 weeks (14 days)
-                    wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
-                    break;
-                case 'monthly':
-                    // Use a custom interval for monthly scheduling
-                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-                    break;
-                case 'bimonthly':
-                    // Calculate timestamp for next occurrence (every 2 months)
-                    $next_occurrence = strtotime('+2 months', $start_time);
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
-                    break;
-                case 'half-yearly':
-                    // Calculate timestamp for next occurrence (every 6 months)
-                    $next_occurrence = strtotime('+6 months', $start_time);
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
-                    break;
-                case 'yearly':
-                    // Use a custom interval for yearly scheduling
-                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-                    break;
-                default:
-                    // Handle invalid interval
-                    return new WP_Error('invalid_interval', 'The specified interval is invalid.');
-            }
-        
-            // Store the hook name in options (outside switch statement)
-            update_option('my_custom_post_event_hook_name', $hook_name);
-        
-            // Return the hook name for later use
-            return $hook_name;
-        }
-
-        function your_custom_cron_schedules($schedules) {
-            $schedules['biweekly'] = array(
-                'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
-                'display'  => __('Every Two Weeks'),
-            );
-            $schedules['monthly'] = array(
-                'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
-                'display'  => __('Monthly'),
-            );
-            $schedules['yearly'] = array(
-                'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
-                'display'  => __('Yearly'),
-            );
-            return $schedules;
-        }
-
-        // Method for the callback function
-        public function my_custom_post_event_callback($params) {
-            // Add your code to programmatically add a post here
-            $todo_class = new to_do_list();
-            $todo_class->set_next_todo_and_actions($params);
-        }
-        
-        // Method to schedule the event and add the action
-        public function schedule_event_and_action() {
-            // Retrieve the hook name from options
-            $hook_name = get_option('my_custom_post_event_hook_name');
-            // Add the action with the dynamic hook name
-            add_action($hook_name, array($this, 'my_custom_post_event_callback'));
-        }
-    
         // document misc
         function count_doc_category($doc_category){
             $current_user_id = get_current_user_id();
@@ -1935,257 +1634,8 @@ if (!class_exists('display_documents')) {
                 
         // Data migration
         function data_migration() {
-            // 2024-5-14 To update the document posts based on the job posts and then 
-            // redirect back to the same page without the query parameters.
-            if (isset($_GET['_job_number_migration'])) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-            
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        $doc_id = get_the_ID();
-                        $start_job = get_post_meta($doc_id, 'start_job', true);
-                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            
-                        $job_args = array(
-                            'post_type'      => 'job',
-                            'posts_per_page' => 1,
-                            'post__in'       => array($start_job), // Specify the job ID to retrieve
-                        );
-                        $job_query = new WP_Query($job_args);
-            
-                        if ($job_query->have_posts()) {
-                            while ($job_query->have_posts()) {
-                                $job_query->the_post();
-                                $job_id = get_the_ID();
-                                $job_title = get_the_title();
-                                $job_content = get_the_content();
-                                $job_number = get_post_meta($job_id, 'job_number', true);
-                                $department = get_post_meta($job_id, 'department', true);
-                            }
-                            // Restore global post data
-                            wp_reset_postdata();
-            
-                            // Update document post with job title and content
-                            $doc_post_args = array(
-                                'ID'           => $doc_id,
-                                'post_title'   => $job_title,
-                                'post_content' => $job_content,
-                            );
-                            wp_update_post($doc_post_args);
-                            update_post_meta($doc_id, 'job_number', $job_number);
-                            update_post_meta($doc_id, 'department', $department);
-
-                        } else {
-                            update_post_meta($doc_id, 'job_number', $doc_number);
-
-                        }
-                    }
-                }
-                // Get the current URL without any query parameters
-                $current_url = remove_query_arg( array_keys( $_GET ) );
-                // Redirect to the URL without any query parameters
-                wp_redirect( $current_url );
-                exit();                
-            }
-
-            // 2024-5-13
-            // Migrate the title and content for document post from job post if job_number==doc_number and update the meta "doc_id"=$job_id if meta "job_id"==$job_id
-            // update the title="登錄" for each document post and add new action with the title="OK", meta "doc_id"=$doc_id, "next_job"=-1, "next_leadtime"=86400 if job_number!=doc_number
-            // 1. It queries documents and iterates over each one.
-            // 2. For each document, it queries for a job post with a matching job number.
-            // 3. If a matching job post is found, it updates the document's title and content with the corresponding job's title and content.
-            // 4. It then checks if there are any existing action posts related to the job. If there are, it updates their doc_id meta to match the job's ID.
-            // 5.If no matching job post is found, it updates the document's title to "登錄" and creates a new action post with the title "OK" and specific meta values.
-            if (isset($_GET['_document_job_migration'])) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-            
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        $doc_id = get_the_ID();
-                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            
-                        $job_args = array(
-                            'post_type'      => 'job',
-                            'posts_per_page' => 1,
-                            'meta_query'     => array(
-                                array(
-                                    'key'     => 'job_number',
-                                    'value'   => $doc_number,
-                                    'compare' => '=',
-                                ),
-                            ),
-                        );
-                        $job_query = new WP_Query($job_args);
-            
-                        if ($job_query->have_posts()) {
-                            while ($job_query->have_posts()) {
-                                $job_query->the_post();
-                                $job_id = get_the_ID();
-                                $job_title = get_the_title();
-                                $job_content = get_the_content();
-                                $job_number = get_post_meta($job_id, 'job_number', true);
-                                $department = get_post_meta($job_id, 'department', true);
-                            }
-                            // Restore global post data
-                            wp_reset_postdata();
-            
-                            // Update document post with job title and content
-                            $doc_post_args = array(
-                                'ID'           => $doc_id,
-                                'post_title'   => $job_title,
-                                'post_content' => $job_content,
-                            );
-                            wp_update_post($doc_post_args);
-                            update_post_meta($doc_id, 'job_number', $job_number);
-                            update_post_meta($doc_id, 'department', $department);
-
-                            $action_args = array(
-                                'post_type'      => 'action',
-                                'posts_per_page' => -1,
-                                'meta_query'     => array(
-                                    array(
-                                        'key'     => 'job_id',
-                                        'value'   => $job_id,
-                                        'compare' => '=',
-                                    ),
-                                ),
-                            );                        
-                            $action_query = new WP_Query($action_args);
-                            
-                            if ($action_query->have_posts()) {
-                                while ($action_query->have_posts()) {
-                                    $action_query->the_post();
-                                    update_post_meta(get_the_ID(), 'doc_id', $doc_id);
-                                }                            
-                                wp_reset_postdata();                            
-                            }    
-
-                        } else {
-                            $doc_post_args = array(
-                                'ID'         => $doc_id,
-                                'post_title' => '登錄',
-                            );
-                            wp_update_post($doc_post_args);
-            
-                            // Set the meta values
-                            $meta_values = array(
-                                'doc_id'        => $doc_id,
-                                'next_job'      => -1,
-                                'next_leadtime' => 86400,
-                            );
-            
-                            // Create the action post
-                            $action_post = array(
-                                'post_title'  => 'OK',
-                                'post_content'  => 'Your post content goes here.',
-                                'post_type'   => 'action', // Adjust the post type as needed
-                                'post_status' => 'publish',
-                                'meta_input'  => $meta_values,
-                            );
-                            // Insert the post into the database
-                            $action_post_id = wp_insert_post($action_post);
-                        }
-                    }
-                    // Reset post data
-                    wp_reset_postdata();
-                }
-
-                // Get the current URL without any query parameters
-                $current_url = remove_query_arg( array_keys( $_GET ) );
-                // Redirect to the URL without any query parameters
-                wp_redirect( $current_url );
-                exit();
-
-            }
-            
-            // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
-            if( isset($_GET['_site_id_migration']) ) {
-                // Query documents with the current meta key 'site_id' set to 8699
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => '8699',
-                            'compare' => '=',
-                        ),
-                    ),
-                );
-                $query = new WP_Query($args);
-                
-                // Loop through each document post and update its meta value
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        // Update the meta value from 8699 to 8698
-                        update_post_meta(get_the_ID(), 'site_id', '8698', '8699');
-                    }
-                    // Reset post data
-                    wp_reset_postdata();
-                }
-            }
-        
-            // Migrate meta key doc_url to doc_frame in document (2024-3-16)
-            if( isset($_GET['_doc_frame_migration']) ) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
-                        update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
-                        endwhile;
-                    wp_reset_postdata();
-                endif;    
-            }
-        
-            // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
-            if( isset($_GET['_field_type_migration']) ) {
-                $args = array(
-                    'post_type'      => 'doc-field',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
-                        update_post_meta(get_the_ID(), 'field_type', $field_type);
-                        endwhile;
-                    wp_reset_postdata();
-                endif;    
-            }
-        
-            // Migrate the_title to meta doc_title in document (2024-1-15)
-            if( isset($_GET['_doc_title_migration']) ) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        update_post_meta( get_the_ID(), 'doc_title', get_the_title());
-                    endwhile;
-                    wp_reset_postdata();
-                endif;    
-            }        
         }
     }
     $documents_class = new display_documents();
-    // Call the method to schedule the event and add the action
-    $documents_class->schedule_event_and_action();
 }
 

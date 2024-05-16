@@ -28,14 +28,14 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
             add_action( 'wp_ajax_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_get_job_action_list_data', array( $this, 'get_job_action_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_job_action_list_data', array( $this, 'get_job_action_list_data' ) );
-            add_action( 'wp_ajax_get_job_action_dialog_data', array( $this, 'get_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_job_action_dialog_data', array( $this, 'get_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_set_job_action_dialog_data', array( $this, 'set_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_job_action_dialog_data', array( $this, 'set_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_del_job_action_dialog_data', array( $this, 'del_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_job_action_dialog_data', array( $this, 'del_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
+            add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );                                                                    
+            add_action( 'wp_ajax_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );                                                                    
+            add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
             add_action( 'wp_ajax_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -84,12 +84,10 @@ if (!class_exists('display_profiles')) {
         
         function display_my_profile() {
             $current_user_id = get_current_user_id();
+            $current_user = get_userdata( $current_user_id );
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            $current_user = get_userdata( $current_user_id );
-            //$is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            //$site_admin_checked = ($is_site_admin==1) ? 'checked' : '';
             ob_start();
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -414,9 +412,7 @@ if (!class_exists('display_profiles')) {
             // Get the user's doc IDs as an array
             $user_docs = get_user_meta($user_id, 'user_doc_ids', true);
             // If $user_docs is not an array, convert it to an array
-            if (!is_array($user_docs)) {
-                $user_docs = array();
-            }
+            if (!is_array($user_docs)) $user_docs = array();
             // Check if the current user has the specified doc ID in their metadata
             return in_array($doc_id, $user_docs);
         }
@@ -626,7 +622,7 @@ if (!class_exists('display_profiles')) {
                 <label for="job-content">Content:</label>
                 <textarea id="job-content" rows="3" style="width:100%;"><?php echo esc_attr($job_content);?></textarea>
                 <div class="separator"></div>
-                <?php echo $documents_class->display_doc_action_list($doc_id);?>
+                <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -696,6 +692,188 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        // doc-action
+        function display_doc_action_list($doc_id=false) {
+            ob_start();
+            ?>
+            <div id="doc-action-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_doc_action_list_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                        if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        ?>
+                        <tr id="edit-doc-action-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                            <td><?php echo esc_html($action_content);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            </div>
+            <?php echo $this->display_doc_action_dialog();?>
+            <?php
+            $html = ob_get_clean();
+            return $html;            
+        }
+            
+        function retrieve_doc_action_list_data($doc_id=false) {
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+        
+        function get_doc_action_list_data() {
+            $response = array();
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $response['html_contain'] = $this->display_doc_action_list($doc_id);
+            }
+            wp_send_json($response);
+        }
+        
+        function display_doc_action_dialog($action_id=false){
+            $action_title = get_the_title($action_id);
+            $action_content = get_post_field('post_content', $action_id);
+            $next_job = get_post_meta($action_id, 'next_job', true);
+            $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+            ob_start();
+            ?>
+            <div id="doc-action-dialog" title="Action dialog">
+            <fieldset>
+                <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
+                <label for="action-title">Title:</label>
+                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="action-content">Content:</label>
+                <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="next-job">Next job:</label>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
+                <label for="next-leadtime">Next leadtime:</label>
+                <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+            </div>
+            <?php
+            $html = ob_get_clean();
+            return $html;            
+        }
+        
+        function get_doc_action_dialog_data() {
+            $response = array();
+            if (isset($_POST['_action_id'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $response['html_contain'] = $this->display_doc_action_dialog($action_id);
+            }
+            wp_send_json($response);
+        }
+
+        function set_doc_action_dialog_data() {
+            $response = array();
+            if( isset($_POST['_action_id']) ) {
+                $data = array(
+                    'ID'         => sanitize_text_field($_POST['_action_id']),
+                    'post_title' => sanitize_text_field($_POST['_action_title']),
+                    'post_content' => sanitize_text_field($_POST['_action_content']),
+                    'meta_input' => array(
+                        'next_job'   => sanitize_text_field($_POST['_next_job']),
+                        'next_leadtime' => sanitize_text_field($_POST['_next_leadtime']),
+                    )
+                );
+                wp_update_post( $data );
+            } else {
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_title'    => 'New action',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'action',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
+                update_post_meta( $post_id, 'next_job', -1);
+                update_post_meta( $post_id, 'next_leadtime', 86400);
+            }
+            wp_send_json($response);
+        }
+        
+        function del_doc_action_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_action_id'], true);
+            wp_send_json($response);
+        }
+        
+        function select_site_job_option_data($selected_option=0) {
+            $options = '<option value="">Select job</option>';
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'job_number',
+                'order'          => 'ASC',
+            );
+
+            $query = new WP_Query($args);
+
+            while ($query->have_posts()) : $query->the_post();
+                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                $job_title = get_the_title().'('.$job_number.')';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            if ($selected_option==-1){
+                $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+            } else {
+                $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+            }
+            if ($selected_option==-2){
+                $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
+            } else {
+                $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
+            }
+            return $options;
+        }
+                
         // doc-category
         function display_doc_category_list() {
             ob_start();

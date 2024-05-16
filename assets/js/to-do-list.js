@@ -17,7 +17,6 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
-        //get_todo_dialog_data(todo_id)
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -65,10 +64,6 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("todo-dialog-exit").on("click", function () {
-            window.location.replace(window.location.href);
-        });
-
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
 
@@ -102,8 +97,9 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    }
 
-    function get_todo_dialog_data(todo_id){
+        $("todo-dialog-exit").on("click", function () {
+            window.location.replace(window.location.href);
+        });
     }
 })

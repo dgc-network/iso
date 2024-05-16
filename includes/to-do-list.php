@@ -11,6 +11,7 @@ if (!class_exists('to_do_list')) {
             add_action( 'init', array( $this, 'register_todo_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_action_post_type' ) );
+            add_filter( 'cron_schedules', array( $this, 'your_custom_cron_schedules' ) );
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -58,7 +59,6 @@ if (!class_exists('to_do_list')) {
                     $this->list_all_scheduled_events();
                     exit;
                 }
-                //if ($_GET['_select_todo']=='4') $this->remove_empty_hook_scheduled_events();
 
                 if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_to_do_list();
 
@@ -423,8 +423,8 @@ if (!class_exists('to_do_list')) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                     }
                     if ( $post_type === 'document' ) {
-                        $documents_class = new display_documents();
-                        $query = $documents_class->retrieve_doc_action_list_data($todo_id);
+                        $profiles_class = new display_profiles();
+                        $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
                     }                    
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
@@ -531,12 +531,8 @@ if (!class_exists('to_do_list')) {
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
             // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
-            //    (1) for document/doc_report from _id
-            //    (2) for document/doc_report from _search
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
-            //    (1) for new/save doc_report.
             // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['doc_id']
-            //    (1) for frquence doc_report
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $current_user_id = get_current_user_id();
@@ -594,8 +590,8 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) {
                 $this->notice_the_responsible_persons($new_todo_id);
                 // Create the Action list for next_job
-                $documents_class = new display_documents();
-                $query = $documents_class->retrieve_doc_action_list_data($next_job);
+                $profiles_class = new display_profiles();
+                $query = $profiles_class->retrieve_doc_action_list_data($next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $new_post = array(
@@ -782,7 +778,6 @@ if (!class_exists('to_do_list')) {
                     $query = $this->retrieve_signature_record_data($doc, $report, $current_page);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
-                    $x = 0;
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -812,7 +807,6 @@ if (!class_exists('to_do_list')) {
                                     <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 </tr>
                                 <?php
-                                $x += 1;
                             }
                         endwhile;
                         wp_reset_postdata();
@@ -833,7 +827,6 @@ if (!class_exists('to_do_list')) {
             // Return an array containing both HTML content and $x
             return array(
                 'html' => $html,
-                //'x'    => $x,
                 'x'    => $total_posts,                
             );
         }
@@ -845,7 +838,6 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'todo',
                 'posts_per_page' => $posts_per_page,
                 'paged'          => $current_page,
-                //'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -880,6 +872,115 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
 
+        // doc-report frequence setting
+        function select_doc_report_frequence_setting_option($selected_option = false) {
+            $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
+            $selected = ($selected_option === "yearly") ? 'selected' : '';
+            $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "half-yearly") ? 'selected' : '';
+            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "bimonthly") ? 'selected' : '';
+            $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "weekly") ? 'selected' : '';
+            $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "weekly") ? 'selected' : '';
+            $options .= '<option value="biweekly" '.$selected.'>' . __( '每二週', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "biweekly") ? 'selected' : '';
+            $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "daily") ? 'selected' : '';
+            $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
+            return $options;
+        }
+        
+        function schedule_post_event_callback($args) {
+            $interval = $args['interval'];
+            $start_time = $args['start_time'];
+            $prev_start_time = isset($args['prev_start_time']) ? $args['prev_start_time'] : null;
+        
+            // Clear the previous scheduled event if it exists
+            if ($prev_start_time) {
+                $prev_hook_name = 'my_custom_post_event_' . $prev_start_time;
+                //wp_clear_scheduled_hook($prev_hook_name);
+                $this->remove_my_custom_scheduled_events($prev_hook_name);
+            }
+        
+            $hook_name = 'my_custom_post_event_' . $start_time;
+        
+            // Schedule the event based on the selected interval
+            switch ($interval) {
+                case 'twice_daily':
+                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                    break;
+                case 'daily':
+                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                    break;
+                case 'weekly':
+                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                    break;
+                case 'biweekly':
+                    // Calculate interval for every 2 weeks (14 days)
+                    wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                    break;
+                case 'monthly':
+                    // Use a custom interval for monthly scheduling
+                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                    break;
+                case 'bimonthly':
+                    // Calculate timestamp for next occurrence (every 2 months)
+                    $next_occurrence = strtotime('+2 months', $start_time);
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'half-yearly':
+                    // Calculate timestamp for next occurrence (every 6 months)
+                    $next_occurrence = strtotime('+6 months', $start_time);
+                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    break;
+                case 'yearly':
+                    // Use a custom interval for yearly scheduling
+                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                    break;
+                default:
+                    // Handle invalid interval
+                    return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+            }
+        
+            // Store the hook name in options (outside switch statement)
+            update_option('my_custom_post_event_hook_name', $hook_name);
+        
+            // Return the hook name for later use
+            return $hook_name;
+        }
+
+        function your_custom_cron_schedules($schedules) {
+            $schedules['biweekly'] = array(
+                'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
+                'display'  => __('Every Two Weeks'),
+            );
+            $schedules['monthly'] = array(
+                'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
+                'display'  => __('Monthly'),
+            );
+            $schedules['yearly'] = array(
+                'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
+                'display'  => __('Yearly'),
+            );
+            return $schedules;
+        }
+
+        // Method for the callback function
+        public function my_custom_post_event_callback($params) {
+            // Add your code to programmatically add a post here
+            $this->set_next_todo_and_actions($params);
+        }
+        
+        // Method to schedule the event and add the action
+        public function schedule_event_and_action() {
+            // Retrieve the hook name from options
+            $hook_name = get_option('my_custom_post_event_hook_name');
+            // Add the action with the dynamic hook name
+            add_action($hook_name, array($this, 'my_custom_post_event_callback'));
+        }
+            
         function remove_my_custom_scheduled_events($remove_name='my_') {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
@@ -894,7 +995,7 @@ if (!class_exists('to_do_list')) {
                 // Loop through the scheduled events
                 foreach ($cron_array as $timestamp => $cron) {
                     foreach ($cron as $hook_name => $events) {
-                        if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) { // Check if hook name starts with 'my_'
+                        if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) {
                             foreach ($events as $event) {
                                 // Unschedule the event
                                 wp_unschedule_event($timestamp, $hook_name, $event['args']);
@@ -945,8 +1046,259 @@ if (!class_exists('to_do_list')) {
 
         // Data migration
         function data_migration() {
+            // 2024-5-14 To update the document posts based on the job posts and then 
+            // redirect back to the same page without the query parameters.
+            if (isset($_GET['_job_number_migration'])) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+            
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $doc_id = get_the_ID();
+                        $start_job = get_post_meta($doc_id, 'start_job', true);
+                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            
+                        $job_args = array(
+                            'post_type'      => 'job',
+                            'posts_per_page' => 1,
+                            'post__in'       => array($start_job), // Specify the job ID to retrieve
+                        );
+                        $job_query = new WP_Query($job_args);
+            
+                        if ($job_query->have_posts()) {
+                            while ($job_query->have_posts()) {
+                                $job_query->the_post();
+                                $job_id = get_the_ID();
+                                $job_title = get_the_title();
+                                $job_content = get_the_content();
+                                $job_number = get_post_meta($job_id, 'job_number', true);
+                                $department = get_post_meta($job_id, 'department', true);
+                            }
+                            // Restore global post data
+                            wp_reset_postdata();
+            
+                            // Update document post with job title and content
+                            $doc_post_args = array(
+                                'ID'           => $doc_id,
+                                'post_title'   => $job_title,
+                                'post_content' => $job_content,
+                            );
+                            wp_update_post($doc_post_args);
+                            update_post_meta($doc_id, 'job_number', $job_number);
+                            update_post_meta($doc_id, 'department', $department);
+
+                        } else {
+                            update_post_meta($doc_id, 'job_number', $doc_number);
+
+                        }
+                    }
+                }
+                // Get the current URL without any query parameters
+                $current_url = remove_query_arg( array_keys( $_GET ) );
+                // Redirect to the URL without any query parameters
+                wp_redirect( $current_url );
+                exit();                
+            }
+
+            // 2024-5-13
+            // Migrate the title and content for document post from job post if job_number==doc_number and update the meta "doc_id"=$job_id if meta "job_id"==$job_id
+            // update the title="登錄" for each document post and add new action with the title="OK", meta "doc_id"=$doc_id, "next_job"=-1, "next_leadtime"=86400 if job_number!=doc_number
+            // 1. It queries documents and iterates over each one.
+            // 2. For each document, it queries for a job post with a matching job number.
+            // 3. If a matching job post is found, it updates the document's title and content with the corresponding job's title and content.
+            // 4. It then checks if there are any existing action posts related to the job. If there are, it updates their doc_id meta to match the job's ID.
+            // 5.If no matching job post is found, it updates the document's title to "登錄" and creates a new action post with the title "OK" and specific meta values.
+            if (isset($_GET['_document_job_migration'])) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+            
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $doc_id = get_the_ID();
+                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            
+                        $job_args = array(
+                            'post_type'      => 'job',
+                            'posts_per_page' => 1,
+                            'meta_query'     => array(
+                                array(
+                                    'key'     => 'job_number',
+                                    'value'   => $doc_number,
+                                    'compare' => '=',
+                                ),
+                            ),
+                        );
+                        $job_query = new WP_Query($job_args);
+            
+                        if ($job_query->have_posts()) {
+                            while ($job_query->have_posts()) {
+                                $job_query->the_post();
+                                $job_id = get_the_ID();
+                                $job_title = get_the_title();
+                                $job_content = get_the_content();
+                                $job_number = get_post_meta($job_id, 'job_number', true);
+                                $department = get_post_meta($job_id, 'department', true);
+                            }
+                            // Restore global post data
+                            wp_reset_postdata();
+            
+                            // Update document post with job title and content
+                            $doc_post_args = array(
+                                'ID'           => $doc_id,
+                                'post_title'   => $job_title,
+                                'post_content' => $job_content,
+                            );
+                            wp_update_post($doc_post_args);
+                            update_post_meta($doc_id, 'job_number', $job_number);
+                            update_post_meta($doc_id, 'department', $department);
+
+                            $action_args = array(
+                                'post_type'      => 'action',
+                                'posts_per_page' => -1,
+                                'meta_query'     => array(
+                                    array(
+                                        'key'     => 'job_id',
+                                        'value'   => $job_id,
+                                        'compare' => '=',
+                                    ),
+                                ),
+                            );                        
+                            $action_query = new WP_Query($action_args);
+                            
+                            if ($action_query->have_posts()) {
+                                while ($action_query->have_posts()) {
+                                    $action_query->the_post();
+                                    update_post_meta(get_the_ID(), 'doc_id', $doc_id);
+                                }                            
+                                wp_reset_postdata();                            
+                            }    
+
+                        } else {
+                            $doc_post_args = array(
+                                'ID'         => $doc_id,
+                                'post_title' => '登錄',
+                            );
+                            wp_update_post($doc_post_args);
+            
+                            // Set the meta values
+                            $meta_values = array(
+                                'doc_id'        => $doc_id,
+                                'next_job'      => -1,
+                                'next_leadtime' => 86400,
+                            );
+            
+                            // Create the action post
+                            $action_post = array(
+                                'post_title'  => 'OK',
+                                'post_content'  => 'Your post content goes here.',
+                                'post_type'   => 'action', // Adjust the post type as needed
+                                'post_status' => 'publish',
+                                'meta_input'  => $meta_values,
+                            );
+                            // Insert the post into the database
+                            $action_post_id = wp_insert_post($action_post);
+                        }
+                    }
+                    // Reset post data
+                    wp_reset_postdata();
+                }
+
+                // Get the current URL without any query parameters
+                $current_url = remove_query_arg( array_keys( $_GET ) );
+                // Redirect to the URL without any query parameters
+                wp_redirect( $current_url );
+                exit();
+
+            }
+            
+            // Migrate meta key site_id from 8699 to 8698 in document post (2024-4-18)
+            if( isset($_GET['_site_id_migration']) ) {
+                // Query documents with the current meta key 'site_id' set to 8699
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => '8699',
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+                $query = new WP_Query($args);
+                
+                // Loop through each document post and update its meta value
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        // Update the meta value from 8699 to 8698
+                        update_post_meta(get_the_ID(), 'site_id', '8698', '8699');
+                    }
+                    // Reset post data
+                    wp_reset_postdata();
+                }
+            }
+        
+            // Migrate meta key doc_url to doc_frame in document (2024-3-16)
+            if( isset($_GET['_doc_frame_migration']) ) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $doc_frame = get_post_meta(get_the_ID(), 'doc_url', true);
+                        update_post_meta(get_the_ID(), 'doc_frame', $doc_frame);
+                        endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }
+        
+            // Migrate meta key editing_type to field_type in doc-field (2024-3-15)
+            if( isset($_GET['_field_type_migration']) ) {
+                $args = array(
+                    'post_type'      => 'doc-field',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_type = get_post_meta(get_the_ID(), 'editing_type', true);
+                        update_post_meta(get_the_ID(), 'field_type', $field_type);
+                        endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }
+        
+            // Migrate the_title to meta doc_title in document (2024-1-15)
+            if( isset($_GET['_doc_title_migration']) ) {
+                $args = array(
+                    'post_type'      => 'document',
+                    'posts_per_page' => -1,
+                );
+                $query = new WP_Query($args);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        update_post_meta( get_the_ID(), 'doc_title', get_the_title());
+                    endwhile;
+                    wp_reset_postdata();
+                endif;    
+            }        
+
         }
     }
     $todo_class = new to_do_list();
+    // Call the method to schedule the event and add the action
+    $todo_class->schedule_event_and_action();
+
 }
 
