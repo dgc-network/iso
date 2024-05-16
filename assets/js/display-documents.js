@@ -774,7 +774,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("doc-report-unpublished").on("click", function () {
+        $("#doc-report-unpublished").on("click", function () {
             const report_id = this.id.substring(21);
             if (window.confirm("Are you sure you want to unpublish this doc-report?")) {
                 $.ajax({

@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("todo-dialog-exit").on("click", function () {
+        $("#todo-dialog-exit").on("click", function () {
             window.location.replace(window.location.href);
         });
     }
