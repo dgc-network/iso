@@ -452,7 +452,15 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
+            <div class="mermaid">
+            graph TD;
+                A-->B;
+                A-->C;
+                B-->D;
+                C-->D;
+            </div>
             <div class="wp-block-wp-mermaid-block mermaid">
+
                 [mermaid]
                 sequenceDiagram
                     文件1->>文件2: 同意
