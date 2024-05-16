@@ -85,8 +85,7 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
-        window.location.replace('?_id='+doc_id);
-        //get_document_dialog_data(doc_id)
+        get_document_dialog_data(doc_id)
     });            
 
     $("#new-document").on("click", function() {
@@ -117,6 +116,7 @@ jQuery(document).ready(function($) {
                 _is_admin: $("#is-admin").val()
             },
             success: function (response) {
+/*                
                 if (response.html_contain === undefined || response.html_contain === null) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
@@ -131,7 +131,15 @@ jQuery(document).ready(function($) {
                         $(this).val(dateText);
                     }
                 });
-            
+*/
+                window.location.replace('?_id='+doc_id);
+                
+                
+                if (response.is_doc_report==1) window.location.replace('?_doc_report='+doc_id);
+                if (response.is_doc_frame==1) window.location.replace('?_doc_frame='+doc_id);
+
+
+
                 $('[id^="reset-document-"]').on("click", function () {
                     const doc_id = this.id.substring(15);
                     if (window.confirm("Are you sure you want to reset this document status?")) {
