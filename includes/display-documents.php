@@ -179,13 +179,29 @@ if (!class_exists('display_documents')) {
                 }
             
                 // Display ISO document statement if initial ID is existed
+                if (isset($_GET['_doc_report'])) {
+                    $doc_id = sanitize_text_field($_GET['_doc_report']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_doc_report_list($doc_id);
+                    echo '</div>';
+                }
+
+                // Display ISO document statement if initial ID is existed
+                if (isset($_GET['_doc_frame'])) {
+                    $doc_id = sanitize_text_field($_GET['_doc_frame']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_doc_frame_contain($doc_id);
+                    echo '</div>';
+                }
+
+                // Display ISO document statement if initial ID is existed
                 if (isset($_GET['_initial'])) {
                     $doc_id = sanitize_text_field($_GET['_initial']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_iso_document_statement($doc_id);
                     echo '</div>';
                 }
-            
+
                 // Display document list if no specific document IDs are existed
                 if (!isset($_GET['_id']) && !isset($_GET['_initial'])) {
                     echo $this->display_document_list();
@@ -495,7 +511,7 @@ if (!class_exists('display_documents')) {
                         $action_content = get_post_field('post_content', get_the_ID());
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                         $next_job_title = get_the_title($next_job);
-                        //if ($next_job>0) $this->display_mermaid_drawing($next_job);
+                        if ($next_job>0) $this->display_mermaid_drawing($next_job);
                         if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
                         if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
