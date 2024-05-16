@@ -1889,7 +1889,7 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $todo_title = get_the_title($doc_id);
         
-            // Create the new To-do for current job_id
+            // Create the new To-do
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',

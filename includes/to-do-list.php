@@ -113,7 +113,6 @@ if (!class_exists('to_do_list')) {
         }
         
         function todo_settings_content($post) {
-            $job_id = esc_attr(get_post_meta($post->ID, 'job_id', true));
             $doc_id = esc_attr(get_post_meta($post->ID, 'doc_id', true));
             $report_id = esc_attr(get_post_meta($post->ID, 'report_id', true));
             $todo_due = esc_attr(get_post_meta($post->ID, 'todo_due', true));
@@ -121,8 +120,6 @@ if (!class_exists('to_do_list')) {
             $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
             $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
             ?>
-            <label for="job_id"> job_id: </label>
-            <input type="text" id="job_id" name="job_id" value="<?php echo $job_id;?>" style="width:100%" >
             <label for="doc_id"> doc_id: </label>
             <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
             <label for="report_id"> report_id: </label>
@@ -337,7 +334,7 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
                 
-                // Add a new meta query to filter by job_id
+                // Add a new meta query
                 $args['meta_query'][] = array(
                     'key'     => 'doc_id',
                     'value'   => $user_doc_ids, // Value is the array of user doc IDs
@@ -499,7 +496,6 @@ if (!class_exists('to_do_list')) {
                         'post_type'     => 'todo',
                     );    
                     $todo_id = wp_insert_post($new_post);
-                    update_post_meta( $todo_id, 'job_id', $doc_id);
                     if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
                     if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
                 }
@@ -600,7 +596,6 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
-            //update_post_meta( $new_todo_id, 'job_id', $next_job );
             if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id );
             if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
@@ -644,7 +639,6 @@ if (!class_exists('to_do_list')) {
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
-            //$job_id = get_post_meta($todo_id, 'job_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -683,7 +677,7 @@ if (!class_exists('to_do_list')) {
         }
         
         // Notice the persons in site
-        function notice_the_persons_in_site($todo_id=0,$job_id=0) {
+        function notice_the_persons_in_site($todo_id=0,$next_job=0) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -694,8 +688,8 @@ if (!class_exists('to_do_list')) {
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
             $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );
-            if ($job_id==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
-            if ($job_id==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
+            if ($next_job==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
+            if ($next_job==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
             $link_uri = home_url().'/display-documents/?_id='.$doc_id;
             if ($report_id) $link_uri = home_url().'/display-documents/?_id='.$report_id;
         
@@ -810,7 +804,6 @@ if (!class_exists('to_do_list')) {
                     $x = 0;
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $job_id = get_post_meta(get_the_ID(), 'job_id', true);
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                             $report_id = get_post_meta(get_the_ID(), 'report_id', true);
                             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);

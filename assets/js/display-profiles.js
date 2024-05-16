@@ -265,10 +265,9 @@ jQuery(document).ready(function($) {
                     $("#site-user-dialog").dialog('open');
 
                     $('[id^="check-user-job-"]').on("click", function () {
-                        const job_id = this.id.substring(15);
                         const doc_id = this.id.substring(15);
                         // Toggle the checkbox state
-                        $("#myCheckbox-"+job_id).prop("checked", function(i, value) {
+                        $("#myCheckbox-"+doc_id).prop("checked", function(i, value) {
                             return !value;
                         });
                         
