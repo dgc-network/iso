@@ -163,7 +163,7 @@ if (!class_exists('display_documents')) {
                 // Display document details if doc_id is existed
                 if (isset($_GET['_id'])) {
                     $doc_id = sanitize_text_field($_GET['_id']);
-                    echo $this->display_doc_report_list($doc_id);
+                    echo $this->display_document_dialog($doc_id);
 /*
                     echo '<div class="ui-widget" id="result-container">';
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
