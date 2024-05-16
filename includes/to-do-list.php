@@ -284,6 +284,11 @@ if (!class_exists('to_do_list')) {
                                 'compare' => 'NOT EXISTS',
                             ),
                             array(
+                                'key'     => 'todo_status',
+                                'value'   => -2,
+                                'compare' => '=',
+                            ),
+                            array(
                                 'relation' => 'AND',
                                 array(
                                     'key'     => 'todo_status',
@@ -334,7 +339,7 @@ if (!class_exists('to_do_list')) {
                 
                 // Add a new meta query to filter by job_id
                 $args['meta_query'][] = array(
-                    'key'     => 'job_id',
+                    'key'     => 'doc_id',
                     'value'   => $user_doc_ids, // Value is the array of user doc IDs
                     'compare' => 'IN',
                 );        
@@ -900,41 +905,7 @@ if (!class_exists('to_do_list')) {
             $query = new WP_Query($args);
             return $query;
         }
-/*                
-        function remove_empty_hook_scheduled_events() {
-            if (current_user_can('administrator')) {
-                // Get all scheduled events
-                $cron_array = _get_cron_array();
-        
-                // Check if there are any scheduled events
-                if (empty($cron_array)) {
-                    echo 'No scheduled events found.';
-                    return;
-                }
-        
-                // Loop through the scheduled events
-                foreach ($cron_array as $timestamp => $cron) {
-                    foreach ($cron as $hook_name => $events) {
-                        if (empty($hook_name) || $hook_name=='1714610760') { // Check if hook name is empty
-                            foreach ($events as $event) {
-                                // Unschedule the event
-                                wp_unschedule_event($timestamp, $hook_name, $event['args']);
-                            }
-                        }
-                    }
-                }
-        
-                echo 'Removed all scheduled events with empty hook names.';
-            } else {
-                echo 'You do not have enough permission to perform this action.';
-            }
-        }
-/*        
-        // Add a menu item in the WordPress admin panel to remove the scheduled events
-        add_action('admin_menu', function() {
-            add_menu_page('Remove Empty Hook Events', 'Remove Empty Hook Events', 'administrator', 'remove-empty-hook-events', 'remove_empty_hook_scheduled_events');
-        });
-*/        
+
         function remove_my_custom_scheduled_events($remove_name='my_') {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
@@ -958,7 +929,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
         
-                echo 'Removed all scheduled events with hook names starting with "my_".';
+                echo 'Removed all scheduled events with hook names starting with '.$remove_name;
             } else {
                 echo 'You do not have enough permission to perform this action.';
             }

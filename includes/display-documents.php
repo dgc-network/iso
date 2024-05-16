@@ -1563,7 +1563,9 @@ if (!class_exists('display_documents')) {
             // Clear the previous scheduled event if it exists
             if ($prev_start_time) {
                 $prev_hook_name = 'my_custom_post_event_' . $prev_start_time;
-                wp_clear_scheduled_hook($prev_hook_name);
+                //wp_clear_scheduled_hook($prev_hook_name);
+                $todo_class = new to_do_list();
+                $todo_class->remove_my_custom_scheduled_events($prev_hook_name);
             }
         
             $hook_name = 'my_custom_post_event_' . $start_time;
@@ -1628,59 +1630,7 @@ if (!class_exists('display_documents')) {
             );
             return $schedules;
         }
-        
-/*        
-        function schedule_post_event_callback($args) {
-            $interval = $args['interval'];
-            $start_time = $args['start_time'];
-            $prev_start_time = $args['prev_start_time'];
-        
-            $hook_name = 'my_custom_post_event_'.$prev_start_time;
-            wp_clear_scheduled_hook($hook_name);
-            $hook_name = 'my_custom_post_event_'.$start_time;
-        
-            // Schedule the event based on the selected interval
-            switch ($interval) {
-                case 'twice_daily':
-                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-                    break;
-                case 'daily':
-                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-                    break;
-                case 'weekly':
-                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-                    break;
-                case 'biweekly':
-                    // Calculate interval for every 2 weeks (14 days)
-                    wp_schedule_event($start_time, 14 * DAY_IN_SECONDS, $hook_name, array($args));
-                    break;
-                case 'monthly':
-                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-                    break;
-                case 'bimonthly':
-                    // Calculate timestamp for next occurrence (every 2 months)
-                    $next_occurrence = strtotime('+2 months', strtotime($start_time));
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
-                    break;
-                case 'half-yearly':
-                    // Calculate timestamp for next occurrence (every 6 months)
-                    $next_occurrence = strtotime('+6 months', strtotime($start_time));
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
-                    break;
-                case 'yearly':
-                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-                    break;
-                default:
-                    // Handle invalid interval
-            }
-        
-            // Store the hook name in options (outside switch statement)
-            update_option('my_custom_post_event_hook_name', $hook_name);
-        
-            // Return the hook name for later use
-            return $hook_name;
-        }
-*/
+
         // Method for the callback function
         public function my_custom_post_event_callback($params) {
             // Add your code to programmatically add a post here
