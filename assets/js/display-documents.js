@@ -120,7 +120,7 @@ jQuery(document).ready(function($) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     //$('#result-container').html(response.html_contain);
-                    $('#result-container').text(response.html_contain);
+                    $('#result-container').replaceWith(response.html_contain);
                     $('#is-doc-report').val(response.is_doc_report);
                     $('#doc-report-frequence-setting').val(response.doc_report_frequence_setting);
                 }
