@@ -230,6 +230,17 @@ if (!class_exists('display_documents')) {
                 </div>
         
 <div class="mermaid">
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts <br/>prevail!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
 </div>
 
                 <table class="ui-widget" style="width:100%;">
@@ -457,20 +468,7 @@ if (!class_exists('display_documents')) {
             </div>
 
 
-            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained"><pre><code><div class="mermaid">
-
-sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
-
+<div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained"><pre><code><div class="mermaid">
 </div></code></pre>
 </div>
             <?php echo $profiles_class->display_doc_action_list($doc_id);?>
