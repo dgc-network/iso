@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
                     $('#is-doc-report').val(response.is_doc_report);
                     $('#doc-report-frequence-setting').val(response.doc_report_frequence_setting);
                     content = 'sequenceDiagram participant Alice participant Bob Alice->>John: Hello John, how are you? loop Healthcheck John->>John: Fight against hypochondria end Note right of John: Rational thoughts <br/>prevail! John-->>Alice: Great! John->>Bob: How about you? Bob-->>John: Jolly good!';
-                    $('.mermaid').html(content);
+                    $('.mermaid').append(content);
                 }
                 $("#doc-id").val(doc_id);
 
