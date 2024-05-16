@@ -459,14 +459,28 @@ if (!class_exists('display_documents')) {
             <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
                 <div class="mermaid">
                 sequenceDiagram
-                    <?php echo $job_title;?>->><?php echo $job_number;?>: <?php echo $doc_revision;?> 
+                <?php
+                    $query = $this->retrieve_doc_action_list_data($doc_id);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $action_title = get_the_title();
+                            $action_content = get_post_field('post_content', get_the_ID());
+                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                            $next_job_title = get_the_title($next_job);
+                            if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                            if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                            $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                            ?>
+                            <?php echo $job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;    
+                ?>
                     loop Healthcheck
                         John->>John: Fight against hypochondria
                     end
                     Note right of John: Rational thoughts <br/>prevail!
-                    John-->>Alice: Great!
-                    John->>Bob: How about you?
-                    Bob-->>John: Jolly good!
                 </div>
             </div>
             <?php echo $profiles_class->display_doc_action_list($doc_id);?>
