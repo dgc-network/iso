@@ -345,7 +345,7 @@ if (!class_exists('display_documents')) {
         }
         
         function get_document_dialog_data() {
-            $result = array();
+            $response = array();
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -355,23 +355,30 @@ if (!class_exists('display_documents')) {
                 $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
                 $profiles_class = new display_profiles();
                 $is_user_doc = $profiles_class->is_user_doc($doc_id, $current_user_id);
+                $response['is_doc_report'] = $is_doc_report;
+                $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                $response['todo_status'] = $todo_status;
+                $response['is_site_admin'] = $is_site_admin;
+                $response['is_user_doc'] = $is_user_doc;
+
+/*
                 if ($todo_status<1) {
                     if ($todo_status==-1) {
                         if ($is_doc_report) {
-                            $result['html_contain'] = $this->display_doc_report_list($doc_id);
+                            $response['html_contain'] = $this->display_doc_report_list($doc_id);
                         } else {
-                            $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                            $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                         }
                     } else {
                         if ($is_user_doc || $is_site_admin==1 || current_user_can('administrator')) {
-                            $result['html_contain'] = $this->display_document_dialog($doc_id);
-                            $result['is_doc_report'] = $is_doc_report;
-                            $result['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                            $response['html_contain'] = $this->display_document_dialog($doc_id);
+                            $response['is_doc_report'] = $is_doc_report;
+                            $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
                         } else {
                             if ($is_doc_report) {
-                                $result['html_contain'] = $this->display_doc_report_list($doc_id);
+                                $response['html_contain'] = $this->display_doc_report_list($doc_id);
                             } else {
-                                $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                                $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                             }    
                         }
                     }
@@ -379,20 +386,39 @@ if (!class_exists('display_documents')) {
                     if (isset($_POST['_is_admin'])) {
                         $is_admin = sanitize_text_field($_POST['_is_admin']);
                         if (current_user_can('administrator') && $is_admin=="1") {
-                            $result['html_contain'] = $this->display_document_dialog($doc_id);
+                            $response['html_contain'] = $this->display_document_dialog($doc_id);
                         }
                     }        
                 }
-        
-            } else {
-                $result['html_contain'] = 'Invalid AJAX request!';
+*/                
             }
-            wp_send_json($result);
+            wp_send_json($response);
         }
         
         function add_mermaid_js() {
             echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
             echo '<script>mermaid.initialize({startOnLoad:true});</script>';
+        }
+        
+        function display_mermaid_drawing($doc_id=false) {
+            $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $action_title = get_the_title();
+                    $action_content = get_post_field('post_content', get_the_ID());
+                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                    $next_job_title = get_the_title($next_job);
+                    if ($next_job>0) $this->display_mermaid_drawing($next_job);
+                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                    $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                    ?>
+                    <?php echo $job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+            endif;    
+
         }
         
         function display_document_dialog($doc_id=false) {
@@ -460,30 +486,10 @@ if (!class_exists('display_documents')) {
                 <div class="mermaid">
                 sequenceDiagram
                 <?php
-                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $action_title = get_the_title();
-                            $action_content = get_post_field('post_content', get_the_ID());
-                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                            $next_job_title = get_the_title($next_job);
-                            if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                            if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
-                            $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                            ?>
-                            <?php echo $job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
-                            <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;    
+                $this->display_mermaid_drawing($doc_id);
                 ?>
-                    loop Healthcheck
-                        John->>John: Fight against hypochondria
-                    end
-                    Note right of John: Rational thoughts <br/>prevail!
                 </div>
             </div>
-            <?php echo $profiles_class->display_doc_action_list($doc_id);?>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
@@ -491,6 +497,7 @@ if (!class_exists('display_documents')) {
                 <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
                 <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
+                <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>

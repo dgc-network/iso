@@ -101,7 +101,7 @@ jQuery(document).ready(function($) {
             },
             error: function(error){
                 console.error(error);                    
-                //alert(error);
+                alert(error);
             }
         });    
     });
@@ -109,6 +109,7 @@ jQuery(document).ready(function($) {
     activate_document_dialog_data($("#doc-id").val())
 
     function activate_document_dialog_data(doc_id){
+
         $('[id^="reset-document-"]').on("click", function () {
             const doc_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to reset this document status?")) {
