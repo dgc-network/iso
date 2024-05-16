@@ -77,6 +77,8 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
+    wp_enqueue_script('mermaid-js', 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js');
+
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
