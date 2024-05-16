@@ -743,6 +743,52 @@ if (!class_exists('display_profiles')) {
         }
 
         function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
+            // Initial query arguments
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                    ),
+                ),
+            );
+        
+            // Perform the initial query
+            $query = new WP_Query($args);
+        
+            if ($nest) {
+                // Retrieve the IDs of the posts from the initial query
+                $initial_ids = wp_list_pluck($query->posts, 'ID');
+        
+                // Additional query arguments to find posts with doc_id equal to next_job of initial results
+                $additional_args = array(
+                    'post_type'      => 'action',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'doc_id',
+                            'value'   => $initial_ids,
+                            'compare' => 'IN',
+                        ),
+                    ),
+                );
+        
+                // Perform the additional query
+                $additional_query = new WP_Query($additional_args);
+        
+                // Combine the results
+                $combined_posts = array_merge($query->posts, $additional_query->posts);
+        
+                // Create a new WP_Query object with the combined results
+                $query = new WP_Query(array('post__in' => wp_list_pluck($combined_posts, 'ID'), 'post_type' => 'action', 'posts_per_page' => -1));
+            }
+        
+            return $query;
+        }
+/*        
+        function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
             $meta_query = array(
                 'relation' => 'OR', // Default to OR for flexible addition of conditions
                 array(
