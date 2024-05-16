@@ -395,6 +395,7 @@ if (!class_exists('to_do_list')) {
                     'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
+                $documents_class = new display_documents();
                 $documents_class->display_doc_field_result($params);
             } else {
                 // document_dialog data

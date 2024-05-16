@@ -17,7 +17,24 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
-        get_todo_dialog_data(todo_id)
+        //get_todo_dialog_data(todo_id)
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: todo_id,
+            },
+            success: function (response) {
+                $('#result-container').html(response.html_contain);
+                activate_todo_dialog_data(response.doc_fields);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+
     });            
 
     var docFieldsValue = $("#doc-fields").val();
@@ -88,20 +105,5 @@ jQuery(document).ready(function($) {
     }
 
     function get_todo_dialog_data(todo_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: todo_id,
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
-            },
-            error: function (error) {
-                console.error(error);
-            }
-        });
     }
 })
