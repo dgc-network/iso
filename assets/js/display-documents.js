@@ -126,12 +126,22 @@ jQuery(document).ready(function($) {
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+/*
+                        var currentUrl = window.location.href;
+                        // Create a URL object
                         var url = new URL(currentUrl);                    
                         // Get the base URL without parameters
                         var baseUrl = url.origin + url.pathname;                    
                         // Reload the page with the base URL
                         window.location.replace(baseUrl);
-    
+*/    
                     },
                     error: function(error){
                         console.error(error);
@@ -234,12 +244,22 @@ jQuery(document).ready(function($) {
                     // Get the current URL
                     var currentUrl = window.location.href;
                     // Create a URL object
+                    var url = new URL(currentUrl);
+                    // Remove the specified parameter
+                    url.searchParams.delete('_id');
+                    // Get the modified URL
+                    var modifiedUrl = url.toString();
+                    // Reload the page with the modified URL
+                    window.location.replace(modifiedUrl);
+/*
+                    var currentUrl = window.location.href;
+                    // Create a URL object
                     var url = new URL(currentUrl);                    
                     // Get the base URL without parameters
                     var baseUrl = url.origin + url.pathname;                    
                     // Reload the page with the base URL
                     window.location.replace(baseUrl);
-                    
+*/                    
                 },
                 error: function(error){
                     console.error(error);
@@ -263,12 +283,22 @@ jQuery(document).ready(function($) {
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+/*
+                        var currentUrl = window.location.href;
+                        // Create a URL object
                         var url = new URL(currentUrl);                    
                         // Get the base URL without parameters
                         var baseUrl = url.origin + url.pathname;                    
                         // Reload the page with the base URL
                         window.location.replace(baseUrl);
-    
+*/    
                     },
                     error: function(error){
                         console.error(error);
@@ -342,7 +372,15 @@ jQuery(document).ready(function($) {
                             window.location.replace('?_doc_frame='+doc_id);
                         }
                     } else {
-                        window.location.replace('?_id='+doc_id);
+                        if (response.is_site_admin==1 || response.is_user_doc) {
+                            window.location.replace('?_id='+doc_id);
+                        } else {
+                            if (response.is_doc_report==1) {
+                                window.location.replace('?_doc_report='+doc_id);
+                            } else {
+                                window.location.replace('?_doc_frame='+doc_id);
+                            }    
+                        }
                     }
                 }
 
@@ -573,12 +611,22 @@ jQuery(document).ready(function($) {
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+/*
+                        var currentUrl = window.location.href;
+                        // Create a URL object
                         var url = new URL(currentUrl);                    
                         // Get the base URL without parameters
                         var baseUrl = url.origin + url.pathname;                    
                         // Reload the page with the base URL
                         window.location.replace(baseUrl);
-
+*/
                     },
                     error: function(error){
                         console.error(error);
@@ -593,12 +641,22 @@ jQuery(document).ready(function($) {
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+/*
+            var currentUrl = window.location.href;
+            // Create a URL object
             var url = new URL(currentUrl);                    
             // Get the base URL without parameters
             var baseUrl = url.origin + url.pathname;                    
             // Reload the page with the base URL
             window.location.replace(baseUrl);
-
+*/
         });        
     }
 
@@ -1021,6 +1079,17 @@ jQuery(document).ready(function($) {
                         '_report_id': report_id,
                     },
                     success: function (response) {
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+/*                        
                         //window.location.replace(window.location.href);
                         // Get the current URL
                         var currentUrl = window.location.href;
@@ -1030,7 +1099,7 @@ jQuery(document).ready(function($) {
                         var baseUrl = url.origin + url.pathname;                    
                         // Reload the page with the base URL
                         window.location.replace(baseUrl);
-            
+*/            
                     },
                     error: function(error){
                         console.error(error);
