@@ -1099,21 +1099,14 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC',
             );
-        
+
             if (!empty($params['doc_id'])) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_id',
                     'value' => $params['doc_id'],
                 );
             }
-/*        
-            if (!empty($params['site_id'])) {
-                $args['meta_query'][] = array(
-                    'key'   => 'site_id',
-                    'value' => $params['site_id'],
-                );
-            }
-*/        
+
             if (!empty($params['is_listing'])) {
                 $args['meta_query'][] = array(
                     'key'     => 'listing_style',
@@ -1121,7 +1114,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '!=',
                 );
             }
-        
+
             if (!empty($params['is_editing'])) {
                 $args['meta_query'][] = array(
                     'key'     => 'field_type',
@@ -1129,7 +1122,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '!=',
                 );
             }
-        
+
             $query = new WP_Query($args);
             return $query;
         }
@@ -1174,10 +1167,10 @@ if (!class_exists('display_documents')) {
                 </select>
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                    <option value=""></option>
                     <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
                     <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
                     <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
-                    <option value=""></option>
                 </select>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
@@ -1189,24 +1182,16 @@ if (!class_exists('display_documents')) {
             $html = ob_get_clean();
             return $html;            
         }
-        
+
         function get_doc_field_dialog_data() {
             $response = array();
             if( isset($_POST['_field_id']) ) {
                 $field_id = sanitize_text_field($_POST['_field_id']);
                 $response['html_contain'] = $this->display_doc_field_dialog($field_id);
-/*
-                $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
-                $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
-                $response["field_type"] = get_post_meta($field_id, 'field_type', true);
-                $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
-                $response["listing_style"] = get_post_meta($field_id, 'listing_style', true);
-                $response["order_field"] = get_post_meta($field_id, 'order_field', true);
-*/                
             }
             wp_send_json($response);
         }
-        
+
         function set_doc_field_dialog_data() {
             $response = array();
             if( isset($_POST['_field_id']) ) {
@@ -1237,13 +1222,13 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+
         function del_doc_field_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_field_id'], true);
             wp_send_json($response);
         }
-        
+
         function sort_doc_field_list_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_field_id_array']) && is_array($_POST['_field_id_array'])) {
@@ -1255,7 +1240,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+
         function display_doc_field_keys($doc_id=false, $site_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             if ($site_id) $params = array('site_id' => $site_id);
@@ -1272,31 +1257,31 @@ if (!class_exists('display_documents')) {
             }    
             return $_array;
         }
-        
+
         function display_doc_field_result($args) {
-        
+
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-        
+
             $params = array(
                 'doc_id'     => $doc_id,
                 'is_editing'  => true,
             );                
             $query = $this->retrieve_doc_field_data($params);
-        
+
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-        
+
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
                         $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                     }
-        
+
                     switch (true) {
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
@@ -1650,8 +1635,6 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_report_id']) ) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 delete_post_meta($report_id, 'todo_status');
-                //delete_post_meta($doc_id, 'due_date');
-                //delete_post_meta($doc_id, 'start_job');
             }
             if( isset($_POST['_doc_id']) ) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
