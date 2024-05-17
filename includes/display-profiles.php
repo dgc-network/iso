@@ -789,7 +789,7 @@ if (!class_exists('display_profiles')) {
         
             // If new posts are found, perform the recursive call
             if ($next_total_posts > $current_total_posts) {
-                return find_next_job_query($query);
+                //return find_next_job_query($query);
             }
         
             // Return the final query
@@ -847,7 +847,7 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
 
             if ($nest) {
-                $this->find_next_job_query($query);
+                $query=$this->find_next_job_query($query);
 /*                
                 // Retrieve the IDs of the posts from the initial query
                 $initial_ids = wp_list_pluck($query->posts, 'ID');            
