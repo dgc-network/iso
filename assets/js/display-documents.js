@@ -592,7 +592,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-field-dialog").html(response.html_contain);
                     $("#doc-field-dialog").dialog('open');
-
+alert('I am here:'+field_id)
                     
 /*
                     $("#field-id").val(field_id);

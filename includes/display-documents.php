@@ -1181,7 +1181,7 @@ if (!class_exists('display_documents')) {
                 </select>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
-                <input type="radio" id="order-field" <?php echo ($order_field=='asc') ? 'checked' : ''?> class="text ui-widget-content ui-corner-all" />
+                <input type="radio" id="order-field" <?php echo ($order_field=='asc') ? 'checked' : ''?> />
                 <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
 
                 <select id="order-field-backup" class="text ui-widget-content ui-corner-all">
