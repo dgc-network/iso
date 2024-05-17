@@ -712,7 +712,7 @@ if (!class_exists('display_profiles')) {
                         $is_doc_report = get_post_meta($current_job, 'is_doc_report', true);
                         if ($next_job==-1) {
                             $next_job_title = __( '文件發行', 'your-text-domain' );
-                            if ($is_doc_report==1) $next_job_title = __( '記錄歸檔', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
                         }
                         if ($next_job==-2) {
                             $next_job_title = __( '文件廢止', 'your-text-domain' );
