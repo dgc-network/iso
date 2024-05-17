@@ -709,8 +709,14 @@ if (!class_exists('display_profiles')) {
                         $action_content = get_post_field('post_content', get_the_ID());
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                         $next_job_title = get_the_title($next_job);
-                        if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                        if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                        if ($next_job==-1) {
+                            $next_job_title = __( '文件發行', 'your-text-domain' );
+                            if ($is_doc_report) $next_job_title = __( '記錄歸檔', 'your-text-domain' );
+                        }
+                        if ($next_job==-2) {
+                            $next_job_title = __( '文件廢止', 'your-text-domain' );
+                            if ($is_doc_report) $next_job_title = __( '記錄作廢', 'your-text-domain' );
+                        }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
                         <tr id="edit-doc-action-<?php the_ID();?>">
