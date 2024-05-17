@@ -1053,7 +1053,7 @@ if (!class_exists('display_documents')) {
                     </thead>
                     <tbody id="sortable-doc-field-list">
                         <?php
-                        //$x = 0;
+                        $x = 0;
                         if ($doc_id) $params = array('doc_id' => $doc_id);
                         //if ($site_id) $params = array('site_id' => $site_id);                
                         $query = $this->retrieve_doc_field_data($params);
@@ -1069,7 +1069,7 @@ if (!class_exists('display_documents')) {
                                 //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                                 echo '</tr>';
-                                //$x += 1;
+                                $x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
@@ -1201,7 +1201,7 @@ if (!class_exists('display_documents')) {
             $response = array();
             if( isset($_POST['_field_id']) ) {
                 $field_id = sanitize_text_field($_POST['_field_id']);
-                $response['html_contain'] = $this->display_doc_field_dislog($field_id);
+                $response['html_contain'] = $this->display_doc_field_dialog($field_id);
 /*
                 $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
                 $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
