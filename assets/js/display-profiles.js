@@ -55,6 +55,7 @@ jQuery(document).ready(function($) {
     });
 
     activate_site_profile_data()
+    activate_doc_action_list_data(doc_id);
 
     function get_site_profile_data(){
         $.ajax({
@@ -314,7 +315,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
-                    activate_doc_action_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
