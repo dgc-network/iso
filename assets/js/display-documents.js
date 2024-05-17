@@ -56,8 +56,7 @@ jQuery(document).ready(function($) {
                     console.error(error);                    
                     alert(error);
                 }
-            });    
-    
+            });        
         }
     });
 
@@ -81,14 +80,6 @@ jQuery(document).ready(function($) {
         autoOpen: false,
     });
 
-    activate_doc_report_list_data($("#doc-id").val());
-    activate_document_dialog_data($("#doc-id").val())
-
-    $('[id^="edit-document-"]').on("click", function () {
-        const doc_id = this.id.substring(14);
-        get_document_dialog_data(doc_id)
-    });            
-
     $("#new-document").on("click", function() {
         $.ajax({
             type: 'POST',
@@ -107,6 +98,13 @@ jQuery(document).ready(function($) {
         });    
     });
 
+    $('[id^="edit-document-"]').on("click", function () {
+        const doc_id = this.id.substring(14);
+        get_document_dialog_data(doc_id)
+    });            
+
+    activate_document_dialog_data($("#doc-id").val())
+    activate_doc_report_list_data($("#doc-id").val());
 
     function activate_document_dialog_data(doc_id){
 
@@ -575,17 +573,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-field-dialog").html(response.html_contain);
                     $("#doc-field-dialog").dialog('open');
-//alert('I am here:'+field_id)
-                    
-/*
-                    $("#field-id").val(field_id);
-                    $("#field-name").val(response.field_name);
-                    $("#field-title").val(response.field_title);
-                    $("#field-type").val(response.field_type).change();
-                    $("#default-value").val(response.default_value);
-                    $("#listing-style").val(response.listing_style).change();
-                    $("#order-field").val(response.order_field).change();
-*/
                 },
                 error: function (error) {
                     console.error(error);                
@@ -612,12 +599,12 @@ jQuery(document).ready(function($) {
                             '_field_type': $("#field-type").val(),
                             '_default_value': $("#default-value").val(),
                             '_listing_style': $("#listing-style").val(),
-                            '_order_field': $("#order-field").val(),
+                            '_order_field': $('#order-field').is(":checked") ? 'ASC' : '',
+                            //'_order_field': $("#order-field").val(),
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            //if (site_id) get_doc_field_list_data(false, site_id);
-                            if (doc_id) get_doc_field_list_data(doc_id);
+                            get_doc_field_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -637,8 +624,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                //if (site_id) get_doc_field_list_data(false, site_id);
-                                if (doc_id) get_doc_field_list_data(doc_id);
+                                get_doc_field_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
