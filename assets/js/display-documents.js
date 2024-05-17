@@ -82,7 +82,7 @@ jQuery(document).ready(function($) {
     });
 
     activate_doc_report_list_data($("#doc-id").val());
-    activate_doc_field_list_data($("#doc-id").val())
+    activate_document_dialog_data($("#doc-id").val())
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
@@ -107,7 +107,6 @@ jQuery(document).ready(function($) {
         });    
     });
 
-    activate_document_dialog_data($("#doc-id").val())
 
     function activate_document_dialog_data(doc_id){
 
@@ -181,25 +180,8 @@ jQuery(document).ready(function($) {
             $("#frquence-start-time-div").show();
         }
 
-        $("#new-doc-action").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_action_dialog_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    get_doc_action_list_data(doc_id);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });    
-        });
         activate_doc_action_list_data(doc_id);
+        activate_doc_field_list_data(doc_id);
 
         $("#doc-report-frequence-setting").on("change", function () {
             if ($(this).val()) {
@@ -515,13 +497,13 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function get_doc_field_list_data(doc_id=false, site_id=false) {
+    function get_doc_field_list_data(doc_id=false) {
         const ajaxData = {
             'action': 'get_doc_field_list_data',
         };
     
         if (doc_id) ajaxData['_doc_id'] = doc_id;
-        if (site_id) ajaxData['_site_id'] = site_id;
+        //if (site_id) ajaxData['_site_id'] = site_id;
     
         $.ajax({
             type: 'POST',
@@ -530,7 +512,7 @@ jQuery(document).ready(function($) {
             data: ajaxData,
             success: function (response) {
                 $('#fields-container').html(response.html_contain);
-                activate_doc_field_list_data(doc_id, site_id);
+                activate_doc_field_list_data(doc_id);
             },
             error: function (error) {
                 console.error(error);
@@ -539,7 +521,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_field_list_data(doc_id=false, site_id=false){
+    function activate_doc_field_list_data(doc_id=false){
         $("#new-doc-field").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -634,7 +616,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            if (site_id) get_doc_field_list_data(false, site_id);
+                            //if (site_id) get_doc_field_list_data(false, site_id);
                             if (doc_id) get_doc_field_list_data(doc_id);
                         },
                         error: function (error) {
@@ -655,7 +637,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                if (site_id) get_doc_field_list_data(false, site_id);
+                                //if (site_id) get_doc_field_list_data(false, site_id);
                                 if (doc_id) get_doc_field_list_data(doc_id);
                             },
                             error: function(error){
@@ -671,6 +653,25 @@ jQuery(document).ready(function($) {
 
     // doc-action scripts
     function activate_doc_action_list_data(doc_id) {
+        $("#new-doc-action").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_action_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_action_list_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+
         $('[id^="edit-doc-action-"]').on("click", function () {
             const action_id = this.id.substring(16);
             $.ajax({

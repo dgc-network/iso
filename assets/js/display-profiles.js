@@ -314,25 +314,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
-
-                    $("#new-doc-action").on("click", function() {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_doc_action_dialog_data',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                get_doc_action_list_data(doc_id);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });    
-                    });
                     activate_doc_action_list_data(doc_id);
                 },
                 error: function (error) {
@@ -528,6 +509,25 @@ jQuery(document).ready(function($) {
 
     // doc-action scripts
     function activate_doc_action_list_data(doc_id) {
+        $("#new-doc-action").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_doc_action_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    get_doc_action_list_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+
         $('[id^="edit-doc-action-"]').on("click", function () {
             const action_id = this.id.substring(16);
             $.ajax({
