@@ -1386,8 +1386,8 @@ if (!class_exists('display_documents')) {
                 ),
             );    
             $query = new WP_Query($args);    
-            $count = $query->found_posts;
-            return $count;
+            $total_posts = $query->found_posts;
+            return $total_posts;
         }
         
         function display_iso_document_statement($doc_id){
