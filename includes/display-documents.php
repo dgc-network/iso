@@ -436,8 +436,8 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
             </div>
-            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
-                <div class="mermaid">
+
+            <div class="mermaid">
                 sequenceDiagram
                 <?php
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
@@ -460,7 +460,9 @@ if (!class_exists('display_documents')) {
                 endif;    
     
                 ?>
-                </div>
+            </div>
+
+            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
             </div>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
