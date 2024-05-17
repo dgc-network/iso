@@ -789,7 +789,7 @@ if (!class_exists('display_profiles')) {
         
             // If new posts are found, perform the recursive call
             if ($next_total_posts > $current_total_posts) {
-                //return find_next_job_query($query);
+                return find_next_job_query($query);
             }
         
             // Return the final query
