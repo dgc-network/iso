@@ -735,6 +735,38 @@ if (!class_exists('display_profiles')) {
             return $html;            
         }
 
+        function find_next_job_query($query=false) {
+            // Retrieve the IDs of the posts from the initial query
+            $initial_ids = wp_list_pluck($query->posts, 'ID');            
+            // Retrieve the meta values of "next_job" for the posts from the initial query
+            $next_jobs = array();
+            foreach ($initial_ids as $post_id) {
+                $next_job = get_post_meta($post_id, 'next_job', true);
+                if (!empty($next_job)) {
+                    $next_jobs[] = $next_job;
+                }
+            }            
+            // Additional query arguments to find posts with doc_id equal to next_job of initial results
+            $additional_args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'doc_id',
+                        'value'   => $next_jobs,
+                        'compare' => 'IN',
+                    ),
+                ),
+            );            
+            // Perform the additional query
+            $additional_query = new WP_Query($additional_args);            
+            // Combine the results
+            $combined_posts = array_merge($query->posts, $additional_query->posts);            
+            // Create a new WP_Query object with the combined results
+            $query = new WP_Query(array('post__in' => wp_list_pluck($combined_posts, 'ID'), 'post_type' => 'action', 'posts_per_page' => -1));
+            return $query;
+        }
+
         function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
             // Initial query arguments
             $args = array(
@@ -751,6 +783,8 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
 
             if ($nest) {
+                $this->find_next_job_query($query);
+/*                
                 // Retrieve the IDs of the posts from the initial query
                 $initial_ids = wp_list_pluck($query->posts, 'ID');            
                 // Retrieve the meta values of "next_job" for the posts from the initial query
@@ -779,6 +813,7 @@ if (!class_exists('display_profiles')) {
                 $combined_posts = array_merge($query->posts, $additional_query->posts);            
                 // Create a new WP_Query object with the combined results
                 $query = new WP_Query(array('post__in' => wp_list_pluck($combined_posts, 'ID'), 'post_type' => 'action', 'posts_per_page' => -1));
+*/                
             }
 
             return $query;
