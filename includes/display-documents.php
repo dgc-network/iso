@@ -1060,7 +1060,7 @@ if (!class_exists('display_documents')) {
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $order_field = get_post_meta(get_the_ID(), 'order_field', true);
-                                if ($order_field) $order_field='checked';
+                                if ($order_field=='ASC') $order_field='checked';
                                 echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' ></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
@@ -1181,15 +1181,8 @@ if (!class_exists('display_documents')) {
                 </select>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
-                <input type="radio" id="order-field" <?php echo ($order_field=='asc') ? 'checked' : ''?> />
+                <input type="radio" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : ''?> />
                 <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
-
-                <select id="order-field-backup" class="text ui-widget-content ui-corner-all">
-                    <option value="ASC"><?php echo __( '由小到大', 'your-text-domain' );?></option>
-                    <option value="DESC"><?php echo __( '由大到小', 'your-text-domain' );?></option>
-                    <option value=""></option>
-                </select>
-
             </fieldset>
             </div>
             <?php
