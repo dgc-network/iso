@@ -122,7 +122,6 @@ jQuery(document).ready(function($) {
                         '_doc_id': doc_id,
                     },
                     success: function (response) {
-                        //window.location.replace(window.location.href);
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
@@ -133,15 +132,6 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
-/*
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);                    
-                        // Get the base URL without parameters
-                        var baseUrl = url.origin + url.pathname;                    
-                        // Reload the page with the base URL
-                        window.location.replace(baseUrl);
-*/    
                     },
                     error: function(error){
                         console.error(error);
@@ -175,10 +165,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-frame-job-setting").on("click", function () {
+            $("#doc-frame-job-setting").toggle()
+            $(".mermaid").toggle()
             $("#job-setting-div").toggle();
         });
 
         $("#doc-report-job-setting").on("click", function () {
+            $("#doc-report-job-setting").toggle();
+            $(".mermaid").toggle()
             $("#job-setting-div").toggle();
         });
 
@@ -240,7 +234,6 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function (response) {
-                    //window.location.replace(window.location.href);
                     // Get the current URL
                     var currentUrl = window.location.href;
                     // Create a URL object
@@ -251,15 +244,6 @@ jQuery(document).ready(function($) {
                     var modifiedUrl = url.toString();
                     // Reload the page with the modified URL
                     window.location.replace(modifiedUrl);
-/*
-                    var currentUrl = window.location.href;
-                    // Create a URL object
-                    var url = new URL(currentUrl);                    
-                    // Get the base URL without parameters
-                    var baseUrl = url.origin + url.pathname;                    
-                    // Reload the page with the base URL
-                    window.location.replace(baseUrl);
-*/                    
                 },
                 error: function(error){
                     console.error(error);
@@ -279,7 +263,6 @@ jQuery(document).ready(function($) {
                         '_doc_id': doc_id,
                     },
                     success: function (response) {
-                        //window.location.replace(window.location.href);
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
@@ -290,15 +273,6 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
-/*
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);                    
-                        // Get the base URL without parameters
-                        var baseUrl = url.origin + url.pathname;                    
-                        // Reload the page with the base URL
-                        window.location.replace(baseUrl);
-*/    
                     },
                     error: function(error){
                         console.error(error);
@@ -344,30 +318,11 @@ jQuery(document).ready(function($) {
                 _is_admin: $("#is-admin").val()
             },
             success: function (response) {
-/*                
-                if (response.html_contain === undefined || response.html_contain === null) {
-                    alert("The document is in To-do process. Please wait for publishing.");
-                } else {
-                    $('#result-container').html(response.html_contain);
-                    $('#is-doc-report').val(response.is_doc_report);
-                    $('#doc-report-frequence-setting').val(response.doc_report_frequence_setting);
-                }
-                $("#doc-id").val(doc_id);
-
-                $(".datepicker").datepicker({
-                    onSelect: function(dateText, inst) {
-                        $(this).val(dateText);
-                    }
-                });
-*/
-                
-                
                 if (response.todo_status>0) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     if (response.todo_status==-1) {
                         if (response.is_doc_report==1) {
-                            //window.location.replace('?_doc_report='+doc_id);
                             // Get the current URL
                             var currentUrl = window.location.href;
                             // Create a URL object
@@ -380,7 +335,6 @@ jQuery(document).ready(function($) {
                             window.location.replace(modifiedUrl);
                             
                         } else {
-                            //window.location.replace('?_doc_frame='+doc_id);
                             // Get the current URL
                             var currentUrl = window.location.href;
                             // Create a URL object
@@ -395,7 +349,6 @@ jQuery(document).ready(function($) {
                         }
                     } else {
                         if (response.is_site_admin==1 || response.is_user_doc) {
-                            //window.location.replace('?_id='+doc_id);
                             // Get the current URL
                             var currentUrl = window.location.href;
                             // Create a URL object
@@ -409,7 +362,6 @@ jQuery(document).ready(function($) {
 
                         } else {
                             if (response.is_doc_report==1) {
-                                //window.location.replace('?_doc_report='+doc_id);
                                 // Get the current URL
                                 var currentUrl = window.location.href;
                                 // Create a URL object
@@ -422,7 +374,6 @@ jQuery(document).ready(function($) {
                                 window.location.replace(modifiedUrl);
 
                             } else {
-                                //window.location.replace('?_doc_frame='+doc_id);
                                 // Get the current URL
                                 var currentUrl = window.location.href;
                                 // Create a URL object
@@ -438,182 +389,6 @@ jQuery(document).ready(function($) {
                         }
                     }
                 }
-
-                //activate_document_dialog_data(doc_id)
-/*
-                $('[id^="reset-document-"]').on("click", function () {
-                    const doc_id = this.id.substring(15);
-                    if (window.confirm("Are you sure you want to reset this document status?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'reset_document_todo_status',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                window.location.replace(window.location.href);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });            
-                        
-                if ($('#is-doc-report').val()==1) {
-                    $("#doc-report-div").show();
-                    $("#doc-report-div1").show();
-                } else {
-                    $("#doc-frame-div").show();
-                }
-
-                $("#doc-frame-label").on("click", function () {
-                    $("#doc-report-div").toggle();
-                    $("#doc-report-div1").toggle();
-                    $("#doc-frame-div").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
-                });
-        
-                $("#doc-field-label").on("click", function () {
-                    $("#doc-report-div").toggle();
-                    $("#doc-report-div1").toggle();
-                    $("#doc-frame-div").toggle();
-                    const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-                    $("#is-doc-report").val(is_doc_report)
-                });
-
-                $("#doc-frame-job-setting").on("click", function () {
-                    $("#job-setting-div").toggle();
-                });
-
-                $("#doc-report-job-setting").on("click", function () {
-                    $("#job-setting-div").toggle();
-                });
-
-                if ($("#doc-report-frequence-setting").val()) {
-                    $("#frquence-start-time-div").show();
-                }
-
-                $("#new-doc-action").on("click", function() {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_action_dialog_data',
-                            '_doc_id': doc_id,
-                        },
-                        success: function (response) {
-                            get_doc_action_list_data(doc_id);
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });    
-                });
-                activate_doc_action_list_data(doc_id);
-
-                $("#doc-report-frequence-setting").on("change", function () {
-                    if ($(this).val()) {
-                        $("#frquence-start-time-div").show();
-                    } else {
-                        $("#frquence-start-time-div").hide();
-                    }
-                });
-
-                $("#save-document-button").on("click", function() {
-                    const ajaxData = {
-                        'action': 'set_document_dialog_data',
-                    };
-                    ajaxData['_doc_id'] = doc_id;
-                    ajaxData['_job_number'] = $("#job-number").val();
-                    ajaxData['_job_title'] = $("#job-title").val();
-                    ajaxData['_job_content'] = $("#job-content").val();
-                    ajaxData['_department'] = $("#department").val();
-                    ajaxData['_doc_number'] = $("#doc-number").val();
-                    ajaxData['_doc_title'] = $("#doc-title").val();
-                    ajaxData['_doc_revision'] = $("#doc-revision").val();
-                    ajaxData['_doc_category'] = $("#doc-category").val();
-                    ajaxData['_doc_frame'] = $("#doc-frame").val();
-                    ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-                    ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
-                    ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
-                    ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
-                    ajaxData['_prev_start_time'] = $("#prev-start-time").val();
-                            
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: ajaxData,
-                        success: function (response) {
-                            window.location.replace(window.location.href);
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                });
-
-                $("#del-document-button").on("click", function() {
-                    if (window.confirm("Are you sure you want to delete this document?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_document_dialog_data',
-                                '_doc_id': doc_id,
-                            },
-                            success: function (response) {
-                                window.location.replace(window.location.href);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                });
-
-                $("#doc-report-preview").on("click", function () {
-                    get_doc_report_list_data(doc_id);
-                });
-            
-                $("#doc-frame-preview").on("click", function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: 'json',
-                        data: {
-                            action: 'get_doc_frame_contain',
-                            _doc_id: doc_id,
-                        },
-                        success: function(response) {
-                            $('#result-container').html(response.html_contain);
-                            activate_published_document_data(doc_id);
-                        },
-                        error: function(xhr, textStatus, errorThrown) {
-                            console.error('AJAX request failed:', errorThrown);
-                            alert('AJAX request failed. Please try again.');
-                        }
-                    });
-                });
-
-                // doc-field scripts
-                activate_doc_field_list_data(doc_id);
-
-                // doc-report scripts
-                activate_doc_report_list_data(doc_id);
-
-                activate_doc_report_dialog_data(response)
-*/
             },
             error: function (error) {
                 console.error(error);
@@ -651,6 +426,36 @@ jQuery(document).ready(function($) {
             $("#signature-record-div").toggle()
         });
 
+        $("#doc-frame-unpublished").on("click", function () {
+            if (window.confirm("Are you sure you want to unpublish this document?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'reset_document_todo_status',
+                        '_doc_id': doc_id,
+                    },
+                    success: function (response) {
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_doc_frame');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }    
+        });
+
         $("#doc-report-unpublished").on("click", function () {
             if (window.confirm("Are you sure you want to unpublish this document?")) {
                 $.ajax({
@@ -662,7 +467,6 @@ jQuery(document).ready(function($) {
                         '_doc_id': doc_id,
                     },
                     success: function (response) {
-                        //window.location.replace(window.location.href);
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
@@ -673,15 +477,6 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
-/*
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);                    
-                        // Get the base URL without parameters
-                        var baseUrl = url.origin + url.pathname;                    
-                        // Reload the page with the base URL
-                        window.location.replace(baseUrl);
-*/
                     },
                     error: function(error){
                         console.error(error);
@@ -691,8 +486,20 @@ jQuery(document).ready(function($) {
             }    
         });
 
+        $("#doc-frame-exit").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_doc_frame');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
+
         $("#doc-report-exit").on("click", function () {
-            //window.location.replace(window.location.href);
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -703,16 +510,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-/*
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);                    
-            // Get the base URL without parameters
-            var baseUrl = url.origin + url.pathname;                    
-            // Reload the page with the base URL
-            window.location.replace(baseUrl);
-*/
-        });        
+        });
     }
 
     // doc-field scripts
@@ -1144,17 +942,6 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
-/*                        
-                        //window.location.replace(window.location.href);
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);                    
-                        // Get the base URL without parameters
-                        var baseUrl = url.origin + url.pathname;                    
-                        // Reload the page with the base URL
-                        window.location.replace(baseUrl);
-*/            
                     },
                     error: function(error){
                         console.error(error);
