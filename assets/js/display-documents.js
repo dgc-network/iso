@@ -128,7 +128,7 @@ jQuery(document).ready(function($) {
                         // Create a URL object
                         var url = new URL(currentUrl);
                         // Remove the specified parameter
-                        url.searchParams.delete('_id');
+                        url.searchParams.delete('_doc_id');
                         // Get the modified URL
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
                     // Create a URL object
                     var url = new URL(currentUrl);
                     // Remove the specified parameter
-                    url.searchParams.delete('_id');
+                    url.searchParams.delete('_doc_id');
                     // Get the modified URL
                     var modifiedUrl = url.toString();
                     // Reload the page with the modified URL
@@ -285,7 +285,7 @@ jQuery(document).ready(function($) {
                         // Create a URL object
                         var url = new URL(currentUrl);
                         // Remove the specified parameter
-                        url.searchParams.delete('_id');
+                        url.searchParams.delete('_doc_id');
                         // Get the modified URL
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
@@ -367,25 +367,80 @@ jQuery(document).ready(function($) {
                 } else {
                     if (response.todo_status==-1) {
                         if (response.is_doc_report==1) {
-                            window.location.replace('?_doc_report='+doc_id);
+                            //window.location.replace('?_doc_report='+doc_id);
+                            // Get the current URL
+                            var currentUrl = window.location.href;
+                            // Create a URL object
+                            var url = new URL(currentUrl);
+                            // Add the new parameter
+                            url.searchParams.set('_doc_report', doc_id);                            
+                            // Get the modified URL
+                            var modifiedUrl = url.toString();                            
+                            // Reload the page with the modified URL
+                            window.location.replace(modifiedUrl);
+                            
                         } else {
-                            window.location.replace('?_doc_frame='+doc_id);
+                            //window.location.replace('?_doc_frame='+doc_id);
+                            // Get the current URL
+                            var currentUrl = window.location.href;
+                            // Create a URL object
+                            var url = new URL(currentUrl);
+                            // Add the new parameter
+                            url.searchParams.set('_doc_frame', doc_id);                            
+                            // Get the modified URL
+                            var modifiedUrl = url.toString();                            
+                            // Reload the page with the modified URL
+                            window.location.replace(modifiedUrl);
+
                         }
                     } else {
                         if (response.is_site_admin==1 || response.is_user_doc) {
-                            window.location.replace('?_id='+doc_id);
+                            //window.location.replace('?_id='+doc_id);
+                            // Get the current URL
+                            var currentUrl = window.location.href;
+                            // Create a URL object
+                            var url = new URL(currentUrl);
+                            // Add the new parameter
+                            url.searchParams.set('_doc_id', doc_id);                            
+                            // Get the modified URL
+                            var modifiedUrl = url.toString();                            
+                            // Reload the page with the modified URL
+                            window.location.replace(modifiedUrl);
+
                         } else {
                             if (response.is_doc_report==1) {
-                                window.location.replace('?_doc_report='+doc_id);
+                                //window.location.replace('?_doc_report='+doc_id);
+                                // Get the current URL
+                                var currentUrl = window.location.href;
+                                // Create a URL object
+                                var url = new URL(currentUrl);
+                                // Add the new parameter
+                                url.searchParams.set('_doc_report', doc_id);                            
+                                // Get the modified URL
+                                var modifiedUrl = url.toString();                            
+                                // Reload the page with the modified URL
+                                window.location.replace(modifiedUrl);
+
                             } else {
-                                window.location.replace('?_doc_frame='+doc_id);
+                                //window.location.replace('?_doc_frame='+doc_id);
+                                // Get the current URL
+                                var currentUrl = window.location.href;
+                                // Create a URL object
+                                var url = new URL(currentUrl);
+                                // Add the new parameter
+                                url.searchParams.set('_doc_frame', doc_id);                            
+                                // Get the modified URL
+                                var modifiedUrl = url.toString();                            
+                                // Reload the page with the modified URL
+                                window.location.replace(modifiedUrl);
+
                             }    
                         }
                     }
                 }
 
                 //activate_document_dialog_data(doc_id)
-
+/*
                 $('[id^="reset-document-"]').on("click", function () {
                     const doc_id = this.id.substring(15);
                     if (window.confirm("Are you sure you want to reset this document status?")) {
@@ -558,7 +613,7 @@ jQuery(document).ready(function($) {
                 activate_doc_report_list_data(doc_id);
 
                 activate_doc_report_dialog_data(response)
-
+*/
             },
             error: function (error) {
                 console.error(error);
@@ -596,7 +651,7 @@ jQuery(document).ready(function($) {
             $("#signature-record-div").toggle()
         });
 
-        $("#doc-unpublished").on("click", function () {
+        $("#doc-report-unpublished").on("click", function () {
             if (window.confirm("Are you sure you want to unpublish this document?")) {
                 $.ajax({
                     type: 'POST',
@@ -613,7 +668,7 @@ jQuery(document).ready(function($) {
                         // Create a URL object
                         var url = new URL(currentUrl);
                         // Remove the specified parameter
-                        url.searchParams.delete('_id');
+                        url.searchParams.delete('_doc_report');
                         // Get the modified URL
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
@@ -636,14 +691,14 @@ jQuery(document).ready(function($) {
             }    
         });
 
-        $("#exit-button").on("click", function () {
+        $("#doc-report-exit").on("click", function () {
             //window.location.replace(window.location.href);
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
             var url = new URL(currentUrl);
             // Remove the specified parameter
-            url.searchParams.delete('_id');
+            url.searchParams.delete('_doc_report');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
@@ -1067,9 +1122,9 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#doc-report-unpublished").on("click", function () {
-            const report_id = this.id.substring(21);
-            if (window.confirm("Are you sure you want to unpublish this doc-report?")) {
+        $("#unpublished-report-").on("click", function () {
+            const report_id = this.id.substring(19);
+            if (window.confirm("Are you sure you want to unpublish this report?")) {
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,

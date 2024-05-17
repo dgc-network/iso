@@ -166,8 +166,8 @@ if (!class_exists('display_documents')) {
                 }
             
                 // Display document details if doc_id is existed
-                if (isset($_GET['_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_id']);
+                if (isset($_GET['_doc_id'])) {
+                    $doc_id = sanitize_text_field($_GET['_doc_id']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_document_dialog($doc_id);
                     echo '</div>';
@@ -198,7 +198,7 @@ if (!class_exists('display_documents')) {
                 }
 
                 // Display document list if no specific document IDs are existed
-                if (!isset($_GET['_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_initial'])) {
+                if (!isset($_GET['_doc_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_initial'])) {
                     echo $this->display_document_list();
                 }
             
@@ -584,7 +584,7 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-                    <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
         
@@ -599,7 +599,7 @@ if (!class_exists('display_documents')) {
             </fieldset>
 
             <div>
-                <input type="button" id="exit-button" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
             </div>
 
@@ -641,7 +641,7 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-                    <span id='doc-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
         
@@ -747,7 +747,7 @@ if (!class_exists('display_documents')) {
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <input type="button" id="exit-button" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                         <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                     </div>
                     <div style="text-align:right; display:flex;">
@@ -874,7 +874,7 @@ if (!class_exists('display_documents')) {
                 <div style="text-align:right; display:flex;">        
                 <?php if ($todo_status){?>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-                    <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <span id='unpublished-report-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 <?php }?>
                 </div>
             </div>
