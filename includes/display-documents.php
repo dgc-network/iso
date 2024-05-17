@@ -453,11 +453,11 @@ if (!class_exists('display_documents')) {
                         $is_doc_report = get_post_meta($next_job, 'is_doc_report', true);
                         if ($next_job==-1) {
                             $next_job_title = __( '文件發行', 'your-text-domain' );
-                            if ($is_doc_report) $next_job_title = __( '記錄歸檔', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄歸檔', 'your-text-domain' );
                         }
                         if ($next_job==-2) {
                             $next_job_title = __( '文件廢止', 'your-text-domain' );
-                            if ($is_doc_report) $next_job_title = __( '記錄作廢', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
                         <?php echo $current_job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
@@ -739,8 +739,8 @@ if (!class_exists('display_documents')) {
                                 }
                                 $todo_id = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                                $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
-                                $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
+                                $todo_status = ($todo_id==-1) ? '記錄歸檔' : $todo_status;
+                                $todo_status = ($todo_id==-2) ? '記錄作廢' : $todo_status;
                                 echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                                 echo '</tr>';
                             endwhile;                
