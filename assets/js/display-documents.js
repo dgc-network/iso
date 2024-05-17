@@ -82,6 +82,7 @@ jQuery(document).ready(function($) {
     });
 
     activate_doc_report_list_data($("#doc-id").val());
+    activate_doc_field_list_data($("#doc-id").val())
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
@@ -592,7 +593,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-field-dialog").html(response.html_contain);
                     $("#doc-field-dialog").dialog('open');
-alert('I am here:'+field_id)
+//alert('I am here:'+field_id)
                     
 /*
                     $("#field-id").val(field_id);
