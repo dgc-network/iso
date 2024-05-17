@@ -592,6 +592,8 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-field-dialog").html(response.html_contain);
                     $("#doc-field-dialog").dialog('open');
+
+                    
 /*
                     $("#field-id").val(field_id);
                     $("#field-name").val(response.field_name);

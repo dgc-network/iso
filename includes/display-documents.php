@@ -1152,7 +1152,7 @@ if (!class_exists('display_documents')) {
             $order_field = get_post_meta($field_id, 'order_field', true);
             ob_start();
             ?>
-            <div id="doc-field-dialog" title="Field dialog" style="display:none;">
+            <div id="doc-field-dialog" title="Field dialog">
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
