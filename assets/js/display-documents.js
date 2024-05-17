@@ -590,7 +590,9 @@ jQuery(document).ready(function($) {
                     '_field_id': field_id,
                 },
                 success: function (response) {
+                    $("#doc-field-dialog").html(response.html_contain);
                     $("#doc-field-dialog").dialog('open');
+/*
                     $("#field-id").val(field_id);
                     $("#field-name").val(response.field_name);
                     $("#field-title").val(response.field_title);
@@ -598,6 +600,7 @@ jQuery(document).ready(function($) {
                     $("#default-value").val(response.default_value);
                     $("#listing-style").val(response.listing_style).change();
                     $("#order-field").val(response.order_field).change();
+*/
                 },
                 error: function (error) {
                     console.error(error);                

@@ -1034,7 +1034,9 @@ if (!class_exists('display_documents')) {
         }
         
         // doc-field
-        function display_doc_field_list($doc_id=false, $site_id=false) {
+        //function display_doc_field_list($doc_id=false, $site_id=false) {
+
+        function display_doc_field_list($doc_id=false) {
             ob_start();
             ?>
             <div id="fields-container">
@@ -1046,14 +1048,14 @@ if (!class_exists('display_documents')) {
                             <th><?php echo __( 'Field', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Type', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Style', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Default', 'your-text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody id="sortable-doc-field-list">
                         <?php
-                        $x = 0;
+                        //$x = 0;
                         if ($doc_id) $params = array('doc_id' => $doc_id);
-                        if ($site_id) $params = array('site_id' => $site_id);                
+                        //if ($site_id) $params = array('site_id' => $site_id);                
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -1064,23 +1066,26 @@ if (!class_exists('display_documents')) {
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
+                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                                 echo '</tr>';
-                                $x += 1;
+                                //$x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
+/*
                         while ($x<50) {
                             echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
                             $x += 1;
                         }
+*/
                         ?>
                     </tbody>
                 </table>
                 <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <?php $this->display_doc_field_dialog();?>
+            <?php echo $this->display_doc_field_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;    
@@ -1101,14 +1106,14 @@ if (!class_exists('display_documents')) {
                     'value' => $params['doc_id'],
                 );
             }
-        
+/*        
             if (!empty($params['site_id'])) {
                 $args['meta_query'][] = array(
                     'key'   => 'site_id',
                     'value' => $params['site_id'],
                 );
             }
-        
+*/        
             if (!empty($params['is_listing'])) {
                 $args['meta_query'][] = array(
                     'key'     => 'listing_style',
@@ -1130,68 +1135,81 @@ if (!class_exists('display_documents')) {
         }
         
         function get_doc_field_list_data() {
-            $result = array();
+            $response = array();
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $result['html_contain'] = $this->display_doc_field_list($doc_id);
-            } else {
-                $result['html_contain'] = 'Invalid AJAX request!';
+                $response['html_contain'] = $this->display_doc_field_list($doc_id);
             }
-            wp_send_json($result);
+            wp_send_json($response);
         }
         
-        function display_doc_field_dialog(){
+        function display_doc_field_dialog($field_id=false) {
+            $field_name = get_post_meta($field_id, 'field_name', true);
+            $field_title = get_post_meta($field_id, 'field_title', true);
+            $field_type = get_post_meta($field_id, 'field_type', true);
+            $listing_style = get_post_meta($field_id, 'listing_style', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $order_field = get_post_meta($field_id, 'order_field', true);
+            ob_start();
             ?>
             <div id="doc-field-dialog" title="Field dialog" style="display:none;">
             <fieldset>
-                <input type="hidden" id="field-id" />
+                <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
-                <input type="text" id="field-name" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="field-name" value="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
-                <input type="text" id="field-title" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
-                    <option value="text"><?php echo __( '文字', 'your-text-domain' );?></option>
-                    <option value="number"><?php echo __( '數字', 'your-text-domain' );?></option>
-                    <option value="date"><?php echo __( '日期', 'your-text-domain' );?></option>
-                    <option value="time"><?php echo __( '時間', 'your-text-domain' );?></option>
-                    <option value="checkbox"><?php echo __( '檢查框', 'your-text-domain' );?></option>
-                    <option value="radio"><?php echo __( '多選一', 'your-text-domain' );?></option>
-                    <option value="textarea"><?php echo __( '文字區域', 'your-text-domain' );?></option>
-                    <option value="heading"><?php echo __( '標題', 'your-text-domain' );?></option>
-                    <option value="image"><?php echo __( '圖片', 'your-text-domain' );?></option>
-                    <option value="video"><?php echo __( '影片', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( '文字', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( '數字', 'your-text-domain' );?></option>
+                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( '日期', 'your-text-domain' );?></option>
+                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( '時間', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( '檢查框', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( '多選一', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( '文字區域', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( '標題', 'your-text-domain' );?></option>
+                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( '圖片', 'your-text-domain' );?></option>
+                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( '影片', 'your-text-domain' );?></option>
                 </select>
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
-                    <option value="left"><?php echo __( '靠左', 'your-text-domain' );?></option>
-                    <option value="center"><?php echo __( '置中', 'your-text-domain' );?></option>
-                    <option value="right"><?php echo __( '靠右', 'your-text-domain' );?></option>
+                    <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
+                    <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
+                    <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
                     <option value=""></option>
                 </select>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
-                <input type="text" id="default-value" class="text ui-widget-content ui-corner-all" />
-                <label for="order-field"><?php echo __( '排列順序：', 'your-text-domain' );?></label>
-                <select id="order-field" class="text ui-widget-content ui-corner-all">
+                <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="radio" id="order-field" <?php echo ($order_field=='asc') ? 'checked' : ''?> class="text ui-widget-content ui-corner-all" />
+                <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
+
+                <select id="order-field-backup" class="text ui-widget-content ui-corner-all">
                     <option value="ASC"><?php echo __( '由小到大', 'your-text-domain' );?></option>
                     <option value="DESC"><?php echo __( '由大到小', 'your-text-domain' );?></option>
                     <option value=""></option>
                 </select>
+
             </fieldset>
             </div>
             <?php
+            $html = ob_get_clean();
+            return $html;            
         }
         
         function get_doc_field_dialog_data() {
             $response = array();
             if( isset($_POST['_field_id']) ) {
                 $field_id = sanitize_text_field($_POST['_field_id']);
+                $response['html_contain'] = $this->display_doc_field_dislog($field_id);
+/*
                 $response["field_name"] = esc_html(get_post_meta($field_id, 'field_name', true));
                 $response["field_title"] = esc_html(get_post_meta($field_id, 'field_title', true));
                 $response["field_type"] = get_post_meta($field_id, 'field_type', true);
                 $response["default_value"] = esc_html(get_post_meta($field_id, 'default_value', true));
                 $response["listing_style"] = get_post_meta($field_id, 'listing_style', true);
                 $response["order_field"] = get_post_meta($field_id, 'order_field', true);
+*/                
             }
             wp_send_json($response);
         }
