@@ -567,7 +567,7 @@ if (!class_exists('display_profiles')) {
                 $args['meta_query'][] = array(
                     'key'     => 'job_number',
                     'value'   => $search_query,
-                    'compare' => '=',
+                    'compare' => 'LIKE',
                 );
             }
 
