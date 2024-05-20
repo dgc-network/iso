@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
     activate_site_profile_data();
     activate_site_job_list_data();
     activate_doc_category_list_data();
+    activate_doc_action_list_data($("#doc-id").val());
 
     // my-profile scripts
     $("#my-profile-submit").on("click", function () {
