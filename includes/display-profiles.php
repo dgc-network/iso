@@ -277,6 +277,27 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <?php
+                if (current_user_can('administrator')) {
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    ?>
+                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
+                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                    <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                    }
+                    echo '</select>';
+                }
+                ?>
                 <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
                 <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                 <fieldset>
@@ -305,27 +326,6 @@ if (!class_exists('display_profiles')) {
                         </tbody>
                     </table>
                 </fieldset>
-                <?php
-                if (current_user_can('administrator')) {
-                    $current_user_id = get_current_user_id();
-                    $site_id = get_user_meta($current_user_id, 'site_id', true);
-                    ?>
-                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                    <?php
-                    $site_args = array(
-                        'post_type'      => 'site',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        $selected = ($site_id == $site->ID) ? 'selected' : '';
-                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-                    }
-                    echo '</select>';
-                }
-                ?>
             </fieldset>
             </div>
             <?php
