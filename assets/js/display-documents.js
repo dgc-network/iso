@@ -678,7 +678,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#doc-action-dialog").dialog({
             width: 450,
             modal: true,
@@ -729,7 +729,8 @@ jQuery(document).ready(function($) {
                     }
                 }
             }
-        });    
+        });
+*/        
     }
 
     function get_doc_action_list_data(doc_id) {

@@ -589,7 +589,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#doc-action-dialog").dialog({
             width: 450,
             modal: true,
@@ -643,7 +643,62 @@ jQuery(document).ready(function($) {
                 }
             }
         });    
+*/        
     }
+
+    $("#doc-action-dialog").dialog({
+        width: 450,
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "Save": function() {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_doc_action_dialog_data',
+                        '_action_id': $("#action-id").val(),
+                        '_action_title': $("#action-title").val(),
+                        '_action_content': $("#action-content").val(),
+                        '_next_job': $("#next-job").val(),
+                        '_next_leadtime': $("#next-leadtime").val(),
+                    },
+                    success: function (response) {
+                        $("#doc-action-dialog").dialog('close');
+                        //get_site_job_dialog_data(doc_id);
+                        get_doc_action_list_data(doc_id);
+                    },
+                    error: function (error) {
+                        console.error(error);                    
+                        alert(error);
+                    }
+                });            
+            },
+            "Delete": function() {
+                if (window.confirm("Are you sure you want to delete this doc action?")) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'del_doc_action_dialog_data',
+                            '_action_id': $("#action-id").val(),
+                        },
+                        success: function (response) {
+                            $("#doc-action-dialog").dialog('close');
+                            //get_site_job_dialog_data(doc_id);
+                            get_doc_action_list_data(doc_id);
+                        },
+                        error: function(error){
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                }
+            }
+        }
+    });    
 
     function get_doc_action_list_data(doc_id=false) {
         $.ajax({
