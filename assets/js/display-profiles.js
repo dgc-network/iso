@@ -579,8 +579,8 @@ jQuery(document).ready(function($) {
                     '_action_id': action_id,
                 },
                 success: function (response) {
-                    $("#doc-action-dialog").html(response.html_contain);
-                    $("#doc-action-dialog").dialog('open');
+                    $("#job-action-dialog").html(response.html_contain);
+                    $("#job-action-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);
@@ -589,7 +589,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#doc-action-dialog").dialog({
+        $("#job-action-dialog").dialog({
             width: 450,
             modal: true,
             autoOpen: false,
@@ -608,7 +608,7 @@ jQuery(document).ready(function($) {
                             '_next_leadtime': $("#next-leadtime").val(),
                         },
                         success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
+                            $("#job-action-dialog").dialog('close');
                             get_job_action_list_data(doc_id);
                         },
                         error: function (error) {
@@ -628,7 +628,7 @@ jQuery(document).ready(function($) {
                                 '_action_id': $("#action-id").val(),
                             },
                             success: function (response) {
-                                $("#doc-action-dialog").dialog('close');
+                                $("#job-action-dialog").dialog('close');
                                 get_job_action_list_data(doc_id);
                             },
                             error: function(error){

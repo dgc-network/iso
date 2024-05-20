@@ -839,7 +839,7 @@ if (!class_exists('display_profiles')) {
             $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             ob_start();
             ?>
-            <div id="doc-action-dialog" title="Action dialog">
+            <div id="job-action-dialog" title="Action dialog">
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <label for="action-title">Title:</label>
