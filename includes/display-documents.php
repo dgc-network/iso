@@ -897,8 +897,6 @@ if (!class_exists('display_documents')) {
                 );                
                 $this->display_doc_field_result($params);
             ?>
-            <input type="checkbox" id="proceed-to-todo" />
-            <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
             <hr>
             <?php
             if (empty($todo_status)){
@@ -920,6 +918,8 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
+                <input type="checkbox" id="proceed-to-todo" />
+                <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
                 <?php
             } else {
                 ?>
