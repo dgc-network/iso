@@ -736,7 +736,7 @@ if (!class_exists('display_profiles')) {
             <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <div id="job-action-dialog"></div>
+            <div id="doc-action-dialog"></div>
             <?php //echo $this->display_doc_action_dialog();?>
             <?php
             $html = ob_get_clean();
@@ -840,7 +840,7 @@ if (!class_exists('display_profiles')) {
             $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             ob_start();
             ?>
-            <div id="job-action-dialog" title="Action dialog">
+            <div id="doc-action-dialog" title="Action dialog">
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <label for="action-title">Title:</label>
