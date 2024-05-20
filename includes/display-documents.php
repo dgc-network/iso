@@ -1081,7 +1081,7 @@ if (!class_exists('display_documents')) {
                 <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <div id="doc-field-dialog"></div>
+            <div id="doc-field-dialog" title="Field dialog"></div>
             <?php //echo $this->display_doc_field_dialog();?>
             <?php
             $html = ob_get_clean();
@@ -1142,7 +1142,7 @@ if (!class_exists('display_documents')) {
             $order_field = get_post_meta($field_id, 'order_field', true);
             ob_start();
             ?>
-            <div id="doc-field-dialog" title="Field dialog">
+            <div id="doc-field-dialog-backup">
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>

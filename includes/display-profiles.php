@@ -234,7 +234,7 @@ if (!class_exists('display_profiles')) {
                     </fieldset>
                     <?php $this->display_new_user_dialog();?>
                     <?php //echo $this->display_site_user_dialog();?>
-                    <div id="site-user-dialog"></div>
+                    <div id="site-user-dialog" title="User dialog"></div>
 
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
@@ -271,7 +271,7 @@ if (!class_exists('display_profiles')) {
             $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
             ob_start();
             ?>
-            <div id="site-user-dialog" title="User dialog">
+            <div id="site-user-dialog-backup">
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
@@ -519,7 +519,7 @@ if (!class_exists('display_profiles')) {
                     </div>
                     </fieldset>        
                 </fieldset>
-                <div id="site-job-dialog"></div>
+                <div id="site-job-dialog" title="Job dialog"></div>
                 <?php //echo $this->display_site_job_dialog();?>                
                 <?php
             } else {
@@ -607,7 +607,7 @@ if (!class_exists('display_profiles')) {
             $department = get_post_meta($doc_id, 'department', true);
             ob_start();
             ?>
-            <div id="site-job-dialog" title="Job dialog">
+            <div id="site-job-dialog-backup">
             <fieldset>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <label for="job-number">Number:</label>
@@ -997,7 +997,8 @@ if (!class_exists('display_profiles')) {
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     </fieldset>        
                 </fieldset>
-                <?php $this->display_doc_category_dialog();?>
+                <div id="doc-category-dialog" title="Category dialog"></div>
+                <?php //$this->display_doc_category_dialog();?>
                 <?php
             } else {
                 ?>
