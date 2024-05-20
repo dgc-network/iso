@@ -233,7 +233,8 @@ if (!class_exists('display_profiles')) {
                     <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     </fieldset>
                     <?php $this->display_new_user_dialog();?>
-                    <?php echo $this->display_site_user_dialog();?>
+                    <?php //echo $this->display_site_user_dialog();?>
+                    <div id="site-user-dialog"></div>
 
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
@@ -518,7 +519,8 @@ if (!class_exists('display_profiles')) {
                     </div>
                     </fieldset>        
                 </fieldset>
-                <?php echo $this->display_site_job_dialog();?>                
+                <div id="site-job-dialog"></div>
+                <?php //echo $this->display_site_job_dialog();?>                
                 <?php
             } else {
                 ?>
