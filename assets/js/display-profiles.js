@@ -293,7 +293,7 @@ jQuery(document).ready(function($) {
         
         });
 
-        activate_doc_action_list_data();
+        //activate_doc_action_list_data();
 
         $("#new-site-job").on("click", function() {
             $.ajax({
