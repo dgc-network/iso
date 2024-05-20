@@ -736,7 +736,7 @@ if (!class_exists('display_profiles')) {
             <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <?php echo $this->display_doc_action_dialog();?>
+            <?php //echo $this->display_doc_action_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;            
@@ -803,7 +803,7 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
-        function retrieve_doc_action_list_data($doc_id = false, $nest = false) {
+        function retrieve_doc_action_list_data($doc_id = false, $is_nest = false) {
             // Initial query arguments
             $args = array(
                 'post_type'      => 'action',
@@ -818,7 +818,7 @@ if (!class_exists('display_profiles')) {
             // Perform the initial query
             $query = new WP_Query($args);
 
-            if ($nest) $query = $this->find_more_query_posts($query);
+            if ($is_nest) $query = $this->find_more_query_posts($query);
 
             return $query;
         }

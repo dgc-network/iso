@@ -610,8 +610,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            get_site_job_dialog_data(doc_id);
-                            //get_doc_action_list_data(doc_id);
+                            //get_site_job_dialog_data(doc_id);
+                            get_doc_action_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -631,8 +631,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                get_site_job_dialog_data(doc_id);
-                                //get_doc_action_list_data(doc_id);
+                                //get_site_job_dialog_data(doc_id);
+                                get_doc_action_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
