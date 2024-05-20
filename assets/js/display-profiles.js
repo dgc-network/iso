@@ -15,7 +15,6 @@ jQuery(document).ready(function($) {
     activate_site_profile_data();
     activate_site_job_list_data();
     activate_doc_category_list_data();
-    //activate_doc_action_list_data($("#doc-id").val());
 
     // my-profile scripts
     $("#my-profile-submit").on("click", function () {
@@ -316,8 +315,6 @@ jQuery(document).ready(function($) {
     
         $('[id^="edit-site-job-"]').on("click", function () {
             const doc_id = this.id.substring(14);
-            //get_site_job_dialog_data(doc_id);
-
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -359,7 +356,6 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
                             get_site_job_list_data();
-                            //window.location.replace(window.location.href);
                         },
                         error: function (error) {
                             console.error(error);
@@ -380,7 +376,6 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
                                 get_site_job_list_data();
-                                //window.location.replace(window.location.href);
                             },
                             error: function (error) {
                                 console.error(error);
@@ -392,28 +387,6 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-/*
-    function get_site_job_dialog_data(doc_id=false) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_site_job_dialog_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {
-                $("#site-job-dialog").html(response.html_contain);
-                $("#site-job-dialog").dialog('open');
-                activate_job_action_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    };
-*/
 
     function get_site_job_list_data(){
         $.ajax({
@@ -661,6 +634,5 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-    }
-    
+    }    
 });

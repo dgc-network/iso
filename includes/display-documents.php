@@ -1040,8 +1040,6 @@ if (!class_exists('display_documents')) {
         }
         
         // doc-field
-        //function display_doc_field_list($doc_id=false, $site_id=false) {
-
         function display_doc_field_list($doc_id=false) {
             ob_start();
             ?>
@@ -1061,7 +1059,6 @@ if (!class_exists('display_documents')) {
                         <?php
                         $x = 0;
                         if ($doc_id) $params = array('doc_id' => $doc_id);
-                        //if ($site_id) $params = array('site_id' => $site_id);                
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -1072,26 +1069,20 @@ if (!class_exists('display_documents')) {
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
-                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                                 echo '</tr>';
                                 $x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
-/*
-                        while ($x<50) {
-                            echo '<tr class="doc-field-list-'.$x.'" style="display:none;"></tr>';
-                            $x += 1;
-                        }
-*/
                         ?>
                     </tbody>
                 </table>
                 <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <?php echo $this->display_doc_field_dialog();?>
+            <div id="doc-field-dialog"></div>
+            <?php //echo $this->display_doc_field_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;    
