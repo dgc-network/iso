@@ -1592,6 +1592,13 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }    
             }
+
+            // Get the current URL without any query parameters
+            $current_url = remove_query_arg( array_keys( $_GET ) );
+            // Redirect to the URL without any query parameters
+            wp_redirect( $current_url );
+            exit();                
+
         }
         
         function set_todo_from_doc_report($action_id=false, $report_id=false) {
