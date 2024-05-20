@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
     activate_site_profile_data();
     activate_site_job_list_data();
     activate_doc_category_list_data();
-    activate_doc_action_list_data($("#doc-id").val());
+    //activate_doc_action_list_data($("#doc-id").val());
 
     // my-profile scripts
     $("#my-profile-submit").on("click", function () {
@@ -316,8 +316,8 @@ jQuery(document).ready(function($) {
     
         $('[id^="edit-site-job-"]').on("click", function () {
             const doc_id = this.id.substring(14);
-            get_site_job_dialog_data(doc_id);
-/*
+            //get_site_job_dialog_data(doc_id);
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -329,14 +329,13 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
-                    activate_doc_action_list_data(doc_id);
+                    activate_job_action_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
                     alert(error);
                 }
             });
-*/
         });
 
         $("#site-job-dialog").dialog({
@@ -393,7 +392,7 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-
+/*
     function get_site_job_dialog_data(doc_id=false) {
         $.ajax({
             type: 'POST',
@@ -406,16 +405,15 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $("#site-job-dialog").html(response.html_contain);
                 $("#site-job-dialog").dialog('open');
-                activate_doc_action_list_data(doc_id);
+                activate_job_action_list_data(doc_id);
             },
             error: function (error) {
                 console.error(error);
                 alert(error);
             }
         });
-
     };
-
+*/
 
     function get_site_job_list_data(){
         $.ajax({
@@ -550,7 +548,7 @@ jQuery(document).ready(function($) {
     }
 
     // doc-action scripts
-    function activate_doc_action_list_data(doc_id=false) {
+    function activate_job_action_list_data(doc_id=false) {
         $("#new-doc-action").on("click", function() {
             jQuery.ajax({
                 type: 'POST',
@@ -561,7 +559,7 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    get_doc_action_list_data(doc_id);
+                    get_job_action_list_data(doc_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -611,8 +609,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            //get_site_job_dialog_data(doc_id);
-                            get_doc_action_list_data(doc_id);
+                            get_job_action_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -632,8 +629,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                //get_site_job_dialog_data(doc_id);
-                                get_doc_action_list_data(doc_id);
+                                get_job_action_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
@@ -646,62 +642,8 @@ jQuery(document).ready(function($) {
         });    
 
     }
-/*
-    $("#doc-action-dialog").dialog({
-        width: 450,
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "Save": function() {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_doc_action_dialog_data',
-                        '_action_id': $("#action-id").val(),
-                        '_action_title': $("#action-title").val(),
-                        '_action_content': $("#action-content").val(),
-                        '_next_job': $("#next-job").val(),
-                        '_next_leadtime': $("#next-leadtime").val(),
-                    },
-                    success: function (response) {
-                        $("#doc-action-dialog").dialog('close');
-                        //get_site_job_dialog_data($("#doc-id").val());
-                        get_doc_action_list_data($("#doc-id").val());
-                    },
-                    error: function (error) {
-                        console.error(error);                    
-                        alert(error);
-                    }
-                });            
-            },
-            "Delete": function() {
-                if (window.confirm("Are you sure you want to delete this doc action?")) {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'del_doc_action_dialog_data',
-                            '_action_id': $("#action-id").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
-                            //get_site_job_dialog_data($("#doc-id").val());
-                            get_doc_action_list_data($("#doc-id").val());
-                        },
-                        error: function(error){
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                }
-            }
-        }
-    });    
-*/
-    function get_doc_action_list_data(doc_id=false) {
+
+    function get_job_action_list_data(doc_id=false) {
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -712,7 +654,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#doc-action-list").html(response.html_contain);
-                activate_doc_action_list_data(doc_id);
+                activate_job_action_list_data(doc_id);
             },
             error: function (error) {
                 console.error(error);
