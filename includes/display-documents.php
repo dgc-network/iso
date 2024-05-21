@@ -1501,9 +1501,10 @@ if (!class_exists('display_documents')) {
         function set_initial_iso_document() {
             $response = array('success' => false, 'error' => 'Invalid data format');
         
-            if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+            //if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
+            if (isset($_POST['_doc_category_id'])) {
                 $doc_category = sanitize_text_field($_POST['_doc_category_id']);
-                $site_id = sanitize_text_field($_POST['_doc_site_id']);
+                //$site_id = sanitize_text_field($_POST['_doc_site_id']);
                 // Retrieve documents based on doc_category_id and doc_site_id
                 $args = array(
                     'post_type'      => 'document',
@@ -1594,13 +1595,13 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }    
             }
-
+/*
             // Get the current URL without any query parameters
             $current_url = remove_query_arg( array_keys( $_GET ) );
             // Redirect to the URL without any query parameters
             wp_redirect( $current_url );
             exit();                
-
+*/
         }
         
         function set_todo_from_doc_report($action_id=false, $report_id=false) {
