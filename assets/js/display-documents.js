@@ -300,7 +300,7 @@ jQuery(document).ready(function($) {
                 _is_admin: $("#is-admin").val()
             },
             success: function (response) {
-                if (response.todo_status>0) {
+                if (response.todo_status>0 && $("#is-admin").val()!=1) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     if (response.todo_status==-1) {
