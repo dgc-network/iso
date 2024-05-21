@@ -1541,22 +1541,22 @@ if (!class_exists('display_documents')) {
         function get_shared_document($doc_id){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            // Create the post
-            $new_post = array(
-                'post_title'    => 'No title',
-                'post_content'  => 'Your post content goes here.',
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-                'post_type'     => 'document',
-            );    
-            $post_id = wp_insert_post($new_post);
-        
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            // Create the post
+            $new_post = array(
+                'post_title'    => get_the_title($doc_id),
+                'post_content'  => get_post_field('post_content', $doc_id),
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+                'post_type'     => 'document',
+            );    
+            $post_id = wp_insert_post($new_post);
+        
             update_post_meta( $post_id, 'site_id', $site_id);
             update_post_meta( $post_id, 'doc_title', $doc_title);
             update_post_meta( $post_id, 'doc_number', $doc_number);
