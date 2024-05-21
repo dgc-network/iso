@@ -1541,6 +1541,7 @@ if (!class_exists('display_documents')) {
         function get_shared_document($doc_id){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $job_number = get_post_meta($doc_id, 'job_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -1558,6 +1559,7 @@ if (!class_exists('display_documents')) {
             $post_id = wp_insert_post($new_post);
         
             update_post_meta( $post_id, 'site_id', $site_id);
+            update_post_meta( $post_id, 'job_number', $job_number);
             update_post_meta( $post_id, 'doc_title', $doc_title);
             update_post_meta( $post_id, 'doc_number', $doc_number);
             update_post_meta( $post_id, 'doc_revision', $doc_revision);
