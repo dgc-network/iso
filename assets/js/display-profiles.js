@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_site_dialog_data',
+                    'action': 'set_site_profile_data',
                     '_site_id': $("#site-id").val(),
                     '_site_title': $("#site-title").val(),
                     '_image_url': $("#image-url").val(),

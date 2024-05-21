@@ -356,7 +356,7 @@ function get_site_dialog_data() {
 add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
 add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
 
-function set_site_dialog_data() {
+function set_site_profile_data() {
     $response = array('success' => false, 'error' => 'Invalid data format');
     if( isset($_POST['_site_id']) ) {
         $site_id = sanitize_text_field($_POST['_site_id']);
@@ -385,6 +385,6 @@ function set_site_dialog_data() {
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_site_dialog_data', 'set_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_set_site_dialog_data', 'set_site_dialog_data' );
+add_action( 'wp_ajax_set_site_profile_data', 'set_site_profile_data' );
+add_action( 'wp_ajax_nopriv_set_site_profile_data', 'set_site_profile_data' );
 

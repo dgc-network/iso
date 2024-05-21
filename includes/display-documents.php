@@ -159,6 +159,14 @@ if (!class_exists('display_documents')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
 
+                // Display ISO document statement if initial ID is existed
+                if (isset($_GET['_initial'])) {
+                    $doc_id = sanitize_text_field($_GET['_initial']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_iso_document_statement($doc_id);
+                    echo '</div>';
+                }
+
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_get_shared_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
@@ -186,14 +194,6 @@ if (!class_exists('display_documents')) {
                     $doc_id = sanitize_text_field($_GET['_doc_frame']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_doc_frame_contain($doc_id);
-                    echo '</div>';
-                }
-
-                // Display ISO document statement if initial ID is existed
-                if (isset($_GET['_initial'])) {
-                    $doc_id = sanitize_text_field($_GET['_initial']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_iso_document_statement($doc_id);
                     echo '</div>';
                 }
 
@@ -1358,6 +1358,42 @@ if (!class_exists('display_documents')) {
         }
         
         // document misc
+        function set_new_site_by_title() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_new_site_title'])) {
+                // Sanitize input values
+                $new_site_title = sanitize_text_field($_POST['_new_site_title']);
+                
+                // Check if a site with the same title already exists
+                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
+                
+                if ($existing_site) {
+                    // A site with the same title already exists
+                    $response['error'] = 'A site with the same title already exists.';
+                } else {
+                    // Insert the new site
+                    $current_user_id = get_current_user_id();
+                    $new_site_args = array(
+                        'post_title'    => $new_site_title,
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'site',
+                    );
+                    $new_site_id = wp_insert_post($new_site_args);
+                    
+                    if (is_wp_error($new_site_id)) {
+                        // Error occurred while inserting the site
+                        $response['error'] = $new_site_id->get_error_message();
+                    } else {
+                        // Successfully created a new site
+                        $response['new_site_id'] = $new_site_id;
+                        $response['success'] = 'Completed to create a new site';
+                    }
+                }
+            }
+            wp_send_json($response);
+        }
+        
         function count_doc_category($doc_category){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1460,42 +1496,6 @@ if (!class_exists('display_documents')) {
             <?php
             $html = ob_get_clean();
             return $html;
-        }
-        
-        function set_new_site_by_title() {
-            $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_new_site_title'])) {
-                // Sanitize input values
-                $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-                
-                // Check if a site with the same title already exists
-                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
-                
-                if ($existing_site) {
-                    // A site with the same title already exists
-                    $response['error'] = 'A site with the same title already exists.';
-                } else {
-                    // Insert the new site
-                    $current_user_id = get_current_user_id();
-                    $new_site_args = array(
-                        'post_title'    => $new_site_title,
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'site',
-                    );
-                    $new_site_id = wp_insert_post($new_site_args);
-                    
-                    if (is_wp_error($new_site_id)) {
-                        // Error occurred while inserting the site
-                        $response['error'] = $new_site_id->get_error_message();
-                    } else {
-                        // Successfully created a new site
-                        $response['new_site_id'] = $new_site_id;
-                        $response['success'] = 'Completed to create a new site';
-                    }
-                }
-            }
-            wp_send_json($response);
         }
         
         function set_initial_iso_document() {
