@@ -1408,11 +1408,13 @@ if (!class_exists('display_documents')) {
                         'value'   => $doc_category,
                         'compare' => '=',
                     ),
+/*                    
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
                         'compare' => '=',
                     ),
+*/                    
                 ),
             );    
             $query = new WP_Query($args);    
@@ -1450,9 +1452,7 @@ if (!class_exists('display_documents')) {
         
             <fieldset>
                 <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-                <div id="site-hint" style="display:none; color:#999;"></div>
-        
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" disabled class="text ui-widget-content ui-corner-all" />
                 <?php
                 $args = array(
                     'post_type'      => 'doc-report',
