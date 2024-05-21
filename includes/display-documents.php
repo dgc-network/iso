@@ -589,7 +589,7 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
+                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -646,7 +646,7 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
+                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('文件簽核記錄', 'your-text-domain')?></button>
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -879,8 +879,8 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">        
                 <?php if ($todo_status){?>
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-                    <span id='unpublished-report-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('表單簽核記錄', 'your-text-domain')?></button>
+                    <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 <?php }?>
                 </div>
             </div>

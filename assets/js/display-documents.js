@@ -914,7 +914,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#unpublished-report-").on("click", function () {
+        $('[id^="report-unpublished-"]').on("click", function () {
             const report_id = this.id.substring(19);
             if (window.confirm("Are you sure you want to unpublish this report?")) {
                 $.ajax({
