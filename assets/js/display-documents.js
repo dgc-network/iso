@@ -50,7 +50,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    window.location.replace(window.location.href);
+                    //window.location.replace(window.location.href);
+                    window.location.replace('/');
                 },
                 error: function(error){
                     console.error(error);                    
