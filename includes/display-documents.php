@@ -429,13 +429,13 @@ if (!class_exists('display_documents')) {
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                <label id="doc-frame-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label><br>
+                <label id="doc-frame-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label>
             </div>
             <div id="doc-report-div" style="display:none;">
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
-                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label><br>
+                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
             <div class="mermaid">
@@ -465,12 +465,9 @@ if (!class_exists('display_documents')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;    
-    
                 ?>
             </div>
 
-            <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
-            </div>
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
@@ -482,6 +479,7 @@ if (!class_exists('display_documents')) {
                 <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>
+
             <div id="doc-report-div1" style="display:none;">            
                 <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                 <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
