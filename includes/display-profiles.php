@@ -220,11 +220,11 @@ if (!class_exists('display_profiles')) {
                         foreach ($users as $user) {
                             $is_site_admin = $this->is_site_admin($user->ID, $site_id);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
-                            $is_other_site = ($user_site == $site_id) ? '' : '*';
+                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
                             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
                             ?>
                             <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                                <td style="text-align:center;"><?php echo $is_other_site.$user->display_name; ?></td>
+                                <td style="text-align:center;"><?php echo $display_name; ?></td>
                                 <td style="text-align:center;"><?php echo $user->user_email; ?></td>
                                 <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
                             </tr>
