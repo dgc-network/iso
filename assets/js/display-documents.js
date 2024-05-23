@@ -943,7 +943,7 @@ jQuery(document).ready(function($) {
                     }
                 });
             }    
-
+/*
             const ajaxData = {
                 'action': 'duplicate_doc_report_data',
             };
@@ -970,6 +970,7 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+*/            
         });
 
         $("#signature-record").on("click", function () {
