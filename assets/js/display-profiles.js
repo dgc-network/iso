@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
                     $('[id^="check-user-job-"]').on("click", function () {
                         const doc_id = this.id.substring(15);
                         // Toggle the checkbox state
-                        $("#myCheckbox-"+doc_id).prop("checked", function(i, value) {
+                        $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
                             return !value;
                         });
                         
@@ -163,7 +163,7 @@ jQuery(document).ready(function($) {
                                     'action': 'set_user_doc_data',
                                     _doc_id : doc_id,
                                     _user_id : user_id,
-                                    _is_user_doc : $("#myCheckbox-"+doc_id).is(":checked") ? 1 : 0,
+                                    _is_user_doc : $("#is-user-doc-"+doc_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);
