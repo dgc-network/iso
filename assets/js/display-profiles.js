@@ -185,13 +185,13 @@ jQuery(document).ready(function($) {
         });
 
         $("#new-user-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
         });
     
         $("#site-user-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {
@@ -336,7 +336,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#site-job-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {
@@ -451,7 +451,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-category-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {
@@ -563,7 +563,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-action-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {

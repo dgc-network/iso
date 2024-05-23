@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#document-setting-dialog").dialog({
-        width: 450,
+        width: 390,
         modal: true,
         autoOpen: false,
     });
@@ -583,7 +583,7 @@ jQuery(document).ready(function($) {
         });
     
         $("#doc-field-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {
@@ -681,7 +681,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-action-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
             buttons: {
@@ -760,7 +760,7 @@ jQuery(document).ready(function($) {
         });
     
         $("#doc-report-setting-dialog").dialog({
-            width: 450,
+            width: 390,
             modal: true,
             autoOpen: false,
         });
