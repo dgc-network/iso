@@ -216,7 +216,7 @@ if (!class_exists('display_profiles')) {
                         }
                         // Loop through the users
                         foreach ($users as $user) {
-                            $is_site_admin = $this->is_site_admin($user->ID);
+                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
                             $is_other_site = ($user_site == $site_id) ? '' : '*';
                             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
@@ -426,10 +426,10 @@ if (!class_exists('display_profiles')) {
             <?php
         }
 
-        function is_site_admin($user_id=false) {
+        function is_site_admin($user_id=false, $site_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();
-            $site_id = get_user_meta($user_id, 'site_id', true);
+            if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
             // Get the user's site_admin_ids as an array
             $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
             // If $site_admin_ids is not an array, convert it to an array
