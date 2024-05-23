@@ -14,6 +14,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
+            add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
+            add_action( 'wp_ajax_nopriv_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
             add_action( 'wp_ajax_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
             add_action( 'wp_ajax_set_site_user_dialog_data', array( $this, 'set_site_user_dialog_data' ) );
@@ -266,6 +268,36 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        function set_site_profile_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if( isset($_POST['_site_id']) ) {
+                $site_id = sanitize_text_field($_POST['_site_id']);
+                $site_title = sanitize_text_field($_POST['_site_title']);
+                // Update the post
+                $post_data = array(
+                    'ID'         => $site_id,
+                    'post_title' => $site_title,
+                );        
+                wp_update_post($post_data);
+                update_post_meta( $site_id, 'image_url', $_POST['_image_url'] );
+                $response = array('success' => true);
+            } else {
+                // Set up the new post data
+                $current_user_id = get_current_user_id();
+                $site_title = sanitize_text_field($_POST['_site_title']);
+                $new_post = array(
+                    'post_title'    => $site_title,
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'site',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_user_meta( $current_user_id, 'site_id', $post_id );
+            }
+            wp_send_json($response);
+        }
+        
         function display_site_user_dialog($user_id=false) {
             $user_data = get_userdata($user_id);
             $is_site_admin = $this->is_site_admin($user_id);

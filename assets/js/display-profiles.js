@@ -210,7 +210,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-user-dialog").dialog('close');
-                            get_site_profile_data();
+                            //get_site_profile_data();
+                            window.location.replace(window.location.href);
                         },
                         error: function (error) {
                             console.error(error);
@@ -240,8 +241,7 @@ jQuery(document).ready(function($) {
                     }
                 },
             }
-        });
-    
+        });    
     }
 
     function get_site_profile_data(){
