@@ -334,12 +334,16 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
                 
-                // Add a new meta query
-                $args['meta_query'][] = array(
-                    'key'     => 'doc_id',
-                    'value'   => $user_doc_ids, // Value is the array of user doc IDs
-                    'compare' => 'IN',
-                );        
+                $profiles_class = new display_profiles();
+                $is_site_admin = $profiles_class->is_site_admin();
+                if (!$is_site_admin) {
+                    // Add a new meta query
+                    $args['meta_query'][] = array(
+                        'key'     => 'doc_id',
+                        'value'   => $user_doc_ids, // Value is the array of user doc IDs
+                        'compare' => 'IN',
+                    );    
+                }
             }
         
             $query = new WP_Query($args);

@@ -1564,6 +1564,28 @@ if (!class_exists('display_documents')) {
             update_post_meta( $post_id, 'doc_frame', $doc_frame);
             update_post_meta( $post_id, 'is_doc_report', $is_doc_report);
         
+            // Create the Action list for $post_id
+            $profiles_class = new display_profiles();
+            $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $new_post = array(
+                        'post_title'    => get_the_title($doc_id),
+                        'post_content'  => get_post_field('post_content', $doc_id),
+                        'post_status'   => 'publish',
+                        'post_author'   => $current_user_id,
+                        'post_type'     => 'action',
+                    );    
+                    $new_action_id = wp_insert_post($new_post);
+                    $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                    $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                    update_post_meta( $new_action_id, 'doc_id', $post_id);
+                    update_post_meta( $new_action_id, 'next_job', $new_next_job);
+                    update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
+                endwhile;
+                wp_reset_postdata();
+            }
+
             if ($is_doc_report==1){
                 $params = array(
                     'doc_id'     => $doc_id,
