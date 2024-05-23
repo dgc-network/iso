@@ -165,12 +165,13 @@ if (!class_exists('display_profiles')) {
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $current_user = get_userdata($current_user_id);        
+            $is_site_admin = $this->is_site_admin();
+
             // Check if the user is administrator or initial...
-            if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
+            if ($is_site_admin || current_user_can('administrator') || $initial) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
@@ -215,10 +216,10 @@ if (!class_exists('display_profiles')) {
                         }
                         // Loop through the users
                         foreach ($users as $user) {
-                            $is_site_admin = get_user_meta($user->ID, 'is_site_admin', true);
+                            $is_site_admin = $this->is_site_admin($user->ID);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
                             $is_other_site = ($user_site == $site_id) ? '' : '*';
-                            $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
+                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
                             ?>
                             <tr id="edit-site-user-<?php echo $user->ID; ?>">
                                 <td style="text-align:center;"><?php echo $is_other_site.$user->display_name; ?></td>
@@ -266,18 +267,18 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_user_dialog($user_id=false) {
-            $current_user = get_userdata($user_id);
-            $is_site_admin = get_user_meta($user_id, 'is_site_admin', true);
-            $is_admin_checked = ($is_site_admin == 1) ? 'checked' : '';
+            $user_data = get_userdata($user_id);
+            $is_site_admin = $this->is_site_admin($user_id);
+            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
             ob_start();
             ?>
             <div id="site-user-dialog-backup">
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
-                <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 if (current_user_can('administrator')) {
                     $current_user_id = get_current_user_id();
@@ -359,12 +360,33 @@ if (!class_exists('display_profiles')) {
                     $response['error'] = $result->get_error_message();
                 } else {
                     // Update user meta
-                    update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
+                    $is_site_admin = sanitize_text_field($_POST['_is_site_admin']);
+                    //update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
                     update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                    $this->set_site_admin_data($user_id, $is_site_admin);
                     $response = array('success' => true);
                 }
             }            
             wp_send_json($response);
+        }
+
+        function set_site_admin_data($user_id=false, $is_site_admin=false) {
+            if (!$user_id) $user_id = get_current_user_id();
+            $site_id = get_user_meta($user_id, 'site_id', true);
+            $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+            if (!is_array($site_admin_ids)) $site_admin_ids = array();
+            $site_exists = in_array($site_id, $site_admin_ids);
+
+            // Check the condition and update 'site_admin_ids' accordingly
+            if ($is_site_admin && !$site_exists) {
+                // Add $site_id to 'site_admin_ids'
+                $site_admin_ids[] = $site_id;
+            } elseif (!$is_site_admin && $site_exists) {
+                // Remove $site_id from 'site_admin_ids'
+                $site_admin_ids = array_diff($site_admin_ids, array($site_id));
+            }        
+            // Update 'site_admin_ids' meta value
+            update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
         }
 
         function del_site_user_dialog_data() {
@@ -404,15 +426,27 @@ if (!class_exists('display_profiles')) {
             <?php
         }
 
+        function is_site_admin($user_id=false) {
+            // Get the current user ID
+            if (!$user_id) $user_id = get_current_user_id();
+            $site_id = get_user_meta($user_id, 'site_id', true);
+            // Get the user's site_admin_ids as an array
+            $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+            // If $site_admin_ids is not an array, convert it to an array
+            if (!is_array($site_admin_ids)) $site_admin_ids = array();
+            // Check if the current user has the specified site_id in their metadata
+            return in_array($site_id, $site_admin_ids);
+        }
+
         function is_user_doc($doc_id=false, $user_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();    
             // Get the user's doc IDs as an array
-            $user_docs = get_user_meta($user_id, 'user_doc_ids', true);
-            // If $user_docs is not an array, convert it to an array
-            if (!is_array($user_docs)) $user_docs = array();
+            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
+            // If $user_doc_ids is not an array, convert it to an array
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
             // Check if the current user has the specified doc ID in their metadata
-            return in_array($doc_id, $user_docs);
+            return in_array($doc_id, $user_doc_ids);
         }
 
         function set_user_doc_data() {
@@ -446,13 +480,13 @@ if (!class_exists('display_profiles')) {
         function display_site_job_list($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $current_user = get_userdata($current_user_id);
+            $is_site_admin = $this->is_site_admin();
 
             // Check if the user is administrator
-            if ($is_site_admin==1 || current_user_can('administrator') || $initial) {
+            if ($is_site_admin || current_user_can('administrator') || $initial) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
@@ -537,7 +571,7 @@ if (!class_exists('display_profiles')) {
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
+            $is_site_admin = $this->is_site_admin();
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (empty($user_doc_ids)) $user_doc_ids=array();
 
@@ -947,12 +981,12 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_list() {
             ob_start();
             $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-            $current_user = get_userdata($current_user_id);
+            $is_site_admin = $this->is_site_admin();
 
-            if ($is_site_admin==1 || current_user_can('administrator')) {
+            if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />

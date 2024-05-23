@@ -330,7 +330,7 @@ jQuery(document).ready(function($) {
 
                         }
                     } else {
-                        if (response.is_site_admin==1 || response.is_user_doc) {
+                        if (response.is_site_admin || response.is_user_doc) {
                             // Get the current URL
                             var currentUrl = window.location.href;
                             // Create a URL object

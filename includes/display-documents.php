@@ -363,9 +363,9 @@ if (!class_exists('display_documents')) {
                 $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                 $todo_status = get_post_meta($doc_id, 'todo_status', true);
                 $current_user_id = get_current_user_id();
-                $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
-                if (current_user_can('administrator')) $is_site_admin = 1;
                 $profiles_class = new display_profiles();
+                $is_site_admin = $profiles_class->is_site_admin();
+                if (current_user_can('administrator')) $is_site_admin = true;
                 $is_user_doc = $profiles_class->is_user_doc($doc_id, $current_user_id);
                 $response['is_doc_report'] = $is_doc_report;
                 $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;

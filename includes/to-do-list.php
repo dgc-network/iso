@@ -376,10 +376,11 @@ if (!class_exists('to_do_list')) {
             if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
         
             $current_user_id = get_current_user_id();
-            $is_site_admin = get_user_meta($current_user_id, 'is_site_admin', true);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-        
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+    
             ob_start();
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
