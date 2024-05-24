@@ -1269,13 +1269,14 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-
+                    $field_value = get_post_meta($report_id, $field_name, true);
+/*
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
                         $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                     }
-
+*/
                     switch (true) {
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';

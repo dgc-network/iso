@@ -377,7 +377,7 @@ if (!class_exists('to_do_list')) {
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+            //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
         
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -389,7 +389,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
-            <input type="hidden" id="report-id" value="<?php echo $report_id;?>" />
+            <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
             <fieldset>
@@ -398,7 +398,8 @@ if (!class_exists('to_do_list')) {
                 // doc_report_dialog data
                 $params = array(
                     'doc_id'     => $doc_id,
-                    'report_id'     => $report_id,
+                    //'report_id'     => $report_id,
+                    'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
                 $documents_class = new display_documents();
                 $documents_class->display_doc_field_result($params);

@@ -760,7 +760,7 @@ jQuery(document).ready(function($) {
         });
     
         $("#doc-report-setting-dialog").dialog({
-            width: 390,
+            width: 600,
             modal: true,
             autoOpen: false,
         });
