@@ -11,7 +11,7 @@ if (!class_exists('to_do_list')) {
             add_action( 'init', array( $this, 'register_todo_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_action_post_type' ) );
-            add_filter( 'cron_schedules', array( $this, 'your_custom_cron_schedules' ) );
+            add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -54,8 +54,8 @@ if (!class_exists('to_do_list')) {
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
 
                 if ($_GET['_select_todo']=='2') $this->list_all_scheduled_events();
-                if (isset($_GET['_remove_my_custom_scheduled_events'])) {
-                    $this->remove_my_custom_scheduled_events($_GET['_remove_my_custom_scheduled_events']);
+                if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
+                    $this->remove_iso_helper_scheduled_events($_GET['_remove_iso_helper_scheduled_events']);
                     $this->list_all_scheduled_events();
                     exit;
                 }
@@ -489,15 +489,15 @@ if (!class_exists('to_do_list')) {
                     );    
                     $todo_id = wp_insert_post($new_post);
                     if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
-                    if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+                    //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
                 }
         
                 // Update current todo
-                update_post_meta( $todo_id, 'submit_user', $current_user_id);
-                update_post_meta( $todo_id, 'submit_action', $action_id);
-                update_post_meta( $todo_id, 'submit_time', time());
+                update_post_meta( $todo_id, 'submit_user', $current_user_id );
+                update_post_meta( $todo_id, 'submit_action', $action_id );
+                update_post_meta( $todo_id, 'submit_time', time() );
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
+                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
         
                 // Create a new doc-report if is_doc_report==1
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -531,7 +531,7 @@ if (!class_exists('to_do_list')) {
                 // set next todo and actions
                 $params = array(
                     'action_id' => $action_id,
-                    'todo_id' => $todo_id,
+                    //'todo_id' => $todo_id,
                     'prev_report_id' => $new_report_id,
                 );        
                 if ($next_job>0) $this->set_next_todo_and_actions($params);
@@ -541,30 +541,32 @@ if (!class_exists('to_do_list')) {
         
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
-            // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
+            // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-            // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['doc_id']
+            // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
-            $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $current_user_id = get_current_user_id();
+            $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
+            $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
         
+            // Find the next_job, next_leadtime, and 
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
                 $todo_id       = get_post_meta($action_id, 'todo_id', true);
-                if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-                if ($next_job>0) $todo_title = get_the_title($next_job);
-                $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-                
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $doc_id        = get_post_meta($todo_id, 'doc_id', true);
+                //if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
+/*                
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                 //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+*/                
             }
         
-            if ($action_id==0) {  // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
+            // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
+            if ($action_id==0) {  
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
                 if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 if (!$next_job) $next_job = $doc_id;
@@ -574,6 +576,7 @@ if (!class_exists('to_do_list')) {
                 $current_user_id = 1;
             }
             
+            if ($next_job>0) $todo_title = get_the_title($next_job);
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
         
@@ -585,18 +588,20 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
-            if ($next_job>0) update_post_meta( $new_todo_id, 'doc_id', $next_job );
-            if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
+            //if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
         
+            if ($next_job>0) update_post_meta( $new_todo_id, 'doc_id', $next_job );
             if ($next_job==-1 || $next_job==-2) {
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
                 update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
                 update_post_meta( $new_todo_id, 'submit_action', $action_id);
                 update_post_meta( $new_todo_id, 'submit_time', time());
-                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job);
-                if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+                //if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
+                if ($prev_report_id) update_post_meta( $prev_report_id, 'todo_status', $next_job );
+                if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
+                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
             }
         
             if ($next_job>0) {
@@ -917,12 +922,11 @@ if (!class_exists('to_do_list')) {
         
             // Clear the previous scheduled event if it exists
             if ($prev_start_time) {
-                $prev_hook_name = 'my_custom_post_event_' . $prev_start_time;
-                //wp_clear_scheduled_hook($prev_hook_name);
-                $this->remove_my_custom_scheduled_events($prev_hook_name);
+                $prev_hook_name = 'iso_helper_post_event_' . $prev_start_time;
+                $this->remove_iso_helper_scheduled_events($prev_hook_name);
             }
         
-            $hook_name = 'my_custom_post_event_' . $start_time;
+            $hook_name = 'iso_helper_post_event_' . $start_time;
         
             // Schedule the event based on the selected interval
             switch ($interval) {
@@ -963,13 +967,13 @@ if (!class_exists('to_do_list')) {
             }
         
             // Store the hook name in options (outside switch statement)
-            update_option('my_custom_post_event_hook_name', $hook_name);
+            update_option('iso_helper_post_event_hook_name', $hook_name);
         
             // Return the hook name for later use
             return $hook_name;
         }
 
-        function your_custom_cron_schedules($schedules) {
+        function iso_helper_cron_schedules($schedules) {
             $schedules['biweekly'] = array(
                 'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
                 'display'  => __('Every Two Weeks'),
@@ -986,7 +990,7 @@ if (!class_exists('to_do_list')) {
         }
 
         // Method for the callback function
-        public function my_custom_post_event_callback($params) {
+        public function iso_helper_post_event_callback($params) {
             // Add your code to programmatically add a post here
             $this->set_next_todo_and_actions($params);
         }
@@ -994,12 +998,12 @@ if (!class_exists('to_do_list')) {
         // Method to schedule the event and add the action
         public function schedule_event_and_action() {
             // Retrieve the hook name from options
-            $hook_name = get_option('my_custom_post_event_hook_name');
+            $hook_name = get_option('iso_helper_post_event_hook_name');
             // Add the action with the dynamic hook name
-            add_action($hook_name, array($this, 'my_custom_post_event_callback'));
+            add_action($hook_name, array($this, 'iso_helper_post_event_callback'));
         }
             
-        function remove_my_custom_scheduled_events($remove_name='my_') {
+        function remove_iso_helper_scheduled_events($remove_name='iso_') {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
                 $cron_array = _get_cron_array();

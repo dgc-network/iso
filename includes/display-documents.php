@@ -891,7 +891,7 @@ if (!class_exists('display_documents')) {
             <fieldset>
             <?php
                 $params = array(
-                    'doc_id'     => $doc_id,
+                    //'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
                 $this->display_doc_field_result($params);
@@ -1257,7 +1257,8 @@ if (!class_exists('display_documents')) {
         function display_doc_field_result($args) {
 
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
-            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            if (empty($report_id)) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
 
             $params = array(
                 'doc_id'     => $doc_id,
@@ -1271,14 +1272,14 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                    $field_value = get_post_meta($report_id, $field_name, true);
-/*
+                    //$field_value = get_post_meta($report_id, $field_name, true);
+
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
                         $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                     }
-*/
+
                     switch (true) {
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
