@@ -223,8 +223,9 @@ if (!class_exists('to_do_list')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            if ($is_doc_report!=1) $doc_title .= '('.$doc_number.')';
-                            if ($report_id) $doc_title .= '(Report#' . $report_id . ')';                            
+                            if ($is_doc_report) $doc_title .= '(電子表單)';
+                            if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
+                            //if ($report_id) $doc_title .= '(Report#' . $report_id . ')';                            
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
@@ -475,7 +476,7 @@ if (!class_exists('to_do_list')) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
                     $todo_title = get_the_title($doc_id);
                     $report_id = sanitize_text_field($_POST['_report_id']);
-                    if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+                    //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
                     $new_post = array(
                         'post_title'    => $todo_title,
                         'post_status'   => 'publish',
@@ -556,7 +557,7 @@ if (!class_exists('to_do_list')) {
                 $report_id = get_post_meta($todo_id, 'report_id', true);
                 if (empty($report_id)) $report_id=$prev_report_id;
                 if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+                //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
             }
         
             if ($action_id==0) {  // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
@@ -627,7 +628,9 @@ if (!class_exists('to_do_list')) {
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            if ($is_doc_report) $doc_title .= '(電子表單)';
+            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
             $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
@@ -667,7 +670,9 @@ if (!class_exists('to_do_list')) {
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            if ($is_doc_report) $doc_title .= '(電子表單)';
+            //if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
@@ -792,7 +797,9 @@ if (!class_exists('to_do_list')) {
                             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                             $todo_site = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                            if ($is_doc_report) $doc_title .= '(電子表單)';
+                            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);

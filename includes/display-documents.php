@@ -859,7 +859,9 @@ if (!class_exists('display_documents')) {
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            if ($report_id) $doc_title .= '(Report#'.$report_id.')';
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            if ($is_doc_report) $doc_title .= '(電子表單)';
+            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
         
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
