@@ -536,7 +536,7 @@ if (!class_exists('to_do_list')) {
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
             // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['to_id'] and $args['prev_report_id']
-            // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
+            // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From my_custom_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
@@ -559,10 +559,11 @@ if (!class_exists('to_do_list')) {
             }
         
             if ($action_id==0) {  // for frquence doc_report to generate a new todo
-                $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-                $next_job = $doc_id;
+                $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
+                if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+                if (!$next_job) $next_job = $doc_id;
                 $todo_title = get_the_title($next_job);
-                update_post_meta( $doc_id, 'todo_status', -1);
+                //update_post_meta( $doc_id, 'todo_status', -1);
                 $next_leadtime = 86400;
                 $current_user_id = 1;
             }
@@ -578,7 +579,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
-            if ($doc_id) update_post_meta( $new_todo_id, 'doc_id', $doc_id );
+            if ($next_job>0) update_post_meta( $new_todo_id, 'doc_id', $next_job );
             if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );

@@ -1651,7 +1651,8 @@ if (!class_exists('display_documents')) {
         
             // set next todo and actions
             $params = array(
-                'action_id' => $action_id,
+                //'action_id' => $action_id,
+                'next_job' => $next_job,
                 'prev_report_id' => $report_id,
             );        
             $todo_class = new to_do_list();
