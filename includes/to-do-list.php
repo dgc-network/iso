@@ -558,7 +558,7 @@ if (!class_exists('to_do_list')) {
                 if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
             }
         
-            if ($action_id==0) {  // for frquence doc_report to generate a new todo
+            if ($action_id==0) {  // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
                 if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 if (!$next_job) $next_job = $doc_id;
