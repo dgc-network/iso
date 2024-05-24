@@ -260,6 +260,8 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);        
             if ($search_query) {
@@ -267,7 +269,7 @@ if (!class_exists('to_do_list')) {
                     'post_type'      => 'document',
                     'posts_per_page' => $posts_per_page,
                     'paged'          => $current_page,
-                    'post__in'       => $user_doc_ids, // Array of document post IDs
+                    //'post__in'       => $user_doc_ids, // Array of document post IDs
                     'meta_query'     => array(
                         'relation' => 'AND',
                         array(
@@ -302,6 +304,10 @@ if (!class_exists('to_do_list')) {
                         ),
                     ),
                 );
+
+                if (!$is_site_admin) {
+                    $args['post__in'] = $user_doc_ids; // Array of document post IDs
+                }
         
                 // Add meta query for searching across all meta keys
                 $document_meta_keys = get_post_type_meta_keys('document');
@@ -335,8 +341,6 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
                 
-                $profiles_class = new display_profiles();
-                $is_site_admin = $profiles_class->is_site_admin();
                 if (!$is_site_admin) {
                     // Add a new meta query
                     $args['meta_query'][] = array(
