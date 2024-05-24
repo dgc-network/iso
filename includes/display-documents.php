@@ -1277,7 +1277,9 @@ if (!class_exists('display_documents')) {
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
-                        $field_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
+                        $field_value = $default_value;
                     }
 
                     switch (true) {
