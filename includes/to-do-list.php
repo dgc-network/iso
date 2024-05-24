@@ -496,9 +496,13 @@ if (!class_exists('to_do_list')) {
                 update_post_meta( $todo_id, 'submit_user', $current_user_id );
                 update_post_meta( $todo_id, 'submit_action', $action_id );
                 update_post_meta( $todo_id, 'submit_time', time() );
+
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
-        
+
+                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                if ($prev_report_id) update_post_meta( $prev_report_id, 'todo_status', $next_job );
+
                 // Create a new doc-report if is_doc_report==1
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                 if ($is_doc_report==1){
