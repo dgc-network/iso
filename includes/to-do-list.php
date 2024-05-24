@@ -60,7 +60,7 @@ if (!class_exists('to_do_list')) {
                     exit;
                 }
 
-                if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_to_do_list();
+                if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_todo_list();
 
             } else {
                 user_did_not_login_yet();
@@ -151,7 +151,7 @@ if (!class_exists('to_do_list')) {
             register_post_type( 'action', $args );
         }
         
-        function display_to_do_list() {
+        function display_todo_list() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);

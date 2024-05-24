@@ -1256,9 +1256,10 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_result($args) {
 
+            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            if (empty($report_id)) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+            //$doc_id = get_post_meta($report_id, 'doc_id', true);
+            //if (empty($report_id)) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
 
             $params = array(
                 'doc_id'     => $doc_id,
