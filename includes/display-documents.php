@@ -891,7 +891,7 @@ if (!class_exists('display_documents')) {
             <fieldset>
             <?php
                 $params = array(
-                    //'doc_id'     => $doc_id,
+                    'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
                 $this->display_doc_field_result($params);
