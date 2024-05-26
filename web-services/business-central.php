@@ -21,6 +21,79 @@ function handle_oauth_callback() {
         if ($code) {
             // Process the code as needed, e.g., exchange it for an access token
             echo 'Authorization code: ' . esc_html($code);
+
+            // After user authentication and authorization, handle the redirect URI to obtain the access token
+    // Exchange authorization code for access token
+    $token_endpoint = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/token";
+    $response = wp_remote_post($token_endpoint, array(
+        'body' => array(
+            'client_id' => $client_id,
+            'client_secret' => $client_secret,
+            'grant_type' => 'authorization_code',
+            //'code' => $_GET['code'],
+            'code' => $code,
+            'redirect_uri' => $redirect_uri,
+            'scope' => $scope,
+        ),
+    ));
+    
+    if (!is_wp_error($response)) {
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body);
+    
+        // Access token
+        $access_token = $data->access_token;
+    
+        // Use the access token to make requests to Dynamics 365 Business Central API endpoints
+        // Example request to retrieve Chart of Accounts
+        $endpoint_url = 'https://api.businesscentral.dynamics.com/v2.0/8fd48cfd-1156-4b3a-bc21-32e0e891eda9/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/Chart_of_Accounts';
+        $response = wp_remote_get($endpoint_url, array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $access_token,
+            ),
+        ));
+/*        
+        // Use the access token to make requests to Dynamics 365 Online API endpoints
+        // Example request to retrieve Chart of Accounts
+        $endpoint_url = 'https://YOUR_DYNAMICS365_URL/api/data/v9.0/chart_of_accounts';
+        $response = wp_remote_get($endpoint_url, array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $access_token,
+            ),
+        ));
+*/    
+        if (!is_wp_error($response)) {
+            // Handle successful response
+            $body = wp_remote_retrieve_body($response);
+            $chart_of_accounts = json_decode($body);
+    
+            // Check if decoding was successful
+            if ($chart_of_accounts !== null) {
+                // Loop through each property of the object
+                foreach ($chart_of_accounts as $property => $value) {
+                    // Output the property name and its value
+                    echo $property . ': ' . $value . '<br>';
+                }
+            } else {
+                // Handle JSON decoding error
+                echo 'Error decoding JSON';
+            }
+            
+            // Process retrieved Chart of Accounts data
+            // ...
+        } else {
+            // Handle error
+            $error_message = $response->get_error_message();
+            // ...
+        }
+    } else {
+        // Handle authentication error
+        $error_message = $response->get_error_message();
+        // ...
+    }
+    
+
+
             exit;
         } else {
             echo 'Authorization code not found.';
