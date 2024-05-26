@@ -3,6 +3,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function register_oauth_callback_endpoint() {
+    add_rewrite_rule('^oauth-callback/?', 'index.php?oauth_callback=1', 'top');
+}
+add_action('init', 'register_oauth_callback_endpoint');
+
+function add_oauth_callback_query_var($vars) {
+    $vars[] = 'oauth_callback';
+    return $vars;
+}
+add_filter('query_vars', 'add_oauth_callback_query_var');
+
+function handle_oauth_callback() {
+    global $wp_query;
+    if (isset($wp_query->query_vars['oauth_callback'])) {
+        $code = isset($_GET['code']) ? sanitize_text_field($_GET['code']) : '';
+        if ($code) {
+            // Process the code as needed, e.g., exchange it for an access token
+            echo 'Authorization code: ' . esc_html($code);
+            exit;
+        } else {
+            echo 'Authorization code not found.';
+            exit;
+        }
+    }
+}
+add_action('template_redirect', 'handle_oauth_callback');
+
+function flush_rewrite_rules_once() {
+    flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'flush_rewrite_rules_once');
+
 function execute_url_programmatically($url) {
     // Ensure the URL is properly formatted
     if (filter_var($url, FILTER_VALIDATE_URL)) {
