@@ -257,9 +257,25 @@ function retrieve_chart_of_account() {
             if ($chart_of_accounts !== null) {
                 // Loop through each property of the object
                 foreach ($chart_of_accounts as $property => $value) {
+                    // Check if the value is an array
+                    if (is_array($value)) {
+                        // Output the property name
+                        echo $property . ': <br>';
+                        // Loop through the array and output its contents
+                        foreach ($value as $sub_property => $sub_value) {
+                            echo '&nbsp;&nbsp;&nbsp;' . $sub_property . ': ' . $sub_value . '<br>';
+                        }
+                    } else {
+                        // Output the property name and its value
+                        echo $property . ': ' . $value . '<br>';
+                    }
+                }
+/*                
+                foreach ($chart_of_accounts as $property => $value) {
                     // Output the property name and its value
                     echo $property . ': ' . $value . '<br>';
                 }
+*/                
             } else {
                 // Handle JSON decoding error
                 echo 'Error decoding JSON';
