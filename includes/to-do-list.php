@@ -488,7 +488,8 @@ if (!class_exists('to_do_list')) {
                         'post_type'     => 'todo',
                     );    
                     $todo_id = wp_insert_post($new_post);
-                    if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
+                    update_post_meta( $todo_id, 'doc_id', $doc_id);
+                    //if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
                     //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
                 }
         
@@ -535,7 +536,7 @@ if (!class_exists('to_do_list')) {
                 // set next todo and actions
                 $params = array(
                     'action_id' => $action_id,
-                    //'todo_id' => $todo_id,
+                    'todo_id' => $todo_id,
                     'prev_report_id' => $new_report_id,
                 );        
                 if ($next_job>0) $this->set_next_todo_and_actions($params);
@@ -545,7 +546,7 @@ if (!class_exists('to_do_list')) {
         
         // to-do-list misc
         function set_next_todo_and_actions($args = array()) {
-            // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'] and $args['prev_report_id']
+            // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['todo_id'] and $args['prev_report_id']
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
@@ -558,7 +559,8 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
-                $todo_id       = get_post_meta($action_id, 'todo_id', true);
+                //$todo_id       = get_post_meta($action_id, 'todo_id', true);
+                $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
                 $doc_id        = get_post_meta($todo_id, 'doc_id', true);
                 //if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
 /*                
