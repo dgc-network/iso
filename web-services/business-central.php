@@ -67,6 +67,29 @@ function handle_oauth_callback() {
             
                     // Check if decoding was successful
                     if ($chart_of_accounts !== null) {
+                        foreach ($chart_of_accounts as $property => $value) {
+                            // Check if the value is an array
+                            if (is_array($value)) {
+                                // Output the property name
+                                echo $property . ': <br>';
+                                // Loop through the array and output its contents
+                                foreach ($value as $sub_property => $sub_value) {
+                                    // Check if the sub-value is an object
+                                    if (is_object($sub_value)) {
+                                        echo '&nbsp;&nbsp;&nbsp;' . $sub_property . ': ' . json_encode($sub_value) . '<br>';
+                                    } else {
+                                        echo '&nbsp;&nbsp;&nbsp;' . $sub_property . ': ' . $sub_value . '<br>';
+                                    }
+                                }
+                            } elseif (is_object($value)) {
+                                // Output the property name and the JSON-encoded object
+                                echo $property . ': ' . json_encode($value) . '<br>';
+                            } else {
+                                // Output the property name and its value
+                                echo $property . ': ' . $value . '<br>';
+                            }
+                        }
+/*                        
                         // Loop through each property of the object
                         foreach ($chart_of_accounts as $property => $value) {
                             // Check if the value is an array
@@ -83,6 +106,7 @@ function handle_oauth_callback() {
                                 //echo $property . ': ' . var_dump($value) . '<br>';
                             }
                         }
+*/                        
                     } else {
                         // Handle JSON decoding error
                         echo 'Error decoding JSON';
