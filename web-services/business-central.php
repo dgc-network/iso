@@ -93,8 +93,8 @@ function retrieve_chart_of_account() {
     //echo $authorization_url;
     
     // Redirect the user to the authorization URL
-    //wp_redirect($authorization_url);
-    //exit;
+    wp_redirect($authorization_url);
+    exit;
     
     // Usage example
     echo execute_url_programmatically($authorization_url);
