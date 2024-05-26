@@ -3,6 +3,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function execute_url_programmatically($url) {
+    // Ensure the URL is properly formatted
+    if (filter_var($url, FILTER_VALIDATE_URL)) {
+        // Perform the GET request
+        $response = wp_remote_get($url);
+
+        // Check for errors
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            echo "Something went wrong: $error_message";
+        } else {
+            // Process the response if needed
+            $body = wp_remote_retrieve_body($response);
+            echo "Request successful. Response: $body";
+        }
+    } else {
+        echo "Invalid URL.";
+    }
+}
+
 function retrieve_code_parameter($url) {
     // Perform the GET request
     $response = wp_remote_get($url);
@@ -70,13 +90,16 @@ function retrieve_chart_of_account() {
         'scope' => $scope,
     );
     $authorization_url = add_query_arg($authorization_params, $authorize_url);
+    //echo $authorization_url;
     
     // Redirect the user to the authorization URL
     //wp_redirect($authorization_url);
     //exit;
     
     // Usage example
-    echo $authorization_url;
+    echo execute_url_programmatically($authorization_url);
+
+    // Usage example
     $code = retrieve_code_parameter($authorization_url);
     if ($code !== null) {
         echo "The code parameter is: $code";
