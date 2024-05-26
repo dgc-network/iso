@@ -157,6 +157,7 @@ function retrieve_chart_of_account() {
         echo "Something went wrong: $error_message";
     } else {
         // Process the response if needed
+        echo 'code:'.$_GET['code'];
 
     }
     // After user authentication and authorization, handle the redirect URI to obtain the access token
