@@ -46,7 +46,7 @@ function retrieve_chart_of_account() {
     
     // Redirect the user to the authorization URL
     wp_redirect($authorization_url);
-    exit;
+    //exit;
     
     // After user authentication and authorization, handle the redirect URI to obtain the access token
     // Exchange authorization code for access token
