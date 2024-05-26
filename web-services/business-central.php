@@ -76,6 +76,7 @@ function retrieve_chart_of_account() {
     //exit;
     
     // Usage example
+    echo $authorization_url;
     $code = retrieve_code_parameter($authorization_url);
     if ($code !== null) {
         echo "The code parameter is: $code";
