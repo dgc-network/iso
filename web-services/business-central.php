@@ -267,7 +267,8 @@ function retrieve_chart_of_account() {
                         }
                     } else {
                         // Output the property name and its value
-                        echo $property . ': ' . $value . '<br>';
+                        //echo $property . ': ' . $value . '<br>';
+                        echo $property . ': ' . var_dump($value) . '<br>';
                     }
                 }
 /*                
