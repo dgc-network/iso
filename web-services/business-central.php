@@ -149,7 +149,7 @@ function retrieve_chart_of_account() {
     //$this->execute_url_programmatically($authorization_url);
     //exit;
 
-    $response = wp_remote_get($url);
+    $response = wp_remote_get($authorization_url);
 
     // Check for errors
     if (is_wp_error($response)) {
