@@ -129,7 +129,7 @@ function retrieve_chart_of_account() {
     //exit;
     
     // Usage example
-    echo execute_url_programmatically($authorization_url);
+    //echo execute_url_programmatically($authorization_url);
 
     // Usage example
     $code = retrieve_code_parameter($authorization_url);
