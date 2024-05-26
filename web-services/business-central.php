@@ -146,10 +146,19 @@ function retrieve_chart_of_account() {
     //exit;
     
     // Usage example
-    $this->execute_url_programmatically($authorization_url);
-    exit;
+    //$this->execute_url_programmatically($authorization_url);
+    //exit;
 
+    $response = wp_remote_get($url);
 
+    // Check for errors
+    if (is_wp_error($response)) {
+        $error_message = $response->get_error_message();
+        echo "Something went wrong: $error_message";
+    } else {
+        // Process the response if needed
+
+    }
     // After user authentication and authorization, handle the redirect URI to obtain the access token
     // Exchange authorization code for access token
     $token_endpoint = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/token";
