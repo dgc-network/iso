@@ -33,7 +33,7 @@ add_action('template_redirect', 'handle_oauth_callback');
 function flush_rewrite_rules_once() {
     flush_rewrite_rules();
 }
-add_action('after_switch_theme', 'flush_rewrite_rules_once');
+//add_action('after_switch_theme', 'flush_rewrite_rules_once');
 
 function execute_url_programmatically($url) {
     // Ensure the URL is properly formatted
