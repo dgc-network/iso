@@ -560,8 +560,6 @@ if (!class_exists('to_do_list')) {
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
                 //$todo_id       = get_post_meta($action_id, 'todo_id', true);
-                $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-                $doc_id        = get_post_meta($todo_id, 'doc_id', true);
                 //if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
 /*                
                 $report_id = get_post_meta($todo_id, 'report_id', true);
@@ -598,7 +596,18 @@ if (!class_exists('to_do_list')) {
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
         
-            if ($next_job>0) update_post_meta( $new_todo_id, 'doc_id', $next_job );
+            if ($next_job>0) {
+                update_post_meta( $new_todo_id, 'doc_id', $next_job );
+                // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
+                $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
+                if ($todo_id) {
+                    $doc_number = get_post_meta($next_job, 'doc_number', true);
+                    if (empty($doc_number)) {
+                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                        update_post_meta( $new_todo_id, 'doc_id', $doc_id );
+                    }
+                }
+            }
             if ($next_job==-1 || $next_job==-2) {
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
                 update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
