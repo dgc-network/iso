@@ -56,7 +56,7 @@ if (!class_exists('display_profiles')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
-                if ($_GET['_display_chart_of_accounts']=='true') display_chart_of_accounts();
+                //if ($_GET['_display_chart_of_accounts']=='true') display_chart_of_accounts();
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
