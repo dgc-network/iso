@@ -3,6 +3,80 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function get_bc_access_token() {
+    $tenant_id = get_option('tenant_id');
+    $client_id = get_option('client_id');
+    $client_secret = get_option('client_secret');
+    $scope = 'https://api.businesscentral.dynamics.com/.default';
+
+    $token_endpoint = "https://login.microsoftonline.com/{$tenant_id}/oauth2/v2.0/token";
+    $response = wp_remote_post($token_endpoint, array(
+        'body' => array(
+            'client_id' => $client_id,
+            'client_secret' => $client_secret,
+            'grant_type' => 'client_credentials',
+            'scope' => $scope,
+        ),
+    ));
+
+    if (is_wp_error($response)) {
+        return false;
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body);
+
+    if (isset($data->access_token)) {
+        return $data->access_token;
+    }
+
+    return false;
+}
+
+function get_bc_companies($access_token) {
+    $tenant_id = get_option('tenant_id');
+    $companies_endpoint = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/companies";
+    $response = wp_remote_get($companies_endpoint, array(
+        'headers' => array(
+            'Authorization' => 'Bearer ' . $access_token,
+            'Content-Type' => 'application/json',
+        ),
+    ));
+
+    if (is_wp_error($response)) {
+        return false;
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body);
+
+    return $data->value ?? false;
+}
+
+function display_bc_companies() {
+    $access_token = get_bc_access_token();
+
+    if (!$access_token) {
+        return 'Failed to retrieve access token.';
+    }
+
+    $companies = get_bc_companies($access_token);
+
+    if (!$companies) {
+        return 'Failed to retrieve companies.';
+    }
+
+    $output = '<ul>';
+    foreach ($companies as $company) {
+        $output .= '<li>Company Name: ' . esc_html($company->displayName) . ', GUID: ' . esc_html($company->id) . '</li>';
+    }
+    $output .= '</ul>';
+
+    return $output;
+}
+add_shortcode('bc_companies', 'display_bc_companies');
+
+
 function register_oauth_callback_endpoint() {
     add_rewrite_rule('^oauth-callback/?', 'index.php?oauth_callback=1', 'top');
 }

@@ -61,6 +61,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
+                if ($_GET['_select_profile']=='4') echo display_bc_companies();
                 if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
                 echo '</div>';
             } else {
@@ -141,6 +142,7 @@ if (!class_exists('display_profiles')) {
                             <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
                             <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                             <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                            <option value="4"><?php echo __( 'Business Central', 'your-text-domain' );?></option>
                         </select>
                     </div>
                     <div style="text-align: right">
