@@ -140,7 +140,7 @@ add_action('after_switch_theme', 'flush_rewrite_rules_once');
 
 
 
-/*
+
 // get_chart_of_accounts
 function register_oauth_callback_endpoint() {
     add_rewrite_rule('^oauth-callback/?', 'index.php?oauth_callback=1', 'top');
@@ -152,7 +152,7 @@ function add_oauth_callback_query_var($vars) {
     return $vars;
 }
 add_filter('query_vars', 'add_oauth_callback_query_var');
-
+/*
 function handle_oauth_callback_1() {
     $tenant_id = get_option('tenant_id');
     $client_id = get_option('client_id');
