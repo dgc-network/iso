@@ -32,6 +32,7 @@ if (!class_exists('to_do_list')) {
                     if ($submit_time) {
                         echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
                     } else {
+                        echo $this->display_todo_dialog($todo_id);
                         $doc_id = get_post_meta($todo_id, 'doc_id', true);
                         $report_id = get_post_meta($todo_id, 'report_id', true);
                         if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
