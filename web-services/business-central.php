@@ -139,8 +139,9 @@ function handle_oauth_callback() {
                 $api_endpoint = 'https://api.businesscentral.dynamics.com/v2.0/';
                 $company = '';
                 $service = 'Chart_of_Accounts'; 
+                $service = 'dgCompanies'; 
                 $endpoint_url = $api_endpoint . $tenant_id. '/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/' . $service;
-                $endpoint_url = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/dgCompanies";
+                //$endpoint_url = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/dgCompanies";
 
                 $response = wp_remote_get($endpoint_url, array(
                     'headers' => array(
