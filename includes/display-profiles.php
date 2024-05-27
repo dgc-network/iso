@@ -64,7 +64,7 @@ if (!class_exists('display_profiles')) {
                 // Example usage
                 $params = array(
                     'company' => 'CRONUS USA, Inc.',
-                    //'service' => 'Chart_of_Accounts',
+                    'service' => 'Chart_of_Accounts',
                     'index_key' => '12345',
                 );
                 if ($_GET['_select_profile']=='4') redirect_to_authorization_url($params);
