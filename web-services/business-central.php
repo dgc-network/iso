@@ -110,11 +110,17 @@ function handle_oauth_callback() {
                 'body' => array(
                     'client_id' => $client_id,
                     'client_secret' => $client_secret,
+                    'grant_type' => 'client_credentials',
+                    'scope' => $scope,
+/*        
+                    'client_id' => $client_id,
+                    'client_secret' => $client_secret,
                     'grant_type' => 'authorization_code',
                     //'code' => $_GET['code'],
                     'code' => $code,
                     'redirect_uri' => $redirect_uri,
                     'scope' => $scope,
+*/                    
                 ),
             ));
             
