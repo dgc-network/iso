@@ -58,11 +58,13 @@ if (!class_exists('display_profiles')) {
                 echo '<div class="ui-widget" id="result-container">';
                 if ($_GET['_retrieve_chart_of_account']=='true') retrieve_chart_of_account();
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
+                if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
-                if ($_GET['_select_profile']=='4') echo display_bc_companies();
-                if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
+                //if ($_GET['_select_profile']=='4') echo display_bc_companies();
+                if ($_GET['_select_profile']=='4') echo retrieve_chart_of_account();
+                //if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
                 echo '</div>';
             } else {
                 user_did_not_login_yet();
