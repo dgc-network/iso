@@ -58,7 +58,7 @@ if (!class_exists('display_profiles')) {
                 echo '<div class="ui-widget" id="result-container">';
                 if ($_GET['_retrieve_chart_of_account']=='true') retrieve_chart_of_account();
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
-                if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
+                if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
@@ -140,7 +140,7 @@ if (!class_exists('display_profiles')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <select id="select-profile">
-                            <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                            <option value="" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                             <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
                             <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                             <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
