@@ -49,7 +49,7 @@ def oauth_callback():
         return "Authorization code not found", 400
 
 @app.route('/retrieve-chart-of-account')
-def retrieve_chart_of_account():
+def display_chart_of_accounts():
     # Authorization endpoint
     authorize_url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/authorize"
     authorization_params = {
