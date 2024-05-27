@@ -36,6 +36,7 @@ function get_bc_access_token() {
 function get_bc_companies($access_token) {
     $tenant_id = get_option('tenant_id');
     $companies_endpoint = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/companies";
+    $companies_endpoint = 'https://api.businesscentral.dynamics.com/v2.0/8fd48cfd-1156-4b3a-bc21-32e0e891eda9/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/Chart_of_Accounts';
     $response = wp_remote_get($companies_endpoint, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token,
