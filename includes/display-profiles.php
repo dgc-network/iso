@@ -71,7 +71,7 @@ if (!class_exists('display_profiles')) {
                 
 
                 //if ($_GET['_select_profile']=='4') echo redirect_to_authorization_url();
-                if ($_GET['_select_profile']=='5') echo display_chart_of_accounts();
+                //if ($_GET['_select_profile']=='5') echo display_chart_of_accounts();
                 if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
                 //if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
                 echo '</div>';
