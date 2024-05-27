@@ -36,7 +36,7 @@ function get_bc_access_token() {
 function get_bc_companies($access_token) {
     $tenant_id = get_option('tenant_id');
     $companies_endpoint = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/companies";
-    $companies_endpoint = 'https://api.businesscentral.dynamics.com/v2.0/8fd48cfd-1156-4b3a-bc21-32e0e891eda9/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/Chart_of_Accounts';
+    //$companies_endpoint = 'https://api.businesscentral.dynamics.com/v2.0/8fd48cfd-1156-4b3a-bc21-32e0e891eda9/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/Chart_of_Accounts';
     $response = wp_remote_get($companies_endpoint, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token,
@@ -108,11 +108,12 @@ function handle_oauth_callback() {
             $token_endpoint = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/token";
             $response = wp_remote_post($token_endpoint, array(
                 'body' => array(
+/*                    
                     'client_id' => $client_id,
                     'client_secret' => $client_secret,
                     'grant_type' => 'client_credentials',
                     'scope' => $scope,
-/*        
+*/
                     'client_id' => $client_id,
                     'client_secret' => $client_secret,
                     'grant_type' => 'authorization_code',
@@ -120,7 +121,7 @@ function handle_oauth_callback() {
                     'code' => $code,
                     'redirect_uri' => $redirect_uri,
                     'scope' => $scope,
-*/                    
+
                 ),
             ));
             
@@ -139,6 +140,7 @@ function handle_oauth_callback() {
                 $company = '';
                 $service = 'Chart_of_Accounts'; 
                 $endpoint_url = $api_endpoint . $tenant_id. '/Production/ODataV4/Company(\'CRONUS%20USA%2C%20Inc.\')/' . $service;
+                $endpoint_url = "https://api.businesscentral.dynamics.com/v2.0/{$tenant_id}/Production/ODataV4/companies";
 
                 $response = wp_remote_get($endpoint_url, array(
                     'headers' => array(
