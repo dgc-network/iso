@@ -29,7 +29,8 @@ function redirect_to_authorization_url($params) {
         'response_type' => 'code',
         'redirect_uri' => $redirect_uri,
         'scope' => implode(' ', $scope),
-        'state' => base64_encode(json_encode($state)),  // Encode state as base64 to pass it safely
+        //'state' => base64_encode(json_encode($state)),  // Encode state as base64 to pass it safely
+        'state' => base64_encode(json_encode($params)),  // Encode state as base64 to pass it safely
     );
     
     $authorization_url = $authorize_url . '?' . http_build_query($authorization_params);
@@ -139,7 +140,7 @@ add_action('after_switch_theme', 'flush_rewrite_rules_once');
 
 
 
-
+/*
 // get_chart_of_accounts
 function register_oauth_callback_endpoint() {
     add_rewrite_rule('^oauth-callback/?', 'index.php?oauth_callback=1', 'top');
@@ -289,3 +290,4 @@ function display_chart_of_accounts($company=false) {
     wp_redirect($authorization_url);
     exit;
 }
+*/

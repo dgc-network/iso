@@ -56,24 +56,19 @@ if (!class_exists('display_profiles')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
-                //if ($_GET['_display_chart_of_accounts']=='true') display_chart_of_accounts();
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
+                if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
                 // Example usage
                 $params = array(
-                    'company' => 'CRONUS USA, Inc.',
-                    'service' => 'Chart_of_Accounts',
+                    //'company' => 'CRONUS USA, Inc.',
+                    //'service' => 'Chart_of_Accounts',
                     'index_key' => '12345',
                 );
                 if ($_GET['_select_profile']=='4') redirect_to_authorization_url($params);
-                
 
-                //if ($_GET['_select_profile']=='4') echo redirect_to_authorization_url();
-                //if ($_GET['_select_profile']=='5') echo display_chart_of_accounts();
-                if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
-                //if ($_GET['_select_profile']!='1'&&$_GET['_select_profile']!='2'&&$_GET['_select_profile']!='3'&&!isset($_GET['_initial'])) echo $this->display_my_profile();
                 echo '</div>';
             } else {
                 user_did_not_login_yet();
