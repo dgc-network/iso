@@ -194,10 +194,10 @@ function handle_oauth_callback() {
                 $error_message = $response->get_error_message();
                 // ...
             }
-            exit;
+            //exit;
         } else {
             echo 'Authorization code not found.';
-            exit;
+            //exit;
         }
     }
 }
