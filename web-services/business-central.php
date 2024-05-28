@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function handle_oauth_callback() {
+function handle_oauth_callback_06() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
@@ -279,7 +279,7 @@ function handle_oauth_callback_redirect() {
 add_action('template_redirect', 'handle_oauth_callback_redirect');
 
 // Redirect function
-function redirect_to_authorization_url_4($params) {
+function redirect_to_authorization_url_04($params) {
     $tenant_id = get_option('tenant_id');
     $client_id = get_option('client_id');
     $redirect_uri = get_option('redirect_uri');
@@ -304,7 +304,7 @@ function redirect_to_authorization_url_4($params) {
     exit;
 }
 
-function handle_oauth_callback_04() {
+function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
