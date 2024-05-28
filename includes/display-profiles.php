@@ -75,12 +75,21 @@ if (!class_exists('display_profiles')) {
                         'service' => 'Customers',
                         //'post_type' => 'POST', // Change to 'GET' or 'POST' as needed
                         'post_type' => 'PATCH', // Change to 'GET' or 'POST' as needed
-                        'body_data' => array( // Include any data you need to send with the POST request
+                        'etag_data' => array( // Include any data you need to send with the POST request
                             //'Name' => (string) get_post_time('U', true, $site_id),
                             //'No' => (string) time(),
                             //'Name' => 'New customer',
                             'No' => '1716883625',
                             //'Name' => '新客戶',
+                            //'Display_Name' => get_the_title($site_id),
+                            //'Balance' => 0,
+                        ),
+                        'body_data' => array( // Include any data you need to send with the POST request
+                            //'Name' => (string) get_post_time('U', true, $site_id),
+                            //'No' => (string) time(),
+                            //'Name' => 'New customer',
+                            //'No' => '1716883625',
+                            'Name' => '新客戶',
                             //'Display_Name' => get_the_title($site_id),
                             //'Balance' => 0,
                         ),

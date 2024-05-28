@@ -100,34 +100,37 @@ function handle_oauth_callback() {
                 $service = isset($state['service']) ? $state['service'] : 'dgCompanies';
                 $post_type = isset($state['post_type']) ? $state['post_type'] : 'GET';
                 $body_data = isset($state['body_data']) ? $state['body_data'] : array();
+                $etag_data = isset($state['etag_data']) ? $state['etag_data'] : array();
                 //$original_url = isset($state['original_url']) ? urldecode($state['original_url']) : home_url();
                 $original_url = isset($state['original_url']) ? urldecode($state['original_url']) : home_url() . '/display-profiles/';
 
                 // Define the endpoint URL
                 $endpoint_url = 'https://api.businesscentral.dynamics.com/v2.0/' . $tenant_id . '/Production/ODataV4/Company(\'' . $company . '\')/' . $service;
 
-                // Add body_data as $filter query parameters if not empty
-                if (!empty($body_data)) {
-                    $filters = [];
-                    foreach ($body_data as $key => $value) {
-                        if (is_string($value)) {
-                            $filters[] = "$key eq '" . esc_attr($value) . "'";
-                        } elseif (is_numeric($value)) {
-                            $filters[] = "$key gt " . esc_attr($value);
+                if ($post_type == 'GET') {
+                    // Add body_data as $filter query parameters if not empty
+                    if (!empty($body_data)) {
+                        $filters = [];
+                        foreach ($body_data as $key => $value) {
+                            if (is_string($value)) {
+                                $filters[] = "$key eq '" . esc_attr($value) . "'";
+                            } elseif (is_numeric($value)) {
+                                $filters[] = "$key gt " . esc_attr($value);
+                            }
+                        }
+                        if (!empty($filters)) {
+                            $endpoint_url = add_query_arg('$filter', implode(' and ', $filters), $endpoint_url);
                         }
                     }
-                    if (!empty($filters)) {
-                        $endpoint_url = add_query_arg('$filter', implode(' and ', $filters), $endpoint_url);
-                    }
-                }
+    
+                    $response = wp_remote_get($endpoint_url, array(
+                        'headers' => array(
+                            'Authorization' => 'Bearer ' . $access_token,
+                        ),
+                    ));
+    
 
-                $response = wp_remote_get($endpoint_url, array(
-                    'headers' => array(
-                        'Authorization' => 'Bearer ' . $access_token,
-                    ),
-                ));
-
-                if ($post_type == 'POST') {
+                } else if ($post_type == 'POST') {
                     $response = wp_remote_post($endpoint_url, array(
                         'headers' => array(
                             'Authorization' => 'Bearer ' . $access_token,
@@ -138,8 +141,28 @@ function handle_oauth_callback() {
 
                 } else {
                     // For PATCH and DELETE, we need the etag
-                    if (!is_wp_error($response)) {
-                        $etag_body = wp_remote_retrieve_body($response);
+                    if (!empty($etag_data)) {
+                        $filters = [];
+                        foreach ($etag_data as $key => $value) {
+                            if (is_string($value)) {
+                                $filters[] = "$key eq '" . esc_attr($value) . "'";
+                            } elseif (is_numeric($value)) {
+                                $filters[] = "$key gt " . esc_attr($value);
+                            }
+                        }
+                        if (!empty($filters)) {
+                            $endpoint_url = add_query_arg('$filter', implode(' and ', $filters), $endpoint_url);
+                        }
+                    }
+    
+                    $etag_response = wp_remote_get($endpoint_url, array(
+                        'headers' => array(
+                            'Authorization' => 'Bearer ' . $access_token,
+                        ),
+                    ));
+    
+                    if (!is_wp_error($etag_response)) {
+                        $etag_body = wp_remote_retrieve_body($etag_response);
                         $etag_data = json_decode($etag_body, true);
 
                         if (isset($etag_data['value']) && is_array($etag_data['value'])) {
