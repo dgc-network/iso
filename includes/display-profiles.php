@@ -56,7 +56,7 @@ if (!class_exists('display_profiles')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
-                
+
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
@@ -77,9 +77,18 @@ if (!class_exists('display_profiles')) {
                 if (isset($_GET['oauth_result_ready']) && $_GET['oauth_result_ready'] == '1') {
                     $oauth_callback_result = get_transient('oauth_callback_result');
                     if (!empty($oauth_callback_result)) {
+                        echo '<pre>';
+                        print_r($oauth_callback_result);
+                        echo '</pre>';
+                        delete_transient('oauth_callback_result'); // Clean up the transient
+                    }
+/*
+                    $oauth_callback_result = get_transient('oauth_callback_result');
+                    if (!empty($oauth_callback_result)) {
                         echo 'OAuth Callback Result: ' . $oauth_callback_result;
                         delete_transient('oauth_callback_result'); // Clean up the transient
                     }
+*/                    
                 }
 
                 echo '</div>';
