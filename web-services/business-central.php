@@ -134,9 +134,9 @@ function handle_oauth_callback() {
                         ),
                         'body' => json_encode($body_data),
                     ));
-                } else if ($post_type == 'PUT') {
+                } else if ($post_type == 'PATCH') {
                     $response = wp_remote_request($endpoint_url, array(
-                        'method' => 'PUT',
+                        'method' => 'PATCH',
                         'headers' => array(
                             'Authorization' => 'Bearer ' . $access_token,
                             'Content-Type' => 'application/json', // Set content type to JSON
