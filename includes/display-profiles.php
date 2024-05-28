@@ -61,13 +61,22 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
                 if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
-                // Example usage
-                $params = array(
-                    //'company' => 'CRONUS USA, Inc.',
-                    //'service' => 'Chart_of_Accounts',
-                    'index_key' => '12345',
-                );
-                if ($_GET['_select_profile']=='4') echo redirect_to_authorization_url($params);
+
+                if ($_GET['_select_profile']=='4') {
+                    // Example usage
+                    $params = array(
+                        //'company' => 'CRONUS USA, Inc.',
+                        //'service' => 'Chart_of_Accounts',
+                        'index_key' => '12345',
+                    );    
+                    redirect_to_authorization_url($params);
+                    
+                    // Retrieve the OAuth callback result
+                    global $oauth_callback_result;
+                    if (!empty($oauth_callback_result)) {
+                        echo 'OAuth Callback Result: ' . $oauth_callback_result;
+                    }
+                }
 
                 echo '</div>';
             } else {
