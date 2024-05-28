@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
+/*
 function redirect_to_authorization_url($params) {
     // Extract parameters from the array
     $tenant_id = get_option('tenant_id');
@@ -136,7 +136,7 @@ function handle_oauth_callback() {
         exit;
     }
 }
-
+*/
 function handle_oauth_callback_redirect() {
     global $wp_query;
     if (isset($wp_query->query_vars['oauth_callback'])) {
@@ -170,8 +170,8 @@ add_action('after_switch_theme', 'flush_rewrite_rules_once');
 
 
 
-/*
-function handle_oauth_callback_4() {
+
+function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
@@ -282,7 +282,7 @@ global $oauth_callback_result;
 $oauth_callback_result = '';
 
 // Redirect function
-function redirect_to_authorization_url_4($params) {
+function redirect_to_authorization_url($params) {
     $tenant_id = get_option('tenant_id');
     $client_id = get_option('client_id');
     $redirect_uri = get_option('redirect_uri');
@@ -307,6 +307,8 @@ function redirect_to_authorization_url_4($params) {
     exit;
 }
 
+
+/*
 // Handle OAuth callback
 function handle_oauth_callback_3() {
     if (isset($_GET['code'])) {
