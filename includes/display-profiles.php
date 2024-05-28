@@ -70,13 +70,13 @@ if (!class_exists('display_profiles')) {
 
                     $params = array(
                         //'company' => 'CRONUS USA, Inc.',
-                        //'service' => 'Chart_of_Accounts',
+                        'service' => 'Chart_of_Accounts',
                         //'index_key' => '12345',
-                        'service' => 'dgCompanies',
+                        //'service' => 'dgCompanies',
                         //'post_type' => 'PUT', // Change to 'GET' or 'POST' as needed
                         'body_data' => array( // Include any data you need to send with the POST request
                             //'Name' => (string) get_post_time('U', true, $site_id),
-                            'Name' => 'dg',
+                            //'Name' => 'dg',
                             //'Display_Name' => get_the_title($site_id),
                         ),
                     );    

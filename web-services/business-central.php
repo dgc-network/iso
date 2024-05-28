@@ -12,10 +12,8 @@ function redirect_to_authorization_url($params) {
 
     // Get the current URL
     $original_url = (is_ssl() ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
     // Encode the original URL
     $encoded_original_url = urlencode($original_url);
-
     // Add the encoded original URL to the parameters
     $params['encoded_original_url'] = $encoded_original_url;
 
