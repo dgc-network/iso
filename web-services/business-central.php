@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-/*
+
 function redirect_to_authorization_url($params) {
     // Extract parameters from the array
     $tenant_id = get_option('tenant_id');
@@ -33,7 +33,7 @@ function redirect_to_authorization_url($params) {
     wp_redirect($authorization_url);
     exit;
 }
-
+/*
 function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
@@ -137,14 +137,6 @@ function handle_oauth_callback() {
     }
 }
 */
-function handle_oauth_callback_redirect() {
-    global $wp_query;
-    if (isset($wp_query->query_vars['oauth_callback'])) {
-        handle_oauth_callback();
-        exit;
-    }
-}
-add_action('template_redirect', 'handle_oauth_callback_redirect');
 
 // Register the OAuth callback endpoint
 function register_oauth_callback_endpoint() {
@@ -164,12 +156,40 @@ function flush_rewrite_rules_once() {
 }
 add_action('after_switch_theme', 'flush_rewrite_rules_once');
 
+function handle_oauth_callback_redirect() {
+    global $wp_query;
+    if (isset($wp_query->query_vars['oauth_callback'])) {
+        handle_oauth_callback();
+        exit;
+    }
+}
+add_action('template_redirect', 'handle_oauth_callback_redirect');
 
+// Redirect function
+function redirect_to_authorization_url_4($params) {
+    $tenant_id = get_option('tenant_id');
+    $client_id = get_option('client_id');
+    $redirect_uri = get_option('redirect_uri');
+    $scope = array('https://api.businesscentral.dynamics.com/.default');
 
+    $authorize_url = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/authorize";
 
+    // Include the parameters in the state
+    $state = base64_encode(json_encode($params));
 
+    $authorization_params = array(
+        'client_id' => $client_id,
+        'response_type' => 'code',
+        'redirect_uri' => $redirect_uri,
+        'scope' => implode(' ', $scope),
+        'state' => $state,
+    );
 
+    $authorization_url = $authorize_url . '?' . http_build_query($authorization_params);
 
+    wp_redirect($authorization_url);
+    exit;
+}
 
 function handle_oauth_callback() {
     if (isset($_GET['code'])) {
@@ -277,38 +297,12 @@ function handle_oauth_callback() {
 
 
 
+
+/*
 // Global variable to store the callback result
 global $oauth_callback_result;
 $oauth_callback_result = '';
 
-// Redirect function
-function redirect_to_authorization_url($params) {
-    $tenant_id = get_option('tenant_id');
-    $client_id = get_option('client_id');
-    $redirect_uri = get_option('redirect_uri');
-    $scope = array('https://api.businesscentral.dynamics.com/.default');
-
-    $authorize_url = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/authorize";
-
-    // Include the parameters in the state
-    $state = base64_encode(json_encode($params));
-
-    $authorization_params = array(
-        'client_id' => $client_id,
-        'response_type' => 'code',
-        'redirect_uri' => $redirect_uri,
-        'scope' => implode(' ', $scope),
-        'state' => $state,
-    );
-
-    $authorization_url = $authorize_url . '?' . http_build_query($authorization_params);
-
-    wp_redirect($authorization_url);
-    exit;
-}
-
-
-/*
 // Handle OAuth callback
 function handle_oauth_callback_3() {
     if (isset($_GET['code'])) {
