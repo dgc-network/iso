@@ -34,7 +34,7 @@ function redirect_to_authorization_url($params) {
     exit;
 }
 
-function handle_oauth_callback() {
+function handle_oauth_callback_05() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
@@ -191,7 +191,7 @@ function redirect_to_authorization_url_4($params) {
     exit;
 }
 
-function handle_oauth_callback_04() {
+function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
