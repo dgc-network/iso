@@ -61,14 +61,23 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
-                if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
+                //if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
 
                 if ($_GET['_select_profile']=='4') {
                     // Example usage
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+
                     $params = array(
                         //'company' => 'CRONUS USA, Inc.',
                         //'service' => 'Chart_of_Accounts',
-                        'index_key' => '12345',
+                        //'index_key' => '12345',
+                        'service' => 'dgCompanies',
+                        'post_type' => 'POST', // Change to 'GET' or 'POST' as needed
+                        'body_data' => array( // Include any data you need to send with the POST request
+                            'Name' => get_post_time('U', true, $site_id),
+                            'Display_Name' => get_the_title($site_id),
+                        ),
                     );    
                     redirect_to_authorization_url($params);
                 }
@@ -82,13 +91,8 @@ if (!class_exists('display_profiles')) {
                         echo '</pre>';
                         delete_transient('oauth_callback_result'); // Clean up the transient
                     }
-/*
-                    $oauth_callback_result = get_transient('oauth_callback_result');
-                    if (!empty($oauth_callback_result)) {
-                        echo 'OAuth Callback Result: ' . $oauth_callback_result;
-                        delete_transient('oauth_callback_result'); // Clean up the transient
-                    }
-*/                    
+                } else {
+                    if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
                 }
 
                 echo '</div>';
