@@ -17,7 +17,7 @@ function redirect_to_authorization_url($params) {
     $encoded_original_url = urlencode($original_url);
 
     // Add the encoded original URL to the parameters
-    $params['original_url'] = $encoded_original_url;
+    $params['encoded_original_url'] = $encoded_original_url;
 
     $authorize_url = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/authorize";
 
