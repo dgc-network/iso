@@ -98,6 +98,28 @@ function handle_oauth_callback() {
                 // Construct the endpoint URL
                 $endpoint_url = "https://api.businesscentral.dynamics.com/v2.0/$tenant_id/Production/ODataV4/Company('$company')/$service";
 
+                // Add body_data as $filter query parameters if not empty
+                if (!empty($body_data) && $post_type == 'GET') {
+                    $filters = [];
+                    foreach ($body_data as $key => $value) {
+                        if (is_string($value)) {
+                            $filters[] = "$key eq '" . esc_attr($value) . "'";
+                        } elseif (is_numeric($value)) {
+                            $filters[] = "$key gt " . esc_attr($value);
+                        }
+                    }
+                    if (!empty($filters)) {
+                        $endpoint_url = add_query_arg('$filter', implode(' and ', $filters), $endpoint_url);
+                    }
+                }
+
+                if ($post_type == 'GET') {
+                    $response = wp_remote_get($endpoint_url, array(
+                        'headers' => array(
+                            'Authorization' => 'Bearer ' . $access_token,
+                        ),
+                    ));
+/*
                 if ($post_type == 'GET') {
                     // Add body_data as query parameters if not empty
                     if (!empty($body_data)) {
@@ -108,6 +130,7 @@ function handle_oauth_callback() {
                             'Authorization' => 'Bearer ' . $access_token,
                         ),
                     ));
+*/
                 } else if ($post_type == 'POST') {
                     $response = wp_remote_post($endpoint_url, array(
                         'headers' => array(
