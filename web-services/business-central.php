@@ -136,7 +136,7 @@ function handle_oauth_callback() {
 function handle_oauth_callback_redirect() {
     global $wp_query;
     if (isset($wp_query->query_vars['oauth_callback'])) {
-        handle_oauth_callback();
+        return handle_oauth_callback();
         exit;
     }
 }
