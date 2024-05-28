@@ -70,12 +70,22 @@ if (!class_exists('display_profiles')) {
                         'index_key' => '12345',
                     );    
                     redirect_to_authorization_url($params);
-                    
+
+                    // Check if the result is ready and retrieve it
+                    if (isset($_GET['oauth_result_ready']) && $_GET['oauth_result_ready'] == '1') {
+                        $oauth_callback_result = get_transient('oauth_callback_result');
+                        if (!empty($oauth_callback_result)) {
+                            echo 'OAuth Callback Result: ' . $oauth_callback_result;
+                            delete_transient('oauth_callback_result'); // Clean up the transient
+                        }
+                    }
+/*
                     // Retrieve the OAuth callback result
                     global $oauth_callback_result;
                     if (!empty($oauth_callback_result)) {
                         echo 'OAuth Callback Result: ' . $oauth_callback_result;
                     }
+*/                    
                 }
 
                 echo '</div>';
