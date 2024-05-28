@@ -13,8 +13,14 @@ function redirect_to_authorization_url($params) {
     // Get the current URL
     $original_url = (is_ssl() ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
+    // Encode the original URL
+    $encoded_original_url = urlencode($original_url);
+
+    // Add the encoded original URL to the parameters
+    $params['original_url'] = $encoded_original_url;
+
     // Add the original URL to the parameters
-    $params['original_url'] = $original_url;
+    //$params['original_url'] = $original_url;
 
     // Encode the parameters as a state parameter
     $state = base64_encode(json_encode($params));
@@ -34,7 +40,7 @@ function redirect_to_authorization_url($params) {
     exit;
 }
 
-function handle_oauth_callback_05() {
+function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
@@ -70,7 +76,9 @@ function handle_oauth_callback_05() {
                 $company = isset($state['company']) ? $state['company'] : 'CRONUS USA, Inc.';
                 $service = isset($state['service']) ? $state['service'] : 'dgCompanies';
                 $index_key = isset($state['index_key']) ? $state['index_key'] : '';
-                $original_url = isset($state['original_url']) ? $state['original_url'] : home_url();
+                //$original_url = isset($state['original_url']) ? $state['original_url'] : home_url();
+                // Decode the original URL
+                $original_url = isset($state['original_url']) ? urldecode($state['original_url']) : home_url();
 
                 // Make the request to Business Central API
                 $endpoint_url = 'https://api.businesscentral.dynamics.com/v2.0/' . $tenant_id . '/Production/ODataV4/Company(\'' . $company . '\')/' . $service;
@@ -191,7 +199,7 @@ function redirect_to_authorization_url_4($params) {
     exit;
 }
 
-function handle_oauth_callback() {
+function handle_oauth_callback_04() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
