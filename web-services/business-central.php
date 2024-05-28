@@ -33,7 +33,7 @@ function redirect_to_authorization_url($params) {
     wp_redirect($authorization_url);
     exit;
 }
-/*
+
 function handle_oauth_callback() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
@@ -136,7 +136,7 @@ function handle_oauth_callback() {
         exit;
     }
 }
-*/
+
 
 // Register the OAuth callback endpoint
 function register_oauth_callback_endpoint() {
@@ -191,7 +191,7 @@ function redirect_to_authorization_url_4($params) {
     exit;
 }
 
-function handle_oauth_callback() {
+function handle_oauth_callback_04() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
