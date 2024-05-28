@@ -376,7 +376,7 @@ function handle_oauth_callback() {
                         
                         // Redirect back to the original page with a query parameter
                         //wp_redirect(add_query_arg('oauth_result_ready', '1', home_url()));
-                        wp_redirect(add_query_arg('oauth_result_ready', '1', home_url().'display_profiles/'));
+                        wp_redirect(add_query_arg('oauth_result_ready', '1', home_url().'/display_profiles/'));
                         exit;
                     } else {
                         set_transient('oauth_callback_result', 'Error decoding JSON', 60);
