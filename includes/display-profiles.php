@@ -73,7 +73,7 @@ if (!class_exists('display_profiles')) {
                         'company' => 'dg',
                         //'service' => 'Chart_of_Accounts',
                         'service' => 'Customers',
-                        //'post_type' => 'POST', // Change to 'GET' or 'POST' as needed
+                        'post_type' => 'POST', // Change to 'GET' or 'POST' as needed
                         //'post_type' => 'PATCH', // Change to 'GET' or 'POST' as needed
                         'etag_data' => array( // Include any data you need to send with the POST request
                             //'Name' => (string) get_post_time('U', true, $site_id),
@@ -86,7 +86,7 @@ if (!class_exists('display_profiles')) {
                         ),
                         'body_data' => array( // Include any data you need to send with the POST request
                             //'Name' => (string) get_post_time('U', true, $site_id),
-                            //'No' => (string) time(),
+                            'No' => (string) time(),
                             //'Name' => 'New customer',
                             //'No' => '1716883625',
                             'Name' => '新客戶',
