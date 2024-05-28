@@ -125,6 +125,11 @@ function handle_oauth_callback() {
                         ),
                         'body' => json_encode($body_data),
                     ));
+                } else {
+                    // Handle unsupported operations
+                    set_transient('oauth_callback_result', 'Error: Operation not supported', 60);
+                    wp_redirect(add_query_arg('oauth_result_ready', '1', $original_url));
+                    exit;
                 }
 
                 if (!is_wp_error($response)) {
