@@ -3,6 +3,105 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function handle_oauth_callback() {
+    if (isset($_GET['code'])) {
+        $code = sanitize_text_field($_GET['code']);
+        $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
+
+        // Retrieve OAuth 2.0 settings
+        $tenant_id = get_option('tenant_id');
+        $client_id = get_option('client_id');
+        $client_secret = get_option('client_secret');
+        $redirect_uri = get_option('redirect_uri');
+        $scope = 'https://api.businesscentral.dynamics.com/.default';
+        
+        // Token endpoint
+        $token_endpoint = "https://login.microsoftonline.com/$tenant_id/oauth2/v2.0/token";
+        $response = wp_remote_post($token_endpoint, array(
+            'body' => array(
+                'client_id' => $client_id,
+                'client_secret' => $client_secret,
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+                'redirect_uri' => $redirect_uri,
+                'scope' => $scope,
+            ),
+        ));
+        
+        if (!is_wp_error($response)) {
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body);
+            
+            if (isset($data->access_token)) {
+                $access_token = $data->access_token;
+                
+                // Extract parameters from state
+                $company = isset($state['company']) ? $state['company'] : 'CRONUS USA, Inc.';
+                $service = isset($state['service']) ? $state['service'] : 'dgCompanies';
+                $index_key = isset($state['index_key']) ? $state['index_key'] : '';
+
+                // Make the request to Business Central API
+                $endpoint_url = 'https://api.businesscentral.dynamics.com/v2.0/' . $tenant_id . '/Production/ODataV4/Company(\'' . $company . '\')/' . $service;
+                $response = wp_remote_get($endpoint_url, array(
+                    'headers' => array(
+                        'Authorization' => 'Bearer ' . $access_token,
+                    ),
+                ));
+
+                if (!is_wp_error($response)) {
+                    $body = wp_remote_retrieve_body($response);
+                    $propertys = json_decode($body);
+            
+                    if ($propertys !== null) {
+                        $output = '';
+                        foreach ($propertys as $property => $value) {
+                            if (is_array($value)) {
+                                $output .= $property . ': <br>';
+                                foreach ($value as $sub_property => $sub_value) {
+                                    if (is_object($sub_value)) {
+                                        $output .= '&nbsp;&nbsp;&nbsp;' . $sub_property . ': ' . json_encode($sub_value) . '<br>';
+                                    } else {
+                                        $output .= '&nbsp;&nbsp;&nbsp;' . $sub_property . ': ' . $sub_value . '<br>';
+                                    }
+                                }
+                            } elseif (is_object($value)) {
+                                $output .= $property . ': ' . json_encode($value) . '<br>';
+                            } else {
+                                $output .= $property . ': ' . $value . '<br>';
+                            }
+                        }
+                        return $output;
+                    } else {
+                        return 'Error decoding JSON';
+                    }
+                } else {
+                    $error_message = $response->get_error_message();
+                    return 'Error: ' . $error_message;
+                }
+            } else {
+                return 'Failed to get access token';
+            }
+        } else {
+            $error_message = $response->get_error_message();
+            return 'Error: ' . $error_message;
+        }
+    } else {
+        return 'Authorization code not found.';
+    }
+}
+
+function handle_oauth_callback_redirect() {
+    global $wp_query;
+    if (isset($wp_query->query_vars['oauth_callback'])) {
+        $result = handle_oauth_callback();
+        echo $result; // For demonstration purposes, you can echo the result here, or handle it as needed.
+        exit;
+    }
+}
+add_action('template_redirect', 'handle_oauth_callback_redirect');
+
+
+
 // handle the array parameter
 function redirect_to_authorization_url($params) {
     // Extract parameters from the array
@@ -39,7 +138,7 @@ function redirect_to_authorization_url($params) {
     exit;
 }
 
-function handle_oauth_callback() {
+function handle_oauth_callback_1() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
         $state = isset($_GET['state']) ? json_decode(base64_decode(sanitize_text_field($_GET['state'])), true) : array();
@@ -133,14 +232,14 @@ function handle_oauth_callback() {
     }
 }
 
-function handle_oauth_callback_redirect() {
+function handle_oauth_callback_redirect_1() {
     global $wp_query;
     if (isset($wp_query->query_vars['oauth_callback'])) {
-        return handle_oauth_callback();
+        return handle_oauth_callback_1();
         exit;
     }
 }
-add_action('template_redirect', 'handle_oauth_callback_redirect');
+add_action('template_redirect', 'handle_oauth_callback_redirect_1');
 
 function flush_rewrite_rules_once() {
     flush_rewrite_rules();
