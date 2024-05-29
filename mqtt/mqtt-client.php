@@ -25,20 +25,19 @@ function mqtt_client_example() {
 
     // Create an instance of phpMQTT
     $mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
-/*
+
     if ($mqtt->connect(true, NULL, $username, $password)) {
         $topics['test/topic'] = array('qos' => 0, 'function' => 'procMsg');
         $mqtt->subscribe($topics, 0);
-
+/*
         // Wait for messages
         while($mqtt->proc()) {
         }
-
+*/
         $mqtt->close();
     } else {
         echo 'Connection failed!';
     }
-*/    
 }
 
 function procMsg($topic, $msg) {
