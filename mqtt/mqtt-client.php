@@ -56,7 +56,7 @@ function mqtt_client_page() {
     echo '<div class="wrap">';
     echo '<h1>MQTT Client</h1>';
     echo '<pre>';
-    mqtt_client_example();
+    //mqtt_client_example();
     echo '</pre>';
     echo '</div>';
 }
