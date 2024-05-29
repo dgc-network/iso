@@ -597,4 +597,17 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
 
+function get_current_page_url() {
+    $url = 'http';
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        $url .= 's';
+    }
+    $url .= '://';
+    if ($_SERVER['SERVER_PORT'] !== '80') {
+        $url .= $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+    } else {
+        $url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    }
+    return $url;
+}
 

@@ -101,8 +101,15 @@ function handle_oauth_callback() {
                 $post_type = isset($state['post_type']) ? $state['post_type'] : 'GET';
                 $body_data = isset($state['body_data']) ? $state['body_data'] : array();
                 $etag_data = isset($state['etag_data']) ? $state['etag_data'] : array();
+                
                 //$original_url = isset($state['original_url']) ? urldecode($state['original_url']) : home_url();
                 $original_url = isset($state['original_url']) ? urldecode($state['original_url']) : home_url() . '/display-profiles/';
+                // Set the original URL in the session if it is empty
+                if (empty($_SESSION['original_url'])) {
+                    $_SESSION['original_url'] = home_url() . '/display-profiles/';
+                }                
+                // Retrieve the original URL from the session
+                $original_url = $_SESSION['original_url'];
 
                 // Define the endpoint URL
                 $endpoint_url = 'https://api.businesscentral.dynamics.com/v2.0/' . $tenant_id . '/Production/ODataV4/Company(\'' . $company . '\')/' . $service;

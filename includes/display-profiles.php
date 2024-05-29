@@ -67,6 +67,7 @@ if (!class_exists('display_profiles')) {
                     // Example usage
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    $_SESSION['original_url'] = get_current_page_url();
 
                     $params = array(
                         //'company' => 'CRONUS USA, Inc.',
@@ -75,7 +76,7 @@ if (!class_exists('display_profiles')) {
                         'service' => 'Customers',
                         //'post_type' => 'POST',
                         //'post_type' => 'PATCH',
-                        'post_type' => 'DELETE',
+                        //'post_type' => 'DELETE',
                         'etag_data' => array( // Include any data you need to send with the GET/PATCH/DELETE request
                             //'Name' => (string) get_post_time('U', true, $site_id),
                             //'No' => (string) time(),
