@@ -31,8 +31,8 @@ function mqtt_client_example() {
         $mqtt->subscribe($topics, 0);
 
         // Wait for messages
-        //while($mqtt->proc()) {
-        //}
+        while($mqtt->proc()) {
+        }
 
         $mqtt->close();
     } else {
