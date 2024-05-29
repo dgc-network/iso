@@ -604,10 +604,13 @@ function get_current_page_url() {
     }
     $url .= '://';
     if ($_SERVER['SERVER_PORT'] !== '80') {
-        $url .= $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+        //$url .= $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
     } else {
-        $url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        //$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
-    return $url;
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $parsed_url = parse_url($request_uri);
+    $path = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+    return $url .= $_SERVER['HTTP_HOST'].$path;
 }
 
