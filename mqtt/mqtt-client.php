@@ -1,4 +1,84 @@
 <?php
+
+// In your plugin main file or a specific handler file (e.g., mqtt-handler.php)
+
+add_action('init', 'setup_mqtt_webhook');
+
+function setup_mqtt_webhook() {
+    add_action('wp_ajax_nopriv_mqtt_webhook', 'handle_mqtt_webhook');
+    add_action('wp_ajax_mqtt_webhook', 'handle_mqtt_webhook');
+}
+
+function handle_mqtt_webhook() {
+    // Verify request method
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        wp_die('Invalid request method', 'Method Not Allowed', array('response' => 405));
+    }
+
+    // Get the payload
+    $payload = file_get_contents('php://input');
+    $data = json_decode($payload, true);
+
+    // Ensure data is valid
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        wp_die('Invalid JSON', 'Bad Request', array('response' => 400));
+    }
+
+    // Save data to the database (use your own method to store data)
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mqtt_messages';
+    $wpdb->insert($table_name, array(
+        'topic' => sanitize_text_field($data['topic']),
+        'message' => sanitize_text_field($data['message']),
+        'received_at' => current_time('mysql')
+    ));
+
+    wp_die('Message received', 'OK', array('response' => 200));
+}
+
+register_activation_hook(__FILE__, 'create_mqtt_messages_table');
+
+function create_mqtt_messages_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mqtt_messages';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        topic varchar(255) NOT NULL,
+        message text NOT NULL,
+        received_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
+
+function display_mqtt_messages_shortcode() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mqtt_messages';
+
+    // Fetch the latest messages
+    $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY received_at DESC LIMIT 10");
+
+    if (empty($results)) {
+        return '<p>No messages received yet.</p>';
+    }
+
+    // Display the messages
+    $output = '<ul>';
+    foreach ($results as $row) {
+        $output .= '<li><strong>Topic:</strong> ' . esc_html($row->topic) . '<br><strong>Message:</strong> ' . esc_html($row->message) . '<br><strong>Received at:</strong> ' . esc_html($row->received_at) . '</li>';
+    }
+    $output .= '</ul>';
+
+    return $output;
+}
+
+/*
 // Include WordPress
 //require_once(dirname(__FILE__) . '/../../wp-load.php');
 
