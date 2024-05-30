@@ -1,5 +1,82 @@
 <?php
 
+function add_custom_cron_intervals($schedules) {
+    $schedules['every_minute'] = array(
+        'interval' => 60, // 60 seconds = 1 minute
+        'display'  => __('Every Minute')
+    );
+    return $schedules;
+}
+add_filter('cron_schedules', 'add_custom_cron_intervals');
+
+function schedule_mqtt_message_fetch() {
+    if (!wp_next_scheduled('fetch_mqtt_messages_event')) {
+        wp_schedule_event(time(), 'every_minute', 'fetch_mqtt_messages_event');
+    }
+}
+add_action('wp', 'schedule_mqtt_message_fetch');
+
+function clear_mqtt_message_fetch_schedule() {
+    $timestamp = wp_next_scheduled('fetch_mqtt_messages_event');
+    wp_unschedule_event($timestamp, 'fetch_mqtt_messages_event');
+}
+register_deactivation_hook(__FILE__, 'clear_mqtt_message_fetch_schedule');
+
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
+
+function fetch_mqtt_messages() {
+    $server = 'public.mqtthq.com';
+    $port = 1883;
+    $username = ''; // If your broker requires username
+    $password = ''; // If your broker requires password
+    $client_id = 'wp-mqtt-client-' . uniqid();
+    $topic = 'mqttHQ-client-test';
+    
+    $mqtt = new phpMQTT($server, $port, $client_id);
+
+    $messages = get_option('mqtt_messages', array());
+
+    if ($mqtt->connect(true, NULL, $username, $password)) {
+        $topics[$topic] = array(
+            "qos" => 0,
+            "function" => function($topic, $msg) use (&$messages) {
+                $messages[] = "Msg Received: $msg";
+            }
+        );
+        $mqtt->subscribe($topics, 0);
+
+        $start_time = time();
+        $timeout = 10; // Set timeout in seconds
+        
+        while ($mqtt->proc()) {
+            if ((time() - $start_time) > $timeout) {
+                break;
+            }
+        }
+        
+        $mqtt->close();
+    } else {
+        $messages[] = "Could not connect to MQTT server.";
+    }
+
+    // Save messages to the options table
+    update_option('mqtt_messages', $messages);
+}
+add_action('fetch_mqtt_messages_event', 'fetch_mqtt_messages');
+
+function display_mqtt_messages_shortcode() {
+    $messages = get_option('mqtt_messages', array());
+
+    if (empty($messages)) {
+        return "No messages available.";
+    }
+
+    return nl2br(implode("\n", $messages));
+}
+add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
+
+
+/*
 require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 function display_mqtt_messages_shortcode() {
