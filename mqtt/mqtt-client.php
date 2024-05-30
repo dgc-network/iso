@@ -1,6 +1,6 @@
 <?php
 // Include WordPress
-require_once(dirname(__FILE__) . '/../../wp-load.php');
+//require_once(dirname(__FILE__) . '/../../wp-load.php');
 
 function mqtt_client() {
     $server = 'broker.hivemq.com'; // Your MQTT broker address
