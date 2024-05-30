@@ -15,7 +15,7 @@ function custom_mqtt_connect_and_subscribe() {
     $client_id = 'wordpress_mqtt_client_' . uniqid();  // Unique client ID
 
     $mqtt = new phpMQTT($server, $port, $client_id);
-
+/*
     if (!$mqtt->connect(true, NULL, $username, $password)) {
         return "Failed to connect to the broker.";
     }
@@ -27,7 +27,7 @@ function custom_mqtt_connect_and_subscribe() {
     $mqtt->proc(true, 1000);
 
     $mqtt->close();
-
+*/
     return get_option('mqtt_last_message', 'No messages yet.');
 }
 
