@@ -3,7 +3,7 @@
 //require_once(dirname(__FILE__) . '/../../wp-load.php');
 
 function mqtt_client() {
-    $server = 'broker.hivemq.com'; // Your MQTT broker address
+    $server = 'public.mqtthq.com'; // Your MQTT broker address
     $port = 1883;
     $clientId = uniqid('phpMQTT_');
     $topic = 'your/topic'; // The topic to subscribe to
