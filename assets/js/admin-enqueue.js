@@ -133,7 +133,7 @@ jQuery(document).ready(function($) {
         });
     }
 });
-
+/*
 jQuery(document).ready(function($) {
     function fetchMqttMessages() {
         $.ajax({
@@ -155,3 +155,4 @@ jQuery(document).ready(function($) {
     // Fetch messages immediately on load
     fetchMqttMessages();
 });
+*/
