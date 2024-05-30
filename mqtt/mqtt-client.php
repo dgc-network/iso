@@ -1,4 +1,68 @@
 <?php
+// Include WordPress
+require_once(dirname(__FILE__) . '/../../wp-load.php');
+
+function mqtt_client() {
+    $server = 'broker.hivemq.com'; // Your MQTT broker address
+    $port = 1883;
+    $clientId = uniqid('phpMQTT_');
+    $topic = 'your/topic'; // The topic to subscribe to
+
+    $socket = fsockopen($server, $port, $errno, $errstr, 60);
+
+    if (!$socket) {
+        return "Could not connect to MQTT broker: $errstr ($errno)";
+    }
+
+    // Connect to the MQTT broker
+    $connect = chr(0x10) . chr(0x0E) . chr(0x00) . chr(0x04) . 'MQTT' . chr(0x04) . chr(0x02) . chr(0x00) . chr(0x3C) . chr(0x00) . chr(strlen($clientId)) . $clientId;
+    fwrite($socket, $connect);
+
+    // Subscribe to the topic
+    $subscribe = chr(0x82) . chr(strlen($topic) + 5) . chr(0x00) . chr(0x01) . chr(0x00) . chr(strlen($topic)) . $topic . chr(0x00);
+    fwrite($socket, $subscribe);
+
+    // Wait for messages
+    stream_set_timeout($socket, 60);
+    $response = fread($socket, 8192);
+    fclose($socket);
+
+    // Process the received message
+    if ($response) {
+        // Parse MQTT message (this is a simple example, you might need to adjust based on actual message structure)
+        $message = substr($response, strpos($response, chr(0x00)) + 1);
+        update_option('mqtt_message', $message);
+        return $message;
+    } else {
+        return "No message received.";
+    }
+}
+
+add_action('mqtt_cron_job', 'mqtt_client');
+
+// Schedule the cron job to run every minute
+if (!wp_next_scheduled('mqtt_cron_job')) {
+    wp_schedule_event(time(), 'minute', 'mqtt_cron_job');
+}
+
+function display_mqtt_message() {
+    $message = get_option('mqtt_message', 'No message received yet.');
+    return "Latest MQTT message: " . esc_html($message);
+}
+
+add_shortcode('mqtt_message', 'display_mqtt_message');
+
+function add_cron_interval($schedules) {
+    $schedules['minute'] = array(
+        'interval' => 60,
+        'display' => __('Every Minute')
+    );
+    return $schedules;
+}
+
+add_filter('cron_schedules', 'add_cron_interval');
+
+/*
 // Include the phpMQTT library
 require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
