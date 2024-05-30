@@ -1,24 +1,62 @@
 <?php
 
-//require 'phpMQTT.php';
 require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 function display_mqtt_messages_shortcode() {
-    $url = parse_url(getenv('CLOUDMQTT_URL'));
-    $topic = substr($url['path'], 1);
-
-    $client_id = "phpMQTT-subscriber";
-    
     $server = 'public.mqtthq.com';
     $port = 1883;
     $username = ''; // If your broker requires username
     $password = ''; // If your broker requires password
-    //$client_id = 'wp-mqtt-client-' . uniqid();
+    $client_id = 'wp-mqtt-client-' . uniqid();
     $topic = 'mqttHQ-client-test';
     
-    //$mqtt = new Bluerhinos\phpMQTT($url['host'], $url['port'], $client_id);
     $mqtt = new phpMQTT($server, $port, $client_id);
-    //if ($mqtt->connect(true, NULL, $url['user'], $url['pass'])) {
+
+    $output = 'Start from here:';
+
+    if ($mqtt->connect(true, NULL, $username, $password)) {
+        $topics[$topic] = array(
+            "qos" => 0,
+            "function" => "procmsg"
+        );
+        $mqtt->subscribe($topics, 0);
+
+        $start_time = time();
+        $timeout = 10; // Set timeout in seconds
+        
+        while ($mqtt->proc()) {
+            if ((time() - $start_time) > $timeout) {
+                break;
+            }
+        }
+        
+        $mqtt->close();
+    } else {
+        $output = "Could not connect to MQTT server.";
+    }
+
+    // Function to process the message
+    function procmsg($topic, $msg) {
+        global $output;
+        $output .= "Msg Recieved: $msg\n";
+    }
+
+    return nl2br($output);
+}
+
+add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
+/*
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
+
+function display_mqtt_messages_shortcode() {
+    $server = 'public.mqtthq.com';
+    $port = 1883;
+    $username = ''; // If your broker requires username
+    $password = ''; // If your broker requires password
+    $client_id = 'wp-mqtt-client-' . uniqid();
+    $topic = 'mqttHQ-client-test';
+    
+    $mqtt = new phpMQTT($server, $port, $client_id);
     
     if ($mqtt->connect(true, NULL, $username, $password)) {
         $topics[$topic] = array(
