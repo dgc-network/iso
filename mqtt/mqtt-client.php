@@ -15,7 +15,9 @@ function custom_mqtt_connect_and_subscribe() {
     $password = '';                // MQTT password if required
     $client_id = 'wordpress_mqtt_client_' . uniqid();  // Unique client ID
 
-    $mqtt = new phpMQTT($server, $port, $client_id);
+    //$mqtt = new phpMQTT($server, $port, $client_id);
+    // Create an instance of phpMQTT
+    $mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
 
     if (!$mqtt->connect(true, NULL, $username, $password)) {
         echo "Failed to connect to the broker.";
