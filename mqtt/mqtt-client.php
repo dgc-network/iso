@@ -48,7 +48,7 @@ add_action('wp_ajax_get_mqtt_messages', 'ajax_get_mqtt_messages');
 add_action('wp_ajax_nopriv_get_mqtt_messages', 'ajax_get_mqtt_messages');
 function ajax_get_mqtt_messages() {
     check_ajax_referer('custom-mqtt-client-nonce', 'nonce');
-    echo custom_mqtt_connect_and_subscribe();
+    //echo custom_mqtt_connect_and_subscribe();
     wp_die();
 }
 
