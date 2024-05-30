@@ -8,6 +8,62 @@ if (!defined('ABSPATH')) {
 require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 function custom_mqtt_connect_and_subscribe() {
+    $server = 'public.mqtthq.com';
+    $port = 1883;
+    $client_id = 'your_client_id_' . uniqid();
+    $username = ''; // If your broker requires authentication
+    $password = ''; // If your broker requires authentication
+    $topics = array('your/topic' => array('qos' => 0, 'function' => 'process_message'));
+
+    $mqtt = new phpMQTT($server, $port, $client_id);
+
+    if (!$mqtt->connect(true, NULL, $username, $password)) {
+        return 'Failed to connect to the MQTT broker.';
+    }
+
+    $mqtt->subscribe($topics, 0);
+
+    $timeout = 10; // Set a timeout of 10 seconds
+    $startTime = time();
+
+    while ($mqtt->proc()) {
+        if (time() - $startTime > $timeout) {
+            break;
+        }
+    }
+
+    $mqtt->close();
+}
+
+function process_message($topic, $msg) {
+    // Process the message and store it in a session or database
+    $_SESSION['mqtt_message'] = $msg;
+    error_log('MQTT Message Received: ' . $msg);
+}
+
+// Shortcode to display MQTT messages
+function display_mqtt_messages() {
+    if (isset($_SESSION['mqtt_message'])) {
+        return 'MQTT Message: ' . esc_html($_SESSION['mqtt_message']);
+    } else {
+        return 'No MQTT messages received yet.';
+    }
+}
+add_shortcode('mqtt_messages', 'display_mqtt_messages');
+
+add_action('wp_ajax_nopriv_fetch_mqtt_messages', 'fetch_mqtt_messages');
+add_action('wp_ajax_fetch_mqtt_messages', 'fetch_mqtt_messages');
+
+function fetch_mqtt_messages() {
+    $result = custom_mqtt_connect_and_subscribe();
+    if ($result === 'Failed to connect to the MQTT broker.') {
+        wp_send_json_error('Failed to connect to the MQTT broker.');
+    } else {
+        wp_send_json_success('Messages fetched successfully.');
+    }
+}
+/*
+function custom_mqtt_connect_and_subscribe() {
     $server = 'public.mqtthq.com'; // Change to your MQTT broker
     $port = 1883;                  // Change to your MQTT broker port
     $username = '';                // MQTT username if required
@@ -139,6 +195,26 @@ function custom_mqtt_shortcode() {
         Loading messages...
     </div>
     <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'fetch_mqtt_messages',
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Messages fetched successfully.');
+                    } else {
+                        console.log('Failed to fetch messages. Error: ' + response.data);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Failed to fetch messages. Error: ' + error);
+                }
+            });
+        });
+
         jQuery(document).ready(function($) {
             function fetchMqttMessages() {
                 $.ajax({
