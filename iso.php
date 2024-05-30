@@ -16,11 +16,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -83,7 +83,6 @@ function wp_enqueue_scripts_and_styles() {
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
 require_once plugin_dir_path( __FILE__ ) . 'mqtt/mqtt-client.php';
-//require_once plugin_dir_path( __FILE__ ) . 'mqtt/phpMQTT.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
