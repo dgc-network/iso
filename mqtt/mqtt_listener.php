@@ -8,7 +8,8 @@ if (file_exists($wp_load_path)) {
 }
 
 // Include the phpMQTT library
-require_once dirname(__FILE__) . '/phpMQTT.php';
+//require_once dirname(__FILE__) . '/phpMQTT.php';
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 // Function to connect to MQTT broker and subscribe to a topic
 function custom_mqtt_connect_and_subscribe() {
