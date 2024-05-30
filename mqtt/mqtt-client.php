@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Include the phpMQTT library
-require_once plugin_dir_path(__FILE__) . 'lib/phpMQTT.php';
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 // Function to connect to MQTT broker and subscribe to a topic
 function custom_mqtt_connect_and_subscribe() {
