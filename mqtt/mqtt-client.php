@@ -19,6 +19,8 @@ add_action('wp', 'schedule_mqtt_message_fetch');
 function clear_mqtt_message_fetch_schedule() {
     $timestamp = wp_next_scheduled('fetch_mqtt_messages_event');
     wp_unschedule_event($timestamp, 'fetch_mqtt_messages_event');
+    // Remove the 'mqtt_messages' option from the database
+    delete_option('mqtt_messages');
 }
 register_deactivation_hook(__FILE__, 'clear_mqtt_message_fetch_schedule');
 
@@ -37,6 +39,25 @@ function fetch_mqtt_messages() {
 
     $messages = get_option('mqtt_messages', array());
 
+    $topics[$topic] = array(
+        "qos" => 0,
+        "function" => function($topic, $msg) use (&$messages) {
+            $messages[] = "Msg Received: $msg";
+        }
+    );
+    $mqtt->subscribe($topics, 0);
+
+    $start_time = time();
+    $timeout = 10; // Set timeout in seconds
+    
+    while ($mqtt->proc()) {
+        if ((time() - $start_time) > $timeout) {
+            break;
+        }
+    }
+    
+    $mqtt->close();
+/*
     if ($mqtt->connect(true, NULL, $username, $password)) {
         $topics[$topic] = array(
             "qos" => 0,
@@ -59,7 +80,7 @@ function fetch_mqtt_messages() {
     } else {
         $messages[] = "Could not connect to MQTT server.";
     }
-
+*/
     // Save messages to the options table
     update_option('mqtt_messages', $messages);
 }
