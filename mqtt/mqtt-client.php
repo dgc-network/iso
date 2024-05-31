@@ -91,6 +91,8 @@ function display_mqtt_messages_shortcode() {
 
     if (empty($messages)) {
         return "No messages available.";
+    } else {
+        delete_option('mqtt_messages');
     }
 
     return nl2br(implode("\n", $messages));
