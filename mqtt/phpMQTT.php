@@ -667,5 +667,6 @@ class phpMQTT
     protected function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
+        $this->_debugMessage($message);
     }
 }
