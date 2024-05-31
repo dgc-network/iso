@@ -26,12 +26,12 @@ require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
 
 function fetch_mqtt_messages() {
     $server = 'public.mqtthq.com';
-    $server = 'broker.mqtt.cool';
+    //$server = 'broker.mqtt.cool';
     $port = 1883;
     $username = ''; // If your broker requires username
     $password = ''; // If your broker requires password
     $client_id = 'wp-mqtt-client-' . uniqid();
-    $topic = 'test/topic';
+    $topic = 'mqttHQ-client-test';
     
     $mqtt = new phpMQTT($server, $port, $client_id);
 
