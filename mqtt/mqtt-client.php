@@ -87,6 +87,7 @@ function fetch_mqtt_messages() {
 add_action('fetch_mqtt_messages_event', 'fetch_mqtt_messages');
 
 function display_mqtt_messages_shortcode() {
+    delete_option('mqtt_messages');
     $messages = get_option('mqtt_messages', array());
 
     if (empty($messages)) {
