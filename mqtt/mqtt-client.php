@@ -83,17 +83,18 @@ function fetch_mqtt_messages() {
 */
     // Save messages to the options table
     update_option('mqtt_messages', $messages);
+    echo $messages;
 }
 add_action('fetch_mqtt_messages_event', 'fetch_mqtt_messages');
 
 function display_mqtt_messages_shortcode() {
-    delete_option('mqtt_messages');
+    //delete_option('mqtt_messages');
     $messages = get_option('mqtt_messages', array());
 
     if (empty($messages)) {
         return "No messages available.";
-    } else {
-        delete_option('mqtt_messages');
+    //} else {
+      //  delete_option('mqtt_messages');
     }
 
     return nl2br(implode("\n", $messages));
