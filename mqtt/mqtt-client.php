@@ -39,25 +39,6 @@ function fetch_mqtt_messages() {
 
     $messages = get_option('mqtt_messages', array());
 
-    $topics[$topic] = array(
-        "qos" => 0,
-        "function" => function($topic, $msg) use (&$messages) {
-            $messages[] = "Msg Received: $msg";
-        }
-    );
-    $mqtt->subscribe($topics, 0);
-
-    $start_time = time();
-    $timeout = 10; // Set timeout in seconds
-    
-    while ($mqtt->proc()) {
-        if ((time() - $start_time) > $timeout) {
-            break;
-        }
-    }
-    
-    $mqtt->close();
-/*
     if ($mqtt->connect(true, NULL, $username, $password)) {
         $topics[$topic] = array(
             "qos" => 0,
@@ -80,10 +61,10 @@ function fetch_mqtt_messages() {
     } else {
         $messages[] = "Could not connect to MQTT server.";
     }
-*/
+
     // Save messages to the options table
     update_option('mqtt_messages', $messages);
-    echo $messages;
+    print_r($messages);
 }
 add_action('fetch_mqtt_messages_event', 'fetch_mqtt_messages');
 
