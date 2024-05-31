@@ -658,6 +658,8 @@ class phpMQTT
     {
         if ($this->debug === true) {
             echo date('r: ') . $message . PHP_EOL;
+            $messages = date('r: ') . $message . PHP_EOL;
+            update_option('mqtt_messages', $messages);
         }
     }
 
@@ -667,6 +669,7 @@ class phpMQTT
     protected function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
-        $this->_debugMessage($message);
+        $messages = 'Error:' . $message;
+        update_option('mqtt_messages', $messages);
     }
 }
