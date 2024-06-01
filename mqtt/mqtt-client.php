@@ -91,6 +91,43 @@ function display_mqtt_messages_shortcode() {
     <script>
         (function() {
             const container = document.getElementById('mqtt-messages-container');
+            const client  = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
+
+            client.on('connect', function () {
+                console.log('Connected to MQTT broker');
+                client.subscribe('mqttHQ-client-test', function (err) {
+                    if (err) {
+                        console.error('Subscription error:', err);
+                    }
+                });
+            });
+
+            client.on('message', function (topic, message) {
+                const msg = message.toString();
+                console.log('Message received:', msg);
+                const newMessage = document.createElement('div');
+                newMessage.textContent = `Msg Received: ${msg}`;
+                container.appendChild(newMessage);
+            });
+
+            client.on('error', function (error) {
+                console.error('MQTT error:', error);
+                container.textContent = 'Error fetching messages. Please check the console for more details.';
+            });
+        })();
+    </script>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
+/*
+function display_mqtt_messages_shortcode() {
+    ob_start(); ?>
+    <div id="mqtt-messages-container">No messages available.</div>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+        (function() {
+            const container = document.getElementById('mqtt-messages-container');
             const client  = mqtt.connect('ws://public.mqtthq.com:8083/mqtt'); // WebSocket URL
 
             client.on('connect', function () {
