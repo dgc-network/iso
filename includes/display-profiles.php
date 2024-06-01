@@ -61,7 +61,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
-                if ($_GET['_select_profile']=='4') display_mqtt_messages_shortcode();
+                if ($_GET['_select_profile']=='4') echo display_mqtt_messages_shortcode();
 
                 if ($_GET['_select_profile']=='5') {
                     // Example usage
@@ -1215,6 +1215,43 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
+
+        function display_mqtt_messages_shortcode() {
+            ob_start(); ?>
+            <div id="mqtt-messages-container">No messages available.</div>
+            <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+            <script>
+                (function() {
+                    const container = document.getElementById('mqtt-messages-container');
+                    const client  = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
+        
+                    client.on('connect', function () {
+                        console.log('Connected to MQTT broker');
+                        client.subscribe('mqttHQ-client-test', function (err) {
+                            if (err) {
+                                console.error('Subscription error:', err);
+                            }
+                        });
+                    });
+        
+                    client.on('message', function (topic, message) {
+                        const msg = message.toString();
+                        console.log('Message received:', msg);
+                        const newMessage = document.createElement('div');
+                        newMessage.textContent = `Msg Received: ${msg}`;
+                        container.appendChild(newMessage);
+                    });
+        
+                    client.on('error', function (error) {
+                        console.error('MQTT error:', error);
+                        container.textContent = 'Error fetching messages. Please check the console for more details.';
+                    });
+                })();
+            </script>
+            <?php
+            return ob_get_clean();
+        }
+        
     }
     $profiles_class = new display_profiles();
 }
