@@ -1,5 +1,128 @@
 <?php
 
+// Add custom cron schedule
+function add_custom_cron_intervals($schedules) {
+    $schedules['every_minute'] = array(
+        'interval' => 60, // 60 seconds = 1 minute
+        'display'  => __('Every Minute')
+    );
+    return $schedules;
+}
+add_filter('cron_schedules', 'add_custom_cron_intervals');
+
+// Schedule MQTT message fetch
+function schedule_mqtt_message_fetch() {
+    if (!wp_next_scheduled('fetch_mqtt_messages_event')) {
+        wp_schedule_event(time(), 'every_minute', 'fetch_mqtt_messages_event');
+    }
+}
+add_action('wp', 'schedule_mqtt_message_fetch');
+
+// Clear schedule and delete options on plugin deactivation
+function clear_mqtt_message_fetch_schedule() {
+    $timestamp = wp_next_scheduled('fetch_mqtt_messages_event');
+    wp_unschedule_event($timestamp, 'fetch_mqtt_messages_event');
+    
+    // Remove the 'mqtt_messages' and 'mqtt_messages_timestamp' options from the database
+    delete_option('mqtt_messages');
+    delete_option('mqtt_messages_timestamp');
+}
+register_deactivation_hook(__FILE__, 'clear_mqtt_message_fetch_schedule');
+
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
+
+// Fetch MQTT messages and store them
+function fetch_mqtt_messages() {
+    $server = 'public.mqtthq.com';
+    $port = 1883;
+    $username = ''; // If your broker requires username
+    $password = ''; // If your broker requires password
+    $client_id = 'wp-mqtt-client-' . uniqid();
+    $topic = 'mqttHQ-client-test';
+    
+    $mqtt = new phpMQTT($server, $port, $client_id);
+
+    $messages = get_option('mqtt_messages', array());
+
+    if ($mqtt->connect(true, NULL, $username, $password)) {
+        $topics[$topic] = array(
+            "qos" => 0,
+            "function" => function($topic, $msg) use (&$messages) {
+                $messages[] = "Msg Received: $msg";
+            }
+        );
+        $mqtt->subscribe($topics, 0);
+
+        $start_time = time();
+        $timeout = 10; // Set timeout in seconds
+        
+        while ($mqtt->proc()) {
+            if ((time() - $start_time) > $timeout) {
+                break;
+            }
+        }
+        
+        $mqtt->close();
+    } else {
+        $messages[] = "Could not connect to MQTT server.";
+    }
+
+    // Save messages and update timestamp
+    update_option('mqtt_messages', $messages);
+    update_option('mqtt_messages_timestamp', time());
+}
+add_action('fetch_mqtt_messages_event', 'fetch_mqtt_messages');
+
+// Register REST API endpoint for messages
+function register_mqtt_messages_endpoint() {
+    register_rest_route('mqtt/v1', '/messages', array(
+        'methods' => 'GET',
+        'callback' => 'fetch_mqtt_messages_endpoint',
+        'permission_callback' => '__return_true',
+    ));
+}
+
+function fetch_mqtt_messages_endpoint() {
+    $messages = get_option('mqtt_messages', array());
+    return rest_ensure_response($messages);
+}
+
+add_action('rest_api_init', 'register_mqtt_messages_endpoint');
+
+// Display messages using a shortcode with dynamic refresh
+function display_mqtt_messages_shortcode() {
+    $messages = get_option('mqtt_messages', array());
+    $initial_messages = empty($messages) ? "No messages available." : nl2br(implode("\n", $messages));
+
+    ob_start(); ?>
+    <div id="mqtt-messages-container"><?php echo $initial_messages; ?></div>
+    <script>
+        (function() {
+            function fetchMessages() {
+                fetch('<?php echo esc_url(rest_url('mqtt/v1/messages')); ?>')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.getElementById('mqtt-messages-container');
+                        if (data.length === 0) {
+                            container.innerHTML = "No messages available.";
+                        } else {
+                            container.innerHTML = data.map(msg => `Msg Received: ${msg}`).join('<br>');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching MQTT messages:', error));
+            }
+
+            setInterval(fetchMessages, 60000); // Fetch every 60 seconds
+            fetchMessages(); // Initial fetch on load
+        })();
+    </script>
+    <?php
+
+    return ob_get_clean();
+}
+add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
+
+/*
 function add_custom_cron_intervals($schedules) {
     $schedules['every_minute'] = array(
         'interval' => 60, // 60 seconds = 1 minute
