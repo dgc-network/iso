@@ -34,6 +34,7 @@ register_deactivation_hook(__FILE__, 'clear_mqtt_message_fetch_schedule');
 // Fetch MQTT messages and store them
 function fetch_mqtt_messages() {
     $server = 'public.mqtthq.com';
+    $server = 'broker.mqtt.cool';
     $port = 1883;
     $username = ''; // If your broker requires username
     $password = ''; // If your broker requires password
