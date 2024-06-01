@@ -22,12 +22,12 @@ add_action('wp', 'schedule_mqtt_message_fetch');
 
 // Clear schedule and delete options on plugin deactivation
 function clear_mqtt_message_fetch_schedule() {
-    $timestamp = wp_next_scheduled('fetch_mqtt_messages_event');
-    wp_unschedule_event($timestamp, 'fetch_mqtt_messages_event');
-    
     // Remove the 'mqtt_messages' and 'mqtt_messages_timestamp' options from the database
     delete_option('mqtt_messages');
     delete_option('mqtt_messages_timestamp');
+
+    $timestamp = wp_next_scheduled('fetch_mqtt_messages_event');
+    wp_unschedule_event($timestamp, 'fetch_mqtt_messages_event');    
 }
 register_deactivation_hook(__FILE__, 'clear_mqtt_message_fetch_schedule');
 
