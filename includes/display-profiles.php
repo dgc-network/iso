@@ -212,16 +212,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <select id="select-profile">
-                            <option value="0" selected><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                            <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                            <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                            <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                            <option value="4"><?php echo __( 'MQTT client', 'your-text-domain' );?></option>
-                            <option value="5"><?php echo __( 'Business Central', 'your-text-domain' );?></option>
-                        </select>
-                    </div>
+                    <div><?php $this->display_select_profile();?></div>                    
                     <div style="text-align: right">
                         <button type="submit" id="my-profile-submit">Submit</button>
                     </div>
