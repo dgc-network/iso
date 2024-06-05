@@ -711,6 +711,9 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
+            open: function(event, ui) {
+                initializeMQTTClient();
+            },
             buttons: {
                 "Save": function () {
                     $.ajax({
