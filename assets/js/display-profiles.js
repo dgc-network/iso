@@ -15,7 +15,8 @@ jQuery(document).ready(function($) {
     activate_site_profile_data();
     activate_site_job_list_data();
     activate_doc_category_list_data();
-
+    activate_mqtt_client_list_data();
+    
     // my-profile scripts
     $("#my-profile-submit").on("click", function () {
         $.ajax({

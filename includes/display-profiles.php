@@ -91,7 +91,6 @@ if (!class_exists('display_profiles')) {
             );
             register_post_type( 'mqtt-client', $args );
         }
-
         
         // Shortcode to display
         function display_shortcode() {
@@ -160,6 +159,20 @@ if (!class_exists('display_profiles')) {
             }
         }
 
+        // Select profile
+        function display_select_profile($select_option=false) {
+            ?>
+            <select id="select-profile">
+                <option value="0" <?php ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                <option value="1" <?php ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                <option value="2" <?php ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                <option value="3" <?php ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="4" <?php ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
+                <option value="5" <?php ($select_option==5) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
+                </select>
+            <?php
+        }
+
         // my-profile scripts
         function display_my_profile() {
             $current_user_id = get_current_user_id();
@@ -212,7 +225,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile();?></div>                    
+                    <div><?php $this->display_select_profile(0);?></div>
                     <div style="text-align: right">
                         <button type="submit" id="my-profile-submit">Submit</button>
                     </div>
@@ -234,6 +247,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        // site-profile setting scripts
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -310,14 +324,7 @@ if (!class_exists('display_profiles')) {
                     <div id="site-user-dialog" title="User dialog"></div>
 
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div>
-                            <select id="select-profile">
-                                <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                                <option value="1" selected><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                                <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                                <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                            </select>
-                        </div>
+                        <div><?php $this->display_select_profile("1");?></div>
                         <div style="text-align: right">
                             <button type="submit" id="site-profile-submit">Submit</button>
                         </div>
@@ -594,14 +601,7 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div>
-                            <select id="select-profile">
-                                <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                                <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                                <option value="2" selected><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                                <option value="3"><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                            </select>
-                        </div>
+                        <div><?php $this->display_select_profile("2");?></div>
                         <div style="text-align: right">
                             <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                         </div>
@@ -1095,16 +1095,8 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div>
-                            <select id="select-profile">
-                                <option value="0"><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                                <option value="1"><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                                <option value="2"><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                                <option value="3" selected><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                            </select>
-                        </div>
-                        <div style="text-align: right">
-                        </div>
+                        <div><?php $this->display_select_profile("3");?></div>
+                        <div style="text-align: right"></div>                        
                     </div>
 
                     <fieldset>
@@ -1232,20 +1224,6 @@ if (!class_exists('display_profiles')) {
             endwhile;
             wp_reset_postdata();
             return $options;
-        }
-
-        // Select profile
-        function display_select_profile($select_option=false) {
-            ?>
-            <select id="select-profile">
-                <option value="0" <?php ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                <option value="1" <?php ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                <option value="2" <?php ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                <option value="3" <?php ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="4" <?php ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
-                <option value="5" <?php ($select_option==5) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
-                </select>
-            <?php
         }
 
         // MQTT Client
