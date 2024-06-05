@@ -44,11 +44,11 @@ function display_mqtt_messages($topic = false, $host = 'test.mosquitto.org', $po
     <script>
         (function() {
             const container = document.getElementById('mqtt-messages-container');
-            const client  = mqtt.connect(`wss://${<?php echo $host ?>}:${<?php echo $port ?>/mqtt`); // Secure WebSocket URL
+            const client  = mqtt.connect(`wss://${<?php echo $host;?>}:${<?php echo $port;?>/mqtt`); // Secure WebSocket URL
 
             client.on('connect', function () {
                 console.log('Connected to MQTT broker');
-                client.subscribe('<?php echo $topic ?>', function (err) {
+                client.subscribe('<?php echo $topic;?>', function (err) {
                     if (err) {
                         console.error('Subscription error:', err);
                     }
