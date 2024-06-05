@@ -712,7 +712,7 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                initializeMQTTClient();
+                initializeMQTTClient($("#client-id").val());
             },
             buttons: {
                 "Save": function () {
@@ -782,14 +782,14 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function initializeMQTTClient() {
+    function initializeMQTTClient(topic='1717552915', host='test.mosquitto.org', port='8081') {
         const container = document.getElementById('mqtt-messages-container');
-        //const client = mqtt.connect('wss://<?php echo $host; ?>:<?php echo $port; ?>/mqtt'); // Secure WebSocket URL
-        const client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
+        const client = mqtt.connect('wss://'+host+':'+port+'/mqtt'); // Secure WebSocket URL
+        //const client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
-            client.subscribe('1717552915', function (err) {
+            client.subscribe(topic, function (err) {
                 if (err) {
                     console.error('Subscription error:', err);
                 }
