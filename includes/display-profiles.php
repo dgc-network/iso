@@ -1325,7 +1325,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
                 <?php //echo display_mqtt_messages('mytopic/test');?>
-                <?php echo display_mqtt_messages($client_id);?>
+                <?php echo display_mqtt_messages($topic);?>
             </fieldset>
             <?php
             $html = ob_get_clean();
