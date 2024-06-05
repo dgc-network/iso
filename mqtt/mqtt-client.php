@@ -72,5 +72,4 @@ function display_mqtt_messages($topic = false, $host = 'test.mosquitto.org', $po
     <?php
     return ob_get_clean();
 }
-//add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
 
