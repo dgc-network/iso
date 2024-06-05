@@ -695,8 +695,9 @@ jQuery(document).ready(function($) {
                     '_mqtt_client_id': mqtt_client_id,
                 },
                 success: function (response) {
-                    $("#mqtt-client-dialog").html(response.html_contain);
-                    $("#mqtt-client-dialog").dialog('open');
+                    //$("#mqtt-client-dialog").html(response.html_contain);
+                    //$("#mqtt-client-dialog").dialog('open');
+                    $("#result-container").html(response.html_contain);
                     activate_mqtt_client_list_data();
                 },
                 error: function (error) {
