@@ -1260,7 +1260,7 @@ if (!class_exists('display_profiles')) {
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $client_id = get_post_meta(get_the_ID(), 'client_id', true);
-                                $topic = get_post_meta(get_the_ID(), 'topic', true);
+                                //$topic = get_post_meta(get_the_ID(), 'topic', true);
                                 $ssid = get_post_meta(get_the_ID(), 'ssid', true);
                                 $password = get_post_meta(get_the_ID(), 'password', true);                    
                                 ?>
@@ -1314,13 +1314,13 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
-                <label for="client-id"><?php echo __( 'Client ID: ', 'your-text-domain' );?></label>
+                <label for="client-id"><?php echo __( 'Client ID:', 'your-text-domain' );?></label>
                 <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="description"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
-                <label for="topic"><?php echo __( 'SSID: ', 'your-text-domain' );?></label>
+                <label for="ssid"><?php echo __( 'SSID:', 'your-text-domain' );?></label>
                 <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="topic"><?php echo __( 'Password: ', 'your-text-domain' );?></label>
+                <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
