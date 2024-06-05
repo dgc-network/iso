@@ -62,7 +62,8 @@ function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosq
                 console.log('Message received:', msg);
                 
                 const newMessage = document.createElement('div');
-                newMessage.textContent = `Msg Received: ${msg}`;
+                //newMessage.textContent = `Msg Received: ${msg}`;
+                newMessage.textContent = msg;
                 newMessage.style.padding = '5px 0';
                 
                 // Prepend new message to the top

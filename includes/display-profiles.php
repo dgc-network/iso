@@ -1235,8 +1235,8 @@ if (!class_exists('display_profiles')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
         
+            // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator')) {
-                // Check if the user is administrator
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
@@ -1323,6 +1323,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="mqtt-messages"><?php echo __( 'Messages:', 'your-text-domain' );?></label>
                 <?php echo display_mqtt_messages('mytopic/test');?>
             </fieldset>
             <?php
