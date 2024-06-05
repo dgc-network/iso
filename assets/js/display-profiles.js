@@ -714,6 +714,9 @@ jQuery(document).ready(function($) {
             open: function(event, ui) {
                 initializeMQTTClient($("#client-id").val());
             },
+            close: function(event, ui) {
+                closeMQTTClient();
+            },
             buttons: {
                 "Save": function () {
                     $.ajax({
@@ -782,9 +785,11 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function initializeMQTTClient(topic='1717552915', host='test.mosquitto.org', port='8081') {
+    let client;
+
+    function initializeMQTTClient(topic='topic/test', host='test.mosquitto.org', port='8081') {
         const container = document.getElementById('mqtt-messages-container');
-        const client = mqtt.connect('wss://'+host+':'+port+'/mqtt'); // Secure WebSocket URL
+        client = mqtt.connect('wss://'+host+':'+port+'/mqtt'); // Secure WebSocket URL
         //const client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
 
         client.on('connect', function () {
@@ -815,6 +820,13 @@ jQuery(document).ready(function($) {
             console.error('MQTT error:', error);
             container.textContent = 'Error fetching messages. Please check the console for more details.';
         });
+    }
+
+    function closeMQTTClient() {
+        if (client) {
+            client.end();
+            console.log('Disconnected from MQTT broker');
+        }
     }
 
 });
