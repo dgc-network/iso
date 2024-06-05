@@ -36,7 +36,7 @@ function display_mqtt_messages_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('display_mqtt_messages', 'display_mqtt_messages_shortcode');
-/*
+
 function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosquitto.org', $port = '8081') {
     ob_start(); ?>
     <div id="mqtt-messages-container" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
@@ -91,12 +91,11 @@ function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosq
                 $("#mqtt-client-dialog").dialog("open");
             });
         });
-
-        </script>
+    </script>
     <?php
     return ob_get_clean();
 }
-*/
+/*
 function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosquitto.org', $port = '8081') {
     ob_start(); ?>
     <div id="mqtt-messages-container" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
@@ -142,3 +141,4 @@ function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosq
     <?php
     return ob_get_clean();
 }
+*/
