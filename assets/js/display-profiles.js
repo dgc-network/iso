@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
     activate_site_job_list_data();
     activate_doc_category_list_data();
     activate_mqtt_client_list_data();
-    
+
     // my-profile scripts
     $("#my-profile-submit").on("click", function () {
         $.ajax({
@@ -697,7 +697,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#mqtt-client-dialog").html(response.html_contain);
                     $("#mqtt-client-dialog").dialog('open');
-                    activate_mqtt_client_list_data(doc_id);
+                    activate_mqtt_client_list_data();
                 },
                 error: function (error) {
                     console.error(error);

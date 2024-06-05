@@ -1239,7 +1239,7 @@ if (!class_exists('display_profiles')) {
                 // Check if the user is administrator
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-                <h2 style="display:inline;"><?php echo __( '溫濕度計', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div><?php $this->display_select_profile(4);?></div>                        
@@ -1249,8 +1249,8 @@ if (!class_exists('display_profiles')) {
                     <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th><?php echo __( 'clientID', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'topic', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'ID', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
                             <th><?php echo __( 'password', 'your-text-domain' );?></th>
                         </thead>
@@ -1259,10 +1259,16 @@ if (!class_exists('display_profiles')) {
                         $query = $this->retrieve_mqtt_client_list();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
+                                $client_id = get_post_meta(get_the_ID(), 'client_id', true);
+                                $topic = get_post_meta(get_the_ID(), 'topic', true);
+                                $ssid = get_post_meta(get_the_ID(), 'ssid', true);
+                                $password = get_post_meta(get_the_ID(), 'password', true);                    
                                 ?>
                                 <tr id="edit-mqtt-client-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php the_title();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($client_id);?></td>
                                     <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($ssid);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($password);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1286,8 +1292,6 @@ if (!class_exists('display_profiles')) {
         }
         
         function retrieve_mqtt_client_list() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'mqtt-client',
                 'posts_per_page' => -1,        
@@ -1303,7 +1307,8 @@ if (!class_exists('display_profiles')) {
 
         function display_mqtt_client_dialog($mqtt_client_id=false) {
             $client_id = get_post_meta($mqtt_client_id, 'client_id', true);
-            $topic = get_post_meta($mqtt_client_id, 'topic', true);
+            $topic = get_the_title($mqtt_client_id);
+            $description = get_post_field('post_content', $mqtt_client_id);
             $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
             $password = get_post_meta($mqtt_client_id, 'password', true);
             ?>
@@ -1311,8 +1316,8 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
                 <label for="client-id"><?php echo __( 'Client ID: ', 'your-text-domain' );?></label>
                 <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="topic"><?php echo __( 'Topic: ', 'your-text-domain' );?></label>
-                <input type="text" id="topic" value="<?php echo $topic;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="description"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label for="topic"><?php echo __( 'SSID: ', 'your-text-domain' );?></label>
                 <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="topic"><?php echo __( 'Password: ', 'your-text-domain' );?></label>
@@ -1334,26 +1339,26 @@ if (!class_exists('display_profiles')) {
                 $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
                 $data = array(
                     'ID'           => $mqtt_client_id,
-                    'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    'post_content' => sanitize_text_field($_POST['_category_content']),
+                    'post_title'   => sanitize_text_field($_POST['_topic']),
+                    'post_content' => sanitize_text_field($_POST['_description']),
                 );
                 wp_update_post( $data );
                 update_post_meta($mqtt_client_id, 'client_id', sanitize_text_field($_POST['_client_id']));
-                update_post_meta($mqtt_client_id, 'topic', sanitize_text_field($_POST['_topic']));
+                //update_post_meta($mqtt_client_id, 'topic', sanitize_text_field($_POST['_topic']));
                 update_post_meta($mqtt_client_id, 'ssid', sanitize_text_field($_POST['_ssid']));
                 update_post_meta($mqtt_client_id, 'password', sanitize_text_field($_POST['_password']));
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => 'New MQTT client',
+                    'post_title'    => time(),
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'mqtt-client',
                 );    
                 $post_id = wp_insert_post($new_post);
-                //update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'client_id', time());
             }
             wp_send_json($response);
         }
