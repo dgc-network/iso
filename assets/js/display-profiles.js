@@ -686,8 +686,6 @@ jQuery(document).ready(function($) {
     
         $('[id^="edit-mqtt-client-"]').on("click", function () {
             const mqtt_client_id = this.id.substring(17);
-            $("#mqtt-client-dialog").dialog('open');
-/*
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -706,7 +704,6 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-*/            
         });
 
         $("#mqtt-client-dialog").dialog({

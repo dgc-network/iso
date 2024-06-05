@@ -1311,6 +1311,7 @@ if (!class_exists('display_profiles')) {
             $description = get_post_field('post_content', $mqtt_client_id);
             $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
             $password = get_post_meta($mqtt_client_id, 'password', true);
+            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
@@ -1324,6 +1325,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
+            $html = ob_get_clean();
+            return $html;        
         }
 
         function get_mqtt_client_dialog_data() {
