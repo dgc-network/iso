@@ -9,6 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'init', array( $this, 'register_job_post_type' ) );
+            add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -46,11 +47,52 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
+            add_action( 'wp_ajax_get_mqtt_client_dialog_data', array( $this, 'get_mqtt_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_mqtt_client_dialog_data', array( $this, 'get_mqtt_client_dialog_data' ) );
+            add_action( 'wp_ajax_set_mqtt_client_dialog_data', array( $this, 'set_mqtt_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_mqtt_client_dialog_data', array( $this, 'set_mqtt_client_dialog_data' ) );
+            add_action( 'wp_ajax_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
 
         }
 
+        // Register job post type
+        function register_job_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'jobs'),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'job', $args );
+        }
+
+        // Register mqtt-client post type
+        function register_mqtt_client_post_type() {
+            $labels = array(
+                'menu_name'     => _x('MQTT client', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'mqtt-clients'),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'mqtt-client', $args );
+        }
+
+        
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
@@ -61,7 +103,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
-                if ($_GET['_select_profile']=='4') echo display_mqtt_messages_shortcode();
+                if ($_GET['_select_profile']=='4') echo $this->display_mqtt_client_list();
 
                 if ($_GET['_select_profile']=='5') {
                     // Example usage
@@ -118,22 +160,7 @@ if (!class_exists('display_profiles')) {
             }
         }
 
-        // Register job post type
-        function register_job_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'rewrite'       => array('slug' => 'jobs'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
-                'has_archive'   => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'job', $args );
-        }
-
+        // my-profile scripts
         function display_my_profile() {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
@@ -1215,6 +1242,160 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
+
+        // Select profile
+        function display_select_profile($select_option=false) {
+            ?>
+            <select id="select-profile">
+                <option value="0" <?php ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                <option value="1" <?php ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                <option value="2" <?php ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                <option value="3" <?php ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="4" <?php ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
+                <option value="5" <?php ($select_option==5) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
+                </select>
+            <?php
+        }
+
+        // MQTT Client
+        function display_mqtt_client_list() {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $is_site_admin = $this->is_site_admin();
+        
+            if ($is_site_admin || current_user_can('administrator')) {
+                // Check if the user is administrator
+                ?>
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo __( '溫濕度計', 'your-text-domain' );?></h2>
+                <fieldset>
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div><?php $this->display_select_profile(4);?></div>                        
+                        <div style="text-align: right"></div>                        
+                    </div>
+        
+                    <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'clientID', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'topic', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'password', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $query = $this->retrieve_mqtt_client_list();
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                ?>
+                                <tr id="edit-mqtt-client-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php the_title();?></td>
+                                    <td><?php the_content();?></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-mqtt-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    </fieldset>        
+                </fieldset>
+                <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
+                <?php
+            } else {
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
+            }
+            $html = ob_get_clean();
+            return $html;        
+        }
+        
+        function retrieve_mqtt_client_list() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'mqtt-client',
+                'posts_per_page' => -1,        
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function get_mqtt_client_list_data() {
+            $response = array('html_contain' => $this->display_mqtt_client_list());
+            wp_send_json($response);
+        }
+
+        function display_mqtt_client_dialog($mqtt_client_id=false) {
+            $client_id = get_post_meta($mqtt_client_id, 'client_id', true);
+            $topic = get_post_meta($mqtt_client_id, 'topic', true);
+            $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
+            $password = get_post_meta($mqtt_client_id, 'password', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
+                <label for="client-id"><?php echo __( 'Client ID: ', 'your-text-domain' );?></label>
+                <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="topic"><?php echo __( 'Topic: ', 'your-text-domain' );?></label>
+                <input type="text" id="topic" value="<?php echo $topic;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="topic"><?php echo __( 'SSID: ', 'your-text-domain' );?></label>
+                <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="topic"><?php echo __( 'Password: ', 'your-text-domain' );?></label>
+                <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+            <?php
+        }
+
+        function get_mqtt_client_dialog_data() {
+            $response = array();
+            $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
+            $response['html_contain'] = $this->display_mqtt_client_dialog($mqtt_client_id);
+            wp_send_json($response);
+        }
+
+        function set_mqtt_client_dialog_data() {
+            $response = array();
+            if( isset($_POST['_mqtt_client_id']) ) {
+                $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
+                $data = array(
+                    'ID'           => $mqtt_client_id,
+                    'post_title'   => sanitize_text_field($_POST['_category_title']),
+                    'post_content' => sanitize_text_field($_POST['_category_content']),
+                );
+                wp_update_post( $data );
+                update_post_meta($mqtt_client_id, 'client_id', sanitize_text_field($_POST['_client_id']));
+                update_post_meta($mqtt_client_id, 'topic', sanitize_text_field($_POST['_topic']));
+                update_post_meta($mqtt_client_id, 'ssid', sanitize_text_field($_POST['_ssid']));
+                update_post_meta($mqtt_client_id, 'password', sanitize_text_field($_POST['_password']));
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New MQTT client',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'mqtt-client',
+                );    
+                $post_id = wp_insert_post($new_post);
+                //update_post_meta($post_id, 'site_id', $site_id);
+            }
+            wp_send_json($response);
+        }
+
+        function del_mqtt_client_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_mqtt_client_id'], true);
+            wp_send_json($response);
+        }
+
+
     }
     $profiles_class = new display_profiles();
 }

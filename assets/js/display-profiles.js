@@ -634,5 +634,148 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-    }    
+    }
+
+    // mqtt-client scripts
+    function activate_mqtt_client_list_data(){
+        $("#search-mqtt-client").on( "change", function() {
+
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+        
+            var searchValue = $("#search-mqtt-client").val();
+            if (searchValue) {
+                queryParams.push("_search=" + searchValue);
+            }
+        
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        
+            // Clear the values of all select elements after redirection
+            $("#select-profile, #search-mqtt-client").val('');
+        
+        });
+
+        $("#new-mqtt-client").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_mqtt_client_dialog_data',
+                },
+                success: function (response) {
+                    get_mqtt_client_list_data();
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-mqtt-client-"]').on("click", function () {
+            const mqtt_client_id = this.id.substring(17);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_mqtt_client_dialog_data',
+                    '_mqtt_client_id': mqtt_client_id,
+                },
+                success: function (response) {
+                    $("#mqtt-client-dialog").html(response.html_contain);
+                    $("#mqtt-client-dialog").dialog('open');
+                    activate_mqtt_client_list_data(doc_id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#mqtt-client-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_mqtt_client_dialog_data',
+                            '_mqtt_client_id': $("#mqtt-client-id").val(),
+                            '_client_id': $("#client-id").val(),
+                            '_topic': $("#topic").val(),
+                            '_ssid': $("#ssid").val(),
+                            '_password': $("#password").val(),
+                        },
+                        success: function (response) {
+                            $("#mqtt-client-dialog").dialog('close');
+                            get_mqtt_client_list_data();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this MQTT client?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_mqtt_client_dialog_data',
+                                '_mqtt_client_id': $("#mqtt_client-id").val(),
+                            },
+                            success: function (response) {
+                                $("#mqtt-client-dialog").dialog('close');
+                                get_mqtt_client_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
+    }
+
+    function get_mqtt_client_list_data(){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_mqtt_client_list_data',
+            },
+            success: function (response) {
+                $("#result-container").html(response.html_contain);
+                activate_mqtt_client_list_data();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
+    
 });
