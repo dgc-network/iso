@@ -1240,7 +1240,6 @@ if (!class_exists('display_profiles')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
-                <?php echo display_mqtt_messages('mytopic/test');?>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div><?php $this->display_select_profile(4);?></div>                        
