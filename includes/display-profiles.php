@@ -1240,6 +1240,7 @@ if (!class_exists('display_profiles')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
+                <?php echo display_mqtt_messages('1717552915');?>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div><?php $this->display_select_profile(4);?></div>                        
@@ -1324,7 +1325,6 @@ if (!class_exists('display_profiles')) {
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <?php echo display_mqtt_messages('1717552915');?>
                 <?php //echo display_mqtt_messages($topic);?>
             </fieldset>
             <?php
