@@ -1307,7 +1307,7 @@ if (!class_exists('display_profiles')) {
 
         function display_mqtt_client_dialog($mqtt_client_id=false) {
             $client_id = get_post_meta($mqtt_client_id, 'client_id', true);
-            $topic = get_the_title($mqtt_client_id);
+            $topic = (string) get_the_title($mqtt_client_id);
             $description = get_post_field('post_content', $mqtt_client_id);
             $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
             $password = get_post_meta($mqtt_client_id, 'password', true);
@@ -1324,8 +1324,8 @@ if (!class_exists('display_profiles')) {
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <?php //echo display_mqtt_messages('mytopic/test');?>
-                <?php echo display_mqtt_messages($topic);?>
+                <?php echo display_mqtt_messages('1717552915');?>
+                <?php //echo display_mqtt_messages($topic);?>
             </fieldset>
             <?php
             $html = ob_get_clean();
