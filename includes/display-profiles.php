@@ -1324,7 +1324,7 @@ if (!class_exists('display_profiles')) {
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <?php //echo display_mqtt_messages($topic);?>
+                <?php echo display_mqtt_messages($topic);?>
             </fieldset>
             <?php
             $html = ob_get_clean();
