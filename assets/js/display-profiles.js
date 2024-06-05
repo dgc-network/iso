@@ -711,6 +711,9 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
+            open: function(event, ui) {
+                initializeMQTTClient();
+            },
             buttons: {
                 "Save": function () {
                     $.ajax({
@@ -779,5 +782,39 @@ jQuery(document).ready(function($) {
         });
     }
 
-    
+    function initializeMQTTClient() {
+        const container = document.getElementById('mqtt-messages-container');
+        //const client = mqtt.connect('wss://<?php echo $host; ?>:<?php echo $port; ?>/mqtt'); // Secure WebSocket URL
+        const client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
+
+        client.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            client.subscribe('1717552915', function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+
+        client.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+            
+            const newMessage = document.createElement('div');
+            newMessage.textContent = msg;
+            newMessage.style.padding = '5px 0';
+            
+            // Prepend new message to the top
+            container.insertBefore(newMessage, container.firstChild);
+            
+            // Scroll to top
+            container.scrollTop = 0;
+        });
+
+        client.on('error', function (error) {
+            console.error('MQTT error:', error);
+            container.textContent = 'Error fetching messages. Please check the console for more details.';
+        });
+    }
+
 });

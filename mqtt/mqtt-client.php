@@ -77,7 +77,7 @@ function display_mqtt_messages($topic = 'mqttHQ-client-test', $host = 'test.mosq
                 container.textContent = 'Error fetching messages. Please check the console for more details.';
             });
         }
-        initializeMQTTClient();
+        //initializeMQTTClient();
 /*
         jQuery(document).ready(function($) {
             $("#mqtt-client-dialog").dialog({
