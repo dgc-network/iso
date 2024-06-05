@@ -1352,7 +1352,6 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($mqtt_client_id, 'password', sanitize_text_field($_POST['_password']));
             } else {
                 $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_title'    => time(),
                     'post_content'  => 'Your post content goes here.',

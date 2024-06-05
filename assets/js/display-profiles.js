@@ -720,7 +720,7 @@ jQuery(document).ready(function($) {
                             'action': 'set_mqtt_client_dialog_data',
                             '_mqtt_client_id': $("#mqtt-client-id").val(),
                             '_client_id': $("#client-id").val(),
-                            '_topic': $("#topic").val(),
+                            '_description': $("#description").val(),
                             '_ssid': $("#ssid").val(),
                             '_password': $("#password").val(),
                         },
@@ -742,7 +742,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_mqtt_client_dialog_data',
-                                '_mqtt_client_id': $("#mqtt_client-id").val(),
+                                '_mqtt_client_id': $("#mqtt-client-id").val(),
                             },
                             success: function (response) {
                                 $("#mqtt-client-dialog").dialog('close');
