@@ -1323,6 +1323,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
+                <?php echo display_mqtt_messages('mytopic/test');?>
             </fieldset>
             <?php
             $html = ob_get_clean();
