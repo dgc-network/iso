@@ -1281,6 +1281,19 @@ if (!class_exists('display_documents')) {
                     } else {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
+
+                        $compare = 'Temperature';
+                        if (substr($default_value, 0, strlen($compare)) == $compare) {
+                            // Use a regular expression to match the number inside the parentheses
+                            if (preg_match('/\((\d+)\)$/', $default_value, $matches)) {
+                                $topic = $matches[1]; // Extract the number from the first capturing group
+                                $host = 'test.mosquitto.org';
+                                $port = '8081';
+                                $default_value = retrieve_MQTT_temperature($topic, $host, $port);
+                            }
+                        }
+                        //if (substr($default_value, 0, strlen($compare))==$compare) $default_value=substr($default_value, strlen($compare));
+
                         $field_value = $default_value;
                     }
 

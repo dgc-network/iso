@@ -1,5 +1,34 @@
 <?php
 
+require_once plugin_dir_path(__FILE__) . 'phpMQTT.php';
+
+function retrieve_MQTT_temperature($topic, $host, $port) {
+    $client_id = 'wp-mqtt-client-' . uniqid();
+    $mqtt = new phpMQTT($host, $port, $client_id);
+
+    $temperature = null;
+
+    if ($mqtt->connect(true, NULL, '', '')) {
+        $mqtt->subscribe([$topic => ["qos" => 0, "function" => function ($topic, $msg) use (&$temperature) {
+            $temperature = $msg;
+        }]], 0);
+
+        // Loop until we get the message or timeout
+        $timeout = 10; // seconds
+        $start_time = time();
+        while (time() - $start_time < $timeout) {
+            $mqtt->proc();
+            if ($temperature !== null) {
+                break;
+            }
+        }
+
+        $mqtt->close();
+    }
+
+    return $temperature;
+}
+
 function display_mqtt_messages_shortcode() {
     ob_start(); ?>
     <div id="mqtt-messages-container">No messages available.</div>

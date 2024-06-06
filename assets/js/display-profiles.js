@@ -828,7 +828,7 @@ jQuery(document).ready(function($) {
     
             const newMessage = document.createElement('div');
             newMessage.textContent = msg;
-            newMessage.style.padding = '5px 0';
+            //newMessage.style.padding = '5px 0';
     
             // Prepend new message to the top
             if (container.firstChild) {
@@ -839,6 +839,13 @@ jQuery(document).ready(function($) {
     
             // Scroll to top
             container.scrollTop = 0;
+
+            // Parse temperature value and send notification if larger than 25
+            const temperature = parseFloat(msg);
+            if (!isNaN(temperature) && temperature > 25) {
+                sendNotification('Temperature Alert', `Temperature is ${temperature}°C, exceeding threshold.`);
+            }
+
         });
     
         mqttClient.on('error', function (error) {
@@ -862,5 +869,10 @@ jQuery(document).ready(function($) {
         } else {
             console.error('MQTT client is not connected');
         }
+    }
+
+    function sendNotification(title, message) {
+        // Replace this with your preferred notification method (e.g., browser notification, alert, etc.)
+        alert(`${title}: ${message}`);
     }
 });
