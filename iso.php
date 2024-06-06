@@ -82,7 +82,7 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
-require_once plugin_dir_path( __FILE__ ) . 'mqtt/mqtt-client.php';
+//require_once plugin_dir_path( __FILE__ ) . 'mqtt/mqtt-client.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
@@ -238,7 +238,8 @@ function init_webhook_events() {
                             }
                         } else {
                             // Open-AI auto reply
-                            $response = $open_ai_api->createChatCompletion($message['text']);
+                            //$response = $open_ai_api->createChatCompletion($message['text']);
+                            $response = $open_ai_api->generate_openai_proposal($message['text']);
                             $line_bot_api->replyMessage([
                                 'replyToken' => $event['replyToken'],
                                 'messages' => [
