@@ -122,6 +122,112 @@ if (!class_exists('open_ai_api')) {
             return $responseContent;
         }
 
+        function enter_your_prompt() {
+            if (isset($_POST['submit'])) {
+                // Get the prompt from the form
+                $prompt = $_POST['prompt'];
+            
+                // Generate proposal based on prompt and existing attachment data
+                $proposed_data = $this->generate_openai_proposal($prompt);
+            
+                // Display the proposed data to the user
+                echo "<p>Proposed Data: $proposed_data</p>";
+            }
+
+            ?>
+            <form method="post">
+                <label for="prompt">Enter your prompt:</label><br>
+                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br>
+                <input type="submit" name="submit" value="Generate Proposal">
+            </form>
+            <?php
+        }
+
+        function generate_openai_proposal($prompt) {
+            // Get all attachment post IDs
+            $attachment_ids = get_posts(array(
+                'post_type' => 'attachment',
+                'numberposts' => -1,
+                'post_status' => null,
+                'fields' => 'ids',
+            ));
+        
+            // Initialize an empty array to store the content of attachments
+            $attachment_contents = array();
+        
+            // Loop through each attachment
+            foreach ($attachment_ids as $attachment_id) {
+                // Get the attachment content
+                $attachment_content = wp_get_attachment_url($attachment_id);
+                // Add the attachment content to the prompt if it can be retrieved
+                if ($attachment_content) {
+                    // Attempt to retrieve the attachment content
+                    $content = @file_get_contents($attachment_content);
+                    if ($content !== false) {
+                        // Add the attachment content to the prompt
+                        $prompt .= "\n" . $content;
+                    } else {
+                        // Log error or handle the case where the attachment cannot be read
+                        error_log('Unable to read attachment: ' . $attachment_content);
+                    }
+                } else {
+                    error_log('Unable to retrieve attachment URL for ID: ' . $attachment_id);
+                }
+            }
+        
+            // Prepare OpenAI API parameters
+            $param = array(
+                'model' => 'gpt-3.5-turbo',
+                'messages' => array(
+                    // Fixed system role for maintaining the subject
+                    array('role' => 'system', 'content' => 'iso-helper'),
+                    // User's message
+                    array('role' => 'user', 'content' => $prompt),
+                ),
+                'temperature' => 1.0,
+                'max_tokens' => 4000,
+                'frequency_penalty' => 0,
+                'presence_penalty' => 0,
+            );
+        
+            // Set up request headers
+            $header = array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $this->openai_api_key,
+            );
+        
+            // Create the request context
+            $context = stream_context_create([
+                'http' => [
+                    'ignore_errors' => true,
+                    'method' => 'POST',
+                    'header' => implode("\r\n", $header),
+                    'content' => json_encode($param),
+                ],
+            ]);
+        
+            // Call the OpenAI API
+            $response = @file_get_contents('https://api.openai.com/v1/chat/completions', false, $context);
+            if ($response === false) {
+                // Handle error if the request fails
+                $error = error_get_last();
+                error_log('Request failed: ' . $error['message']);
+                return 'Error: Unable to connect to the OpenAI API. Please try again later.';
+            }
+        
+            // Parse the response
+            $data = json_decode($response, true);
+            if (isset($data['choices'][0]['message']['content'])) {
+                $responseContent = $data['choices'][0]['message']['content'];
+            } else {
+                $responseContent = 'Error: Failed to get a valid response from the OpenAI API.';
+                error_log('Invalid API response: ' . $response);
+            }
+        
+            // Return the generated response
+            return $responseContent;
+        }
+/*        
         function generate_openai_proposal($prompt) {
             // Get all attachment post IDs
             $attachment_ids = get_posts(array(
@@ -196,26 +302,6 @@ if (!class_exists('open_ai_api')) {
             // Return the generated response
             return $responseContent;
         }
-        
-        function enter_your_prompt() {
-            if (isset($_POST['submit'])) {
-                // Get the prompt from the form
-                $prompt = $_POST['prompt'];
-            
-                // Generate proposal based on prompt and existing attachment data
-                $proposed_data = $this->generate_openai_proposal($prompt);
-            
-                // Display the proposed data to the user
-                echo "<p>Proposed Data: $proposed_data</p>";
-            }
-
-            ?>
-            <form method="post">
-                <label for="prompt">Enter your prompt:</label><br>
-                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br>
-                <input type="submit" name="submit" value="Generate Proposal">
-            </form>
-            <?php
-        }
+*/        
     }
 }
