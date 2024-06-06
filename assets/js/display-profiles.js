@@ -732,9 +732,9 @@ jQuery(document).ready(function($) {
                             '_password': $("#password").val(),
                         },
                         success: function (response) {
+                            publishMQTTMessage("mytopic/newDeviceID", $("#client-id").val());
                             $("#mqtt-client-dialog").dialog('close');
                             get_mqtt_client_list_data();
-                            publishMQTTMessage("mytopic/newDeviceID", $("#client-id").val());
                         },
                         error: function (error) {
                             console.error(error);
