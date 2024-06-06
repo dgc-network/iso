@@ -676,7 +676,6 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     get_mqtt_client_list_data();
-                    publishMQTTMessage("mytopic/newDeviceID", "newDeviceID");
                 },
                 error: function(error){
                     console.error(error);
@@ -735,6 +734,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#mqtt-client-dialog").dialog('close');
                             get_mqtt_client_list_data();
+                            publishMQTTMessage("mytopic/newDeviceID", $("#client-id").val());
                         },
                         error: function (error) {
                             console.error(error);
