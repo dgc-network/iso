@@ -142,7 +142,112 @@ if (!class_exists('open_ai_api')) {
             </form>
             <?php
         }
-
+        
+        function generate_openai_proposal($prompt) {
+            // Initialize an empty string to store error messages
+            $error_messages = '';
+        
+            // Get all attachment post IDs
+            $attachment_ids = get_posts(array(
+                'post_type' => 'attachment',
+                'numberposts' => -1,
+                'post_status' => null,
+                'fields' => 'ids',
+            ));
+        
+            // Loop through each attachment
+            foreach ($attachment_ids as $attachment_id) {
+                // Get the attachment URL
+                $attachment_url = wp_get_attachment_url($attachment_id);
+                if ($attachment_url) {
+                    // Attempt to retrieve the attachment content
+                    $content = @file_get_contents($attachment_url);
+                    if ($content !== false) {
+                        // Add the attachment content to the prompt
+                        $prompt .= "\n" . $content;
+                    } else {
+                        // Log error and skip this attachment
+                        $error_message = 'Unable to read attachment: ' . $attachment_url;
+                        error_log($error_message);
+                        $error_messages .= $error_message . "<br>";
+                    }
+                } else {
+                    // Log error if the URL cannot be retrieved
+                    $error_message = 'Unable to retrieve attachment URL for ID: ' . $attachment_id;
+                    error_log($error_message);
+                    $error_messages .= $error_message . "<br>";
+                }
+            }
+        
+            // Prepare OpenAI API parameters
+            $param = array(
+                'model' => 'gpt-3.5-turbo',
+                'messages' => array(
+                    // Fixed system role for maintaining the subject
+                    array('role' => 'system', 'content' => 'iso-helper'),
+                    // User's message
+                    array('role' => 'user', 'content' => $prompt),
+                ),
+                'temperature' => 1.0,
+                'max_tokens' => 4000,
+                'frequency_penalty' => 0,
+                'presence_penalty' => 0,
+            );
+        
+            // Set up request headers
+            $header = array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $this->openai_api_key,
+            );
+        
+            // Create the request context
+            $context = stream_context_create([
+                'http' => [
+                    'ignore_errors' => true,
+                    'method' => 'POST',
+                    'header' => implode("\r\n", $header),
+                    'content' => json_encode($param),
+                ],
+            ]);
+        
+            // Call the OpenAI API
+            $response = @file_get_contents('https://api.openai.com/v1/chat/completions', false, $context);
+            if ($response === false) {
+                // Handle error if the request fails
+                $error = error_get_last();
+                $error_message = 'Request failed: ' . $error['message'];
+                error_log($error_message);
+                $error_messages .= $error_message . "<br>";
+                return 'Error: Unable to connect to the OpenAI API. Please try again later.<br>' . $error_messages;
+            }
+        
+            // Parse the response
+            $data = json_decode($response, true);
+            if (isset($data['choices'][0]['message']['content'])) {
+                $responseContent = $data['choices'][0]['message']['content'];
+            } else {
+                $error_message = 'Error: Failed to get a valid response from the OpenAI API.';
+                error_log('Invalid API response: ' . $response);
+                $error_messages .= $error_message . "<br>";
+                $responseContent = $error_message;
+            }
+        
+            // Return the generated response with any error messages
+            return $responseContent . '<br>' . $error_messages;
+        }
+/*        
+        // Example usage with form handling:
+        if (isset($_POST['submit'])) {
+            // Get the prompt from the form
+            $prompt = sanitize_text_field($_POST['prompt']);
+        
+            // Generate proposal based on prompt and existing attachment data
+            $proposed_data = generate_openai_proposal($prompt);
+        
+            // Display the proposed data to the user
+            echo "<p>Proposed Data: </p><pre>$proposed_data</pre>";
+        }
+        
         function generate_openai_proposal($prompt) {
             // Initialize an empty string to store error messages
             $error_messages = '';
