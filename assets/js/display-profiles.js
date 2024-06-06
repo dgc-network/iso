@@ -789,8 +789,8 @@ jQuery(document).ready(function($) {
 
     function initializeMQTTClient(topic='topic/test', host='test.mosquitto.org', port='8081') {
         const container = document.getElementById('mqtt-messages-container');
+        container.innerHTML = ''; // Clear previous messages
         client = mqtt.connect('wss://'+host+':'+port+'/mqtt'); // Secure WebSocket URL
-        //const client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt'); // Secure WebSocket URL
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
@@ -825,6 +825,7 @@ jQuery(document).ready(function($) {
     function closeMQTTClient() {
         if (client) {
             client.end();
+            client = null;
             console.log('Disconnected from MQTT broker');
         }
     }
