@@ -1324,7 +1324,7 @@ if (!class_exists('display_profiles')) {
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <div id="mqtt-messages-container" style="height: 200px; overflow-x: overflow-y: scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
+                <div id="mqtt-messages-container" style="height:200px; overflow-x:scroll; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
             </fieldset>
             <?php
             $html = ob_get_clean();
