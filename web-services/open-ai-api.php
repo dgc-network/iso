@@ -236,8 +236,9 @@ if (!class_exists('open_ai_api')) {
                 $responseContent = $data['choices'][0]['message']['content'];
             } else {
                 $error_message = 'Error: Failed to get a valid response from the OpenAI API.';
-                error_log('Invalid API response: ' . $response);
-                $error_messages .= $error_message . "<br>";
+                $error_log_message = 'Invalid API response: ' . $response;
+                error_log($error_log_message);
+                $error_messages .= $error_log_message . "<br>";
                 $responseContent = $error_message;
             }
         
