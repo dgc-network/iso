@@ -727,6 +727,7 @@ jQuery(document).ready(function($) {
                             'action': 'set_mqtt_client_dialog_data',
                             '_mqtt_client_id': $("#mqtt-client-id").val(),
                             '_client_id': $("#client-id").val(),
+                            '_mqtt_topic': $("#mqtt-topic").val(),
                             '_description': $("#description").val(),
                             '_ssid': $("#ssid").val(),
                             '_password': $("#password").val(),

@@ -1345,12 +1345,12 @@ if (!class_exists('display_profiles')) {
                 $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
                 $data = array(
                     'ID'           => $mqtt_client_id,
-                    'post_title'   => sanitize_text_field($_POST['_topic']),
+                    //'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
+                    'post_title'   => sanitize_text_field($_POST['_client_id']),
                     'post_content' => sanitize_text_field($_POST['_description']),
                 );
                 wp_update_post( $data );
                 update_post_meta($mqtt_client_id, 'client_id', sanitize_text_field($_POST['_client_id']));
-                //update_post_meta($mqtt_client_id, 'topic', sanitize_text_field($_POST['_topic']));
                 update_post_meta($mqtt_client_id, 'ssid', sanitize_text_field($_POST['_ssid']));
                 update_post_meta($mqtt_client_id, 'password', sanitize_text_field($_POST['_password']));
             } else {
