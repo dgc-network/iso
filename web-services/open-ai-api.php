@@ -146,6 +146,8 @@ if (!class_exists('open_ai_api')) {
         function generate_openai_proposal($prompt) {
             // Initialize an empty string to store error messages
             $error_messages = '';
+            $max_token_length = 16385;
+            $current_token_length = strlen($prompt);
         
             // Get all attachment post IDs
             $attachment_ids = get_posts(array(
@@ -157,6 +159,14 @@ if (!class_exists('open_ai_api')) {
         
             // Loop through each attachment
             foreach ($attachment_ids as $attachment_id) {
+                // Check if adding more content would exceed the token limit
+                if ($current_token_length >= $max_token_length) {
+                    $error_message = 'Token limit reached, some attachments were skipped.';
+                    error_log($error_message);
+                    $error_messages .= $error_message . "<br>";
+                    break;
+                }
+        
                 // Get the attachment URL
                 $attachment_url = wp_get_attachment_url($attachment_id);
                 if ($attachment_url) {
@@ -166,8 +176,20 @@ if (!class_exists('open_ai_api')) {
                         // Attempt to retrieve the attachment content
                         $content = @file_get_contents($attachment_url);
                         if ($content !== false) {
-                            // Add the attachment content to the prompt
-                            $prompt .= "\n" . $content;
+                            // Check if adding this content will exceed the token limit
+                            if ($current_token_length + strlen($content) < $max_token_length) {
+                                // Add the attachment content to the prompt
+                                $prompt .= "\n" . $content;
+                                $current_token_length += strlen($content);
+                            } else {
+                                // Truncate the content to fit within the token limit
+                                $available_length = $max_token_length - $current_token_length;
+                                $prompt .= "\n" . substr($content, 0, $available_length);
+                                $current_token_length += $available_length;
+                                $error_message = 'Attachment content truncated to fit token limit: ' . $attachment_url;
+                                error_log($error_message);
+                                $error_messages .= $error_message . "<br>";
+                            }
                         } else {
                             // Log error and skip this attachment
                             $error_message = 'Unable to read attachment: ' . $attachment_url;
