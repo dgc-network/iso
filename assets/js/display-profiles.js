@@ -676,6 +676,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     get_mqtt_client_list_data();
+                    publishMQTTMessage("mytopic/newDeviceID", "newDeviceID");
                 },
                 error: function(error){
                     console.error(error);
@@ -712,7 +713,7 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                initializeMQTTClient($("#client-id").val());
+                initializeMQTTClient($("#mqtt-topic").val());
             },
             close: function(event, ui) {
                 closeMQTTClient();
@@ -795,9 +796,8 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function initializeMQTTClient(topic = 'mqttHQ-client-test', host = 'test.mosquitto.org', port = '8081') {
+    function initializeMQTTClient(topic = 'mqtt-topic', host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
-        //container.innerHTML = ''; // Clear previous messages
     
         // Disconnect previous client if exists
         if (mqttClient) {
@@ -847,5 +847,19 @@ jQuery(document).ready(function($) {
                 container.textContent = 'Error fetching messages. Please check the console for more details.';
             }
         });
+    }
+
+    function publishMQTTMessage(topic, message) {
+        if (mqttClient && mqttClient.connected) {
+            mqttClient.publish(topic, message, {}, function (err) {
+                if (err) {
+                    console.error('Publish error:', err);
+                } else {
+                    console.log('Message published:', message);
+                }
+            });
+        } else {
+            console.error('MQTT client is not connected');
+        }
     }
 });

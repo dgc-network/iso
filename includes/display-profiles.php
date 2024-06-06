@@ -1307,7 +1307,7 @@ if (!class_exists('display_profiles')) {
 
         function display_mqtt_client_dialog($mqtt_client_id=false) {
             $client_id = get_post_meta($mqtt_client_id, 'client_id', true);
-            $topic = (string) get_the_title($mqtt_client_id);
+            $mqtt_topic = get_the_title($mqtt_client_id);
             $description = get_post_field('post_content', $mqtt_client_id);
             $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
             $password = get_post_meta($mqtt_client_id, 'password', true);
@@ -1315,6 +1315,7 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
+                <input type="hidden" id="mqtt-topic" value="<?php echo $mqtt_topic;?>" />
                 <label for="client-id"><?php echo __( 'Client ID:', 'your-text-domain' );?></label>
                 <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
@@ -1324,7 +1325,7 @@ if (!class_exists('display_profiles')) {
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
                 <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <div id="mqtt-messages-container" style="height:200px; overflow-x:scroll; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
+                <div id="mqtt-messages-container" style="height:200px; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
             </fieldset>
             <?php
             $html = ob_get_clean();
