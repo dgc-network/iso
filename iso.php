@@ -239,6 +239,7 @@ function init_webhook_events() {
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
+                            
                             //$response = $open_ai_api->generate_openai_proposal($message['text']);
                             $line_bot_api->replyMessage([
                                 'replyToken' => $event['replyToken'],

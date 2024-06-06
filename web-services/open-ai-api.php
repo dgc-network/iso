@@ -197,5 +197,25 @@ if (!class_exists('open_ai_api')) {
             return $responseContent;
         }
         
+        function enter_your_prompt() {
+            if (isset($_POST['submit'])) {
+                // Get the prompt from the form
+                $prompt = $_POST['prompt'];
+            
+                // Generate proposal based on prompt and existing attachment data
+                $proposed_data = $this->generate_openai_proposal($prompt);
+            
+                // Display the proposed data to the user
+                echo "<p>Proposed Data: $proposed_data</p>";
+            }
+
+            ?>
+            <form method="post">
+                <label for="prompt">Enter your prompt:</label><br>
+                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br>
+                <input type="submit" name="submit" value="Generate Proposal">
+            </form>
+            <?php
+        }
     }
 }

@@ -35,30 +35,13 @@ if (!class_exists('to_do_list')) {
                         echo '<div class="ui-widget" id="result-container">';
                         echo $this->display_todo_dialog($todo_id);
                         echo '</div>';
-/*
-                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                        $report_id = get_post_meta($todo_id, 'report_id', true);
-                        if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                        $documents_class = new display_documents();
-                        if ($doc_id) $doc_fields = $documents_class->display_doc_field_keys($doc_id);
-                        // Check if $doc_fields is already defined and is an array and not empty
-                        if (isset($doc_fields) && is_array($doc_fields) && !empty($doc_fields)) {
-                            // Convert the PHP array to a JSON string
-                            $doc_fields_json = json_encode($doc_fields);
-                            echo '<input type="hidden" id="doc-fields" value="'.$doc_fields_json.'">';
-                            echo '<div class="ui-widget" id="result-container">';
-                            echo $this->display_todo_dialog($todo_id);
-                            echo '</div>';
-                        } else {
-                            echo 'Todo #'.$todo_id.' is not an validaed todo.';
-                        }
-*/                        
                     }
                 }
 
                 if ($_GET['_select_todo']=='1') $this->display_signature_record();
 
                 if ($_GET['_select_todo']=='2') $this->list_all_scheduled_events();
+
                 if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
                     $this->remove_iso_helper_scheduled_events($_GET['_remove_iso_helper_scheduled_events']);
                     $this->list_all_scheduled_events();
@@ -564,14 +547,6 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
-                //$todo_id       = get_post_meta($action_id, 'todo_id', true);
-                //if (empty($todo_id)) $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-/*                
-                $report_id = get_post_meta($todo_id, 'report_id', true);
-                if (empty($report_id)) $report_id=$prev_report_id;
-                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-*/                
             }
         
             // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
@@ -580,7 +555,6 @@ if (!class_exists('to_do_list')) {
                 if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 if (!$next_job) $next_job = $doc_id;
                 $todo_title = get_the_title($next_job);
-                //update_post_meta( $doc_id, 'todo_status', -1);
                 $next_leadtime = 86400;
                 $current_user_id = 1;
             }
@@ -597,7 +571,6 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
-            //if ($report_id) update_post_meta( $new_todo_id, 'report_id', $report_id );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
         
@@ -659,7 +632,6 @@ if (!class_exists('to_do_list')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) $doc_title .= '(電子表單)';
-            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
             $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
@@ -701,7 +673,6 @@ if (!class_exists('to_do_list')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) $doc_title .= '(電子表單)';
-            //if ($report_id) $doc_title .= '(Report#'.$report_id.')'; 
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
 

@@ -104,6 +104,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
                 if ($_GET['_select_profile']=='4') echo $this->display_mqtt_client_list();
 
+                $open_ai_api = new open_ai_api();
+                if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
+
                 if ($_GET['_select_profile']=='5') {
                     // Example usage
                     $current_user_id = get_current_user_id();
@@ -163,12 +166,13 @@ if (!class_exists('display_profiles')) {
         function display_select_profile($select_option=false) {
             ?>
             <select id="select-profile">
-                <option value="0" <?php ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                <option value="1" <?php ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                <option value="2" <?php ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                <option value="3" <?php ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="4" <?php ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
-                <option value="5" <?php ($select_option==5) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
+                <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
+                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
+                <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( 'Enter your prompt', 'your-text-domain' );?></option>
                 </select>
             <?php
         }
@@ -324,7 +328,7 @@ if (!class_exists('display_profiles')) {
                     <div id="site-user-dialog" title="User dialog"></div>
 
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile("1");?></div>
+                        <div><?php $this->display_select_profile(1);?></div>
                         <div style="text-align: right">
                             <button type="submit" id="site-profile-submit">Submit</button>
                         </div>
@@ -601,7 +605,7 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile("2");?></div>
+                        <div><?php $this->display_select_profile(2);?></div>
                         <div style="text-align: right">
                             <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                         </div>
@@ -1095,7 +1099,7 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile("3");?></div>
+                        <div><?php $this->display_select_profile(3);?></div>
                         <div style="text-align: right"></div>                        
                     </div>
 
