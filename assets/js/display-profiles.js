@@ -796,7 +796,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function initializeMQTTClient(topic = 'mqtt-topic', host = 'test.mosquitto.org', port = '8081') {
+    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
     
         // Disconnect previous client if exists
