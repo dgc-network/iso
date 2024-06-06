@@ -785,6 +785,55 @@ jQuery(document).ready(function($) {
         });
     }
 
+    let mqttClient;
+
+    function initializeMQTTClient(topic = 'mqttHQ-client-test', host = 'test.mosquitto.org', port = '8081') {
+        const container = document.getElementById('mqtt-messages-container');
+        container.innerHTML = ''; // Clear previous messages
+        mqttClient = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+    
+        mqttClient.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClient.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+    
+        mqttClient.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+    
+            const newMessage = document.createElement('div');
+            newMessage.textContent = msg;
+            newMessage.style.padding = '5px 0';
+    
+            // Prepend new message to the top
+            if (container.firstChild) {
+                container.insertBefore(newMessage, container.firstChild);
+            } else {
+                container.appendChild(newMessage);
+            }
+    
+            // Scroll to top
+            container.scrollTop = 0;
+        });
+    
+        mqttClient.on('error', function (error) {
+            console.error('MQTT error:', error);
+            container.textContent = 'Error fetching messages. Please check the console for more details.';
+        });
+    }
+    
+    function closeMQTTClient() {
+        if (mqttClient) {
+            mqttClient.end();
+            mqttClient = null;
+            console.log('Disconnected from MQTT broker');
+        }
+    }
+/*    
     let client;
 
     function initializeMQTTClient(topic='topic/test', host='test.mosquitto.org', port='8081') {
@@ -829,5 +878,5 @@ jQuery(document).ready(function($) {
             console.log('Disconnected from MQTT broker');
         }
     }
-
+*/
 });
