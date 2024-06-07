@@ -57,7 +57,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
-
+            add_action( 'wp_ajax_update_temperature_option', array( $this, 'update_temperature_option' ) );
+            add_action( 'wp_ajax_nopriv_update_temperature_option', array( $this, 'update_temperature_option' ) );                
         }
 
         // Register job post type
@@ -1378,7 +1379,20 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-
+        function update_temperature_option() {
+            if (isset($_POST['topic']) && isset($_POST['temperature'])) {
+                $topic = sanitize_text_field($_POST['topic']);
+                $temperature = floatval($_POST['temperature']);
+                
+                // Update the option
+                update_option($topic, $temperature);
+                
+                wp_send_json_success(array('message' => 'Temperature updated successfully.'));
+            } else {
+                wp_send_json_error(array('message' => 'Missing topic or temperature.'));
+            }
+        }
+        
     }
     $profiles_class = new display_profiles();
 }

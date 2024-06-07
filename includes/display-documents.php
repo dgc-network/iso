@@ -1282,14 +1282,14 @@ if (!class_exists('display_documents')) {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
 
-                        $compare = 'Temperature';
+                        $compare = 'thermometer';
                         if (substr($default_value, 0, strlen($compare)) == $compare) {
                             // Use a regular expression to match the number inside the parentheses
-                            if (preg_match('/\((\d+)\)$/', $default_value, $matches)) {
+                            //if (preg_match('/\((\d+)\)$/', $default_value, $matches)) {
+                            // Use a regular expression to match the number after the hyphen
+                            if (preg_match('/-(\d+)$/', $default_value, $matches)) {
                                 $topic = $matches[1]; // Extract the number from the first capturing group
-                                $host = 'test.mosquitto.org';
-                                $port = '8081';
-                                $default_value = retrieve_MQTT_temperature($topic, $host, $port);
+                                $default_value = get_option($topic);
                             }
                         }
                         //if (substr($default_value, 0, strlen($compare))==$compare) $default_value=substr($default_value, strlen($compare));

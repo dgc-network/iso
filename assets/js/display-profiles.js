@@ -787,6 +787,34 @@ jQuery(document).ready(function($) {
         });
     }
 
+    initialize_all_MQTT_clients();
+    // Function to initialize MQTT client with a specific topic
+    function initialize_all_MQTT_clients() {
+        // Retrieve the post title via AJAX
+        $.ajax({
+            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
+            method: 'GET',
+            data: {
+                slug: topic,
+                per_page: 1 // We only need one post matching the topic
+            },
+            success: function(response) {
+                if (response.length > 0) {
+                    const post = response[0];
+                    const topic = post.title.rendered;
+                    console.log('Post title for topic: ' + topic);
+                    // Your MQTT client initialization code here
+                    initializeMQTTClient(topic);
+                } else {
+                    console.error('No post found for topic.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching post for topic:', error);
+            }
+        });
+    }
+
     let mqttClient;
 
     function closeMQTTClient() {
@@ -840,12 +868,9 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
 
-            // Parse temperature value and send notification if larger than 25
+            // Parse temperature value and ...
             const temperature = parseFloat(msg);
-            if (!isNaN(temperature) && temperature > 25) {
-                sendNotification('Temperature Alert', `Temperature is ${temperature}°C, exceeding threshold.`);
-            }
-
+            updateTemperatureOption(topic, temperature);
         });
     
         mqttClient.on('error', function (error) {
@@ -871,8 +896,26 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function sendNotification(title, message) {
-        // Replace this with your preferred notification method (e.g., browser notification, alert, etc.)
-        alert(`${title}: ${message}`);
+    function updateTemperatureOption(topic, temperature) {
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            data: {
+                action: 'update_temperature_option',
+                topic: topic,
+                temperature: temperature
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log(response.data.message);
+                } else {
+                    console.error(response.data.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
     }
+
 });
