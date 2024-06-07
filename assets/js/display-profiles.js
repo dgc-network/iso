@@ -792,7 +792,7 @@ jQuery(document).ready(function($) {
     function initialize_all_MQTT_clients() {
         // Retrieve all MQTT client posts via AJAX
         $.ajax({
-            url: '/wp-json/wp/v2/posts?type=mqtt-client', // Adjust the endpoint URL as needed
+            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
             method: 'GET',
             success: function(response) {
                 if (response.length > 0) {
