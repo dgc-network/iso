@@ -1260,6 +1260,8 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
                             <th><?php echo __( 'password', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'H%', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -1268,13 +1270,17 @@ if (!class_exists('display_profiles')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $client_id = get_post_meta(get_the_ID(), 'client_id', true);
                                 $ssid = get_post_meta(get_the_ID(), 'ssid', true);
-                                $password = get_post_meta(get_the_ID(), 'password', true);                    
+                                $password = get_post_meta(get_the_ID(), 'password', true);
+                                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                                $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                                 ?>
                                 <tr id="edit-mqtt-client-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($client_id);?></td>
                                     <td><?php the_content();?></td>
                                     <td style="text-align:center;"><?php echo esc_html($ssid);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($password);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1384,6 +1390,14 @@ if (!class_exists('display_profiles')) {
             if (isset($_POST['topic']) && isset($_POST['temperature'])) {
                 $topic = sanitize_text_field($_POST['topic']);
                 $temperature = floatval($_POST['temperature']);
+                $humidity = floatval($_POST['humidity']);
+                
+                // Find the post by title
+                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+            
+                // Update the post meta
+                update_post_meta($post->ID, 'temperature', $temperature);
+                update_post_meta($post->ID, 'humidity', $humidity);
                 
                 // Update the option
                 update_option($topic, $temperature);
