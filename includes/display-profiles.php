@@ -1357,8 +1357,7 @@ if (!class_exists('display_profiles')) {
                 $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
                 $data = array(
                     'ID'           => $mqtt_client_id,
-                    //'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
-                    'post_title'   => sanitize_text_field($_POST['_client_id']),
+                    'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
                     'post_content' => sanitize_text_field($_POST['_description']),
                 );
                 wp_update_post( $data );
@@ -1391,14 +1390,14 @@ if (!class_exists('display_profiles')) {
                 $topic = sanitize_text_field($_POST['topic']);
                 $temperature = floatval($_POST['temperature']);
                 $humidity = floatval($_POST['humidity']);
-                
+
                 // Find the post by title
                 $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
-            
+
                 // Update the post meta
                 update_post_meta($post->ID, 'temperature', $temperature);
                 update_post_meta($post->ID, 'humidity', $humidity);
-                
+
                 // Update the option
                 update_option($topic, $temperature);
                 

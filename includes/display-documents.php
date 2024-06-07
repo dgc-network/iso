@@ -657,20 +657,17 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
                     <fieldset>
-                        <label for="doc-title"> Document: </label>
+                        <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
                         <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                        <label for="doc-field-setting"> Field setting: </label>
+                        <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
                         <?php echo $this->display_doc_field_list($doc_id);?>
-                        <div class="separator"></div>
-                        <label for="doc-report-rows">Doc-report rows: </label>
-                        <input type="text" id="doc-report-rows" value="<?php echo get_option('doc_report_rows');?>" />
                     </fieldset>
                 </div>        
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <select id="select-doc-report-function">
-                            <option value="">Select ...</option>
+                            <option value=""><?php echo __( 'Select ...', 'your-text-domain' );?></option>
                         </select>
                     </div>
                     <div style="text-align:right; display:flex;">
@@ -1082,7 +1079,6 @@ if (!class_exists('display_documents')) {
             </fieldset>
             </div>
             <div id="doc-field-dialog" title="Field dialog"></div>
-            <?php //echo $this->display_doc_field_dialog();?>
             <?php
             $html = ob_get_clean();
             return $html;    
@@ -1259,8 +1255,6 @@ if (!class_exists('display_documents')) {
 
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
-            //$doc_id = get_post_meta($report_id, 'doc_id', true);
-            //if (empty($report_id)) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
 
             $params = array(
                 'doc_id'     => $doc_id,
@@ -1274,7 +1268,6 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                    //$field_value = get_post_meta($report_id, $field_name, true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
@@ -1282,17 +1275,27 @@ if (!class_exists('display_documents')) {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
 
-                        $compare = 'thermometer';
-                        if (substr($default_value, 0, strlen($compare)) == $compare) {
+                        if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                             // Use a regular expression to match the number inside the parentheses
-                            //if (preg_match('/\((\d+)\)$/', $default_value, $matches)) {
-                            // Use a regular expression to match the number after the hyphen
                             if (preg_match('/-(\d+)$/', $default_value, $matches)) {
                                 $topic = $matches[1]; // Extract the number from the first capturing group
                                 $default_value = get_option($topic);
+                                // Find the post by title
+                                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+                                $default_value = get_post_meta($post->ID, 'temperature', true);
                             }
                         }
-                        //if (substr($default_value, 0, strlen($compare))==$compare) $default_value=substr($default_value, strlen($compare));
+
+                        if (substr($default_value, 0, strlen('hygrometer')) == 'hygrometer') {
+                            // Use a regular expression to match the number inside the parentheses
+                            if (preg_match('/-(\d+)$/', $default_value, $matches)) {
+                                $topic = $matches[1]; // Extract the number from the first capturing group
+                                $default_value = get_option($topic);
+                                // Find the post by title
+                                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+                                $default_value = get_post_meta($post->ID, 'humidity', true);
+                            }
+                        }
 
                         $field_value = $default_value;
                     }
