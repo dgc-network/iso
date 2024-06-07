@@ -88,7 +88,7 @@ if (!class_exists('display_profiles')) {
                 'rewrite'       => array('slug' => 'mqtt-clients'),
                 'supports'      => array( 'title', 'editor', 'custom-fields' ),
                 'has_archive'   => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'mqtt-client', $args );
         }
