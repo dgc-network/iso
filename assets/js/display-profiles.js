@@ -787,7 +787,11 @@ jQuery(document).ready(function($) {
         });
     }
 
-    initialize_all_MQTT_clients();
+    // Hook the initialize_all_MQTT_clients() function to wp_loaded event
+    $(window).on('load', function() {
+        initialize_all_MQTT_clients();
+    });
+
     // Function to initialize MQTT client with a specific topic
     function initialize_all_MQTT_clients() {
         // Retrieve all MQTT client posts via AJAX
@@ -812,33 +816,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*    
-    function initialize_all_MQTT_clients() {
-        // Retrieve the post title via AJAX
-        $.ajax({
-            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
-            method: 'GET',
-            data: {
-                //slug: topic,
-                //per_page: 1 // We only need one post matching the topic
-            },
-            success: function(response) {
-                if (response.length > 0) {
-                    const post = response[0];
-                    const topic = post.title.rendered;
-                    console.log('Post title for topic: ' + topic);
-                    // Your MQTT client initialization code here
-                    initializeMQTTClient(topic);
-                } else {
-                    console.error('No post found for topic.');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching post for topic:', error);
-            }
-        });
-    }
-*/
+
     let mqttClient;
 
     function closeMQTTClient() {
