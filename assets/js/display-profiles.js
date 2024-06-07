@@ -795,8 +795,8 @@ jQuery(document).ready(function($) {
             url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
             method: 'GET',
             data: {
-                slug: topic,
-                per_page: 1 // We only need one post matching the topic
+                //slug: topic,
+                //per_page: 1 // We only need one post matching the topic
             },
             success: function(response) {
                 if (response.length > 0) {
