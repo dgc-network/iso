@@ -790,6 +790,30 @@ jQuery(document).ready(function($) {
     initialize_all_MQTT_clients();
     // Function to initialize MQTT client with a specific topic
     function initialize_all_MQTT_clients() {
+        // Retrieve all MQTT client posts via AJAX
+        $.ajax({
+            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
+            method: 'GET',
+            success: function(response) {
+                if (response.length > 0) {
+                    // Loop through all MQTT client posts
+                    response.forEach(function(post) {
+                        const topic = post.title.rendered; // Get the topic from the post title
+                        console.log('Post title for topic: ' + topic);
+                        // Initialize MQTT client for this topic
+                        initializeMQTTClient(topic);
+                    });
+                } else {
+                    console.error('No MQTT client posts found.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching MQTT client posts:', error);
+            }
+        });
+    }
+/*    
+    function initialize_all_MQTT_clients() {
         // Retrieve the post title via AJAX
         $.ajax({
             url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
@@ -814,7 +838,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     let mqttClient;
 
     function closeMQTTClient() {
