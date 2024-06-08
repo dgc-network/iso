@@ -1261,7 +1261,7 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
                             <th><?php echo __( 'password', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'H%', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'H', 'your-text-domain' );?><span style="font-size:small">%</span></th>
                         </thead>
                         <tbody>
                         <?php
