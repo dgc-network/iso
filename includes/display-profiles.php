@@ -1329,7 +1329,7 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
                 <input type="hidden" id="mqtt-topic" value="<?php echo $mqtt_topic;?>" />
                 <label for="client-id"><?php echo __( 'Client ID:', 'your-text-domain' );?></label>
-                <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label for="ssid"><?php echo __( 'SSID:', 'your-text-domain' );?></label>
