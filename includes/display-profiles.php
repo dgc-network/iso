@@ -1450,10 +1450,11 @@ if (!class_exists('display_profiles')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                            $user_data = get_userdata($user_id);
                             $exception_value = get_post_meta(get_the_ID(), 'exception_value', true);
                             ?>
                             <tr id="edit-exception-notification-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($user_id);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($exception_value);?></td>
                             </tr>
                             <?php 
@@ -1468,10 +1469,10 @@ if (!class_exists('display_profiles')) {
             <div id="exception-notification-dialog" title="Exception notification dialog"></div>
             <div id="new-exception-notification-dialog" title="Exception notification dialog">
             <fieldset>
-                <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-                <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
-                <input type="text" id="exception-value" value="25" class="text ui-widget-content ui-corner-all" />
+                <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
+                <label for="new-exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
+                <input type="text" id="new-exception-value" value="25" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             </div>

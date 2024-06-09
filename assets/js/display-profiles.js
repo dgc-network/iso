@@ -995,8 +995,8 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_exception_notification_dialog_data',
                             '_mqtt_client_id': mqtt_client_id,
-                            '_user_id': $("#user-id").val(),
-                            '_exception_value': $("#exception-value").val(),
+                            '_user_id': $("#new-user-id").val(),
+                            '_exception_value': $("#new-exception-value").val(),
                         },
                         success: function (response) {
                             $("#new-exception-notification-dialog").dialog('close');
