@@ -640,7 +640,7 @@ jQuery(document).ready(function($) {
     // mqtt-client scripts
     function activate_mqtt_client_list_data(){
         activate_exception_notification_list_data($("#mqtt-client-id").val());
-        
+
         $("#search-mqtt-client").on( "change", function() {
 
             // Initialize an empty array to store query parameters
@@ -987,6 +987,8 @@ jQuery(document).ready(function($) {
     // Exception notification scripts
     function activate_exception_notification_list_data(mqtt_client_id=false){
         $("#new-exception-notification").on("click", function() {
+            $("#new-exception-notification-dialog").dialog('open');
+/*
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -995,6 +997,7 @@ jQuery(document).ready(function($) {
                     'action': 'set_exception_notification_dialog_data',
                 },
                 success: function (response) {
+                    $("#new-exception-notification-dialog").dialog('close');
                     get_exception_notification_list_data(mqtt_client_id);
                 },
                 error: function(error){
@@ -1002,6 +1005,7 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });    
+*/            
         });
     
         $('[id^="edit-exception-notification-"]').on("click", function () {
@@ -1025,6 +1029,34 @@ jQuery(document).ready(function($) {
                 }
             });
         });
+
+        $("#new-exception-notification-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Add": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_exception_notification_dialog_data',
+                            '_user_id': $("#user-id").val(),
+                            '_exception_value': $("#exception-value").val(),
+                        },
+                        success: function (response) {
+                            $("#new-exception-notification-dialog").dialog('close');
+                            get_exception_notification_list_data(mqtt_client_id);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+            }
+        });    
 
         $("#exception-notification-dialog").dialog({
             width: 390,

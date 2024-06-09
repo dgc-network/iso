@@ -24,6 +24,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_site_user_dialog_data', array( $this, 'set_site_user_dialog_data' ) );
             add_action( 'wp_ajax_del_site_user_dialog_data', array( $this, 'del_site_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', array( $this, 'del_site_user_dialog_data' ) );
+            add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
+            add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
             add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
@@ -56,10 +58,16 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_mqtt_client_dialog_data', array( $this, 'set_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
-            add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
-            add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );
             add_action( 'wp_ajax_nopriv_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );                
+            add_action( 'wp_ajax_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
+            add_action( 'wp_ajax_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
         }
 
         // Register job post type
@@ -1459,7 +1467,15 @@ if (!class_exists('display_profiles')) {
                 <div id="new-exception-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             <div id="exception-notification-dialog" title="Exception notification dialog"></div>
-            <div id="add-exception-notification-dialog" title="Exception notification dialog"></div>
+            <div id="new-exception-notification-dialog" title="Exception notification dialog">
+            <fieldset>
+                <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <input type="text" id="user-id" value="<?php echo $user_id;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
+                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+            </fieldset>
+            </div>
             <?php
             $html = ob_get_clean();
             return $html;        
