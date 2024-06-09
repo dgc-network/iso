@@ -1432,8 +1432,8 @@ if (!class_exists('display_profiles')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                        $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
-                        $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true);
+                        $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
+                        $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
                         if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
                         if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
                     endwhile;
