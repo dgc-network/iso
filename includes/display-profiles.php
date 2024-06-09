@@ -114,8 +114,7 @@ if (!class_exists('display_profiles')) {
                 'rewrite'       => array('slug' => 'exception-notifications'),
                 'supports'      => array( 'title', 'editor', 'custom-fields' ),
                 'has_archive'   => true,
-                'show_in_menu'  => false,
-                'show_in_rest'  => true,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'exception-notification', $args );
         }
