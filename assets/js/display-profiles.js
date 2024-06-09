@@ -871,8 +871,25 @@ jQuery(document).ready(function($) {
             container.scrollTop = 0;
 
             // Parse temperature value and ...
-            const temperature = parseFloat(msg);
-            updateTemperatureOption(topic, temperature);
+            //const temperature = parseFloat(msg);
+            //update_temperature_humidity(topic, temperature);
+
+            // Parse temperature and humidity values
+            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
+            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
+    
+            if (temperatureMatch) {
+                const temperature = parseFloat(temperatureMatch[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_temperature_humidity(topic, temperature, 0);
+            }
+    
+            if (humidityMatch) {
+                const humidity = parseInt(humidityMatch[1], 10);
+                console.log('Parsed Humidity:', humidity);
+                updateHumidityOption(topic, humidity, 1);
+            }
+    
         });
     
         mqttClient.on('error', function (error) {
@@ -898,14 +915,15 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function updateTemperatureOption(topic, temperature) {
+    function update_temperature_humidity(topic, value, humidity=0) {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             data: {
-                action: 'update_temperature_option',
-                topic: topic,
-                temperature: temperature
+                action: 'update_temperature_humidity',
+                _topic: topic,
+                _value: value,
+                _humidity: humidity
             },
             success: function(response) {
                 if (response.success) {

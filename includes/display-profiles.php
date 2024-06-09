@@ -57,8 +57,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
-            add_action( 'wp_ajax_update_temperature_option', array( $this, 'update_temperature_option' ) );
-            add_action( 'wp_ajax_nopriv_update_temperature_option', array( $this, 'update_temperature_option' ) );                
+            add_action( 'wp_ajax_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );
+            add_action( 'wp_ajax_nopriv_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );                
         }
 
         // Register job post type
@@ -1385,21 +1385,24 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function update_temperature_option() {
-            if (isset($_POST['topic']) && isset($_POST['temperature'])) {
-                $topic = sanitize_text_field($_POST['topic']);
-                $temperature = floatval($_POST['temperature']);
-                $humidity = floatval($_POST['humidity']);
+        function update_temperature_humidity() {
+            if (isset($_POST['_topic']) && isset($_POST['_value'])) {
+                $topic = sanitize_text_field($_POST['_topic']);
+                $value = sanitize_text_field($_POST['_value']);
+                $humidity = sanitize_text_field($_POST['_humidity']);
 
                 // Find the post by title
                 $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
                 // Update the post meta
-                update_post_meta($post->ID, 'temperature', $temperature);
-                update_post_meta($post->ID, 'humidity', $humidity);
+                if ($humidity==1) {
+                    update_post_meta($post->ID, 'humidity', $value);
+                } else {
+                    update_post_meta($post->ID, 'temperature', $value);
+                }
 
                 // Update the option
-                update_option($topic, $temperature);
+                //update_option($topic, $temperature);
                 
                 wp_send_json_success(array('message' => 'Temperature updated successfully.'));
             } else {
