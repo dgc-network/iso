@@ -1404,9 +1404,9 @@ if (!class_exists('display_profiles')) {
                 // Update the option
                 //update_option($topic, $temperature);
                 
-                wp_send_json_success(array('message' => 'Temperature updated successfully.'));
+                wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
-                wp_send_json_error(array('message' => 'Missing topic or temperature.'));
+                wp_send_json_error(array('message' => 'Missing topic or value.'));
             }
         }
         
