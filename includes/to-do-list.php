@@ -663,7 +663,7 @@ if (!class_exists('to_do_list')) {
                 ]);
             }
         }
-        
+
         // Notice the persons in site
         function notice_the_persons_in_site($todo_id=0,$next_job=0) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -706,7 +706,7 @@ if (!class_exists('to_do_list')) {
                 ]);            
             }    
         }
-        
+
         function retrieve_todo_action_list_data($todo_id=0) {
             $args = array(
                 'post_type'      => 'action',

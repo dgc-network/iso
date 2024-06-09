@@ -996,7 +996,8 @@ jQuery(document).ready(function($) {
                             'action': 'set_exception_notification_dialog_data',
                             '_mqtt_client_id': mqtt_client_id,
                             '_user_id': $("#new-user-id").val(),
-                            '_exception_value': $("#new-exception-value").val(),
+                            '_max_temperature': $("#new-max-temperature").val(),
+                            '_max_humidity': $("#new-max-humidity").val(),
                         },
                         success: function (response) {
                             $("#new-exception-notification-dialog").dialog('close');
@@ -1047,7 +1048,8 @@ jQuery(document).ready(function($) {
                             'action': 'set_exception_notification_dialog_data',
                             '_exception_notification_id': $("#exception-notification-id").val(),
                             '_user_id': $("#user-id").val(),
-                            '_exception_value': $("#exception-value").val(),
+                            '_max_temperature': $("#max-temperature").val(),
+                            '_max_humidity': $("#max-humidity").val(),
                         },
                         success: function (response) {
                             $("#exception-notification-dialog").dialog('close');

@@ -1428,6 +1428,18 @@ if (!class_exists('display_profiles')) {
                 if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
                 if ($flag=="password") update_post_meta($post->ID, 'password', $value);
 
+                $query = $this->retrieve_exception_notification_list($post->ID);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                        $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
+                        $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true);
+                        if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
+                        if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+
                 wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
                 wp_send_json_error(array('message' => 'Missing topic or value.'));
@@ -1435,6 +1447,23 @@ if (!class_exists('display_profiles')) {
         }
         
         // Exception notification
+        function exception_notification_event($user_id=false, $mqtt_topic=false, $max_temperature=false, $max_humidity=false) {
+            $user_data = get_userdata($user_id);
+            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
+            if ($max_temperature) $text_message = '#'.$mqtt_topic.'的溫度已經超過'.$max_temperature.'度C。';
+            if ($max_humidity) $text_message = '#'.$mqtt_topic.'的濕度已經超過'.$max_humidity.'%。';
+            $params = [
+                'display_name' => $user_data->display_name,
+                'link_uri' => $link_uri,
+                'text_message' => $text_message,
+            ];        
+            $flexMessage = set_flex_message($params);
+            $line_bot_api->pushMessage([
+                'to' => get_user_meta($user_id, 'line_user_id', TRUE),
+                'messages' => [$flexMessage],
+            ]);            
+        }
+
         function display_exception_notification_list($mqtt_client_id=false) {
             ob_start();
                 ?>
@@ -1442,7 +1471,8 @@ if (!class_exists('display_profiles')) {
                 <table class="ui-widget" style="width:100%; font-size:small;">
                     <thead>
                         <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Exception', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1451,11 +1481,13 @@ if (!class_exists('display_profiles')) {
                         while ($query->have_posts()) : $query->the_post();
                             $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                             $user_data = get_userdata($user_id);
-                            $exception_value = get_post_meta(get_the_ID(), 'exception_value', true);
+                            $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
+                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true);
                             ?>
                             <tr id="edit-exception-notification-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($exception_value);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -1471,8 +1503,8 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-                <label for="new-exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
-                <input type="text" id="new-exception-value" value="25" class="text ui-widget-content ui-corner-all" />
+                <label for="new-max-temperature"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             </div>
@@ -1505,15 +1537,18 @@ if (!class_exists('display_profiles')) {
 
         function display_exception_notification_dialog($exception_notification_id=false) {
             $user_id = get_post_meta($exception_notification_id, 'user_id', true);
-            $exception_value = get_post_meta($exception_notification_id, 'exception_value', true);
+            $max_temperature = get_post_meta($exception_notification_id, 'max_temperature', true);
+            $max_humidity = get_post_meta($exception_notification_id, 'max_humidity', true);
             ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data($user_id);?></select>
-                <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
-                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="max-temperature"><?php echo __( 'Max. Temperature(c):', 'your-text-domain' );?></label>
+                <input type="text" id="max-temperature" value="<?php echo $max_temperature;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
+                <input type="text" id="max-humidity" value="<?php echo $max_humidity;?>" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             <?php
@@ -1533,7 +1568,8 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_exception_notification_id']) ) {
                 $exception_notification_id = sanitize_text_field($_POST['_exception_notification_id']);
                 update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
-                update_post_meta($exception_notification_id, 'exception_value', sanitize_text_field($_POST['_exception_value']));
+                update_post_meta($exception_notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
+                update_post_meta($exception_notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
@@ -1546,7 +1582,8 @@ if (!class_exists('display_profiles')) {
                 $exception_notification_id = wp_insert_post($new_post);
                 update_post_meta($exception_notification_id, 'mqtt_client_id', sanitize_text_field($_POST['_mqtt_client_id']));
                 update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
-                update_post_meta($exception_notification_id, 'exception_value', sanitize_text_field($_POST['_exception_value']));
+                update_post_meta($exception_notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
+                update_post_meta($exception_notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             }
             wp_send_json($response);
         }
