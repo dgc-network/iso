@@ -106,13 +106,13 @@ if (!class_exists('display_profiles')) {
         // Register exception-notification post type
         function register_exception_notification_post_type() {
             $labels = array(
-                'menu_name'     => _x('Exception notification', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('Notification', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
                 'rewrite'       => array('slug' => 'notifications'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'supports'      => array( 'custom-fields' ),
                 'has_archive'   => true,
                 //'show_in_menu'  => false,
             );
@@ -1540,7 +1540,7 @@ if (!class_exists('display_profiles')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'exception-notification',
+                    'post_type'     => 'notification',
                 );    
                 $exception_notification_id = wp_insert_post($new_post);
                 update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));

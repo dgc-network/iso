@@ -980,48 +980,8 @@ jQuery(document).ready(function($) {
     function activate_exception_notification_list_data(mqtt_client_id=false){
         $("#new-exception-notification").on("click", function() {
             $("#new-exception-notification-dialog").dialog('open');
-/*
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_exception_notification_dialog_data',
-                },
-                success: function (response) {
-                    $("#new-exception-notification-dialog").dialog('close');
-                    get_exception_notification_list_data(mqtt_client_id);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });    
-*/            
         });
     
-        $('[id^="edit-exception-notification-"]').on("click", function () {
-            const exception_notification_id = this.id.substring(28);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_exception_notification_dialog_data',
-                    '_exception_notification_id': exception_notification_id,
-                },
-                success: function (response) {
-                    $("#exception-notification-dialog").html(response.html_contain);
-                    $("#exception-notification-dialog").dialog('open');
-                    activate_exception_notification_list_data(mqtt_client_id);
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
         $("#new-exception-notification-dialog").dialog({
             width: 390,
             modal: true,
@@ -1049,6 +1009,28 @@ jQuery(document).ready(function($) {
                 },
             }
         });    
+
+        $('[id^="edit-exception-notification-"]').on("click", function () {
+            const exception_notification_id = this.id.substring(28);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_exception_notification_dialog_data',
+                    '_exception_notification_id': exception_notification_id,
+                },
+                success: function (response) {
+                    $("#exception-notification-dialog").html(response.html_contain);
+                    $("#exception-notification-dialog").dialog('open');
+                    activate_exception_notification_list_data(mqtt_client_id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
 
         $("#exception-notification-dialog").dialog({
             width: 390,
