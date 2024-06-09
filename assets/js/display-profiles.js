@@ -870,8 +870,15 @@ jQuery(document).ready(function($) {
             container.scrollTop = 0;
 
             // Parse temperature and humidity values
+            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
             const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
             const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
+    
+            if (DS18B20Match) {
+                const temperature = parseFloat(DS18B20Match[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_temperature_humidity(topic, temperature, 0);
+            }
     
             if (temperatureMatch) {
                 const temperature = parseFloat(temperatureMatch[1]);
