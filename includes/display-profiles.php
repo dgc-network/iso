@@ -1449,7 +1449,7 @@ if (!class_exists('display_profiles')) {
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->exception_notification($mqtt_client_id);
+                        $query = $this->retrieve_exception_notification_list($mqtt_client_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $user_id = get_post_meta(get_the_ID(), 'user_id', true);
@@ -1485,6 +1485,13 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'exception-notification',
                 'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'mqtt_client_id',
+                        'value'   => $mqtt_client_id,
+                        'compare' => '=',
+                    ),
+                ),
             );
             $query = new WP_Query($args);
             return $query;
