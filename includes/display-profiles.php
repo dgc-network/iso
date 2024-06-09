@@ -1543,6 +1543,7 @@ if (!class_exists('display_profiles')) {
                     'post_type'     => 'notification',
                 );    
                 $exception_notification_id = wp_insert_post($new_post);
+                update_post_meta($exception_notification_id, 'mqtt_client_id', sanitize_text_field($_POST['_mqtt_client_id']));
                 update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
                 update_post_meta($exception_notification_id, 'exception_value', sanitize_text_field($_POST['_exception_value']));
             }

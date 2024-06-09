@@ -994,6 +994,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_exception_notification_dialog_data',
+                            '_mqtt_client_id': mqtt_client_id,
                             '_user_id': $("#user-id").val(),
                             '_exception_value': $("#exception-value").val(),
                         },
