@@ -1460,6 +1460,7 @@ if (!class_exists('display_profiles')) {
                 'text_message' => $text_message,
             ];        
             $flexMessage = set_flex_message($params);
+            $line_bot_api = new line_bot_api();
             $line_bot_api->pushMessage([
                 'to' => get_user_meta($user_id, 'line_user_id', TRUE),
                 'messages' => [$flexMessage],
