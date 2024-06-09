@@ -1436,8 +1436,6 @@ if (!class_exists('display_profiles')) {
                         $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
                         if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
                         if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
-                        //$this->exception_notification_event($user_id, $topic, $max_temperature, false);
-                        //if ($flag=='humidity') $this->exception_notification_event($user_id, $topic, false, $max_humidity);
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1452,8 +1450,12 @@ if (!class_exists('display_profiles')) {
         function exception_notification_event($user_id=false, $mqtt_topic=false, $max_temperature=false, $max_humidity=false) {
             $user_data = get_userdata($user_id);
             $link_uri = home_url().'/display-profiles/?_id='.$user_id;
-            if ($max_temperature) $text_message = '#'.$mqtt_topic.'的溫度已經超過'.$max_temperature.'度C。';
-            if ($max_humidity) $text_message = '#'.$mqtt_topic.'的濕度已經超過'.$max_humidity.'%。';
+            // Find the post by title
+            $post = get_page_by_title($mqtt_topic, OBJECT, 'mqtt-client');
+            $content = get_post_field('post_content', $post->ID);
+
+            if ($max_temperature) $text_message = '#'.$mqtt_topic.$content.'的溫度已經超過'.$max_temperature.'度C。';
+            if ($max_humidity) $text_message = '#'.$mqtt_topic.$content.'的濕度已經超過'.$max_humidity.'%。';
             $params = [
                 'display_name' => $user_data->display_name,
                 'link_uri' => $link_uri,
