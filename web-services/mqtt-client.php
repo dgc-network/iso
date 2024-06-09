@@ -88,7 +88,8 @@ if (!class_exists('mqtt_client')) {
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = $this->is_site_admin();
+            //$is_site_admin = $this->is_site_admin();
+            $is_site_admin = display_profiles::is_site_admin();
         
             // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator')) {
