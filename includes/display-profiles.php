@@ -1470,7 +1470,7 @@ if (!class_exists('display_profiles')) {
             <div id="new-exception-notification-dialog" title="Exception notification dialog">
             <fieldset>
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php $this->select_user_id_option_data()?></select>
+                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
                 <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
                 <input type="text" id="exception-value" value="25" class="text ui-widget-content ui-corner-all" />
                 </div>
@@ -1511,7 +1511,7 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php $this->select_user_id_option_data($user_id)?></select>
+                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data($user_id);?></select>
                 <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
                 <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" />
                 </div>
