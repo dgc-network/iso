@@ -112,9 +112,9 @@ if (!class_exists('display_profiles')) {
                 'labels'        => $labels,
                 'public'        => true,
                 'rewrite'       => array('slug' => 'notifications'),
-                'supports'      => array( 'custom-fields' ),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
                 'has_archive'   => true,
-                //'show_in_menu'  => false,
+                'show_in_menu'  => false,
             );
             register_post_type( 'notification', $args );
         }
