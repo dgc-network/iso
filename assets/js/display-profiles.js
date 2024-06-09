@@ -639,6 +639,8 @@ jQuery(document).ready(function($) {
 
     // mqtt-client scripts
     function activate_mqtt_client_list_data(){
+        activate_exception_notification_list_data($("#mqtt-client-id").val());
+        
         $("#search-mqtt-client").on( "change", function() {
 
             // Initialize an empty array to store query parameters
@@ -821,11 +823,6 @@ jQuery(document).ready(function($) {
     function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
     
-        // Disconnect previous client if exists
-        //if (mqttClient) {
-        //    mqttClient.end();
-        //}
-    
         mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
     
         mqttClientInit.on('connect', function () {
@@ -840,26 +837,7 @@ jQuery(document).ready(function($) {
         mqttClientInit.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
-/*    
-            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
-    
-            const newMessage = document.createElement('div');
-            newMessage.textContent = msg;
-    
-            // Prepend new message to the top
-            if (container.firstChild) {
-                container.insertBefore(newMessage, container.firstChild);
-            } else {
-                container.appendChild(newMessage);
-            }
-    
-            // Scroll to top
-            container.scrollTop = 0;
-*/
+
             // Parse temperature and humidity values
             const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
             const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
@@ -1006,4 +984,118 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // Exception notification scripts
+    function activate_exception_notification_list_data(mqtt_client_id=false){
+        $("#new-exception-notification").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_exception_notification_dialog_data',
+                },
+                success: function (response) {
+                    get_exception_notification_list_data(mqtt_client_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-exception-notification-"]').on("click", function () {
+            const exception_notification_id = this.id.substring(28);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_exception_notification_dialog_data',
+                    '_exception_notification_id': exception_notification_id,
+                },
+                success: function (response) {
+                    $("#exception-notification-dialog").html(response.html_contain);
+                    $("#exception-notification-dialog").dialog('open');
+                    activate_exception_notification_list_data(mqtt_client_id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#exception-notification-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_exception_notification_dialog_data',
+                            '_exception_notification_id': $("#exception-notification-id").val(),
+                            '_user_id': $("#user-id").val(),
+                            '_exception_value': $("#exception-value").val(),
+                        },
+                        success: function (response) {
+                            $("#exception-notification-dialog").dialog('close');
+                            get_exception_notification_list_data(mqtt_client_id);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this exception notification?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_exception_notification_dialog_data',
+                                '_exception_notification_id': $("#exception_notification-id").val(),
+                            },
+                            success: function (response) {
+                                $("#exception-notification-dialog").dialog('close');
+                                get_exception_notification_list_data(mqtt_client_id);
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
+    }
+
+    function get_exception_notification_list_data(mqtt_client_id=false){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_exception_notification_list_data',
+                '_mqtt_client_id': mqtt_client_id,
+            },
+            success: function (response) {
+                $("#exception-notification-list").html(response.html_contain);
+                activate_exception_notification_list_data();
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    }
+
+    
 });

@@ -1150,7 +1150,6 @@ if (!class_exists('display_profiles')) {
                     </fieldset>        
                 </fieldset>
                 <div id="doc-category-dialog" title="Category dialog"></div>
-                <?php //$this->display_doc_category_dialog();?>
                 <?php
             } else {
                 ?>
@@ -1311,7 +1310,6 @@ if (!class_exists('display_profiles')) {
                     </fieldset>        
                 </fieldset>
                 <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
-                <div id="exception-notification-dialog" title="Exception notification dialog"></div>
                 <?php
             } else {
                 ?>
@@ -1358,7 +1356,9 @@ if (!class_exists('display_profiles')) {
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
                 <div id="mqtt-messages-container" style="height:200px; font-size:smaller; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
                 <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
+                <div id="exception-notification-list">
                 <?php echo $this->display_exception_notification_list($mqtt_client_id);?>
+                </div>
             </fieldset>
             <?php
             $html = ob_get_clean();
@@ -1430,53 +1430,37 @@ if (!class_exists('display_profiles')) {
         // Exception notification
         function display_exception_notification_list($mqtt_client_id=false) {
             ob_start();
-            $current_user_id = get_current_user_id();
-            $current_user = get_userdata($current_user_id);
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = $this->is_site_admin();
-        
-            // Check if the user is administrator
-            if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <fieldset>
-        
-                    <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Exception', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $query = $this->retrieve_exception_notification_list($mqtt_client_id);
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                                $exception_value = get_post_meta(get_the_ID(), 'exception_value', true);
-                                ?>
-                                <tr id="edit-mqtt-client-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($user_id);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($exception_value);?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-mqtt-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    </fieldset>        
-                </fieldset>
-                <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
-                <div id="exception-notification-dialog" title="Exception notification dialog"></div>
-                <?php
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
+                <table class="ui-widget" style="width:100%; font-size:small;">
+                    <thead>
+                        <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Exception', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_exception_notification_list($mqtt_client_id);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                            $exception_value = get_post_meta(get_the_ID(), 'exception_value', true);
+                            ?>
+                            <tr id="edit-exception-notification-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php echo esc_html($user_id);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($exception_value);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <div id="new-exception-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            <div id="exception-notification-dialog" title="Exception notification dialog"></div>
+            <div id="add-exception-notification-dialog" title="Exception notification dialog"></div>
+            <?php
             $html = ob_get_clean();
             return $html;        
         }
@@ -1495,6 +1479,65 @@ if (!class_exists('display_profiles')) {
             );
             $query = new WP_Query($args);
             return $query;
+        }
+
+        function get_exception_notification_list_data() {
+            $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
+            $response = array('html_contain' => $this->display_exception_notification_list($mqtt_client_id));
+            wp_send_json($response);
+        }
+
+        function display_exception_notification_dialog($exception_notification_id=false) {
+            $user_id = get_post_meta($exception_notification_id, 'user_id', true);
+            $exception_value = get_post_meta($exception_notification_id, 'exception_value', true);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
+                <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <input type="text" id="user-id" value="<?php echo $user_id;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
+                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+            </fieldset>
+            <?php
+            $html = ob_get_clean();
+            return $html;        
+        }
+
+        function get_exception_notification_dialog_data() {
+            $response = array();
+            $exception_notification_id = sanitize_text_field($_POST['_exception_notification_id']);
+            $response['html_contain'] = $this->display_exception_notification_dialog($exception_notification_id);
+            wp_send_json($response);
+        }
+
+        function set_exception_notification_dialog_data() {
+            $response = array();
+            if( isset($_POST['_exception_notification_id']) ) {
+                $exception_notification_id = sanitize_text_field($_POST['_exception_notification_id']);
+                update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
+                update_post_meta($exception_notification_id, 'exception_value', sanitize_text_field($_POST['_exception_value']));
+            } else {
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_title'    => time(),
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'exception-notification',
+                );    
+                $exception_notification_id = wp_insert_post($new_post);
+                update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
+                update_post_meta($exception_notification_id, 'exception_value', sanitize_text_field($_POST['_exception_value']));
+            }
+            wp_send_json($response);
+        }
+
+        function del_exception_notification_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_exception_notification_id'], true);
+            wp_send_json($response);
         }
 
 
