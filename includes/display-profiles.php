@@ -1434,8 +1434,10 @@ if (!class_exists('display_profiles')) {
                         $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                         $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
                         $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                        if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
-                        if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
+                        //if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
+                        //if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
+                        if ($flag=='temperature') $this->exception_notification_event($user_id, $topic, $max_temperature, false);
+                        if ($flag=='humidity') $this->exception_notification_event($user_id, $topic, false, $max_humidity);
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1503,8 +1505,10 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-                <label for="new-max-temperature"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
+                <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
                 <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
+                <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             </div>
@@ -1545,7 +1549,7 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data($user_id);?></select>
-                <label for="max-temperature"><?php echo __( 'Max. Temperature(c):', 'your-text-domain' );?></label>
+                <label for="max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
                 <input type="text" id="max-temperature" value="<?php echo $max_temperature;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
                 <input type="text" id="max-humidity" value="<?php echo $max_humidity;?>" class="text ui-widget-content ui-corner-all" />
