@@ -1454,8 +1454,8 @@ if (!class_exists('display_profiles')) {
             $post = get_page_by_title($mqtt_topic, OBJECT, 'mqtt-client');
             $content = get_post_field('post_content', $post->ID);
 
-            if ($max_temperature) $text_message = '#'.$mqtt_topic.$content.'的溫度已經超過'.$max_temperature.'度C。';
-            if ($max_humidity) $text_message = '#'.$mqtt_topic.$content.'的濕度已經超過'.$max_humidity.'%。';
+            if ($max_temperature) $text_message = '#'.$mqtt_topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
+            if ($max_humidity) $text_message = '#'.$mqtt_topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
             $params = [
                 'display_name' => $user_data->display_name,
                 'link_uri' => $link_uri,
