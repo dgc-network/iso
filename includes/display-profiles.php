@@ -10,6 +10,7 @@ if (!class_exists('display_profiles')) {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'init', array( $this, 'register_job_post_type' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
+            add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -93,7 +94,24 @@ if (!class_exists('display_profiles')) {
             );
             register_post_type( 'mqtt-client', $args );
         }
-        
+
+        // Register exception-notification post type
+        function register_exception_notification_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Exception notification', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'rewrite'       => array('slug' => 'exception-notifications'),
+                'supports'      => array( 'title', 'editor', 'custom-fields' ),
+                'has_archive'   => true,
+                'show_in_menu'  => false,
+                'show_in_rest'  => true,
+            );
+            register_post_type( 'exception-notification', $args );
+        }
+
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
@@ -1261,7 +1279,7 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
                             <th><?php echo __( 'password', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'H', 'your-text-domain' );?><span style="font-size:small">%</span></th>
+                            <th><?php echo __( 'H', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -1280,7 +1298,7 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><?php echo esc_html($ssid);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($password);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($humidity);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1293,6 +1311,7 @@ if (!class_exists('display_profiles')) {
                     </fieldset>        
                 </fieldset>
                 <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
+                <div id="exception-notification-dialog" title="Exception notification dialog"></div>
                 <?php
             } else {
                 ?>
@@ -1333,11 +1352,13 @@ if (!class_exists('display_profiles')) {
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label for="ssid"><?php echo __( 'SSID:', 'your-text-domain' );?></label>
-                <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
-                <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
                 <div id="mqtt-messages-container" style="height:200px; font-size:smaller; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
+                <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
+                <?php echo $this->display_exception_notification_list($mqtt_client_id);?>
             </fieldset>
             <?php
             $html = ob_get_clean();
@@ -1406,6 +1427,70 @@ if (!class_exists('display_profiles')) {
             }
         }
         
+        // Exception notification
+        function display_exception_notification_list($mqtt_client_id=false) {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $is_site_admin = $this->is_site_admin();
+        
+            // Check if the user is administrator
+            if ($is_site_admin || current_user_can('administrator')) {
+                ?>
+                <fieldset>
+        
+                    <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Exception', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $query = $this->exception_notification($mqtt_client_id);
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                                $exception_value = get_post_meta(get_the_ID(), 'exception_value', true);
+                                ?>
+                                <tr id="edit-mqtt-client-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php echo esc_html($user_id);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($exception_value);?></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-mqtt-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    </fieldset>        
+                </fieldset>
+                <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
+                <div id="exception-notification-dialog" title="Exception notification dialog"></div>
+                <?php
+            } else {
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
+            }
+            $html = ob_get_clean();
+            return $html;        
+        }
+        
+        function retrieve_exception_notification_list($mqtt_client_id=false) {
+            $args = array(
+                'post_type'      => 'exception-notification',
+                'posts_per_page' => -1,        
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+
     }
     $profiles_class = new display_profiles();
 }
