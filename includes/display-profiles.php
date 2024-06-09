@@ -1436,7 +1436,7 @@ if (!class_exists('display_profiles')) {
                         $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
                         //if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
                         //if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $max_temperature, $max_humidity);
-                        //if ($flag=='temperature') $this->exception_notification_event($user_id, $topic, $max_temperature, false);
+                        $this->exception_notification_event($user_id, $topic, $max_temperature, false);
                         //if ($flag=='humidity') $this->exception_notification_event($user_id, $topic, false, $max_humidity);
                     endwhile;
                     wp_reset_postdata();
