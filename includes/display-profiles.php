@@ -76,7 +76,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
-                if ($_GET['_select_profile']=='4') echo mqtt_client::display_mqtt_client_list();
+                $mqtt_client = new mqtt_client();
+                if ($_GET['_select_profile']=='4') echo $mqtt_client->display_mqtt_client_list();
+                //if ($_GET['_select_profile']=='4') echo mqtt_client::display_mqtt_client_list();
 
                 $open_ai_api = new open_ai_api();
                 if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();

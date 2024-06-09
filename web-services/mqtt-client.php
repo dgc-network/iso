@@ -181,10 +181,6 @@ if (!class_exists('mqtt_client')) {
                 <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
-                <label for="ssid"><?php echo __( 'SSID:', 'your-text-domain' );?></label>
-                <input type="text" id="ssid" value="<?php echo $ssid;?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="password"><?php echo __( 'Password:', 'your-text-domain' );?></label>
-                <input type="text" id="password" value="<?php echo $password;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
                 <div id="mqtt-messages-container" style="height:200px; font-size:smaller; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
                 <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
