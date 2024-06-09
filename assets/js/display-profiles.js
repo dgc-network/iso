@@ -858,7 +858,6 @@ jQuery(document).ready(function($) {
     
             const newMessage = document.createElement('div');
             newMessage.textContent = msg;
-            //newMessage.style.padding = '5px 0';
     
             // Prepend new message to the top
             if (container.firstChild) {
@@ -869,10 +868,6 @@ jQuery(document).ready(function($) {
     
             // Scroll to top
             container.scrollTop = 0;
-
-            // Parse temperature value and ...
-            //const temperature = parseFloat(msg);
-            //update_temperature_humidity(topic, temperature);
 
             // Parse temperature and humidity values
             const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
@@ -887,7 +882,7 @@ jQuery(document).ready(function($) {
             if (humidityMatch) {
                 const humidity = parseInt(humidityMatch[1], 10);
                 console.log('Parsed Humidity:', humidity);
-                updateHumidityOption(topic, humidity, 1);
+                update_temperature_humidity(topic, humidity, 1);
             }
     
         });
