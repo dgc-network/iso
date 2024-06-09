@@ -111,12 +111,12 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'exception-notifications'),
+                'rewrite'       => array('slug' => 'notifications'),
                 'supports'      => array( 'title', 'editor', 'custom-fields' ),
                 'has_archive'   => true,
                 //'show_in_menu'  => false,
             );
-            register_post_type( 'exception-notification', $args );
+            register_post_type( 'notification', $args );
         }
 
         // Shortcode to display
@@ -1482,7 +1482,7 @@ if (!class_exists('display_profiles')) {
         
         function retrieve_exception_notification_list($mqtt_client_id=false) {
             $args = array(
-                'post_type'      => 'exception-notification',
+                'post_type'      => 'notification',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
                     array(
