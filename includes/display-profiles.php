@@ -1389,21 +1389,17 @@ if (!class_exists('display_profiles')) {
             if (isset($_POST['_topic']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
                 $value = sanitize_text_field($_POST['_value']);
-                $humidity = sanitize_text_field($_POST['_humidity']);
+                $flag = sanitize_text_field($_POST['_flag']);
 
                 // Find the post by title
                 $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
                 // Update the post meta
-                if ($humidity==1) {
-                    update_post_meta($post->ID, 'humidity', $value);
-                } else {
-                    update_post_meta($post->ID, 'temperature', $value);
-                }
+                if ($flag==0) update_post_meta($post->ID, 'temperature', $value);
+                if ($flag==1) update_post_meta($post->ID, 'humidity', $value);
+                if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
+                if ($flag=="password") update_post_meta($post->ID, 'password', $value);
 
-                // Update the option
-                //update_option($topic, $temperature);
-                
                 wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
                 wp_send_json_error(array('message' => 'Missing topic or value.'));

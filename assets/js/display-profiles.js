@@ -712,10 +712,10 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                initializeMQTTClient($("#mqtt-topic").val());
+                open_MQTT_Client($("#mqtt-topic").val());
             },
             close: function(event, ui) {
-                closeMQTTClient();
+                close_MQTT_Client();
             },
             buttons: {
                 "Save": function () {
@@ -817,9 +817,98 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
+        const container = document.getElementById('mqtt-messages-container');
+    
+        // Disconnect previous client if exists
+        //if (mqttClient) {
+        //    mqttClient.end();
+        //}
+    
+        mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+    
+        mqttClientInit.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClientInit.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+    
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+/*    
+            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
+            if (!container) {
+                console.error('Container not found');
+                return;
+            }
+    
+            const newMessage = document.createElement('div');
+            newMessage.textContent = msg;
+    
+            // Prepend new message to the top
+            if (container.firstChild) {
+                container.insertBefore(newMessage, container.firstChild);
+            } else {
+                container.appendChild(newMessage);
+            }
+    
+            // Scroll to top
+            container.scrollTop = 0;
+*/
+            // Parse temperature and humidity values
+            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
+            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
+            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
+            const ssidMatch = msg.match(/SSID:\s*(\w+)/);
+            const passwordMatch = msg.match(/Password:\s*(\w+)/);
+    
+            if (DS18B20Match) {
+                const temperature = parseFloat(DS18B20Match[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_temperature_humidity(topic, temperature, 0);
+            }
+    
+            if (temperatureMatch) {
+                const temperature = parseFloat(temperatureMatch[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_temperature_humidity(topic, temperature, 0);
+            }
+    
+            if (humidityMatch) {
+                const humidity = parseInt(humidityMatch[1], 10);
+                console.log('Parsed Humidity:', humidity);
+                update_temperature_humidity(topic, humidity, 1);
+            }
+    
+            if (ssidMatch) {
+                const ssid = ssidMatch[1];
+                console.log('Parsed SSID:', ssid);
+                update_temperature_humidity(topic, ssid, 'ssid');
+            }
+    
+            if (passwordMatch) {
+                const password = passwordMatch[1];
+                console.log('Parsed Password:', password);
+                update_temperature_humidity(topic, password, 'password');
+            }
+        });
+    
+        mqttClientInit.on('error', function (error) {
+            console.error('MQTT error:', error);
+            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
+            if (container) {
+                container.textContent = 'Error fetching messages. Please check the console for more details.';
+            }
+        });
+    }
+
     let mqttClient;
 
-    function closeMQTTClient() {
+    function close_MQTT_Client() {
         if (mqttClient) {
             mqttClient.end();
             mqttClient = null;
@@ -827,7 +916,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
+    function open_MQTT_Client(topic = false, host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
     
         // Disconnect previous client if exists
@@ -868,30 +957,6 @@ jQuery(document).ready(function($) {
     
             // Scroll to top
             container.scrollTop = 0;
-
-            // Parse temperature and humidity values
-            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
-            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
-            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
-    
-            if (DS18B20Match) {
-                const temperature = parseFloat(DS18B20Match[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_temperature_humidity(topic, temperature, 0);
-            }
-    
-            if (temperatureMatch) {
-                const temperature = parseFloat(temperatureMatch[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_temperature_humidity(topic, temperature, 0);
-            }
-    
-            if (humidityMatch) {
-                const humidity = parseInt(humidityMatch[1], 10);
-                console.log('Parsed Humidity:', humidity);
-                update_temperature_humidity(topic, humidity, 1);
-            }
-    
         });
     
         mqttClient.on('error', function (error) {
@@ -917,7 +982,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function update_temperature_humidity(topic, value, humidity=0) {
+    function update_temperature_humidity(topic, value, flag=0) {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -925,7 +990,7 @@ jQuery(document).ready(function($) {
                 action: 'update_temperature_humidity',
                 _topic: topic,
                 _value: value,
-                _humidity: humidity
+                _flag: flag
             },
             success: function(response) {
                 if (response.success) {
