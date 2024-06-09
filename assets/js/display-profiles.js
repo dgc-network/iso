@@ -848,39 +848,31 @@ jQuery(document).ready(function($) {
             if (DS18B20Match) {
                 const temperature = parseFloat(DS18B20Match[1]);
                 console.log('Parsed Temperature:', temperature);
-                update_temperature_humidity(topic, temperature, 0);
+                update_mqtt_client_data(topic, temperature, 'temperature');
             }
     
             if (temperatureMatch) {
                 const temperature = parseFloat(temperatureMatch[1]);
                 console.log('Parsed Temperature:', temperature);
-                update_temperature_humidity(topic, temperature, 0);
+                update_mqtt_client_data(topic, temperature, 'temperature');
             }
     
             if (humidityMatch) {
                 const humidity = parseInt(humidityMatch[1], 10);
                 console.log('Parsed Humidity:', humidity);
-                update_temperature_humidity(topic, humidity, 1);
+                update_mqtt_client_data(topic, humidity, 'humidity');
             }
     
             if (ssidMatch) {
                 const ssid = ssidMatch[1];
                 console.log('Parsed SSID:', ssid);
-                update_temperature_humidity(topic, ssid, 'ssid');
+                update_mqtt_client_data(topic, ssid, 'ssid');
             }
     
             if (passwordMatch) {
                 const password = passwordMatch[1];
                 console.log('Parsed Password:', password);
-                update_temperature_humidity(topic, password, 'password');
-            }
-        });
-    
-        mqttClientInit.on('error', function (error) {
-            console.error('MQTT error:', error);
-            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
-            if (container) {
-                container.textContent = 'Error fetching messages. Please check the console for more details.';
+                update_mqtt_client_data(topic, password, 'password');
             }
         });
     }
@@ -961,12 +953,12 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function update_temperature_humidity(topic, value, flag=0) {
+    function update_mqtt_client_data(topic, value, flag=false) {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             data: {
-                action: 'update_temperature_humidity',
+                action: 'update_mqtt_client_data',
                 _topic: topic,
                 _value: value,
                 _flag: flag

@@ -58,8 +58,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_mqtt_client_dialog_data', array( $this, 'set_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_mqtt_client_dialog_data', array( $this, 'del_mqtt_client_dialog_data' ) );
-            add_action( 'wp_ajax_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );
-            add_action( 'wp_ajax_nopriv_update_temperature_humidity', array( $this, 'update_temperature_humidity' ) );                
+            add_action( 'wp_ajax_update_mqtt_client_data', array( $this, 'update_mqtt_client_data' ) );
+            add_action( 'wp_ajax_nopriv_update_mqtt_client_data', array( $this, 'update_mqtt_client_data' ) );                
             add_action( 'wp_ajax_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
             add_action( 'wp_ajax_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
@@ -1414,7 +1414,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function update_temperature_humidity() {
+        function update_mqtt_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
                 $value = sanitize_text_field($_POST['_value']);
@@ -1424,8 +1424,8 @@ if (!class_exists('display_profiles')) {
                 $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
                 // Update the post meta
-                if ($flag==0) update_post_meta($post->ID, 'temperature', $value);
-                if ($flag==1) update_post_meta($post->ID, 'humidity', $value);
+                if ($flag=='temperature') update_post_meta($post->ID, 'temperature', $value);
+                if ($flag=='humidity') update_post_meta($post->ID, 'humidity', $value);
                 if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
                 if ($flag=="password") update_post_meta($post->ID, 'password', $value);
 
@@ -1470,9 +1470,9 @@ if (!class_exists('display_profiles')) {
             <div id="new-exception-notification-dialog" title="Exception notification dialog">
             <fieldset>
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <input type="text" id="user-id" value="<?php echo $user_id;?>" class="text ui-widget-content ui-corner-all" />
+                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php $this->select_user_id_option_data()?></select>
                 <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
-                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <input type="text" id="exception-value" value="25" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             </div>
@@ -1511,9 +1511,9 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <input type="text" id="user-id" value="<?php echo $user_id;?>" class="text ui-widget-content ui-corner-all" />
+                <select id="user-id" class="text ui-widget-content ui-corner-all"><?php $this->select_user_id_option_data($user_id)?></select>
                 <label for="exception-value"><?php echo __( 'Exception:', 'your-text-domain' );?></label>
-                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <input type="text" id="exception-value" value="<?php echo $exception_value;?>" class="text ui-widget-content ui-corner-all" />
                 </div>
             </fieldset>
             <?php
@@ -1554,6 +1554,18 @@ if (!class_exists('display_profiles')) {
             $response = array();
             wp_delete_post($_POST['_exception_notification_id'], true);
             wp_send_json($response);
+        }
+
+        function select_user_id_option_data($selected_option = 0) {
+            $users = get_users();
+            $options = '<option value="">Select user</option>';
+            
+            foreach ($users as $user) {
+                $selected = ($selected_option == $user->ID) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . '</option>';
+            }
+            
+            return $options;
         }
 
 
