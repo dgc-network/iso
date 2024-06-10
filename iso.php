@@ -65,7 +65,7 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-*/
+
     wp_enqueue_script('display-documents-js', plugins_url('assets/js/display-documents.js', __FILE__), array('jquery'), $version);
     wp_localize_script('display-documents-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -78,7 +78,7 @@ function wp_enqueue_scripts_and_styles() {
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
     wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
-
+*/
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
