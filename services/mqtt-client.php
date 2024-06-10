@@ -3,11 +3,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if (!class_exists('my_mqtt_client')) {
-    class my_mqtt_client {
+if (!class_exists('mqtt_client')) {
+    class mqtt_client {
 
         public function __construct() {
-/*
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
@@ -30,9 +29,8 @@ if (!class_exists('my_mqtt_client')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
-*/
         }
-/*
+
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -45,7 +43,7 @@ if (!class_exists('my_mqtt_client')) {
                 'nonce'    => wp_create_nonce('mqtt-client-nonce'), // Generate nonce
             ));                
         }        
-/*
+
         // Register mqtt-client post type
         function register_mqtt_client_post_type() {
             $labels = array(
@@ -75,7 +73,7 @@ if (!class_exists('my_mqtt_client')) {
             );
             register_post_type( 'notification', $args );
         }
-/*
+
         // MQTT Client
         function display_mqtt_client_list() {
             ob_start();
@@ -428,7 +426,6 @@ if (!class_exists('my_mqtt_client')) {
             
             return $options;
         }
-*/            
     }
-    $mqtt_client = new my_mqtt_client();
+    $mqtt_client = new mqtt_client();
 }
