@@ -25,7 +25,7 @@ if (!class_exists('line_bot_api')) {
         public $channel_access_token;
 
         public function __construct($channelAccessToken='', $channelSecret='') {
-    
+/*    
             if ($channelAccessToken==''||$channelSecret=='') {
                 if (file_exists(dirname( __FILE__ ) . '/config.ini')) {
                     $config = parse_ini_file(dirname( __FILE__ ) . '/config.ini', true);
@@ -38,10 +38,68 @@ if (!class_exists('line_bot_api')) {
                 }    
             } 
             $this->channel_access_token = $channelAccessToken;
-
+*/
+            add_action('admin_init', array( $this, 'line_bot_register_settings' ) );
             $this->channel_access_token = get_option('line_bot_token_option');
         }
 
+        function line_bot_register_settings() {
+            // Register Line bot section
+            add_settings_section(
+                'line_bot_settings_section',
+                'Line bot Settings',
+                array( $this, 'line_bot_settings_section_callback' ),
+                'web-service-settings'
+            );
+        
+            // Register fields for Line bot section
+            add_settings_field(
+                'line_bot_token_option',
+                'Line bot Token',
+                array( $this, 'line_bot_token_option_callback' ),
+                'web-service-settings',
+                'line_bot_settings_section'
+            );
+            register_setting('web-service-settings', 'line_bot_token_option');
+        
+            add_settings_field(
+                'line_official_account',
+                'Line official account',
+                array( $this, 'line_official_account_callback' ),
+                'web-service-settings',
+                'line_bot_settings_section'
+            );
+            register_setting('web-service-settings', 'line_official_account');
+        
+            add_settings_field(
+                'line_official_qr_code',
+                'Line official qr-code',
+                array( $this, 'line_official_qr_code_callback' ),
+                'web-service-settings',
+                'line_bot_settings_section'
+            );
+            register_setting('web-service-settings', 'line_official_qr_code');
+        }
+
+        function line_bot_settings_section_callback() {
+            echo '<p>Settings for Line bot.</p>';
+        }
+        
+        function line_bot_token_option_callback() {
+            $value = get_option('line_bot_token_option');
+            echo '<input type="text" id="line_bot_token_option" name="line_bot_token_option" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function line_official_account_callback() {
+            $value = get_option('line_official_account');
+            echo '<input type="text" id="line_official_account" name="line_official_account" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function line_official_qr_code_callback() {
+            $value = get_option('line_official_qr_code');
+            echo '<input type="text" id="line_official_qr_code" name="line_official_qr_code" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+                
         /**
          * @return mixed
          */

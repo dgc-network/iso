@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function web_service_register_settings() {
+/*    
     // Register Line bot section
     add_settings_section(
         'line_bot_settings_section',

@@ -22,35 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 if (!class_exists('open_ai_api')) {
     class open_ai_api {
 
-        /** @var string */
         private $openai_api_key;
     
-        /**
-         * @param string $openai_api_key
-         */
         public function __construct($openai_api_key='') {
-/*    
-            if ($openai_api_key=='') {
-                if (file_exists(dirname( __FILE__ ) . '/config.ini')) {
-                    $config = parse_ini_file(dirname( __FILE__ ) . '/config.ini', true);
-                    if ($config['OpenAI']['API_KEY'] == null) {
-                        error_log("config.ini uncompleted!", 0);
-                    } else {
-                        $openai_api_key = $config['OpenAI']['API_KEY'];
-                    }
-                }    
-            } 
-            $this->openai_api_key = $openai_api_key;
-*/
             add_action('admin_init', array( $this, 'open_ai_register_settings' ) );
             $this->openai_api_key = get_option('open_ai_api_key');
-
         }
     
         function open_ai_register_settings() {
             // Register Open AI section
             add_settings_section(
-                'open_ai_settings_section',
+                'open-ai-settings-section',
                 'Open AI Settings',
                 array( $this, 'open_ai_settings_section_callback' ),
                 'web-service-settings'
@@ -58,13 +40,13 @@ if (!class_exists('open_ai_api')) {
         
             // Register fields for Open AI section
             add_settings_field(
-                'open_ai_api_key',
+                'open-ai-api-key',
                 'API_KEY',
                 array( $this, 'open_ai_api_key_callback' ),
                 'web-service-settings',
-                'open_ai_settings_section'
+                'open-ai-settings-section'
             );
-            register_setting('web-service-settings', 'open_ai_api_key');
+            register_setting('web-service-settings', 'open-ai-api-key');
         }
         
         function open_ai_settings_section_callback() {
@@ -75,12 +57,7 @@ if (!class_exists('open_ai_api')) {
             $value = get_option('open_ai_api_key');
             echo '<input type="text" id="open_ai_api_key" name="open_ai_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
-        
-        
-        /**
-         * @param array<string, mixed> $param
-         * @return void
-         */
+                
         public function createCompletion($param) {
     
             $param["model"]="text-davinci-003";
@@ -110,10 +87,6 @@ if (!class_exists('open_ai_api')) {
             return $data['choices'][0];
         }
         
-        /**
-         * @param array<string, mixed> $param
-         * @return void
-         */
         public function createChatCompletion($userMessage) {
             $param = array(
                 'model' => 'gpt-3.5-turbo',
