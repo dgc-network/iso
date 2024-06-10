@@ -62,7 +62,7 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
-require_once plugin_dir_path( __FILE__ ) . 'web-services/default-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'services/default-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
