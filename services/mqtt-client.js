@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
 
     // Hook the initialize_all_MQTT_clients() function to wp_loaded event
     $(window).on('load', function() {
-        initialize_all_MQTT_clients();
+        //initialize_all_MQTT_clients();
     });
     //initialize_all_MQTT_clients();
 
