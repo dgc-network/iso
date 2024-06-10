@@ -61,13 +61,14 @@ function wp_enqueue_scripts_and_styles() {
     ));
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
-
+/*
 require_once plugin_dir_path( __FILE__ ) . 'web-services/mqtt-client.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/options-setting.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/edit-site.php';
+require_once plugin_dir_path( __FILE__ ) . 'web-services/edit-site.php';
+*/
+require_once plugin_dir_path( __FILE__ ) . 'web-services/default-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
