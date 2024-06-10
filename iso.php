@@ -61,13 +61,7 @@ function wp_enqueue_scripts_and_styles() {
     ));
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
-/*
-require_once plugin_dir_path( __FILE__ ) . 'web-services/mqtt-client.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/business-central.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/line-bot-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'web-services/edit-site.php';
-*/
+
 require_once plugin_dir_path( __FILE__ ) . 'web-services/default-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
@@ -181,7 +175,7 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
-                        $query = get_keyword_matchmaking($message['text']);
+                        $query = get_keyword_matched($message['text']);
                         if ($query) {
                             if ($query==-1) {
                                 $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
@@ -246,7 +240,7 @@ function init_webhook_events() {
 }
 add_action( 'parse_request', 'init_webhook_events' );
 
-function get_keyword_matchmaking($search_query) {
+function get_keyword_matched($search_query) {
 
     if (strpos($search_query, '註冊') !== false) return -1;
     if (strpos($search_query, '登入') !== false) return -1;
@@ -580,21 +574,4 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     return $allcaps;
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-
-function get_current_page_url() {
-    $url = 'http';
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-        $url .= 's';
-    }
-    $url .= '://';
-    if ($_SERVER['SERVER_PORT'] !== '80') {
-        //$url .= $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
-    } else {
-        //$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    }
-    $request_uri = $_SERVER['REQUEST_URI'];
-    $parsed_url = parse_url($request_uri);
-    $path = isset($parsed_url['path']) ? $parsed_url['path'] : '';
-    return $url .= $_SERVER['HTTP_HOST'].$path;
-}
 
