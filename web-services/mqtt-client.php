@@ -24,6 +24,7 @@ if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -47,6 +48,19 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
 
         }
+
+        function enqueue_mqtt_client_scripts() {
+            $version = time(); // Update this version number when you make changes
+            wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
+            wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
+            wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
+        
+            wp_enqueue_script('mqtt-client', plugins_url('mqtt-client.js', __FILE__), array('jquery'), $version);
+            wp_localize_script('mqtt-client', 'ajax_object', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('mqtt-client-nonce'), // Generate nonce
+            ));                
+        }        
 
         // Register mqtt-client post type
         function register_mqtt_client_post_type() {
@@ -168,8 +182,8 @@ if (!class_exists('mqtt_client')) {
 
         function display_mqtt_client_dialog($mqtt_client_id=false) {
             $client_id = get_post_meta($mqtt_client_id, 'client_id', true);
-            $mqtt_topic = get_the_title($mqtt_client_id);
             $description = get_post_field('post_content', $mqtt_client_id);
+            $mqtt_topic = get_the_title($mqtt_client_id);
             $ssid = get_post_meta($mqtt_client_id, 'ssid', true);
             $password = get_post_meta($mqtt_client_id, 'password', true);
             ob_start();
