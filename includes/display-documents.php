@@ -775,8 +775,6 @@ if (!class_exists('display_documents')) {
                     <div style="text-align:right; display:flex;">
                     </div>
                 </div>
-
-
             </fieldset>
             <?php
             $html = ob_get_clean();
