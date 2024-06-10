@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
 
+    activate_mqtt_client_list_data();
+
     // mqtt-client scripts
     function activate_mqtt_client_list_data(){
         activate_exception_notification_list_data($("#mqtt-client-id").val());
