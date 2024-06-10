@@ -82,7 +82,7 @@ if (!class_exists('mqtt_client')) {
         }
 
         // MQTT Client
-        function display_mqtt_client_list() {
+        public function display_mqtt_client_list() {
             ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
@@ -92,7 +92,8 @@ if (!class_exists('mqtt_client')) {
             $is_site_admin = display_profiles::is_site_admin();
         
             // Check if the user is administrator
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
+            if (display_profiles::is_site_admin() || current_user_can('administrator')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
