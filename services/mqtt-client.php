@@ -3,10 +3,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Include a PHP MQTT client library. If you don't have one, you can use phpMQTT or Bluerhinos PHPMQTT.
+require_once 'phpMQTT.php';
+
 if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
+            register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
+
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
@@ -29,6 +34,54 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
+        }
+
+        function initialize_all_MQTT_clients() {
+            // Retrieve all posts with category 'mqtt-client'
+            $args = array(
+                'category_name' => 'mqtt-client',
+                'post_type' => 'post',
+                'posts_per_page' => -1
+            );
+        
+            $posts = get_posts($args);
+            $topics = [];
+        
+            foreach ($posts as $post) {
+                $topic = $post->post_title;
+                $topics[] = $topic;
+        
+                // Example action: store topic in an option (optional, if needed later)
+                update_option('mqtt_topic_' . $post->ID, $topic);
+            }
+        
+            // Define MQTT broker details
+            $host = 'test.mosquitto.org';
+            $port = 1883;
+            $client_id = 'your_client_id';
+        
+            // Connect to the MQTT broker and subscribe to topics
+            connect_to_mqtt_broker($host, $port, $client_id, $topics);
+        }
+
+        function connect_to_mqtt_broker($host, $port, $client_id, $topics) {
+            // Example using Bluerhinos PHPMQTT
+            $mqtt = new Bluerhinos\phpMQTT($host, $port, $client_id);
+        
+            if ($mqtt->connect(true, NULL, 'username', 'password')) {
+                foreach ($topics as $topic) {
+                    $mqtt->subscribe([$topic => ["qos" => 0, "function" => "procmsg"]]);
+                }
+                $mqtt->close();
+            } else {
+                echo "Failed to connect to MQTT broker.";
+            }
+        }
+        
+        function procmsg($topic, $msg) {
+            echo "Message received on topic {$topic}: {$msg}\n";
+            // Process the message as needed, e.g., update options or post meta
+            // update_option('mqtt_message_' . $topic, $msg);
         }
 
         function enqueue_mqtt_client_scripts() {

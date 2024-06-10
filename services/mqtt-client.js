@@ -6,12 +6,12 @@ jQuery(document).ready(function($) {
         initialize_all_MQTT_clients();
     });
     //initialize_all_MQTT_clients();
-*/
+
     $(document).ready(function() {
         console.log('Document ready, calling initialize_all_MQTT_clients');
         initialize_all_MQTT_clients();
     });
-
+*/
     // Function to initialize MQTT client with a specific topic
     function initialize_all_MQTT_clients() {
         // Retrieve all MQTT client posts via AJAX
