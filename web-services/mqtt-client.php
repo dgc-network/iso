@@ -82,7 +82,7 @@ if (!class_exists('mqtt_client')) {
         }
 
         // MQTT Client
-        public function display_mqtt_client_list() {
+        public static function display_mqtt_client_list() {
             ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);

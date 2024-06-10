@@ -515,7 +515,7 @@ if (!class_exists('display_profiles')) {
             <?php
         }
 
-        public function is_site_admin($user_id=false, $site_id=false) {
+        public static function is_site_admin($user_id=false, $site_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();
             if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
