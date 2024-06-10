@@ -1150,27 +1150,27 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function display_doc_category_dialog() {
+        function display_doc_category_dialog($category_id=false) {
+            $category_title = get_the_title($category_id);
+            $category_content = get_post_field('post_content', $category_id);
+            ob_start();
             ?>
-            <div id="doc-category-dialog" title="Category dialog" style="display:none;">
             <fieldset>
-                <input type="hidden" id="category-id" />
+                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
-                <input type="text" id="category-title" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="category-content" rows="3" style="width:100%;"></textarea>
+                <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?>"</textarea>
             </fieldset>
-            </div>
             <?php
+            $html = ob_get_clean();
+            return $html;        
         }
 
         function get_doc_category_dialog_data() {
             $response = array();
-            if( isset($_POST['_category_id']) ) {
-                $category_id = sanitize_text_field($_POST['_category_id']);
-                $response["category_title"] = get_the_title($category_id);
-                $response["category_content"] = get_post_field('post_content', $category_id);
-            }
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $response['html_contain'] = $this->display_doc_category_dialog($category_id);
             wp_send_json($response);
         }
 

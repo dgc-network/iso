@@ -438,10 +438,8 @@ jQuery(document).ready(function($) {
                     '_category_id': category_id,
                 },
                 success: function (response) {
+                    $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
-                    $("#category-id").val(category_id);
-                    $("#category-title").val(response.category_title);
-                    $("#category-content").val(response.category_content);
                 },
                 error: function (error) {
                     console.error(error);
