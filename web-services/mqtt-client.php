@@ -82,25 +82,23 @@ if (!class_exists('mqtt_client')) {
         }
 
         // MQTT Client
-        public static function display_mqtt_client_list() {
+        function display_mqtt_client_list() {
             ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            //$is_site_admin = $this->is_site_admin();
-            $is_site_admin = display_profiles::is_site_admin();
-        
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+    
             // Check if the user is administrator
-            //if ($is_site_admin || current_user_can('administrator')) {
-            if (display_profiles::is_site_admin() || current_user_can('administrator')) {
+            if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
-                <?php //echo display_mqtt_messages('1717552915');?>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php display_profiles::display_select_profile(4);?></div>                        
+                        <div><?php $profiles_class->display_select_profile(4);?></div>                        
                         <div style="text-align: right"></div>                        
                     </div>
         
