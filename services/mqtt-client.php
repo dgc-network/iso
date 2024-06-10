@@ -8,7 +8,7 @@ if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
+            //add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
