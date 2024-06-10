@@ -139,7 +139,7 @@ if (!class_exists('display_profiles')) {
         }
 
         // Select profile
-        function display_select_profile($select_option=false) {
+        public static function display_select_profile($select_option=false) {
             ?>
             <select id="select-profile">
                 <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>

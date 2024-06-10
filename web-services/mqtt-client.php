@@ -100,7 +100,7 @@ if (!class_exists('mqtt_client')) {
                 <?php //echo display_mqtt_messages('1717552915');?>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile(4);?></div>                        
+                        <div><?php display_profiles::display_select_profile(4);?></div>                        
                         <div style="text-align: right"></div>                        
                     </div>
         
