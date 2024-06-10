@@ -437,4 +437,5 @@ if (!class_exists('open_ai_api')) {
             return $responseContent . '<br>' . $error_messages;
         }
     }
+    $open_ai_api = new open_ai_api();
 }
