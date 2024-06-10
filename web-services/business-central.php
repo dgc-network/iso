@@ -64,39 +64,39 @@ if (!class_exists('business_central')) {
                 'web-service-settings',
                 'business-central-section-settings',
             );
-            register_setting('web-service-settings', 'bc-scope');
-        
-            function business_central_section_settings_callback() {
-                echo '<p>Settings for Business Central.</p>';
-            }
-            
-            function tenant_id_callback() {
-                $value = get_option('tenant_id');
-                echo '<input type="text" id="tenant_id" name="tenant_id" style="width:100%;" value="' . esc_attr($value) . '" />';
-            }
-            
-            function client_id_callback() {
-                $value = get_option('client_id');
-                echo '<input type="text" id="client_id" name="client_id" style="width:100%;" value="' . esc_attr($value) . '" />';
-            }
-            
-            function client_secret_callback() {
-                $value = get_option('client_secret');
-                echo '<input type="text" id="client_secret" name="client_secret" style="width:100%;" value="' . esc_attr($value) . '" />';
-            }
-            
-            function redirect_uri_callback() {
-                $value = get_option('redirect_uri');
-                echo '<input type="text" id="redirect_uri" name="redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
-            }
-            
-            function bc_scope_callback() {
-                $value = get_option('bc_scope');
-                echo '<input type="text" id="bc_scope" name="bc_scope" style="width:100%;" value="' . esc_attr($value) . '" />';
-            }
-            
-            
+            register_setting('web-service-settings', 'bc-scope');        
         }
+
+        function business_central_section_settings_callback() {
+            echo '<p>Settings for Business Central.</p>';
+        }
+        
+        function tenant_id_callback() {
+            $value = get_option('tenant_id');
+            echo '<input type="text" id="tenant_id" name="tenant_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function client_id_callback() {
+            $value = get_option('client_id');
+            echo '<input type="text" id="client_id" name="client_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function client_secret_callback() {
+            $value = get_option('client_secret');
+            echo '<input type="text" id="client_secret" name="client_secret" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function redirect_uri_callback() {
+            $value = get_option('redirect_uri');
+            echo '<input type="text" id="redirect_uri" name="redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+        function bc_scope_callback() {
+            $value = get_option('bc_scope');
+            echo '<input type="text" id="bc_scope" name="bc_scope" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+        
+    
     }
     $business_central = new business_central();
 }
