@@ -46,7 +46,7 @@ if (!class_exists('mqtt_client')) {
                 'nonce'    => wp_create_nonce('mqtt-client-nonce'), // Generate nonce
             ));                
         }        
-
+/*
         // Register mqtt-client post type
         function register_mqtt_client_post_type() {
             $labels = array(
