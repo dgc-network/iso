@@ -444,7 +444,7 @@ if (!class_exists('to_do_list')) {
                         endwhile;
                         wp_reset_postdata();
                     }
-                ?>        
+                ?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />

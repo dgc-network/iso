@@ -648,7 +648,6 @@ if (!class_exists('display_profiles')) {
                     </fieldset>        
                 </fieldset>
                 <div id="site-job-dialog" title="Job dialog"></div>
-                <?php //echo $this->display_site_job_dialog();?>                
                 <?php
             } else {
                 ?>

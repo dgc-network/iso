@@ -472,7 +472,7 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
-                        <?php echo $current_job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?> 
+                        <?php echo $current_job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?>
                         <?php
                     endwhile;
                     wp_reset_postdata();
@@ -590,7 +590,7 @@ if (!class_exists('display_documents')) {
             $todo_class = new to_do_list();
             $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
             $$html_contain = $signature_record_list['html'];
-            ?>    
+            ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -647,7 +647,7 @@ if (!class_exists('display_documents')) {
             $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
             $html_contain = $signature_record_list['html'];
             ob_start();
-            ?>    
+            ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
@@ -1180,7 +1180,7 @@ if (!class_exists('display_documents')) {
                 </select>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
-                <input type="checkbox" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : ''?> />
+                <input type="checkbox" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : '';?> />
                 <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
             </fieldset>
             </div>
@@ -1352,7 +1352,7 @@ if (!class_exists('display_documents')) {
             
                         case ($field_type=='radio'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
-                            ?>                    
+                            ?>
                             <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                             <?php
@@ -1467,7 +1467,7 @@ if (!class_exists('display_documents')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
-            ?>    
+            ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />

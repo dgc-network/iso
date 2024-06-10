@@ -46,7 +46,7 @@ get_header(); ?>
                     </p>
                 </form>
             </div><!-- .entry-content -->
-        </article><!-- #post-<?php the_ID(); ?> -->
+        </article><!-- #post-<?php the_ID();?>-->
 
     </main><!-- #main -->
 </div><!-- #primary -->
