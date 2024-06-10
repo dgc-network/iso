@@ -199,18 +199,14 @@ if (!class_exists('mqtt_client')) {
                 $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
                 $data = array(
                     'ID'           => $mqtt_client_id,
-                    //'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
                     'post_content' => sanitize_text_field($_POST['_description']),
                 );
                 wp_update_post( $data );
-                //update_post_meta($mqtt_client_id, 'client_id', sanitize_text_field($_POST['_client_id']));
-                //update_post_meta($mqtt_client_id, 'ssid', sanitize_text_field($_POST['_ssid']));
-                //update_post_meta($mqtt_client_id, 'password', sanitize_text_field($_POST['_password']));
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_title'    => time(),
-                    'post_content'  => 'Your post content goes here.',
+                    'post_content'  => 'xxx公司，xxx冷凍庫',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'mqtt-client',
@@ -301,7 +297,7 @@ if (!class_exists('mqtt_client')) {
                             $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                             $user_data = get_userdata($user_id);
                             $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
-                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true);
+                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
                             ?>
                             <tr id="edit-exception-notification-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
@@ -417,13 +413,11 @@ if (!class_exists('mqtt_client')) {
 
         function select_user_id_option_data($selected_option = 0) {
             $users = get_users();
-            $options = '<option value="">Select user</option>';
-            
+            $options = '<option value="">Select user</option>';            
             foreach ($users as $user) {
                 $selected = ($selected_option == $user->ID) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . '</option>';
-            }
-            
+            }            
             return $options;
         }
     }
