@@ -98,11 +98,11 @@ if (!class_exists('mqtt_client')) {
         // MQTT Client
         function display_mqtt_client_list() {
             ob_start();
+            $profiles_class = new display_profiles();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
     
             // Check if the user is administrator
