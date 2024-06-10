@@ -202,7 +202,7 @@ if (!class_exists('mqtt_client')) {
                 $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
                 $data = array(
                     'ID'           => $mqtt_client_id,
-                    //'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
+                    'post_title'   => sanitize_text_field($_POST['_mqtt_topic']),
                     'post_content' => sanitize_text_field($_POST['_description']),
                 );
                 wp_update_post( $data );
