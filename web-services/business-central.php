@@ -3,6 +3,104 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if (!class_exists('business_central')) {
+    class business_central {
+
+        public function __construct() {
+            add_action('admin_init', array( $this, 'business_central_register_settings' ) );
+
+        }
+
+        function business_central_register_settings() {
+            // Register Business Central section
+            add_settings_section(
+                'business-central-section-settings',
+                'Business Central Settings',
+                array( $this, 'business_central_section_settings_callback' ),
+                'web-service-settings'
+            );
+        
+            // Register fields for Business Central section
+            add_settings_field(
+                'tenant-id',
+                'Tenant ID',
+                array( $this, 'tenant_id_callback' ),
+                'web-service-settings',
+                'business-central-section-settings',
+            );
+            register_setting('web-service-settings', 'tenant-id');
+        
+            add_settings_field(
+                'client-id',
+                'Client ID',
+                array( $this, 'client_id_callback' ),
+                'web-service-settings',
+                'business-central-section-settings',
+            );
+            register_setting('web-service-settings', 'client-id');
+        
+            add_settings_field(
+                'client-secret',
+                'Client Secret',
+                array( $this, 'client_secret_callback' ),
+                'web-service-settings',
+                'business-central-section-settings',
+            );
+            register_setting('web-service-settings', 'client-secret');
+        
+            add_settings_field(
+                'redirect-uri',
+                'Redirect URI',
+                array( $this, 'redirect_uri_callback' ),
+                'web-service-settings',
+                'business-central-section-settings',
+            );
+            register_setting('web-service-settings', 'redirect-uri');
+        
+            add_settings_field(
+                'bc-scope',
+                'Scope',
+                array( $this, 'bc_scope_callback' ),
+                'web-service-settings',
+                'business-central-section-settings',
+            );
+            register_setting('web-service-settings', 'bc-scope');
+        
+            function business_central_section_settings_callback() {
+                echo '<p>Settings for Business Central.</p>';
+            }
+            
+            function tenant_id_callback() {
+                $value = get_option('tenant_id');
+                echo '<input type="text" id="tenant_id" name="tenant_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+            }
+            
+            function client_id_callback() {
+                $value = get_option('client_id');
+                echo '<input type="text" id="client_id" name="client_id" style="width:100%;" value="' . esc_attr($value) . '" />';
+            }
+            
+            function client_secret_callback() {
+                $value = get_option('client_secret');
+                echo '<input type="text" id="client_secret" name="client_secret" style="width:100%;" value="' . esc_attr($value) . '" />';
+            }
+            
+            function redirect_uri_callback() {
+                $value = get_option('redirect_uri');
+                echo '<input type="text" id="redirect_uri" name="redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
+            }
+            
+            function bc_scope_callback() {
+                $value = get_option('bc_scope');
+                echo '<input type="text" id="bc_scope" name="bc_scope" style="width:100%;" value="' . esc_attr($value) . '" />';
+            }
+            
+            
+        }
+    }
+    $business_central = new business_central();
+}
+
 // Redirect function
 function redirect_to_authorization_url($params) {
     $tenant_id = get_option('tenant_id');

@@ -24,7 +24,8 @@ if (!class_exists('line_bot_api')) {
         /** @var string */
         public $channel_access_token;
 
-        public function __construct($channelAccessToken='', $channelSecret='') {
+        //public function __construct($channelAccessToken='', $channelSecret='') {
+        public function __construct() {
 /*    
             if ($channelAccessToken==''||$channelSecret=='') {
                 if (file_exists(dirname( __FILE__ ) . '/config.ini')) {
@@ -46,42 +47,42 @@ if (!class_exists('line_bot_api')) {
         function line_bot_register_settings() {
             // Register Line bot section
             add_settings_section(
-                'line_bot_settings_section',
+                'line-bot-section-settings',
                 'Line bot Settings',
-                array( $this, 'line_bot_settings_section_callback' ),
+                array( $this, 'line_bot_section_settings_callback' ),
                 'web-service-settings'
             );
         
             // Register fields for Line bot section
             add_settings_field(
-                'line_bot_token_option',
+                'line-bot-token-option',
                 'Line bot Token',
                 array( $this, 'line_bot_token_option_callback' ),
                 'web-service-settings',
-                'line_bot_settings_section'
+                'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line_bot_token_option');
+            register_setting('web-service-settings', 'line-bot-token-option');
         
             add_settings_field(
-                'line_official_account',
+                'line-official-account',
                 'Line official account',
                 array( $this, 'line_official_account_callback' ),
                 'web-service-settings',
-                'line_bot_settings_section'
+                'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line_official_account');
+            register_setting('web-service-settings', 'line-official-account');
         
             add_settings_field(
-                'line_official_qr_code',
+                'line-official-qr-code',
                 'Line official qr-code',
                 array( $this, 'line_official_qr_code_callback' ),
                 'web-service-settings',
-                'line_bot_settings_section'
+                'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line_official_qr_code');
+            register_setting('web-service-settings', 'line-official-qr-code');
         }
 
-        function line_bot_settings_section_callback() {
+        function line_bot_section_settings_callback() {
             echo '<p>Settings for Line bot.</p>';
         }
         
@@ -465,4 +466,5 @@ if (!class_exists('line_bot_api')) {
             return $signature;
         }
     }
+    $line_bot_api = new line_bot_api();
 }

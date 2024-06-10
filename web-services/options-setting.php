@@ -58,7 +58,7 @@ function web_service_register_settings() {
         'open_ai_settings_section'
     );
     register_setting('web-service-settings', 'open_ai_api_key');
-*/
+
     // Register Business Central section
     add_settings_section(
         'business_central_settings_section',
@@ -112,7 +112,7 @@ function web_service_register_settings() {
         'business_central_settings_section'
     );
     register_setting('web-service-settings', 'bc_scope');
-
+*/
     // Register Operation section
     add_settings_section(
         'operation_settings_section',

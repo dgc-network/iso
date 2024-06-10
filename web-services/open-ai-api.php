@@ -32,24 +32,24 @@ if (!class_exists('open_ai_api')) {
         function open_ai_register_settings() {
             // Register Open AI section
             add_settings_section(
-                'open-ai-settings-section',
+                'open-ai-section-settings',
                 'Open AI Settings',
-                array( $this, 'open_ai_settings_section_callback' ),
+                array( $this, 'open_ai_section_settings_callback' ),
                 'web-service-settings'
             );
         
             // Register fields for Open AI section
             add_settings_field(
                 'open-ai-api-key',
-                'API_KEY',
+                'API KEY',
                 array( $this, 'open_ai_api_key_callback' ),
                 'web-service-settings',
-                'open-ai-settings-section'
+                'open-ai-section-settings'
             );
             register_setting('web-service-settings', 'open-ai-api-key');
         }
         
-        function open_ai_settings_section_callback() {
+        function open_ai_section_settings_callback() {
             echo '<p>Settings for Open AI.</p>';
         }
         
