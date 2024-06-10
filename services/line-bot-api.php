@@ -21,26 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if (!class_exists('line_bot_api')) {
     class line_bot_api {
-        /** @var string */
-        public $channel_access_token;
+        private $channel_access_token;
 
-        //public function __construct($channelAccessToken='', $channelSecret='') {
         public function __construct() {
-/*    
-            if ($channelAccessToken==''||$channelSecret=='') {
-                if (file_exists(dirname( __FILE__ ) . '/config.ini')) {
-                    $config = parse_ini_file(dirname( __FILE__ ) . '/config.ini', true);
-                    if ($config['LineBot']['Token'] == null || $config['LineBot']['Secret'] == null) {
-                        error_log("config.ini uncompleted!", 0);
-                    } else {
-                        $channelAccessToken = $config['LineBot']['Token'];
-                        $channelSecret = $config['LineBot']['Secret'];
-                    }
-                }    
-            } 
-            $this->channel_access_token = $channelAccessToken;
-*/
-            add_action('admin_init', array( $this, 'line_bot_register_settings' ) );
+            add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
             $this->channel_access_token = get_option('line_bot_token_option');
         }
 
@@ -99,28 +83,6 @@ if (!class_exists('line_bot_api')) {
         function line_official_qr_code_callback() {
             $value = get_option('line_official_qr_code');
             echo '<input type="text" id="line_official_qr_code" name="line_official_qr_code" style="width:100%;" value="' . esc_attr($value) . '" />';
-        }
-                
-        /**
-         * @return mixed
-         */
-        public function parseEvents() {
-         
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                http_response_code(405);
-                error_log('Method not allowed');
-            }
-    
-            $entityBody = file_get_contents('php://input');            
-    
-            if ($entityBody === false || strlen($entityBody) === 0) {
-                http_response_code(400);
-                error_log('Missing request body');
-            }
-
-            $data = json_decode($entityBody, true);
-
-            return $data['events'];
         }
 
         /**
