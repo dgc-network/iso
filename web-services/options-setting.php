@@ -39,7 +39,7 @@ function web_service_register_settings() {
         'line_bot_settings_section'
     );
     register_setting('web-service-settings', 'line_official_qr_code');
-
+/*
     // Register AI section
     add_settings_section(
         'open_ai_settings_section',
@@ -57,7 +57,7 @@ function web_service_register_settings() {
         'open_ai_settings_section'
     );
     register_setting('web-service-settings', 'open_ai_api_key');
-
+*/
     // Register Business Central section
     add_settings_section(
         'business_central_settings_section',

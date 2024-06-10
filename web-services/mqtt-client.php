@@ -210,7 +210,7 @@ if (!class_exists('mqtt_client')) {
         function get_mqtt_client_dialog_data() {
             $response = array();
             $mqtt_client_id = sanitize_text_field($_POST['_mqtt_client_id']);
-            //$response['html_contain'] = $this->display_mqtt_client_dialog($mqtt_client_id);
+            $response['html_contain'] = $this->display_mqtt_client_dialog($mqtt_client_id);
             wp_send_json($response);
         }
 

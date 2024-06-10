@@ -59,26 +59,6 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-/*
-    wp_enqueue_script('display-profiles-js', plugins_url('assets/js/display-profiles.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('display-profiles-js', 'ajax_object', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
-    ));
-
-    wp_enqueue_script('display-documents-js', plugins_url('assets/js/display-documents.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('display-documents-js', 'ajax_object', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
-    ));
-
-    wp_enqueue_script('to-do-list-js', plugins_url('assets/js/to-do-list.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('to-do-list-js', 'ajax_object', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
-    ));
-    wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
-*/
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
