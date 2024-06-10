@@ -33,7 +33,7 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
 */
         }
-
+/*
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
