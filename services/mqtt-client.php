@@ -70,11 +70,8 @@ if (!class_exists('mqtt_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'mqtt-clients'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
-                'has_archive'   => true,
-                'show_in_menu'  => false,
                 'show_in_rest'  => true,
+                'show_in_menu'  => false,
             );
             register_post_type( 'mqtt-client', $args );
         }

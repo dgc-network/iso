@@ -2,8 +2,100 @@ jQuery(document).ready(function($) {
 
     activate_mqtt_client_list_data();
 
+    // Hook the initialize_all_MQTT_clients() function to wp_loaded event
+    $(window).on('load', function() {
+        initialize_all_MQTT_clients();
+    });
+    //initialize_all_MQTT_clients();
+
+    // Function to initialize MQTT client with a specific topic
+    function initialize_all_MQTT_clients() {
+        // Retrieve all MQTT client posts via AJAX
+        $.ajax({
+            //url: '/wp-json/custom/v1/mqtt-client', // Adjust the endpoint URL as needed
+            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
+            method: 'GET',
+            success: function(response) {
+                if (response.length > 0) {
+                    // Loop through all MQTT client posts
+                    response.forEach(function(post) {
+                        const topic = post.title.rendered; // Get the topic from the post title
+                        console.log('Post title for topic: ' + topic);
+                        // Initialize MQTT client for this topic
+                        initializeMQTTClient(topic);
+                    });
+                } else {
+                    console.error('No MQTT client posts found.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching MQTT client posts:', error);
+            }
+        });
+    }
+
+    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
+        const container = document.getElementById('mqtt-messages-container');
+    
+        mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+    
+        mqttClientInit.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClientInit.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+    
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+
+            // Parse temperature and humidity values
+            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
+            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
+            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
+            const ssidMatch = msg.match(/SSID:\s*(\w+)/);
+            const passwordMatch = msg.match(/Password:\s*(\w+)/);
+    
+            if (DS18B20Match) {
+                const temperature = parseFloat(DS18B20Match[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_mqtt_client_data(topic, temperature, 'temperature');
+            }
+    
+            if (temperatureMatch) {
+                const temperature = parseFloat(temperatureMatch[1]);
+                console.log('Parsed Temperature:', temperature);
+                update_mqtt_client_data(topic, temperature, 'temperature');
+            }
+    
+            if (humidityMatch) {
+                const humidity = parseInt(humidityMatch[1], 10);
+                console.log('Parsed Humidity:', humidity);
+                update_mqtt_client_data(topic, humidity, 'humidity');
+            }
+    
+            if (ssidMatch) {
+                const ssid = ssidMatch[1];
+                console.log('Parsed SSID:', ssid);
+                update_mqtt_client_data(topic, ssid, 'ssid');
+            }
+    
+            if (passwordMatch) {
+                const password = passwordMatch[1];
+                console.log('Parsed Password:', password);
+                update_mqtt_client_data(topic, password, 'password');
+            }
+        });
+    }
+
+    
+
     // mqtt-client scripts
     function activate_mqtt_client_list_data(){
+
         activate_exception_notification_list_data($("#mqtt-client-id").val());
 
         $("#search-mqtt-client").on( "change", function() {
@@ -149,95 +241,6 @@ jQuery(document).ready(function($) {
             error: function (error) {
                 console.error(error);
                 alert(error);
-            }
-        });
-    }
-
-    // Hook the initialize_all_MQTT_clients() function to wp_loaded event
-    $(window).on('load', function() {
-        initialize_all_MQTT_clients();
-    });
-    //initialize_all_MQTT_clients();
-
-    // Function to initialize MQTT client with a specific topic
-    function initialize_all_MQTT_clients() {
-        // Retrieve all MQTT client posts via AJAX
-        $.ajax({
-            //url: '/wp-json/custom/v1/mqtt-client', // Adjust the endpoint URL as needed
-            url: '/wp-json/wp/v2/mqtt-client', // Adjust the endpoint URL as needed
-            method: 'GET',
-            success: function(response) {
-                if (response.length > 0) {
-                    // Loop through all MQTT client posts
-                    response.forEach(function(post) {
-                        const topic = post.title.rendered; // Get the topic from the post title
-                        console.log('Post title for topic: ' + topic);
-                        // Initialize MQTT client for this topic
-                        initializeMQTTClient(topic);
-                    });
-                } else {
-                    console.error('No MQTT client posts found.');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching MQTT client posts:', error);
-            }
-        });
-    }
-
-    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        const container = document.getElementById('mqtt-messages-container');
-    
-        mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
-    
-        mqttClientInit.on('connect', function () {
-            console.log('Connected to MQTT broker');
-            mqttClientInit.subscribe(topic, function (err) {
-                if (err) {
-                    console.error('Subscription error:', err);
-                }
-            });
-        });
-    
-        mqttClientInit.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-
-            // Parse temperature and humidity values
-            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
-            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
-            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
-            const ssidMatch = msg.match(/SSID:\s*(\w+)/);
-            const passwordMatch = msg.match(/Password:\s*(\w+)/);
-    
-            if (DS18B20Match) {
-                const temperature = parseFloat(DS18B20Match[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_mqtt_client_data(topic, temperature, 'temperature');
-            }
-    
-            if (temperatureMatch) {
-                const temperature = parseFloat(temperatureMatch[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_mqtt_client_data(topic, temperature, 'temperature');
-            }
-    
-            if (humidityMatch) {
-                const humidity = parseInt(humidityMatch[1], 10);
-                console.log('Parsed Humidity:', humidity);
-                update_mqtt_client_data(topic, humidity, 'humidity');
-            }
-    
-            if (ssidMatch) {
-                const ssid = ssidMatch[1];
-                console.log('Parsed SSID:', ssid);
-                update_mqtt_client_data(topic, ssid, 'ssid');
-            }
-    
-            if (passwordMatch) {
-                const password = passwordMatch[1];
-                console.log('Parsed Password:', password);
-                update_mqtt_client_data(topic, password, 'password');
             }
         });
     }
