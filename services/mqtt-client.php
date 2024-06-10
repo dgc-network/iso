@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if (!class_exists('mqtt_client')) {
-    class mqtt_client {
+if (!class_exists('my_mqtt_client')) {
+    class my_mqtt_client {
 
         public function __construct() {
 /*
@@ -431,5 +431,5 @@ if (!class_exists('mqtt_client')) {
         }
 */            
     }
-    $mqtt_client = new mqtt_client();
+    $mqtt_client = new my_mqtt_client();
 }
