@@ -10,7 +10,7 @@ if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
-            //register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
+            register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
@@ -95,35 +95,35 @@ if (!class_exists('mqtt_client')) {
             if ($DS18B20Match) {
                 $temperature = floatval($DS18B20Match);
                 echo "Parsed Temperature: {$temperature}\n";
-                $this->update_mqtt_client_data($topic, $temperature, 'temperature');
+                $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
             }
     
             if ($temperatureMatch) {
                 $temperature = floatval($temperatureMatch);
                 echo "Parsed Temperature: {$temperature}\n";
-                $this->update_mqtt_client_data($topic, $temperature, 'temperature');
+                $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
             }
     
             if ($humidityMatch) {
                 $humidity = intval($humidityMatch);
                 echo "Parsed Humidity: {$humidity}\n";
-                $this->update_mqtt_client_data($topic, $humidity, 'humidity');
+                $this->update_mqtt_client_data_01($topic, $humidity, 'humidity');
             }
     
             if ($ssidMatch) {
                 $ssid = $ssidMatch;
                 echo "Parsed SSID: {$ssid}\n";
-                $this->update_mqtt_client_data($topic, $ssid, 'ssid');
+                $this->update_mqtt_client_data_01($topic, $ssid, 'ssid');
             }
     
             if ($passwordMatch) {
                 $password = $passwordMatch;
                 echo "Parsed Password: {$password}\n";
-                $this->update_mqtt_client_data($topic, $password, 'password');
+                $this->update_mqtt_client_data_01($topic, $password, 'password');
             }
         }
     
-        public function update_mqtt_client_data($topic, $value, $type) {
+        public function update_mqtt_client_data_01($topic, $value, $type) {
             // Find the post by title
             $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
@@ -146,7 +146,7 @@ if (!class_exists('mqtt_client')) {
             endif;
 
         }
-/*
+
         function update_mqtt_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
@@ -179,7 +179,6 @@ if (!class_exists('mqtt_client')) {
                 wp_send_json_error(array('message' => 'Missing topic or value.'));
             }
         }
-*/        
 
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
