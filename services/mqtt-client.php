@@ -10,8 +10,13 @@ if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
-            register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
-
+            //register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
+            add_action('init', function() {
+                if (current_user_can('administrator')) {
+                    $this->initialize_all_MQTT_clients();
+                }
+            });
+                        
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
