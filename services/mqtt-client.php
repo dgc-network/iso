@@ -3,14 +3,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Include a PHP MQTT client library. If you don't have one, you can use phpMQTT or Bluerhinos PHPMQTT.
-require_once 'phpMQTT.php';
+require_once 'mqtt-client-initializer.php';
 
 if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
         public function __construct() {
-            register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
+
+            //register_activation_hook( __FILE__, array( $this, 'initialize_all_MQTT_clients' ) );
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
@@ -35,7 +35,7 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
         }
-
+/*
         public function initialize_all_MQTT_clients() {
             // Retrieve all posts with category 'mqtt-client'
             $args = array(
@@ -81,7 +81,7 @@ if (!class_exists('mqtt_client')) {
         }
     
         public function procmsg($topic, $msg) {
-            
+
             echo "Message received on topic {$topic}: {$msg}\n";
 
             // Parse temperature and humidity values
@@ -145,7 +145,7 @@ if (!class_exists('mqtt_client')) {
             endif;
 
         }
-
+*/
         function update_mqtt_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
