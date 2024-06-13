@@ -15,10 +15,105 @@ class MQTT_Client_Initializer {
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
         add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
+        add_action('init', array($this, 'create_mqtt_log_post_type'));
     }
 
+
+    function create_mqtt_log_post_type() {
+        $labels = array(
+            'name'               => _x('MQTT Logs', 'post type general name', 'your-text-domain'),
+            'singular_name'      => _x('MQTT Log', 'post type singular name', 'your-text-domain'),
+            'menu_name'          => _x('MQTT Logs', 'admin menu', 'your-text-domain'),
+            'name_admin_bar'     => _x('MQTT Log', 'add new on admin bar', 'your-text-domain'),
+            'add_new'            => _x('Add New', 'log', 'your-text-domain'),
+            'add_new_item'       => __('Add New Log', 'your-text-domain'),
+            'new_item'           => __('New Log', 'your-text-domain'),
+            'edit_item'          => __('Edit Log', 'your-text-domain'),
+            'view_item'          => __('View Log', 'your-text-domain'),
+            'all_items'          => __('All Logs', 'your-text-domain'),
+            'search_items'       => __('Search Logs', 'your-text-domain'),
+            'parent_item_colon'  => __('Parent Logs:', 'your-text-domain'),
+            'not_found'          => __('No logs found.', 'your-text-domain'),
+            'not_found_in_trash' => __('No logs found in Trash.', 'your-text-domain')
+        );
+    
+        $args = array(
+            'labels'             => $labels,
+            'public'             => false,
+            'publicly_queryable' => false,
+            'show_ui'            => true,
+            'show_in_menu'       => true,
+            'query_var'          => true,
+            'rewrite'            => array('slug' => 'mqtt-log'),
+            'capability_type'    => 'post',
+            'has_archive'        => true,
+            'hierarchical'       => false,
+            'menu_position'      => null,
+            'supports'           => array('title', 'editor')
+        );
+    
+        register_post_type('mqtt_log', $args);
+    }
+    
     //add_action('admin_menu', 'add_mqtt_log_menu');
 
+    function add_mqtt_log_menu() {
+        add_submenu_page(
+            'edit.php?post_type=mqtt_log', // Parent slug
+            'MQTT Logs',                   // Page title
+            'MQTT Logs',                   // Menu title
+            'manage_options',              // Capability
+            'mqtt-log',                    // Menu slug
+            'display_mqtt_log'             // Function to display the page
+        );
+    }
+    
+    function display_mqtt_log() {
+        // Display the list of logs
+        $args = array(
+            'post_type'      => 'mqtt_log',
+            'posts_per_page' => 10, // Adjust as needed
+            'paged'          => (get_query_var('paged')) ? get_query_var('paged') : 1
+        );
+    
+        $query = new WP_Query($args);
+    
+        echo '<div class="wrap">';
+        echo '<h1>MQTT Logs</h1>';
+        if ($query->have_posts()) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>Title</th><th>Message</th></tr></thead>';
+            echo '<tbody>';
+            while ($query->have_posts()) {
+                $query->the_post();
+                echo '<tr>';
+                echo '<td>' . get_the_title() . '</td>';
+                echo '<td>' . get_the_content() . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody>';
+            echo '</table>';
+    
+            // Pagination
+            $total_pages = $query->max_num_pages;
+            $current_page = max(1, get_query_var('paged'));
+            echo paginate_links(array(
+                'base'    => add_query_arg('paged', '%#%'),
+                'format'  => '',
+                'prev_text' => __('&laquo;'),
+                'next_text' => __('&raquo;'),
+                'total'   => $total_pages,
+                'current' => $current_page
+            ));
+        } else {
+            echo '<p>No logs found.</p>';
+        }
+        echo '</div>';
+    
+        wp_reset_postdata();
+    }
+    
+/*    
     function add_mqtt_log_menu() {
         // Ensure the function exists before calling it
         if (function_exists('add_menu_page')) {
@@ -137,6 +232,17 @@ class MQTT_Client_Initializer {
 
     public function procmsg($topic, $msg) {
         $this->log("Message received on topic {$topic}: {$msg}");
+        // Create a new post in the custom post type
+        $post_data = array(
+            'post_title'    => wp_strip_all_tags($topic),
+            'post_content'  => $msg,
+            'post_status'   => 'publish',
+            'post_author'   => 1, // Assuming user ID 1 is the admin
+            'post_type'     => 'mqtt_log'
+        );
+    
+        wp_insert_post($post_data);
+    
 
         // Parse temperature and humidity values
         $DS18B20Match = preg_match('/DS18B20 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
