@@ -7,25 +7,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once 'phpMQTT.php';
 
 class MQTT_Client_Initializer {
+    private $log_file;
+
     public function __construct() {
+        $this->log_file = plugin_dir_path(__FILE__) . 'mqtt_log.txt';
         register_activation_hook(__FILE__, array($this, 'schedule_mqtt_initialization'));
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
-
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
+    }
+
+    private function log($message) {
+        $timestamp = date('Y-m-d H:i:s');
+        file_put_contents($this->log_file, "[$timestamp] $message\n", FILE_APPEND);
     }
 
     public function schedule_mqtt_initialization() {
         if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
             wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
+            $this->log('Scheduled MQTT initialization.');
         }
     }
 
     public function clear_scheduled_mqtt_initialization() {
         $timestamp = wp_next_scheduled('initialize_all_MQTT_clients_hook');
-        wp_unschedule_event($timestamp, 'initialize_all_MQTT_clients_hook');
+        if ($timestamp) {
+            wp_unschedule_event($timestamp, 'initialize_all_MQTT_clients_hook');
+            $this->log('Cleared scheduled MQTT initialization.');
+        }
     }
 
     public function initialize_all_MQTT_clients() {
+        $this->log('Initializing all MQTT clients.');
         // Retrieve all posts with category 'mqtt-client'
         $args = array(
             'category_name' => 'mqtt-client',
@@ -39,8 +51,6 @@ class MQTT_Client_Initializer {
         foreach ($posts as $post) {
             $topic = $post->post_title;
             $topics[] = $topic;
-
-            // Example action: store topic in an option (optional, if needed later)
             update_option('mqtt_topic_' . $post->ID, $topic);
         }
 
@@ -49,12 +59,11 @@ class MQTT_Client_Initializer {
         $port = 1883;
         $client_id = 'id' . time();
 
-        // Connect to the MQTT broker and subscribe to topics
+        $this->log('Connecting to MQTT broker.');
         $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
     }
 
     public function connect_to_mqtt_broker($host, $port, $client_id, $topics) {
-        // Example using Bluerhinos PHPMQTT
         $mqtt = new Bluerhinos\phpMQTT($host, $port, $client_id);
 
         if ($mqtt->connect()) {
@@ -62,13 +71,14 @@ class MQTT_Client_Initializer {
                 $mqtt->subscribe([$topic => ["qos" => 0, "function" => array($this, "procmsg")]]);
             }
             $mqtt->close();
+            $this->log('Successfully connected to MQTT broker and subscribed to topics.');
         } else {
-            echo "Failed to connect to MQTT broker.";
+            $this->log('Failed to connect to MQTT broker.');
         }
     }
 
     public function procmsg($topic, $msg) {
-        echo "Message received on topic {$topic}: {$msg}\n";
+        $this->log("Message received on topic {$topic}: {$msg}");
 
         // Parse temperature and humidity values
         $DS18B20Match = preg_match('/DS18B20 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
@@ -109,6 +119,8 @@ class MQTT_Client_Initializer {
     }
 
     public function update_mqtt_client_data_01($topic, $value, $type) {
+        $this->log("Updating MQTT client data for topic {$topic}, type {$type}, value {$value}.");
+
         // Find the post by title
         $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
@@ -132,7 +144,6 @@ class MQTT_Client_Initializer {
         endif;
     }
 
-    // Your existing functions `retrieve_exception_notification_list` and `exception_notification_event` should remain here
 }
 
 new MQTT_Client_Initializer();
