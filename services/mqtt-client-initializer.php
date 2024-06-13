@@ -118,14 +118,15 @@ class MQTT_Client_Initializer {
         if ($type == "ssid") update_post_meta($post->ID, 'ssid', $value);
         if ($type == "password") update_post_meta($post->ID, 'password', $value);
 
-        $query = $this->retrieve_exception_notification_list($post->ID);
+        $mqtt_client = new mqtt_client();
+        $query = $mqtt_client->retrieve_exception_notification_list($post->ID);
         if ($query->have_posts()) :
             while ($query->have_posts()) : $query->the_post();
                 $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                 $max_temperature = (float)get_post_meta(get_the_ID(), 'max_temperature', true);
                 $max_humidity = (float)get_post_meta(get_the_ID(), 'max_humidity', true);
-                if ($type == 'temperature' && $value > $max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
-                if ($type == 'humidity' && $value > $max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
+                if ($type == 'temperature' && $value > $max_temperature) $mqtt_client->exception_notification_event($user_id, $topic, $max_temperature);
+                if ($type == 'humidity' && $value > $max_humidity) $mqtt_client->exception_notification_event($user_id, $topic, false, $max_humidity);
             endwhile;
             wp_reset_postdata();
         endif;
