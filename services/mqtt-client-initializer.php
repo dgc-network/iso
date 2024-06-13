@@ -14,8 +14,25 @@ class MQTT_Client_Initializer {
         register_activation_hook(__FILE__, array($this, 'schedule_mqtt_initialization'));
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
+        add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
     }
 
+    function add_mqtt_log_menu() {
+        add_menu_page('MQTT Log', 'MQTT Log', 'manage_options', 'mqtt-log', 'display_mqtt_log');
+    }
+    
+    function display_mqtt_log() {
+        $log_file = plugin_dir_path(__FILE__) . 'mqtt_log.txt';
+        if (file_exists($log_file)) {
+            $log_content = file_get_contents($log_file);
+            echo '<div style="white-space: pre-wrap; background: #fff; padding: 20px; border: 1px solid #ccc;">';
+            echo nl2br(esc_html($log_content));
+            echo '</div>';
+        } else {
+            echo '<p>No log file found.</p>';
+        }
+    }
+    
     private function log($message) {
         $timestamp = date('Y-m-d H:i:s');
         file_put_contents($this->log_file, "[$timestamp] $message\n", FILE_APPEND);
