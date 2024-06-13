@@ -184,7 +184,6 @@ class MQTT_Client_Initializer {
     // Process incoming MQTT messages
     public function procmsg($topic, $msg) {
         $this->log("Message received on topic {$topic}: {$msg}");
-
         // Create a new post in the custom post type
         $post_data = array(
             'post_title'    => wp_strip_all_tags($topic),
@@ -193,10 +192,71 @@ class MQTT_Client_Initializer {
             'post_author'   => 1, // Assuming user ID 1 is the admin
             'post_type'     => 'mqtt_log'
         );
+    
         wp_insert_post($post_data);
+    
+        // Parse temperature and humidity values
+        $DS18B20Match = preg_match('/DS18B20 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
+        $temperatureMatch = preg_match('/DHT11 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
+        $humidityMatch = preg_match('/DHT11 Humidity:\s*(\d+)/', $msg, $matches) ? $matches[1] : null;
+        $ssidMatch = preg_match('/SSID:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
+        $passwordMatch = preg_match('/Password:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
 
-        // Parse temperature and humidity values if needed
-        // Update other relevant data as per your application needs
+        if ($DS18B20Match) {
+            $temperature = floatval($DS18B20Match);
+            echo "Parsed Temperature: {$temperature}\n";
+            $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
+        }
+
+        if ($temperatureMatch) {
+            $temperature = floatval($temperatureMatch);
+            echo "Parsed Temperature: {$temperature}\n";
+            $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
+        }
+
+        if ($humidityMatch) {
+            $humidity = intval($humidityMatch);
+            echo "Parsed Humidity: {$humidity}\n";
+            $this->update_mqtt_client_data_01($topic, $humidity, 'humidity');
+        }
+
+        if ($ssidMatch) {
+            $ssid = $ssidMatch;
+            echo "Parsed SSID: {$ssid}\n";
+            $this->update_mqtt_client_data_01($topic, $ssid, 'ssid');
+        }
+
+        if ($passwordMatch) {
+            $password = $passwordMatch;
+            echo "Parsed Password: {$password}\n";
+            $this->update_mqtt_client_data_01($topic, $password, 'password');
+        }
+    }
+
+    public function update_mqtt_client_data_01($topic, $value, $type) {
+        $this->log("Updating MQTT client data for topic {$topic}, type {$type}, value {$value}.");
+
+        // Find the post by title
+        $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+
+        // Update the post meta
+        if ($type == 'temperature') update_post_meta($post->ID, 'temperature', $value);
+        if ($type == 'humidity') update_post_meta($post->ID, 'humidity', $value);
+        if ($type == "ssid") update_post_meta($post->ID, 'ssid', $value);
+        if ($type == "password") update_post_meta($post->ID, 'password', $value);
+
+        $mqtt_client = new mqtt_client();
+        $query = $mqtt_client->retrieve_exception_notification_list($post->ID);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                $max_temperature = (float)get_post_meta(get_the_ID(), 'max_temperature', true);
+                $max_humidity = (float)get_post_meta(get_the_ID(), 'max_humidity', true);
+                if ($type == 'temperature' && $value > $max_temperature) $mqtt_client->exception_notification_event($user_id, $topic, $max_temperature);
+                if ($type == 'humidity' && $value > $max_humidity) $mqtt_client->exception_notification_event($user_id, $topic, false, $max_humidity);
+            endwhile;
+            wp_reset_postdata();
+        endif;
     }
 
 }
