@@ -17,6 +17,47 @@ class MQTT_Client_Initializer {
         add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
     }
 
+    //add_action('admin_menu', 'add_mqtt_log_menu');
+
+    function add_mqtt_log_menu() {
+        // Ensure the function exists before calling it
+        if (function_exists('add_menu_page')) {
+            add_menu_page(
+                'MQTT Log',          // Page title
+                'MQTT Log',          // Menu title
+                'manage_options',    // Capability
+                'mqtt-log',          // Menu slug
+                'display_mqtt_log',  // Function to display the page
+                'dashicons-admin-generic', // Icon (optional)
+                20                   // Position (optional)
+            );
+        }
+    }
+    
+    function display_mqtt_log() {
+        // Ensure the function exists before calling it
+        if (function_exists('plugin_dir_path')) {
+            //$this->log_file = plugin_dir_path(__FILE__) . 'mqtt_log.txt';
+    
+            // Check if the file exists and is readable
+            if (file_exists($this->log_file) && is_readable($this->log_file)) {
+                $log_content = file_get_contents($this->log_file);
+    
+                if ($log_content !== false) {
+                    echo '<div style="white-space: pre-wrap; background: #fff; padding: 20px; border: 1px solid #ccc;">';
+                    echo nl2br(esc_html($log_content));
+                    echo '</div>';
+                } else {
+                    echo '<p>Unable to read log file content.</p>';
+                }
+            } else {
+                echo '<p>No log file found or file is not readable.</p>';
+            }
+        } else {
+            echo '<p>Function plugin_dir_path does not exist.</p>';
+        }
+    }
+/*    
     function add_mqtt_log_menu() {
         add_menu_page('MQTT Log', 'MQTT Log', 'manage_options', 'mqtt-log', 'display_mqtt_log');
     }
@@ -32,7 +73,7 @@ class MQTT_Client_Initializer {
             echo '<p>No log file found.</p>';
         }
     }
-    
+*/    
     private function log($message) {
         $timestamp = date('Y-m-d H:i:s');
         file_put_contents($this->log_file, "[$timestamp] $message\n", FILE_APPEND);
