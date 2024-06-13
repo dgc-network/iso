@@ -67,13 +67,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
-add_action('init', function() {
-    if (current_user_can('administrator')) {
-        $mqtt_client = new mqtt_client();
-        $mqtt_client->initialize_all_MQTT_clients();
-    }
-});
-
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
