@@ -58,7 +58,8 @@ if (!class_exists('mqtt_client')) {
             // Define MQTT broker details
             $host = 'test.mosquitto.org';
             $port = 1883;
-            $client_id = 'your_client_id';
+            //$client_id = 'your_client_id';
+            $client_id = 'id'.time();
     
             // Connect to the MQTT broker and subscribe to topics
             $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
@@ -68,7 +69,8 @@ if (!class_exists('mqtt_client')) {
             // Example using Bluerhinos PHPMQTT
             $mqtt = new Bluerhinos\phpMQTT($host, $port, $client_id);
     
-            if ($mqtt->connect(true, NULL, 'username', 'password')) {
+            //if ($mqtt->connect(true, NULL, 'username', 'password')) {
+            if ($mqtt->connect()) {
                 foreach ($topics as $topic) {
                     $mqtt->subscribe([$topic => ["qos" => 0, "function" => array($this, "procmsg")]]);
                 }
@@ -79,10 +81,7 @@ if (!class_exists('mqtt_client')) {
         }
     
         public function procmsg($topic, $msg) {
-            echo "Message received on topic {$topic}: {$msg}\n";
-            // Process the message as needed, e.g., update options or post meta
-            // update_option('mqtt_message_' . $topic, $msg);
-
+            
             echo "Message received on topic {$topic}: {$msg}\n";
 
             // Parse temperature and humidity values
