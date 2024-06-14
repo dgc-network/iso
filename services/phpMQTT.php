@@ -667,5 +667,7 @@ class phpMQTT
     protected function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
+        $initializer = new MQTT_Client_Initializer();
+        $initializer->log('Error:' . $message);
     }
 }
