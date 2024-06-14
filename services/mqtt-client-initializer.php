@@ -138,7 +138,8 @@ class MQTT_Client_Initializer {
     }
 
     // Log messages to the custom post type
-    private function log($message) {
+    //private function log($message) {
+    public function log($message) {
         $timestamp = date('Y-m-d H:i:s');
         $post_data = array(
             'post_title'    => wp_strip_all_tags($timestamp),
