@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function (error) {
                     console.error(error);
-                    alert(error);
+                    //alert(error);
                 }
             });
         });
@@ -275,10 +275,18 @@ jQuery(document).ready(function($) {
                 console.error('Container not found');
                 return;
             }
-    
+/*    
+            const jsonString = '{"deviceID":"myTestDevice","ssid":"LIN","topic":"1718283872","time":27055102,"DHT11 Humidity":85}';
+            const jsonObject = JSON.parse(jsonString);
+            const prettyJsonString = JSON.stringify(jsonObject, null, 2);
+            console.log(prettyJsonString);
+*/
+            const msgObject = JSON.parse(msg);
+            msg = JSON.stringify(msgObject, null, 2);
+
             const newMessage = document.createElement('div');
             newMessage.textContent = msg;
-    
+
             // Prepend new message to the top
             if (container.firstChild) {
                 container.insertBefore(newMessage, container.firstChild);
