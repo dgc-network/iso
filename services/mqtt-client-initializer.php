@@ -15,6 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
+// Enable error logging
+ini_set('log_errors', 1);
+ini_set('error_log', plugin_dir_path(__FILE__) . 'error_log.txt');
+error_reporting(E_ALL);
+
 class MQTT_Client_Initializer {
 
     public function __construct() {
