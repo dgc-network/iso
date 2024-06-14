@@ -24,6 +24,8 @@ class WebSocketMQTTClient {
         $this->port = $port;
         $this->client_id = $client_id;
         $this->topics = $topics;
+        add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
+
     }
 
     public function connect_and_subscribe() {
@@ -55,7 +57,99 @@ class WebSocketMQTTClient {
             'post_type'     => 'mqtt_log'
         );
         wp_insert_post($post_data);
+
+        // Parse temperature and humidity values
+        $DS18B20Match = preg_match('/DS18B20 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
+        $temperatureMatch = preg_match('/DHT11 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
+        $humidityMatch = preg_match('/DHT11 Humidity:\s*(\d+)/', $msg, $matches) ? $matches[1] : null;
+        $ssidMatch = preg_match('/SSID:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
+        $passwordMatch = preg_match('/Password:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
+
+        if ($DS18B20Match) {
+            $temperature = floatval($DS18B20Match);
+            echo "Parsed Temperature: {$temperature}\n";
+            $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
+        }
+
+        if ($temperatureMatch) {
+            $temperature = floatval($temperatureMatch);
+            echo "Parsed Temperature: {$temperature}\n";
+            $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
+        }
+
+        if ($humidityMatch) {
+            $humidity = intval($humidityMatch);
+            echo "Parsed Humidity: {$humidity}\n";
+            $this->update_mqtt_client_data_01($topic, $humidity, 'humidity');
+        }
+
+        if ($ssidMatch) {
+            $ssid = $ssidMatch;
+            echo "Parsed SSID: {$ssid}\n";
+            $this->update_mqtt_client_data_01($topic, $ssid, 'ssid');
+        }
+
+        if ($passwordMatch) {
+            $password = $passwordMatch;
+            echo "Parsed Password: {$password}\n";
+            $this->update_mqtt_client_data_01($topic, $password, 'password');
+        }
     }
+
+    public function update_mqtt_client_data_01($topic, $value, $type) {
+        $this->log("Updating MQTT client data for topic {$topic}, type {$type}, value {$value}.");
+
+        // Find the post by title
+        $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+
+        // Update the post meta
+        if ($type == 'temperature') update_post_meta($post->ID, 'temperature', $value);
+        if ($type == 'humidity') update_post_meta($post->ID, 'humidity', $value);
+        if ($type == "ssid") update_post_meta($post->ID, 'ssid', $value);
+        if ($type == "password") update_post_meta($post->ID, 'password', $value);
+
+        $mqtt_client = new mqtt_client();
+        $query = $mqtt_client->retrieve_exception_notification_list($post->ID);
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                $max_temperature = (float)get_post_meta(get_the_ID(), 'max_temperature', true);
+                $max_humidity = (float)get_post_meta(get_the_ID(), 'max_humidity', true);
+                if ($type == 'temperature' && $value > $max_temperature) $mqtt_client->exception_notification_event($user_id, $topic, $max_temperature);
+                if ($type == 'humidity' && $value > $max_humidity) $mqtt_client->exception_notification_event($user_id, $topic, false, $max_humidity);
+            endwhile;
+            wp_reset_postdata();
+        endif;
+    }
+
+    // Initialize all MQTT clients
+    public function initialize_all_MQTT_clients() {
+        //$this->log('Initializing all MQTT clients.');
+        $args = array(
+            'category_name' => 'mqtt-client',
+            'post_type'     => 'post',
+            'posts_per_page'=> -1
+        );
+
+        $posts = get_posts($args);
+        $topics = [];
+
+        foreach ($posts as $post) {
+            $topic = $post->post_title;
+            $topics[] = $topic;
+            update_option('mqtt_topic_' . $post->ID, $topic);
+        }
+
+        $host = 'test.mosquitto.org';
+        $port = 8080; // WebSocket port
+        $client_id = 'id' . time();
+        //$topics = ['topic/you/want/to/subscribe'];
+        
+        $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
+        $mqtt_client->connect_and_subscribe();
+    }
+
+    
 }
 
 function schedule_mqtt_background_process() {
@@ -76,7 +170,7 @@ function clear_mqtt_background_process() {
     wp_clear_scheduled_hook('run_mqtt_background_process');
 }
 register_deactivation_hook(__FILE__, 'clear_mqtt_background_process');
-
+/*
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
@@ -86,7 +180,6 @@ class MQTT_Client_Initializer {
         register_activation_hook(__FILE__, array($this, 'schedule_mqtt_initialization'));
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
-        add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
         add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
         add_action('init', array($this, 'create_mqtt_log_post_type'));
     }
@@ -236,21 +329,11 @@ class MQTT_Client_Initializer {
         }
 
         $host = 'test.mosquitto.org';
-        $port = 8080; // WebSocket port
-        $client_id = 'id' . time();
-        $topics = ['topic/you/want/to/subscribe'];
-        
-        $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
-        $mqtt_client->connect_and_subscribe();
-        
-/*
-        $host = 'test.mosquitto.org';
         $port = 1883;
         $client_id = 'id' . time();
 
         $this->log('Connecting to MQTT broker.');
         $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
-*/        
     }
 
     // Connect to the MQTT broker and subscribe to topics
@@ -349,3 +432,4 @@ class MQTT_Client_Initializer {
 }
 
 new MQTT_Client_Initializer();
+*/
