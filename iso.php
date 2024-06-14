@@ -67,6 +67,24 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
+function pluginprefix_setup_post_type() {
+    // 註冊 book 自定義文章類型
+    register_post_type( 'book', ['public' => 'true'] );
+}
+add_action( 'init', 'pluginprefix_setup_post_type' );
+ 
+function pluginprefix_install() {
+    // 拿剛剛定義的副程式來用
+    pluginprefix_setup_post_type();
+ 
+    // 註冊文章類型後，更新固定連結的規則
+    flush_rewrite_rules();
+}
+
+// 
+register_activation_hook( __FILE__, 'pluginprefix_install' );
+
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

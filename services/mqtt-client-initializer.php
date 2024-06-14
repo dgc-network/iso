@@ -3,23 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function pluginprefix_setup_post_type() {
-    // 註冊 book 自定義文章類型
-    register_post_type( 'book', ['public' => 'true'] );
-}
-add_action( 'init', 'pluginprefix_setup_post_type' );
- 
-function pluginprefix_install() {
-    // 拿剛剛定義的副程式來用
-    pluginprefix_setup_post_type();
- 
-    // 註冊文章類型後，更新固定連結的規則
-    flush_rewrite_rules();
-}
-
-// 
-register_activation_hook( __FILE__, 'pluginprefix_install' );
-
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
