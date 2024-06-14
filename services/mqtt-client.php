@@ -13,6 +13,7 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
+            add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
 
             add_action( 'wp_ajax_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
@@ -33,6 +34,34 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
         }
+
+        // Initialize all MQTT clients
+        public function initialize_all_MQTT_clients() {
+            //$this->log('Initializing all MQTT clients.');
+            $args = array(
+                'category_name' => 'mqtt-client',
+                'post_type'     => 'post',
+                'posts_per_page'=> -1
+            );
+    
+            $posts = get_posts($args);
+            $topics = [];
+    
+            foreach ($posts as $post) {
+                $topic = $post->post_title;
+                $topics[] = $topic;
+                update_option('mqtt_topic_' . $post->ID, $topic);
+            }
+    
+            $host = 'test.mosquitto.org';
+            $port = 8080; // WebSocket port
+            $client_id = 'id' . time();
+            
+            $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
+            $mqtt_client->connect_and_subscribe();
+        }
+    
+
 /*
         public function initialize_all_MQTT_clients() {
             // Retrieve all posts with category 'mqtt-client'
@@ -144,38 +173,6 @@ if (!class_exists('mqtt_client')) {
 
         }
 */
-        function update_mqtt_client_data() {
-            if (isset($_POST['_topic']) && isset($_POST['_value'])) {
-                $topic = sanitize_text_field($_POST['_topic']);
-                $value = sanitize_text_field($_POST['_value']);
-                $flag = sanitize_text_field($_POST['_flag']);
-
-                // Find the post by title
-                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
-
-                // Update the post meta
-                if ($flag=='temperature') update_post_meta($post->ID, 'temperature', $value);
-                if ($flag=='humidity') update_post_meta($post->ID, 'humidity', $value);
-                if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
-                if ($flag=="password") update_post_meta($post->ID, 'password', $value);
-
-                $query = $this->retrieve_exception_notification_list($post->ID);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                        $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
-                        $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                        if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
-                        if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-
-                wp_send_json_success(array('message' => 'Updated successfully.'));
-            } else {
-                wp_send_json_error(array('message' => 'Missing topic or value.'));
-            }
-        }
 
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
@@ -367,6 +364,39 @@ if (!class_exists('mqtt_client')) {
             $response = array();
             wp_delete_post($_POST['_mqtt_client_id'], true);
             wp_send_json($response);
+        }
+
+        function update_mqtt_client_data() {
+            if (isset($_POST['_topic']) && isset($_POST['_value'])) {
+                $topic = sanitize_text_field($_POST['_topic']);
+                $value = sanitize_text_field($_POST['_value']);
+                $flag = sanitize_text_field($_POST['_flag']);
+
+                // Find the post by title
+                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+
+                // Update the post meta
+                if ($flag=='temperature') update_post_meta($post->ID, 'temperature', $value);
+                if ($flag=='humidity') update_post_meta($post->ID, 'humidity', $value);
+                if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
+                if ($flag=="password") update_post_meta($post->ID, 'password', $value);
+
+                $query = $this->retrieve_exception_notification_list($post->ID);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                        $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
+                        $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
+                        if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
+                        if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+
+                wp_send_json_success(array('message' => 'Updated successfully.'));
+            } else {
+                wp_send_json_error(array('message' => 'Missing topic or value.'));
+            }
         }
 
         // Exception notification

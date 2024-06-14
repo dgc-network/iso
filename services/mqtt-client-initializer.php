@@ -168,7 +168,7 @@ function clear_mqtt_background_process() {
     wp_clear_scheduled_hook('run_mqtt_background_process');
 }
 register_deactivation_hook(__FILE__, 'clear_mqtt_background_process');
-
+/*
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
@@ -336,14 +336,14 @@ class MQTT_Client_Initializer {
         
         $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
         $mqtt_client->connect_and_subscribe();
-/*
+
         $host = 'test.mosquitto.org';
         $port = 1883;
         $client_id = 'id' . time();
 
         $this->log('Connecting to MQTT broker.');
         $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
-*/        
+
     }
 
     // Connect to the MQTT broker and subscribe to topics
@@ -442,3 +442,4 @@ class MQTT_Client_Initializer {
 }
 
 new MQTT_Client_Initializer();
+*/
