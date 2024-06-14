@@ -2,15 +2,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-/*
-$host = 'test.mosquitto.org';
-$port = 8080; // WebSocket port
-$client_id = 'id' . time();
-$topics = ['topic/you/want/to/subscribe'];
 
-$mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
-$mqtt_client->connect_and_subscribe();
-*/
+// Enable error logging
+ini_set('log_errors', 1);
+ini_set('error_log', plugin_dir_path(__FILE__) . 'error_log.txt');
+error_reporting(E_ALL);
+
 require 'phpMQTT.php'; // Make sure the phpMQTT library is included
 
 class WebSocketMQTTClient {
@@ -95,7 +92,7 @@ class WebSocketMQTTClient {
     }
 
     public function update_mqtt_client_data_01($topic, $value, $type) {
-        $this->log("Updating MQTT client data for topic {$topic}, type {$type}, value {$value}.");
+        //$this->log("Updating MQTT client data for topic {$topic}, type {$type}, value {$value}.");
 
         // Find the post by title
         $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
@@ -156,14 +153,7 @@ function schedule_mqtt_background_process() {
     }
 }
 add_action('wp', 'schedule_mqtt_background_process');
-/*
-function run_mqtt_background_process() {
-    $output = null;
-    $retval = null;
-    exec('php /path/to/your/mqtt_script.php > /dev/null &', $output, $retval);
-}
-add_action('run_mqtt_background_process', 'run_mqtt_background_process');
-*/
+
 function clear_mqtt_background_process() {
     wp_clear_scheduled_hook('run_mqtt_background_process');
 }

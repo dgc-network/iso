@@ -83,8 +83,8 @@ function pluginprefix_install() {
 
 // 
 register_activation_hook( __FILE__, 'pluginprefix_install' );
-*/
-    // Schedule the initialization event
+
+// Schedule the initialization event
     function schedule_mqtt_initialization() {
         if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
             wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
@@ -92,7 +92,7 @@ register_activation_hook( __FILE__, 'pluginprefix_install' );
         }
     }
     register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
-
+*/
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
