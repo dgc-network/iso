@@ -1440,13 +1440,6 @@ if (!class_exists('display_documents')) {
                         'value'   => $doc_category,
                         'compare' => '=',
                     ),
-/*                    
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',
-                    ),
-*/                    
                 ),
             );    
             $query = new WP_Query($args);    
