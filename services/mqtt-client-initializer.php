@@ -24,8 +24,6 @@ class WebSocketMQTTClient {
         $this->port = $port;
         $this->client_id = $client_id;
         $this->topics = $topics;
-        add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
-
     }
 
     public function connect_and_subscribe() {
@@ -170,7 +168,7 @@ function clear_mqtt_background_process() {
     wp_clear_scheduled_hook('run_mqtt_background_process');
 }
 register_deactivation_hook(__FILE__, 'clear_mqtt_background_process');
-/*
+
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
@@ -179,7 +177,10 @@ class MQTT_Client_Initializer {
     public function __construct() {
         register_activation_hook(__FILE__, array($this, 'schedule_mqtt_initialization'));
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
+
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
+        add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
+
         add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
         add_action('init', array($this, 'create_mqtt_log_post_type'));
     }
@@ -329,11 +330,20 @@ class MQTT_Client_Initializer {
         }
 
         $host = 'test.mosquitto.org';
+        $port = 8080; // WebSocket port
+        $client_id = 'id' . time();
+        //$topics = ['topic/you/want/to/subscribe'];
+        
+        $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
+        $mqtt_client->connect_and_subscribe();
+/*
+        $host = 'test.mosquitto.org';
         $port = 1883;
         $client_id = 'id' . time();
 
         $this->log('Connecting to MQTT broker.');
         $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
+*/        
     }
 
     // Connect to the MQTT broker and subscribe to topics
@@ -432,4 +442,3 @@ class MQTT_Client_Initializer {
 }
 
 new MQTT_Client_Initializer();
-*/
