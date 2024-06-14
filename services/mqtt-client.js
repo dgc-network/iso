@@ -429,7 +429,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_exception_notification_dialog_data',
-                                '_exception_notification_id': $("#exception_notification-id").val(),
+                                '_exception_notification_id': $("#exception-notification-id").val(),
                             },
                             success: function (response) {
                                 $("#exception-notification-dialog").dialog('close');
