@@ -660,8 +660,8 @@ class phpMQTT
         if ($this->debug === true) {
             echo date('r: ') . $message . PHP_EOL;
         }
-        $initializer = new MQTT_Client_Initializer();
-        $initializer->log(date('r: ') . $message);
+        //$initializer = new MQTT_Client_Initializer();
+        //$initializer->log(date('r: ') . $message);
     }
 
     /**
@@ -671,7 +671,7 @@ class phpMQTT
     //public function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
-        $initializer = new MQTT_Client_Initializer();
-        $initializer->log('Error:' . $message);
+        //$initializer = new MQTT_Client_Initializer();
+        //$initializer->log('Error:' . $message);
     }
 }
