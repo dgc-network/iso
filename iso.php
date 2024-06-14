@@ -66,7 +66,7 @@ require_once plugin_dir_path( __FILE__ ) . 'services/default-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
-
+/*
 function pluginprefix_setup_post_type() {
     // 註冊 book 自定義文章類型
     register_post_type( 'book', ['public' => 'true'] );
@@ -92,7 +92,7 @@ register_activation_hook( __FILE__, 'pluginprefix_install' );
         }
     }
     register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
-
+*/
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

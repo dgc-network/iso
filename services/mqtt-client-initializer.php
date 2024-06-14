@@ -16,8 +16,25 @@ class MQTT_Client_Initializer {
         add_action('init', array($this, 'create_mqtt_log_post_type'));
     }
 
+    // Schedule the initialization event
+    function schedule_mqtt_initialization() {
+        if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
+            wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
+            $this->log('Scheduled MQTT initialization.');
+        }
+    }
+
+    // Clear the scheduled initialization event
+    function clear_scheduled_mqtt_initialization() {
+        $timestamp = wp_next_scheduled('initialize_all_MQTT_clients_hook');
+        if ($timestamp) {
+            wp_unschedule_event($timestamp, 'initialize_all_MQTT_clients_hook');
+            $this->log('Cleared scheduled MQTT initialization.');
+        }
+    }
+
     // Register the custom post type for MQTT logs
-    public function create_mqtt_log_post_type() {
+    function create_mqtt_log_post_type() {
         $labels = array(
             'name'               => _x('MQTT Logs', 'post type general name', 'your-text-domain'),
             'singular_name'      => _x('MQTT Log', 'post type singular name', 'your-text-domain'),
@@ -50,11 +67,12 @@ class MQTT_Client_Initializer {
             'supports'           => array('title', 'editor')
         );
 
-        register_post_type('mqtt_log', $args);
+        //register_post_type('mqtt_log', $args);
+        register_post_type('mqtt_log');
     }
 
     // Add a submenu page for viewing MQTT logs
-    public function add_mqtt_log_menu() {
+    function add_mqtt_log_menu() {
         add_submenu_page(
             'edit.php?post_type=mqtt_log', // Parent slug
             'MQTT Logs',                   // Page title
@@ -66,7 +84,7 @@ class MQTT_Client_Initializer {
     }
 
     // Display the list of logs
-    public function display_mqtt_log() {
+    function display_mqtt_log() {
         $args = array(
             'post_type'      => 'mqtt_log',
             'posts_per_page' => 10, // Adjust as needed
@@ -121,23 +139,6 @@ class MQTT_Client_Initializer {
             'post_type'     => 'mqtt_log'
         );
         wp_insert_post($post_data);
-    }
-
-    // Schedule the initialization event
-    public function schedule_mqtt_initialization() {
-        if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
-            wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
-            $this->log('Scheduled MQTT initialization.');
-        }
-    }
-
-    // Clear the scheduled initialization event
-    public function clear_scheduled_mqtt_initialization() {
-        $timestamp = wp_next_scheduled('initialize_all_MQTT_clients_hook');
-        if ($timestamp) {
-            wp_unschedule_event($timestamp, 'initialize_all_MQTT_clients_hook');
-            $this->log('Cleared scheduled MQTT initialization.');
-        }
     }
 
     // Initialize all MQTT clients
