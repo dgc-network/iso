@@ -3,6 +3,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+    // Schedule the initialization event
+    function schedule_mqtt_initialization() {
+        if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
+            wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
+            //$this->log('Scheduled MQTT initialization.');
+        }
+    }
+    register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
+
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
@@ -67,8 +76,8 @@ class MQTT_Client_Initializer {
             'supports'           => array('title', 'editor')
         );
 
-        //register_post_type('mqtt_log', $args);
-        register_post_type('mqtt_log', ['public' => 'true']);
+        register_post_type('mqtt_log', $args);
+        //register_post_type('mqtt_log', ['public' => 'true']);
     }
 
     // Add a submenu page for viewing MQTT logs
