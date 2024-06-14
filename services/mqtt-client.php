@@ -3,8 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-//require_once 'mqtt-client-initializer.php';
-
 if (!class_exists('mqtt_client')) {
     class mqtt_client {
 
@@ -13,7 +11,6 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
-            //add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
 
             add_action( 'wp_ajax_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
@@ -34,145 +31,6 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
         }
-
-        // Initialize all MQTT clients
-        public function initialize_all_MQTT_clients() {
-            //$this->log('Initializing all MQTT clients.');
-            $args = array(
-                'category_name' => 'mqtt-client',
-                'post_type'     => 'post',
-                'posts_per_page'=> -1
-            );
-    
-            $posts = get_posts($args);
-            $topics = [];
-    
-            foreach ($posts as $post) {
-                $topic = $post->post_title;
-                $topics[] = $topic;
-                update_option('mqtt_topic_' . $post->ID, $topic);
-            }
-    
-            $host = 'test.mosquitto.org';
-            $port = 8080; // WebSocket port
-            $client_id = 'id' . time();
-            
-            $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
-            $mqtt_client->connect_and_subscribe();
-        }
-    
-
-/*
-        public function initialize_all_MQTT_clients() {
-            // Retrieve all posts with category 'mqtt-client'
-            $args = array(
-                'category_name' => 'mqtt-client',
-                'post_type' => 'post',
-                'posts_per_page' => -1
-            );
-    
-            $posts = get_posts($args);
-            $topics = [];
-    
-            foreach ($posts as $post) {
-                $topic = $post->post_title;
-                $topics[] = $topic;
-    
-                // Example action: store topic in an option (optional, if needed later)
-                update_option('mqtt_topic_' . $post->ID, $topic);
-            }
-    
-            // Define MQTT broker details
-            $host = 'test.mosquitto.org';
-            $port = 1883;
-            //$client_id = 'your_client_id';
-            $client_id = 'id'.time();
-    
-            // Connect to the MQTT broker and subscribe to topics
-            $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
-        }
-    
-        public function connect_to_mqtt_broker($host, $port, $client_id, $topics) {
-            // Example using Bluerhinos PHPMQTT
-            $mqtt = new Bluerhinos\phpMQTT($host, $port, $client_id);
-    
-            //if ($mqtt->connect(true, NULL, 'username', 'password')) {
-            if ($mqtt->connect()) {
-                foreach ($topics as $topic) {
-                    $mqtt->subscribe([$topic => ["qos" => 0, "function" => array($this, "procmsg")]]);
-                }
-                $mqtt->close();
-            } else {
-                echo "Failed to connect to MQTT broker.";
-            }
-        }
-    
-        public function procmsg($topic, $msg) {
-
-            echo "Message received on topic {$topic}: {$msg}\n";
-
-            // Parse temperature and humidity values
-            $DS18B20Match = preg_match('/DS18B20 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
-            $temperatureMatch = preg_match('/DHT11 Temperature:\s*([\d.]+)/', $msg, $matches) ? $matches[1] : null;
-            $humidityMatch = preg_match('/DHT11 Humidity:\s*(\d+)/', $msg, $matches) ? $matches[1] : null;
-            $ssidMatch = preg_match('/SSID:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
-            $passwordMatch = preg_match('/Password:\s*(\w+)/', $msg, $matches) ? $matches[1] : null;
-    
-            if ($DS18B20Match) {
-                $temperature = floatval($DS18B20Match);
-                echo "Parsed Temperature: {$temperature}\n";
-                $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
-            }
-    
-            if ($temperatureMatch) {
-                $temperature = floatval($temperatureMatch);
-                echo "Parsed Temperature: {$temperature}\n";
-                $this->update_mqtt_client_data_01($topic, $temperature, 'temperature');
-            }
-    
-            if ($humidityMatch) {
-                $humidity = intval($humidityMatch);
-                echo "Parsed Humidity: {$humidity}\n";
-                $this->update_mqtt_client_data_01($topic, $humidity, 'humidity');
-            }
-    
-            if ($ssidMatch) {
-                $ssid = $ssidMatch;
-                echo "Parsed SSID: {$ssid}\n";
-                $this->update_mqtt_client_data_01($topic, $ssid, 'ssid');
-            }
-    
-            if ($passwordMatch) {
-                $password = $passwordMatch;
-                echo "Parsed Password: {$password}\n";
-                $this->update_mqtt_client_data_01($topic, $password, 'password');
-            }
-        }
-    
-        public function update_mqtt_client_data_01($topic, $value, $type) {
-            // Find the post by title
-            $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
-
-            // Update the post meta
-            if ($type=='temperature') update_post_meta($post->ID, 'temperature', $value);
-            if ($type=='humidity') update_post_meta($post->ID, 'humidity', $value);
-            if ($type=="ssid") update_post_meta($post->ID, 'ssid', $value);
-            if ($type=="password") update_post_meta($post->ID, 'password', $value);
-
-            $query = $this->retrieve_exception_notification_list($post->ID);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                    $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
-                    $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                    if ($type=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
-                    if ($type=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
-                endwhile;
-                wp_reset_postdata();
-            endif;
-
-        }
-*/
 
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
