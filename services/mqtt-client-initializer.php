@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
+/*
     // Schedule the initialization event
     function schedule_mqtt_initialization() {
         if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         }
     }
     register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
-
+*/
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
 
