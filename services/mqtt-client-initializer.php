@@ -68,7 +68,7 @@ class MQTT_Client_Initializer {
         );
 
         //register_post_type('mqtt_log', $args);
-        register_post_type('mqtt_log');
+        register_post_type('mqtt_log', ['public' => 'true']);
     }
 
     // Add a submenu page for viewing MQTT logs
