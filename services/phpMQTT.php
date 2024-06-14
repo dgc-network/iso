@@ -654,8 +654,8 @@ class phpMQTT
     /**
      * @param string $message
      */
-    //protected function _debugMessage(string $message): void
-    public function _debugMessage(string $message): void
+    protected function _debugMessage(string $message): void
+    //public function _debugMessage(string $message): void
     {
         if ($this->debug === true) {
             echo date('r: ') . $message . PHP_EOL;
@@ -667,8 +667,8 @@ class phpMQTT
     /**
      * @param string $message
      */
-    //protected function _errorMessage(string $message): void
-    public function _errorMessage(string $message): void
+    protected function _errorMessage(string $message): void
+    //public function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
         $initializer = new MQTT_Client_Initializer();
