@@ -3,25 +3,82 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 /*
-    // Schedule the initialization event
-    function schedule_mqtt_initialization() {
-        if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
-            wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
-            //$this->log('Scheduled MQTT initialization.');
+$host = 'test.mosquitto.org';
+$port = 8080; // WebSocket port
+$client_id = 'id' . time();
+$topics = ['topic/you/want/to/subscribe'];
+
+$mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
+$mqtt_client->connect_and_subscribe();
+*/
+require 'phpMQTT.php'; // Make sure the phpMQTT library is included
+
+class WebSocketMQTTClient {
+    private $host;
+    private $port;
+    private $client_id;
+    private $topics;
+
+    public function __construct($host, $port, $client_id, $topics) {
+        $this->host = $host;
+        $this->port = $port;
+        $this->client_id = $client_id;
+        $this->topics = $topics;
+    }
+
+    public function connect_and_subscribe() {
+        $mqtt = new Bluerhinos\phpMQTT($this->host, $this->port, $this->client_id);
+
+        if ($mqtt->connect(true, NULL, NULL, NULL, true, 60, 'ws')) {
+            foreach ($this->topics as $topic) {
+                $mqtt->subscribe([$topic => ["qos" => 0, "function" => [$this, "procmsg"]]]);
+            }
+
+            while($mqtt->proc()) {
+                // Keep the connection alive
+            }
+
+            $mqtt->close();
+        } else {
+            error_log('Failed to connect to MQTT broker via WebSocket.');
         }
     }
-    register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
+
+    public function procmsg($topic, $msg) {
+        error_log("Message received on topic {$topic}: {$msg}");
+        // Handle the message, for example, save it to the database or create a new post
+        $post_data = array(
+            'post_title'    => wp_strip_all_tags($topic),
+            'post_content'  => $msg,
+            'post_status'   => 'publish',
+            'post_author'   => 1, // Assuming user ID 1 is the admin
+            'post_type'     => 'mqtt_log'
+        );
+        wp_insert_post($post_data);
+    }
+}
+
+function schedule_mqtt_background_process() {
+    if (!wp_next_scheduled('run_mqtt_background_process')) {
+        wp_schedule_event(time(), 'hourly', 'run_mqtt_background_process');
+    }
+}
+add_action('wp', 'schedule_mqtt_background_process');
+/*
+function run_mqtt_background_process() {
+    $output = null;
+    $retval = null;
+    exec('php /path/to/your/mqtt_script.php > /dev/null &', $output, $retval);
+}
+add_action('run_mqtt_background_process', 'run_mqtt_background_process');
 */
+function clear_mqtt_background_process() {
+    wp_clear_scheduled_hook('run_mqtt_background_process');
+}
+register_deactivation_hook(__FILE__, 'clear_mqtt_background_process');
+
 // Include a PHP MQTT client library. Ensure this path is correct.
 require_once 'phpMQTT.php';
-
-// Enable error logging
-ini_set('log_errors', 1);
-ini_set('error_log', plugin_dir_path(__FILE__) . 'error_log.txt');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 class MQTT_Client_Initializer {
 
@@ -29,6 +86,7 @@ class MQTT_Client_Initializer {
         register_activation_hook(__FILE__, array($this, 'schedule_mqtt_initialization'));
         register_deactivation_hook(__FILE__, array($this, 'clear_scheduled_mqtt_initialization'));
         add_action('initialize_all_MQTT_clients_hook', array($this, 'initialize_all_MQTT_clients'));
+        add_action('run_mqtt_background_process', array($this, 'initialize_all_MQTT_clients'));
         add_action('admin_menu', array($this, 'add_mqtt_log_menu'));
         add_action('init', array($this, 'create_mqtt_log_post_type'));
     }
@@ -178,11 +236,21 @@ class MQTT_Client_Initializer {
         }
 
         $host = 'test.mosquitto.org';
+        $port = 8080; // WebSocket port
+        $client_id = 'id' . time();
+        $topics = ['topic/you/want/to/subscribe'];
+        
+        $mqtt_client = new WebSocketMQTTClient($host, $port, $client_id, $topics);
+        $mqtt_client->connect_and_subscribe();
+        
+/*
+        $host = 'test.mosquitto.org';
         $port = 1883;
         $client_id = 'id' . time();
 
         $this->log('Connecting to MQTT broker.');
         $this->connect_to_mqtt_broker($host, $port, $client_id, $topics);
+*/        
     }
 
     // Connect to the MQTT broker and subscribe to topics
