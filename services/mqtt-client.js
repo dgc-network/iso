@@ -330,7 +330,7 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
         });
-/*        
+*/        
         mqttClient.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
@@ -367,7 +367,7 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
         });
-*/        
+/*        
         mqttClient.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
@@ -391,7 +391,7 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
         });
-
+*/
         mqttClient.on('error', function (error) {
             console.error('MQTT error:', error);
             const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
