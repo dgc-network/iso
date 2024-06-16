@@ -269,6 +269,43 @@ jQuery(document).ready(function($) {
         mqttClient.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
+            
+            let displayMessage = msg;
+            try {
+                // Try to parse the message to verify it's valid JSON
+                JSON.parse(msg);
+            } catch (e) {
+                // If it's not valid JSON, add an error note
+                displayMessage = "Invalid JSON:\n" + msg;
+            }
+        
+            const container = document.getElementById('mqtt-messages-container');
+            if (!container) {
+                console.error('Container not found');
+                return;
+            }
+        
+            const newMessage = document.createElement('div');
+            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
+            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
+            newMessage.style.padding = '10px';      // Optional: Add some styling
+            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
+            newMessage.textContent = displayMessage;
+        
+            // Prepend new message to the top
+            if (container.firstChild) {
+                container.insertBefore(newMessage, container.firstChild);
+            } else {
+                container.appendChild(newMessage);
+            }
+        
+            // Scroll to top
+            container.scrollTop = 0;
+        });
+/*        
+        mqttClient.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
         
             let prettyJsonString;
             try {
