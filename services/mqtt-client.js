@@ -78,55 +78,6 @@ jQuery(document).ready(function($) {
                 console.log('Message does not match expected format');
             }
         });
-/*        
-        function update_mqtt_client_data(topic, value, type) {
-            console.log(`Updating MQTT client data for topic ${topic}, type ${type}, value ${value}.`);
-            // Add your update logic here
-        }
-        
-    
-        mqttClientInit.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-
-            // Parse temperature and humidity values
-            const DS18B20Match = msg.match(/DS18B20 Temperature:\s*([\d.]+)/);
-            const temperatureMatch = msg.match(/DHT11 Temperature:\s*([\d.]+)/);
-            const humidityMatch = msg.match(/DHT11 Humidity:\s*(\d+)/);
-            const ssidMatch = msg.match(/SSID:\s*(\w+)/);
-            const passwordMatch = msg.match(/Password:\s*(\w+)/);
-    
-            if (DS18B20Match) {
-                const temperature = parseFloat(DS18B20Match[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_mqtt_client_data(topic, temperature, 'temperature');
-            }
-    
-            if (temperatureMatch) {
-                const temperature = parseFloat(temperatureMatch[1]);
-                console.log('Parsed Temperature:', temperature);
-                update_mqtt_client_data(topic, temperature, 'temperature');
-            }
-    
-            if (humidityMatch) {
-                const humidity = parseInt(humidityMatch[1], 10);
-                console.log('Parsed Humidity:', humidity);
-                update_mqtt_client_data(topic, humidity, 'humidity');
-            }
-    
-            if (ssidMatch) {
-                const ssid = ssidMatch[1];
-                console.log('Parsed SSID:', ssid);
-                update_mqtt_client_data(topic, ssid, 'ssid');
-            }
-    
-            if (passwordMatch) {
-                const password = passwordMatch[1];
-                console.log('Parsed Password:', password);
-                update_mqtt_client_data(topic, password, 'password');
-            }
-        });
-*/        
     }
 
     activate_mqtt_client_list_data();
@@ -285,14 +236,6 @@ jQuery(document).ready(function($) {
 
     let mqttClient;
 
-    function close_MQTT_Client() {
-        if (mqttClient) {
-            mqttClient.end();
-            mqttClient = null;
-            console.log('Disconnected from MQTT broker');
-        }
-    }
-
     function open_MQTT_Client(topic = false, host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
     
@@ -338,6 +281,39 @@ jQuery(document).ready(function($) {
             newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
             newMessage.textContent = prettyJsonString;
         
+            // Append new message to the bottom
+            container.appendChild(newMessage);
+        
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        });
+/*        
+        mqttClient.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+        
+            let prettyJsonString;
+            try {
+                const jsonObject = JSON.parse(msg);
+                prettyJsonString = JSON.stringify(jsonObject, null, 2);
+            } catch (e) {
+                // If the message is not valid JSON, just display the raw message
+                prettyJsonString = msg;
+            }
+        
+            const container = document.getElementById('mqtt-messages-container');
+            if (!container) {
+                console.error('Container not found');
+                return;
+            }
+        
+            const newMessage = document.createElement('div');
+            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
+            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
+            newMessage.style.padding = '10px';      // Optional: Add some styling
+            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
+            newMessage.textContent = prettyJsonString;
+        
             // Prepend new message to the top
             if (container.firstChild) {
                 container.insertBefore(newMessage, container.firstChild);
@@ -348,7 +324,7 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
         });
-
+*/
         mqttClient.on('error', function (error) {
             console.error('MQTT error:', error);
             const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
@@ -369,6 +345,14 @@ jQuery(document).ready(function($) {
             });
         } else {
             console.error('MQTT client is not connected');
+        }
+    }
+
+    function close_MQTT_Client() {
+        if (mqttClient) {
+            mqttClient.end();
+            mqttClient = null;
+            console.log('Disconnected from MQTT broker');
         }
     }
 
