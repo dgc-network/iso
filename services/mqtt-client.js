@@ -39,6 +39,51 @@ jQuery(document).ready(function($) {
                 }
             });
         });
+
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+        
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(msg);
+            } catch (e) {
+                console.error('Failed to parse JSON message:', e);
+                return;
+            }
+        
+            if (parsedMessage.messageType === 'Matter' && parsedMessage.data) {
+                const { SSID, Password, Topic, Temperature, Humidity } = parsedMessage.data;
+        
+                if (Temperature !== undefined) {
+                    console.log('Parsed Temperature:', Temperature);
+                    update_mqtt_client_data(topic, Temperature, 'temperature');
+                }
+        
+                if (Humidity !== undefined) {
+                    console.log('Parsed Humidity:', Humidity);
+                    update_mqtt_client_data(topic, Humidity, 'humidity');
+                }
+        
+                if (SSID !== undefined) {
+                    console.log('Parsed SSID:', SSID);
+                    update_mqtt_client_data(topic, SSID, 'ssid');
+                }
+        
+                if (Password !== undefined) {
+                    console.log('Parsed Password:', Password);
+                    update_mqtt_client_data(topic, Password, 'password');
+                }
+            } else {
+                console.log('Message does not match expected format');
+            }
+        });
+/*        
+        function update_mqtt_client_data(topic, value, type) {
+            console.log(`Updating MQTT client data for topic ${topic}, type ${type}, value ${value}.`);
+            // Add your update logic here
+        }
+        
     
         mqttClientInit.on('message', function (topic, message) {
             const msg = message.toString();
@@ -81,6 +126,7 @@ jQuery(document).ready(function($) {
                 update_mqtt_client_data(topic, password, 'password');
             }
         });
+*/        
     }
 
     activate_mqtt_client_list_data();
@@ -265,72 +311,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-/*    
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-            
-            const container = document.getElementById('mqtt-messages-container');
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
-        
-            const newMessage = document.createElement('div');
-            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
-            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
-            newMessage.style.padding = '10px';      // Optional: Add some styling
-            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
-            newMessage.textContent = msg;
-        
-            // Prepend new message to the top
-            if (container.firstChild) {
-                container.insertBefore(newMessage, container.firstChild);
-            } else {
-                container.appendChild(newMessage);
-            }
-        
-            // Scroll to top
-            container.scrollTop = 0;
-        });
-/*        
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-            
-            let displayMessage = msg;
-            try {
-                // Try to parse the message to verify it's valid JSON
-                JSON.parse(msg);
-            } catch (e) {
-                // If it's not valid JSON, add an error note
-                displayMessage = "Invalid JSON:\n" + msg;
-            }
-        
-            const container = document.getElementById('mqtt-messages-container');
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
-        
-            const newMessage = document.createElement('div');
-            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
-            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
-            newMessage.style.padding = '10px';      // Optional: Add some styling
-            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
-            newMessage.textContent = displayMessage;
-        
-            // Prepend new message to the top
-            if (container.firstChild) {
-                container.insertBefore(newMessage, container.firstChild);
-            } else {
-                container.appendChild(newMessage);
-            }
-        
-            // Scroll to top
-            container.scrollTop = 0;
-        });
-*/        
+
         mqttClient.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
@@ -367,31 +348,7 @@ jQuery(document).ready(function($) {
             // Scroll to top
             container.scrollTop = 0;
         });
-/*        
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-    
-            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
 
-            const newMessage = document.createElement('div');
-            newMessage.textContent = msg;
-
-            // Prepend new message to the top
-            if (container.firstChild) {
-                container.insertBefore(newMessage, container.firstChild);
-            } else {
-                container.appendChild(newMessage);
-            }
-
-            // Scroll to top
-            container.scrollTop = 0;
-        });
-*/
         mqttClient.on('error', function (error) {
             console.error('MQTT error:', error);
             const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
