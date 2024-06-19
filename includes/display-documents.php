@@ -507,8 +507,7 @@ if (!class_exists('display_documents')) {
             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function set_document_dialog_data() {
@@ -620,8 +619,7 @@ if (!class_exists('display_documents')) {
             </div>
 
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function get_doc_frame_contain() {
@@ -777,8 +775,7 @@ if (!class_exists('display_documents')) {
                 </div>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $current_page=1) {
@@ -940,8 +937,7 @@ if (!class_exists('display_documents')) {
             ?>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function get_doc_report_dialog_data() {
@@ -1091,8 +1087,7 @@ if (!class_exists('display_documents')) {
             </div>
             <div id="doc-field-dialog" title="Field dialog"></div>
             <?php
-            $html = ob_get_clean();
-            return $html;    
+            return ob_get_clean();
         }
         
         function retrieve_doc_field_data($params = array()) {
@@ -1183,8 +1178,7 @@ if (!class_exists('display_documents')) {
             </fieldset>
             </div>
             <?php
-            $html = ob_get_clean();
-            return $html;            
+            return ob_get_clean();
         }
 
         function get_doc_field_dialog_data() {
@@ -1519,8 +1513,7 @@ if (!class_exists('display_documents')) {
             </fieldset>
             <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function set_initial_iso_document() {

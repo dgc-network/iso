@@ -224,8 +224,7 @@ if (!class_exists('display_profiles')) {
                 </div>    
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
 
         function set_my_profile_data() {
@@ -328,8 +327,7 @@ if (!class_exists('display_profiles')) {
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
 
         function get_site_profile_data() {
@@ -432,8 +430,7 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <?php
-            $html = ob_get_clean();
-            return $html;            
+            return ob_get_clean();
         }
 
         function get_site_user_dialog_data() {
@@ -654,8 +651,7 @@ if (!class_exists('display_profiles')) {
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
 
         function retrieve_site_job_list_data($current_page = 1) {
@@ -750,8 +746,7 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <?php
-            $html = ob_get_clean();
-            return $html;            
+            return ob_get_clean();
         }
 
         function get_site_job_dialog_data() {
@@ -868,8 +863,7 @@ if (!class_exists('display_profiles')) {
             <div id="doc-action-dialog" title="Action dialog"></div>
             <?php //echo $this->display_doc_action_dialog();?>
             <?php
-            $html = ob_get_clean();
-            return $html;            
+            return ob_get_clean();
         }
 
         function find_more_query_posts($query=false) {
@@ -983,8 +977,7 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <?php
-            $html = ob_get_clean();
-            return $html;            
+            return ob_get_clean();
         }
 
         function get_doc_action_dialog_data() {
@@ -1123,8 +1116,7 @@ if (!class_exists('display_profiles')) {
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
 
         function retrieve_doc_category_data() {
@@ -1162,8 +1154,7 @@ if (!class_exists('display_profiles')) {
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?>"</textarea>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;        
+            return ob_get_clean();
         }
 
         function get_doc_category_dialog_data() {

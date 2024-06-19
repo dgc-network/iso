@@ -146,8 +146,7 @@ if (!class_exists('mqtt_client')) {
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
-            $html = ob_get_clean();
-            return $html;        
+            return ob_get_clean();
         }
         
         function retrieve_mqtt_client_list() {
@@ -187,8 +186,7 @@ if (!class_exists('mqtt_client')) {
                 </div>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;        
+            return ob_get_clean();
         }
 
         function get_mqtt_client_dialog_data() {
@@ -331,8 +329,7 @@ if (!class_exists('mqtt_client')) {
             </fieldset>
             </div>
             <?php
-            $html = ob_get_clean();
-            return $html;        
+            return ob_get_clean();
         }
         
         function retrieve_exception_notification_list($mqtt_client_id=false) {
@@ -374,8 +371,7 @@ if (!class_exists('mqtt_client')) {
                 </div>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;        
+            return ob_get_clean();
         }
 
         function get_exception_notification_dialog_data() {

@@ -452,8 +452,7 @@ if (!class_exists('to_do_list')) {
             </div>
             </fieldset>
             <?php
-            $html = ob_get_clean();
-            return $html;
+            return ob_get_clean();
         }
         
         function get_todo_dialog_data() {
@@ -850,10 +849,10 @@ if (!class_exists('to_do_list')) {
                     ?>
                 </div>
             <?php
-            $html = ob_get_clean();
+            //$html = ob_get_clean();
             // Return an array containing both HTML content and $x
             return array(
-                'html' => $html,
+                'html' => ob_get_clean(),
                 'x'    => $total_posts,                
             );
         }

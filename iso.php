@@ -349,9 +349,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
         </fieldset>
     </div>
     <?php        
-    $html = ob_get_clean();
-    return $html;
-
+    return ob_get_clean();
 }
 
 // User did not login system yet
