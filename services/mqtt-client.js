@@ -354,7 +354,7 @@ jQuery(document).ready(function($) {
 
     var map, marker;
 
-    function display_geolocation(topic = false){
+    function display_geolocation(topic = false, host = 'test.mosquitto.org', port = '8081'){
         // Initialize the map
         map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
 
@@ -363,6 +363,28 @@ jQuery(document).ready(function($) {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        mqttClient = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+    
+        mqttClient.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClient.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+
+        mqttClient.on('message', function (topic, message) {
+            const msg = message.toString();
+            try {
+                const geolocationData = JSON.parse(msg);
+                updateMap(geolocationData);
+            } catch (e) {
+                console.error("Invalid JSON message:", msg);
+            }
+        });
+
+/*
         // Connect to MQTT broker
         //var client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId");
         var client = new Paho.MQTT.Client("test.mosquitto.org", 8081, "clientId");
@@ -384,6 +406,7 @@ jQuery(document).ready(function($) {
                 client.subscribe(topic);
             }
         });    
+*/        
     }
 
     function updateMap(geolocationData) {
