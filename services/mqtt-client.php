@@ -37,6 +37,7 @@ if (!class_exists('mqtt_client')) {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
             wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
+            wp_enqueue_script('leaflet', "https://unpkg.com/leaflet/dist/leaflet.js");
             wp_enqueue_script('paho-mqtt', "https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.3/mqttws31.min.js");
         
             wp_enqueue_script('mqtt-client', plugins_url('mqtt-client.js', __FILE__), array('jquery'), $version);

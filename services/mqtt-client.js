@@ -352,9 +352,11 @@ jQuery(document).ready(function($) {
         });
     }
 
+    var map, marker;
+
     function display_geolocation(topic = false){
         // Initialize the map
-        var map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
+        map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
 
         // Add a tile layer to the map (OpenStreetMap tiles)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -383,8 +385,6 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-
-    var marker;
 
     function updateMap(geolocationData) {
         // Update the map view to the new geolocation data
