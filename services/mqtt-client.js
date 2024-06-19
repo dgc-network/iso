@@ -144,14 +144,24 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#mqtt-client-dialog").html(response.html_contain);
-                    $("#mqtt-client-dialog").dialog('open');
+                    //$("#mqtt-client-dialog").dialog('open');
+                    $("#geolocation-dialog").dialog('open');
                     activate_mqtt_client_list_data();
                 },
                 error: function (error) {
                     console.error(error);
-                    //alert(error);
+                    alert(error);
                 }
             });
+        });
+
+        $("#geolocation-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            open: function(event, ui) {
+                display_geolocation();
+            },
         });
 
         $("#mqtt-client-dialog").dialog({
@@ -159,7 +169,7 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                open_MQTT_Client($("#mqtt-topic").val());
+                display_MQTT_message($("#mqtt-topic").val());
             },
             close: function(event, ui) {
                 //close_MQTT_Client();
@@ -236,7 +246,7 @@ jQuery(document).ready(function($) {
 
     let mqttClient;
 
-    function open_MQTT_Client(topic = false, host = 'test.mosquitto.org', port = '8081') {
+    function display_MQTT_message(topic = false, host = 'test.mosquitto.org', port = '8081') {
         const container = document.getElementById('mqtt-messages-container');
     
         // Disconnect previous client if exists
@@ -287,44 +297,7 @@ jQuery(document).ready(function($) {
             // Scroll to bottom
             container.scrollTop = container.scrollHeight;
         });
-/*        
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-        
-            let prettyJsonString;
-            try {
-                const jsonObject = JSON.parse(msg);
-                prettyJsonString = JSON.stringify(jsonObject, null, 2);
-            } catch (e) {
-                // If the message is not valid JSON, just display the raw message
-                prettyJsonString = msg;
-            }
-        
-            const container = document.getElementById('mqtt-messages-container');
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
-        
-            const newMessage = document.createElement('div');
-            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
-            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
-            newMessage.style.padding = '10px';      // Optional: Add some styling
-            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
-            newMessage.textContent = prettyJsonString;
-        
-            // Prepend new message to the top
-            if (container.firstChild) {
-                container.insertBefore(newMessage, container.firstChild);
-            } else {
-                container.appendChild(newMessage);
-            }
-        
-            // Scroll to top
-            container.scrollTop = 0;
-        });
-*/
+
         mqttClient.on('error', function (error) {
             console.error('MQTT error:', error);
             const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
@@ -378,6 +351,61 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    function display_geolocation(topic = false){
+        // Initialize the map
+        var map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
+
+        // Add a tile layer to the map (OpenStreetMap tiles)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Connect to MQTT broker
+        //var client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId");
+        var client = new Paho.MQTT.Client("test.mosquitto.org", 8081, "clientId");
+
+        client.onMessageArrived = function (message) {
+            const msg = message.payloadString;
+            try {
+                const geolocationData = JSON.parse(msg);
+                updateMap(geolocationData);
+            } catch (e) {
+                console.error("Invalid JSON message:", msg);
+            }
+        };
+    
+        client.connect({
+            onSuccess: function () {
+                console.log("Connected to MQTT broker");
+                //client.subscribe("your/topic");
+                client.subscribe(topic);
+            }
+        });    
+    }
+
+    var marker;
+
+    function updateMap(geolocationData) {
+        // Update the map view to the new geolocation data
+        map.setView([geolocationData.latitude, geolocationData.longitude], 13);
+
+        // If marker already exists, remove it
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        // Add a new marker at the updated location
+        marker = L.marker([geolocationData.latitude, geolocationData.longitude]).addTo(map);
+
+        // Add a popup to the marker with some information
+        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
+                          <b>Latitude:</b> ${geolocationData.latitude}<br>
+                          <b>Longitude:</b> ${geolocationData.longitude}<br>
+                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}`).openPopup();
+    }
+
+
 
     // Exception notification scripts
     function activate_exception_notification_list_data(mqtt_client_id=false){
