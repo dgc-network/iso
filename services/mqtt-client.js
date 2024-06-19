@@ -352,6 +352,7 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // Geolocation map
     var map, marker;
 
     function display_geolocation(topic = false, host = 'test.mosquitto.org', port = '8081'){
@@ -383,30 +384,6 @@ jQuery(document).ready(function($) {
                 console.error("Invalid JSON message:", msg);
             }
         });
-
-/*
-        // Connect to MQTT broker
-        //var client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId");
-        var client = new Paho.MQTT.Client("test.mosquitto.org", 8081, "clientId");
-
-        client.onMessageArrived = function (message) {
-            const msg = message.payloadString;
-            try {
-                const geolocationData = JSON.parse(msg);
-                updateMap(geolocationData);
-            } catch (e) {
-                console.error("Invalid JSON message:", msg);
-            }
-        };
-    
-        client.connect({
-            onSuccess: function () {
-                console.log("Connected to MQTT broker");
-                //client.subscribe("your/topic");
-                client.subscribe(topic);
-            }
-        });    
-*/        
     }
 
     function updateMap(geolocationData) {
@@ -433,27 +410,6 @@ jQuery(document).ready(function($) {
                           <b>Temperature:</b> ${geolocationData.data.Temperature}°C<br>
                           <b>Humidity:</b> ${geolocationData.data.Humidity}%`).openPopup();
     }
-/*    
-    function updateMap(geolocationData) {
-        // Update the map view to the new geolocation data
-        map.setView([geolocationData.latitude, geolocationData.longitude], 13);
-
-        // If marker already exists, remove it
-        if (marker) {
-            map.removeLayer(marker);
-        }
-
-        // Add a new marker at the updated location
-        marker = L.marker([geolocationData.latitude, geolocationData.longitude]).addTo(map);
-
-        // Add a popup to the marker with some information
-        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
-                          <b>Latitude:</b> ${geolocationData.latitude}<br>
-                          <b>Longitude:</b> ${geolocationData.longitude}<br>
-                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}`).openPopup();
-    }
-*/
-
 
     // Exception notification scripts
     function activate_exception_notification_list_data(mqtt_client_id=false){
