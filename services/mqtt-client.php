@@ -138,7 +138,7 @@ if (!class_exists('mqtt_client')) {
                     </fieldset>        
                 </fieldset>
                 <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
-                <div id="geolocation-dialog" title="Map"><div id="map"></div></div>
+                <div id="geolocation-dialog" title="Map"><div id="map" style="height:500px;"></div></div>
                 <?php
             } else {
                 ?>
