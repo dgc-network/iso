@@ -410,6 +410,31 @@ jQuery(document).ready(function($) {
     }
 
     function updateMap(geolocationData) {
+        // Ensure latitude and longitude are numbers
+        const latitude = parseFloat(geolocationData.data.Latitude);
+        const longitude = parseFloat(geolocationData.data.Longitude);
+
+        // Update the map view to the new geolocation data
+        map.setView([latitude, longitude], 13);
+
+        // If marker already exists, remove it
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        // Add a new marker at the updated location
+        marker = L.marker([latitude, longitude]).addTo(map);
+
+        // Add a popup to the marker with some information
+        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
+                          <b>Latitude:</b> ${latitude}<br>
+                          <b>Longitude:</b> ${longitude}<br>
+                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
+                          <b>Temperature:</b> ${geolocationData.data.Temperature}°C<br>
+                          <b>Humidity:</b> ${geolocationData.data.Humidity}%`).openPopup();
+    }
+/*    
+    function updateMap(geolocationData) {
         // Update the map view to the new geolocation data
         map.setView([geolocationData.latitude, geolocationData.longitude], 13);
 
@@ -427,7 +452,7 @@ jQuery(document).ready(function($) {
                           <b>Longitude:</b> ${geolocationData.longitude}<br>
                           <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}`).openPopup();
     }
-
+*/
 
 
     // Exception notification scripts
