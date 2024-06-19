@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                display_geolocation();
+                display_geolocation($("#mqtt-topic").val());
             },
         });
 
