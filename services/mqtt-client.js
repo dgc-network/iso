@@ -407,8 +407,8 @@ jQuery(document).ready(function($) {
                           <b>Latitude:</b> ${latitude}<br>
                           <b>Longitude:</b> ${longitude}<br>
                           <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
-                          <b>Temperature:</b> ${geolocationData.data.Temperature}°C<br>
-                          <b>Humidity:</b> ${geolocationData.data.Humidity}%`).openPopup();
+                          <b>Phone:</b> ${geolocationData.data.Phone}°C<br>
+                          <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
     }
 
     // Exception notification scripts
