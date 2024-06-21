@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-
+    var lat;
     // Function to initialize MQTT client with a specific topic
     initialize_all_MQTT_clients();
     function initialize_all_MQTT_clients() {
@@ -145,6 +145,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#mqtt-client-dialog").html(response.html_contain);
                     $("#mqtt-client-dialog").dialog('open');
+                    $("#latitude").val(lat);
                     //$("#geolocation-dialog").dialog('open');
                     activate_mqtt_client_list_data();
                 },
@@ -236,10 +237,10 @@ jQuery(document).ready(function($) {
     
             // Show the position on the map
             function showPosition(position) {
-                var lat = position.coords.latitude;
+                //var lat = position.coords.latitude;
+                lat = position.coords.latitude;
                 var lon = position.coords.longitude;
                 var accuracy = position.coords.accuracy;
-                $("#latitude").html(lat);
             }
     
             // Handle geolocation errors
