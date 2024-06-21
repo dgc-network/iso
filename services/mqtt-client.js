@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    var lat;
+    let lat;
     // Function to initialize MQTT client with a specific topic
     initialize_all_MQTT_clients();
     function initialize_all_MQTT_clients() {
