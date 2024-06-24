@@ -11,6 +11,7 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
+            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
 
             add_action( 'wp_ajax_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
@@ -174,7 +175,6 @@ if (!class_exists('mqtt_client')) {
             <fieldset>
                 <input type="hidden" id="mqtt-client-id" value="<?php echo $mqtt_client_id;?>" />
                 <input type="hidden" id="mqtt-topic" value="<?php echo $mqtt_topic;?>" />
-                <input type="text" id="latitude" />
                 <label for="client-id"><?php echo __( 'Client ID:', 'your-text-domain' );?></label>
                 <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
@@ -267,6 +267,54 @@ if (!class_exists('mqtt_client')) {
             // Find the post by title
             $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
             $content = get_post_field('post_content', $post->ID);
+        
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
+            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
+        
+            // Parameters to pass to the notification function
+            $params = [
+                'user_id' => $user_id,
+                'topic' => $topic,
+                'text_message' => $text_message,
+            ];
+        
+            // Schedule the event to run after 5 minutes (300 seconds)
+            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
+        }
+        
+        // Function to send the notification
+        function send_delayed_notification($params) {
+            $user_id = $params['user_id'];
+            $topic = $params['topic'];
+            $text_message = $params['text_message'];
+        
+            $user_data = get_userdata($user_id);
+            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
+        
+            $params = [
+                'display_name' => $user_data->display_name,
+                'link_uri' => $link_uri,
+                'text_message' => $text_message,
+            ];
+        
+            $flexMessage = set_flex_message($params);
+            $line_bot_api = new line_bot_api();
+            $line_bot_api->pushMessage([
+                'to' => get_user_meta($user_id, 'line_user_id', TRUE),
+                'messages' => [$flexMessage],
+            ]);
+        }
+        
+        // Register the hook for the scheduled event
+        //add_action('send_delayed_notification', 'send_delayed_notification');
+/*        
+        // Exception notification
+        function exception_notification_event($user_id=false, $topic=false, $max_temperature=false, $max_humidity=false) {
+            $user_data = get_userdata($user_id);
+            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
+            // Find the post by title
+            $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+            $content = get_post_field('post_content', $post->ID);
 
             if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
             if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
@@ -282,7 +330,7 @@ if (!class_exists('mqtt_client')) {
                 'messages' => [$flexMessage],
             ]);            
         }
-
+*/
         function display_exception_notification_list($mqtt_client_id=false) {
             ob_start();
                 ?>
