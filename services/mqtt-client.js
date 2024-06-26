@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
     }
 
     function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        const container = document.getElementById('mqtt-messages-container');
+        //const container = document.getElementById('mqtt-messages-container');
     
         mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
     
@@ -40,6 +40,41 @@ jQuery(document).ready(function($) {
             });
         });
 
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+        
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(msg);
+            } catch (e) {
+                console.error('Failed to parse JSON message:', e);
+                return;
+            }
+        
+            const { ssid, password, temperature, humidity } = parsedMessage;
+        
+            if (temperature !== undefined) {
+                console.log('Parsed Temperature:', temperature);
+                update_mqtt_client_data(topic, temperature, 'temperature');
+            }
+        
+            if (humidity !== undefined) {
+                console.log('Parsed Humidity:', humidity);
+                update_mqtt_client_data(topic, humidity, 'humidity');
+            }
+        
+            if (ssid !== undefined) {
+                console.log('Parsed SSID:', ssid);
+                update_mqtt_client_data(topic, ssid, 'ssid');
+            }
+        
+            if (password !== undefined) {
+                console.log('Parsed Password:', password);
+                update_mqtt_client_data(topic, password, 'password');
+            }
+        });
+/*        
         mqttClientInit.on('message', function (topic, message) {
             const msg = message.toString();
             console.log('Message received:', msg);
@@ -78,6 +113,7 @@ jQuery(document).ready(function($) {
                 console.log('Message does not match expected format');
             }
         });
+*/        
     }
 
     activate_mqtt_client_list_data();
@@ -145,7 +181,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#mqtt-client-dialog").html(response.html_contain);
                     $("#mqtt-client-dialog").dialog('open');
-                    $("#latitude").val(lat);
+                    //$("#latitude").val(lat);
                     //$("#geolocation-dialog").dialog('open');
                     activate_mqtt_client_list_data();
                 },
@@ -225,7 +261,7 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-
+/*
             // Function to get current geolocation
             function getCurrentLocation() {
                 if (navigator.geolocation) {
@@ -263,7 +299,7 @@ jQuery(document).ready(function($) {
     
             // Get current location on page load
             window.onload = getCurrentLocation;
-    
+*/    
     function get_mqtt_client_list_data(){
         $.ajax({
             type: 'POST',
@@ -286,7 +322,7 @@ jQuery(document).ready(function($) {
     let mqttClient;
 
     function display_MQTT_message(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        const container = document.getElementById('mqtt-messages-container');
+        //const container = document.getElementById('mqtt-messages-container');
     
         // Disconnect previous client if exists
         if (mqttClient) {
