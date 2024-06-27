@@ -170,18 +170,29 @@ if (!class_exists('display_profiles')) {
         function display_my_profile() {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            $phone_number = get_user_meta($current_user_id, 'phone_number', true);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             ob_start();
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $this->display_select_profile(0);?></div>
+                    <div style="text-align: right">
+                        <button type="submit" id="my-profile-submit">Submit</button>
+                    </div>
+                </div>    
+                <hr>
             <fieldset>
                 <label for="display-name"><?php echo __( 'Name: ', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="my-jobs"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -213,19 +224,57 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 </fieldset>
-                <label for="site-title"><?php echo __( 'Site: ', 'your-text-domain' );?></label>
-                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <hr>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(0);?></div>
-                    <div style="text-align: right">
-                        <button type="submit" id="my-profile-submit">Submit</button>
-                    </div>
-                </div>    
+                <label for="my-notifications"><?php echo __( 'My notifications: ', 'your-text-domain' );?></label>
+                <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Topic', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_exception_notification_data($current_user_id);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                            $user_data = get_userdata($user_id);
+                            $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
+                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
+                            ?>
+                            <tr id="edit-exception-notification-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+
+                </fieldset>
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+
+        function retrieve_exception_notification_data($user_id=false) {
+            $args = array(
+                'post_type'      => 'notification',
+                'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'user_id',
+                        'value'   => $user_id,
+                        'compare' => '=',
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
         }
 
         function set_my_profile_data() {

@@ -412,7 +412,7 @@ if (!class_exists('mqtt_client')) {
                 if ($key=="ssid") update_post_meta($post->ID, 'ssid', $value);
                 if ($key=="password") update_post_meta($post->ID, 'password', $value);
 
-                $query = $this->retrieve_exception_notification_list($post->ID);
+                $query = $this->retrieve_exception_notification_data($post->ID);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $user_id = get_post_meta(get_the_ID(), 'user_id', true);
@@ -499,7 +499,7 @@ if (!class_exists('mqtt_client')) {
                     </thead>
                     <tbody>
                     <?php
-                    $query = $this->retrieve_exception_notification_list($mqtt_client_id);
+                    $query = $this->retrieve_exception_notification_data($mqtt_client_id);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $user_id = get_post_meta(get_the_ID(), 'user_id', true);
@@ -537,7 +537,7 @@ if (!class_exists('mqtt_client')) {
             return ob_get_clean();
         }
         
-        function retrieve_exception_notification_list($mqtt_client_id=false) {
+        function retrieve_exception_notification_data($mqtt_client_id=false) {
             $args = array(
                 'post_type'      => 'notification',
                 'posts_per_page' => -1,        
