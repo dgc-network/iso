@@ -32,10 +32,10 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
-            add_action( 'wp_ajax_nopriv_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
-            add_action( 'wp_ajax_get_geolocation_message_dialog_data', array( $this, 'get_geolocation_message_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_geolocation_message_dialog_data', array( $this, 'get_geolocation_message_dialog_data' ) );
+            add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
+            add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
+            add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
+            add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
         }
 
         function enqueue_mqtt_client_scripts() {
@@ -120,7 +120,8 @@ if (!class_exists('mqtt_client')) {
                     <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th><?php echo __( 'Topic', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Receiver', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Message', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
@@ -130,12 +131,15 @@ if (!class_exists('mqtt_client')) {
                         $query = $this->retrieve_geolocation_message_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
+                                // Get post creation time
+                                $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
                                 $topic = get_the_title();
                                 $message = get_the_content();
                                 $latitude = get_post_meta(get_the_ID(), 'latitude', true);
                                 $longitude = get_post_meta(get_the_ID(), 'longitude', true);
                                 ?>
                                 <tr id="edit-geolocation-message-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
@@ -171,7 +175,7 @@ if (!class_exists('mqtt_client')) {
             return $query;
         }
 
-        function get_geolocation_message_dialog_data() {
+        function get_geolocation_message_data() {
             $response = array();
             $geolocation_message_id = sanitize_text_field($_POST['_geolocation_message_id']);
             $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
@@ -179,18 +183,15 @@ if (!class_exists('mqtt_client')) {
             wp_send_json($response);
         }
 
-        function create_geolocation_message_post() {
-            // Verify nonce for security (optional but recommended)
-            //check_ajax_referer('your_nonce_action', 'security');
-        
-            $phone = sanitize_text_field($_POST['phone']);
+        function set_geolocation_message_data() {
+            $receiver = sanitize_text_field($_POST['receiver']);
             $message = sanitize_text_field($_POST['message']);
             $latitude = sanitize_text_field($_POST['latitude']);
             $longitude = sanitize_text_field($_POST['longitude']);
         
             // Create a new post
             $post_data = array(
-                'post_title'    => $phone, // Using phone as the title
+                'post_title'    => $receiver, // Using receiver as the title
                 'post_content'  => $message,
                 'post_status'   => 'publish',
                 'post_type'     => 'geolocation-message',
@@ -207,8 +208,6 @@ if (!class_exists('mqtt_client')) {
                 wp_send_json_error('Failed to create post.');
             }
         }
-        
-
 
         // MQTT Client
         function display_mqtt_client_list() {
@@ -378,36 +377,11 @@ if (!class_exists('mqtt_client')) {
                         $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                         $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
                         $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                        if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
-                        if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
+                        if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $value, $max_temperature);
+                        if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $value, false, $max_humidity);
                     endwhile;
                     wp_reset_postdata();
                 endif;
-
-                if (in_array($key, ['phone', 'message', 'latitude', 'longitude'])) {
-                    if ($key == 'phone') $topic=$value;
-                    $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
-                    
-                    if ($post) {
-                        if ($key == 'phone') $this->update_post_field('post_title', $value, $post->ID);
-                        if ($key == 'message') $this->update_post_field('post_content', $value, $post->ID);
-                        if ($key == 'latitude') update_post_meta($post->ID, 'latitude', $value);
-                        if ($key == 'longitude') update_post_meta($post->ID, 'longitude', $value);
-                    } else {
-                        // Create a new post
-                        $post_data = array(
-                            'post_title'    => ($key == 'phone') ? $value : '',
-                            'post_content'  => ($key == 'message') ? $value : '',
-                            'post_status'   => 'publish',
-                            'post_type'     => 'geolocation-message',
-                        );
-                        
-                        $new_post_id = wp_insert_post($post_data);
-                        
-                        if ($key == 'latitude') update_post_meta($new_post_id, 'latitude', $value);
-                        if ($key == 'longitude') update_post_meta($new_post_id, 'longitude', $value);
-                    }
-                }
 
                 wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
@@ -425,16 +399,19 @@ if (!class_exists('mqtt_client')) {
         }
         
         // Exception notification
-        function exception_notification_event($user_id=false, $topic=false, $max_temperature=false, $max_humidity=false) {
+        function exception_notification_event($user_id=false, $topic=false, $value=false, $max_temperature=false, $max_humidity=false) {
             $user_data = get_userdata($user_id);
             $link_uri = home_url().'/display-profiles/?_id='.$user_id;
             // Find the post by title
             $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
             $content = get_post_field('post_content', $post->ID);
         
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
-        
+            //if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
+            //if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
+
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'現在的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C。';
+            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'現在的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%。';
+
             // Parameters to pass to the notification function
             $params = [
                 'user_id' => $user_id,
@@ -469,32 +446,6 @@ if (!class_exists('mqtt_client')) {
             ]);
         }
         
-        // Register the hook for the scheduled event
-        //add_action('send_delayed_notification', 'send_delayed_notification');
-/*        
-        // Exception notification
-        function exception_notification_event($user_id=false, $topic=false, $max_temperature=false, $max_humidity=false) {
-            $user_data = get_userdata($user_id);
-            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
-            // Find the post by title
-            $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
-            $content = get_post_field('post_content', $post->ID);
-
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
-            $params = [
-                'display_name' => $user_data->display_name,
-                'link_uri' => $link_uri,
-                'text_message' => $text_message,
-            ];        
-            $flexMessage = set_flex_message($params);
-            $line_bot_api = new line_bot_api();
-            $line_bot_api->pushMessage([
-                'to' => get_user_meta($user_id, 'line_user_id', TRUE),
-                'messages' => [$flexMessage],
-            ]);            
-        }
-*/
         function display_exception_notification_list($mqtt_client_id=false) {
             ob_start();
                 ?>

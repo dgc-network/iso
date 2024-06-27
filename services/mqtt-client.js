@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
             });
 
             // Check if all required keys are present
-            const requiredKeys = ['phone', 'message', 'latitude', 'longitude'];
+            const requiredKeys = ['receiver', 'message', 'latitude', 'longitude'];
             const hasAllKeys = requiredKeys.every(key => parsedMessage.hasOwnProperty(key));
         
             if (hasAllKeys) {
@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
                           <b>Latitude:</b> ${latitude}<br>
                           <b>Longitude:</b> ${longitude}<br>
                           <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
-                          <b>Phone:</b> ${geolocationData.data.Phone}°C<br>
+                          <b>receiver:</b> ${geolocationData.data.receiver}°C<br>
                           <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
     }
 
@@ -119,8 +119,8 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             method: 'POST',
             data: {
-                action: 'create_geolocation_message_post', // Custom action name
-                phone: data.phone,
+                action: 'set_geolocation_message_data', // Custom action name
+                receiver: data.receiver,
                 message: data.message,
                 latitude: data.latitude,
                 longitude: data.longitude,
@@ -148,7 +148,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_geolocation_message_dialog_data',
+                    'action': 'get_geolocation_message_data',
                     '_geolocation_message_id': geolocation_message_id,
                 },
                 success: function (response) {
