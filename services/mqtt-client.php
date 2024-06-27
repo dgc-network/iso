@@ -169,7 +169,7 @@ if (!class_exists('mqtt_client')) {
 
         function create_geolocation_message_post() {
             // Verify nonce for security (optional but recommended)
-            check_ajax_referer('your_nonce_action', 'security');
+            //check_ajax_referer('your_nonce_action', 'security');
         
             $phone = sanitize_text_field($_POST['phone']);
             $message = sanitize_text_field($_POST['message']);
