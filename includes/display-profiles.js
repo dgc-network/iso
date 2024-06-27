@@ -26,6 +26,7 @@ jQuery(document).ready(function($) {
                 'action': 'set_my_profile_data',
                 '_display_name': $("#display-name").val(),
                 '_user_email': $("#user-email").val(),
+                '_phone_number': $("#phone-number").val(),
             },
             success: function (response) {
                 console.log(response);

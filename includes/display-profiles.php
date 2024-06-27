@@ -279,12 +279,11 @@ if (!class_exists('display_profiles')) {
 
         function set_my_profile_data() {
             $response = array();
-            if (isset($_POST['_display_name'])) {
-                $current_user_id = get_current_user_id();
-                wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
-                wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
-                $response = array('success' => true);
-            }
+            $current_user_id = get_current_user_id();
+            wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
+            wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
+            update_user_meta( $current_user_id, 'phone_number', sanitize_text_field($_POST['_phone_number']) );
+            $response = array('success' => true);
             wp_send_json($response);
         }
 
