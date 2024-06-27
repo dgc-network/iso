@@ -87,7 +87,8 @@ jQuery(document).ready(function($) {
     function createGeolocationMessagePost(data) {
         // Use AJAX to call a WordPress function to create a new post
         $.ajax({
-            url: ajaxurl, // WordPress AJAX URL
+            //url: ajaxurl, // WordPress AJAX URL
+            url: ajax_object.ajax_url,
             method: 'POST',
             data: {
                 action: 'create_geolocation_message_post', // Custom action name
@@ -104,7 +105,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
+
     activate_mqtt_client_list_data();
 
     // mqtt-client scripts
