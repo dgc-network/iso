@@ -34,6 +34,8 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
             add_action( 'wp_ajax_nopriv_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
+            add_action( 'wp_ajax_get_geolocation_message_dialog_data', array( $this, 'get_geolocation_message_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_geolocation_message_dialog_data', array( $this, 'get_geolocation_message_dialog_data' ) );
         }
 
         function enqueue_mqtt_client_scripts() {
@@ -167,6 +169,14 @@ if (!class_exists('mqtt_client')) {
             );
             $query = new WP_Query($args);
             return $query;
+        }
+
+        function get_geolocation_message_dialog_data() {
+            $response = array();
+            $geolocation_message_id = sanitize_text_field($_POST['_geolocation_message_id']);
+            $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
+            $response['longitude'] = get_post_meta($geolocation_message_id, 'longitude', true);
+            wp_send_json($response);
         }
 
         function create_geolocation_message_post() {
