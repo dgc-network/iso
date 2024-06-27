@@ -73,7 +73,7 @@ if (!class_exists('mqtt_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'geolocation-message', $args );
         }
@@ -148,6 +148,8 @@ if (!class_exists('mqtt_client')) {
                     </table>
                     </fieldset>        
                 </fieldset>
+                <input type="hidden" id="latitude" />
+                <input type="hidden" id="longitude" />
                 <div id="geolocation-dialog" title="Geolocation map"><div id="map" style="height:500px;"></div></div>
                 <?php
             } else {
@@ -259,7 +261,6 @@ if (!class_exists('mqtt_client')) {
                     </fieldset>        
                 </fieldset>
                 <div id="mqtt-client-dialog" title="MQTT Client dialog"></div>
-                <div id="geolocation-dialog" title="Geolocation map"><div id="map" style="height:500px;"></div></div>
                 <?php
             } else {
                 ?>

@@ -84,6 +84,34 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // Geolocation map
+    var map, marker;
+
+    function updateMap(geolocationData) {
+        // Ensure latitude and longitude are numbers
+        const latitude = parseFloat(geolocationData.data.Latitude);
+        const longitude = parseFloat(geolocationData.data.Longitude);
+
+        // Update the map view to the new geolocation data
+        map.setView([latitude, longitude], 13);
+
+        // If marker already exists, remove it
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        // Add a new marker at the updated location
+        marker = L.marker([latitude, longitude]).addTo(map);
+
+        // Add a popup to the marker with some information
+        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
+                          <b>Latitude:</b> ${latitude}<br>
+                          <b>Longitude:</b> ${longitude}<br>
+                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
+                          <b>Phone:</b> ${geolocationData.data.Phone}°C<br>
+                          <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
+    }
+
     function createGeolocationMessagePost(data) {
         // Use AJAX to call a WordPress function to create a new post
         $.ajax({
@@ -102,6 +130,95 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error('Failed to create post:', error);
+            }
+        });
+    }
+
+    activate_geolocation_message_list_data();
+
+    // geolocation-message scripts
+    function activate_geolocation_message_list_data(){
+
+        $('[id^="edit-geolocation-message-"]').on("click", function () {
+            const geolocation_message_id = this.id.substring(25);
+            //$("#geolocation-dialog").dialog('open');
+
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_geolocation_message_dialog_data',
+                    '_geolocation_message_id': geolocation_message_id,
+                },
+                success: function (response) {
+                    //$("#mqtt-client-dialog").html(response.html_contain);
+                    //$("#mqtt-client-dialog").dialog('open');
+                    $("#latitude").val(response.latitude);
+                    $("#longitude").val(response.longitude);
+                    $("#geolocation-dialog").dialog('open');
+                    //activate_mqtt_client_list_data();
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
+        });
+
+        $("#geolocation-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            open: function(event, ui) {
+                //display_geolocation($("#mqtt-topic").val());
+                // Initialize the map
+                map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
+
+                // Add a tile layer to the map (OpenStreetMap tiles)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+        
+                // Update the map view to the new geolocation data
+                latitude = $("#latitude").val();
+                longitude = $("#longitude").val();
+                map.setView([latitude, longitude], 13);
+
+
+            },
+        });
+
+    }
+
+    function display_geolocation(topic = false, host = 'test.mosquitto.org', port = '8081'){
+        // Initialize the map
+        map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
+
+        // Add a tile layer to the map (OpenStreetMap tiles)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        mqttClient = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+    
+        mqttClient.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClient.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+
+        mqttClient.on('message', function (topic, message) {
+            const msg = message.toString();
+            try {
+                const geolocationData = JSON.parse(msg);
+                updateMap(geolocationData);
+            } catch (e) {
+                console.error("Invalid JSON message:", msg);
             }
         });
     }
@@ -416,65 +533,6 @@ jQuery(document).ready(function($) {
                 console.error('AJAX error:', status, error);
             }
         });
-    }
-
-    // Geolocation map
-    var map, marker;
-
-    function display_geolocation(topic = false, host = 'test.mosquitto.org', port = '8081'){
-        // Initialize the map
-        map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
-
-        // Add a tile layer to the map (OpenStreetMap tiles)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        mqttClient = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
-    
-        mqttClient.on('connect', function () {
-            console.log('Connected to MQTT broker');
-            mqttClient.subscribe(topic, function (err) {
-                if (err) {
-                    console.error('Subscription error:', err);
-                }
-            });
-        });
-
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            try {
-                const geolocationData = JSON.parse(msg);
-                updateMap(geolocationData);
-            } catch (e) {
-                console.error("Invalid JSON message:", msg);
-            }
-        });
-    }
-
-    function updateMap(geolocationData) {
-        // Ensure latitude and longitude are numbers
-        const latitude = parseFloat(geolocationData.data.Latitude);
-        const longitude = parseFloat(geolocationData.data.Longitude);
-
-        // Update the map view to the new geolocation data
-        map.setView([latitude, longitude], 13);
-
-        // If marker already exists, remove it
-        if (marker) {
-            map.removeLayer(marker);
-        }
-
-        // Add a new marker at the updated location
-        marker = L.marker([latitude, longitude]).addTo(map);
-
-        // Add a popup to the marker with some information
-        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
-                          <b>Latitude:</b> ${latitude}<br>
-                          <b>Longitude:</b> ${longitude}<br>
-                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
-                          <b>Phone:</b> ${geolocationData.data.Phone}°C<br>
-                          <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
     }
 
     // Exception notification scripts
