@@ -57,10 +57,10 @@ jQuery(document).ready(function($) {
                 password: 'password',
                 temperature: 'temperature',
                 humidity: 'humidity',
-                topic: 'topic',
-                message: 'message',
-                latitude: 'latitude',
-                longitude: 'longitude',
+                //topic: 'topic',
+                //message: 'message',
+                //latitude: 'latitude',
+                //longitude: 'longitude',
                 // Add more mappings as needed
             };
         
@@ -70,9 +70,41 @@ jQuery(document).ready(function($) {
                     update_mqtt_client_data(topic, keyMapping[key], parsedMessage[key]);
                 }
             });
+
+            // Check if all required keys are present
+            const requiredKeys = ['phone', 'message', 'latitude', 'longitude'];
+            const hasAllKeys = requiredKeys.every(key => parsedMessage.hasOwnProperty(key));
+        
+            if (hasAllKeys) {
+                createGeolocationMessagePost(parsedMessage);
+            } else {
+                console.log('Message does not contain all required keys');
+            }
+
         });
     }
 
+    function createGeolocationMessagePost(data) {
+        // Use AJAX to call a WordPress function to create a new post
+        $.ajax({
+            url: ajaxurl, // WordPress AJAX URL
+            method: 'POST',
+            data: {
+                action: 'create_geolocation_message_post', // Custom action name
+                phone: data.phone,
+                message: data.message,
+                latitude: data.latitude,
+                longitude: data.longitude,
+            },
+            success: function (response) {
+                console.log('Post created successfully:', response);
+            },
+            error: function (error) {
+                console.error('Failed to create post:', error);
+            }
+        });
+    }
+    
     activate_mqtt_client_list_data();
 
     // mqtt-client scripts

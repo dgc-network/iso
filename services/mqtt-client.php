@@ -32,6 +32,8 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
+            add_action( 'wp_ajax_nopriv_create_geolocation_message_post', array( $this, 'create_geolocation_message_post' ) );
         }
 
         function enqueue_mqtt_client_scripts() {
@@ -132,7 +134,7 @@ if (!class_exists('mqtt_client')) {
                                 $longitude = get_post_meta(get_the_ID(), 'longitude', true);
                                 ?>
                                 <tr id="edit-geolocation-message-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($topic);?></td>
+                                    <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
@@ -165,6 +167,35 @@ if (!class_exists('mqtt_client')) {
             return $query;
         }
 
+        function create_geolocation_message_post() {
+            // Verify nonce for security (optional but recommended)
+            check_ajax_referer('your_nonce_action', 'security');
+        
+            $phone = sanitize_text_field($_POST['phone']);
+            $message = sanitize_text_field($_POST['message']);
+            $latitude = sanitize_text_field($_POST['latitude']);
+            $longitude = sanitize_text_field($_POST['longitude']);
+        
+            // Create a new post
+            $post_data = array(
+                'post_title'    => $phone, // Using phone as the title
+                'post_content'  => $message,
+                'post_status'   => 'publish',
+                'post_type'     => 'geolocation-message',
+            );
+        
+            $new_post_id = wp_insert_post($post_data);
+        
+            if (!is_wp_error($new_post_id)) {
+                // Add custom meta data
+                update_post_meta($new_post_id, 'latitude', $latitude);
+                update_post_meta($new_post_id, 'longitude', $longitude);
+                wp_send_json_success('Post created successfully.');
+            } else {
+                wp_send_json_error('Failed to create post.');
+            }
+        }
+        
 
 
         // MQTT Client
