@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
             const hasAllKeys = requiredKeys.every(key => parsedMessage.hasOwnProperty(key));
         
             if (hasAllKeys) {
-                createGeolocationMessagePost(parsedMessage);
+                set_geolocation_message_data(parsedMessage);
             } else {
                 console.log('Message does not contain all required keys');
             }
@@ -112,7 +112,7 @@ jQuery(document).ready(function($) {
                           <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
     }
 
-    function createGeolocationMessagePost(data) {
+    function set_geolocation_message_data(data) {
         // Use AJAX to call a WordPress function to create a new post
         $.ajax({
             //url: ajaxurl, // WordPress AJAX URL
@@ -152,12 +152,10 @@ jQuery(document).ready(function($) {
                     '_geolocation_message_id': geolocation_message_id,
                 },
                 success: function (response) {
-                    //$("#mqtt-client-dialog").html(response.html_contain);
-                    //$("#mqtt-client-dialog").dialog('open');
                     $("#latitude").val(response.latitude);
                     $("#longitude").val(response.longitude);
+                    $("#message").text(response.message);
                     $("#geolocation-dialog").dialog('open');
-                    //activate_mqtt_client_list_data();
                 },
                 error: function (error) {
                     console.error(error);
@@ -172,7 +170,6 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                //display_geolocation($("#mqtt-topic").val());
                 // Initialize the map
                 map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
 
@@ -186,8 +183,16 @@ jQuery(document).ready(function($) {
                 longitude = $("#longitude").val();
                 map.setView([latitude, longitude], 13);
 
-
+                // Update the message at the bottom of the dialog
+                //var message = "Displaying geolocation data for latitude " + latitude + " and longitude " + longitude;
+                //$("#dialog-message").text(message);
             },
+            close: function(event, ui) {
+                if (map) {
+                    map.remove(); // Properly remove the map instance
+                    map = null; // Clear the map variable
+                }
+            }
         });
 
     }

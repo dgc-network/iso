@@ -154,9 +154,12 @@ if (!class_exists('mqtt_client')) {
                     </table>
                     </fieldset>        
                 </fieldset>
-                <input type="hidden" id="latitude" />
-                <input type="hidden" id="longitude" />
-                <div id="geolocation-dialog" title="Geolocation map"><div id="map" style="height:500px;"></div></div>
+                <div id="geolocation-dialog" title="Geolocation map">
+                    <input type="hidden" id="latitude" />
+                    <input type="hidden" id="longitude" />
+                    <div id="map" style="height:400px;"></div>
+                    <div id="message" style="margin-top: 20px;"></div>
+                </div>
                 <?php
             } else {
                 ?>
@@ -180,6 +183,7 @@ if (!class_exists('mqtt_client')) {
             $geolocation_message_id = sanitize_text_field($_POST['_geolocation_message_id']);
             $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
             $response['longitude'] = get_post_meta($geolocation_message_id, 'longitude', true);
+            $response['message'] = get_post_meta($geolocation_message_id, 'message', true);
             wp_send_json($response);
         }
 
