@@ -298,7 +298,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#geolocation-dialog").dialog({
             width: 390,
             modal: true,
@@ -307,7 +307,7 @@ jQuery(document).ready(function($) {
                 display_geolocation($("#mqtt-topic").val());
             },
         });
-
+*/
         $("#mqtt-client-dialog").dialog({
             width: 390,
             modal: true,
