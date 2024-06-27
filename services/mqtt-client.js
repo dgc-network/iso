@@ -1,4 +1,85 @@
 jQuery(document).ready(function($) {
+    initialize_all_MQTT_clients();
+    
+    function initialize_all_MQTT_clients() {
+        // Retrieve all MQTT client posts via AJAX
+        $.ajax({
+            url: '/wp-json/mqtt/v1/initialize', // Adjust the endpoint URL as needed
+            method: 'GET',
+            dataType: 'json', // Ensure the response is parsed as JSON
+            success: function(response) {
+                if (response.length > 0) {
+                    // Loop through all MQTT client posts
+                    response.forEach(function(topic) {
+                        console.log('Post title for topic: ' + topic);
+                        // Initialize MQTT client for this topic
+                        initializeMQTTClient(topic);
+                    });
+                } else {
+                    console.error('No MQTT client posts found.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching MQTT client posts:', xhr.responseText);
+            }
+        });
+    }
+
+    function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
+        const mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+
+        mqttClientInit.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            mqttClientInit.subscribe(topic, function (err) {
+                if (err) {
+                    console.error('Subscription error:', err);
+                }
+            });
+        });
+
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(msg);
+            } catch (e) {
+                console.error('Failed to parse JSON message:', e);
+                return;
+            }
+
+            // Define a mapping of keys to their respective handlers or types
+            const keyMapping = {
+                ssid: 'ssid',
+                password: 'password',
+                temperature: 'temperature',
+                humidity: 'humidity',
+                // Add more mappings as needed
+            };
+
+            Object.keys(parsedMessage).forEach(key => {
+                if (keyMapping[key] !== undefined) {
+                    console.log(`Parsed ${key.charAt(0).toUpperCase() + key.slice(1)}:`, parsedMessage[key]);
+                    update_mqtt_client_data(topic, keyMapping[key], parsedMessage[key]);
+                }
+            });
+
+            // Check if all required keys are present
+            const requiredKeys = ['receiver', 'message', 'latitude', 'longitude'];
+            const hasAllKeys = requiredKeys.every(key => parsedMessage.hasOwnProperty(key));
+
+            if (hasAllKeys) {
+                set_geolocation_message_data(parsedMessage);
+            } else {
+                console.log('Message does not contain all required keys');
+            }
+        });
+    }
+/*    
+});
+
+jQuery(document).ready(function($) {
     // Initialize all MQTT clients via AJAX
     $.ajax({
         url: '/wp-json/mqtt/v1/initialize', // The endpoint URL
@@ -18,7 +99,7 @@ jQuery(document).ready(function($) {
     });
 /*    
 });
-*/
+
 function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
     const mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
 

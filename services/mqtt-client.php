@@ -58,6 +58,28 @@ if (!class_exists('mqtt_client')) {
             $query = new WP_Query($args);
             
             if ($query->have_posts()) {
+                $topics = [];
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $topic = get_the_title();
+                    $topics[] = $topic;
+                }
+                wp_reset_postdata();
+                return new WP_REST_Response($topics, 200);
+            } else {
+                return new WP_REST_Response('No MQTT client posts found.', 404);
+            }
+        }
+/*        
+        function initialize_all_MQTT_clients() {
+            // Fetch all MQTT client posts
+            $args = array(
+                'post_type' => 'mqtt-client',
+                'posts_per_page' => -1,
+            );
+            $query = new WP_Query($args);
+            
+            if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
                     $topic = get_the_title();
@@ -71,7 +93,7 @@ if (!class_exists('mqtt_client')) {
             
             return new WP_REST_Response('MQTT clients initialized.', 200);
         }
-        
+*/        
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
