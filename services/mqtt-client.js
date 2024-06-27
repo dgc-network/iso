@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
     });
 /*    
 });
-/*
+*/
 function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
     const mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
 
@@ -71,7 +71,7 @@ function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port =
 
     });
 }
-*/
+
 /*
 jQuery(document).ready(function($) {
     //let lat;
@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-*/
+
     function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
     
         mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
 
         });
     }
-
+*/
     var map, marker;
     activate_geolocation_message_list_data();
 

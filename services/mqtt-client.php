@@ -44,7 +44,8 @@ if (!class_exists('mqtt_client')) {
         function register_mqtt_rest_endpoint() {
             register_rest_route('mqtt/v1', '/initialize', array(
                 'methods' => 'GET',
-                'callback' => 'initialize_all_MQTT_clients',
+                //'callback' => 'initialize_all_MQTT_clients',
+                'callback' => array( $this, 'initialize_all_MQTT_clients' ),
             ));
         }
         
