@@ -30,6 +30,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response);
+                alert('Data saved!');
             },
             error: function (error) {
                 console.error(error);

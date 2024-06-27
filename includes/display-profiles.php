@@ -71,9 +71,6 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'jobs'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'job', $args );
@@ -93,10 +90,10 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='4') echo $mqtt_client->display_mqtt_client_list();
                 if ($_GET['_select_profile']=='5') echo $mqtt_client->display_geolocation_message_list();
 
-                //$open_ai_api = new open_ai_api();
-                //if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
+                $open_ai_api = new open_ai_api();
+                if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
 
-                if ($_GET['_select_profile']=='6') {
+                if ($_GET['_select_profile']=='7') {
                     // Example usage
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -161,7 +158,6 @@ if (!class_exists('display_profiles')) {
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
                 <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '座標訊息', 'your-text-domain' );?></option>
-                <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( 'Business central', 'your-text-domain' );?></option>
                 </select>
             <?php
         }
@@ -178,13 +174,13 @@ if (!class_exists('display_profiles')) {
             ?>
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(0);?></div>
-                    <div style="text-align: right">
-                        <button type="submit" id="my-profile-submit">Submit</button>
-                    </div>
-                </div>    
-                <hr>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile(0);?></div>
+                <div style="text-align: right">
+                    <button type="submit" id="my-profile-submit">Submit</button>
+                </div>
+            </div>    
+            <hr>
             <fieldset>
                 <label for="display-name"><?php echo __( 'Name: ', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
@@ -192,6 +188,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
+                
                 <label for="my-jobs"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
@@ -224,6 +221,7 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 </fieldset>
+
                 <label for="my-notifications"><?php echo __( 'My notifications: ', 'your-text-domain' );?></label>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
@@ -254,7 +252,39 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
+                </fieldset>
 
+                <label for="my-messages"><?php echo __( 'My messages: ', 'your-text-domain' );?></label>
+                <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Sender', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Message', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_exception_notification_data($current_user_id);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                            $user_data = get_userdata($user_id);
+                            $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
+                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
+                            ?>
+                            <tr id="edit-exception-notification-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
                 </fieldset>
             </fieldset>
             <?php

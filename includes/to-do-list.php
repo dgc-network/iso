@@ -71,33 +71,13 @@ if (!class_exists('to_do_list')) {
         // Create a todo Post Type
         function register_todo_post_type() {
             $labels = array(
-                'name'               => _x('To-Do Items', 'post type general name', 'textdomain'),
-                'singular_name'      => _x('To-Do Item', 'post type singular name', 'textdomain'),
                 'menu_name'          => _x('To-Do Items', 'admin menu', 'textdomain'),
-                'add_new'            => _x('Add New', 'to-do item', 'textdomain'),
-                'add_new_item'       => __('Add New To-Do Item', 'textdomain'),
-                'edit_item'          => __('Edit To-Do Item', 'textdomain'),
-                'new_item'           => __('New To-Do Item', 'textdomain'),
-                'view_item'          => __('View To-Do Item', 'textdomain'),
-                'search_items'       => __('Search To-Do Items', 'textdomain'),
-                'not_found'          => __('No to-do items found', 'textdomain'),
-                'not_found_in_trash' => __('No to-do items found in the Trash', 'textdomain'),
             );
         
             $args = array(
                 'labels'             => $labels,
                 'public'             => true,
-                'publicly_queryable' => true,
-                'show_ui'            => true,
-                'show_in_menu'       => true,
-                'query_var'          => true,
-                'rewrite'            => array('slug' => 'todo'),
-                'capability_type'    => 'post',
-                'has_archive'        => true,
-                'hierarchical'       => false,
-                'menu_position'      => null,
-                'supports'           => array( 'title', 'custom-fields' ),
-                //'show_in_menu'       => false, // Set this to false to hide from the admin menu
+                'show_in_menu'       => false, // Set this to false to hide from the admin menu
             );
             register_post_type('todo', $args);
         }
@@ -144,9 +124,6 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'actions'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'action', $args );
