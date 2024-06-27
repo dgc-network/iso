@@ -409,8 +409,8 @@ if (!class_exists('mqtt_client')) {
             //if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
             //if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
 
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'現在的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'現在的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%。';
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'現在的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C五分鐘了。';
+            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'現在的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%五分鐘了。';
 
             // Parameters to pass to the notification function
             $params = [
