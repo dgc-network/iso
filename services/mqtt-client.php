@@ -450,8 +450,10 @@ if (!class_exists('mqtt_client')) {
             //if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
             //if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
 
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'在'.wp_date('Y-m-d H:i:s', time()-(5 * 60 * 1000)).'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'在'.wp_date('Y-m-d H:i:s', time()-(5 * 60 * 1000)).'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
+            $five_minutes_ago = time()-(5 * 60 * 1000);
+            $five_minutes_ago = wp_date(get_option('date_format'), $five_minutes_ago).' '.wp_date(get_option('time_format'), $five_minutes_ago);
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
+            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
 
             // Parameters to pass to the notification function
             $params = [
