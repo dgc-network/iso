@@ -316,19 +316,19 @@ if (!class_exists('mqtt_client')) {
         }
 
         function update_mqtt_client_data() {
-            if (isset($_POST['_topic']) && isset($_POST['_value'])) {
+            if (isset($_POST['_topic']) && isset($_POST['_key']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
+                $key = sanitize_text_field($_POST['_key']);
                 $value = sanitize_text_field($_POST['_value']);
-                $flag = sanitize_text_field($_POST['_flag']);
 
-                // Find the post by title
+                // Find the mqtt-client post by title
                 $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
 
                 // Update the post meta
-                if ($flag=='temperature') update_post_meta($post->ID, 'temperature', $value);
-                if ($flag=='humidity') update_post_meta($post->ID, 'humidity', $value);
-                if ($flag=="ssid") update_post_meta($post->ID, 'ssid', $value);
-                if ($flag=="password") update_post_meta($post->ID, 'password', $value);
+                if ($key=='temperature') update_post_meta($post->ID, 'temperature', $value);
+                if ($key=='humidity') update_post_meta($post->ID, 'humidity', $value);
+                if ($key=="ssid") update_post_meta($post->ID, 'ssid', $value);
+                if ($key=="password") update_post_meta($post->ID, 'password', $value);
 
                 $query = $this->retrieve_exception_notification_list($post->ID);
                 if ($query->have_posts()) :
@@ -336,18 +336,63 @@ if (!class_exists('mqtt_client')) {
                         $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                         $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
                         $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                        if ($flag=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
-                        if ($flag=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
+                        if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $max_temperature);
+                        if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, false, $max_humidity);
                     endwhile;
                     wp_reset_postdata();
                 endif;
 
+                if (in_array($key, ['topic', 'message', 'latitude', 'longitude'])) {
+                    $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
+                    
+                    if ($post) {
+                        if ($key == 'topic') $this->update_post_field('post_title', $value, $post->ID);
+                        if ($key == 'message') $this->update_post_field('post_content', $value, $post->ID);
+                        if ($key == 'latitude') update_post_meta($post->ID, 'latitude', $value);
+                        if ($key == 'longitude') update_post_meta($post->ID, 'longitude', $value);
+                    } else {
+                        // Create a new post
+                        $post_data = array(
+                            'post_title'    => ($key == 'topic') ? $value : '',
+                            'post_content'  => ($key == 'message') ? $value : '',
+                            'post_status'   => 'publish',
+                            'post_type'     => 'geolocation-message',
+                        );
+                        
+                        $new_post_id = wp_insert_post($post_data);
+                        
+                        if ($key == 'latitude') update_post_meta($new_post_id, 'latitude', $value);
+                        if ($key == 'longitude') update_post_meta($new_post_id, 'longitude', $value);
+                    }
+                }
+/*                
+                if ($key=='topic' || $key=='message' || $key=='latitude' || $key=='longtitude') {
+                    $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
+                    if ($post) {
+                        if ($key=='topic') update_post_field($post->ID, 'title', $value);
+                        if ($key=='message') update_post_field($post->ID, 'content', $value);
+                        if ($key=='latitude') update_post_meta($post->ID, 'latitude', $value);
+                        if ($key=='longtitude') update_post_meta($post->ID, 'longtitude', $value);
+                    } else {
+
+                    }
+                }
+*/
                 wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
                 wp_send_json_error(array('message' => 'Missing topic or value.'));
             }
         }
 
+        function update_post_field($post_id, $field, $value) {
+            // Update the post field
+            $post_data = array(
+                'ID' => $post_id,
+                $field => $value,
+            );
+            wp_update_post($post_data);
+        }
+        
         // Exception notification
         function exception_notification_event($user_id=false, $topic=false, $max_temperature=false, $max_humidity=false) {
             $user_data = get_userdata($user_id);

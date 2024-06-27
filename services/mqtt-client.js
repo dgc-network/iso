@@ -58,13 +58,17 @@ jQuery(document).ready(function($) {
                 password: 'password',
                 temperature: 'temperature',
                 humidity: 'humidity',
+                topic: 'topic',
+                message: 'message',
+                latitude: 'latitude',
+                longitude: 'longitude',
                 // Add more mappings as needed
             };
         
             Object.keys(parsedMessage).forEach(key => {
                 if (keyMapping[key] !== undefined) {
                     console.log(`Parsed ${key.charAt(0).toUpperCase() + key.slice(1)}:`, parsedMessage[key]);
-                    update_mqtt_client_data(topic, parsedMessage[key], keyMapping[key]);
+                    update_mqtt_client_data(topic, keyMapping[key], parsedMessage[key]);
                 }
             });
         });
@@ -442,15 +446,15 @@ jQuery(document).ready(function($) {
         // mqttClientData[topic][type] = value;
     }
 
-    function update_mqtt_client_data(topic, value, flag=false) {
+    function update_mqtt_client_data(topic, key, value) {
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             data: {
                 action: 'update_mqtt_client_data',
                 _topic: topic,
+                _key: key,
                 _value: value,
-                _flag: flag
             },
             success: function(response) {
                 if (response.success) {
