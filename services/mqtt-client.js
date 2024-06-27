@@ -27,7 +27,6 @@ jQuery(document).ready(function($) {
     }
 
     function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        //const container = document.getElementById('mqtt-messages-container');
     
         mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
     
@@ -72,82 +71,6 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-        
-/*        
-        mqttClientInit.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-        
-            let parsedMessage;
-            try {
-                parsedMessage = JSON.parse(msg);
-            } catch (e) {
-                console.error('Failed to parse JSON message:', e);
-                return;
-            }
-        
-            const { ssid, password, temperature, humidity } = parsedMessage;
-        
-            if (temperature !== undefined) {
-                console.log('Parsed Temperature:', temperature);
-                update_mqtt_client_data(topic, temperature, 'temperature');
-            }
-        
-            if (humidity !== undefined) {
-                console.log('Parsed Humidity:', humidity);
-                update_mqtt_client_data(topic, humidity, 'humidity');
-            }
-        
-            if (ssid !== undefined) {
-                console.log('Parsed SSID:', ssid);
-                update_mqtt_client_data(topic, ssid, 'ssid');
-            }
-        
-            if (password !== undefined) {
-                console.log('Parsed Password:', password);
-                update_mqtt_client_data(topic, password, 'password');
-            }
-        });
-/*        
-        mqttClientInit.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-        
-            let parsedMessage;
-            try {
-                parsedMessage = JSON.parse(msg);
-            } catch (e) {
-                console.error('Failed to parse JSON message:', e);
-                return;
-            }
-        
-            if (parsedMessage.messageType === 'Matter' && parsedMessage.data) {
-                const { SSID, Password, Topic, Temperature, Humidity } = parsedMessage.data;
-        
-                if (Temperature !== undefined) {
-                    console.log('Parsed Temperature:', Temperature);
-                    update_mqtt_client_data(topic, Temperature, 'temperature');
-                }
-        
-                if (Humidity !== undefined) {
-                    console.log('Parsed Humidity:', Humidity);
-                    update_mqtt_client_data(topic, Humidity, 'humidity');
-                }
-        
-                if (SSID !== undefined) {
-                    console.log('Parsed SSID:', SSID);
-                    update_mqtt_client_data(topic, SSID, 'ssid');
-                }
-        
-                if (Password !== undefined) {
-                    console.log('Parsed Password:', Password);
-                    update_mqtt_client_data(topic, Password, 'password');
-                }
-            } else {
-                console.log('Message does not match expected format');
-            }
-        });
-*/        
     }
 
     activate_mqtt_client_list_data();
@@ -438,15 +361,8 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function update_mqtt_client_data(topic, value, type) {
-        // Implement your logic to update the MQTT client data here
-        console.log(`Updating ${type} for topic ${topic} with value ${value}`);
-        // Example implementation
-        // mqttClientData[topic] = mqttClientData[topic] || {};
-        // mqttClientData[topic][type] = value;
-    }
-
     function update_mqtt_client_data(topic, key, value) {
+        console.log(`Updating ${key} for topic ${topic} with value ${value}`);
         jQuery.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,

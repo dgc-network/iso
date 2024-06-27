@@ -119,7 +119,7 @@ if (!class_exists('mqtt_client')) {
                             <th><?php echo __( 'Topic', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Message', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Longtitude', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -129,13 +129,13 @@ if (!class_exists('mqtt_client')) {
                                 $topic = get_the_title();
                                 $message = get_the_content();
                                 $latitude = get_post_meta(get_the_ID(), 'latitude', true);
-                                $longtitude = get_post_meta(get_the_ID(), 'longtitude', true);
+                                $longitude = get_post_meta(get_the_ID(), 'longitude', true);
                                 ?>
                                 <tr id="edit-geolocation-message-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($topic);?></td>
                                     <td><?php the_content();?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($longtitude);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -342,18 +342,19 @@ if (!class_exists('mqtt_client')) {
                     wp_reset_postdata();
                 endif;
 
-                if (in_array($key, ['topic', 'message', 'latitude', 'longitude'])) {
+                if (in_array($key, ['phone', 'message', 'latitude', 'longitude'])) {
+                    if ($key == 'phone') $topic=$value;
                     $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
                     
                     if ($post) {
-                        if ($key == 'topic') $this->update_post_field('post_title', $value, $post->ID);
+                        if ($key == 'phone') $this->update_post_field('post_title', $value, $post->ID);
                         if ($key == 'message') $this->update_post_field('post_content', $value, $post->ID);
                         if ($key == 'latitude') update_post_meta($post->ID, 'latitude', $value);
                         if ($key == 'longitude') update_post_meta($post->ID, 'longitude', $value);
                     } else {
                         // Create a new post
                         $post_data = array(
-                            'post_title'    => ($key == 'topic') ? $value : '',
+                            'post_title'    => ($key == 'phone') ? $value : '',
                             'post_content'  => ($key == 'message') ? $value : '',
                             'post_status'   => 'publish',
                             'post_type'     => 'geolocation-message',
@@ -366,13 +367,13 @@ if (!class_exists('mqtt_client')) {
                     }
                 }
 /*                
-                if ($key=='topic' || $key=='message' || $key=='latitude' || $key=='longtitude') {
+                if ($key=='topic' || $key=='message' || $key=='latitude' || $key=='longitude') {
                     $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
                     if ($post) {
                         if ($key=='topic') update_post_field($post->ID, 'title', $value);
                         if ($key=='message') update_post_field($post->ID, 'content', $value);
                         if ($key=='latitude') update_post_meta($post->ID, 'latitude', $value);
-                        if ($key=='longtitude') update_post_meta($post->ID, 'longtitude', $value);
+                        if ($key=='longitude') update_post_meta($post->ID, 'longitude', $value);
                     } else {
 
                     }
