@@ -366,19 +366,7 @@ if (!class_exists('mqtt_client')) {
                         if ($key == 'longitude') update_post_meta($new_post_id, 'longitude', $value);
                     }
                 }
-/*                
-                if ($key=='topic' || $key=='message' || $key=='latitude' || $key=='longitude') {
-                    $post = get_page_by_title($topic, OBJECT, 'geolocation-message');
-                    if ($post) {
-                        if ($key=='topic') update_post_field($post->ID, 'title', $value);
-                        if ($key=='message') update_post_field($post->ID, 'content', $value);
-                        if ($key=='latitude') update_post_meta($post->ID, 'latitude', $value);
-                        if ($key=='longitude') update_post_meta($post->ID, 'longitude', $value);
-                    } else {
 
-                    }
-                }
-*/
                 wp_send_json_success(array('message' => 'Updated successfully.'));
             } else {
                 wp_send_json_error(array('message' => 'Missing topic or value.'));
