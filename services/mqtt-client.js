@@ -1,5 +1,80 @@
 jQuery(document).ready(function($) {
-    let lat;
+    // Initialize all MQTT clients via AJAX
+    $.ajax({
+        url: '/wp-json/mqtt/v1/initialize', // The endpoint URL
+        method: 'GET',
+        success: function(response) {
+            console.log(response);
+            // After fetching the topics, initialize each MQTT client in the front-end
+            const topics = response.split('\n').filter(line => line.startsWith('Initializing MQTT client for topic:'));
+            topics.forEach(function(line) {
+                const topic = line.replace('Initializing MQTT client for topic: ', '');
+                initializeMQTTClient(topic);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching MQTT client posts:', error);
+        }
+    });
+/*    
+});
+/*
+function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
+    const mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
+
+    mqttClientInit.on('connect', function () {
+        console.log('Connected to MQTT broker');
+        mqttClientInit.subscribe(topic, function (err) {
+            if (err) {
+                console.error('Subscription error:', err);
+            }
+        });
+    });
+
+    mqttClientInit.on('message', function (topic, message) {
+        const msg = message.toString();
+        console.log('Message received:', msg);
+
+        let parsedMessage;
+        try {
+            parsedMessage = JSON.parse(msg);
+        } catch (e) {
+            console.error('Failed to parse JSON message:', e);
+            return;
+        }
+
+        // Define a mapping of keys to their respective handlers or types
+        const keyMapping = {
+            ssid: 'ssid',
+            password: 'password',
+            temperature: 'temperature',
+            humidity: 'humidity',
+            // Add more mappings as needed
+        };
+
+        Object.keys(parsedMessage).forEach(key => {
+            if (keyMapping[key] !== undefined) {
+                console.log(`Parsed ${key.charAt(0).toUpperCase() + key.slice(1)}:`, parsedMessage[key]);
+                update_mqtt_client_data(topic, keyMapping[key], parsedMessage[key]);
+            }
+        });
+
+        // Check if all required keys are present
+        const requiredKeys = ['receiver', 'message', 'latitude', 'longitude'];
+        const hasAllKeys = requiredKeys.every(key => parsedMessage.hasOwnProperty(key));
+
+        if (hasAllKeys) {
+            set_geolocation_message_data(parsedMessage);
+        } else {
+            console.log('Message does not contain all required keys');
+        }
+
+    });
+}
+*/
+/*
+jQuery(document).ready(function($) {
+    //let lat;
     // Function to initialize MQTT client with a specific topic
     initialize_all_MQTT_clients();
     function initialize_all_MQTT_clients() {
@@ -25,7 +100,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     function initializeMQTTClient(topic = false, host = 'test.mosquitto.org', port = '8081') {
     
         mqttClientInit = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
@@ -57,10 +132,6 @@ jQuery(document).ready(function($) {
                 password: 'password',
                 temperature: 'temperature',
                 humidity: 'humidity',
-                //topic: 'topic',
-                //message: 'message',
-                //latitude: 'latitude',
-                //longitude: 'longitude',
                 // Add more mappings as needed
             };
         
@@ -84,34 +155,10 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // Geolocation map
     var map, marker;
+    activate_geolocation_message_list_data();
 
-    function updateMap(geolocationData) {
-        // Ensure latitude and longitude are numbers
-        const latitude = parseFloat(geolocationData.data.Latitude);
-        const longitude = parseFloat(geolocationData.data.Longitude);
-
-        // Update the map view to the new geolocation data
-        map.setView([latitude, longitude], 13);
-
-        // If marker already exists, remove it
-        if (marker) {
-            map.removeLayer(marker);
-        }
-
-        // Add a new marker at the updated location
-        marker = L.marker([latitude, longitude]).addTo(map);
-
-        // Add a popup to the marker with some information
-        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
-                          <b>Latitude:</b> ${latitude}<br>
-                          <b>Longitude:</b> ${longitude}<br>
-                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
-                          <b>receiver:</b> ${geolocationData.data.receiver}°C<br>
-                          <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
-    }
-
+    // geolocation-message scripts
     function set_geolocation_message_data(data) {
         // Use AJAX to call a WordPress function to create a new post
         $.ajax({
@@ -134,15 +181,10 @@ jQuery(document).ready(function($) {
         });
     }
 
-    activate_geolocation_message_list_data();
-
-    // geolocation-message scripts
     function activate_geolocation_message_list_data(){
 
         $('[id^="edit-geolocation-message-"]').on("click", function () {
             const geolocation_message_id = this.id.substring(25);
-            //$("#geolocation-dialog").dialog('open');
-
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -181,11 +223,7 @@ jQuery(document).ready(function($) {
                 // Update the map view to the new geolocation data
                 latitude = $("#latitude").val();
                 longitude = $("#longitude").val();
-                map.setView([latitude, longitude], 13);
-
-                // Update the message at the bottom of the dialog
-                //var message = "Displaying geolocation data for latitude " + latitude + " and longitude " + longitude;
-                //$("#dialog-message").text(message);
+                map.setView([latitude, longitude], 18);
             },
             close: function(event, ui) {
                 if (map) {
@@ -194,7 +232,32 @@ jQuery(document).ready(function($) {
                 }
             }
         });
+    }
 
+    // Geolocation map
+    function updateMap(geolocationData) {
+        // Ensure latitude and longitude are numbers
+        const latitude = parseFloat(geolocationData.data.Latitude);
+        const longitude = parseFloat(geolocationData.data.Longitude);
+
+        // Update the map view to the new geolocation data
+        map.setView([latitude, longitude], 13);
+
+        // If marker already exists, remove it
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        // Add a new marker at the updated location
+        marker = L.marker([latitude, longitude]).addTo(map);
+
+        // Add a popup to the marker with some information
+        marker.bindPopup(`<b>Device ID:</b> ${geolocationData.deviceID}<br>
+                          <b>Latitude:</b> ${latitude}<br>
+                          <b>Longitude:</b> ${longitude}<br>
+                          <b>Timestamp:</b> ${new Date(geolocationData.timestamp * 1000).toLocaleString()}<br>
+                          <b>receiver:</b> ${geolocationData.data.receiver}°C<br>
+                          <b>Message:</b> ${geolocationData.data.Message}%`).openPopup();
     }
 
     function display_geolocation(topic = false, host = 'test.mosquitto.org', port = '8081'){
@@ -221,7 +284,7 @@ jQuery(document).ready(function($) {
             const msg = message.toString();
             try {
                 const geolocationData = JSON.parse(msg);
-                updateMap(geolocationData);
+                //updateMap(geolocationData);
             } catch (e) {
                 console.error("Invalid JSON message:", msg);
             }
@@ -303,25 +366,13 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-/*
-        $("#geolocation-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            open: function(event, ui) {
-                display_geolocation($("#mqtt-topic").val());
-            },
-        });
-*/
+
         $("#mqtt-client-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
                 display_MQTT_message($("#mqtt-topic").val());
-            },
-            close: function(event, ui) {
-                //close_MQTT_Client();
             },
             buttons: {
                 "Save": function () {
@@ -339,7 +390,6 @@ jQuery(document).ready(function($) {
                             '_password': $("#password").val(),
                         },
                         success: function (response) {
-                            //publishMQTTMessage("mytopic/newDeviceID", $("#client-id").val());
                             $("#mqtt-client-dialog").dialog('close');
                             get_mqtt_client_list_data();
                         },
@@ -373,45 +423,7 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-/*
-            // Function to get current geolocation
-            function getCurrentLocation() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition, showError);
-                } else {
-                    alert("Geolocation is not supported by this browser.");
-                }
-            }
-    
-            // Show the position on the map
-            function showPosition(position) {
-                //var lat = position.coords.latitude;
-                lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                var accuracy = position.coords.accuracy;
-            }
-    
-            // Handle geolocation errors
-            function showError(error) {
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        alert("User denied the request for Geolocation.");
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        alert("Location information is unavailable.");
-                        break;
-                    case error.TIMEOUT:
-                        alert("The request to get user location timed out.");
-                        break;
-                    case error.UNKNOWN_ERROR:
-                        alert("An unknown error occurred.");
-                        break;
-                }
-            }
-    
-            // Get current location on page load
-            window.onload = getCurrentLocation;
-*/    
+
     function get_mqtt_client_list_data(){
         $.ajax({
             type: 'POST',
@@ -434,8 +446,6 @@ jQuery(document).ready(function($) {
     let mqttClient;
 
     function display_MQTT_message(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        //const container = document.getElementById('mqtt-messages-container');
-    
         // Disconnect previous client if exists
         if (mqttClient) {
             mqttClient.end();

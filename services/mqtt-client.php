@@ -36,8 +36,41 @@ if (!class_exists('mqtt_client')) {
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
+
+            add_action( 'rest_api_init', array( $this, 'register_mqtt_rest_endpoint' ) );
+
         }
 
+        function register_mqtt_rest_endpoint() {
+            register_rest_route('mqtt/v1', '/initialize', array(
+                'methods' => 'GET',
+                'callback' => 'initialize_all_MQTT_clients',
+            ));
+        }
+        
+        function initialize_all_MQTT_clients() {
+            // Fetch all MQTT client posts
+            $args = array(
+                'post_type' => 'mqtt-client',
+                'posts_per_page' => -1,
+            );
+            $query = new WP_Query($args);
+            
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $topic = get_the_title();
+                    echo "Initializing MQTT client for topic: $topic\n";
+                    // Here, you would initialize the MQTT client (this part needs to be handled in JS)
+                }
+                wp_reset_postdata();
+            } else {
+                echo 'No MQTT client posts found.';
+            }
+            
+            return new WP_REST_Response('MQTT clients initialized.', 200);
+        }
+        
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -75,7 +108,7 @@ if (!class_exists('mqtt_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                //'show_in_menu'  => false,
+                'show_in_menu'  => false,
             );
             register_post_type( 'geolocation-message', $args );
         }
@@ -88,9 +121,6 @@ if (!class_exists('mqtt_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'notifications'),
-                'supports'      => array( 'title', 'editor', 'custom-fields' ),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'notification', $args );
