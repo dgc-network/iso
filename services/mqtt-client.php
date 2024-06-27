@@ -39,12 +39,19 @@ if (!class_exists('mqtt_client')) {
 
             add_action( 'rest_api_init', array( $this, 'register_mqtt_rest_endpoint' ) );
 
+            // Schedule the event
+            if (!wp_next_scheduled('mqtt_clients_initialization_event')) {
+                wp_schedule_event(time(), 'hourly', 'mqtt_clients_initialization_event');
+            }
+            
+            // Hook into that event to run the initialization function
+            add_action('mqtt_clients_initialization_event', array( $this, 'initialize_all_MQTT_clients'));
+    
         }
-
+        
         function register_mqtt_rest_endpoint() {
             register_rest_route('mqtt/v1', '/initialize', array(
                 'methods' => 'GET',
-                //'callback' => 'initialize_all_MQTT_clients',
                 'callback' => array( $this, 'initialize_all_MQTT_clients' ),
             ));
         }
@@ -70,30 +77,7 @@ if (!class_exists('mqtt_client')) {
                 return new WP_REST_Response('No MQTT client posts found.', 404);
             }
         }
-/*        
-        function initialize_all_MQTT_clients() {
-            // Fetch all MQTT client posts
-            $args = array(
-                'post_type' => 'mqtt-client',
-                'posts_per_page' => -1,
-            );
-            $query = new WP_Query($args);
-            
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $topic = get_the_title();
-                    echo "Initializing MQTT client for topic: $topic\n";
-                    // Here, you would initialize the MQTT client (this part needs to be handled in JS)
-                }
-                wp_reset_postdata();
-            } else {
-                echo 'No MQTT client posts found.';
-            }
-            
-            return new WP_REST_Response('MQTT clients initialized.', 200);
-        }
-*/        
+
         function enqueue_mqtt_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
