@@ -183,7 +183,7 @@ if (!class_exists('mqtt_client')) {
             $geolocation_message_id = sanitize_text_field($_POST['_geolocation_message_id']);
             $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
             $response['longitude'] = get_post_meta($geolocation_message_id, 'longitude', true);
-            $response['message'] = get_post_meta($geolocation_message_id, 'message', true);
+            $response['message'] = get_post_field('post_content', $geolocation_message_id);
             wp_send_json($response);
         }
 
