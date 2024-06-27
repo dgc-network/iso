@@ -52,6 +52,36 @@ jQuery(document).ready(function($) {
                 return;
             }
         
+            // Define a mapping of keys to their respective handlers or types
+            const keyMapping = {
+                ssid: 'ssid',
+                password: 'password',
+                temperature: 'temperature',
+                humidity: 'humidity',
+                // Add more mappings as needed
+            };
+        
+            Object.keys(parsedMessage).forEach(key => {
+                if (keyMapping[key] !== undefined) {
+                    console.log(`Parsed ${key.charAt(0).toUpperCase() + key.slice(1)}:`, parsedMessage[key]);
+                    update_mqtt_client_data(topic, parsedMessage[key], keyMapping[key]);
+                }
+            });
+        });
+        
+/*        
+        mqttClientInit.on('message', function (topic, message) {
+            const msg = message.toString();
+            console.log('Message received:', msg);
+        
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(msg);
+            } catch (e) {
+                console.error('Failed to parse JSON message:', e);
+                return;
+            }
+        
             const { ssid, password, temperature, humidity } = parsedMessage;
         
             if (temperature !== undefined) {
@@ -402,6 +432,14 @@ jQuery(document).ready(function($) {
             mqttClient = null;
             console.log('Disconnected from MQTT broker');
         }
+    }
+
+    function update_mqtt_client_data(topic, value, type) {
+        // Implement your logic to update the MQTT client data here
+        console.log(`Updating ${type} for topic ${topic} with value ${value}`);
+        // Example implementation
+        // mqttClientData[topic] = mqttClientData[topic] || {};
+        // mqttClientData[topic][type] = value;
     }
 
     function update_mqtt_client_data(topic, value, flag=false) {

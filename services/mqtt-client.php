@@ -10,6 +10,7 @@ if (!class_exists('mqtt_client')) {
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
+            add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
             add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
 
@@ -39,7 +40,6 @@ if (!class_exists('mqtt_client')) {
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
             wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
             wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
-            //wp_enqueue_script('paho-mqtt', "https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.3/mqttws31.min.js");
             wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
 
             wp_enqueue_script('mqtt-client', plugins_url('mqtt-client.js', __FILE__), array('jquery'), $version);
@@ -63,6 +63,19 @@ if (!class_exists('mqtt_client')) {
             register_post_type( 'mqtt-client', $args );
         }
 
+        // Register geolocation-message post type
+        function register_geolocation_message_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Geolocation', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'geolocation-message', $args );
+        }
+
         // Register exception-notification post type
         function register_exception_notification_post_type() {
             $labels = array(
@@ -78,6 +91,81 @@ if (!class_exists('mqtt_client')) {
             );
             register_post_type( 'notification', $args );
         }
+
+        // Geolocation message
+        function display_geolocation_message_list() {
+            ob_start();
+            $profiles_class = new display_profiles();
+            $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $is_site_admin = $profiles_class->is_site_admin();
+    
+            // Check if the user is administrator
+            if ($is_site_admin || current_user_can('administrator')) {
+                ?>
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo __( '座標訊息', 'your-text-domain' );?></h2>
+                <fieldset>
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div><?php $profiles_class->display_select_profile(5);?></div>                        
+                        <div style="text-align: right"></div>                        
+                    </div>
+        
+                    <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Topic', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Message', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Longtitude', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $query = $this->retrieve_geolocation_message_data();
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $topic = get_the_title();
+                                $message = get_the_content();
+                                $latitude = get_post_meta(get_the_ID(), 'latitude', true);
+                                $longtitude = get_post_meta(get_the_ID(), 'longtitude', true);
+                                ?>
+                                <tr id="edit-geolocation-message-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php echo esc_html($topic);?></td>
+                                    <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($longtitude);?></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    </fieldset>        
+                </fieldset>
+                <div id="geolocation-dialog" title="Geolocation map"><div id="map" style="height:500px;"></div></div>
+                <?php
+            } else {
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
+            }
+            return ob_get_clean();
+        }
+        
+        function retrieve_geolocation_message_data() {
+            $args = array(
+                'post_type'      => 'geolocation-message',
+                'posts_per_page' => -1,        
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+
 
         // MQTT Client
         function display_mqtt_client_list() {
