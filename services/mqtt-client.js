@@ -79,6 +79,30 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function update_mqtt_client_data(topic, key, value) {
+        console.log(`Updating ${key} for topic ${topic} with value ${value}`);
+        jQuery.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            data: {
+                action: 'update_mqtt_client_data',
+                _topic: topic,
+                _key: key,
+                _value: value,
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log(response.data.message);
+                } else {
+                    console.error(response.data.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
+    }
+
     var map, marker;
     activate_geolocation_message_list_data();
 
@@ -391,30 +415,6 @@ jQuery(document).ready(function($) {
             mqttClient = null;
             console.log('Disconnected from MQTT broker');
         }
-    }
-
-    function update_mqtt_client_data(topic, key, value) {
-        console.log(`Updating ${key} for topic ${topic} with value ${value}`);
-        jQuery.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            data: {
-                action: 'update_mqtt_client_data',
-                _topic: topic,
-                _key: key,
-                _value: value,
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log(response.data.message);
-                } else {
-                    console.error(response.data.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-            }
-        });
     }
 
     // Exception notification scripts
