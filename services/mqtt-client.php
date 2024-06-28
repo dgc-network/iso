@@ -441,6 +441,74 @@ if (!class_exists('mqtt_client')) {
         
         // Exception notification
         function exception_notification_event($user_id=false, $topic=false, $value=false, $max_temperature=false, $max_humidity=false) {
+            //$user_data = get_userdata($user_id);
+            //$link_uri = home_url().'/display-profiles/?_id='.$user_id;
+        
+            // Find the post by title
+            $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+            $content = get_post_field('post_content', $post->ID);
+            
+            // Prepare the notification message
+            $five_minutes_ago = time() - (5 * 60);
+            $five_minutes_ago_formatted = wp_date(get_option('date_format'), $five_minutes_ago) . ' ' . wp_date(get_option('time_format'), $five_minutes_ago);
+        
+            if ($max_temperature) {
+                $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago_formatted.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
+            }
+            if ($max_humidity) {
+                $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago_formatted.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
+            }
+        
+            // Check if a notification has been sent today
+            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $topic, true);
+            $today = wp_date('Y-m-d');
+        
+            if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
+                // Notification already sent today, do not send again
+                return;
+            }
+        
+            // Parameters to pass to the notification function
+            $params = [
+                'user_id' => $user_id,
+                //'topic' => $topic,
+                'text_message' => $text_message,
+            ];
+        
+            // Schedule the event to run after 5 minutes (300 seconds)
+            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
+        
+            // Update the last notification time
+            update_user_meta($user_id, 'last_notification_time_' . $topic, time());
+        }
+        
+        // Hook for sending delayed notification
+        //add_action('send_delayed_notification', 'send_delayed_notification_handler');
+        
+        function send_delayed_notification_handler($params) {
+            $user_id = $params['user_id'];
+            $text_message = $params['text_message'];
+            
+            $user_data = get_userdata($user_id);
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        
+            // Prepare the flex message
+            $flexMessage = set_flex_message([
+                'display_name' => $user_data->display_name,
+                'link_uri' => home_url() . '/display-profiles/?_id=' . $user_id,
+                'text_message' => $text_message,
+            ]);
+        
+            // Send the message via the LINE API
+            $line_bot_api = new line_bot_api();
+            $line_bot_api->pushMessage([
+                'to' => $line_user_id,
+                'messages' => [$flexMessage],
+            ]);
+        }
+/*        
+        // Exception notification
+        function exception_notification_event($user_id=false, $topic=false, $value=false, $max_temperature=false, $max_humidity=false) {
             $user_data = get_userdata($user_id);
             $link_uri = home_url().'/display-profiles/?_id='.$user_id;
             // Find the post by title
@@ -450,10 +518,10 @@ if (!class_exists('mqtt_client')) {
             if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'°C。';
             if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
 
-            //$five_minutes_ago = time()-(5 * 60 * 1000);
-            //$five_minutes_ago = wp_date(get_option('date_format'), $five_minutes_ago).' '.wp_date(get_option('time_format'), $five_minutes_ago);
-            //if ($max_temperature) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
-            //if ($max_humidity) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
+            $five_minutes_ago = time()-(5 * 60 * 1000);
+            $five_minutes_ago = wp_date(get_option('date_format'), $five_minutes_ago).' '.wp_date(get_option('time_format'), $five_minutes_ago);
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
+            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
 
             // Parameters to pass to the notification function
             $params = [
@@ -488,7 +556,7 @@ if (!class_exists('mqtt_client')) {
                 'messages' => [$flexMessage],
             ]);
         }
-        
+*/        
         function display_exception_notification_list($mqtt_client_id=false) {
             ob_start();
                 ?>
