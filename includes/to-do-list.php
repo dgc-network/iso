@@ -723,7 +723,6 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
-            <fieldset>
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
@@ -749,7 +748,6 @@ if (!class_exists('to_do_list')) {
                 </div>
                 <?php echo $html_contain;?>
                 <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
-            </fieldset>
             </div>
             <?php
         }
