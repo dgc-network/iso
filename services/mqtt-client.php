@@ -10,6 +10,7 @@ if (!class_exists('mqtt_client')) {
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mqtt_client_scripts' ) );
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
+            add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -106,6 +107,19 @@ if (!class_exists('mqtt_client')) {
                 'show_in_menu'  => false,
             );
             register_post_type( 'mqtt-client', $args );
+        }
+
+        // Register geolocation-message post type
+        function register_iot_message_post_type() {
+            $labels = array(
+                'menu_name'     => _x('iot-message', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'iot-message', $args );
         }
 
         // Register geolocation-message post type
