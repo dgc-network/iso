@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+    console.log('jQuery document ready');
     initialize_all_MQTT_clients();
     
     function initialize_all_MQTT_clients() {
@@ -8,6 +9,7 @@ jQuery(document).ready(function($) {
             method: 'GET',
             dataType: 'json', // Ensure the response is parsed as JSON
             success: function(response) {
+                console.log('MQTT client posts response:', response);
                 if (response.length > 0) {
                     // Loop through all MQTT client posts
                     response.forEach(function(topic) {
