@@ -619,9 +619,6 @@ if (!class_exists('display_documents')) {
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            //$todo_class = new to_do_list();
-            //$signature_record_list = $todo_class->get_signature_record_list($doc_id);
-            //$html_contain = $signature_record_list['html'];
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -647,7 +644,6 @@ if (!class_exists('display_documents')) {
                 <?php echo $signature_record_list['html']?>
             </div>
         
-            <fieldset>
                 <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
                     <fieldset>
                         <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
@@ -669,6 +665,7 @@ if (!class_exists('display_documents')) {
                     </div>
                 </div>
 
+            <fieldset>
                 <table style="width:100%;">
                     <thead>
                         <?php
@@ -747,13 +744,6 @@ if (!class_exists('display_documents')) {
                     echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
                     if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
                     ?>
-                </div>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                    </div>
-                    <div style="text-align:right; display:flex;">
-                    </div>
                 </div>
             </fieldset>
             <?php
