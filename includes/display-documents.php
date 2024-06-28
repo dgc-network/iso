@@ -562,9 +562,9 @@ if (!class_exists('display_documents')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $todo_class = new to_do_list();
-            $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
-            $html_contain = $signature_record_list['html'];
+            //$todo_class = new to_do_list();
+            //$signature_record_list = $todo_class->get_signature_record_list($doc_id);
+            //$html_contain = $signature_record_list['html'];
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -582,7 +582,9 @@ if (!class_exists('display_documents')) {
             </div>
         
             <div id="signature-record-div" style="display:none;">
-                <?php echo $html_contain;?>
+                <?php $todo_class = new to_do_list();?>
+                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
+                <?php echo $signature_record_list['html']?>
             </div>
             
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -617,9 +619,9 @@ if (!class_exists('display_documents')) {
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $todo_class = new to_do_list();
-            $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
-            $html_contain = $signature_record_list['html'];
+            //$todo_class = new to_do_list();
+            //$signature_record_list = $todo_class->get_signature_record_list($doc_id);
+            //$html_contain = $signature_record_list['html'];
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -640,7 +642,9 @@ if (!class_exists('display_documents')) {
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             
             <div id="signature-record-div" style="display:none;">
-                <?php echo $html_contain;?>
+                <?php $todo_class = new to_do_list();?>
+                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
+                <?php echo $signature_record_list['html']?>
             </div>
         
             <fieldset>
@@ -845,13 +849,11 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) $doc_title .= '(電子表單)';
-            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
-        
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $todo_class = new to_do_list();
-            $signature_record_list = $todo_class->get_signature_record_list($site_id, false, $report_id);
-            $html_contain = $signature_record_list['html'];
+            //$todo_class = new to_do_list();
+            //$signature_record_list = $todo_class->get_signature_record_list(false, $report_id);
+            //$html_contain = $signature_record_list['html'];
         
             ob_start();
             ?>
@@ -869,7 +871,9 @@ if (!class_exists('display_documents')) {
             </div>
         
             <div id="report-signature-record-div" style="display:none;">
-                <?php echo $html_contain;?>
+                <?php $todo_class = new to_do_list();?>
+                <?php $signature_record_list = $todo_class->get_signature_record_list(false, $report_id);?>
+                <?php echo $signature_record_list['html']?>
             </div>
         
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />

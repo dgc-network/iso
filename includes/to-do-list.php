@@ -716,7 +716,7 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $current_user = get_userdata( $current_user_id );
-            $signature_record_list = $this->get_signature_record_list($site_id);
+            $signature_record_list = $this->get_signature_record_list();
             $html_contain = $signature_record_list['html'];
             $x_value = $signature_record_list['x'];
             ?>
@@ -752,7 +752,9 @@ if (!class_exists('to_do_list')) {
             <?php
         }
         
-        function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
+        function get_signature_record_list($doc=false, $report=false ) {
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true);
             ob_start();
             ?>
             <fieldset>
@@ -782,11 +784,10 @@ if (!class_exists('to_do_list')) {
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                             $report_id = get_post_meta(get_the_ID(), 'report_id', true);
                             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                            $todo_site = get_post_meta($doc_id, 'site_id', true);
+                            $site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             if ($is_doc_report) $doc_title .= '(電子表單)';
-                            //if ($report_id) $doc_title .= '(Report#'.$report_id.')';
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
@@ -794,8 +795,8 @@ if (!class_exists('to_do_list')) {
                             $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
         
-                            if ($todo_site==$site_id) { // Aditional condition to filter the data
-                                $current_user = get_userdata( $submit_user );
+                            if ($current_site==$site_id) { // Aditional condition to filter the data
+                                $user_data = get_userdata( $submit_user );
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                     <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
@@ -803,7 +804,7 @@ if (!class_exists('to_do_list')) {
                                     <td><?php echo esc_html($doc_title);?></td>
                                     <?php };?>
                                     <td style="text-align:center;"><?php esc_html(the_title());?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($current_user->display_name);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                                     <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
                                     <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 </tr>
