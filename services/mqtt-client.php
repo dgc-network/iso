@@ -12,7 +12,6 @@ if (!class_exists('mqtt_client')) {
             add_action( 'init', array( $this, 'register_mqtt_client_post_type' ) );
             add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
-            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
 
             add_action( 'wp_ajax_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_mqtt_client_list_data', array( $this, 'get_mqtt_client_list_data' ) );
@@ -45,8 +44,9 @@ if (!class_exists('mqtt_client')) {
             }
             
             // Hook into that event to run the initialization function
-            add_action('mqtt_clients_initialization_event', array( $this, 'initialize_all_MQTT_clients'));
-    
+            add_action( 'mqtt_clients_initialization_event', array( $this, 'initialize_all_MQTT_clients' ) );
+            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
+
         }
         
         function register_mqtt_rest_endpoint() {

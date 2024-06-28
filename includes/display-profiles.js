@@ -30,7 +30,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response);
-                alert('Data saved!');
+                alert("Data update success!");
             },
             error: function (error) {
                 console.error(error);
@@ -119,7 +119,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert("Success!");
+                        alert("Data update success!");
                     } else {
                         alert("Error: " + response.error);
                     }
