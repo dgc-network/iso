@@ -447,7 +447,7 @@ if (!class_exists('mqtt_client')) {
             $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
             $content = get_post_field('post_content', $post->ID);
         
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'度C。';
+            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'°C。';
             if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
 
             //$five_minutes_ago = time()-(5 * 60 * 1000);

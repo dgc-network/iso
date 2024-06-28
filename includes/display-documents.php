@@ -72,28 +72,12 @@ if (!class_exists('display_documents')) {
         // Register document post type
         function register_document_post_type() {
             $labels = array(
-                'name'               => _x( 'Documents', 'post type general name', 'your-text-domain' ),
-                'singular_name'      => _x( 'Document', 'post type singular name', 'your-text-domain' ),
-                'add_new'            => _x( 'Add New Document', 'book', 'your-text-domain' ),
-                'add_new_item'       => __( 'Add New Document', 'your-text-domain' ),
-                'edit_item'          => __( 'Edit Document', 'your-text-domain' ),
-                'new_item'           => __( 'New Document', 'your-text-domain' ),
-                'all_items'          => __( 'All Documents', 'your-text-domain' ),
-                'view_item'          => __( 'View Document', 'your-text-domain' ),
-                'search_items'       => __( 'Search Documents', 'your-text-domain' ),
-                'not_found'          => __( 'No documents found', 'your-text-domain' ),
-                'not_found_in_trash' => __( 'No documents found in the Trash', 'your-text-domain' ),
-                'parent_item_colon'  => '',
-                'menu_name'          => 'Documents'
+                'menu_name'     => _x('Documents', 'admin menu', 'textdomain'),
             );
         
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'supports'      => array( 'title', 'custom-fields' ),
-                'taxonomies'    => array( 'category', 'post_tag' ),
-                'has_archive'   => true,
-                'rewrite'       => array( 'slug' => 'documents' ),
                 'show_in_menu'  => false,
             );
             register_post_type( 'document', $args );
@@ -126,9 +110,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'doc-reports'),
-                'supports'      => array('title', 'editor', 'custom-fields'),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'doc-report', $args );
@@ -142,9 +123,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'doc-fields'),
-                'supports'      => array('title', 'editor', 'custom-fields'),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'doc-field', $args );
@@ -158,9 +136,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'rewrite'       => array('slug' => 'doc-categories'),
-                'supports'      => array('title', 'editor', 'custom-fields'),
-                'has_archive'   => true,
                 'show_in_menu'  => false,
             );
             register_post_type( 'doc-category', $args );
@@ -239,7 +214,6 @@ if (!class_exists('display_documents')) {
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
-            <fieldset>
                 <div id="document-setting-dialog" title="Document setting" style="display:none">
                 <fieldset>
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
@@ -257,6 +231,8 @@ if (!class_exists('display_documents')) {
                         <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
+
+            <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -588,7 +564,7 @@ if (!class_exists('display_documents')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $todo_class = new to_do_list();
             $signature_record_list = $todo_class->get_signature_record_list($site_id, $doc_id);
-            $$html_contain = $signature_record_list['html'];
+            $html_contain = $signature_record_list['html'];
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -606,7 +582,7 @@ if (!class_exists('display_documents')) {
             </div>
         
             <div id="signature-record-div" style="display:none;">
-                <fieldset><?php echo $$html_contain;?></fieldset>
+                <?php echo $html_contain;?>
             </div>
             
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -663,7 +639,9 @@ if (!class_exists('display_documents')) {
         
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             
-            <div id="signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
+            <div id="signature-record-div" style="display:none;">
+                <?php echo $html_contain;?>
+            </div>
         
             <fieldset>
                 <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
@@ -890,7 +868,9 @@ if (!class_exists('display_documents')) {
                 </div>
             </div>
         
-            <div id="report-signature-record-div" style="display:none;"><fieldset><?php echo $html_contain;?></fieldset></div>
+            <div id="report-signature-record-div" style="display:none;">
+                <?php echo $html_contain;?>
+            </div>
         
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />

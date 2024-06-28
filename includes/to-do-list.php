@@ -72,8 +72,7 @@ if (!class_exists('to_do_list')) {
         function register_todo_post_type() {
             $labels = array(
                 'menu_name'          => _x('To-Do Items', 'admin menu', 'textdomain'),
-            );
-        
+            );        
             $args = array(
                 'labels'             => $labels,
                 'public'             => true,
@@ -138,7 +137,6 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
-            <fieldset>
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
@@ -163,6 +161,7 @@ if (!class_exists('to_do_list')) {
                     </div>
                 </div>
 
+            <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -718,7 +717,7 @@ if (!class_exists('to_do_list')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             $current_user = get_userdata( $current_user_id );
             $signature_record_list = $this->get_signature_record_list($site_id);
-            $$html_contain = $signature_record_list['html'];
+            $html_contain = $signature_record_list['html'];
             $x_value = $signature_record_list['x'];
             ?>
             <div class="ui-widget" id="result-container">
@@ -748,7 +747,7 @@ if (!class_exists('to_do_list')) {
                         <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
-                <?php echo $$html_contain;?>
+                <?php echo $html_contain;?>
                 <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
             </fieldset>
             </div>
@@ -758,6 +757,7 @@ if (!class_exists('to_do_list')) {
         function get_signature_record_list($site_id=false, $doc=false, $report=false ) {
             ob_start();
             ?>
+            <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -825,6 +825,7 @@ if (!class_exists('to_do_list')) {
                     if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
                     ?>
                 </div>
+            </fieldset>
             <?php
             //$html = ob_get_clean();
             // Return an array containing both HTML content and $x
