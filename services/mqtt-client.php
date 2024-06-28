@@ -45,7 +45,8 @@ if (!class_exists('mqtt_client')) {
             
             // Hook into that event to run the initialization function
             add_action( 'mqtt_clients_initialization_event', array( $this, 'initialize_all_MQTT_clients' ) );
-            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
+            //add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
+            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification_handler' ) );
 
         }
         
