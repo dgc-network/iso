@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    initialize_all_MQTT_clients();
+    //initialize_all_MQTT_clients();
     
     function initialize_all_MQTT_clients() {
         // Retrieve all MQTT client posts via AJAX
