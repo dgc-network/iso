@@ -117,7 +117,8 @@ if (!class_exists('mqtt_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                'show_in_rest'  => true,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'iot-message', $args );
         }
