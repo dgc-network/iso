@@ -11,7 +11,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
             add_action( 'init', array( $this, 'register_http_client_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
-            add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
+            //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
             add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
@@ -36,7 +36,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
-
+/*
             add_action( 'rest_api_init', array( $this, 'register_mqtt_rest_endpoint' ) );
 
             // Schedule the event
@@ -48,9 +48,9 @@ if (!class_exists('http_client')) {
             add_action( 'http_clients_initialization_event', array( $this, 'initialize_all_http_clients' ) );
             //add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
             add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification_handler' ) );
-
+*/
         }
-        
+/*        
         function register_mqtt_rest_endpoint() {
             register_rest_route('mqtt/v1', '/initialize', array(
                 'methods' => 'GET',
@@ -79,7 +79,7 @@ if (!class_exists('http_client')) {
                 return new WP_REST_Response('No MQTT client posts found.', 404);
             }
         }
-
+*/
         function enqueue_http_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -122,7 +122,7 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'iot-message', $args );
         }
-
+/*
         // Register geolocation-message post type
         function register_geolocation_message_post_type() {
             $labels = array(
@@ -135,7 +135,7 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'geolocation-message', $args );
         }
-
+*/
         // Register exception-notification post type
         function register_exception_notification_post_type() {
             $labels = array(
@@ -150,7 +150,7 @@ if (!class_exists('http_client')) {
         }
 
         // Geolocation message
-        function display_geolocation_message_list() {
+        function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
             $current_user_id = get_current_user_id();
@@ -163,7 +163,7 @@ if (!class_exists('http_client')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-                <h2 style="display:inline;"><?php echo __( '座標訊息', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div><?php $profiles_class->display_select_profile(5);?></div>                        
@@ -176,12 +176,14 @@ if (!class_exists('http_client')) {
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Receiver', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Message', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'T(C)', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'H(%)', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->retrieve_geolocation_message_data();
+                        $query = $this->retrieve_iot_message_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 // Get post creation time
@@ -195,6 +197,8 @@ if (!class_exists('http_client')) {
                                     <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
                                 </tr>
@@ -222,25 +226,25 @@ if (!class_exists('http_client')) {
             return ob_get_clean();
         }
         
-        function retrieve_geolocation_message_data() {
+        function retrieve_iot_message_data() {
             $args = array(
-                'post_type'      => 'geolocation-message',
+                'post_type'      => 'iot-message',
                 'posts_per_page' => -1,        
             );
             $query = new WP_Query($args);
             return $query;
         }
 
-        function get_geolocation_message_data() {
+        function get_iot_message_data() {
             $response = array();
-            $geolocation_message_id = sanitize_text_field($_POST['_geolocation_message_id']);
+            $iot_message_id = sanitize_text_field($_POST['_iot_message_id']);
             $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
             $response['longitude'] = get_post_meta($geolocation_message_id, 'longitude', true);
             $response['message'] = get_post_field('post_content', $geolocation_message_id);
             wp_send_json($response);
         }
 
-        function set_geolocation_message_data() {
+        function set_iot_message_data() {
             $receiver = sanitize_text_field($_POST['receiver']);
             $message = sanitize_text_field($_POST['message']);
             $latitude = sanitize_text_field($_POST['latitude']);
@@ -251,7 +255,7 @@ if (!class_exists('http_client')) {
                 'post_title'    => $receiver, // Using receiver as the title
                 'post_content'  => $message,
                 'post_status'   => 'publish',
-                'post_type'     => 'geolocation-message',
+                'post_type'     => 'iot-message',
             );
         
             $new_post_id = wp_insert_post($post_data);

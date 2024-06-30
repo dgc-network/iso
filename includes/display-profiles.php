@@ -76,6 +76,20 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'job', $args );
         }
 
+        // Select profile
+        function display_select_profile($select_option=false) {
+            ?>
+            <select id="select-profile">
+                <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( 'HTTP Clients', 'your-text-domain' );?></option>
+                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
+                </select>
+            <?php
+        }
+
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
@@ -88,7 +102,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
                 $http_client = new http_client();
                 if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
-                if ($_GET['_select_profile']=='5') echo $http_client->display_geolocation_message_list();
+                if ($_GET['_select_profile']=='5') echo $http_client->display_iot_message_list();
 
                 $open_ai_api = new open_ai_api();
                 if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
@@ -146,20 +160,6 @@ if (!class_exists('display_profiles')) {
             } else {
                 user_did_not_login_yet();
             }
-        }
-
-        // Select profile
-        function display_select_profile($select_option=false) {
-            ?>
-            <select id="select-profile">
-                <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度計', 'your-text-domain' );?></option>
-                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '座標訊息', 'your-text-domain' );?></option>
-                </select>
-            <?php
         }
 
         // my-profile scripts
