@@ -10,8 +10,9 @@ if (!class_exists('http_client')) {
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
             add_action( 'init', array( $this, 'register_http_client_post_type' ) );
-            add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
+            //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
+            add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -109,7 +110,7 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'http-client', $args );
         }
-
+/*
         // Register geolocation-message post type
         function register_iot_message_post_type() {
             $labels = array(
@@ -123,7 +124,7 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'iot-message', $args );
         }
-
+*/
         function register_iot_message_meta() {
             register_post_meta('iot-message', 'deviceID', array(
                 'show_in_rest' => true,
@@ -141,6 +142,19 @@ if (!class_exists('http_client')) {
                 'type' => 'number',
             ));
             // Register other metadata similarly...
+        }
+        
+        function create_iot_message_post_type() {
+            register_post_type('iot-message', array(
+                'labels' => array(
+                    'name' => 'IoT Messages',
+                    'singular_name' => 'IoT Message',
+                ),
+                'public' => true,
+                'show_in_rest' => true,
+                'supports' => array('title', 'editor', 'custom-fields'),
+                'capability_type' => 'post',
+            ));
         }
         
 /*
