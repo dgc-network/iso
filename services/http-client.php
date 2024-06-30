@@ -210,8 +210,8 @@ if (!class_exists('http_client')) {
                         <thead>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'T(C)', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'H(%)', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'H', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
                         </thead>
@@ -243,7 +243,7 @@ if (!class_exists('http_client')) {
                                     <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($humidity);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
                                 </tr>
@@ -378,8 +378,6 @@ if (!class_exists('http_client')) {
                         <thead>
                             <th><?php echo __( 'ID', 'your-text-domain' );?></th>
                             <th><?php echo __( 'description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'SSID', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'password', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
                             <th><?php echo __( 'H', 'your-text-domain' );?></th>
                         </thead>
@@ -388,17 +386,13 @@ if (!class_exists('http_client')) {
                         $query = $this->retrieve_http_client_list();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $client_id = get_post_meta(get_the_ID(), 'client_id', true);
-                                $ssid = get_post_meta(get_the_ID(), 'ssid', true);
-                                $password = get_post_meta(get_the_ID(), 'password', true);
+                                $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
                                 $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                                 $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                                 ?>
                                 <tr id="edit-http-client-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($client_id);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
                                     <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($ssid);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($password);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
                                 </tr>
@@ -437,7 +431,7 @@ if (!class_exists('http_client')) {
         }
 
         function display_http_client_dialog($http_client_id=false) {
-            $client_id = get_post_meta($http_client_id, 'client_id', true);
+            $deviceID = get_post_meta($http_client_id, 'deviceID', true);
             $description = get_post_field('post_content', $http_client_id);
             $mqtt_topic = get_the_title($http_client_id);
             $ssid = get_post_meta($http_client_id, 'ssid', true);
@@ -446,8 +440,8 @@ if (!class_exists('http_client')) {
             ?>
             <fieldset>
                 <input type="hidden" id="http-client-id" value="<?php echo $http_client_id;?>" />
-                <label for="client-id"><?php echo __( 'Client ID:', 'your-text-domain' );?></label>
-                <input type="text" id="client-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="device-id"><?php echo __( 'Device ID:', 'your-text-domain' );?></label>
+                <input type="text" id="device-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
@@ -487,7 +481,7 @@ if (!class_exists('http_client')) {
                     'post_type'     => 'http-client',
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'client_id', time());
+                update_post_meta($post_id, 'deviceID', time());
             }
             wp_send_json($response);
         }
