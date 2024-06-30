@@ -13,6 +13,7 @@ if (!class_exists('http_client')) {
             //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
+            add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -441,11 +442,9 @@ if (!class_exists('http_client')) {
             <fieldset>
                 <input type="hidden" id="http-client-id" value="<?php echo $http_client_id;?>" />
                 <label for="device-id"><?php echo __( 'Device ID:', 'your-text-domain' );?></label>
-                <input type="text" id="device-id" value="<?php echo $client_id;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <input type="text" id="device-id" value="<?php echo $deviceID;?>" class="text ui-widget-content ui-corner-all" disabled />
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
-                <label for="mqtt-messages"><?php echo __( 'Message received:', 'your-text-domain' );?></label>
-                <div id="mqtt-messages-container" style="height:200px; font-size:smaller; overflow-y:scroll; border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; word-wrap: break-word;">...</div>
                 <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
                 <div id="exception-notification-list">
                 <?php echo $this->display_exception_notification_list($http_client_id);?>
@@ -491,6 +490,54 @@ if (!class_exists('http_client')) {
             wp_delete_post($_POST['_http_client_id'], true);
             wp_send_json($response);
         }
+
+        // Hook into the action that triggers when a new post is created
+        function update_http_client_meta($post_id, $post, $update) {
+            // We only want to run this on new posts, not updates
+            if ($update) {
+                return;
+            }
+        
+            // Get the deviceID from the new iot-message post
+            $deviceID = get_post_meta($post_id, 'deviceID', true);
+            $temperature = get_post_meta($post_id, 'temperature', true);
+            $humidity = get_post_meta($post_id, 'humidity', true);
+        
+            // Check if deviceID is set
+            if (!$deviceID) {
+                return;
+            }
+        
+            // Query for the http-client post with the matching deviceID
+            $args = array(
+                'post_type' => 'http-client',
+                'meta_query' => array(
+                    array(
+                        'key' => 'deviceID',
+                        'value' => $deviceID,
+                        'compare' => '='
+                    )
+                )
+            );
+            $query = new WP_Query($args);
+        
+            // If a matching post is found, update its meta data
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $http_client_post_id = get_the_ID();
+        
+                    if ($temperature) {
+                        update_post_meta($http_client_post_id, 'temperature', $temperature);
+                    }
+                    if ($humidity) {
+                        update_post_meta($http_client_post_id, 'humidity', $humidity);
+                    }
+                }
+                wp_reset_postdata();
+            }
+        }
+        
 
         function update_http_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_key']) && isset($_POST['_value'])) {
