@@ -183,7 +183,9 @@ if (!class_exists('http_client')) {
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->retrieve_iot_message_data();
+                        //$query = $this->retrieve_iot_message_data();
+                        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                        $query = $this->retrieve_iot_message_data($paged);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 // Get post creation time
@@ -209,7 +211,22 @@ if (!class_exists('http_client')) {
                         ?>
                         </tbody>
                     </table>
-                    </fieldset>        
+                    </fieldset>
+                    <?php
+                    // Pagination
+                    $total_pages = $query->max_num_pages;
+                    if ($total_pages > 1) {
+                        $current_page = max(1, get_query_var('paged'));
+                        echo paginate_links(array(
+                            'base'      => get_pagenum_link(1) . '%_%',
+                            'format'    => '/page/%#%',
+                            'current'   => $current_page,
+                            'total'     => $total_pages,
+                            'prev_text' => __('« Prev'),
+                            'next_text' => __('Next »'),
+                        ));
+                    }
+                    ?>
                 </fieldset>
                 <div id="geolocation-dialog" title="Geolocation map">
                     <input type="hidden" id="latitude" />
@@ -226,6 +243,18 @@ if (!class_exists('http_client')) {
             return ob_get_clean();
         }
         
+        function retrieve_iot_message_data($paged = 1) {
+            $args = array(
+                'post_type'      => 'iot-message',
+                'posts_per_page' => 20, // Show 20 records per page
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+                'paged'          => $paged,
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*        
         function retrieve_iot_message_data() {
             $args = array(
                 'post_type'      => 'iot-message',
@@ -234,7 +263,7 @@ if (!class_exists('http_client')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function get_iot_message_data() {
             $response = array();
             $iot_message_id = sanitize_text_field($_POST['_iot_message_id']);
