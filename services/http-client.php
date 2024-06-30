@@ -11,6 +11,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
             add_action( 'init', array( $this, 'register_http_client_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
+            add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -122,6 +123,26 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'iot-message', $args );
         }
+
+        function register_iot_message_meta() {
+            register_post_meta('iot-message', 'deviceID', array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => 'string',
+            ));
+            register_post_meta('iot-message', 'temperature', array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => 'number',
+            ));
+            register_post_meta('iot-message', 'humidity', array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => 'number',
+            ));
+            // Register other metadata similarly...
+        }
+        
 /*
         // Register geolocation-message post type
         function register_geolocation_message_post_type() {
