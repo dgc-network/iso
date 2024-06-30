@@ -62,37 +62,11 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
-require_once plugin_dir_path( __FILE__ ) . 'services/default-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
-/*
-function pluginprefix_setup_post_type() {
-    // 註冊 book 自定義文章類型
-    register_post_type( 'book', ['public' => 'true'] );
-}
-add_action( 'init', 'pluginprefix_setup_post_type' );
- 
-function pluginprefix_install() {
-    // 拿剛剛定義的副程式來用
-    pluginprefix_setup_post_type();
- 
-    // 註冊文章類型後，更新固定連結的規則
-    flush_rewrite_rules();
-}
 
-// 
-register_activation_hook( __FILE__, 'pluginprefix_install' );
-
-// Schedule the initialization event
-    function schedule_mqtt_initialization() {
-        if (!wp_next_scheduled('initialize_all_MQTT_clients_hook')) {
-            wp_schedule_single_event(time() + 60, 'initialize_all_MQTT_clients_hook');
-            //$this->log('Scheduled MQTT initialization.');
-        }
-    }
-    register_activation_hook( __FILE__, 'schedule_mqtt_initialization' );
-*/
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

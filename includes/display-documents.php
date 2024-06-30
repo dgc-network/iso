@@ -1261,7 +1261,7 @@ if (!class_exists('display_documents')) {
                                 $topic = $matches[1]; // Extract the number from the first capturing group
                                 $default_value = get_option($topic);
                                 // Find the post by title
-                                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+                                $post = get_page_by_title($topic, OBJECT, 'http-client');
                                 $default_value = get_post_meta($post->ID, 'temperature', true);
                             }
                         }
@@ -1272,7 +1272,7 @@ if (!class_exists('display_documents')) {
                                 $topic = $matches[1]; // Extract the number from the first capturing group
                                 $default_value = get_option($topic);
                                 // Find the post by title
-                                $post = get_page_by_title($topic, OBJECT, 'mqtt-client');
+                                $post = get_page_by_title($topic, OBJECT, 'http-client');
                                 $default_value = get_post_meta($post->ID, 'humidity', true);
                             }
                         }
