@@ -209,8 +209,7 @@ if (!class_exists('http_client')) {
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Receiver', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Message', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Device', 'your-text-domain' );?></th>
                             <th><?php echo __( 'T(C)', 'your-text-domain' );?></th>
                             <th><?php echo __( 'H(%)', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
@@ -234,6 +233,7 @@ if (!class_exists('http_client')) {
                                 $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
                                 $topic = get_the_title();
                                 $message = get_the_content();
+                                $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
                                 $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                                 $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                                 $latitude = get_post_meta(get_the_ID(), 'latitude', true);
@@ -241,8 +241,7 @@ if (!class_exists('http_client')) {
                                 ?>
                                 <tr id="edit-geolocation-message-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
-                                    <td style="text-align:center;"><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($humidity);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
