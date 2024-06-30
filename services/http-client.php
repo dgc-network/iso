@@ -184,14 +184,23 @@ if (!class_exists('http_client')) {
                         <tbody>
                         <?php
                         //$query = $this->retrieve_iot_message_data();
-                        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-                        $query = $this->retrieve_iot_message_data($paged);
+                        //$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                        //$query = $this->retrieve_iot_message_data($paged);
+                        // Define the custom pagination parameters
+                        $posts_per_page = get_option('operation_row_counts');
+                        $current_page = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_iot_message_data($current_page);
+                        $total_posts = $query->found_posts;
+                        $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 // Get post creation time
                                 $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
                                 $topic = get_the_title();
                                 $message = get_the_content();
+                                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                                $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                                 $latitude = get_post_meta(get_the_ID(), 'latitude', true);
                                 $longitude = get_post_meta(get_the_ID(), 'longitude', true);
                                 ?>
@@ -211,8 +220,17 @@ if (!class_exists('http_client')) {
                         ?>
                         </tbody>
                     </table>
+                    <div class="pagination">
+                        <?php
+                        // Display pagination links
+                        if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
+                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
+                        if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                        ?>
+                    </div>
                     </fieldset>
                     <?php
+/*                    
                     // Pagination
                     $total_pages = $query->max_num_pages;
                     if ($total_pages > 1) {
@@ -226,6 +244,7 @@ if (!class_exists('http_client')) {
                             'next_text' => __('Next »'),
                         ));
                     }
+*/                        
                     ?>
                 </fieldset>
                 <div id="geolocation-dialog" title="Geolocation map">
