@@ -493,8 +493,15 @@ if (!class_exists('http_client')) {
         }
 
         // Hook into the action that triggers when a new post is created
+        //add_action('save_post_iot-message', 'update_http_client_meta', 10, 3);
+
         function update_http_client_meta($post_id, $post, $update) {
-/*            
+            // Add logging to see if the function is being triggered
+            error_log('update_http_client_meta triggered for post ID: ' . $post_id);
+        }
+/*        
+        function update_http_client_meta($post_id, $post, $update) {
+
             // We only want to run this on new posts, not updates
             if ($update) {
                 return;
@@ -540,9 +547,9 @@ if (!class_exists('http_client')) {
                 }
                 wp_reset_postdata();
             }
-*/
+
         }
-        
+*/        
 
         function update_http_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_key']) && isset($_POST['_value'])) {
