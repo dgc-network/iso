@@ -13,7 +13,7 @@ if (!class_exists('http_client')) {
             //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
-            //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
+            add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
             
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
@@ -521,7 +521,7 @@ if (!class_exists('http_client')) {
                 )
             );
             $query = new WP_Query($args);
-        
+/*        
             // If a matching post is found, update its meta data
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
@@ -539,6 +539,7 @@ if (!class_exists('http_client')) {
                 }
                 wp_reset_postdata();
             }
+*/                
         }
         
 

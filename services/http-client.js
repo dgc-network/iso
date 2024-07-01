@@ -248,7 +248,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
-                    activate_http_client_list_data();
+                    //activate_http_client_list_data();
                 },
                 error: function (error) {
                     console.error(error);
