@@ -494,6 +494,7 @@ if (!class_exists('http_client')) {
         }
 
         function update_http_client_meta_on_publish($new_status, $old_status, $post) {
+/*            
             if ('publish' === $new_status && 'publish' !== $old_status && 'iot-message' === $post->post_type) {
                 $deviceID = get_post_meta($post->ID, 'deviceID', true);
                 $temperature = get_post_meta($post->ID, 'temperature', true);
@@ -503,6 +504,7 @@ if (!class_exists('http_client')) {
                     $this->update_http_client_meta($deviceID, $temperature, $humidity);
                 }
             }
+*/                
         }
         
 
