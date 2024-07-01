@@ -13,7 +13,8 @@ if (!class_exists('http_client')) {
             //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
-            add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
+            //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
+            add_action( 'transition_post_status', array( $this, 'update_http_client_meta_on_publish', 10, 3 ) );
             
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
@@ -492,14 +493,23 @@ if (!class_exists('http_client')) {
             wp_send_json($response);
         }
 
-        // Hook into the action that triggers when a new post is created
-        //add_action('save_post_iot-message', 'update_http_client_meta', 10, 3);
-
-        function update_http_client_meta($post_id, $post, $update) {
-            // Add logging to see if the function is being triggered
-            error_log('update_http_client_meta triggered for post ID: ' . $post_id);
+        function update_http_client_meta_on_publish($new_status, $old_status, $post) {
+            if ('publish' === $new_status && 'publish' !== $old_status && 'iot-message' === $post->post_type) {
+                $deviceID = get_post_meta($post->ID, 'deviceID', true);
+                $temperature = get_post_meta($post->ID, 'temperature', true);
+                $humidity = get_post_meta($post->ID, 'humidity', true);
+        
+                if ($deviceID) {
+                    update_http_client_meta($deviceID, $temperature, $humidity);
+                }
+            }
         }
-/*        
+        
+
+        function update_http_client_meta($deviceID, $temperature, $humidity){
+/*
+        }
+
         function update_http_client_meta($post_id, $post, $update) {
 
             // We only want to run this on new posts, not updates
@@ -516,7 +526,7 @@ if (!class_exists('http_client')) {
             if (!$deviceID) {
                 return;
             }
-        
+*/        
             // Query for the http-client post with the matching deviceID
             $args = array(
                 'post_type' => 'http-client',
@@ -549,8 +559,8 @@ if (!class_exists('http_client')) {
             }
 
         }
-*/        
 
+        
         function update_http_client_data() {
             if (isset($_POST['_topic']) && isset($_POST['_key']) && isset($_POST['_value'])) {
                 $topic = sanitize_text_field($_POST['_topic']);
