@@ -494,6 +494,8 @@ if (!class_exists('http_client')) {
 
         // Hook into the action that triggers when a new post is created
         function update_http_client_meta($post_id, $post, $update) {
+            return;
+
             // We only want to run this on new posts, not updates
             if ($update) {
                 return;
@@ -521,7 +523,7 @@ if (!class_exists('http_client')) {
                 )
             );
             $query = new WP_Query($args);
-/*        
+
             // If a matching post is found, update its meta data
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
@@ -539,7 +541,7 @@ if (!class_exists('http_client')) {
                 }
                 wp_reset_postdata();
             }
-*/                
+
         }
         
 
