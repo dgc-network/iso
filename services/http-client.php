@@ -14,7 +14,7 @@ if (!class_exists('http_client')) {
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
             //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
-            //add_action( 'transition_post_status', array( $this, 'update_http_client_meta_on_publish', 10, 3 ) );
+            add_action( 'transition_post_status', array( $this, 'update_http_client_meta_on_publish', 10, 3 ) );
             
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
@@ -500,7 +500,7 @@ if (!class_exists('http_client')) {
                 $humidity = get_post_meta($post->ID, 'humidity', true);
         
                 if ($deviceID) {
-                    update_http_client_meta($deviceID, $temperature, $humidity);
+                    $this->update_http_client_meta($deviceID, $temperature, $humidity);
                 }
             }
         }
