@@ -13,7 +13,8 @@ if (!class_exists('http_client')) {
             //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
-            add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
+            //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
+            
             //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
@@ -528,10 +529,12 @@ if (!class_exists('http_client')) {
                     $http_client_post_id = get_the_ID();
         
                     if ($temperature) {
-                        update_post_meta($http_client_post_id, 'temperature', $temperature);
+                        update_post_meta(get_the_ID(), 'temperature', $temperature);
+                        $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
                     }
                     if ($humidity) {
-                        update_post_meta($http_client_post_id, 'humidity', $humidity);
+                        update_post_meta(get_the_ID(), 'humidity', $humidity);
+                        $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
                     }
                 }
                 wp_reset_postdata();
@@ -582,27 +585,39 @@ if (!class_exists('http_client')) {
         }
         
         // Exception notification
-        function exception_notification_event($user_id=false, $topic=false, $value=false, $max_temperature=false, $max_humidity=false) {
-            //$user_data = get_userdata($user_id);
-            //$link_uri = home_url().'/display-profiles/?_id='.$user_id;
-        
-            // Find the post by title
-            $post = get_page_by_title($topic, OBJECT, 'http-client');
-            $content = get_post_field('post_content', $post->ID);
+        function create_exception_notification_events($http_client_id=false, $key=false, $value=false) {
+            $query = $this->retrieve_exception_notification_data($http_client_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $user_id = get_post_meta(get_the_ID(), 'user_id', true);
+                    $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
+                    $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
+                    if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_temperature);
+                    if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_humidity);
+                endwhile;
+                wp_reset_postdata();
+            endif;
+
+
+        }
+
+        function exception_notification_event($http_client_id=false, $user_id=false, $key=false, $value=false, $max_value=false) {
+            $content = get_post_field('post_content', $http_client_id);
+            $deviceID = get_post_meta($http_client_id, 'deviceID', true);
             
             // Prepare the notification message
             $five_minutes_ago = time() - (5 * 60);
             $five_minutes_ago_formatted = wp_date(get_option('date_format'), $five_minutes_ago) . ' ' . wp_date(get_option('time_format'), $five_minutes_ago);
         
-            if ($max_temperature) {
-                $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago_formatted.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
+            if ($key=='temperature') {
+                $text_message = '#'.$deviceID.' '.$content.'在'.$five_minutes_ago_formatted.'的溫度是'.$value.'°C，已經超過設定的'.$max_value.'°C了。';
             }
-            if ($max_humidity) {
-                $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago_formatted.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
+            if ($key=='humidity') {
+                $text_message = '#'.$deviceID.' '.$content.'在'.$five_minutes_ago_formatted.'的濕度是'.$value.'%，已經超過設定的'.$max_value.'%了。';
             }
         
             // Check if a notification has been sent today
-            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $topic, true);
+            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $deviceID, true);
             $today = wp_date('Y-m-d');
         
             if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
@@ -621,7 +636,7 @@ if (!class_exists('http_client')) {
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
         
             // Update the last notification time
-            update_user_meta($user_id, 'last_notification_time_' . $topic, time());
+            update_user_meta($user_id, 'last_notification_time_' . $deviceID, time());
         }
         
         // Hook for sending delayed notification
