@@ -915,7 +915,7 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $query = $this->retrieve_doc_user_list_data($doc_id);
+                $query = $this->retrieve_users_by_doc_id($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $action_title = get_the_title();
@@ -944,6 +944,25 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
+        function retrieve_users_by_doc_id($doc_id) {
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'user_doc_ids',
+                        'value'   => '"' . $doc_id . '"',
+                        'compare' => 'LIKE'
+                    )
+                )
+            );
+        
+            $user_query = new WP_User_Query($args);
+        
+            // Get the results
+            $users = $user_query->get_results();
+        
+            return $users;
+        }
+        
         // doc-action
         function display_doc_action_list($doc_id=false) {
             ob_start();
