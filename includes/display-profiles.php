@@ -915,7 +915,16 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $query = $this->retrieve_users_by_doc_id($doc_id);
+                $users = $this->retrieve_users_by_doc_id($doc_id);
+                foreach ($users as $user) {
+                    ?>
+                    <tr>
+                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
+                    </tr>
+                    <?php
+                }
+/*                
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $action_title = get_the_title();
@@ -933,6 +942,7 @@ if (!class_exists('display_profiles')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;
+*/                
                 ?>
                 </tbody>
             </table>
