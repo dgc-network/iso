@@ -143,7 +143,7 @@ if (!class_exists('display_documents')) {
         
         // Shortcode to display
         function display_shortcode() {
-            $this->data_migration();
+            //$this->data_migration();
             // Check if the user is logged in
             if (is_user_logged_in()) {
 
@@ -1670,9 +1670,6 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
                 
-        // Data migration
-        function data_migration() {
-        }
     }
     $documents_class = new display_documents();
 }
