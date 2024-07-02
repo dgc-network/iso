@@ -669,19 +669,39 @@ jQuery(document).ready(function($) {
     // doc-user scripts
     function activate_doc_user_list_data(doc_id=false) {
         $("#new-doc-user").on("click", function() {
-            //doc_id = $("#doc-id").val(); 
             jQuery.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_new_user_list_data',
-                    //'_doc_id': doc_id,
                 },
                 success: function (response) {
                     $("#new-doc-user-dialog").html(response.html_contain);
                     $("#new-doc-user-dialog").dialog('open');
-                    //get_job_action_list_data(doc_id);
+                    //doc_id = $("#doc-id").val();
+                    $('[id^="add-doc-user-"]').on("click", function () {
+                        if (window.confirm("Are you sure you want to add this doc user?")) {
+                            const user_id = this.id.substring(13);
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'add_doc_user_data',
+                                    '_doc_id': doc_id,
+                                    '_user_id': user_id,
+                                },
+                                success: function (response) {
+                                    get_doc_user_list_data(doc_id);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    });                        
                 },
                 error: function(error){
                     console.error(error);
@@ -690,79 +710,34 @@ jQuery(document).ready(function($) {
             });    
         });
 
-        $('[id^="edit-doc-user-"]').on("click", function () {
-            const _id = this.id.substring(16);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_user_dialog_data',
-                    '_action_id': action_id,
-                },
-                success: function (response) {
-                    $("#new-doc-user-dialog").html(response.html_contain);
-                    $("#new-doc-user-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
+        $('[id^="del-doc-user-"]').on("click", function () {
+            if (window.confirm("Are you sure you want to delete this doc user?")) {
+                const user_id = this.id.substring(13);
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_doc_user_data',
+                        '_doc_id': doc_id,
+                        '_user_id': user_id,
+                    },
+                    success: function (response) {
+                        $("#new-doc-user-dialog").html(response.html_contain);
+                        $("#new-doc-user-dialog").dialog('open');
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
         });
 
         $("#new-doc-user-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
-/*
-            buttons: {
-                "Save": function() {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_action_dialog_data',
-                            '_action_id': $("#action-id").val(),
-                            '_action_title': $("#action-title").val(),
-                            '_action_content': $("#action-content").val(),
-                            '_next_job': $("#next-job").val(),
-                            '_next_leadtime': $("#next-leadtime").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
-                            get_job_action_list_data(doc_id);
-                        },
-                        error: function (error) {
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });            
-                },
-                "Delete": function() {
-                    if (window.confirm("Are you sure you want to delete this doc action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_doc_action_dialog_data',
-                                '_action_id': $("#action-id").val(),
-                            },
-                            success: function (response) {
-                                $("#doc-action-dialog").dialog('close');
-                                get_job_action_list_data(doc_id);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                }
-            }
-*/                    
         });
     }
 

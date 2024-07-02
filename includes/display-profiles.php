@@ -51,6 +51,10 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );                                                                    
             add_action( 'wp_ajax_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );                                                                    
+            add_action( 'wp_ajax_add_doc_user_data', array( $this, 'add_doc_user_data' ) );
+            add_action( 'wp_ajax_nopriv_add_doc_user_data', array( $this, 'add_doc_user_data' ) );                                                                    
+            add_action( 'wp_ajax_del_doc_user_data', array( $this, 'del_doc_user_data' ) );
+            add_action( 'wp_ajax_nopriv_del_doc_user_data', array( $this, 'del_doc_user_data' ) );                                                                    
 
             add_action( 'wp_ajax_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
@@ -215,14 +219,14 @@ if (!class_exists('display_profiles')) {
                             $job_title = get_the_title($doc_id);
                             $job_content = get_post_field('post_content', $doc_id);
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            $authorize_checked = $this->is_authorize_doc(get_the_ID()) ? 'checked' : '';
+                            $authorize_checked = $this->is_authorize_doc($doc_id) ? 'checked' : '';
                             if ($doc_site==$site_id) {
                             ?>
-                            <tr id="check-authorize-job-<?php the_ID();?>">
+                            <tr id="check-authorize-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
-                                <td style="text-align:center;"><input type="checkbox" id="is-authorize-doc-<?php the_ID();?>" <?php echo $authorize_checked;?> /></td>
+                                <td style="text-align:center;"><input type="checkbox" id="is-authorize-doc-<?php echo $doc_id;?>" <?php echo $authorize_checked;?> /></td>
                                 </tr>
                             <?php
                             }
@@ -1183,7 +1187,7 @@ if (!class_exists('display_profiles')) {
                 $users = $this->retrieve_users_by_doc_id($doc_id);
                 foreach ($users as $user) {
                     ?>
-                    <tr>
+                    <tr id="del-doc-user-<?php echo $user->ID;?>">
                         <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
                         <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
                     </tr>
@@ -1219,7 +1223,7 @@ if (!class_exists('display_profiles')) {
             return $users;
         }
 
-        function display_new_doc_user_list() {
+        function display_new_user_list() {
             ob_start();
             ?>
             <div id="new-doc-user-list">
@@ -1236,7 +1240,7 @@ if (!class_exists('display_profiles')) {
                 $users = $this->retrieve_users_by_site_id();
                 foreach ($users as $user) {
                     ?>
-                    <tr>
+                    <tr id="add-doc-user-<?php echo $user->ID;?>">
                         <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
                         <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
                     </tr>
@@ -1245,10 +1249,8 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <div id="new-doc-user-dialog" title="User dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -1274,9 +1276,99 @@ if (!class_exists('display_profiles')) {
             return $users;
         }
 
+        function get_doc_user_list_data() {
+            $response = array();
+            $response['html_contain'] = $this->display_doc_user_list();
+            wp_send_json($response);
+        }
+
         function get_new_user_list_data() {
             $response = array();
-            $response['html_contain'] = $this->display_new_doc_user_list();
+            $response['html_contain'] = $this->display_new_user_list();
+            wp_send_json($response);
+        }
+
+        function add_doc_user_data() {
+            $response = array();
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $user_id = sanitize_text_field($_POST['_user_id']);
+
+            // Check if user exists
+            if (get_userdata($user_id) === false) {
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid user ID.';
+                wp_send_json($response);
+            }
+        
+            // Retrieve current user_doc_ids
+            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
+        
+            if (empty($user_doc_ids)) {
+                $user_doc_ids = array();
+            } elseif (is_string($user_doc_ids)) {
+                // Handle if user_doc_ids is a serialized array or a comma-separated list
+                $user_doc_ids_array = maybe_unserialize($user_doc_ids);
+                if (is_array($user_doc_ids_array)) {
+                    $user_doc_ids = $user_doc_ids_array;
+                } else {
+                    $user_doc_ids = explode(',', $user_doc_ids);
+                }
+            }
+        
+            // Add the new doc_id if it doesn't already exist
+            if (!in_array($doc_id, $user_doc_ids)) {
+                $user_doc_ids[] = $doc_id;
+                update_user_meta($user_id, 'user_doc_ids', $user_doc_ids);
+        
+                $response['status'] = 'success';
+                $response['message'] = 'Document ID added successfully.';
+            } else {
+                $response['status'] = 'info';
+                $response['message'] = 'Document ID already exists for this user.';
+            }
+
+            wp_send_json($response);
+        }
+
+        function del_doc_user_data() {
+            $response = array();
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $user_id = sanitize_text_field($_POST['_user_id']);
+
+            // Check if user exists
+            if (get_userdata($user_id) === false) {
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid user ID.';
+                wp_send_json($response);
+            }
+        
+            // Retrieve current user_doc_ids
+            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
+        
+            if (empty($user_doc_ids)) {
+                $user_doc_ids = array();
+            } elseif (is_string($user_doc_ids)) {
+                // Handle if user_doc_ids is a serialized array or a comma-separated list
+                $user_doc_ids_array = maybe_unserialize($user_doc_ids);
+                if (is_array($user_doc_ids_array)) {
+                    $user_doc_ids = $user_doc_ids_array;
+                } else {
+                    $user_doc_ids = explode(',', $user_doc_ids);
+                }
+            }
+        
+            // Remove the doc_id if it exists
+            if (in_array($doc_id, $user_doc_ids)) {
+                $user_doc_ids = array_diff($user_doc_ids, array($doc_id));
+                update_user_meta($user_id, 'user_doc_ids', $user_doc_ids);
+        
+                $response['status'] = 'success';
+                $response['message'] = 'Document ID deleted successfully.';
+            } else {
+                $response['status'] = 'info';
+                $response['message'] = 'Document ID does not exist for this user.';
+            }
+
             wp_send_json($response);
         }
 
