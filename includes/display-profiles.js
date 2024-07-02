@@ -675,7 +675,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_doc_user_list_data',
+                    'action': 'get_new_user_list_data',
                     //'_doc_id': doc_id,
                 },
                 success: function (response) {

@@ -15,6 +15,7 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
+
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
@@ -27,6 +28,7 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', array( $this, 'del_site_user_dialog_data' ) );
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
+
             add_action( 'wp_ajax_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
             add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
@@ -35,6 +37,7 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
             add_action( 'wp_ajax_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
+
             add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
             add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
@@ -43,6 +46,12 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );                                                                    
             add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
+
+            add_action( 'wp_ajax_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );                                                                    
+            add_action( 'wp_ajax_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );                                                                    
+
             add_action( 'wp_ajax_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -1265,7 +1274,7 @@ if (!class_exists('display_profiles')) {
             return $users;
         }
 
-        function get_new_doc_user_list_data() {
+        function get_new_user_list_data() {
             $response = array();
             $response['html_contain'] = $this->display_new_doc_user_list();
             wp_send_json($response);
