@@ -145,7 +145,7 @@ if (!class_exists('to_do_list')) {
             register_post_type( 'action', $args );
         }
         
-        function display_godo_list() {
+        function display_goto_list() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
