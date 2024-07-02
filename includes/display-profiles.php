@@ -698,6 +698,7 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Department', 'your-text-domain' );?></th>
+                            <th></th>
                         </thead>
                         <tbody>
                         <?php
@@ -714,12 +715,15 @@ if (!class_exists('display_profiles')) {
                                 $department = get_post_meta(get_the_ID(), 'department', true);
                                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                 $content = get_the_content().'('.$doc_number.')';
+                                $users = $this->retrieve_users_by_doc_id(get_the_ID());
+                                if (!$users) $unassigned = '<span style="color:red;">U</span>';
                                 ?>
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td width="70%"><?php echo esc_html($content);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($department);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($unassigned);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -835,6 +839,7 @@ if (!class_exists('display_profiles')) {
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
+                <div class="separator"></div>
                 <?php echo $this->display_doc_user_list($doc_id);?>
             <?php
             return ob_get_clean();
@@ -924,25 +929,6 @@ if (!class_exists('display_profiles')) {
                     </tr>
                     <?php
                 }
-/*                
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $next_job_title = get_the_title($next_job);
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                        ?>
-                        <tr id="edit-doc-user-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
-                        </tr>
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-*/                
                 ?>
                 </tbody>
             </table>
