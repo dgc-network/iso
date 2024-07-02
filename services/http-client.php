@@ -41,55 +41,13 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
-/*
-            add_action( 'rest_api_init', array( $this, 'register_mqtt_rest_endpoint' ) );
+        }
 
-            // Schedule the event
-            if (!wp_next_scheduled('http_clients_initialization_event')) {
-                wp_schedule_event(time(), 'hourly', 'http_clients_initialization_event');
-            }
-            
-            // Hook into that event to run the initialization function
-            add_action( 'http_clients_initialization_event', array( $this, 'initialize_all_http_clients' ) );
-            //add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification' ) );
-            add_action( 'send_delayed_notification', array( $this, 'send_delayed_notification_handler' ) );
-*/
-        }
-/*        
-        function register_mqtt_rest_endpoint() {
-            register_rest_route('mqtt/v1', '/initialize', array(
-                'methods' => 'GET',
-                'callback' => array( $this, 'initialize_all_http_clients' ),
-            ));
-        }
-        
-        function initialize_all_http_clients() {
-            // Fetch all MQTT client posts
-            $args = array(
-                'post_type' => 'http-client',
-                'posts_per_page' => -1,
-            );
-            $query = new WP_Query($args);
-            
-            if ($query->have_posts()) {
-                $topics = [];
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $topic = get_the_title();
-                    $topics[] = $topic;
-                }
-                wp_reset_postdata();
-                return new WP_REST_Response($topics, 200);
-            } else {
-                return new WP_REST_Response('No MQTT client posts found.', 404);
-            }
-        }
-*/
         function enqueue_http_client_scripts() {
             $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-            wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
+            //wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
             //wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
             //wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
 
@@ -191,6 +149,7 @@ if (!class_exists('http_client')) {
         function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
+            $todo_class = new to_do_list();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -204,7 +163,7 @@ if (!class_exists('http_client')) {
                 <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $profiles_class->display_select_profile(5);?></div>                        
+                        <div><?php $todo_class->display_select_todo(5);?></div>                        
                         <div style="text-align: right"></div>                        
                     </div>
         
@@ -359,6 +318,7 @@ if (!class_exists('http_client')) {
         function display_http_client_list() {
             ob_start();
             $profiles_class = new display_profiles();
+            $todo_class = new to_do_list();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -372,7 +332,7 @@ if (!class_exists('http_client')) {
                 <h2 style="display:inline;"><?php echo __( 'HTTP Client', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $profiles_class->display_select_profile(4);?></div>                        
+                        <div><?php $todo_class->display_select_todo(4);?></div>                        
                         <div style="text-align: right"></div>                        
                     </div>
         
@@ -494,7 +454,7 @@ if (!class_exists('http_client')) {
         }
 
         function update_http_client_meta_on_publish($new_status, $old_status, $post) {
-/*            
+
             if ('publish' === $new_status && 'publish' !== $old_status && 'iot-message' === $post->post_type) {
                 $deviceID = get_post_meta($post->ID, 'deviceID', true);
                 $temperature = get_post_meta($post->ID, 'temperature', true);
@@ -504,7 +464,7 @@ if (!class_exists('http_client')) {
                     $this->update_http_client_meta($deviceID, $temperature, $humidity);
                 }
             }
-*/                
+
         }
         
 
