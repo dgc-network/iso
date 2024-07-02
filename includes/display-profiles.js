@@ -326,8 +326,6 @@ jQuery(document).ready(function($) {
         
         });
 
-        //activate_doc_action_list_data();
-
         $("#new-site-job").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -360,6 +358,7 @@ jQuery(document).ready(function($) {
                     $("#site-job-dialog").html(response.html_contain);
                     $("#site-job-dialog").dialog('open');
                     activate_job_action_list_data(doc_id);
+                    activate_doc_user_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
