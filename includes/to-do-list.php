@@ -64,7 +64,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if ($_GET['_select_todo']=='1') $this->display_goto_list();
+                if ($_GET['_select_todo']=='1') echo $this->display_goto_list();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
                 if ($_GET['_select_todo']=='3') $this->list_all_scheduled_events();
                 $http_client = new http_client();
