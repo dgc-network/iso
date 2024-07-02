@@ -824,8 +824,6 @@ if (!class_exists('display_profiles')) {
             $department = get_post_meta($doc_id, 'department', true);
             ob_start();
             ?>
-            <div id="site-job-dialog-backup">
-            <fieldset>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <label for="job-number">Number:</label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
@@ -837,8 +835,7 @@ if (!class_exists('display_profiles')) {
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            </div>
+                <?php echo $this->display_doc_user_list($doc_id);?>
             <?php
             return ob_get_clean();
         }
@@ -901,6 +898,50 @@ if (!class_exists('display_profiles')) {
             if ($doc_title) echo 'You cannot delete this document';
             else wp_delete_post($doc_id, true);
             wp_send_json($response);
+        }
+
+        // doc-user
+        function display_doc_user_list($doc_id=false) {
+            ob_start();
+            ?>
+            <div id="doc-user-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_doc_user_list_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        ?>
+                        <tr id="edit-doc-user-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            </div>
+            <div id="doc-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
         }
 
         // doc-action
