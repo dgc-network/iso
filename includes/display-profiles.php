@@ -723,7 +723,7 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td width="70%"><?php echo esc_html($content);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($department);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($unassigned);?></td>
+                                    <td style="text-align:center;"><?php echo $unassigned;?></td>
                                 </tr>
                                 <?php 
                             endwhile;
