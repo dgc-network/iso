@@ -218,12 +218,11 @@ if (!class_exists('to_do_list')) {
                             if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-                            $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
+                            if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
-                                <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_report_frequence_setting); ?></td>
                             </tr>
                             <?php
