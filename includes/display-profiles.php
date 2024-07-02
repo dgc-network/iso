@@ -905,60 +905,6 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        // doc-user
-        function display_doc_user_list($doc_id=false) {
-            ob_start();
-            ?>
-            <div id="doc-user-list">
-            <fieldset>
-            <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                $users = $this->retrieve_users_by_doc_id($doc_id);
-                foreach ($users as $user) {
-                    ?>
-                    <tr>
-                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
-                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
-                    </tr>
-                    <?php
-                }
-                ?>
-                </tbody>
-            </table>
-            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            </fieldset>
-            </div>
-            <div id="doc-user-dialog" title="User dialog"></div>
-            <?php
-            return ob_get_clean();
-        }
-
-        function retrieve_users_by_doc_id($doc_id) {
-            $args = array(
-                'meta_query' => array(
-                    array(
-                        'key'     => 'user_doc_ids',
-                        'value'   => '"' . $doc_id . '"',
-                        'compare' => 'LIKE'
-                    )
-                )
-            );
-        
-            $user_query = new WP_User_Query($args);
-        
-            // Get the results
-            $users = $user_query->get_results();
-        
-            return $users;
-        }
-        
         // doc-action
         function display_doc_action_list($doc_id=false) {
             ob_start();
@@ -1011,7 +957,6 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <div id="doc-action-dialog" title="Action dialog"></div>
-            <?php //echo $this->display_doc_action_dialog();?>
             <?php
             return ob_get_clean();
         }
@@ -1113,7 +1058,6 @@ if (!class_exists('display_profiles')) {
             $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             ob_start();
             ?>
-            <div id="doc-action-dialog-backup">
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <label for="action-title">Title:</label>
@@ -1125,7 +1069,6 @@ if (!class_exists('display_profiles')) {
                 <label for="next-leadtime">Next leadtime:</label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
-            </div>
             <?php
             return ob_get_clean();
         }
@@ -1211,6 +1154,121 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
             }
             return $options;
+        }
+
+        // doc-user
+        function display_doc_user_list($doc_id=false) {
+            ob_start();
+            ?>
+            <div id="doc-user-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $users = $this->retrieve_users_by_doc_id($doc_id);
+                foreach ($users as $user) {
+                    ?>
+                    <tr>
+                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            </div>
+            <div id="new-doc-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_users_by_doc_id($doc_id) {
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'user_doc_ids',
+                        'value'   => '"' . $doc_id . '"',
+                        'compare' => 'LIKE'
+                    )
+                )
+            );
+        
+            $user_query = new WP_User_Query($args);
+        
+            // Get the results
+            $users = $user_query->get_results();
+        
+            return $users;
+        }
+
+        function display_new_doc_user_list() {
+            ob_start();
+            ?>
+            <div id="new-doc-user-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $users = $this->retrieve_users_by_site_id();
+                foreach ($users as $user) {
+                    ?>
+                    <tr>
+                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            </div>
+            <div id="new-doc-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_users_by_site_id() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    )
+                )
+            );
+        
+            $user_query = new WP_User_Query($args);
+        
+            // Get the results
+            $users = $user_query->get_results();
+        
+            return $users;
+        }
+
+        function get_new_doc_user_list_data() {
+            $response = array();
+            $response['html_contain'] = $this->display_new_doc_user_list();
+            wp_send_json($response);
         }
 
         // doc-category
