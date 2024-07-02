@@ -165,7 +165,7 @@ if (!class_exists('to_do_list')) {
                 </div>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo(0);?></div>
+                    <div><?php $this->display_select_todo(1);?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                         <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>

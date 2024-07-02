@@ -193,6 +193,7 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Authorize', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
@@ -203,13 +204,15 @@ if (!class_exists('display_profiles')) {
                             $job_title = get_the_title($doc_id);
                             $job_content = get_post_field('post_content', $doc_id);
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            $authorize_checked = $this->is_authorize_doc(get_the_ID()) ? 'checked' : '';
                             if ($doc_site==$site_id) {
                             ?>
-                            <tr>
+                            <tr id="check-authorize-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
-                            </tr>
+                                <td style="text-align:center;"><input type="checkbox" id="is-authorize-doc-<?php the_ID();?>" <?php echo $authorize_checked;?> /></td>
+                                </tr>
                             <?php
                             }
                         }
@@ -223,7 +226,7 @@ if (!class_exists('display_profiles')) {
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Topic', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
                     </thead>
@@ -248,42 +251,20 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 </fieldset>
-
-                <label for="my-messages"><?php echo __( 'My messages: ', 'your-text-domain' );?></label>
-                <fieldset style="margin-top:5px;">
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <th><?php echo __( 'Sender', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Message', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $query = $this->retrieve_my_geolocation_messages();
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $sender = get_post_meta(get_the_ID(), 'sender', true);
-                            $latitude = get_post_meta(get_the_ID(), 'latitude', true);
-                            $longitude = get_post_meta(get_the_ID(), 'longitude', true);
-                            ?>
-                            <tr id="edit-exception-notification-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($sender);?></td>
-                                <td><?php the_content();?></td>
-                                <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
-                            </tr>
-                            <?php 
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                </fieldset>
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+
+        function is_authorize_doc($doc_id=false, $user_id=false) {
+            // Get the current user ID
+            if (!$user_id) $user_id = get_current_user_id();    
+            // Get the user's doc IDs as an array
+            $authorize_doc_ids = get_user_meta($user_id, 'authorize_doc_ids', true);
+            // If $user_doc_ids is not an array, convert it to an array
+            if (!is_array($authorize_doc_ids)) $authorize_doc_ids = array();
+            // Check if the current user has the specified doc ID in their metadata
+            return in_array($doc_id, $authorize_doc_ids);
         }
 
         function retrieve_my_exception_notifications() {
