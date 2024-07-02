@@ -677,9 +677,8 @@ jQuery(document).ready(function($) {
                     'action': 'get_new_user_list_data',
                 },
                 success: function (response) {
-                    $("#new-doc-user-dialog").html(response.html_contain);
-                    $("#new-doc-user-dialog").dialog('open');
-                    //doc_id = $("#doc-id").val();
+                    $("#new-user-list-dialog").html(response.html_contain);
+                    $("#new-user-list-dialog").dialog('open');
                     $('[id^="add-doc-user-"]').on("click", function () {
                         if (window.confirm("Are you sure you want to add this doc user?")) {
                             const user_id = this.id.substring(13);
@@ -693,6 +692,7 @@ jQuery(document).ready(function($) {
                                     '_user_id': user_id,
                                 },
                                 success: function (response) {
+                                    $("#new-user-list-dialog").dialog('close');
                                     get_doc_user_list_data(doc_id);
                                 },
                                 error: function (error) {
@@ -723,8 +723,7 @@ jQuery(document).ready(function($) {
                         '_user_id': user_id,
                     },
                     success: function (response) {
-                        $("#new-doc-user-dialog").html(response.html_contain);
-                        $("#new-doc-user-dialog").dialog('open');
+                        get_doc_user_list_data(doc_id);
                     },
                     error: function (error) {
                         console.error(error);
@@ -734,7 +733,7 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("#new-doc-user-dialog").dialog({
+        $("#new-user-list-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -759,7 +758,5 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-    }
-
-    
+    }    
 });

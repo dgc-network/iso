@@ -1199,7 +1199,7 @@ if (!class_exists('display_profiles')) {
             <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <div id="new-doc-user-dialog" title="User dialog"></div>
+            <div id="new-user-list-dialog" title="New user"></div>
             <?php
             return ob_get_clean();
         }
@@ -1226,7 +1226,6 @@ if (!class_exists('display_profiles')) {
         function display_new_user_list() {
             ob_start();
             ?>
-            <div id="new-doc-user-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1250,7 +1249,6 @@ if (!class_exists('display_profiles')) {
                 </tbody>
             </table>
             </fieldset>
-            </div>
             <?php
             return ob_get_clean();
         }
