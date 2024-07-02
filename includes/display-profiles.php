@@ -683,15 +683,15 @@ if (!class_exists('display_profiles')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
-                <fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile(2);?></div>
-                        <div style="text-align: right">
-                            <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
-                        </div>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $this->display_select_profile(2);?></div>
+                    <div style="text-align: right">
+                        <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                     </div>
+                </div>
         
-                    <fieldset>
+                <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th>#</th>
@@ -737,7 +737,6 @@ if (!class_exists('display_profiles')) {
                         if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
                         ?>
                     </div>
-                    </fieldset>        
                 </fieldset>
                 <div id="site-job-dialog" title="Job dialog"></div>
                 <?php
@@ -1172,13 +1171,13 @@ if (!class_exists('display_profiles')) {
                 ?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
-                <fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $this->display_select_profile(3);?></div>
-                        <div style="text-align: right"></div>                        
-                    </div>
 
-                    <fieldset>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $this->display_select_profile(3);?></div>
+                    <div style="text-align: right"></div>                        
+                </div>
+
+                <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th><?php echo __( 'Category', 'your-text-domain' );?></th>
@@ -1202,7 +1201,6 @@ if (!class_exists('display_profiles')) {
                         </tbody>
                     </table>
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    </fieldset>        
                 </fieldset>
                 <div id="doc-category-dialog" title="Category dialog"></div>
                 <?php
