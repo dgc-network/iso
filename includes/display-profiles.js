@@ -56,7 +56,6 @@ jQuery(document).ready(function($) {
                     data: {
                         'action': 'set_authorize_doc_data',
                         _doc_id : doc_id,
-                        //_user_id : user_id,
                         _is_authorize_doc : $("#is-authorize-doc-"+doc_id).is(":checked") ? 1 : 0,
                     },
                     success: function (response) {

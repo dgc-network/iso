@@ -286,7 +286,7 @@ if (!class_exists('display_profiles')) {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
+                //$is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
 
                 $user_id = get_current_user_id();
                 $authorize_doc_ids = get_user_meta($user_id, 'authorize_doc_ids', true);
