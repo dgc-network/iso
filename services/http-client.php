@@ -162,13 +162,13 @@ if (!class_exists('http_client')) {
                 <div class="ui-widget" id="result-container">
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
-                <fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $todo_class->display_select_todo(5);?></div>                        
-                        <div style="text-align: right"></div>                        
-                    </div>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $todo_class->display_select_todo(5);?></div>
+                    <div style="text-align: right"></div>                        
+                </div>
         
-                    <fieldset>
+                <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
@@ -180,9 +180,6 @@ if (!class_exists('http_client')) {
                         </thead>
                         <tbody>
                         <?php
-                        //$query = $this->retrieve_iot_message_data();
-                        //$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-                        //$query = $this->retrieve_iot_message_data($paged);
                         // Define the custom pagination parameters
                         $posts_per_page = get_option('operation_row_counts');
                         $current_page = max(1, get_query_var('paged')); // Get the current page number
@@ -225,9 +222,6 @@ if (!class_exists('http_client')) {
                         if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
                         ?>
                     </div>
-                    </fieldset>
-                    <?php
-                    ?>
                 </fieldset>
                 </div>
                 <div id="geolocation-dialog" title="Geolocation map">
@@ -318,13 +312,13 @@ if (!class_exists('http_client')) {
                 <div class="ui-widget" id="result-container">
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( 'HTTP Client', 'your-text-domain' );?></h2>
-                <fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div><?php $todo_class->display_select_todo(4);?></div>                        
-                        <div style="text-align: right"></div>                        
-                    </div>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $todo_class->display_select_todo(4);?></div>
+                    <div style="text-align: right"></div>                        
+                </div>
         
-                    <fieldset>
+                <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th><?php echo __( 'ID', 'your-text-domain' );?></th>
@@ -355,7 +349,6 @@ if (!class_exists('http_client')) {
                         </tbody>
                     </table>
                     <div id="new-http-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    </fieldset>        
                     <div id="http-client-dialog" title="HTTP Client dialog"></div>
                 </fieldset>
                 </div>

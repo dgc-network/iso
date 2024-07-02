@@ -13,6 +13,8 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
+            add_action( 'wp_ajax_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
+            add_action( 'wp_ajax_nopriv_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
@@ -265,6 +267,32 @@ if (!class_exists('display_profiles')) {
             if (!is_array($authorize_doc_ids)) $authorize_doc_ids = array();
             // Check if the current user has the specified doc ID in their metadata
             return in_array($doc_id, $authorize_doc_ids);
+        }
+
+        function set_authorize_doc_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
+
+                $user_id = get_current_user_id();
+                $authorize_doc_ids = get_user_meta($user_id, 'authorize_doc_ids', true);
+                if (!is_array($authorize_doc_ids)) $authorize_doc_ids = array();
+                $authorize_exists = in_array($doc_id, $authorize_doc_ids);
+
+                // Check the condition and update 'user_doc_ids' accordingly
+                if ($is_authorize_doc == 1 && !$authorize_exists) {
+                    // Add $doc_id to 'user_doc_ids'
+                    $authorize_doc_ids[] = $doc_id;
+                } elseif ($is_authorize_doc != 1 && $authorize_exists) {
+                    // Remove $doc_id from 'user_doc_ids'
+                    $authorize_doc_ids = array_diff($authorize_doc_ids, array($doc_id));
+                }        
+                // Update 'user_doc_ids' meta value
+                update_user_meta( $user_id, 'authorize_doc_ids', $authorize_doc_ids);
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
         }
 
         function retrieve_my_exception_notifications() {

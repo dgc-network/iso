@@ -12,32 +12,64 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
+    activate_my_profile_data();
     activate_site_profile_data();
     activate_site_job_list_data();
     activate_doc_category_list_data();
 
     // my-profile scripts
-    $("#my-profile-submit").on("click", function () {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'set_my_profile_data',
-                '_display_name': $("#display-name").val(),
-                '_user_email': $("#user-email").val(),
-                '_phone_number': $("#phone-number").val(),
-            },
-            success: function (response) {
-                console.log(response);
-                alert("Data update success!");
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
+    function activate_my_profile_data(){
+        $("#my-profile-submit").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_my_profile_data',
+                    '_display_name': $("#display-name").val(),
+                    '_user_email': $("#user-email").val(),
+                    '_phone_number': $("#phone-number").val(),
+                },
+                success: function (response) {
+                    console.log(response);
+                    alert("Data update success!");
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });            
+        });
+    
+        $('[id^="check-authorize-job-"]').on("click", function () {
+            const doc_id = this.id.substring(20);
+            // Toggle the checkbox state
+            $("#is-authorize-doc-"+doc_id).prop("checked", function(i, value) {
+                return !value;
+            });
+            
+            if (window.confirm("Are you sure you want to change this setting?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_authorize_doc_data',
+                        _doc_id : doc_id,
+                        //_user_id : user_id,
+                        _is_authorize_doc : $("#is-authorize-doc-"+doc_id).is(":checked") ? 1 : 0,
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
             }
-        });            
-    });
+        });        
+    }
 
     // site-profile scripts
     function activate_site_profile_data(){
@@ -177,7 +209,6 @@ jQuery(document).ready(function($) {
                             });
                         }
                     });
-                                
                 },
                 error: function (error) {
                     console.error(error);
