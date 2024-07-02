@@ -64,7 +64,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if ($_GET['_select_todo']=='1') echo $this->display_goto_list();
+                if ($_GET['_select_todo']=='1') echo $this->display_job_list();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
                 if ($_GET['_select_todo']=='3') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
@@ -148,7 +148,7 @@ if (!class_exists('to_do_list')) {
             register_post_type( 'action', $args );
         }
         
-        function display_goto_list() {
+        function display_job_list() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
@@ -189,39 +189,41 @@ if (!class_exists('to_do_list')) {
                     // Define the custom pagination parameters
                     $posts_per_page = get_option('operation_row_counts');
                     $current_page = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_goto_list_data($current_page);
+                    $query = $this->retrieve_job_list_data($current_page);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $todo_id = get_the_ID();
-                            $todo_title = get_the_title();
-                            $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
-                            if ($todo_due < time()) $todo_due_color='color:red;';
-                            $todo_due = wp_date(get_option('date_format'), $todo_due);
-                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $doc_id = get_the_ID();
+                            $job_title = get_the_title();
+                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                            $job_title .= '('.$job_number.')';
+                            //if ($todo_due < time()) $todo_due_color='color:red;';
+                            //$todo_due = wp_date(get_option('date_format'), $todo_due);
+                            //$doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                             $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
                             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
 
-                            if (empty($doc_id)) {
-                                $doc_id = get_the_ID();
-                                $todo_title = get_the_title($doc_id);
-                                $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
-                                if ($todo_due==-1) $todo_due='發行';
-                            }
+                            //if (empty($doc_id)) {
+                            //    $doc_id = get_the_ID();
+                            //    $todo_title = get_the_title($doc_id);
+                            //    $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
+                            //    if ($todo_due==-1) $todo_due='發行';
+                            //}
 
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            if ($is_doc_report) $doc_title .= '(電子表單)';
-                            if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
+                            //if ($is_doc_report) $doc_title .= '(電子表單)';
+                            //if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
+                            $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
                             if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
-                            <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
-                                <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
+                            <tr id="edit-todo-<?php echo esc_attr(get_the_ID()); ?>">
+                                <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_report_frequence_setting); ?></td>
                             </tr>
@@ -245,7 +247,7 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_goto_list_data($current_page = 1){
+        function retrieve_job_list_data($current_page = 1){
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
 
@@ -263,6 +265,9 @@ if (!class_exists('to_do_list')) {
                     'posts_per_page' => $posts_per_page,
                     'paged'          => $current_page,
                     //'post__in'       => $user_doc_ids, // Array of document post IDs
+                    'meta_key'       => 'job_number', // Meta key for sorting
+                    'orderby'        => 'meta_value', // Sort by meta value
+                    'order'          => 'ASC', // Sorting order (ascending)
                     'meta_query'     => array(
                         'relation' => 'AND',
                         array(
