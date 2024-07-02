@@ -66,7 +66,10 @@ if (!class_exists('to_do_list')) {
 
                 if ($_GET['_select_todo']=='1') echo $this->display_goto_list();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
-                if ($_GET['_select_todo']=='3') $this->list_all_scheduled_events();
+                if ($_GET['_select_todo']=='3') {
+                    ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
+                }
+                //$this->list_all_scheduled_events();
                 $http_client = new http_client();
                 if ($_GET['_select_todo']=='4') echo $http_client->display_http_client_list();
                 if ($_GET['_select_todo']=='5') echo $http_client->display_iot_message_list();
