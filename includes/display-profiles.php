@@ -234,7 +234,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
-                <div id="my-job-action-dialog" title="my-job-action"></div>
+                <div id="my-job-action-dialog" title="Action authorization"></div>
                 </fieldset>
 
                 <label for="my-notifications"><?php echo __( 'My notifications: ', 'your-text-domain' );?></label>
@@ -348,6 +348,7 @@ if (!class_exists('display_profiles')) {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_action_id'])) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
+                $is_authorize_action = sanitize_text_field($_POST['_is_authorize_action']);
                 $user_id = get_current_user_id();
                 $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
                 if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
