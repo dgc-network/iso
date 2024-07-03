@@ -64,13 +64,6 @@ function wp_enqueue_scripts_and_styles() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
-
-    wp_enqueue_script('display-documents', plugins_url('includes/display-documents.js', __FILE__), array('jquery'), $version);
-    wp_localize_script('display-documents', 'ajax_object', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('display-documents-nonce'), // Generate nonce
-    ));                
-
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 

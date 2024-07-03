@@ -8,8 +8,8 @@ if (!class_exists('display_profiles')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
-            //add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            add_action( 'init', array( $this, 'register_job_post_type' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
+            //add_action( 'init', array( $this, 'register_job_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -69,10 +69,9 @@ if (!class_exists('display_profiles')) {
         }
 
         function enqueue_display_profile_scripts() {
-            $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
-            wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-        
+            wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
+            $version = time(); // Update this version number when you make changes
             wp_enqueue_script('display-profiles', plugins_url('display-profiles.js', __FILE__), array('jquery'), $version);
             wp_localize_script('display-profiles', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
