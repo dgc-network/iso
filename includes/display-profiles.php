@@ -222,8 +222,8 @@ if (!class_exists('display_profiles')) {
                                 $job_number = get_post_meta($doc_id, 'job_number', true);
                                 $job_title = get_the_title($doc_id);
                                 $job_content = get_post_field('post_content', $doc_id);
-                                $authorized =$this->is_doc_authorized($doc_id);
-                                $is_checked = ($authorized) ? 'checked' : '';
+                                //$authorized =$this->is_doc_authorized($doc_id);
+                                $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
                                 ?>
                             <tr id="edit-my-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
@@ -929,7 +929,9 @@ if (!class_exists('display_profiles')) {
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
                 <div class="separator"></div>
-                <?php echo $this->display_doc_user_list($doc_id);?>
+                <div id="doc-user-list">
+                    <?php echo $this->display_doc_user_list($doc_id);?>
+                </div>
             <?php
             return ob_get_clean();
         }
@@ -1249,7 +1251,6 @@ if (!class_exists('display_profiles')) {
         function display_doc_user_list($doc_id=false) {
             ob_start();
             ?>
-            <div id="doc-user-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1274,8 +1275,7 @@ if (!class_exists('display_profiles')) {
             </table>
             <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
-            </div>
-            <div id="new-user-list-dialog" title="New user"></div>
+            <div id="new-user-list-dialog" title="Add doc user"></div>
             <?php
             return ob_get_clean();
         }
@@ -1299,7 +1299,7 @@ if (!class_exists('display_profiles')) {
             return $users;
         }
 
-        function display_new_user_list() {
+        function display_new_doc_user_list() {
             ob_start();
             ?>
             <fieldset>
@@ -1358,7 +1358,7 @@ if (!class_exists('display_profiles')) {
 
         function get_new_user_list_data() {
             $response = array();
-            $response['html_contain'] = $this->display_new_user_list();
+            $response['html_contain'] = $this->display_new_doc_user_list();
             wp_send_json($response);
         }
 

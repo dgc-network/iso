@@ -707,7 +707,7 @@ jQuery(document).ready(function($) {
                     $("#new-user-list-dialog").html(response.html_contain);
                     $("#new-user-list-dialog").dialog('open');
                     $('[id^="add-doc-user-"]').on("click", function () {
-                        if (window.confirm("Are you sure you want to add this doc user?")) {
+                        if (window.confirm("Are you sure you want to add this new user for doc?")) {
                             const user_id = this.id.substring(13);
                             $.ajax({
                                 type: 'POST',
