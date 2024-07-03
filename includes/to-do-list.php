@@ -17,7 +17,16 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_set_todo_dialog_data', array( $this, 'set_todo_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_todo_dialog_data', array( $this, 'set_todo_dialog_data' ) );    
+            add_action( 'wp_ajax_nopriv_set_todo_dialog_data', array( $this, 'set_todo_dialog_data' ) );
+
+            // Schedule the cron job if it's not already scheduled
+            if (!wp_next_scheduled('daily_action_process_event')) {
+                wp_schedule_event(time(), 'daily', 'daily_action_process_event');
+            }
+    
+            // Hook the function to the scheduled cron job
+            add_action('daily_action_process_event', [$this, 'process_action_posts_daily']);
+
         }
 
         function enqueue_to_do_list_scripts() {
@@ -711,10 +720,12 @@ if (!class_exists('to_do_list')) {
         function set_todo_dialog_data() {
             if( isset($_POST['_action_id']) ) {
                 // action button is clicked
-                $current_user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
+                update_todo_dialog_data($action_id);
+/*                
                 $next_job = get_post_meta($action_id, 'next_job', true);
                 $todo_id = get_post_meta($action_id, 'todo_id', true);
+                $current_user_id = get_current_user_id();
         
                 // Create new todo if the meta key 'todo_id' does not exist
                 if ( empty( $todo_id ) ) {
@@ -780,13 +791,89 @@ if (!class_exists('to_do_list')) {
                     'todo_id' => $todo_id,
                     'prev_report_id' => $new_report_id,
                 );        
-                if ($next_job>0) $this->set_next_todo_and_actions($params);
+                if ($next_job>0) $this->update_next_todo_and_actions($params);
+*/                
             }
             wp_send_json($response);
         }
         
         // to-do-list misc
-        function set_next_todo_and_actions($args = array()) {
+        function update_todo_dialog_data($action_id=false) {
+            // action button is clicked
+            $current_user_id = get_current_user_id();
+            //$action_id = sanitize_text_field($_POST['_action_id']);
+            $next_job = get_post_meta($action_id, 'next_job', true);
+            $todo_id = get_post_meta($action_id, 'todo_id', true);
+
+            // Create new todo if the meta key 'todo_id' does not exist
+            if ( empty( $todo_id ) ) {
+                $doc_id = get_post_meta($action_id, 'doc_id', true);
+                $todo_title = get_the_title($doc_id);
+                //$report_id = sanitize_text_field($_POST['_report_id']);
+                //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
+                $new_post = array(
+                    'post_title'    => $todo_title,
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'todo',
+                );    
+                $todo_id = wp_insert_post($new_post);
+                update_post_meta( $todo_id, 'doc_id', $doc_id);
+                //if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
+                //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
+            }
+
+            // Update current todo
+            update_post_meta( $todo_id, 'submit_user', $current_user_id );
+            update_post_meta( $todo_id, 'submit_action', $action_id );
+            update_post_meta( $todo_id, 'submit_time', time() );
+
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
+
+            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+            if ($prev_report_id) update_post_meta( $prev_report_id, 'todo_status', $next_job );
+
+            // Create a new doc-report if is_doc_report==1
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            if ($is_doc_report==1){
+                $new_post = array(
+                    'post_title'    => 'New doc-report',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'doc-report',
+                );    
+                $new_report_id = wp_insert_post($new_post);
+                update_post_meta( $new_report_id, 'doc_id', $doc_id);
+                update_post_meta( $new_report_id, 'todo_status', $next_job);
+                update_post_meta( $doc_id, 'todo_status', -1);
+                // Update the post
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
+                $documents_class = new display_documents();
+                $query = $documents_class->retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $field_value = sanitize_text_field($_POST[$field_name]);
+                        update_post_meta( $new_report_id, $field_name, $field_value);
+                    endwhile;
+                    wp_reset_postdata();
+                }            
+            }
+    
+            // set next todo and actions
+            $params = array(
+                'action_id' => $action_id,
+                'todo_id' => $todo_id,
+                'prev_report_id' => $new_report_id,
+            );        
+            if ($next_job>0) $this->update_next_todo_and_actions($params);
+
+        }
+        
+        function update_next_todo_and_actions($args = array()) {
             // 1. From set_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['todo_id'] and $args['prev_report_id']
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
@@ -839,6 +926,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
             }
+
             if ($next_job==-1 || $next_job==-2) {
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
                 update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
@@ -870,6 +958,7 @@ if (!class_exists('to_do_list')) {
                         update_post_meta( $new_action_id, 'todo_id', $new_todo_id);
                         update_post_meta( $new_action_id, 'next_job', $new_next_job);
                         update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
+                        update_post_meta( $new_action_id, 'doc_action_id', get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1231,7 +1320,7 @@ if (!class_exists('to_do_list')) {
         // Method for the callback function
         public function iso_helper_post_event_callback($params) {
             // Add your code to programmatically add a post here
-            $this->set_next_todo_and_actions($params);
+            $this->update_next_todo_and_actions($params);
         }
         
         // Method to schedule the event and add the action
@@ -1305,6 +1394,153 @@ if (!class_exists('to_do_list')) {
             }
         }
 
+        public function process_action_posts_daily() {
+            // todo-list
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_due',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+            );
+    
+            $query = new WP_Query($args);
+    
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $todo_id = get_the_ID();
+                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    $doc_id = get_post_meta($report_id, 'doc_id', true);
+    
+                    if ($doc_id) {
+                        $profiles_class = new display_profiles();
+                        $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                        if ($action_query->have_posts()) :
+                            while ($action_query->have_posts()) : $action_query->the_post();
+                                $authorized =$profiles_class->is_action_authorized(get_the_ID());
+                                if ($authorized) {
+                                    $action_id = $this->get_action_post_id_by_doc_action_id(get_the_ID());
+                                    $this->update_todo_dialog_data($action_id);
+                                }
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    }
+                }    
+                wp_reset_postdata();
+            }
+
+            // doc-job-list
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                    array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'todo_status',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'todo_status',
+                            'value'   => -2,
+                            'compare' => '=',
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'todo_status',
+                                'value'   => -1,
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'is_doc_report',
+                                'value'   => 1,
+                                'compare' => '=',
+                            ),
+                        ),
+                    ),
+                ),
+            );
+/*
+            if (!$is_site_admin) {
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+            }
+
+            // Add meta query for searching across all meta keys
+            $document_meta_keys = get_post_type_meta_keys('document');
+            $meta_query_all_keys = array('relation' => 'OR');
+            foreach ($document_meta_keys as $meta_key) {
+                $meta_query_all_keys[] = array(
+                    'key'     => $meta_key,
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                );
+            }
+            
+            $args['meta_query'][] = $meta_query_all_keys;
+*/
+            $query = new WP_Query($args);
+    
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $doc_id = get_the_ID();
+            
+                    if ($doc_id) {
+                        $profiles_class = new display_profiles();
+                        $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                        if ($action_query->have_posts()) :
+                            while ($action_query->have_posts()) : $action_query->the_post();
+                                $action_id = get_the_ID();
+                                $authorized =$profiles_class->is_action_authorized(get_the_ID());
+                                if ($authorized) $this->update_todo_dialog_data($action_id);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    }
+                }    
+                wp_reset_postdata();
+            }
+        }
+    
+        public function get_action_post_id_by_doc_action_id($action_id) {
+            $args = array(
+                'post_type'      => 'action',
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'doc_action_id',
+                        'value'   => $action_id,
+                        'compare' => '=',
+                    ),
+                ),
+                'fields' => 'ids', // Only return post IDs
+            );
+    
+            $query = new WP_Query($args);
+    
+            if ($query->have_posts()) {
+                return $query->posts[0]; // Return the first matching post ID
+            }
+    
+            return false; // Return false if no matching post is found
+        }
     }
     $todo_class = new to_do_list();
     // Call the method to schedule the event and add the action

@@ -16,11 +16,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -32,13 +32,6 @@ require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
-
-function remove_admin_bar() {
-  if (!current_user_can('administrator') && !is_admin()) {
-    show_admin_bar(false);
-  }
-}
-add_action('after_setup_theme', 'remove_admin_bar');
 
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
@@ -67,6 +60,13 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
+function remove_admin_bar() {
+    if (!current_user_can('administrator') && !is_admin()) {
+      show_admin_bar(false);
+    }
+}
+add_action('after_setup_theme', 'remove_admin_bar');
+  
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
@@ -122,29 +122,24 @@ function init_webhook_events() {
     $events = $data['events'] ?? [];
 
     foreach ((array)$events as $event) {
-
         $line_user_id = $event['source']['userId'];
         $profile = $line_bot_api->getProfile($line_user_id);
         $display_name = str_replace(' ', '', $profile['displayName']);
-        
+
         // Regular expression to detect URLs
         $urlRegex = '/\bhttps?:\/\/\S+\b/';
-
         // Match URLs in the text
         if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
             // Extract the matched URLs
             $urls = $matches[0];
-            
             // Output the detected URLs
             foreach ($urls as $url) {
                 // Parse the URL
                 $parsed_url = parse_url($url);
-                
                 // Check if the URL contains a query string
                 if (isset($parsed_url['query'])) {
                     // Parse the query string
                     parse_str($parsed_url['query'], $query_params);
-                    
                     // Check if the 'doc_id' parameter exists in the query parameters
                     if (isset($query_params['_get_shared_doc_id'])) {
                         // Retrieve the value of the 'doc_id' parameter
@@ -153,15 +148,12 @@ function init_webhook_events() {
                         $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }
                 }
-                
                 $params = [
                     'display_name' => $display_name,
                     'link_uri' => $url,
                     'text_message' => $text_message,
                 ];
-                
                 $flexMessage = set_flex_message($params);
-                
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
@@ -182,15 +174,15 @@ function init_webhook_events() {
                                 $text_message = __( '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。', 'your-text-domain' );
                                 // Encode the Chinese characters for inclusion in the URL
                                 $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-                                
+
                                 $params = [
                                     'display_name' => $display_name,
                                     'link_uri' => $link_uri,
                                     'text_message' => $text_message,
                                 ];
-                                
+
                                 $flexMessage = set_flex_message($params);
-                                
+
                                 $line_bot_api->replyMessage([
                                     'replyToken' => $event['replyToken'],
                                     'messages' => [$flexMessage],
