@@ -1446,11 +1446,11 @@ if (!class_exists('to_do_list')) {
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',
-                    ),
+                    //array(
+                    //    'key'     => 'site_id',
+                    //    'value'   => $site_id,
+                    //    'compare' => '=',
+                    //),
                     array(
                         'relation' => 'OR',
                         array(
