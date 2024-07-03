@@ -21,17 +21,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
-
 function register_session() {
     if ( ! session_id() ) {
         session_start();
     }
 }
 add_action( 'init', 'register_session' );
+
+require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
 
 function remove_admin_bar() {
   if (!current_user_can('administrator') && !is_admin()) {
