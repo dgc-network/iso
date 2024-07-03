@@ -360,6 +360,38 @@ if (!class_exists('display_profiles')) {
 
         function set_authorize_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
+            
+            if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
+                $user_id = get_current_user_id();
+                $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
+                
+                if (!is_array($authorize_action_ids)) {
+                    $authorize_action_ids = array();
+                }
+        
+                $authorize_exists = in_array($action_id, $authorize_action_ids);
+        
+                // Check the condition and update 'authorize_action_ids' accordingly
+                if ($is_action_authorized == 1 && !$authorize_exists) {
+                    // Add $action_id to 'authorize_action_ids'
+                    $authorize_action_ids[] = $action_id;
+                } elseif ($is_action_authorized != 1 && $authorize_exists) {
+                    // Remove $action_id from 'authorize_action_ids'
+                    $authorize_action_ids = array_diff($authorize_action_ids, array($action_id));
+                }
+                
+                // Update 'authorize_action_ids' meta value
+                update_user_meta($user_id, 'authorize_action_ids', $authorize_action_ids);
+                $response = array('success' => true);
+            }
+            
+            wp_send_json($response);
+        }
+/*        
+        function set_authorize_action_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_action_id'])) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
@@ -382,7 +414,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+*/
         function retrieve_my_exception_notifications() {
             $current_user_id = get_current_user_id();
             $args = array(
