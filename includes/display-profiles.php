@@ -15,6 +15,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
+            add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
 
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
@@ -325,7 +327,7 @@ if (!class_exists('display_profiles')) {
 
         }
 
-        function get_my_job_dialog_data() {
+        function get_my_job_action_dialog_data() {
             $response = array('html_contain' => $this->display_my_job_action_dialog());
             wp_send_json($response);
         }

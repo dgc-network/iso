@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_my_job_dialog_data',
+                    'action': 'get_my_job_action_dialog_data',
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
