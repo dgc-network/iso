@@ -210,7 +210,7 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Authorize', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
