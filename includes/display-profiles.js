@@ -66,6 +66,35 @@ jQuery(document).ready(function($) {
                         const radioButton = $("#is-action-authorized-" + action_id);
                     
                         if (window.confirm("Are you sure you want to change this setting?")) {
+                            // Toggle the radio button state
+                            const isChecked = radioButton.is(":checked");
+                            radioButton.prop("checked", !isChecked);
+                    
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_authorize_action_data',
+                                    _action_id: action_id,
+                                    _is_action_authorized: !isChecked ? 1 : 0,
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    });
+/*                    
+                    $('[id^="check-action-authorize-"]').on("click", function () {
+                        const action_id = this.id.substring(23);
+                        const radioButton = $("#is-action-authorized-" + action_id);
+                    
+                        if (window.confirm("Are you sure you want to change this setting?")) {
                             // Change the radio button state
                             if (!radioButton.is(":checked")) {
                                 radioButton.prop("checked", true);
