@@ -63,6 +63,56 @@ jQuery(document).ready(function($) {
 
                     $('[id^="check-action-authorize-"]').on("click", function () {
                         const action_id = this.id.substring(23);
+                        const radioButton = $("#is-action-authorized-" + action_id);
+                    
+                        if (window.confirm("Are you sure you want to change this setting?")) {
+                            // Change the radio button state
+                            if (!radioButton.is(":checked")) {
+                                radioButton.prop("checked", true);
+                    
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_authorize_action_data',
+                                        _action_id: action_id,
+                                        _is_action_authorized: 1,
+                                    },
+                                    success: function (response) {
+                                        console.log(response);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            } else {
+                                radioButton.prop("checked", false);
+                    
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_authorize_action_data',
+                                        _action_id: action_id,
+                                        _is_action_authorized: 0,
+                                    },
+                                    success: function (response) {
+                                        console.log(response);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            }
+                        }
+                    });
+/*                    
+                    $('[id^="check-action-authorize-"]').on("click", function () {
+                        const action_id = this.id.substring(23);
                         // Toggle the checkbox state
                         $("#is-action-authorized-"+action_id).prop("checked", function(i, value) {
                             return !value;
@@ -88,6 +138,7 @@ jQuery(document).ready(function($) {
                             });
                         }
                     });
+*/                    
                 },
                 error: function (error) {
                     console.error(error);
