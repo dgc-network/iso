@@ -274,13 +274,14 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function display_my_job_action_dialog() {
+        function display_my_job_action_dialog($doc_id=false) {
             ob_start();
             ?>
             <fieldset>
             <table style="width:100%;">
                 <thead>
                     <tr>
+                        <th></th>
                         <th><?php echo __( 'Action', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Next', 'your-text-domain' );?></th>
@@ -307,7 +308,8 @@ if (!class_exists('display_profiles')) {
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
-                        <tr id="edit-doc-action-<?php the_ID();?>">
+                        <tr id="check-authorize-action-<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="checkbox" id="is-authorize-action-<?php the_ID();?>" /></td>
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
@@ -328,7 +330,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function get_my_job_action_dialog_data() {
-            $response = array('html_contain' => $this->display_my_job_action_dialog());
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response = array('html_contain' => $this->display_my_job_action_dialog($doc_id));
             wp_send_json($response);
         }
 

@@ -61,10 +61,10 @@ jQuery(document).ready(function($) {
                     $("#my-job-action-dialog").html(response.html_contain);
                     $("#my-job-action-dialog").dialog('open');
 
-                    $('[id^="check-user-job-"]').on("click", function () {
-                        const doc_id = this.id.substring(15);
+                    $('[id^="check-authorize-action-"]').on("click", function () {
+                        const action_id = this.id.substring(23);
                         // Toggle the checkbox state
-                        $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
+                        $("#is-authorize-action-"+action_id).prop("checked", function(i, value) {
                             return !value;
                         });
                         
@@ -74,10 +74,10 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_user_doc_data',
-                                    _doc_id : doc_id,
-                                    _user_id : user_id,
-                                    _is_user_doc : $("#is-user-doc-"+doc_id).is(":checked") ? 1 : 0,
+                                    'action': 'set_authorize_action_data',
+                                    _action_id : action_id,
+                                    //_user_id : user_id,
+                                    _is_authorize_action : $("#is-authorize-action-"+action_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);
@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
             });
 
         });
-    
+/*    
         $('[id^="check-authorize-job-"]').on("click", function () {
             const doc_id = this.id.substring(20);
             // Toggle the checkbox state
@@ -125,6 +125,7 @@ jQuery(document).ready(function($) {
                 });
             }
         });        
+*/        
     }
 
     // site-profile scripts
