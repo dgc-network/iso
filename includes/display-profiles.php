@@ -222,12 +222,12 @@ if (!class_exists('display_profiles')) {
                             $authorize_checked = $this->is_authorize_doc($doc_id) ? 'checked' : '';
                             if ($doc_site==$site_id) {
                             ?>
-                            <tr id="check-authorize-job-<?php echo $doc_id;?>">
+                            <tr id="edit-my-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
                                 <td style="text-align:center;"><input type="checkbox" id="is-authorize-doc-<?php echo $doc_id;?>" <?php echo $authorize_checked;?> /></td>
-                                </tr>
+                            </tr>
                             <?php
                             }
                         }
@@ -235,6 +235,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
+                <div id="my-job-action-dialog" title="my-job-action"></div>
                 </fieldset>
 
                 <label for="my-notifications"><?php echo __( 'My notifications: ', 'your-text-domain' );?></label>
@@ -269,6 +270,64 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+
+        function display_my_job_action_dialog() {
+            ob_start();
+            ?>
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_doc_action_list_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        if ($next_job==-1) {
+                            $next_job_title = __( '文件發行', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
+                        }
+                        if ($next_job==-2) {
+                            $next_job_title = __( '文件廢止', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
+                        }
+                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        ?>
+                        <tr id="edit-doc-action-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                            <td><?php echo esc_html($action_content);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($next_leadtime);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            </fieldset>
+            </div>
+            <?php
+            return ob_get_clean();
+
+        }
+
+        function get_my_job_dialog_data() {
+            $response = array('html_contain' => $this->display_my_job_action_dialog());
+            wp_send_json($response);
         }
 
         function is_authorize_doc($doc_id=false, $user_id=false) {

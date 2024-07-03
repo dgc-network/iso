@@ -37,7 +37,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <select id="select-todo">
                 <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
-                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '啟動事項', 'your-text-domain' );?></option>
+                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '啟動授權', 'your-text-domain' );?></option>
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( 'Scheduled list', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( 'HTTP Clients', 'your-text-domain' );?></option>
@@ -64,7 +64,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if ($_GET['_select_todo']=='1') echo $this->display_job_list();
+                if ($_GET['_select_todo']=='1') echo $this->display_job_authorization();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
                 if ($_GET['_select_todo']=='3') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
@@ -148,7 +148,7 @@ if (!class_exists('to_do_list')) {
             register_post_type( 'action', $args );
         }
         
-        function display_job_list() {
+        function display_job_authorization() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
@@ -156,22 +156,12 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-            <h2 style="display:inline;"><?php echo __( '啟動事項', 'your-text-domain' );?></h2>
-                <div id="todo-setting-div" style="display:none">
-                <fieldset>
-                    <label for="display-name">Name : </label>
-                    <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="site-title"> Site: </label>
-                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                </fieldset>
-                </div>
+            <h2 style="display:inline;"><?php echo __( '啟動授權', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo(1);?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                        <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                        <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
 
@@ -181,7 +171,7 @@ if (!class_exists('to_do_list')) {
                         <tr>
                             <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Frequence', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Authorize', 'your-text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -189,7 +179,7 @@ if (!class_exists('to_do_list')) {
                     // Define the custom pagination parameters
                     $posts_per_page = get_option('operation_row_counts');
                     $current_page = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_job_list_data($current_page);
+                    $query = $this->retrieve_job_authorization_data($current_page);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
 
@@ -198,31 +188,15 @@ if (!class_exists('to_do_list')) {
                             $doc_id = get_the_ID();
                             $job_title = get_the_title();
                             $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                            $job_title .= '('.$job_number.')';
-                            //if ($todo_due < time()) $todo_due_color='color:red;';
-                            //$todo_due = wp_date(get_option('date_format'), $todo_due);
-                            //$doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            $report_id = get_post_meta(get_the_ID(), 'report_id', true);                    
-                            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-
-                            //if (empty($doc_id)) {
-                            //    $doc_id = get_the_ID();
-                            //    $todo_title = get_the_title($doc_id);
-                            //    $todo_due = get_post_meta(get_the_ID(), 'todo_status', true);
-                            //    if ($todo_due==-1) $todo_due='發行';
-                            //}
-
-                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            if ($job_number) $job_title .= '('.$job_number.')';
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            //if ($is_doc_report) $doc_title .= '(電子表單)';
-                            //if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
-                            $doc_title .= '('.$doc_number.')';
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            if ($doc_number) $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
                             if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
-                            <tr id="edit-todo-<?php echo esc_attr(get_the_ID()); ?>">
+                            <tr id="edit-job-authorization-<?php the_ID(); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_report_frequence_setting); ?></td>
@@ -247,7 +221,7 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_job_list_data($current_page = 1){
+        function retrieve_job_authorization_data($current_page = 1){
             // Define the custom pagination parameters
             $posts_per_page = get_option('operation_row_counts');
 
@@ -264,7 +238,6 @@ if (!class_exists('to_do_list')) {
                     'post_type'      => 'document',
                     'posts_per_page' => $posts_per_page,
                     'paged'          => $current_page,
-                    //'post__in'       => $user_doc_ids, // Array of document post IDs
                     'meta_key'       => 'job_number', // Meta key for sorting
                     'orderby'        => 'meta_value', // Sort by meta value
                     'order'          => 'ASC', // Sorting order (ascending)
@@ -319,39 +292,110 @@ if (!class_exists('to_do_list')) {
                 }
                 
                 $args['meta_query'][] = $meta_query_all_keys;
-/*
-            } else {
-                // Define the WP_Query arguments
-                $args = array(
-                    'post_type'      => 'todo',
-                    'posts_per_page' => $posts_per_page,
-                    'paged'          => $current_page,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'todo_due',
-                            'compare' => 'EXISTS',
-                        ),
-                        array(
-                            'key'     => 'submit_user',
-                            'compare' => 'NOT EXISTS',
-                        ),
-                    ),
-                );
 
-                if (!$is_site_admin) {
-                    // Add a new meta query
-                    $args['meta_query'][] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids, // Value is the array of user doc IDs
-                        'compare' => 'IN',
-                    );    
-                }
-            }
-*/
-            $query = new WP_Query($args);
+                $query = new WP_Query($args);
             return $query;
         }
+
+        function display_job_authorization_dialog($todo_id) {
+            // Get the post type of the post with the given ID
+            $post_type = get_post_type( $todo_id );
+        
+            // Check if the post type is 'todo'
+            if ( ($post_type != 'todo') && ($post_type != 'document') ) {
+                return 'post type is '.$post_type.'. Wrong type!';
+            }
+            
+            if ( $post_type === 'todo' ) {
+                $report_id = get_post_meta($todo_id, 'report_id', true);
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+            }
+            
+            if ( $post_type === 'document' ) {
+                $doc_id = $todo_id;
+            }
+            
+            if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
+        
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+        
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+    
+            ob_start();
+            ?>
+            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
+            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+            <fieldset>
+            <?php
+            if ($is_doc_report) {
+                // doc_report_dialog data
+                $params = array(
+                    'doc_id'     => $doc_id,
+                    //'report_id'     => $report_id,
+                    'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
+                );                
+                $documents_class = new display_documents();
+                $documents_class->display_doc_field_result($params);
+            } else {
+                // document_dialog data
+                $profiles_class = new display_profiles();
+                ?>
+                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+                <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+                <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+                <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
+                <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
+                <?php
+            }
+            ?>
+            <hr>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                <?php
+                    if ( $post_type === 'todo' ) {
+                        $query = $this->retrieve_todo_action_list_data($todo_id);
+                    }
+                    if ( $post_type === 'document' ) {
+                        $profiles_class = new display_profiles();
+                        $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
+                    }                    
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                        endwhile;
+                        wp_reset_postdata();
+                    }
+                ?>
+                </div>
+                <div style="text-align: right">
+                    <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />
+                </div>
+            </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+        
 
 
         function display_todo_list() {
@@ -460,7 +504,8 @@ if (!class_exists('to_do_list')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
 
-            $search_query = sanitize_text_field($_GET['_search']);        
+            $search_query = sanitize_text_field($_GET['_search']);
+/*                    
             if ($search_query) {
                 $args = array(
                     'post_type'      => 'document',
@@ -520,6 +565,7 @@ if (!class_exists('to_do_list')) {
                 $args['meta_query'][] = $meta_query_all_keys;
 
             } else {
+*/             
                 // Define the WP_Query arguments
                 $args = array(
                     'post_type'      => 'todo',
@@ -546,7 +592,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );    
                 }
-            }
+            //}
 
             $query = new WP_Query($args);
             return $query;

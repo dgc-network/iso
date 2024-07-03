@@ -41,6 +41,63 @@ jQuery(document).ready(function($) {
             });            
         });
     
+        $("#my-job-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+        });
+
+        $('[id^="edit-my-job-"]').on("click", function () {
+            const doc_id = this.id.substring(12);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_job_dialog_data',
+                    '_doc_id': doc_id,
+                },
+                success: function (response) {
+                    $("#my-job-action-dialog").html(response.html_contain);
+                    $("#my-job-action-dialog").dialog('open');
+
+                    $('[id^="check-user-job-"]').on("click", function () {
+                        const doc_id = this.id.substring(15);
+                        // Toggle the checkbox state
+                        $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
+                            return !value;
+                        });
+                        
+                        if (window.confirm("Are you sure you want to change this setting?")) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_user_doc_data',
+                                    _doc_id : doc_id,
+                                    _user_id : user_id,
+                                    _is_user_doc : $("#is-user-doc-"+doc_id).is(":checked") ? 1 : 0,
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
+        });
+    
         $('[id^="check-authorize-job-"]').on("click", function () {
             const doc_id = this.id.substring(20);
             // Toggle the checkbox state
