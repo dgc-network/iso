@@ -59,8 +59,8 @@ if (!class_exists('display_documents')) {
 
         function enqueue_display_document_scripts() {
             $version = time(); // Update this version number when you make changes
-            wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
-            wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
+            //wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
+            //wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
         
             wp_enqueue_script('display-documents', plugins_url('display-documents.js', __FILE__), array('jquery'), $version);
             wp_localize_script('display-documents', 'ajax_object', array(
