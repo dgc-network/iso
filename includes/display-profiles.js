@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
                     $("#my-job-action-dialog").html(response.html_contain);
                     $("#my-job-action-dialog").dialog('open');
 
-                    $('[id^="check-authorize-action-"]').on("click", function () {
+                    $('[id^="check-action-authorize-"]').on("click", function () {
                         const action_id = this.id.substring(23);
                         // Toggle the checkbox state
                         $("#is-action-authorized-"+action_id).prop("checked", function(i, value) {

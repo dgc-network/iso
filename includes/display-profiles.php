@@ -217,11 +217,11 @@ if (!class_exists('display_profiles')) {
                     // Accessing elements of the array
                     if (is_array($user_doc_ids)) {
                         foreach ($user_doc_ids as $doc_id) {
-                            $job_number = get_post_meta($doc_id, 'job_number', true);
-                            $job_title = get_the_title($doc_id);
-                            $job_content = get_post_field('post_content', $doc_id);
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
                             if ($doc_site==$site_id) {
+                                $job_number = get_post_meta($doc_id, 'job_number', true);
+                                $job_title = get_the_title($doc_id);
+                                $job_content = get_post_field('post_content', $doc_id);
                                 $authorized =$this->is_doc_authorized($doc_id);
                                 $is_checked = ($authorized) ? 'checked' : '';
                                 ?>
@@ -294,7 +294,7 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $authorize_checked = $this->is_action_authorized(get_the_ID()) ? 'checked' : '';
+                        $is_checked = $this->is_action_authorized(get_the_ID()) ? 'checked' : '';
                         $action_title = get_the_title();
                         $action_content = get_post_field('post_content', get_the_ID());
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
@@ -310,8 +310,8 @@ if (!class_exists('display_profiles')) {
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
-                        <tr id="check-authorize-action-<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="is-action-authorized-<?php the_ID();?>" <?php echo $authorize_checked;?> /></td>
+                        <tr id="check-action-authorize-<?php the_ID();?>">
+                            <td style="text-align:center;"><input type="radio" name="is_action_authorized" id="is-action-authorized-<?php the_ID();?>" <?php echo $is_checked;?> /></td>
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
