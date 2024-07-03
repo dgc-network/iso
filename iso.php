@@ -21,6 +21,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
+//require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
+
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -61,11 +66,6 @@ function wp_enqueue_scripts_and_styles() {
     ));
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
-
-require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
 
 function set_flex_message($params) {
     $display_name = $params['display_name'];
