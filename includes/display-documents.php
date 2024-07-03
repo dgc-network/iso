@@ -8,7 +8,7 @@ if (!class_exists('display_documents')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
+            //add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'init', array( $this, 'register_document_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
