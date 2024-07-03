@@ -13,8 +13,8 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
-            add_action( 'wp_ajax_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
-            add_action( 'wp_ajax_nopriv_set_authorize_doc_data', array( $this, 'set_authorize_doc_data' ) );
+            add_action( 'wp_ajax_set_authorize_action_data', array( $this, 'set_authorize_action_data' ) );
+            add_action( 'wp_ajax_nopriv_set_authorize_action_data', array( $this, 'set_authorize_action_data' ) );
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
 
@@ -210,7 +210,6 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Authorize', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
@@ -221,14 +220,12 @@ if (!class_exists('display_profiles')) {
                             $job_title = get_the_title($doc_id);
                             $job_content = get_post_field('post_content', $doc_id);
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            $authorize_checked = $this->is_authorize_doc($doc_id) ? 'checked' : '';
                             if ($doc_site==$site_id) {
                             ?>
                             <tr id="edit-my-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
-                                <td style="text-align:center;"><input type="checkbox" id="is-authorize-doc-<?php echo $doc_id;?>" <?php echo $authorize_checked;?> /></td>
                             </tr>
                             <?php
                             }
@@ -293,6 +290,7 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        $authorize_checked = $this->is_authorize_action(get_the_ID()) ? 'checked' : '';
                         $action_title = get_the_title();
                         $action_content = get_post_field('post_content', get_the_ID());
                         $next_job = get_post_meta(get_the_ID(), 'next_job', true);
@@ -309,7 +307,7 @@ if (!class_exists('display_profiles')) {
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
                         <tr id="check-authorize-action-<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="checkbox" id="is-authorize-action-<?php the_ID();?>" /></td>
+                            <td style="text-align:center;"><input type="checkbox" id="is-authorize-action-<?php the_ID();?>" <?php echo $authorize_checked;?> /></td>
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
@@ -335,38 +333,36 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function is_authorize_doc($doc_id=false, $user_id=false) {
+        function is_authorize_action($action_id=false, $user_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();    
             // Get the user's doc IDs as an array
-            $authorize_doc_ids = get_user_meta($user_id, 'authorize_doc_ids', true);
+            $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
             // If $user_doc_ids is not an array, convert it to an array
-            if (!is_array($authorize_doc_ids)) $authorize_doc_ids = array();
+            if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
             // Check if the current user has the specified doc ID in their metadata
-            return in_array($doc_id, $authorize_doc_ids);
+            return in_array($action_id, $authorize_action_ids);
         }
 
-        function set_authorize_doc_data() {
+        function set_authorize_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                //$is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
-
+            if (isset($_POST['_action_id'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
                 $user_id = get_current_user_id();
-                $authorize_doc_ids = get_user_meta($user_id, 'authorize_doc_ids', true);
-                if (!is_array($authorize_doc_ids)) $authorize_doc_ids = array();
-                $authorize_exists = in_array($doc_id, $authorize_doc_ids);
+                $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
+                if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
+                $authorize_exists = in_array($action_id, $authorize_action_ids);
 
                 // Check the condition and update 'user_doc_ids' accordingly
-                if ($is_authorize_doc == 1 && !$authorize_exists) {
+                if ($is_authorize_action == 1 && !$authorize_exists) {
                     // Add $doc_id to 'user_doc_ids'
-                    $authorize_doc_ids[] = $doc_id;
-                } elseif ($is_authorize_doc != 1 && $authorize_exists) {
+                    $authorize_action_ids[] = $action_id;
+                } elseif ($is_authorize_action != 1 && $authorize_exists) {
                     // Remove $doc_id from 'user_doc_ids'
-                    $authorize_doc_ids = array_diff($authorize_doc_ids, array($doc_id));
+                    $authorize_action_ids = array_diff($authorize_action_ids, array($doc_id));
                 }        
                 // Update 'user_doc_ids' meta value
-                update_user_meta( $user_id, 'authorize_doc_ids', $authorize_doc_ids);
+                update_user_meta( $user_id, 'authorize_action_ids', $authorize_action_ids);
                 $response = array('success' => true);
             }
             wp_send_json($response);

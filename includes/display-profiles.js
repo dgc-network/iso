@@ -76,7 +76,6 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_authorize_action_data',
                                     _action_id : action_id,
-                                    //_user_id : user_id,
                                     _is_authorize_action : $("#is-authorize-action-"+action_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
@@ -97,35 +96,6 @@ jQuery(document).ready(function($) {
             });
 
         });
-/*    
-        $('[id^="check-authorize-job-"]').on("click", function () {
-            const doc_id = this.id.substring(20);
-            // Toggle the checkbox state
-            $("#is-authorize-doc-"+doc_id).prop("checked", function(i, value) {
-                return !value;
-            });
-            
-            if (window.confirm("Are you sure you want to change this setting?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_authorize_doc_data',
-                        _doc_id : doc_id,
-                        _is_authorize_doc : $("#is-authorize-doc-"+doc_id).is(":checked") ? 1 : 0,
-                    },
-                    success: function (response) {
-                        console.log(response);
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });        
-*/        
     }
 
     // site-profile scripts
