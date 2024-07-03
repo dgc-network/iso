@@ -437,7 +437,8 @@ if (!class_exists('display_documents')) {
                 Alice-xCarl: We are too many
                 destroy Bob
                 Bob->>Alice: I agree
-
+            </div>
+            <div class="mermaid">
             sequenceDiagram
                 <?php
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
