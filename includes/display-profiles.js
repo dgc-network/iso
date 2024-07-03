@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
                     $('[id^="check-authorize-action-"]').on("click", function () {
                         const action_id = this.id.substring(23);
                         // Toggle the checkbox state
-                        $("#is-authorize-action-"+action_id).prop("checked", function(i, value) {
+                        $("#is-action-authorized-"+action_id).prop("checked", function(i, value) {
                             return !value;
                         });
                         
@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_authorize_action_data',
                                     _action_id : action_id,
-                                    _is_authorize_action : $("#is-authorize-action-"+action_id).is(":checked") ? 1 : 0,
+                                    _is_action_authorized : $("#is-action-authorized-"+action_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);
