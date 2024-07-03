@@ -426,7 +426,19 @@ if (!class_exists('display_documents')) {
             </div>
 
             <div class="mermaid">
-                sequenceDiagram
+            sequenceDiagram
+                Alice->>Bob: Hello Bob, how are you ?
+                Bob->>Alice: Fine, thank you. And you?
+                create participant Carl
+                Alice->>Carl: Hi Carl!
+                create actor D as Donald
+                Carl->>D: Hi!
+                destroy Carl
+                Alice-xCarl: We are too many
+                destroy Bob
+                Bob->>Alice: I agree
+
+            sequenceDiagram
                 <?php
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
                 if ($query->have_posts()) :
