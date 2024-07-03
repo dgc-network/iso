@@ -223,13 +223,13 @@ if (!class_exists('display_profiles')) {
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
                             if ($doc_site==$site_id) {
                                 $authorized =$this->is_doc_authorized($doc_id);
-                                if ($authorized) $authorize_checked='checked';
-                            ?>
+                                $is_checked = ($authorized) ? 'checked' : '';
+                                ?>
                             <tr id="edit-my-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td width="70%"><?php echo wp_kses_post($job_content);?></td>
-                                <td style="text-align:center;"><input type="radio" <?php echo $authorize_checked;?> /></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
                             <?php
                             }
