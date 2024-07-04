@@ -478,8 +478,8 @@ if (!class_exists('http_client')) {
 
         function display_exception_notification_list($http_client_id=false) {
             ob_start();
-                ?>
-                <fieldset>
+            ?>
+            <fieldset>
                 <table class="ui-widget" style="width:100%; font-size:small;">
                     <thead>
                         <th><?php echo __( 'User', 'your-text-domain' );?></th>
@@ -512,14 +512,6 @@ if (!class_exists('http_client')) {
             </fieldset>
             <div id="exception-notification-dialog" title="Exception notification dialog"></div>
             <div id="new-notification-dialog" title="Add new user">
-            <fieldset>
-                <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-                <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
-                <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
-                <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
-                <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
-                </fieldset>
             </div>
             <?php
             return ob_get_clean();
