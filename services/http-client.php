@@ -40,8 +40,7 @@ if (!class_exists('http_client')) {
 
             add_filter('cron_schedules', array( $this, 'custom_cron_schedules'));
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
-                //wp_schedule_event(time(), 'daily', 'five_minutes_action_process_event');
-                wp_schedule_event(time(), 'Every Five Minutes', 'five_minutes_action_process_event');
+                wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_http_client_meta'));
             register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
