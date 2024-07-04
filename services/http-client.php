@@ -511,16 +511,15 @@ if (!class_exists('http_client')) {
                 <div id="new-exception-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             <div id="exception-notification-dialog" title="Exception notification dialog"></div>
-            <div id="new-exception-notification-dialog" title="Exception notification dialog">
-            <fieldset>
+            <div id="new-notification-dialog" title="Add new user">
+                <fieldset>
                 <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
                 <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
                 <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
                 <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
                 <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
-                </div>
-            </fieldset>
+                </fieldset>
             </div>
             <?php
             return ob_get_clean();

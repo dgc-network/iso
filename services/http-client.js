@@ -234,10 +234,10 @@ jQuery(document).ready(function($) {
     // Exception notification scripts
     function activate_exception_notification_list_data(http_client_id=false){
         $("#new-exception-notification").on("click", function() {
-            $("#new-exception-notification-dialog").dialog('open');
+            $("#new-notification-dialog").dialog('open');
         });
     
-        $("#new-exception-notification-dialog").dialog({
+        $("#new-notification-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -255,7 +255,7 @@ jQuery(document).ready(function($) {
                             '_max_humidity': $("#new-max-humidity").val(),
                         },
                         success: function (response) {
-                            $("#new-exception-notification-dialog").dialog('close');
+                            $("#new-notification-dialog").dialog('close');
                             get_exception_notification_list_data(http_client_id);
                         },
                         error: function (error) {
