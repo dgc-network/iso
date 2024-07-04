@@ -10,15 +10,13 @@ if (!class_exists('http_client')) {
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
             add_action( 'init', array( $this, 'register_http_client_post_type' ) );
-            //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
-            add_action( 'init', array( $this, 'create_iot_message_post_type' ) );
+            add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
+            add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
+
             //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
             //add_action( 'transition_post_status', array( $this, 'update_http_client_meta_on_publish', 10, 3 ) );
             
-            //add_action( 'init', array( $this, 'register_geolocation_message_post_type' ) );
-            add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
-
             add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
@@ -27,8 +25,6 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
             add_action( 'wp_ajax_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_update_http_client_data', array( $this, 'update_http_client_data' ) );
-            add_action( 'wp_ajax_nopriv_update_http_client_data', array( $this, 'update_http_client_data' ) );                
             add_action( 'wp_ajax_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
             add_action( 'wp_ajax_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
@@ -42,30 +38,24 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
 
-            //add_action('transition_post_status', array( $this, 'update_meta_on_status_change', 10, 3));
-        }
-
-        function update_meta_on_status_change($new_status, $old_status, $post) {
-/*            
-            if ($post->post_type !== 'your_post_type') {
-                return;
+            add_filter('cron_schedules', array( $this, 'custom_cron_schedules'));
+            if (!wp_next_scheduled('five_minutes_action_process_event')) {
+                //wp_schedule_event(time(), 'daily', 'five_minutes_action_process_event');
+                wp_schedule_event(time(), 'Every Five Minutes', 'five_minutes_action_process_event');
             }
-*/        
-            if ($old_status !== 'publish' && $new_status === 'publish') {
-                // Post is being published, perform your action here
-                update_post_meta($post->ID, 'your_meta_key', 'new_value');
-            }
+            add_action('five_minutes_action_process_event', array( $this, 'update_http_client_meta'));
+            register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
+            
         }
-        
 
         function enqueue_http_client_scripts() {
-            $version = time(); // Update this version number when you make changes
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
             //wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
-            //wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
-            //wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
+            wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
+            wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
 
+            $version = time(); // Update this version number when you make changes
             wp_enqueue_script('http-client', plugins_url('http-client.js', __FILE__), array('jquery'), $version);
             wp_localize_script('http-client', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
@@ -86,21 +76,7 @@ if (!class_exists('http_client')) {
             );
             register_post_type( 'http-client', $args );
         }
-/*
-        // Register geolocation-message post type
-        function register_iot_message_post_type() {
-            $labels = array(
-                'menu_name'     => _x('iot-message', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_rest'  => true,
-                //'show_in_menu'  => false,
-            );
-            register_post_type( 'iot-message', $args );
-        }
-*/
+
         function register_iot_message_meta() {
             register_post_meta('iot-message', 'deviceID', array(
                 'show_in_rest' => true,
@@ -120,7 +96,7 @@ if (!class_exists('http_client')) {
             // Register other metadata similarly...
         }
         
-        function create_iot_message_post_type() {
+        function register_iot_message_post_type() {
             register_post_type('iot-message', array(
                 'labels' => array(
                     'name' => 'IoT Messages',
@@ -133,21 +109,6 @@ if (!class_exists('http_client')) {
             ));
         }
         
-/*
-        // Register geolocation-message post type
-        function register_geolocation_message_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Geolocation', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'geolocation-message', $args );
-        }
-*/
-        // Register exception-notification post type
         function register_exception_notification_post_type() {
             $labels = array(
                 'menu_name'     => _x('Notification', 'admin menu', 'textdomain'),
@@ -160,7 +121,7 @@ if (!class_exists('http_client')) {
             register_post_type( 'notification', $args );
         }
 
-        // Geolocation message
+        // iot message
         function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
@@ -265,16 +226,7 @@ if (!class_exists('http_client')) {
             $query = new WP_Query($args);
             return $query;
         }
-/*        
-        function retrieve_iot_message_data() {
-            $args = array(
-                'post_type'      => 'iot-message',
-                'posts_per_page' => -1,        
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-*/
+
         function get_iot_message_data() {
             $response = array();
             $iot_message_id = sanitize_text_field($_POST['_iot_message_id']);
@@ -449,118 +401,6 @@ if (!class_exists('http_client')) {
             wp_delete_post($_POST['_http_client_id'], true);
             wp_send_json($response);
         }
-
-        function update_http_client_meta_on_publish($new_status, $old_status, $post) {
-
-            if ('publish' === $new_status && 'publish' !== $old_status && 'iot-message' === $post->post_type) {
-                $deviceID = get_post_meta($post->ID, 'deviceID', true);
-                $temperature = get_post_meta($post->ID, 'temperature', true);
-                $humidity = get_post_meta($post->ID, 'humidity', true);
-        
-                if ($deviceID) {
-                    $this->update_http_client_meta($deviceID, $temperature, $humidity);
-                }
-            }
-
-        }
-        
-
-        function update_http_client_meta($deviceID, $temperature, $humidity){
-/*
-        }
-
-        function update_http_client_meta($post_id, $post, $update) {
-
-            // We only want to run this on new posts, not updates
-            if ($update) {
-                return;
-            }
-        
-            // Get the deviceID from the new iot-message post
-            $deviceID = get_post_meta($post_id, 'deviceID', true);
-            $temperature = get_post_meta($post_id, 'temperature', true);
-            $humidity = get_post_meta($post_id, 'humidity', true);
-        
-            // Check if deviceID is set
-            if (!$deviceID) {
-                return;
-            }
-*/        
-            // Query for the http-client post with the matching deviceID
-            $args = array(
-                'post_type' => 'http-client',
-                'meta_query' => array(
-                    array(
-                        'key' => 'deviceID',
-                        'value' => $deviceID,
-                        'compare' => '='
-                    )
-                )
-            );
-            $query = new WP_Query($args);
-
-            // If a matching post is found, update its meta data
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $http_client_post_id = get_the_ID();
-        
-                    if ($temperature) {
-                        update_post_meta(get_the_ID(), 'temperature', $temperature);
-                        $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
-                    }
-                    if ($humidity) {
-                        update_post_meta(get_the_ID(), 'humidity', $humidity);
-                        $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
-                    }
-                }
-                wp_reset_postdata();
-            }
-
-        }
-
-        
-        function update_http_client_data() {
-            if (isset($_POST['_topic']) && isset($_POST['_key']) && isset($_POST['_value'])) {
-                $topic = sanitize_text_field($_POST['_topic']);
-                $key = sanitize_text_field($_POST['_key']);
-                $value = sanitize_text_field($_POST['_value']);
-
-                // Find the http-client post by title
-                $post = get_page_by_title($topic, OBJECT, 'http-client');
-
-                // Update the post meta
-                if ($key=='temperature') update_post_meta($post->ID, 'temperature', $value);
-                if ($key=='humidity') update_post_meta($post->ID, 'humidity', $value);
-                if ($key=="ssid") update_post_meta($post->ID, 'ssid', $value);
-                if ($key=="password") update_post_meta($post->ID, 'password', $value);
-
-                $query = $this->retrieve_exception_notification_data($post->ID);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                        $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
-                        $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                        if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event($user_id, $topic, $value, $max_temperature);
-                        if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event($user_id, $topic, $value, false, $max_humidity);
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-
-                wp_send_json_success(array('message' => 'Updated successfully.'));
-            } else {
-                wp_send_json_error(array('message' => 'Missing topic or value.'));
-            }
-        }
-
-        function update_post_field($post_id, $field, $value) {
-            // Update the post field
-            $post_data = array(
-                'ID' => $post_id,
-                $field => $value,
-            );
-            wp_update_post($post_data);
-        }
         
         // Exception notification
         function create_exception_notification_events($http_client_id=false, $key=false, $value=false) {
@@ -575,8 +415,6 @@ if (!class_exists('http_client')) {
                 endwhile;
                 wp_reset_postdata();
             endif;
-
-
         }
 
         function exception_notification_event($http_client_id=false, $user_id=false, $key=false, $value=false, $max_value=false) {
@@ -617,9 +455,6 @@ if (!class_exists('http_client')) {
             update_user_meta($user_id, 'last_notification_time_' . $deviceID, time());
         }
         
-        // Hook for sending delayed notification
-        //add_action('send_delayed_notification', 'send_delayed_notification_handler');
-        
         function send_delayed_notification_handler($params) {
             $user_id = $params['user_id'];
             $text_message = $params['text_message'];
@@ -641,57 +476,7 @@ if (!class_exists('http_client')) {
                 'messages' => [$flexMessage],
             ]);
         }
-/*        
-        // Exception notification
-        function exception_notification_event($user_id=false, $topic=false, $value=false, $max_temperature=false, $max_humidity=false) {
-            $user_data = get_userdata($user_id);
-            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
-            // Find the post by title
-            $post = get_page_by_title($topic, OBJECT, 'http-client');
-            $content = get_post_field('post_content', $post->ID);
-        
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'的溫度已經超過'.$max_temperature.'°C。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'的濕度已經超過'.$max_humidity.'%。';
 
-            $five_minutes_ago = time()-(5 * 60 * 1000);
-            $five_minutes_ago = wp_date(get_option('date_format'), $five_minutes_ago).' '.wp_date(get_option('time_format'), $five_minutes_ago);
-            if ($max_temperature) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的溫度是'.$value.'°C，已經超過設定的'.$max_temperature.'°C了。';
-            if ($max_humidity) $text_message = '#'.$topic.' '.$content.'在'.$five_minutes_ago.'的濕度是'.$value.'%，已經超過設定的'.$max_humidity.'%了。';
-
-            // Parameters to pass to the notification function
-            $params = [
-                'user_id' => $user_id,
-                'topic' => $topic,
-                'text_message' => $text_message,
-            ];
-        
-            // Schedule the event to run after 5 minutes (300 seconds)
-            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
-        }
-        
-        // Function to send the notification
-        function send_delayed_notification($params) {
-            $user_id = $params['user_id'];
-            $topic = $params['topic'];
-            $text_message = $params['text_message'];
-        
-            $user_data = get_userdata($user_id);
-            $link_uri = home_url().'/display-profiles/?_id='.$user_id;
-        
-            $params = [
-                'display_name' => $user_data->display_name,
-                'link_uri' => $link_uri,
-                'text_message' => $text_message,
-            ];
-        
-            $flexMessage = set_flex_message($params);
-            $line_bot_api = new line_bot_api();
-            $line_bot_api->pushMessage([
-                'to' => get_user_meta($user_id, 'line_user_id', TRUE),
-                'messages' => [$flexMessage],
-            ]);
-        }
-*/        
         function display_exception_notification_list($http_client_id=false) {
             ob_start();
                 ?>
@@ -831,6 +616,88 @@ if (!class_exists('http_client')) {
             }            
             return $options;
         }
+
+        function custom_cron_schedules($schedules) {
+            if (!isset($schedules['every_five_minutes'])) {
+                $schedules['every_five_minutes'] = array(
+                    'interval' => 300, // 300 seconds = 5 minutes
+                    'display' => __('Every Five Minutes')
+                );
+            }
+            return $schedules;
+        }
+
+        function update_http_client_meta() {
+            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
+            $args = array(
+                'post_type' => 'iot-message',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key' => 'processed',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+                'date_query' => array(
+                    array(
+                        'after' => '5 minutes ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+            $iot_query = new WP_Query($args);
+        
+            if ($iot_query->have_posts()) {
+                while ($iot_query->have_posts()) {
+                    $iot_query->the_post();
+                    $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
+        
+                    // Find 'http-client' post with the same deviceID
+                    $http_args = array(
+                        'post_type' => 'http-client',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'deviceID',
+                                'value' => $deviceID,
+                                'compare' => '='
+                            )
+                        )
+                    );
+                    $http_query = new WP_Query($http_args);
+        
+                    if ($http_query->have_posts()) {
+                        while ($http_query->have_posts()) {
+                            $http_query->the_post();
+                            $http_post_id = get_the_ID();
+        
+                            // Update 'temperature' and 'humidity' metadata
+                            if ($humidity) {
+                                update_post_meta($http_post_id, 'temperature', $temperature);
+                                $this->create_exception_notification_events($http_post_id, 'temperature', $temperature);
+                            }
+                            if ($humidity) {
+                                update_post_meta($http_post_id, 'humidity', $humidity);
+                                $this->create_exception_notification_events($http_post_id, 'humidity', $humidity);
+                            }
+                        }
+                        wp_reset_postdata();
+                    }
+        
+                    // Mark the 'iot-message' post as processed
+                    update_post_meta(get_the_ID(), 'processed', 1);
+                }
+                wp_reset_postdata();
+            }
+        }
+
+        function custom_cron_deactivation() {
+            $timestamp = wp_next_scheduled('five_minutes_action_process_event');
+            if ($timestamp) {
+                wp_unschedule_event($timestamp, 'five_minutes_action_process_event');
+            }
+        }        
     }
     $http_client = new http_client();
 }
