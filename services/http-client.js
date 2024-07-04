@@ -84,12 +84,12 @@ jQuery(document).ready(function($) {
     function activate_http_client_list_data(){
 
         activate_exception_notification_list_data($("#http-client-id").val());
-
+/*
         $("#select-todo").on( "change", function() {
             window.location.replace("?_select_todo="+$(this).val());
             $(this).val('');
         });
-    
+*/    
         $("#search-http-client").on( "change", function() {
 
             // Initialize an empty array to store query parameters
