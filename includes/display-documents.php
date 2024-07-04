@@ -436,6 +436,14 @@ if (!class_exists('display_documents')) {
             And here is another:
             <pre class="mermaid">
                 graph TD 
+                Rover -->|Wife| Linda
+                Linda -->|Son| Chein
+                Linda -->|Son| Leo
+            </pre>
+
+            And here is another:
+            <pre class="mermaid">
+                graph TD 
                 A[Client] -->|tcp_123| B
                 B(Load Balancer) 
                 B -->|tcp_456| C[Server1] 
@@ -449,16 +457,16 @@ if (!class_exists('display_documents')) {
     
             <pre class="mermaid">
             sequenceDiagram
-                Alice->>Bob: Hello Bob, how are you ?
-                Alice->>Carl: Hi Carl!
-                create actor D as Donald
-                Carl->>D: Hi!
-                Bob->>Alice: Fine, thank you. And you?
-                create participant Carl
-                destroy Carl
-                Alice-xCarl: We are too many
-                destroy Bob
-                Bob->>Alice: I agree
+            Alice->>Bob: Hello Bob, how are you ?
+            Bob->>Alice: Fine, thank you. And you?
+            create participant Carl
+            Alice->>Carl: Hi Carl!
+            create actor D as Donald
+            Carl->>D: Hi!
+            destroy Carl
+            Alice-xCarl: We are too many
+            destroy Bob
+            Bob->>Alice: I agree
             </pre>
 
             <pre class="mermaid">
