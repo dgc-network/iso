@@ -148,6 +148,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
+                    activate_exception_notification_list_data(http_client_id);
                     //activate_http_client_list_data();
                 },
                 error: function (error) {
@@ -280,7 +281,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#exception-notification-dialog").html(response.html_contain);
                     $("#exception-notification-dialog").dialog('open');
-                    activate_exception_notification_list_data(http_client_id);
+                    //activate_exception_notification_list_data(http_client_id);
                 },
                 error: function (error) {
                     console.error(error);
