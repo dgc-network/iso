@@ -42,7 +42,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
 
-            add_action('transition_post_status', array( $this, 'update_meta_on_status_change', 10, 3));
+            //add_action('transition_post_status', array( $this, 'update_meta_on_status_change', 10, 3));
         }
 
         function update_meta_on_status_change($new_status, $old_status, $post) {
