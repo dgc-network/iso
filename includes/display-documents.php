@@ -53,8 +53,8 @@ if (!class_exists('display_documents')) {
         }
 
         function add_mermaid_js() {
-            echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
-            echo '<script>mermaid.initialize({startOnLoad:true});</script>';
+            //echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
+            //echo '<script>mermaid.initialize({startOnLoad:true});</script>';
         }
 
         function enqueue_display_document_scripts() {
@@ -425,14 +425,43 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
-            <div class="mermaid">
+            Here is one mermaid diagram:
+            <pre class="mermaid">
+                graph TD 
+                A[Client] --> B[Load Balancer] 
+                B --> C[Server1] 
+                B --> D[Server2]
+            </pre>
+
+            And here is another:
+            <pre class="mermaid">
+                graph TD 
+                A[Client] -->|tcp_123| B
+                B(Load Balancer) 
+                B -->|tcp_456| C[Server1] 
+                B -->|tcp_456| D[Server2]
+            </pre>
+
+            <script type="module">
+                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                mermaid.initialize({ startOnLoad: true });
+            </script>
+    
+            <pre class="mermaid">
             sequenceDiagram
                 Alice->>Bob: Hello Bob, how are you ?
                 Alice->>Carl: Hi Carl!
                 create actor D as Donald
                 Carl->>D: Hi!
-            </div>
-            <div class="mermaid">
+                Bob->>Alice: Fine, thank you. And you?
+                create participant Carl
+                destroy Carl
+                Alice-xCarl: We are too many
+                destroy Bob
+                Bob->>Alice: I agree
+            </pre>
+
+            <pre class="mermaid">
             sequenceDiagram
                 <?php
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
@@ -460,7 +489,7 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 endif;    
                 ?>
-            </div>
+            </pre>
 
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
