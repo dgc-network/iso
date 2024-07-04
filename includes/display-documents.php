@@ -444,6 +444,40 @@ if (!class_exists('display_documents')) {
             And here is another:
             <pre class="mermaid">
                 graph TD 
+                <?php
+                $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                        $current_job_title = get_the_title($current_job);
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        if ($next_job==-1) {
+                            $next_job_title = __( '文件發行', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
+                        }
+                        if ($next_job==-2) {
+                            $next_job_title = __( '文件廢止', 'your-text-domain' );
+                            if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
+                        }
+                        ?>
+
+                <?php echo $current_job_title;?> -->|<?php echo $action_title;?>| <?php echo $next_job_title;?>
+                
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;    
+                ?>
+
+            </pre>
+
+            And here is another:
+            <pre class="mermaid">
+                graph TD 
                 A[Client] -->|tcp_123| B
                 B(Load Balancer) 
                 B -->|tcp_456| C[Server1] 
