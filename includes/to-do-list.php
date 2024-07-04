@@ -636,7 +636,6 @@ if (!class_exists('to_do_list')) {
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
         
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -657,7 +656,6 @@ if (!class_exists('to_do_list')) {
                 // doc_report_dialog data
                 $params = array(
                     'doc_id'     => $doc_id,
-                    //'report_id'     => $report_id,
                     'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
                 $documents_class = new display_documents();
