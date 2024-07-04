@@ -25,7 +25,7 @@ if (!class_exists('to_do_list')) {
             }
     
             // Hook the function to the scheduled cron job
-            add_action('daily_action_process_event', [$this, 'process_action_posts_daily']);
+            add_action('daily_action_process_event', [$this, 'process_authorized_action_posts_daily']);
 
         }
 
@@ -164,7 +164,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-            <h2 style="display:inline;"><?php echo __( '啟動授權', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo(1);?></div>
@@ -179,7 +179,7 @@ if (!class_exists('to_do_list')) {
                         <tr>
                             <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Authorize', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -199,15 +199,17 @@ if (!class_exists('to_do_list')) {
                             if ($job_number) $job_title .= '('.$job_number.')';
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
+
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
                             if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
-                            <tr id="edit-job-authorization-<?php the_ID(); ?>">
+                            <tr id="edit-todo-<?php the_ID(); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
-                                <td style="text-align:center;"><?php echo esc_html($doc_report_frequence_setting); ?></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
                             <?php
                         endwhile;
@@ -1394,7 +1396,7 @@ if (!class_exists('to_do_list')) {
             }
         }
 
-        public function process_action_posts_daily() {
+        public function process_authorized_action_posts_daily() {
             // todo-list
             $args = array(
                 'post_type'      => 'todo',
@@ -1445,13 +1447,13 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
-                    'relation' => 'AND',
+                    //'relation' => 'AND',
                     //array(
                     //    'key'     => 'site_id',
                     //    'value'   => $site_id,
                     //    'compare' => '=',
                     //),
-                    array(
+                    //array(
                         'relation' => 'OR',
                         array(
                             'key'     => 'todo_status',
@@ -1475,7 +1477,7 @@ if (!class_exists('to_do_list')) {
                                 'compare' => '=',
                             ),
                         ),
-                    ),
+                    //),
                 ),
             );
 /*
