@@ -429,6 +429,8 @@ if (!class_exists('display_documents')) {
             sequenceDiagram
                 Alice->>Bob: Hello Bob, how are you ?
                 Alice->>Carl: Hi Carl!
+                create actor D as Donald
+                Carl->>D: Hi!
             </div>
             <div class="mermaid">
             sequenceDiagram
