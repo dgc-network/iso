@@ -14,7 +14,7 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            add_action( 'wp_footer', array( $this, 'add_mermaid_js' ));
+            //add_action( 'wp_footer', array( $this, 'add_mermaid_js' ));
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -425,23 +425,6 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
-            Here is one mermaid diagram:
-            <pre class="mermaid">
-                graph TD 
-                A[Client] --> B[Load Balancer] 
-                B --> C[Server1] 
-                B --> D[Server2]
-            </pre>
-
-            And here is another:
-            <pre class="mermaid">
-                graph TD 
-                Rover -->|Wife| Linda
-                Linda -->|Son| Chein
-                Linda -->|Son| Leo
-            </pre>
-
-            And here is another:
             <pre class="mermaid">
                 graph TD 
                 <?php
@@ -466,72 +449,19 @@ if (!class_exists('display_documents')) {
                         ?>
 
                 <?php echo $current_job_title;?> -->|<?php echo $action_title;?>| <?php echo $next_job_title;?>
-                
+
                         <?php
                     endwhile;
                     wp_reset_postdata();
                 endif;    
                 ?>
 
-            </pre>
-
-            And here is another:
-            <pre class="mermaid">
-                graph TD 
-                A[Client] -->|tcp_123| B
-                B(Load Balancer) 
-                B -->|tcp_456| C[Server1] 
-                B -->|tcp_456| D[Server2]
             </pre>
 
             <script type="module">
                 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
                 mermaid.initialize({ startOnLoad: true });
             </script>
-    
-            <pre class="mermaid">
-            sequenceDiagram
-            Alice->>Bob: Hello Bob, how are you ?
-            Bob->>Alice: Fine, thank you. And you?
-            create participant Carl
-            Alice->>Carl: Hi Carl!
-            create actor D as Donald
-            Carl->>D: Hi!
-            destroy Carl
-            Alice-xCarl: We are too many
-            destroy Bob
-            Bob->>Alice: I agree
-            </pre>
-
-            <pre class="mermaid">
-            sequenceDiagram
-                <?php
-                $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
-                        $current_job_title = get_the_title($current_job);
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $next_job_title = get_the_title($next_job);
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        if ($next_job==-1) {
-                            $next_job_title = __( '文件發行', 'your-text-domain' );
-                            if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
-                        }
-                        if ($next_job==-2) {
-                            $next_job_title = __( '文件廢止', 'your-text-domain' );
-                            if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
-                        }
-                        ?>
-                        <?php echo $current_job_title;?>->><?php echo $next_job_title;?>: <?php echo $action_title;?>
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;    
-                ?>
-            </pre>
 
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
