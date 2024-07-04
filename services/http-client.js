@@ -352,7 +352,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#exception-notification-list").html(response.html_contain);
-                activate_exception_notification_list_data();
+                activate_exception_notification_list_data(http_client_id);
             },
             error: function (error) {
                 console.error(error);
