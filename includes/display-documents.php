@@ -428,6 +428,7 @@ if (!class_exists('display_documents')) {
             <div class="mermaid">
             sequenceDiagram
                 Alice->>Bob: Hello Bob, how are you ?
+                Alice->>Carl: Hi Carl!
             </div>
             <div class="mermaid">
             sequenceDiagram
