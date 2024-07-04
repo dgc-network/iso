@@ -85,15 +85,20 @@ jQuery(document).ready(function($) {
 
         activate_exception_notification_list_data($("#http-client-id").val());
 
+        $("#select-todo").on( "change", function() {
+            window.location.replace("?_select_todo="+$(this).val());
+            $(this).val('');
+        });
+    
         $("#search-http-client").on( "change", function() {
 
             // Initialize an empty array to store query parameters
             var queryParams = [];
         
             // Check the selected value for each select element and add it to the queryParams array
-            var profileValue = $("#select-profile").val();
+            var profileValue = $("#select-todo").val();
             if (profileValue) {
-                queryParams.push("_select_profile=" + profileValue);
+                queryParams.push("_select_todo=" + profileValue);
             }
         
             var searchValue = $("#search-http-client").val();
@@ -108,7 +113,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
         
             // Clear the values of all select elements after redirection
-            $("#select-profile, #search-http-client").val('');
+            $("#select-todo, #search-http-client").val('');
         
         });
 
@@ -226,90 +231,6 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
-    let mqttClient;
-
-    function display_MQTT_message(topic = false, host = 'test.mosquitto.org', port = '8081') {
-        // Disconnect previous client if exists
-        if (mqttClient) {
-            mqttClient.end();
-        }
-    
-        mqttClient = mqtt.connect('wss://' + host + ':' + port + '/mqtt'); // Secure WebSocket URL
-    
-        mqttClient.on('connect', function () {
-            console.log('Connected to MQTT broker');
-            mqttClient.subscribe(topic, function (err) {
-                if (err) {
-                    console.error('Subscription error:', err);
-                }
-            });
-        });
-
-        mqttClient.on('message', function (topic, message) {
-            const msg = message.toString();
-            console.log('Message received:', msg);
-        
-            let prettyJsonString;
-            try {
-                const jsonObject = JSON.parse(msg);
-                prettyJsonString = JSON.stringify(jsonObject, null, 2);
-            } catch (e) {
-                // If the message is not valid JSON, just display the raw message
-                prettyJsonString = msg;
-            }
-        
-            const container = document.getElementById('mqtt-messages-container');
-            if (!container) {
-                console.error('Container not found');
-                return;
-            }
-        
-            const newMessage = document.createElement('div');
-            newMessage.style.whiteSpace = 'pre-wrap'; // Ensure whitespace is preserved
-            newMessage.style.background = '#f9f9f9'; // Optional: Add some styling
-            newMessage.style.padding = '10px';      // Optional: Add some styling
-            newMessage.style.border = '1px solid #ccc'; // Optional: Add some styling
-            newMessage.textContent = prettyJsonString;
-        
-            // Append new message to the bottom
-            container.appendChild(newMessage);
-        
-            // Scroll to bottom
-            container.scrollTop = container.scrollHeight;
-        });
-
-        mqttClient.on('error', function (error) {
-            console.error('MQTT error:', error);
-            const container = document.getElementById('mqtt-messages-container'); // Ensure container is selected again
-            if (container) {
-                container.textContent = 'Error fetching messages. Please check the console for more details.';
-            }
-        });
-    }
-
-    function publishMQTTMessage(topic, message) {
-        if (mqttClient && mqttClient.connected) {
-            mqttClient.publish(topic, message, {}, function (err) {
-                if (err) {
-                    console.error('Publish error:', err);
-                } else {
-                    console.log('Message published:', message);
-                }
-            });
-        } else {
-            console.error('MQTT client is not connected');
-        }
-    }
-
-    function close_http_client() {
-        if (mqttClient) {
-            mqttClient.end();
-            mqttClient = null;
-            console.log('Disconnected from MQTT broker');
-        }
-    }
-
     // Exception notification scripts
     function activate_exception_notification_list_data(http_client_id=false){
         $("#new-exception-notification").on("click", function() {
@@ -359,7 +280,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#exception-notification-dialog").html(response.html_contain);
                     $("#exception-notification-dialog").dialog('open');
-                    activate_exception_notification_list_data(http_client_id);
+                    //activate_exception_notification_list_data(http_client_id);
                 },
                 error: function (error) {
                     console.error(error);
