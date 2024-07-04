@@ -197,12 +197,14 @@ if (!class_exists('to_do_list')) {
                             $job_title = get_the_title();
                             $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                             if ($job_number) $job_title .= '('.$job_number.')';
+
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            if ($doc_number) $doc_title .= '('.$doc_number.')';
+
                             $profiles_class = new display_profiles();
                             $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
 
-                            if ($doc_number) $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
                             if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
@@ -307,7 +309,7 @@ if (!class_exists('to_do_list')) {
                 $query = new WP_Query($args);
             return $query;
         }
-
+/*
         function display_job_authorization_dialog($todo_id) {
             // Get the post type of the post with the given ID
             $post_type = get_post_type( $todo_id );
@@ -406,7 +408,7 @@ if (!class_exists('to_do_list')) {
             <?php
             return ob_get_clean();
         }
-        
+*/        
 
 
         function display_todo_list() {
@@ -1504,7 +1506,7 @@ if (!class_exists('to_do_list')) {
                     $query->the_post();
                     $doc_id = get_the_ID();
             
-                    if ($doc_id) {
+                    //if ($doc_id) {
                         $profiles_class = new display_profiles();
                         $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                         if ($action_query->have_posts()) :
@@ -1515,7 +1517,7 @@ if (!class_exists('to_do_list')) {
                             endwhile;
                             wp_reset_postdata();
                         endif;
-                    }
+                    //}
                 }    
                 wp_reset_postdata();
             }

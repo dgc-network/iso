@@ -662,11 +662,7 @@ if (!class_exists('display_documents')) {
                 </div>        
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <select id="select-doc-report-function">
-                            <option value=""><?php echo __( 'Select ...', 'your-text-domain' );?></option>
-                        </select>
-                    </div>
+                    <div></div>                    
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
                         <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>

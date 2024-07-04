@@ -934,9 +934,7 @@ if (!class_exists('display_profiles')) {
                 <label for="department">Department:</label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
                 <div class="separator"></div>
-                <div id="doc-user-list">
-                    <?php echo $this->display_doc_user_list($doc_id);?>
-                </div>
+                <?php echo $this->display_doc_user_list($doc_id);?>
             <?php
             return ob_get_clean();
         }
@@ -1256,6 +1254,7 @@ if (!class_exists('display_profiles')) {
         function display_doc_user_list($doc_id=false) {
             ob_start();
             ?>
+            <div id="doc-user-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1281,6 +1280,7 @@ if (!class_exists('display_profiles')) {
             <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             <div id="new-user-list-dialog" title="Add doc user"></div>
+            </div>
             <?php
             return ob_get_clean();
         }
