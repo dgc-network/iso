@@ -41,7 +41,22 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
+
+            add_action('transition_post_status', array( $this, 'update_meta_on_status_change', 10, 3));
         }
+
+        function update_meta_on_status_change($new_status, $old_status, $post) {
+/*            
+            if ($post->post_type !== 'your_post_type') {
+                return;
+            }
+*/        
+            if ($old_status !== 'publish' && $new_status === 'publish') {
+                // Post is being published, perform your action here
+                update_post_meta($post->ID, 'your_meta_key', 'new_value');
+            }
+        }
+        
 
         function enqueue_http_client_scripts() {
             $version = time(); // Update this version number when you make changes
