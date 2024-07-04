@@ -199,7 +199,8 @@ if (!class_exists('to_do_list')) {
                             if ($job_number) $job_title .= '('.$job_number.')';
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
+                            $profiles_class = new display_profiles();
+                            $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
 
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);

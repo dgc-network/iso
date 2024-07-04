@@ -221,7 +221,6 @@ if (!class_exists('display_profiles')) {
                                 $job_number = get_post_meta($doc_id, 'job_number', true);
                                 $job_title = get_the_title($doc_id);
                                 $job_content = get_post_field('post_content', $doc_id);
-                                //$authorized =$this->is_doc_authorized($doc_id);
                                 $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
                                 ?>
                             <tr id="edit-my-job-<?php echo $doc_id;?>">
