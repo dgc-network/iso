@@ -1321,7 +1321,7 @@ if (!class_exists('to_do_list')) {
                     $todo_id = get_the_ID();
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                    $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
     
                     if ($doc_id) {
                         $profiles_class = new display_profiles();
@@ -1330,7 +1330,7 @@ if (!class_exists('to_do_list')) {
                             while ($action_query->have_posts()) : $action_query->the_post();
                                 $authorized =$profiles_class->is_action_authorized(get_the_ID());
                                 if ($authorized) {
-                                    $action_id = $this->get_action_post_id_by_doc_action_id(get_the_ID());
+                                    $action_id = $this->get_todo_action_id_by_doc_action_id(get_the_ID());
                                     $this->update_todo_dialog_data($action_id);
                                 }
                             endwhile;
@@ -1423,7 +1423,7 @@ if (!class_exists('to_do_list')) {
             }
         }
     
-        public function get_action_post_id_by_doc_action_id($action_id) {
+        public function get_todo_action_id_by_doc_action_id($action_id) {
             $args = array(
                 'post_type'      => 'action',
                 'meta_query'     => array(
