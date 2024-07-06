@@ -236,7 +236,7 @@ if (!class_exists('to_do_list')) {
 
         function retrieve_job_authorization_data($current_page = 1){
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -246,71 +246,72 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);        
-            //if ($search_query) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => $posts_per_page,
-                    'paged'          => $current_page,
-                    'meta_key'       => 'job_number', // Meta key for sorting
-                    'orderby'        => 'meta_value', // Sort by meta value
-                    'order'          => 'ASC', // Sorting order (ascending)
-                    'meta_query'     => array(
-                        'relation' => 'AND',
+
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $current_page,
+                'meta_key'       => 'job_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                    array(
+                        'key'     => 'doc_number',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'relation' => 'OR',
                         array(
-                            'key'     => 'site_id',
-                            'value'   => $site_id,
+                            'key'     => 'todo_status',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'todo_status',
+                            'value'   => -2,
                             'compare' => '=',
                         ),
                         array(
-                            'key'     => 'doc_number',
-                            'compare' => 'EXISTS',
-                        ),
-                        array(
-                            'relation' => 'OR',
+                            'relation' => 'AND',
                             array(
                                 'key'     => 'todo_status',
-                                'compare' => 'NOT EXISTS',
-                            ),
-                            array(
-                                'key'     => 'todo_status',
-                                'value'   => -2,
+                                'value'   => -1,
                                 'compare' => '=',
                             ),
                             array(
-                                'relation' => 'AND',
-                                array(
-                                    'key'     => 'todo_status',
-                                    'value'   => -1,
-                                    'compare' => '=',
-                                ),
-                                array(
-                                    'key'     => 'is_doc_report',
-                                    'value'   => 1,
-                                    'compare' => '=',
-                                ),
+                                'key'     => 'is_doc_report',
+                                'value'   => 1,
+                                'compare' => '=',
                             ),
                         ),
                     ),
+                ),
+            );
+
+            if (!$is_site_admin) {
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+            }
+
+            // Add meta query for searching across all meta keys
+            $document_meta_keys = get_post_type_meta_keys('document');
+            $meta_query_all_keys = array('relation' => 'OR');
+            foreach ($document_meta_keys as $meta_key) {
+                $meta_query_all_keys[] = array(
+                    'key'     => $meta_key,
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
                 );
+            }
+            
+            $args['meta_query'][] = $meta_query_all_keys;
 
-                if (!$is_site_admin) {
-                    $args['post__in'] = $user_doc_ids; // Array of document post IDs
-                }
+            $query = new WP_Query($args);
 
-                // Add meta query for searching across all meta keys
-                $document_meta_keys = get_post_type_meta_keys('document');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($document_meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                
-                $args['meta_query'][] = $meta_query_all_keys;
-
-                $query = new WP_Query($args);
             return $query;
         }
 
@@ -323,6 +324,7 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
             <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
             <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
+
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>
                     <label for="display-name">Name : </label>
@@ -382,7 +384,6 @@ if (!class_exists('to_do_list')) {
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             if ($is_doc_report) $doc_title .= '(電子表單)';
                             if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
-                            //if ($report_id) $doc_title .= '(Report#' . $report_id . ')';                            
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
@@ -421,95 +422,47 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
-/*                    
-            if ($search_query) {
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => $posts_per_page,
-                    'paged'          => $current_page,
-                    //'post__in'       => $user_doc_ids, // Array of document post IDs
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => $site_id,
-                            'compare' => '=',
-                        ),
-                        array(
-                            'relation' => 'OR',
-                            array(
-                                'key'     => 'todo_status',
-                                'compare' => 'NOT EXISTS',
-                            ),
-                            array(
-                                'key'     => 'todo_status',
-                                'value'   => -2,
-                                'compare' => '=',
-                            ),
-                            array(
-                                'relation' => 'AND',
-                                array(
-                                    'key'     => 'todo_status',
-                                    'value'   => -1,
-                                    'compare' => '=',
-                                ),
-                                array(
-                                    'key'     => 'is_doc_report',
-                                    'value'   => 1,
-                                    'compare' => '=',
-                                ),
-                            ),
-                        ),
+
+            // Define the WP_Query arguments
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => $posts_per_page,
+                'paged'          => $current_page,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_due',
+                        'compare' => 'EXISTS',
                     ),
-                );
-
-                if (!$is_site_admin) {
-                    $args['post__in'] = $user_doc_ids; // Array of document post IDs
-                }
-
-                // Add meta query for searching across all meta keys
-                $document_meta_keys = get_post_type_meta_keys('document');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($document_meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                
-                $args['meta_query'][] = $meta_query_all_keys;
-
-            } else {
-*/             
-                // Define the WP_Query arguments
-                $args = array(
-                    'post_type'      => 'todo',
-                    'posts_per_page' => $posts_per_page,
-                    'paged'          => $current_page,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'todo_due',
-                            'compare' => 'EXISTS',
-                        ),
-                        array(
-                            'key'     => 'submit_user',
-                            'compare' => 'NOT EXISTS',
-                        ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'NOT EXISTS',
                     ),
+                ),
+            );
+
+            if (!$is_site_admin) {
+                // Add a new meta query
+                $args['meta_query'][] = array(
+                    'key'     => 'doc_id',
+                    'value'   => $user_doc_ids, // Value is the array of user doc IDs
+                    'compare' => 'IN',
+                );    
+            }
+
+            // Add meta query for searching across all meta keys
+            $document_meta_keys = get_post_type_meta_keys('document');
+            $meta_query_all_keys = array('relation' => 'OR');
+            foreach ($document_meta_keys as $meta_key) {
+                $meta_query_all_keys[] = array(
+                    'key'     => $meta_key,
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
                 );
-
-                if (!$is_site_admin) {
-                    // Add a new meta query
-                    $args['meta_query'][] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids, // Value is the array of user doc IDs
-                        'compare' => 'IN',
-                    );    
-                }
-            //}
-
+            }
+            
+            $args['meta_query'][] = $meta_query_all_keys;
+            
             $query = new WP_Query($args);
             return $query;
         }
@@ -628,77 +581,6 @@ if (!class_exists('to_do_list')) {
                 // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $this->update_todo_dialog_data($action_id);
-/*                
-                $next_job = get_post_meta($action_id, 'next_job', true);
-                $todo_id = get_post_meta($action_id, 'todo_id', true);
-                $current_user_id = get_current_user_id();
-        
-                // Create new todo if the meta key 'todo_id' does not exist
-                if ( empty( $todo_id ) ) {
-                    $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $todo_title = get_the_title($doc_id);
-                    $report_id = sanitize_text_field($_POST['_report_id']);
-                    //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
-                    $new_post = array(
-                        'post_title'    => $todo_title,
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'todo',
-                    );    
-                    $todo_id = wp_insert_post($new_post);
-                    update_post_meta( $todo_id, 'doc_id', $doc_id);
-                    //if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
-                    //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
-                }
-        
-                // Update current todo
-                update_post_meta( $todo_id, 'submit_user', $current_user_id );
-                update_post_meta( $todo_id, 'submit_action', $action_id );
-                update_post_meta( $todo_id, 'submit_time', time() );
-
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
-
-                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                if ($prev_report_id) update_post_meta( $prev_report_id, 'todo_status', $next_job );
-
-                // Create a new doc-report if is_doc_report==1
-                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                if ($is_doc_report==1){
-                    $new_post = array(
-                        'post_title'    => 'New doc-report',
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'doc-report',
-                    );    
-                    $new_report_id = wp_insert_post($new_post);
-                    update_post_meta( $new_report_id, 'doc_id', $doc_id);
-                    update_post_meta( $new_report_id, 'todo_status', $next_job);
-                    update_post_meta( $doc_id, 'todo_status', -1);
-                    // Update the post
-                    $params = array(
-                        'doc_id'     => $doc_id,
-                    );                
-                    $documents_class = new display_documents();
-                    $query = $documents_class->retrieve_doc_field_data($params);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) : $query->the_post();
-                            $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                            $field_value = sanitize_text_field($_POST[$field_name]);
-                            update_post_meta( $new_report_id, $field_name, $field_value);
-                        endwhile;
-                        wp_reset_postdata();
-                    }            
-                }
-        
-                // set next todo and actions
-                $params = array(
-                    'action_id' => $action_id,
-                    'todo_id' => $todo_id,
-                    'prev_report_id' => $new_report_id,
-                );        
-                if ($next_job>0) $this->update_next_todo_and_actions($params);
-*/                
             }
             wp_send_json($response);
         }
@@ -707,7 +589,6 @@ if (!class_exists('to_do_list')) {
         function update_todo_dialog_data($action_id=false) {
             // action button is clicked
             $current_user_id = get_current_user_id();
-            //$action_id = sanitize_text_field($_POST['_action_id']);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
 
@@ -715,8 +596,6 @@ if (!class_exists('to_do_list')) {
             if ( empty( $todo_id ) ) {
                 $doc_id = get_post_meta($action_id, 'doc_id', true);
                 $todo_title = get_the_title($doc_id);
-                //$report_id = sanitize_text_field($_POST['_report_id']);
-                //if ($report_id) $todo_title = '(Report#'.$report_id.')'; 
                 $new_post = array(
                     'post_title'    => $todo_title,
                     'post_status'   => 'publish',
@@ -725,8 +604,6 @@ if (!class_exists('to_do_list')) {
                 );    
                 $todo_id = wp_insert_post($new_post);
                 update_post_meta( $todo_id, 'doc_id', $doc_id);
-                //if ($doc_id) update_post_meta( $todo_id, 'doc_id', $doc_id);
-                //if ($report_id) update_post_meta( $todo_id, 'report_id', $report_id);
             }
 
             // Update current todo
@@ -1090,10 +967,10 @@ if (!class_exists('to_do_list')) {
         
         function retrieve_signature_record_data($doc_id=false, $report_id=false, $current_page=1){
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
             $args = array(
                 'post_type'      => 'todo',
-                'posts_per_page' => $posts_per_page,
+                'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $current_page,
                 'meta_query'     => array(
                     'relation' => 'AND',
@@ -1352,11 +1229,6 @@ if (!class_exists('to_do_list')) {
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
-                    //array(
-                    //    'key'     => 'site_id',
-                    //    'value'   => $site_id,
-                    //    'compare' => '=',
-                    //),
                     array(
                         'key'     => 'doc_number',
                         'compare' => 'EXISTS',
@@ -1372,42 +1244,10 @@ if (!class_exists('to_do_list')) {
                             'value'   => -2,
                             'compare' => '=',
                         ),
-/*                        
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'todo_status',
-                                'value'   => -1,
-                                'compare' => '=',
-                            ),
-                            array(
-                                'key'     => 'is_doc_report',
-                                'value'   => 1,
-                                'compare' => '=',
-                            ),
-                        ),
-*/                        
                     ),
                 ),
             );
-/*
-            if (!$is_site_admin) {
-                $args['post__in'] = $user_doc_ids; // Array of document post IDs
-            }
 
-            // Add meta query for searching across all meta keys
-            $document_meta_keys = get_post_type_meta_keys('document');
-            $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($document_meta_keys as $meta_key) {
-                $meta_query_all_keys[] = array(
-                    'key'     => $meta_key,
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                );
-            }
-            
-            $args['meta_query'][] = $meta_query_all_keys;
-*/
             $query = new WP_Query($args);
     
             if ($query->have_posts()) {
@@ -1415,18 +1255,16 @@ if (!class_exists('to_do_list')) {
                     $query->the_post();
                     $doc_id = get_the_ID();
             
-                    //if ($doc_id) {
-                        $profiles_class = new display_profiles();
-                        $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                        if ($action_query->have_posts()) :
-                            while ($action_query->have_posts()) : $action_query->the_post();
-                                $action_id = get_the_ID();
-                                $authorized =$profiles_class->is_action_authorized(get_the_ID());
-                                if ($authorized) $this->update_todo_dialog_data($action_id);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    //}
+                    $profiles_class = new display_profiles();
+                    $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                    if ($action_query->have_posts()) :
+                        while ($action_query->have_posts()) : $action_query->the_post();
+                            $action_id = get_the_ID();
+                            $authorized =$profiles_class->is_action_authorized(get_the_ID());
+                            if ($authorized) $this->update_todo_dialog_data($action_id);
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
                 }    
                 wp_reset_postdata();
             }
