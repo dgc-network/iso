@@ -48,7 +48,7 @@ if (!class_exists('to_do_list')) {
                 <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '啟動&授權', 'your-text-domain' );?></option>
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
-                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( 'Cron jobs', 'your-text-domain' );?></option>
+                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( 'HTTP Clients', 'your-text-domain' );?></option>
                 <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
                 </select>
