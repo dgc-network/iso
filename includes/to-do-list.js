@@ -11,6 +11,11 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
+    $("#search-job").on( "change", function() {
+        window.location.replace("?_search="+$(this).val());
+        $(this).val('');
+    });
+
     $("#todo-setting").on("click", function () {
         $("#todo-setting-div").toggle();
     });
