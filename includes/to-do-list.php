@@ -623,7 +623,7 @@ if (!class_exists('to_do_list')) {
             if( isset($_POST['_action_id']) ) {
                 // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                update_todo_dialog_data($action_id);
+                $this->update_todo_dialog_data($action_id);
 /*                
                 $next_job = get_post_meta($action_id, 'next_job', true);
                 $todo_id = get_post_meta($action_id, 'todo_id', true);
