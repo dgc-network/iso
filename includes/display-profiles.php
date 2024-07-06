@@ -1401,6 +1401,7 @@ if (!class_exists('display_profiles')) {
         
                 $response['status'] = 'success';
                 $response['message'] = 'Document ID added successfully.';
+                $response['html_contain'] = $this->display_doc_user_list();
             } else {
                 $response['status'] = 'info';
                 $response['message'] = 'Document ID already exists for this user.';
@@ -1443,6 +1444,7 @@ if (!class_exists('display_profiles')) {
         
                 $response['status'] = 'success';
                 $response['message'] = 'Document ID deleted successfully.';
+                $response['html_contain'] = $this->display_doc_user_list();
             } else {
                 $response['status'] = 'info';
                 $response['message'] = 'Document ID does not exist for this user.';
