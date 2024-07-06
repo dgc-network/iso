@@ -1357,7 +1357,8 @@ if (!class_exists('display_profiles')) {
 
         function get_doc_user_list_data() {
             $response = array();
-            $response['html_contain'] = $this->display_doc_user_list();
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
         }
 
@@ -1401,7 +1402,6 @@ if (!class_exists('display_profiles')) {
         
                 $response['status'] = 'success';
                 $response['message'] = 'Document ID added successfully.';
-                $response['html_contain'] = $this->display_doc_user_list();
             } else {
                 $response['status'] = 'info';
                 $response['message'] = 'Document ID already exists for this user.';
@@ -1444,7 +1444,6 @@ if (!class_exists('display_profiles')) {
         
                 $response['status'] = 'success';
                 $response['message'] = 'Document ID deleted successfully.';
-                $response['html_contain'] = $this->display_doc_user_list();
             } else {
                 $response['status'] = 'info';
                 $response['message'] = 'Document ID does not exist for this user.';

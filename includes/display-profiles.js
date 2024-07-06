@@ -726,9 +726,9 @@ jQuery(document).ready(function($) {
                                     console.log(response)
                                     $("#new-user-list-dialog").dialog('close');
                                     //$("#site-job-dialog").html(response.html_contain);
-                                    //get_doc_user_list_data(doc_id);
-                                    $("#doc-user-list").html(response.html_contain);
-                                    activate_doc_user_list_data(doc_id);
+                                    get_doc_user_list_data(doc_id);
+                                    //$("#doc-user-list").html(response.html_contain);
+                                    //activate_doc_user_list_data(doc_id);
 
                                 },
                                 error: function (error) {
