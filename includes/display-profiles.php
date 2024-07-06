@@ -215,6 +215,46 @@ if (!class_exists('display_profiles')) {
                     <?php    
                     // Accessing elements of the array
                     if (is_array($user_doc_ids)) {
+                        // Collect documents in an array
+                        $documents = array();
+                        foreach ($user_doc_ids as $doc_id) {
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            if ($doc_site == $site_id) {
+                                $job_number = get_post_meta($doc_id, 'job_number', true);
+                                $job_title = get_the_title($doc_id);
+                                $job_content = get_post_field('post_content', $doc_id);
+                                $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
+                                
+                                // Add to documents array
+                                $documents[] = array(
+                                    'doc_id' => $doc_id,
+                                    'job_number' => $job_number,
+                                    'job_title' => $job_title,
+                                    'job_content' => $job_content,
+                                    'is_checked' => $is_checked
+                                );
+                            }
+                        }
+                    
+                        // Sort documents by job_number
+                        usort($documents, function($a, $b) {
+                            return strcmp($a['job_number'], $b['job_number']);
+                        });
+                    
+                        // Display sorted documents
+                        foreach ($documents as $doc) {
+                            ?>
+                            <tr id="edit-my-job-<?php echo $doc['doc_id']; ?>">
+                                <td style="text-align:center;"><?php echo esc_html($doc['job_number']); ?></td>
+                                <td style="text-align:center;"><?php echo esc_html($doc['job_title']); ?></td>
+                                <td width="70%"><?php echo wp_kses_post($doc['job_content']); ?></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $doc['is_checked']; ?> /></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+/*                    
+                    if (is_array($user_doc_ids)) {
                         foreach ($user_doc_ids as $doc_id) {
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
                             if ($doc_site==$site_id) {
@@ -233,6 +273,7 @@ if (!class_exists('display_profiles')) {
                             }
                         }
                     }
+*/                        
                     ?>
                     </tbody>
                 </table>
