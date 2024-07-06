@@ -13,6 +13,7 @@ if (!class_exists('to_do_list')) {
             add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_action_post_type' ) );
             add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
+            add_action('init', array($this, 'schedule_event_and_action'));
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -1455,7 +1456,7 @@ if (!class_exists('to_do_list')) {
     }
     $todo_class = new to_do_list();
     // Call the method to schedule the event and add the action
-    $todo_class->schedule_event_and_action();
+    //$todo_class->schedule_event_and_action();
 
 }
 
