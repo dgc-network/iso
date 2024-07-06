@@ -261,6 +261,10 @@ if (!class_exists('to_do_list')) {
                             'compare' => '=',
                         ),
                         array(
+                            'key'     => 'doc_number',
+                            'compare' => 'EXISTS',
+                        ),
+                        array(
                             'relation' => 'OR',
                             array(
                                 'key'     => 'todo_status',
@@ -1346,13 +1350,17 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
-                    //'relation' => 'AND',
+                    'relation' => 'AND',
                     //array(
                     //    'key'     => 'site_id',
                     //    'value'   => $site_id,
                     //    'compare' => '=',
                     //),
-                    //array(
+                    array(
+                        'key'     => 'doc_number',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
                         'relation' => 'OR',
                         array(
                             'key'     => 'todo_status',
@@ -1378,7 +1386,7 @@ if (!class_exists('to_do_list')) {
                             ),
                         ),
 */                        
-                    //),
+                    ),
                 ),
             );
 /*
