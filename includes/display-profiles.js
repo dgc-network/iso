@@ -45,6 +45,9 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
+            open: function(event, ui) {
+                window.location.replace(window.location.href);
+            },
         });
 
         $('[id^="edit-my-job-"]').on("click", function () {
