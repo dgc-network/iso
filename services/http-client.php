@@ -156,11 +156,11 @@ if (!class_exists('http_client')) {
                         <tbody>
                         <?php
                         // Define the custom pagination parameters
-                        $posts_per_page = get_option('operation_row_counts');
+                        //$posts_per_page = get_option('operation_row_counts');
                         $current_page = max(1, get_query_var('paged')); // Get the current page number
                         $query = $this->retrieve_iot_message_data($current_page);
                         $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -217,7 +217,7 @@ if (!class_exists('http_client')) {
         function retrieve_iot_message_data($paged = 1) {
             $args = array(
                 'post_type'      => 'iot-message',
-                'posts_per_page' => 20, // Show 20 records per page
+                'posts_per_page' => get_option('operation_row_counts'), // Show 20 records per page
                 'orderby'        => 'date',
                 'order'          => 'DESC',
                 'paged'          => $paged,

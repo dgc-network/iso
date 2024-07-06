@@ -838,11 +838,11 @@ if (!class_exists('display_profiles')) {
                         <tbody>
                         <?php
                         // Define the custom pagination parameters
-                        $posts_per_page = get_option('operation_row_counts');
+                        //$posts_per_page = get_option('operation_row_counts');
                         $current_page = max(1, get_query_var('paged')); // Get the current page number
                         $query = $this->retrieve_site_job_list_data($current_page);
                         $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -889,7 +889,7 @@ if (!class_exists('display_profiles')) {
 
         function retrieve_site_job_list_data($current_page = 1) {
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -899,7 +899,7 @@ if (!class_exists('display_profiles')) {
 
             $args = array(
                 'post_type'      => 'document',
-                'posts_per_page' => $posts_per_page,
+                'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $current_page,
                 'meta_query'     => array(
                     array(

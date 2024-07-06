@@ -199,11 +199,11 @@ if (!class_exists('display_documents')) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
             $current_page = max(1, get_query_var('paged')); // Get the current page number
             $query = $this->retrieve_document_list_data($current_page);
             $total_posts = $query->found_posts;
-            $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+            $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -285,7 +285,7 @@ if (!class_exists('display_documents')) {
         
         function retrieve_document_list_data($current_page = 1) {
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -317,7 +317,7 @@ if (!class_exists('display_documents')) {
 
             $args = array(
                 'post_type'      => 'document',
-                'posts_per_page' => $posts_per_page,
+                'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $current_page,
                 'meta_query'     => array(
                     'relation' => 'OR',
@@ -693,11 +693,11 @@ if (!class_exists('display_documents')) {
                     <tbody>
                         <?php
                         // Define the custom pagination parameters
-                        $posts_per_page = get_option('operation_row_counts');
+                        //$posts_per_page = get_option('operation_row_counts');
                         $current_page = max(1, get_query_var('paged')); // Get the current page number
                         $query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $current_page);
                         $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / $posts_per_page); // Calculate the total number of pages
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
             
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -756,11 +756,11 @@ if (!class_exists('display_documents')) {
         
         function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $current_page=1) {
             // Define the custom pagination parameters
-            $posts_per_page = get_option('operation_row_counts');
+            //$posts_per_page = get_option('operation_row_counts');
         
             $args = array(
                 'post_type'      => 'doc-report',
-                'posts_per_page' => $posts_per_page,
+                'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $current_page,
                 'meta_query'     => array(
                     'relation' => 'AND',
