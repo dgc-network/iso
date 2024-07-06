@@ -723,8 +723,10 @@ jQuery(document).ready(function($) {
                                     '_user_id': user_id,
                                 },
                                 success: function (response) {
+                                    console.log(response)
                                     $("#new-user-list-dialog").dialog('close');
                                     get_doc_user_list_data(doc_id);
+                                    //$("#site-job-dialog").html(response.html_contain);
                                 },
                                 error: function (error) {
                                     console.error(error);

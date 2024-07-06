@@ -77,7 +77,7 @@ if (!class_exists('to_do_list')) {
                 if ($_GET['_select_todo']=='3') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
                 }
-                //$this->list_all_scheduled_events();
+
                 $http_client = new http_client();
                 if ($_GET['_select_todo']=='4') echo $http_client->display_http_client_list();
                 if ($_GET['_select_todo']=='5') echo $http_client->display_iot_message_list();
@@ -88,7 +88,6 @@ if (!class_exists('to_do_list')) {
                     exit;
                 }
 
-                //if ($_GET['_select_todo']!='1' && $_GET['_select_todo']!='2' && !isset($_GET['_id'])) $this->display_todo_list();
                 if (!isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
 
             } else {
@@ -1297,7 +1296,7 @@ if (!class_exists('to_do_list')) {
         }
 
         public function process_authorized_action_posts_daily() {
-            // todo-list
+            // process the todo-list first
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => -1,
@@ -1342,7 +1341,7 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             }
 
-            // doc-job-list
+            // process the doc-job-list after
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
@@ -1364,6 +1363,7 @@ if (!class_exists('to_do_list')) {
                             'value'   => -2,
                             'compare' => '=',
                         ),
+/*                        
                         array(
                             'relation' => 'AND',
                             array(
@@ -1377,6 +1377,7 @@ if (!class_exists('to_do_list')) {
                                 'compare' => '=',
                             ),
                         ),
+*/                        
                     //),
                 ),
             );
