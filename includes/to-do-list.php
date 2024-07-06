@@ -586,9 +586,9 @@ if (!class_exists('to_do_list')) {
         }
         
         // to-do-list misc
-        function update_todo_dialog_data($action_id=false) {
+        function update_todo_dialog_data($action_id=false, $user_id=false) {
             // action button is clicked
-            $current_user_id = get_current_user_id();
+            if (!$user_id) $current_user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
 
@@ -648,6 +648,7 @@ if (!class_exists('to_do_list')) {
     
             // set next todo and actions
             $params = array(
+                'user_id' => $user_id,
                 'action_id' => $action_id,
                 'todo_id' => $todo_id,
                 'prev_report_id' => $new_report_id,
@@ -661,7 +662,8 @@ if (!class_exists('to_do_list')) {
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
-            $current_user_id = get_current_user_id();
+            //$current_user_id = get_current_user_id();
+            $current_user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
         
@@ -1213,7 +1215,7 @@ if (!class_exists('to_do_list')) {
                                 $authorized =$profiles_class->is_action_authorized(get_the_ID());
                                 if ($authorized) {
                                     $action_id = $this->get_todo_action_id_by_doc_action_id(get_the_ID());
-                                    $this->update_todo_dialog_data($action_id);
+                                    $this->update_todo_dialog_data($action_id, $authorized);
                                 }
                             endwhile;
                             wp_reset_postdata();
@@ -1261,7 +1263,7 @@ if (!class_exists('to_do_list')) {
                         while ($action_query->have_posts()) : $action_query->the_post();
                             $action_id = get_the_ID();
                             $authorized =$profiles_class->is_action_authorized(get_the_ID());
-                            if ($authorized) $this->update_todo_dialog_data($action_id);
+                            if ($authorized) $this->update_todo_dialog_data($action_id, $authorized);
                         endwhile;
                         wp_reset_postdata();
                     endif;

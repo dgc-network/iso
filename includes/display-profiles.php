@@ -253,27 +253,6 @@ if (!class_exists('display_profiles')) {
                             <?php
                         }
                     }
-/*                    
-                    if (is_array($user_doc_ids)) {
-                        foreach ($user_doc_ids as $doc_id) {
-                            $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            if ($doc_site==$site_id) {
-                                $job_number = get_post_meta($doc_id, 'job_number', true);
-                                $job_title = get_the_title($doc_id);
-                                $job_content = get_post_field('post_content', $doc_id);
-                                $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
-                                ?>
-                            <tr id="edit-my-job-<?php echo $doc_id;?>">
-                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                                <td width="70%"><?php echo wp_kses_post($job_content);?></td>
-                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
-                            </tr>
-                            <?php
-                            }
-                        }
-                    }
-*/                        
                     ?>
                     </tbody>
                 </table>
@@ -395,7 +374,12 @@ if (!class_exists('display_profiles')) {
             // If $user_doc_ids is not an array, convert it to an array
             if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
             // Check if the current user has the specified doc ID in their metadata
-            return in_array($action_id, $authorize_action_ids);
+            //return in_array($action_id, $authorize_action_ids);
+            if (in_array($action_id, $authorize_action_ids)) {
+                return $user_id;
+            } else {
+                return false;
+            }
         }
 
         function set_authorize_action_data() {
