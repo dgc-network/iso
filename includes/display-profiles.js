@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            open: function(event, ui) {
+            close: function(event, ui) {
                 window.location.replace(window.location.href);
             },
         });
