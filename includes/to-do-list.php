@@ -451,7 +451,7 @@ if (!class_exists('to_do_list')) {
             }
 
             // Add meta query for searching across all meta keys
-            $document_meta_keys = get_post_type_meta_keys('document');
+            $document_meta_keys = get_post_type_meta_keys('todo');
             $meta_query_all_keys = array('relation' => 'OR');
             foreach ($document_meta_keys as $meta_key) {
                 $meta_query_all_keys[] = array(
