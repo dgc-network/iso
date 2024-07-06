@@ -1593,8 +1593,6 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
-
-
     }
     $profiles_class = new display_profiles();
 }

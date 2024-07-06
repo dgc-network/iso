@@ -547,7 +547,7 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta( $post_id, 'site_id', $site_id);
-                update_post_meta( $post_id, 'job_number', '-');
+                //update_post_meta( $post_id, 'job_number', '-');
                 update_post_meta( $post_id, 'doc_number', '-');
                 update_post_meta( $post_id, 'doc_revision', 'A');
                 update_post_meta( $post_id, 'doc_report_frequence_start_time', time());
@@ -1125,22 +1125,22 @@ if (!class_exists('display_documents')) {
             <div id="doc-field-dialog-backup">
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
-                <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
-                <input type="text" id="field-name" value="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
+                <input type="text" id="field-name" value="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
-                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( '文字', 'your-text-domain' );?></option>
-                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( '數字', 'your-text-domain' );?></option>
-                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( '日期', 'your-text-domain' );?></option>
-                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( '時間', 'your-text-domain' );?></option>
-                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( '檢查框', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( '多選一', 'your-text-domain' );?></option>
-                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( '文字區域', 'your-text-domain' );?></option>
-                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( '標題', 'your-text-domain' );?></option>
-                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( '圖片', 'your-text-domain' );?></option>
-                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( '影片', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
+                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( 'Date', 'your-text-domain' );?></option>
+                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( 'Time', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Caption', 'your-text-domain' );?></option>
+                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
+                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">

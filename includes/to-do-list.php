@@ -209,7 +209,7 @@ if (!class_exists('to_do_list')) {
                             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
                             if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
-                            <tr id="edit-todo-<?php the_ID(); ?>">
+                            <tr id="edit-todo-<?php echo $doc_id; ?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
@@ -309,107 +309,6 @@ if (!class_exists('to_do_list')) {
                 $query = new WP_Query($args);
             return $query;
         }
-/*
-        function display_job_authorization_dialog($todo_id) {
-            // Get the post type of the post with the given ID
-            $post_type = get_post_type( $todo_id );
-        
-            // Check if the post type is 'todo'
-            if ( ($post_type != 'todo') && ($post_type != 'document') ) {
-                return 'post type is '.$post_type.'. Wrong type!';
-            }
-            
-            if ( $post_type === 'todo' ) {
-                $report_id = get_post_meta($todo_id, 'report_id', true);
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-            }
-            
-            if ( $post_type === 'document' ) {
-                $doc_id = $todo_id;
-            }
-            
-            if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
-        
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-        
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-    
-            ob_start();
-            ?>
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
-            <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-            <fieldset>
-            <?php
-            if ($is_doc_report) {
-                // doc_report_dialog data
-                $params = array(
-                    'doc_id'     => $doc_id,
-                    //'report_id'     => $report_id,
-                    'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
-                );                
-                $documents_class = new display_documents();
-                $documents_class->display_doc_field_result($params);
-            } else {
-                // document_dialog data
-                $profiles_class = new display_profiles();
-                ?>
-                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-                <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-                <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-                <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
-                <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-                <?php
-            }
-            ?>
-            <hr>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                <?php
-                    if ( $post_type === 'todo' ) {
-                        $query = $this->retrieve_todo_action_list_data($todo_id);
-                    }
-                    if ( $post_type === 'document' ) {
-                        $profiles_class = new display_profiles();
-                        $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
-                    }                    
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) : $query->the_post();
-                            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-                        endwhile;
-                        wp_reset_postdata();
-                    }
-                ?>
-                </div>
-                <div style="text-align: right">
-                    <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />
-                </div>
-            </div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-*/        
-
 
         function display_todo_list() {
             $current_user_id = get_current_user_id();
