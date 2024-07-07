@@ -1179,8 +1179,7 @@ if (!class_exists('to_do_list')) {
             }
         }
 
-        public function process_authorized_action_posts_daily() {
-/*            
+        public function process_authorized_action_test_code() {
             $new_post = array(
                 'post_title'    => time(),
                 'post_content'  => 'Your post content goes here.',
@@ -1189,7 +1188,9 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'notification',
             );    
             $exception_notification_id = wp_insert_post($new_post);
-*/
+        }
+
+        public function process_authorized_action_posts_daily() {
             // process the todo-list first
             $args = array(
                 'post_type'      => 'todo',
@@ -1222,11 +1223,14 @@ if (!class_exists('to_do_list')) {
                         $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                         if ($action_query->have_posts()) :
                             while ($action_query->have_posts()) : $action_query->the_post();
+                                $this->process_authorized_action_test_code();
+/*
                                 $authorized =$profiles_class->is_action_authorized(get_the_ID());
                                 if ($authorized) {
                                     $action_id = $this->get_todo_action_id_by_doc_action_id(get_the_ID());
                                     $this->update_todo_dialog_data($action_id, $authorized);
                                 }
+*/                                    
                             endwhile;
                             wp_reset_postdata();
                         endif;
