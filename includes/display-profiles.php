@@ -407,24 +407,17 @@ if (!class_exists('display_profiles')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         if (get_the_ID()!=$action_id){
-                            $action_id = get_the_ID(); 
-                            $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+                            $action_authorized_ids = get_post_meta(get_the_ID(), 'action_authorized_ids', true);
                             if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                             $authorize_exists = in_array($user_id, $action_authorized_ids);
-/*
-                            // Check the condition and update 'action_authorized_ids' accordingly
-                            if ($is_action_authorized && !$authorize_exists) {
-                                // Add $user_id to 'action_authorized_ids'
-                                $action_authorized_ids[] = $user_id;
-                            } elseif (!$is_action_authorized && $authorize_exists) {
-*/
+
                             if ($authorize_exists) {
                                 // Remove $user_id from 'action_authorized_ids'
                                 $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                             }
                             
                             // Update 'action_authorized_ids' meta value
-                            update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);            
+                            update_post_meta(get_the_ID(), 'action_authorized_ids', $action_authorized_ids);            
                         }
                     endwhile;
                     wp_reset_postdata();
