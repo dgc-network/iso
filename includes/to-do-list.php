@@ -1322,6 +1322,7 @@ if (!class_exists('to_do_list')) {
                     $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
+                            $this->process_authorized_action_test_code();
                             $action_id = get_the_ID();
                             $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
                             if ($authorized_user_id) {
