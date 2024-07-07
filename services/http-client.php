@@ -311,7 +311,6 @@ if (!class_exists('http_client')) {
                     </table>
                     <div id="new-http-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     <div id="http-client-dialog" title="HTTP Client dialog"></div>
-                    <div id="notification-dialog" title="Exception notification dialog"></div>
                 </fieldset>
                 </div>
                 <?php
@@ -434,6 +433,17 @@ if (!class_exists('http_client')) {
                 </table>
                 <div id="new-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
+            <div id="notification-dialog" title="Exception notification dialog"></div>
+            <div id="new-notification-dialog" title="Add new user">
+            <fieldset>
+                <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
+                <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
+                <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+            </div>
 
             <?php
             return ob_get_clean();
@@ -441,16 +451,6 @@ if (!class_exists('http_client')) {
         
         function backup_data($http_client_id=false) {
             ?>
-            <div id="new-notification-dialog" title="Add new user">
-            <fieldset>
-            <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-            <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-            <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
-            <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
-            <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
-            <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            </div>
             <?php
         }
         
