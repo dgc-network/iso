@@ -369,10 +369,13 @@ if (!class_exists('display_profiles')) {
             if (!$action_id) return false;
             if (!$user_id) $user_id = get_current_user_id();
             $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
-            // If $action_authorized_ids is not an array, convert it to an array
             if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
-            // Check if the current user has the specified action ID in their metadata
-            return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;
+
+            if ($user_id) {
+                return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;    
+            } else {
+                return $action_authorized_ids;
+            }
         }
 
         function set_action_authorized_data() {

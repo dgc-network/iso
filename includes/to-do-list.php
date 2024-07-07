@@ -1299,7 +1299,7 @@ if (!class_exists('to_do_list')) {
                         while ($action_query->have_posts()) : $action_query->the_post();
                             //$this->process_authorized_action_test_code();
                             $action_id = get_the_ID();
-                            $action_authorized_ids =$profiles_class->is_action_authorized($action_id);
+                            $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 $this->process_authorized_action_test_code();
                                 foreach ($action_authorized_ids as $user_id) {
