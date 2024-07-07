@@ -384,23 +384,9 @@ if (!class_exists('display_profiles')) {
             if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {
                 $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
-/*                
-                $doc_id = get_post_meta($action_id, 'doc_id', true);
-                $query = $this->retrieve_doc_action_list_data($doc_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        if (get_the_ID()==$action_id){
-
-                        }
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-*/
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
-                
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
-        
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
         
                 // Check the condition and update 'action_authorized_ids' accordingly
@@ -414,6 +400,36 @@ if (!class_exists('display_profiles')) {
                 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
+
+                // update the other actions
+                $doc_id = get_post_meta($action_id, 'doc_id', true);
+                $query = $this->retrieve_doc_action_list_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        if (get_the_ID()!=$action_id){
+                            $action_id = get_the_ID(); 
+                            $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+                            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+                            $authorize_exists = in_array($user_id, $action_authorized_ids);
+/*
+                            // Check the condition and update 'action_authorized_ids' accordingly
+                            if ($is_action_authorized && !$authorize_exists) {
+                                // Add $user_id to 'action_authorized_ids'
+                                $action_authorized_ids[] = $user_id;
+                            } elseif (!$is_action_authorized && $authorize_exists) {
+*/
+                            if ($authorize_exists) {
+                                // Remove $user_id from 'action_authorized_ids'
+                                $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                            }
+                            
+                            // Update 'action_authorized_ids' meta value
+                            update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);            
+                        }
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+
                 $response = array('success' => true);
             }
             

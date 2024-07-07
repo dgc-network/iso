@@ -768,7 +768,6 @@ if (!class_exists('to_do_list')) {
                         //Update the action_authorized_ids
                         $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
                         if ($action_authorized_ids){
-                            //$this->process_authorized_action_test_code();
                             update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
                         }
                     endwhile;
@@ -1248,10 +1247,8 @@ if (!class_exists('to_do_list')) {
                             $action_id = get_the_ID();
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
-                                $this->process_authorized_action_test_code();
                                 foreach ($action_authorized_ids as $user_id) {
                                     $this->update_todo_dialog_data($action_id, $user_id);
-                                    //$this->process_authorized_action_test_code();
                                 }
                             }
                         endwhile;
@@ -1297,14 +1294,11 @@ if (!class_exists('to_do_list')) {
                     $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
-                            //$this->process_authorized_action_test_code();
                             $action_id = get_the_ID();
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
-                                $this->process_authorized_action_test_code();
                                 foreach ($action_authorized_ids as $user_id) {
                                     $this->update_todo_dialog_data($action_id, $user_id);
-                                    //$this->process_authorized_action_test_code();
                                 }    
                             }
                         endwhile;
