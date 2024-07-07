@@ -350,6 +350,7 @@ if (!class_exists('to_do_list')) {
                             <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -384,11 +385,16 @@ if (!class_exists('to_do_list')) {
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             if ($is_doc_report) $doc_title .= '(電子表單)';
                             if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
+
+                            $profiles_class = new display_profiles();
+                            $is_checked = $profiles_class->is_doc_authorized($todo_id) ? 'checked' : '';
+
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
                             <?php
                         endwhile;
@@ -663,7 +669,8 @@ if (!class_exists('to_do_list')) {
             // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
             //$current_user_id = get_current_user_id();
-            $current_user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
+            $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
+            $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
         
@@ -681,7 +688,7 @@ if (!class_exists('to_do_list')) {
                 if (!$next_job) $next_job = $doc_id;
                 $todo_title = get_the_title($next_job);
                 $next_leadtime = 86400;
-                $current_user_id = 1;
+                //$current_user_id = 1;
             }
             
             if ($next_job>0) $todo_title = get_the_title($next_job);
@@ -692,7 +699,7 @@ if (!class_exists('to_do_list')) {
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
+                'post_author'   => $user_id,
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
@@ -714,7 +721,7 @@ if (!class_exists('to_do_list')) {
 
             if ($next_job==-1 || $next_job==-2) {
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
-                update_post_meta( $new_todo_id, 'submit_user', $current_user_id);
+                update_post_meta( $new_todo_id, 'submit_user', $user_id);
                 update_post_meta( $new_todo_id, 'submit_action', $action_id);
                 update_post_meta( $new_todo_id, 'submit_time', time());
                 //if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
@@ -734,7 +741,7 @@ if (!class_exists('to_do_list')) {
                             'post_title'    => get_the_title(),
                             'post_content'  => get_post_field('post_content', get_the_ID()),
                             'post_status'   => 'publish',
-                            'post_author'   => $current_user_id,
+                            'post_author'   => $user_id,
                             'post_type'     => 'action',
                         );    
                         $new_action_id = wp_insert_post($new_post);
@@ -746,9 +753,9 @@ if (!class_exists('to_do_list')) {
                         update_post_meta( $new_action_id, 'doc_action_id', get_the_ID());
                         
                         //Update the authorize_action_ids
-                        $is_action_authorized = $profiles_class->is_action_authorized(get_the_ID(),$current_user_id);
+                        $is_action_authorized = $profiles_class->is_action_authorized(get_the_ID(), $user_id);
                         //if ($authorized){
-                            $authorize_action_ids = get_user_meta($current_user_id, 'authorize_action_ids', true);
+                            $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
                 
                             if (!is_array($authorize_action_ids)) {
                                 $authorize_action_ids = array();
@@ -766,7 +773,7 @@ if (!class_exists('to_do_list')) {
                             }
                             
                             // Update 'authorize_action_ids' meta value
-                            update_user_meta($current_user_id, 'authorize_action_ids', $authorize_action_ids);
+                            update_user_meta($user_id, 'authorize_action_ids', $authorize_action_ids);
             
                         //}
                     endwhile;
