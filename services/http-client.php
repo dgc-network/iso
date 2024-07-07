@@ -582,12 +582,12 @@ if (!class_exists('http_client')) {
                 update_post_meta($exception_notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
                 update_post_meta($exception_notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             } else {
-                $current_user_id = get_current_user_id();
+                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_title'    => time(),
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
+                    'post_author'   => get_current_user_id(),
                     'post_type'     => 'notification',
                 );    
                 $exception_notification_id = wp_insert_post($new_post);
