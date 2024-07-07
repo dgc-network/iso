@@ -158,22 +158,12 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#new-notification").on("click", function() {
-            alert('I am here!')
-        });
-
-        $("#notification-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-        });
-
         $("#http-client-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
             open: function(event, ui) {
-                display_MQTT_message($("#mqtt-topic").val());
+                //display_MQTT_message($("#mqtt-topic").val());
             },
             buttons: {
                 "Save": function () {
