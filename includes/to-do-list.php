@@ -594,7 +594,7 @@ if (!class_exists('to_do_list')) {
         // to-do-list misc
         function update_todo_dialog_data($action_id=false, $user_id=false) {
             // action button is clicked
-            if (!$user_id) $current_user_id = get_current_user_id();
+            if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
 
@@ -605,7 +605,7 @@ if (!class_exists('to_do_list')) {
                 $new_post = array(
                     'post_title'    => $todo_title,
                     'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
+                    'post_author'   => $user_id,
                     'post_type'     => 'todo',
                 );    
                 $todo_id = wp_insert_post($new_post);
@@ -613,7 +613,7 @@ if (!class_exists('to_do_list')) {
             }
 
             // Update current todo
-            update_post_meta( $todo_id, 'submit_user', $current_user_id );
+            update_post_meta( $todo_id, 'submit_user', $user_id );
             update_post_meta( $todo_id, 'submit_action', $action_id );
             update_post_meta( $todo_id, 'submit_time', time() );
 
@@ -629,7 +629,7 @@ if (!class_exists('to_do_list')) {
                 $new_post = array(
                     'post_title'    => 'New doc-report',
                     'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
+                    'post_author'   => $user_id,
                     'post_type'     => 'doc-report',
                 );    
                 $new_report_id = wp_insert_post($new_post);
@@ -732,7 +732,8 @@ if (!class_exists('to_do_list')) {
         
             if ($next_job>0) {
                 $this->notice_the_responsible_persons($new_todo_id);
-                // Create the Action list for next_job 
+
+                // Create the new Action list for next_job 
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_doc_action_list_data($next_job);
                 if ($query->have_posts()) {
@@ -1252,7 +1253,7 @@ if (!class_exists('to_do_list')) {
                         while ($action_query->have_posts()) : $action_query->the_post();
                             $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
                             if ($authorized_user_id) {
-                                $this->process_authorized_action_test_code();
+                                //$this->process_authorized_action_test_code();
                                 //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
                                 $this->update_todo_dialog_data($action_id, $authorized_user_id);
                             }
@@ -1284,7 +1285,7 @@ if (!class_exists('to_do_list')) {
                 }    
                 wp_reset_postdata();
             }
-/*
+
             // process the doc-job-list after
             $args = array(
                 'post_type'      => 'document',
@@ -1322,15 +1323,18 @@ if (!class_exists('to_do_list')) {
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
                             $action_id = get_the_ID();
-                            $authorized =$profiles_class->is_action_authorized(get_the_ID());
-                            if ($authorized) $this->update_todo_dialog_data($action_id, $authorized);
+                            $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
+                            if ($authorized_user_id) {
+                                $this->process_authorized_action_test_code();
+                                $this->update_todo_dialog_data($action_id, $authorized_user_id);
+                            }
                         endwhile;
                         wp_reset_postdata();
                     endif;
                 }    
                 wp_reset_postdata();
             }
-*/                
+
         }
     
         public function get_todo_action_id_by_job_action_id($action_id) {
