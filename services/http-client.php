@@ -115,7 +115,7 @@ if (!class_exists('http_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'notification', $args );
         }
