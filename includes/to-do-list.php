@@ -386,8 +386,8 @@ if (!class_exists('to_do_list')) {
                             if ($is_doc_report) $doc_title .= '(電子表單)';
                             if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
 
-                            $profiles_class = new display_profiles();
-                            $is_checked = $profiles_class->is_doc_authorized($todo_id) ? 'checked' : '';
+                            //$profiles_class = new display_profiles();
+                            $is_checked = $this->is_todo_authorized($todo_id) ? 'checked' : '';
 
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id); ?>">
@@ -414,6 +414,18 @@ if (!class_exists('to_do_list')) {
             </fieldset>
             </div>
             <?php
+        }
+
+        function is_todo_authorized($todo_id=false) {
+            $query = $this->retrieve_todo_action_list_data($todo_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $profiles_class = new display_profiles();
+                    if ($profiles_class->is_action_authorized(get_the_ID())) return true;
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return false;
         }
 
         function retrieve_todo_list_data($current_page = 1){
@@ -756,8 +768,8 @@ if (!class_exists('to_do_list')) {
                         //Update the action_authorize_ids
                         $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
                         if ($action_authorized_ids){
-                                $this->process_authorized_action_test_code();
-                                update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
+                            $this->process_authorized_action_test_code();
+                            update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
                         }
 /*                        
                             $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);

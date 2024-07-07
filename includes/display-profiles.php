@@ -354,7 +354,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function is_doc_authorized($doc_id=false, $user_id=false) {
+        function is_doc_authorized($doc_id=false) {
             $query = $this->retrieve_doc_action_list_data($doc_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
