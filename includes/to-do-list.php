@@ -1248,7 +1248,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
                             foreach ($action_authorized_ids as $user_id) {
                                 $this->update_todo_dialog_data(get_the_ID(), $user_id);
-                                //$this->process_authorized_action_test_code();
+                                $this->process_authorized_action_test_code();
                             }
                         endwhile;
                         wp_reset_postdata();
