@@ -234,7 +234,8 @@ jQuery(document).ready(function($) {
     // Exception notification scripts
     function activate_notification_list_data(http_client_id=false){
         $("#new-notification").on("click", function() {
-            $("#new-notification-dialog").dialog('open');
+            //$("#new-notification-dialog").dialog('open');
+            $("#notification-dialog").dialog('open');
         });
     
         $("#new-notification-dialog").dialog({
