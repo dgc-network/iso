@@ -9,7 +9,6 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            //add_action( 'init', array( $this, 'register_job_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -78,19 +77,6 @@ if (!class_exists('display_profiles')) {
                 'nonce'    => wp_create_nonce('display-profiles-nonce'), // Generate nonce
             ));                
         }        
-
-        // Register job post type
-        function register_job_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Jobs', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'job', $args );
-        }
 
         // Select profile
         function display_select_profile($select_option=false) {
@@ -688,7 +674,6 @@ if (!class_exists('display_profiles')) {
                 } else {
                     // Update user meta
                     $is_site_admin = sanitize_text_field($_POST['_is_site_admin']);
-                    //update_user_meta($user_id, 'is_site_admin', sanitize_text_field($_POST['_is_site_admin']));
                     update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
                     $this->set_site_admin_data($user_id, $is_site_admin);
                     $response = array('success' => true);
@@ -836,10 +821,8 @@ if (!class_exists('display_profiles')) {
                         </thead>
                         <tbody>
                         <?php
-                        // Define the custom pagination parameters
-                        //$posts_per_page = get_option('operation_row_counts');
-                        $current_page = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_site_job_list_data($current_page);
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_site_job_list_data($paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -870,9 +853,9 @@ if (!class_exists('display_profiles')) {
                     <div class="pagination">
                         <?php
                         // Display pagination links
-                        if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                        if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                         ?>
                     </div>
                 </fieldset>
@@ -886,10 +869,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_site_job_list_data($current_page = 1) {
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-
+        function retrieve_site_job_list_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $is_site_admin = $this->is_site_admin();
@@ -899,7 +879,7 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_query'     => array(
                     array(
                         'key'   => 'site_id',
@@ -915,7 +895,7 @@ if (!class_exists('display_profiles')) {
                 $args['post__in'] = $user_doc_ids; // Value is the array of job post IDs
             }
 
-            if ($current_page==0) $args['posts_per_page'] = -1;
+            if ($paged==0) $args['posts_per_page'] = -1;
 
             $search_query = sanitize_text_field($_GET['_search']);
             if ($search_query) $args['paged'] = 1;

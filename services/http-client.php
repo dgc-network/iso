@@ -14,9 +14,6 @@ if (!class_exists('http_client')) {
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
-            //add_action( 'save_post_iot-message', array( $this, 'update_http_client_meta', 10, 3 ) );
-            //add_action( 'transition_post_status', array( $this, 'update_http_client_meta_on_publish', 10, 3 ) );
-            
             add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
@@ -155,10 +152,8 @@ if (!class_exists('http_client')) {
                         </thead>
                         <tbody>
                         <?php
-                        // Define the custom pagination parameters
-                        //$posts_per_page = get_option('operation_row_counts');
-                        $current_page = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_iot_message_data($current_page);
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_iot_message_data($paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -192,9 +187,9 @@ if (!class_exists('http_client')) {
                     <div class="pagination">
                         <?php
                         // Display pagination links
-                        if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                        if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                         ?>
                     </div>
                 </fieldset>
@@ -585,7 +580,6 @@ if (!class_exists('http_client')) {
                 update_post_meta($notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
                 update_post_meta($notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             } else {
-                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_title'    => time(),
                     'post_content'  => 'Your post content goes here.',

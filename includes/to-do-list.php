@@ -23,11 +23,9 @@ if (!class_exists('to_do_list')) {
             // Schedule the cron job if it's not already scheduled
             if (!wp_next_scheduled('daily_action_process_event')) {
                 wp_schedule_event(time(), 'daily', 'daily_action_process_event');
-            }
-    
+            }    
             // Hook the function to the scheduled cron job
             add_action('daily_action_process_event', [$this, 'process_authorized_action_posts_daily']);
-
         }
 
         function enqueue_to_do_list_scripts() {
@@ -184,10 +182,8 @@ if (!class_exists('to_do_list')) {
                     </thead>
                     <tbody>
                     <?php
-                    // Define the custom pagination parameters
-                    //$posts_per_page = get_option('operation_row_counts');
-                    $current_page = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_job_authorization_data($current_page);
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_job_authorization_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -224,9 +220,9 @@ if (!class_exists('to_do_list')) {
                 <?php
                     // Display pagination links
                     echo '<div class="pagination">';
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     echo '</div>';
                 ?>
             </fieldset>
@@ -234,10 +230,7 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_job_authorization_data($current_page = 1){
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-
+        function retrieve_job_authorization_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -250,7 +243,7 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_key'       => 'job_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -355,10 +348,8 @@ if (!class_exists('to_do_list')) {
                     </thead>
                     <tbody>
                     <?php
-                    // Define the custom pagination parameters
-                    //$posts_per_page = get_option('operation_row_counts');
-                    $current_page = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_todo_list_data($current_page);
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_todo_list_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -386,7 +377,6 @@ if (!class_exists('to_do_list')) {
                             if ($is_doc_report) $doc_title .= '(電子表單)';
                             if (!$is_doc_report) $doc_title .= '('.$doc_number.')';
 
-                            //$profiles_class = new display_profiles();
                             $is_checked = $this->is_todo_authorized($todo_id) ? 'checked' : '';
 
                             ?>
@@ -406,9 +396,9 @@ if (!class_exists('to_do_list')) {
                 <?php
                     // Display pagination links
                     echo '<div class="pagination">';
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     echo '</div>';
                 ?>
             </fieldset>
@@ -428,10 +418,7 @@ if (!class_exists('to_do_list')) {
             return false;
         }
 
-        function retrieve_todo_list_data($current_page = 1){
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-
+        function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -445,7 +432,7 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -680,7 +667,6 @@ if (!class_exists('to_do_list')) {
             // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From iso_helper_post_event_callback($params), create a next_todo based on the $args['doc_id']
         
-            //$current_user_id = get_current_user_id();
             $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
@@ -693,14 +679,13 @@ if (!class_exists('to_do_list')) {
                 if (empty($next_leadtime)) $next_leadtime=86400;
             }
         
-            // for set_todo_from_doc_report() and frquence doc_report to generate a new todo
+            // set_todo_from_doc_report() and frquence doc_report to generate a new todo
             if ($action_id==0) {  
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
                 if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 if (!$next_job) $next_job = $doc_id;
                 $todo_title = get_the_title($next_job);
                 $next_leadtime = 86400;
-                //$current_user_id = 1;
             }
             
             if ($next_job>0) $todo_title = get_the_title($next_job);
@@ -736,7 +721,6 @@ if (!class_exists('to_do_list')) {
                 update_post_meta( $new_todo_id, 'submit_user', $user_id);
                 update_post_meta( $new_todo_id, 'submit_action', $action_id);
                 update_post_meta( $new_todo_id, 'submit_time', time());
-                //if ($report_id) update_post_meta( $report_id, 'todo_status', $next_job);
                 if ($prev_report_id) update_post_meta( $prev_report_id, 'todo_status', $next_job );
                 if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
                 if ($doc_id) update_post_meta( $doc_id, 'todo_status', $next_job );
@@ -932,10 +916,8 @@ if (!class_exists('to_do_list')) {
                     </thead>
                     <tbody>
                     <?php
-                    // Define the custom pagination parameters
-                    //$posts_per_page = get_option('operation_row_counts');
-                    $current_page = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_signature_record_data($doc, $report, $current_page);
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_signature_record_data($doc, $report, $paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
@@ -978,28 +960,24 @@ if (!class_exists('to_do_list')) {
                 <div class="pagination">
                     <?php
                     // Display pagination links
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
             </fieldset>
             <?php
-            //$html = ob_get_clean();
-            // Return an array containing both HTML content and $x
             return array(
                 'html' => ob_get_clean(),
                 'x'    => $total_posts,                
             );
         }
         
-        function retrieve_signature_record_data($doc_id=false, $report_id=false, $current_page=1){
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
+        function retrieve_signature_record_data($doc_id=false, $report_id=false, $paged=1){
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -1130,7 +1108,6 @@ if (!class_exists('to_do_list')) {
 
         // Method for the callback function
         public function iso_helper_post_event_callback($params) {
-            // Add your code to programmatically add a post here
             $this->update_next_todo_and_actions($params);
         }
         
@@ -1204,7 +1181,7 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to display this.';
             }
         }
-
+/*
         public function process_authorized_action_test_code() {
             $new_post = array(
                 'post_title'    => time(),
@@ -1215,7 +1192,7 @@ if (!class_exists('to_do_list')) {
             );    
             $post_id = wp_insert_post($new_post);
         }
-
+*/
         public function process_authorized_action_posts_daily() {
             // process the todo-list first
             $args = array(
@@ -1333,8 +1310,5 @@ if (!class_exists('to_do_list')) {
         }
     }
     $todo_class = new to_do_list();
-    // Call the method to schedule the event and add the action
-    //$todo_class->schedule_event_and_action();
-
 }
 

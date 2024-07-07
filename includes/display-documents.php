@@ -14,7 +14,6 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            //add_action( 'wp_footer', array( $this, 'add_mermaid_js' ));
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -50,11 +49,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
-        }
-
-        function add_mermaid_js() {
-            //echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.4/mermaid.min.js"></script>';
-            //echo '<script>mermaid.initialize({startOnLoad:true});</script>';
         }
 
         function enqueue_display_document_scripts() {
@@ -142,7 +136,6 @@ if (!class_exists('display_documents')) {
         
         // Shortcode to display
         function display_shortcode() {
-            //$this->data_migration();
             // Check if the user is logged in
             if (is_user_logged_in()) {
 
@@ -198,10 +191,8 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-            $current_page = max(1, get_query_var('paged')); // Get the current page number
-            $query = $this->retrieve_document_list_data($current_page);
+            $paged = max(1, get_query_var('paged')); // Get the current page number
+            $query = $this->retrieve_document_list_data($paged);
             $total_posts = $query->found_posts;
             $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -273,9 +264,9 @@ if (!class_exists('display_documents')) {
                 <div class="pagination">
                     <?php
                     // Display pagination links
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
             </fieldset>
@@ -283,10 +274,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_list_data($current_page = 1) {
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-
+        function retrieve_document_list_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_filter = array(
@@ -313,12 +301,12 @@ if (!class_exists('display_documents')) {
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             );
-            if ($search_query) $current_page = 1;
+            if ($search_query) $paged = 1;
 
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'OR',
                     array(
@@ -547,7 +535,6 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta( $post_id, 'site_id', $site_id);
-                //update_post_meta( $post_id, 'job_number', '-');
                 update_post_meta( $post_id, 'doc_number', '-');
                 update_post_meta( $post_id, 'doc_revision', 'A');
                 update_post_meta( $post_id, 'doc_report_frequence_start_time', time());
@@ -570,9 +557,6 @@ if (!class_exists('display_documents')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            //$todo_class = new to_do_list();
-            //$signature_record_list = $todo_class->get_signature_record_list($doc_id);
-            //$html_contain = $signature_record_list['html'];
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -692,10 +676,8 @@ if (!class_exists('display_documents')) {
                     </thead>
                     <tbody>
                         <?php
-                        // Define the custom pagination parameters
-                        //$posts_per_page = get_option('operation_row_counts');
-                        $current_page = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $current_page);
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
             
@@ -744,9 +726,9 @@ if (!class_exists('display_documents')) {
                 <div class="pagination">
                     <?php
                     // Display pagination links
-                    if ($current_page > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $current_page, $total_pages) . '</span>';
-                    if ($current_page < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($current_page + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
             </fieldset>
@@ -754,14 +736,11 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
         
-        function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $current_page=1) {
-            // Define the custom pagination parameters
-            //$posts_per_page = get_option('operation_row_counts');
-        
+        function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $current_page,
+                'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -837,7 +816,6 @@ if (!class_exists('display_documents')) {
         }
         
         function display_doc_report_dialog($report_id=false) {
-
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -845,10 +823,6 @@ if (!class_exists('display_documents')) {
             if ($is_doc_report) $doc_title .= '(電子表單)';
             $site_id = get_post_meta($doc_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            //$todo_class = new to_do_list();
-            //$signature_record_list = $todo_class->get_signature_record_list(false, $report_id);
-            //$html_contain = $signature_record_list['html'];
-        
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1497,11 +1471,8 @@ if (!class_exists('display_documents')) {
         function set_initial_iso_document() {
             $response = array('success' => false, 'error' => 'Invalid data format');
         
-            //if (isset($_POST['_doc_category_id']) && isset($_POST['_doc_site_id'])) {
             if (isset($_POST['_doc_category_id'])) {
                 $doc_category = sanitize_text_field($_POST['_doc_category_id']);
-                //$site_id = sanitize_text_field($_POST['_doc_site_id']);
-                // Retrieve documents based on doc_category_id and doc_site_id
                 $args = array(
                     'post_type'      => 'document',
                     'posts_per_page' => -1,
@@ -1512,13 +1483,6 @@ if (!class_exists('display_documents')) {
                             'value'   => $doc_category,
                             'compare' => '=',
                         ),
-/*                        
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => $site_id,
-                            'compare' => '=',
-                        ),
-*/                        
                     ),
                 );
                 
@@ -1615,13 +1579,6 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }    
             }
-/*
-            // Get the current URL without any query parameters
-            $current_url = remove_query_arg( array_keys( $_GET ) );
-            // Redirect to the URL without any query parameters
-            wp_redirect( $current_url );
-            exit();                
-*/
         }
         
         function set_todo_from_doc_report($action_id=false, $report_id=false) {
@@ -1650,7 +1607,6 @@ if (!class_exists('display_documents')) {
         
             // set next todo and actions
             $params = array(
-                //'action_id' => $action_id,
                 'next_job' => $next_job,
                 'prev_report_id' => $report_id,
             );        
