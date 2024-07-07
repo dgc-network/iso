@@ -149,18 +149,17 @@ jQuery(document).ready(function($) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
                     activate_notification_list_data(http_client_id);
-                    
-                    $("#new-notification").on("click", function() {
-                        //$("#new-notification-dialog").dialog('open');
-                        $("#notification-dialog").dialog('open');
-                    });
-            
+
                 },
                 error: function (error) {
                     console.error(error);
                     alert(error);
                 }
             });
+        });
+
+        $("#new-notification").on("click", function() {
+            alert('I am here!')
         });
 
         $("#notification-dialog").dialog({
