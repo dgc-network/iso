@@ -379,6 +379,7 @@ if (!class_exists('display_profiles')) {
             $response = array('success' => false, 'error' => 'Invalid data format');
             
             if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {
+                $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
 /*                
                 $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -393,7 +394,6 @@ if (!class_exists('display_profiles')) {
                 endif;
 */
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
-                $user_id = get_current_user_id();
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
@@ -402,10 +402,10 @@ if (!class_exists('display_profiles')) {
         
                 // Check the condition and update 'action_authorized_ids' accordingly
                 if ($is_action_authorized && !$authorize_exists) {
-                    // Add $action_id to 'action_authorized_ids'
+                    // Add $user_id to 'action_authorized_ids'
                     $action_authorized_ids[] = $user_id;
                 } elseif (!$is_action_authorized && $authorize_exists) {
-                    // Remove $action_id from 'action_authorized_ids'
+                    // Remove $user_id from 'action_authorized_ids'
                     $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                 }
                 

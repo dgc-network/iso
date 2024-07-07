@@ -1248,9 +1248,10 @@ if (!class_exists('to_do_list')) {
                             $action_id = get_the_ID();
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
+                                $this->process_authorized_action_test_code();
                                 foreach ($action_authorized_ids as $user_id) {
                                     $this->update_todo_dialog_data($action_id, $user_id);
-                                    $this->process_authorized_action_test_code();
+                                    //$this->process_authorized_action_test_code();
                                 }
                             }
                         endwhile;
@@ -1302,7 +1303,7 @@ if (!class_exists('to_do_list')) {
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
                                     $this->update_todo_dialog_data($action_id, $user_id);
-                                    //$this->process_authorized_action_test_code();
+                                    $this->process_authorized_action_test_code();
                                 }    
                             }
                         endwhile;
