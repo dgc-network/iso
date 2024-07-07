@@ -765,34 +765,12 @@ if (!class_exists('to_do_list')) {
                         update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
                         update_post_meta( $new_action_id, 'doc_action_id', get_the_ID());
                         
-                        //Update the action_authorize_ids
+                        //Update the action_authorized_ids
                         $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
                         if ($action_authorized_ids){
-                            $this->process_authorized_action_test_code();
-                            update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
+                            //$this->process_authorized_action_test_code();
+                            update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
                         }
-/*                        
-                            $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);
-                
-                            if (!is_array($action_authorize_ids)) {
-                                $action_authorize_ids = array();
-                            }
-                    
-                            $authorize_exists = in_array($new_action_id, $action_authorize_ids);
-                    
-                            // Check the condition and update 'action_authorize_ids' accordingly
-                            if ($is_action_authorized && !$authorize_exists) {
-                                // Add $action_id to 'action_authorize_ids'
-                                $action_authorize_ids[] = $new_action_id;
-                            } elseif (!$is_action_authorized && $authorize_exists) {
-                                // Remove $action_id from 'action_authorize_ids'
-                                $action_authorize_ids = array_diff($action_authorize_ids, array($new_action_id));
-                            }
-                            
-                            // Update 'action_authorize_ids' meta value
-                            update_user_meta($user_id, 'action_authorize_ids', $action_authorize_ids);
-*/            
-                        //}
                     endwhile;
                     wp_reset_postdata();
                 }

@@ -369,27 +369,27 @@ if (!class_exists('display_profiles')) {
         function is_action_authorized($action_id=false, $user_id=false) {
             if (!$action_id) return false;
             if (!$user_id) $user_id = get_current_user_id();
-            $action_authorize_ids = get_post_meta($action_id, 'action_authorize_ids', true);
-            // If $action_authorize_ids is not an array, convert it to an array
-            if (!is_array($action_authorize_ids)) $action_authorize_ids = array();
+            $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+            // If $action_authorized_ids is not an array, convert it to an array
+            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
             // Check if the current user has the specified action ID in their metadata
-            return in_array($user_id, $action_authorize_ids) ? $action_authorize_ids : false;
+            return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;
 /*
             if ($user_id) {
                 // Get the user's doc IDs as an array
-                $action_authorize_ids = get_post_meta($action_id, 'action_authorize_ids', true);
-                // If $action_authorize_ids is not an array, convert it to an array
-                if (!is_array($action_authorize_ids)) $action_authorize_ids = array();
+                $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+                // If $action_authorized_ids is not an array, convert it to an array
+                if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 // Check if the current user has the specified action ID in their metadata
-                return in_array($user_id, $action_authorize_ids) ? $action_authorize_ids : false;
+                return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;
             } else {
                 // Check all users
                 $all_users = get_users();
                 foreach ($all_users as $user) {
                     $user_id = $user->ID;
-                    $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);
-                    if (!is_array($action_authorize_ids)) $action_authorize_ids = array();
-                    if (in_array($action_id, $action_authorize_ids)) {
+                    $action_authorized_ids = get_user_meta($user_id, 'action_authorized_ids', true);
+                    if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+                    if (in_array($action_id, $action_authorized_ids)) {
                         return $user_id;
                     }
                 }
@@ -403,12 +403,12 @@ if (!class_exists('display_profiles')) {
             if (!$user_id) $user_id = get_current_user_id();
             //if (!$user_id) $user_id = 1;
             // Get the user's doc IDs as an array
-            $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);
+            $action_authorized_ids = get_user_meta($user_id, 'action_authorized_ids', true);
             // If $user_doc_ids is not an array, convert it to an array
-            if (!is_array($action_authorize_ids)) $action_authorize_ids = array();
+            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
             // Check if the current user has the specified doc ID in their metadata
-            return in_array($action_id, $action_authorize_ids) ? $user_id : false;
-            //return in_array($action_id, $action_authorize_ids);
+            return in_array($action_id, $action_authorized_ids) ? $user_id : false;
+            //return in_array($action_id, $action_authorized_ids);
         }
 */
         function set_action_authorized_data() {
@@ -418,23 +418,23 @@ if (!class_exists('display_profiles')) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
                 $user_id = get_current_user_id();
-                $action_authorize_ids = get_post_meta($action_id, 'action_authorize_ids', true);
+                $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 
-                if (!is_array($action_authorize_ids)) $action_authorize_ids = array();
+                if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
         
-                $authorize_exists = in_array($uset_id, $action_authorize_ids);
+                $authorize_exists = in_array($uset_id, $action_authorized_ids);
         
-                // Check the condition and update 'action_authorize_ids' accordingly
+                // Check the condition and update 'action_authorized_ids' accordingly
                 if ($is_action_authorized && !$authorize_exists) {
-                    // Add $action_id to 'action_authorize_ids'
-                    $action_authorize_ids[] = $user_id;
+                    // Add $action_id to 'action_authorized_ids'
+                    $action_authorized_ids[] = $user_id;
                 } elseif (!$is_action_authorized && $authorize_exists) {
-                    // Remove $action_id from 'action_authorize_ids'
-                    $action_authorize_ids = array_diff($action_authorize_ids, array($user_id));
+                    // Remove $action_id from 'action_authorized_ids'
+                    $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                 }
                 
-                // Update 'action_authorize_ids' meta value
-                update_post_meta($action_id, 'action_authorize_ids', $action_authorize_ids);
+                // Update 'action_authorized_ids' meta value
+                update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
                 $response = array('success' => true);
             }
             
