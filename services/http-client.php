@@ -366,8 +366,10 @@ if (!class_exists('http_client')) {
 
         function get_http_client_dialog_data() {
             $response = array();
-            $http_client_id = sanitize_text_field($_POST['_http_client_id']);
-            $response['html_contain'] = $this->display_http_client_dialog($http_client_id);
+            if( isset($_POST['_http_client_id']) ) {
+                $http_client_id = sanitize_text_field($_POST['_http_client_id']);
+                $response['html_contain'] = $this->display_http_client_dialog($http_client_id);
+            }
             wp_send_json($response);
         }
 
