@@ -157,6 +157,12 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $("#notification-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+        });
+
         $("#http-client-dialog").dialog({
             width: 390,
             modal: true,

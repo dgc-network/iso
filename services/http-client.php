@@ -311,6 +311,7 @@ if (!class_exists('http_client')) {
                     </table>
                     <div id="new-http-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                     <div id="http-client-dialog" title="HTTP Client dialog"></div>
+                    <div id="notification-dialog" title="Exception notification dialog"></div>
                 </fieldset>
                 </div>
                 <?php
@@ -433,7 +434,6 @@ if (!class_exists('http_client')) {
                 </table>
                 <div id="new-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
-            <div id="notification-dialog" title="Exception notification dialog"></div>
 
             <?php
             return ob_get_clean();
