@@ -1242,7 +1242,7 @@ if (!class_exists('to_do_list')) {
                     $query->the_post();
                     $todo_id = get_the_ID();
                     $profiles_class = new display_profiles();
-                    $action_query = $profiles_class->retrieve_doc_action_list_data($todo_id);
+                    $action_query = $this->retrieve_todo_action_list_data($todo_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
                             $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
