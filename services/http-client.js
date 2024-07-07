@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
 
     function activate_http_client_list_data(){
 
-        activate_notification_list_data($("#http-client-id").val());
+        //activate_notification_list_data($("#http-client-id").val());
 /*
         $("#select-todo").on( "change", function() {
             window.location.replace("?_select_todo="+$(this).val());
@@ -148,9 +148,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
-                    $("#new-notification-dialog").dialog('close');
                     activate_notification_list_data(http_client_id);
-                    //activate_http_client_list_data();
                 },
                 error: function (error) {
                     console.error(error);
@@ -319,7 +317,7 @@ jQuery(document).ready(function($) {
                     });
                 },
                 "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this exception notification?")) {
+                    if (window.confirm("Are you sure you want to delete this notification?")) {
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,

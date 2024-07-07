@@ -352,7 +352,7 @@ if (!class_exists('http_client')) {
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
                 <div id="notification-list">
-                <?php echo $this->display_exception_notification_list($http_client_id);?>
+                <?php //echo $this->display_exception_notification_list($http_client_id);?>
                 </div>
             </fieldset>
             <?php
