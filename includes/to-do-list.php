@@ -1245,7 +1245,7 @@ if (!class_exists('to_do_list')) {
                         while ($action_query->have_posts()) : $action_query->the_post();
                             $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
                             if ($authorized_user_id) {
-                                //$this->process_authorized_action_test_code();
+                                $this->process_authorized_action_test_code();
                                 //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
                                 $this->update_todo_dialog_data($action_id, $authorized_user_id);
                             }
