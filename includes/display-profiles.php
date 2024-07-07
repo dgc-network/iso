@@ -365,7 +365,7 @@ if (!class_exists('display_profiles')) {
             endif;
             return false;
         }
-/*
+
         function is_action_authorized($action_id=false, $user_id=false) {
             if (!$user_id) $user_id = get_current_user_id();
             if ($user_id) {
@@ -389,7 +389,7 @@ if (!class_exists('display_profiles')) {
                 return false;
             }
         }
-*/        
+/*
         function is_action_authorized($action_id=false, $user_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();
@@ -401,15 +401,8 @@ if (!class_exists('display_profiles')) {
             // Check if the current user has the specified doc ID in their metadata
             return in_array($action_id, $authorize_action_ids) ? $user_id : false;
             //return in_array($action_id, $authorize_action_ids);
-/*            
-            if (in_array($action_id, $authorize_action_ids)) {
-                return $user_id;
-            } else {
-                return false;
-            }
-*/                
         }
-
+*/
         function set_authorize_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             
