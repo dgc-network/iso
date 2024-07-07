@@ -753,29 +753,32 @@ if (!class_exists('to_do_list')) {
                         update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
                         update_post_meta( $new_action_id, 'doc_action_id', get_the_ID());
                         
-                        //Update the authorize_action_ids
-                        $is_action_authorized = $profiles_class->is_action_authorized(get_the_ID(), $user_id);
-                        //if ($authorized){
-                            $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
+                        //Update the action_authorize_ids
+                        $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
+                        if ($action_authorized_ids){
+                            update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
+                        }
+/*                        
+                            $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);
                 
-                            if (!is_array($authorize_action_ids)) {
-                                $authorize_action_ids = array();
+                            if (!is_array($action_authorize_ids)) {
+                                $action_authorize_ids = array();
                             }
                     
-                            $authorize_exists = in_array($new_action_id, $authorize_action_ids);
+                            $authorize_exists = in_array($new_action_id, $action_authorize_ids);
                     
-                            // Check the condition and update 'authorize_action_ids' accordingly
+                            // Check the condition and update 'action_authorize_ids' accordingly
                             if ($is_action_authorized && !$authorize_exists) {
-                                // Add $action_id to 'authorize_action_ids'
-                                $authorize_action_ids[] = $new_action_id;
+                                // Add $action_id to 'action_authorize_ids'
+                                $action_authorize_ids[] = $new_action_id;
                             } elseif (!$is_action_authorized && $authorize_exists) {
-                                // Remove $action_id from 'authorize_action_ids'
-                                $authorize_action_ids = array_diff($authorize_action_ids, array($new_action_id));
+                                // Remove $action_id from 'action_authorize_ids'
+                                $action_authorize_ids = array_diff($action_authorize_ids, array($new_action_id));
                             }
                             
-                            // Update 'authorize_action_ids' meta value
-                            update_user_meta($user_id, 'authorize_action_ids', $authorize_action_ids);
-            
+                            // Update 'action_authorize_ids' meta value
+                            update_user_meta($user_id, 'action_authorize_ids', $action_authorize_ids);
+*/            
                         //}
                     endwhile;
                     wp_reset_postdata();
@@ -1251,38 +1254,15 @@ if (!class_exists('to_do_list')) {
                     $action_query = $profiles_class->retrieve_doc_action_list_data($todo_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
-                            $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
-                            if ($authorized_user_id) {
+                            $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
+                            foreach ($action_authorized_ids as $user_id) {
+                                $this->update_todo_dialog_data(get_the_ID(), $user_id);
                                 //$this->process_authorized_action_test_code();
-                                //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
-                                $this->update_todo_dialog_data($action_id, $authorized_user_id);
                             }
                         endwhile;
                         wp_reset_postdata();
                     endif;
-
-/*
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                    if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-    
-                    if ($doc_id) {
-                        $profiles_class = new display_profiles();
-                        $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                        if ($action_query->have_posts()) :
-                            while ($action_query->have_posts()) : $action_query->the_post();
-                                $authorized =$profiles_class->is_action_authorized(get_the_ID());
-                                if ($authorized) {
-                                    $this->process_authorized_action_test_code();
-                                    //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
-                                    //$this->update_todo_dialog_data($action_id, $authorized);
-                                }
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    }
-*/                        
-                }    
+              }    
                 wp_reset_postdata();
             }
 
@@ -1323,11 +1303,10 @@ if (!class_exists('to_do_list')) {
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
                             //$this->process_authorized_action_test_code();
-                            $action_id = get_the_ID();
-                            $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
-                            if ($authorized_user_id) {
-                                $this->process_authorized_action_test_code();
-                                $this->update_todo_dialog_data($action_id, $authorized_user_id);
+                            $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
+                            foreach ($action_authorized_ids as $user_id) {
+                                $this->update_todo_dialog_data(get_the_ID(), $user_id);
+                                //$this->process_authorized_action_test_code();
                             }
                         endwhile;
                         wp_reset_postdata();

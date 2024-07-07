@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_authorize_action_data',
+                                    'action': 'set_action_authorized_data',
                                     _action_id: action_id,
                                     _is_action_authorized: !isChecked ? 1 : 0,
                                 },
