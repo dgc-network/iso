@@ -756,7 +756,8 @@ if (!class_exists('to_do_list')) {
                         //Update the action_authorize_ids
                         $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
                         if ($action_authorized_ids){
-                            update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
+                                $this->process_authorized_action_test_code();
+                                update_post_meta($new_action_id, 'action_authorize_ids', $action_authorize_ids);
                         }
 /*                        
                             $action_authorize_ids = get_user_meta($user_id, 'action_authorize_ids', true);
