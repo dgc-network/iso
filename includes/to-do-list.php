@@ -1245,10 +1245,13 @@ if (!class_exists('to_do_list')) {
                     $action_query = $this->retrieve_todo_action_list_data($todo_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
-                            $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
-                            foreach ($action_authorized_ids as $user_id) {
-                                $this->update_todo_dialog_data(get_the_ID(), $user_id);
-                                $this->process_authorized_action_test_code();
+                            $action_id = get_the_ID();
+                            $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
+                            if ($action_authorized_ids) {
+                                foreach ($action_authorized_ids as $user_id) {
+                                    $this->update_todo_dialog_data($action_id, $user_id);
+                                    $this->process_authorized_action_test_code();
+                                }
                             }
                         endwhile;
                         wp_reset_postdata();
@@ -1294,10 +1297,13 @@ if (!class_exists('to_do_list')) {
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
                             //$this->process_authorized_action_test_code();
-                            $action_authorized_ids =$profiles_class->is_action_authorized(get_the_ID());
-                            foreach ($action_authorized_ids as $user_id) {
-                                $this->update_todo_dialog_data(get_the_ID(), $user_id);
-                                //$this->process_authorized_action_test_code();
+                            $action_id = get_the_ID();
+                            $action_authorized_ids =$profiles_class->is_action_authorized($action_id);
+                            if ($action_authorized_ids) {
+                                foreach ($action_authorized_ids as $user_id) {
+                                    $this->update_todo_dialog_data($action_id, $user_id);
+                                    //$this->process_authorized_action_test_code();
+                                }    
                             }
                         endwhile;
                         wp_reset_postdata();
