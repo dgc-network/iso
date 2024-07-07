@@ -358,14 +358,14 @@ if (!class_exists('display_profiles')) {
             $query = $this->retrieve_doc_action_list_data($doc_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $authorized =$this->is_action_authorized(get_the_ID());
-                    if ($authorized) return true;
+                    //$authorized =$this->is_action_authorized(get_the_ID());
+                    if ($this->is_action_authorized(get_the_ID())) return true;
                 endwhile;
                 wp_reset_postdata();
             endif;
             return false;
         }
-
+/*
         function is_action_authorized($action_id=false, $user_id=false) {
             if (!$user_id) $user_id = get_current_user_id();
             if ($user_id) {
@@ -389,7 +389,7 @@ if (!class_exists('display_profiles')) {
                 return false;
             }
         }
-/*        
+*/        
         function is_action_authorized($action_id=false, $user_id=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();
@@ -399,14 +399,17 @@ if (!class_exists('display_profiles')) {
             // If $user_doc_ids is not an array, convert it to an array
             if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
             // Check if the current user has the specified doc ID in their metadata
+            return in_array($action_id, $authorize_action_ids) ? $user_id : false;
             //return in_array($action_id, $authorize_action_ids);
+/*            
             if (in_array($action_id, $authorize_action_ids)) {
                 return $user_id;
             } else {
                 return false;
             }
+*/                
         }
-*/
+
         function set_authorize_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             

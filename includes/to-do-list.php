@@ -725,7 +725,7 @@ if (!class_exists('to_do_list')) {
         
             if ($next_job>0) {
                 $this->notice_the_responsible_persons($new_todo_id);
-                // Create the Action list for next_job
+                // Create the Action list for next_job 
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_doc_action_list_data($next_job);
                 if ($query->have_posts()) {
@@ -744,6 +744,31 @@ if (!class_exists('to_do_list')) {
                         update_post_meta( $new_action_id, 'next_job', $new_next_job);
                         update_post_meta( $new_action_id, 'next_leadtime', $new_next_leadtime);
                         update_post_meta( $new_action_id, 'doc_action_id', get_the_ID());
+                        
+                        //Update the authorize_action_ids
+                        $is_action_authorized = $profiles_class->is_action_authorized(get_the_ID(),$current_user_id);
+                        //if ($authorized){
+                            $authorize_action_ids = get_user_meta($current_user_id, 'authorize_action_ids', true);
+                
+                            if (!is_array($authorize_action_ids)) {
+                                $authorize_action_ids = array();
+                            }
+                    
+                            $authorize_exists = in_array($new_action_id, $authorize_action_ids);
+                    
+                            // Check the condition and update 'authorize_action_ids' accordingly
+                            if ($is_action_authorized && !$authorize_exists) {
+                                // Add $action_id to 'authorize_action_ids'
+                                $authorize_action_ids[] = $new_action_id;
+                            } elseif (!$is_action_authorized && $authorize_exists) {
+                                // Remove $action_id from 'authorize_action_ids'
+                                $authorize_action_ids = array_diff($authorize_action_ids, array($new_action_id));
+                            }
+                            
+                            // Update 'authorize_action_ids' meta value
+                            update_user_meta($current_user_id, 'authorize_action_ids', $authorize_action_ids);
+            
+                        //}
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1214,6 +1239,21 @@ if (!class_exists('to_do_list')) {
                 while ($query->have_posts()) {
                     $query->the_post();
                     $todo_id = get_the_ID();
+                    $profiles_class = new display_profiles();
+                    $action_query = $profiles_class->retrieve_doc_action_list_data($todo_id);
+                    if ($action_query->have_posts()) :
+                        while ($action_query->have_posts()) : $action_query->the_post();
+                            $authorized_user_id =$profiles_class->is_action_authorized(get_the_ID());
+                            if ($authorized_user_id) {
+                                //$this->process_authorized_action_test_code();
+                                //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
+                                $this->update_todo_dialog_data($action_id, $authorized_user_id);
+                            }
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+
+/*
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                     if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -1226,13 +1266,14 @@ if (!class_exists('to_do_list')) {
                                 $authorized =$profiles_class->is_action_authorized(get_the_ID());
                                 if ($authorized) {
                                     $this->process_authorized_action_test_code();
-                                    //$action_id = $this->get_todo_action_id_by_doc_action_id(get_the_ID());
+                                    //$action_id = $this->get_todo_action_id_by_job_action_id(get_the_ID());
                                     //$this->update_todo_dialog_data($action_id, $authorized);
                                 }
                             endwhile;
                             wp_reset_postdata();
                         endif;
                     }
+*/                        
                 }    
                 wp_reset_postdata();
             }
@@ -1285,7 +1326,7 @@ if (!class_exists('to_do_list')) {
 */                
         }
     
-        public function get_todo_action_id_by_doc_action_id($action_id) {
+        public function get_todo_action_id_by_job_action_id($action_id) {
             $args = array(
                 'post_type'      => 'action',
                 'meta_query'     => array(
