@@ -367,8 +367,33 @@ if (!class_exists('display_profiles')) {
         }
 
         function is_action_authorized($action_id=false, $user_id=false) {
+            if (!$user_id) $user_id = get_current_user_id();
+            if ($user_id) {
+                // Get the user's doc IDs as an array
+                $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
+                // If $authorize_action_ids is not an array, convert it to an array
+                if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
+                // Check if the current user has the specified action ID in their metadata
+                return in_array($action_id, $authorize_action_ids) ? $user_id : false;
+            } else {
+                // Check all users
+                $all_users = get_users();
+                foreach ($all_users as $user) {
+                    $user_id = $user->ID;
+                    $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
+                    if (!is_array($authorize_action_ids)) $authorize_action_ids = array();
+                    if (in_array($action_id, $authorize_action_ids)) {
+                        return $user_id;
+                    }
+                }
+                return false;
+            }
+        }
+/*        
+        function is_action_authorized($action_id=false, $user_id=false) {
             // Get the current user ID
-            if (!$user_id) $user_id = get_current_user_id();    
+            if (!$user_id) $user_id = get_current_user_id();
+            //if (!$user_id) $user_id = 1;
             // Get the user's doc IDs as an array
             $authorize_action_ids = get_user_meta($user_id, 'authorize_action_ids', true);
             // If $user_doc_ids is not an array, convert it to an array
@@ -381,7 +406,7 @@ if (!class_exists('display_profiles')) {
                 return false;
             }
         }
-
+*/
         function set_authorize_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             

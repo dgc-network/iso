@@ -1180,6 +1180,7 @@ if (!class_exists('to_do_list')) {
         }
 
         public function process_authorized_action_posts_daily() {
+/*            
             $new_post = array(
                 'post_title'    => time(),
                 'post_content'  => 'Your post content goes here.',
@@ -1188,7 +1189,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'notification',
             );    
             $exception_notification_id = wp_insert_post($new_post);
-/*
+*/
             // process the todo-list first
             $args = array(
                 'post_type'      => 'todo',
@@ -1233,7 +1234,7 @@ if (!class_exists('to_do_list')) {
                 }    
                 wp_reset_postdata();
             }
-
+/*
             // process the doc-job-list after
             $args = array(
                 'post_type'      => 'document',
