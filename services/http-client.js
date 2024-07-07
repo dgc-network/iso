@@ -148,11 +148,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
-                    $("#new-notification-dialog").dialog({
-                        width: 390,
-                        modal: true,
-                        autoOpen: false,
-                    })            
+                    $("#new-notification-dialog").dialog('close');
                     activate_notification_list_data(http_client_id);
                     //activate_http_client_list_data();
                 },
