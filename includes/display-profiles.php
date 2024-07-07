@@ -245,7 +245,7 @@ if (!class_exists('display_profiles')) {
                 <div id="my-job-action-dialog" title="Action authorization"></div>
                 </fieldset>
 
-                <label for="my-notifications"><?php echo __( 'My notifications: ', 'your-text-domain' );?></label>
+                <label for="my-notifications"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -273,6 +273,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
+                <div id="my-notification-dialog" title="Notification"></div>
                 </fieldset>
             </fieldset>
             <?php

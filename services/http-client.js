@@ -278,7 +278,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#notification-dialog").html(response.html_contain);
                     $("#notification-dialog").dialog('open');
-                    //activate_notification_list_data(http_client_id);
                 },
                 error: function (error) {
                     console.error(error);

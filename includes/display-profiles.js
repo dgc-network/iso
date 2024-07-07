@@ -98,8 +98,81 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-
         });
+
+        $('[id^="edit-my-notification-"]').on("click", function () {
+            const notification_id = this.id.substring(21);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_notification_dialog_data',
+                    '_notification_id': notification_id,
+                },
+                success: function (response) {
+                    $("#my-notification-dialog").html(response.html_contain);
+                    $("#my-notification-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#my-notification-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_notification_dialog_data',
+                            '_notification_id': $("#notification-id").val(),
+                            '_user_id': $("#user-id").val(),
+                            '_max_temperature': $("#max-temperature").val(),
+                            '_max_humidity': $("#max-humidity").val(),
+                        },
+                        success: function (response) {
+                            $("#my-notification-dialog").dialog('close');
+                            window.location.replace(window.location.href);
+                            //get_notification_list_data(http_client_id);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this notification?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_notification_dialog_data',
+                                '_notification_id': $("#notification-id").val(),
+                            },
+                            success: function (response) {
+                                window.location.replace(window.location.href);
+                                //$("#notification-dialog").dialog('close');
+                                //get_notification_list_data(http_client_id);
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
     }
 
     // site-profile scripts
