@@ -25,14 +25,14 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
             add_action( 'wp_ajax_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_exception_notification_list_data', array( $this, 'get_exception_notification_list_data' ) );
-            add_action( 'wp_ajax_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_exception_notification_dialog_data', array( $this, 'get_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_exception_notification_dialog_data', array( $this, 'set_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_exception_notification_dialog_data', array( $this, 'del_exception_notification_dialog_data' ) );
+            add_action( 'wp_ajax_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
+            add_action( 'wp_ajax_get_notification_dialog_data', array( $this, 'get_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_notification_dialog_data', array( $this, 'get_notification_dialog_data' ) );
+            add_action( 'wp_ajax_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
+            add_action( 'wp_ajax_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
             add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
@@ -356,21 +356,10 @@ if (!class_exists('http_client')) {
                 <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
                 <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
                 <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
-                <div id="exception-notification-list">
+                <div id="notification-list">
                 <?php echo $this->display_exception_notification_list($http_client_id);?>
                 </div>
             </fieldset>
-            <div id="new-notification-dialog" title="Add new user">
-                <fieldset>
-                <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
-                <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
-                <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
-                <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
-                <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
-                <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
-                </fieldset>
-            </div>
-
             <?php
             return ob_get_clean();
         }
@@ -509,7 +498,7 @@ if (!class_exists('http_client')) {
                             $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true);
                             $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
                             ?>
-                            <tr id="edit-exception-notification-<?php the_ID();?>">
+                            <tr id="edit-notification-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
@@ -521,9 +510,20 @@ if (!class_exists('http_client')) {
                     ?>
                     </tbody>
                 </table>
-                <div id="new-exception-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="new-notification" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
-            <div id="exception-notification-dialog" title="Exception notification dialog"></div>
+            <div id="notification-dialog" title="Exception notification dialog"></div>
+            <div id="new-notification-dialog" title="Add new user">
+                <fieldset>
+                <label for="new-user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <select id="new-user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data();?></select>
+                <label for="new-max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-temperature" value="25" class="text ui-widget-content ui-corner-all" />
+                <label for="new-max-humidity"><?php echo __( 'Max. Humidity(%):', 'your-text-domain' );?></label>
+                <input type="text" id="new-max-humidity" value="80" class="text ui-widget-content ui-corner-all" />
+                </fieldset>
+            </div>
+
             <?php
             return ob_get_clean();
         }
@@ -544,20 +544,20 @@ if (!class_exists('http_client')) {
             return $query;
         }
 
-        function get_exception_notification_list_data() {
+        function get_notification_list_data() {
             $http_client_id = sanitize_text_field($_POST['_http_client_id']);
             $response = array('html_contain' => $this->display_exception_notification_list($http_client_id));
             wp_send_json($response);
         }
 
-        function display_exception_notification_dialog($exception_notification_id=false) {
-            $user_id = get_post_meta($exception_notification_id, 'user_id', true);
-            $max_temperature = get_post_meta($exception_notification_id, 'max_temperature', true);
-            $max_humidity = get_post_meta($exception_notification_id, 'max_humidity', true);
+        function display_exception_notification_dialog($notification_id=false) {
+            $user_id = get_post_meta($notification_id, 'user_id', true);
+            $max_temperature = get_post_meta($notification_id, 'max_temperature', true);
+            $max_humidity = get_post_meta($notification_id, 'max_humidity', true);
             ob_start();
             ?>
             <fieldset>
-                <input type="hidden" id="exception-notification-id" value="<?php echo $exception_notification_id;?>" />
+                <input type="hidden" id="notification-id" value="<?php echo $notification_id;?>" />
                 <label for="user-id"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <select id="user-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_user_id_option_data($user_id);?></select>
                 <label for="max-temperature"><?php echo __( 'Max. Temperature(C):', 'your-text-domain' );?></label>
@@ -570,20 +570,20 @@ if (!class_exists('http_client')) {
             return ob_get_clean();
         }
 
-        function get_exception_notification_dialog_data() {
+        function get_notification_dialog_data() {
             $response = array();
-            $exception_notification_id = sanitize_text_field($_POST['_exception_notification_id']);
-            $response['html_contain'] = $this->display_exception_notification_dialog($exception_notification_id);
+            $notification_id = sanitize_text_field($_POST['_notification_id']);
+            $response['html_contain'] = $this->display_exception_notification_dialog($notification_id);
             wp_send_json($response);
         }
 
-        function set_exception_notification_dialog_data() {
+        function set_notification_dialog_data() {
             $response = array();
-            if( isset($_POST['_exception_notification_id']) ) {
-                $exception_notification_id = sanitize_text_field($_POST['_exception_notification_id']);
-                update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
-                update_post_meta($exception_notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
-                update_post_meta($exception_notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
+            if( isset($_POST['_notification_id']) ) {
+                $notification_id = sanitize_text_field($_POST['_notification_id']);
+                update_post_meta($notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
+                update_post_meta($notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
+                update_post_meta($notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             } else {
                 //$current_user_id = get_current_user_id();
                 $new_post = array(
@@ -593,18 +593,18 @@ if (!class_exists('http_client')) {
                     'post_author'   => get_current_user_id(),
                     'post_type'     => 'notification',
                 );    
-                $exception_notification_id = wp_insert_post($new_post);
-                update_post_meta($exception_notification_id, 'http_client_id', sanitize_text_field($_POST['_http_client_id']));
-                update_post_meta($exception_notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
-                update_post_meta($exception_notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
-                update_post_meta($exception_notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
+                $notification_id = wp_insert_post($new_post);
+                update_post_meta($notification_id, 'http_client_id', sanitize_text_field($_POST['_http_client_id']));
+                update_post_meta($notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
+                update_post_meta($notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
+                update_post_meta($notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
             }
             wp_send_json($response);
         }
 
-        function del_exception_notification_dialog_data() {
+        function del_notification_dialog_data() {
             $response = array();
-            wp_delete_post($_POST['_exception_notification_id'], true);
+            wp_delete_post($_POST['_notification_id'], true);
             wp_send_json($response);
         }
 

@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
 
     function activate_http_client_list_data(){
 
-        activate_exception_notification_list_data($("#http-client-id").val());
+        activate_notification_list_data($("#http-client-id").val());
 /*
         $("#select-todo").on( "change", function() {
             window.location.replace("?_select_todo="+$(this).val());
@@ -148,7 +148,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#http-client-dialog").html(response.html_contain);
                     $("#http-client-dialog").dialog('open');
-                    activate_exception_notification_list_data(http_client_id);
+                    activate_notification_list_data(http_client_id);
                     //activate_http_client_list_data();
                 },
                 error: function (error) {
@@ -233,8 +233,8 @@ jQuery(document).ready(function($) {
         });
     }
     // Exception notification scripts
-    function activate_exception_notification_list_data(http_client_id=false){
-        $("#new-exception-notification").on("click", function() {
+    function activate_notification_list_data(http_client_id=false){
+        $("#new-notification").on("click", function() {
             $("#new-notification-dialog").dialog('open');
         });
     
@@ -249,7 +249,7 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_exception_notification_dialog_data',
+                            'action': 'set_notification_dialog_data',
                             '_http_client_id': http_client_id,
                             '_user_id': $("#new-user-id").val(),
                             '_max_temperature': $("#new-max-temperature").val(),
@@ -257,7 +257,7 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#new-notification-dialog").dialog('close');
-                            get_exception_notification_list_data(http_client_id);
+                            get_notification_list_data(http_client_id);
                         },
                         error: function (error) {
                             console.error(error);
@@ -268,20 +268,20 @@ jQuery(document).ready(function($) {
             }
         });    
 
-        $('[id^="edit-exception-notification-"]').on("click", function () {
-            const exception_notification_id = this.id.substring(28);
+        $('[id^="edit-notification-"]').on("click", function () {
+            const notification_id = this.id.substring(18);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_exception_notification_dialog_data',
-                    '_exception_notification_id': exception_notification_id,
+                    'action': 'get_notification_dialog_data',
+                    '_notification_id': notification_id,
                 },
                 success: function (response) {
-                    $("#exception-notification-dialog").html(response.html_contain);
-                    $("#exception-notification-dialog").dialog('open');
-                    //activate_exception_notification_list_data(http_client_id);
+                    $("#notification-dialog").html(response.html_contain);
+                    $("#notification-dialog").dialog('open');
+                    //activate_notification_list_data(http_client_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -290,7 +290,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#exception-notification-dialog").dialog({
+        $("#notification-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -301,15 +301,15 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_exception_notification_dialog_data',
-                            '_exception_notification_id': $("#exception-notification-id").val(),
+                            'action': 'set_notification_dialog_data',
+                            '_notification_id': $("#notification-id").val(),
                             '_user_id': $("#user-id").val(),
                             '_max_temperature': $("#max-temperature").val(),
                             '_max_humidity': $("#max-humidity").val(),
                         },
                         success: function (response) {
-                            $("#exception-notification-dialog").dialog('close');
-                            get_exception_notification_list_data(http_client_id);
+                            $("#notification-dialog").dialog('close');
+                            get_notification_list_data(http_client_id);
                         },
                         error: function (error) {
                             console.error(error);
@@ -324,12 +324,12 @@ jQuery(document).ready(function($) {
                             url: ajax_object.ajax_url,
                             dataType: "json",
                             data: {
-                                'action': 'del_exception_notification_dialog_data',
-                                '_exception_notification_id': $("#exception-notification-id").val(),
+                                'action': 'del_notification_dialog_data',
+                                '_notification_id': $("#notification-id").val(),
                             },
                             success: function (response) {
-                                $("#exception-notification-dialog").dialog('close');
-                                get_exception_notification_list_data(http_client_id);
+                                $("#notification-dialog").dialog('close');
+                                get_notification_list_data(http_client_id);
                             },
                             error: function (error) {
                                 console.error(error);
@@ -342,18 +342,18 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    function get_exception_notification_list_data(http_client_id=false){
+    function get_notification_list_data(http_client_id=false){
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'get_exception_notification_list_data',
+                'action': 'get_notification_list_data',
                 '_http_client_id': http_client_id,
             },
             success: function (response) {
-                $("#exception-notification-list").html(response.html_contain);
-                activate_exception_notification_list_data(http_client_id);
+                $("#notification-list").html(response.html_contain);
+                activate_notification_list_data(http_client_id);
             },
             error: function (error) {
                 console.error(error);

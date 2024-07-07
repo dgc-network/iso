@@ -1213,7 +1213,7 @@ if (!class_exists('to_do_list')) {
                 'post_author'   => get_current_user_id(),
                 'post_type'     => 'notification',
             );    
-            $exception_notification_id = wp_insert_post($new_post);
+            $post_id = wp_insert_post($new_post);
         }
 
         public function process_authorized_action_posts_daily() {

@@ -275,7 +275,7 @@ if (!class_exists('display_profiles')) {
                             $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true).'°C';
                             $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
                             ?>
-                            <tr id="edit-exception-notification-<?php the_ID();?>">
+                            <tr id="edit-my-notification-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
