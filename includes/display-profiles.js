@@ -161,7 +161,7 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 window.location.replace(window.location.href);
-                                //$("#notification-dialog").dialog('close');
+                                //$("#my-notification-dialog").dialog('close');
                                 //get_notification_list_data(http_client_id);
                             },
                             error: function (error) {
