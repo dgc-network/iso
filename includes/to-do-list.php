@@ -1044,7 +1044,7 @@ if (!class_exists('to_do_list')) {
             }
         
             $hook_name = 'iso_helper_post_event_' . $start_time;
-        
+/*        
             // Schedule the event based on the selected interval
             switch ($interval) {
                 case 'twice_daily':
@@ -1082,7 +1082,7 @@ if (!class_exists('to_do_list')) {
                     // Handle invalid interval
                     return new WP_Error('invalid_interval', 'The specified interval is invalid.');
             }
-        
+*/        
             // Store the hook name in options (outside switch statement)
             update_option('iso_helper_post_event_hook_name', $hook_name);
         
