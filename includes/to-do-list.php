@@ -12,8 +12,6 @@ if (!class_exists('to_do_list')) {
             add_action( 'init', array( $this, 'register_todo_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_action_post_type' ) );
-            add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
-            add_action('init', array($this, 'schedule_event_and_action'));
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -25,7 +23,9 @@ if (!class_exists('to_do_list')) {
                 wp_schedule_event(time(), 'daily', 'daily_action_process_event');
             }    
             // Hook the function to the scheduled cron job
-            add_action('daily_action_process_event', [$this, 'process_authorized_action_posts_daily']);
+            add_action( 'daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
+            add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
+            add_action( 'init', array($this, 'schedule_event_and_action' ) );
         }
 
         function enqueue_to_do_list_scripts() {
