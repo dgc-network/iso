@@ -189,10 +189,10 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 
                 <label for="my-job-list"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
-                <div id="my-job-list"><?php echo $this->my_job_list();?></div>
+                <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
                 <label for="my-notification-list"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
-                <div id="my-notofication-list"><?php echo $this->my_notofication_list();?></div>
+                <div id="my-notofication-list"><?php echo $this->display_my_notofication_list();?></div>
             </fieldset>
             <?php
             return ob_get_clean();
