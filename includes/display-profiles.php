@@ -201,6 +201,7 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $current_user_id = get_current_user_id();
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             ?>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
