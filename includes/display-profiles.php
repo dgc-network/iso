@@ -166,7 +166,6 @@ if (!class_exists('display_profiles')) {
         function display_my_profile() {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
@@ -200,6 +199,8 @@ if (!class_exists('display_profiles')) {
 
         function display_my_job_list() {
             ob_start();
+            $current_user_id = get_current_user_id();
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             ?>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
