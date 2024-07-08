@@ -1040,7 +1040,7 @@ if (!class_exists('to_do_list')) {
             // Clear the previous scheduled event if it exists
             if ($prev_start_time) {
                 $prev_hook_name = 'iso_helper_post_event_' . $prev_start_time;
-                $this->remove_iso_helper_scheduled_events($prev_hook_name);
+                //$this->remove_iso_helper_scheduled_events($prev_hook_name);
             }
         
             $hook_name = 'iso_helper_post_event_' . $start_time;
