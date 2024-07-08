@@ -188,7 +188,19 @@ if (!class_exists('display_profiles')) {
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 
-                <label for="my-jobs"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
+                <label for="my-job-list"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
+                <div id="my-job-list"><?php echo $this->my_job_list();?></div>
+
+                <label for="my-notification-list"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
+                <div id="my-notofication-list"><?php echo $this->my_notofication_list();?></div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function display_my_job_list() {
+            ob_start();
+            ?>
                 <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -244,37 +256,41 @@ if (!class_exists('display_profiles')) {
                 </table>
                 <div id="my-job-action-dialog" title="Action authorization"></div>
                 </fieldset>
+            <?php
+            return ob_get_clean();
+        }
 
-                <label for="my-notifications"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
-                <fieldset style="margin-top:5px;">
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $query = $this->retrieve_my_exception_notifications();
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true).'°C';
-                            $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
-                            ?>
-                            <tr id="edit-my-notification-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
-                            </tr>
-                            <?php 
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                <div id="my-notification-dialog" title="Notification"></div>
-                </fieldset>
+        function display_my_notification_list() {
+            ob_start();
+            ?>
+            <fieldset style="margin-top:5px;">
+            <table class="ui-widget" style="width:100%;">
+                <thead>
+                    <th><?php echo __( 'Device', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
+                    <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_my_exception_notifications();
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true).'°C';
+                        $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
+                        ?>
+                        <tr id="edit-my-notification-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php the_title();?></td>
+                            <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
+                        </tr>
+                        <?php 
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="my-notification-dialog" title="Notification"></div>
             </fieldset>
             <?php
             return ob_get_clean();
