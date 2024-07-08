@@ -54,11 +54,11 @@ jQuery(document).ready(function($) {
                         'action': 'get_my_job_list_data',
                     },
                     success: function (response) {
-                        //window.location.replace(window.location.href);
                         console.log(response);
-                        $("##my-job-action-list-dialog").dialog('close');
-                        $("#my-job-list").html(response.html_contain);
-                        activate_my_profile_data();
+                        window.location.replace(window.location.href);
+                        //$("#my-job-action-list-dialog").dialog('close');
+                        //$("#my-job-list").html(response.html_contain);
+                        //activate_my_profile_data();
                     },
                     error: function (error) {
                         console.error(error);
@@ -157,11 +157,11 @@ jQuery(document).ready(function($) {
                             '_max_humidity': $("#max-humidity").val(),
                         },
                         success: function (response) {
-                            $("#my-notification-dialog").dialog('close');
-                            $("#my-notification-list").html(response.my_notification_list);
-                            activate_my_profile_data();
-                            //window.location.replace(window.location.href);
-                            //get_notification_list_data(http_client_id);
+                            console.log(response);
+                            window.location.replace(window.location.href);
+                            //$("#my-notification-dialog").dialog('close');
+                            //$("#my-notification-list").html(response.my_notification_list);
+                            //activate_my_profile_data();
                         },
                         error: function (error) {
                             console.error(error);
@@ -180,11 +180,11 @@ jQuery(document).ready(function($) {
                                 '_notification_id': $("#notification-id").val(),
                             },
                             success: function (response) {
-                                $("#my-notification-dialog").dialog('close');
-                                $("#my-notification-list").html(response.my_notification_list);
-                                activate_my_profile_data();
-                                //window.location.replace(window.location.href);
-                                //get_notification_list_data(http_client_id);
+                                console.log(response);
+                                window.location.replace(window.location.href);
+                                //$("#my-notification-dialog").dialog('close');
+                                //$("#my-notification-list").html(response.my_notification_list);
+                                //activate_my_profile_data();
                             },
                             error: function (error) {
                                 console.error(error);
