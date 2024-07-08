@@ -192,7 +192,7 @@ if (!class_exists('display_profiles')) {
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
                 <label for="my-notification-list"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
-                <div id="my-notofication-list"><?php echo $this->display_my_notofication_list();?></div>
+                <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
             <?php
             return ob_get_clean();
