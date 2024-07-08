@@ -520,7 +520,7 @@ if (!class_exists('display_documents')) {
                     'doc_id' => $doc_id,
                 );            
                 $todo_class = new to_do_list();
-                if ($doc_report_frequence_setting) $hook_name=$todo_class->schedule_post_event_callback($params);
+                //if ($doc_report_frequence_setting) $hook_name=$todo_class->schedule_post_event_callback($params);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
