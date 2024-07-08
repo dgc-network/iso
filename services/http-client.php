@@ -532,7 +532,9 @@ if (!class_exists('http_client')) {
         function del_notification_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_notification_id'], true);
-            wp_send_json($response);
+            $profiles_class = new display_profiles();
+            $response['my_notification_list'] = $profiles_class->display_my_notification_list();
+        wp_send_json($response);
         }
 
         function create_exception_notification_events($http_client_id=false, $key=false, $value=false) {
