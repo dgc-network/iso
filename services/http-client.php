@@ -510,6 +510,8 @@ if (!class_exists('http_client')) {
                 update_post_meta($notification_id, 'user_id', sanitize_text_field($_POST['_user_id']));
                 update_post_meta($notification_id, 'max_temperature', sanitize_text_field($_POST['_max_temperature']));
                 update_post_meta($notification_id, 'max_humidity', sanitize_text_field($_POST['_max_humidity']));
+                $profiles_class = new display_profiles();
+                $response['my_notification_list'] = $profiles_class->display_my_notification_list();
             } else {
                 $new_post = array(
                     'post_title'    => time(),

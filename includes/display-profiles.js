@@ -41,12 +41,30 @@ jQuery(document).ready(function($) {
             });            
         });
     
-        $("#my-job-action-dialog").dialog({
+        $("#my-job-action-list-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
             close: function(event, ui) {
-                window.location.replace(window.location.href);
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'get_my_job_list_data',
+                    },
+                    success: function (response) {
+                        //window.location.replace(window.location.href);
+                        console.log(response);
+                        $("##my-job-action-list-dialog").dialog('close');
+                        $("#my-job-list").html(response.html_contain);
+                        activate_my_profile_data();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
             },
         });
 
@@ -61,8 +79,8 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    $("#my-job-action-dialog").html(response.html_contain);
-                    $("#my-job-action-dialog").dialog('open');
+                    $("#my-job-action-list-dialog").html(response.html_contain);
+                    $("#my-job-action-list-dialog").dialog('open');
 
                     $('[id^="check-action-authorize-"]').on("click", function () {
                         const action_id = this.id.substring(23);
@@ -140,7 +158,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#my-notification-dialog").dialog('close');
-                            window.location.replace(window.location.href);
+                            $("#my-notification-list").html(response.my_notification_list);
+                            activate_my_profile_data();
+                            //window.location.replace(window.location.href);
                             //get_notification_list_data(http_client_id);
                         },
                         error: function (error) {
@@ -160,8 +180,10 @@ jQuery(document).ready(function($) {
                                 '_notification_id': $("#notification-id").val(),
                             },
                             success: function (response) {
-                                window.location.replace(window.location.href);
-                                //$("#my-notification-dialog").dialog('close');
+                                $("#my-notification-dialog").dialog('close');
+                                $("#my-notification-list").html(response.my_notification_list);
+                                activate_my_profile_data();
+                                //window.location.replace(window.location.href);
                                 //get_notification_list_data(http_client_id);
                             },
                             error: function (error) {
