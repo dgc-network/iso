@@ -866,7 +866,8 @@ if (!class_exists('display_profiles')) {
                                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                 $content = get_the_content().'('.$doc_number.')';
                                 $users = $this->retrieve_users_by_doc_id(get_the_ID());
-                                if ($users==array()) $unassigned = '<span style="color:red;">U</span>';
+                                $unassigned = (!empty($users)) ? '' : '<span style="color:red;">U</span>';
+                                //if ($users==array()) $unassigned = '<span style="color:red;">U</span>';
                                 ?>
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
