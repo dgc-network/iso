@@ -537,6 +537,72 @@ if (!class_exists('http_client')) {
             wp_send_json($response);
         }
 
+        // http-clients operation
+        function update_http_client_meta() {
+            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
+            $args = array(
+                'post_type' => 'iot-message',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key' => 'processed',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+                'date_query' => array(
+                    array(
+                        'after' => '5 minutes ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+            $iot_query = new WP_Query($args);
+        
+            if ($iot_query->have_posts()) {
+                while ($iot_query->have_posts()) {
+                    $iot_query->the_post();
+                    $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
+        
+                    // Find 'http-client' post with the same deviceID
+                    $http_args = array(
+                        'post_type' => 'http-client',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'deviceID',
+                                'value' => $deviceID,
+                                'compare' => '='
+                            )
+                        )
+                    );
+                    $http_query = new WP_Query($http_args);
+        
+                    if ($http_query->have_posts()) {
+                        while ($http_query->have_posts()) {
+                            $http_query->the_post();
+                            $http_post_id = get_the_ID();
+        
+                            // Update 'temperature' and 'humidity' metadata
+                            if ($humidity) {
+                                update_post_meta($http_post_id, 'temperature', $temperature);
+                                $this->create_exception_notification_events($http_post_id, 'temperature', $temperature);
+                            }
+                            if ($humidity) {
+                                update_post_meta($http_post_id, 'humidity', $humidity);
+                                $this->create_exception_notification_events($http_post_id, 'humidity', $humidity);
+                            }
+                        }
+                        wp_reset_postdata();
+                    }
+        
+                    // Mark the 'iot-message' post as processed
+                    update_post_meta(get_the_ID(), 'processed', 1);
+                }
+                wp_reset_postdata();
+            }
+        }
+
         function create_exception_notification_events($http_client_id=false, $key=false, $value=false) {
             $query = $this->retrieve_notification_data($http_client_id);
             if ($query->have_posts()) :
@@ -544,14 +610,14 @@ if (!class_exists('http_client')) {
                     $user_id = get_post_meta(get_the_ID(), 'user_id', true);
                     $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
                     $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                    if ($key=='temperature' && $value>$max_temperature) $this->exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_temperature);
-                    if ($key=='humidity' && $value>$max_humidity) $this->exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_humidity);
+                    if ($key=='temperature' && $value>$max_temperature) $this->prepare_exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_temperature);
+                    if ($key=='humidity' && $value>$max_humidity) $this->prepare_exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_humidity);
                 endwhile;
                 wp_reset_postdata();
             endif;
         }
 
-        function exception_notification_event($http_client_id=false, $user_id=false, $key=false, $value=false, $max_value=false) {
+        function prepare_exception_notification_event($http_client_id=false, $user_id=false, $key=false, $value=false, $max_value=false) {
             $content = get_post_field('post_content', $http_client_id);
             $deviceID = get_post_meta($http_client_id, 'deviceID', true);
             
@@ -629,71 +695,6 @@ if (!class_exists('http_client')) {
                 );
             }
             return $schedules;
-        }
-
-        function update_http_client_meta() {
-            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
-            $args = array(
-                'post_type' => 'iot-message',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key' => 'processed',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                ),
-                'date_query' => array(
-                    array(
-                        'after' => '5 minutes ago',
-                        'inclusive' => true,
-                    ),
-                ),
-            );
-            $iot_query = new WP_Query($args);
-        
-            if ($iot_query->have_posts()) {
-                while ($iot_query->have_posts()) {
-                    $iot_query->the_post();
-                    $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
-                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-        
-                    // Find 'http-client' post with the same deviceID
-                    $http_args = array(
-                        'post_type' => 'http-client',
-                        'meta_query' => array(
-                            array(
-                                'key' => 'deviceID',
-                                'value' => $deviceID,
-                                'compare' => '='
-                            )
-                        )
-                    );
-                    $http_query = new WP_Query($http_args);
-        
-                    if ($http_query->have_posts()) {
-                        while ($http_query->have_posts()) {
-                            $http_query->the_post();
-                            $http_post_id = get_the_ID();
-        
-                            // Update 'temperature' and 'humidity' metadata
-                            if ($humidity) {
-                                update_post_meta($http_post_id, 'temperature', $temperature);
-                                $this->create_exception_notification_events($http_post_id, 'temperature', $temperature);
-                            }
-                            if ($humidity) {
-                                update_post_meta($http_post_id, 'humidity', $humidity);
-                                $this->create_exception_notification_events($http_post_id, 'humidity', $humidity);
-                            }
-                        }
-                        wp_reset_postdata();
-                    }
-        
-                    // Mark the 'iot-message' post as processed
-                    update_post_meta(get_the_ID(), 'processed', 1);
-                }
-                wp_reset_postdata();
-            }
         }
 
         function custom_cron_deactivation() {
