@@ -850,7 +850,7 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Department', 'your-text-domain' );?></th>
-                            <th></th>
+                            <th>A</th>
                         </thead>
                         <tbody>
                         <?php
@@ -1343,7 +1343,8 @@ if (!class_exists('display_profiles')) {
                 'meta_query' => array(
                     array(
                         'key'     => 'user_doc_ids',
-                        'value'   => '"' . $doc_id . '"',
+                        //'value'   => '"' . $doc_id . '"',
+                        'value'   => $doc_id,
                         'compare' => 'LIKE'
                     )
                 )
