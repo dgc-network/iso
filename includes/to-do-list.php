@@ -25,7 +25,7 @@ if (!class_exists('to_do_list')) {
             // Hook the function to the scheduled cron job
             add_action( 'daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
             add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
-            add_action( 'init', array($this, 'schedule_event_and_action' ) );
+            add_action( 'init', array( $this, 'schedule_event_and_action' ) );
         }
 
         function enqueue_to_do_list_scripts() {
@@ -684,7 +684,7 @@ if (!class_exists('to_do_list')) {
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
                 if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                 if (!$next_job) $next_job = $doc_id;
-                $todo_title = get_the_title($next_job);
+                //$todo_title = get_the_title($next_job);
                 $next_leadtime = 86400;
             }
             
@@ -1108,6 +1108,7 @@ if (!class_exists('to_do_list')) {
 
         // Method for the callback function
         public function iso_helper_post_event_callback($params) {
+            $this->scheduler_event_test_code();
             $this->update_next_todo_and_actions($params);
         }
         
@@ -1181,8 +1182,8 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to display this.';
             }
         }
-/*
-        public function process_authorized_action_test_code() {
+
+        public function scheduler_event_test_code() {
             $new_post = array(
                 'post_title'    => time(),
                 'post_content'  => 'Your post content goes here.',
@@ -1192,7 +1193,7 @@ if (!class_exists('to_do_list')) {
             );    
             $post_id = wp_insert_post($new_post);
         }
-*/
+
         public function process_authorized_action_posts_daily() {
             // process the todo-list first
             $args = array(
