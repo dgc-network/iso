@@ -73,6 +73,19 @@ if (!class_exists('http_client')) {
             register_post_type( 'http-client', $args );
         }
 
+        function register_iot_message_post_type() {
+            register_post_type('iot-message', array(
+                'labels' => array(
+                    'name' => 'IoT Messages',
+                    'singular_name' => 'IoT Message',
+                ),
+                'public' => true,
+                'show_in_rest' => true,
+                'supports' => array('title', 'editor', 'custom-fields'),
+                'capability_type' => 'post',
+            ));
+        }
+        
         function register_iot_message_meta() {
             register_post_meta('iot-message', 'deviceID', array(
                 'show_in_rest' => true,
@@ -92,19 +105,6 @@ if (!class_exists('http_client')) {
             // Register other metadata similarly...
         }
         
-        function register_iot_message_post_type() {
-            register_post_type('iot-message', array(
-                'labels' => array(
-                    'name' => 'IoT Messages',
-                    'singular_name' => 'IoT Message',
-                ),
-                'public' => true,
-                'show_in_rest' => true,
-                'supports' => array('title', 'editor', 'custom-fields'),
-                'capability_type' => 'post',
-            ));
-        }
-        
         function register_exception_notification_post_type() {
             $labels = array(
                 'menu_name'     => _x('Notification', 'admin menu', 'textdomain'),
@@ -117,6 +117,148 @@ if (!class_exists('http_client')) {
             register_post_type( 'notification', $args );
         }
 
+        // HTTP Client
+        function display_http_client_list() {
+            ob_start();
+            $profiles_class = new display_profiles();
+            $todo_class = new to_do_list();
+            $current_user_id = get_current_user_id();
+            $current_user = get_userdata($current_user_id);
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
+            $is_site_admin = $profiles_class->is_site_admin();
+    
+            // Check if the user is administrator
+            if ($is_site_admin || current_user_can('administrator')) {
+                ?>
+                <div class="ui-widget" id="result-container">
+                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <h2 style="display:inline;"><?php echo __( '溫濕度異常通知設定', 'your-text-domain' );?></h2>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $todo_class->display_select_todo(4);?></div>
+                    <div style="text-align: right"></div>                        
+                </div>
+        
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'ID', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'H', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $query = $this->retrieve_http_client_list();
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
+                                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                                $humidity = get_post_meta(get_the_ID(), 'humidity', true);
+                                ?>
+                                <tr id="edit-http-client-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
+                                    <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-http-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="http-client-dialog" title="HTTP Client dialog"></div>
+                </fieldset>
+                </div>
+                <?php
+            } else {
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
+            }
+            return ob_get_clean();
+        }
+        
+        function retrieve_http_client_list() {
+            $args = array(
+                'post_type'      => 'http-client',
+                'posts_per_page' => -1,        
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function get_http_client_list_data() {
+            $response = array('html_contain' => $this->display_http_client_list());
+            wp_send_json($response);
+        }
+
+        function display_http_client_dialog($http_client_id=false) {
+            $deviceID = get_post_meta($http_client_id, 'deviceID', true);
+            $description = get_post_field('post_content', $http_client_id);
+            $mqtt_topic = get_the_title($http_client_id);
+            $ssid = get_post_meta($http_client_id, 'ssid', true);
+            $password = get_post_meta($http_client_id, 'password', true);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="http-client-id" value="<?php echo $http_client_id;?>" />
+                <label for="device-id"><?php echo __( 'Device ID:', 'your-text-domain' );?></label>
+                <input type="text" id="device-id" value="<?php echo $deviceID;?>" class="text ui-widget-content ui-corner-all" disabled />
+                <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
+                <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
+                <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
+                <div id="notification-list">
+                <?php echo $this->display_notification_list($http_client_id);?>
+                </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_http_client_dialog_data() {
+            $response = array();
+            if( isset($_POST['_http_client_id']) ) {
+                $http_client_id = sanitize_text_field($_POST['_http_client_id']);
+                $response['html_contain'] = $this->display_http_client_dialog($http_client_id);
+            }
+            wp_send_json($response);
+        }
+
+        function set_http_client_dialog_data() {
+            $response = array();
+            if( isset($_POST['_http_client_id']) ) {
+                $http_client_id = sanitize_text_field($_POST['_http_client_id']);
+                $data = array(
+                    'ID'           => $http_client_id,
+                    'post_content' => sanitize_text_field($_POST['_description']),
+                );
+                wp_update_post( $data );
+            } else {
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_title'    => time(),
+                    'post_content'  => 'xxx公司，xxx冷凍庫',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'http-client',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'deviceID', time());
+            }
+            wp_send_json($response);
+        }
+
+        function del_http_client_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_http_client_id'], true);
+            wp_send_json($response);
+        }
+        
         // iot message
         function display_iot_message_list() {
             ob_start();
@@ -256,148 +398,6 @@ if (!class_exists('http_client')) {
             }
         }
 
-        // HTTP Client
-        function display_http_client_list() {
-            ob_start();
-            $profiles_class = new display_profiles();
-            $todo_class = new to_do_list();
-            $current_user_id = get_current_user_id();
-            $current_user = get_userdata($current_user_id);
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = $profiles_class->is_site_admin();
-    
-            // Check if the user is administrator
-            if ($is_site_admin || current_user_can('administrator')) {
-                ?>
-                <div class="ui-widget" id="result-container">
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-                <h2 style="display:inline;"><?php echo __( 'HTTP Client', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $todo_class->display_select_todo(4);?></div>
-                    <div style="text-align: right"></div>                        
-                </div>
-        
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'ID', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'H', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $query = $this->retrieve_http_client_list();
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
-                                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                                $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-                                ?>
-                                <tr id="edit-http-client-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
-                                    <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-http-client" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    <div id="http-client-dialog" title="HTTP Client dialog"></div>
-                </fieldset>
-                </div>
-                <?php
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
-            return ob_get_clean();
-        }
-        
-        function retrieve_http_client_list() {
-            $args = array(
-                'post_type'      => 'http-client',
-                'posts_per_page' => -1,        
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-
-        function get_http_client_list_data() {
-            $response = array('html_contain' => $this->display_http_client_list());
-            wp_send_json($response);
-        }
-
-        function display_http_client_dialog($http_client_id=false) {
-            $deviceID = get_post_meta($http_client_id, 'deviceID', true);
-            $description = get_post_field('post_content', $http_client_id);
-            $mqtt_topic = get_the_title($http_client_id);
-            $ssid = get_post_meta($http_client_id, 'ssid', true);
-            $password = get_post_meta($http_client_id, 'password', true);
-            ob_start();
-            ?>
-            <fieldset>
-                <input type="hidden" id="http-client-id" value="<?php echo $http_client_id;?>" />
-                <label for="device-id"><?php echo __( 'Device ID:', 'your-text-domain' );?></label>
-                <input type="text" id="device-id" value="<?php echo $deviceID;?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="description"><?php echo __( 'Description:', 'your-text-domain' );?></label>
-                <textarea id="description" rows="3" style="width:100%;"><?php echo $description;?></textarea>
-                <label><?php echo __( 'Exception notification:', 'your-text-domain' );?></label>
-                <div id="notification-list">
-                <?php echo $this->display_notification_list($http_client_id);?>
-                </div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
-        function get_http_client_dialog_data() {
-            $response = array();
-            if( isset($_POST['_http_client_id']) ) {
-                $http_client_id = sanitize_text_field($_POST['_http_client_id']);
-                $response['html_contain'] = $this->display_http_client_dialog($http_client_id);
-            }
-            wp_send_json($response);
-        }
-
-        function set_http_client_dialog_data() {
-            $response = array();
-            if( isset($_POST['_http_client_id']) ) {
-                $http_client_id = sanitize_text_field($_POST['_http_client_id']);
-                $data = array(
-                    'ID'           => $http_client_id,
-                    'post_content' => sanitize_text_field($_POST['_description']),
-                );
-                wp_update_post( $data );
-            } else {
-                $current_user_id = get_current_user_id();
-                $new_post = array(
-                    'post_title'    => time(),
-                    'post_content'  => 'xxx公司，xxx冷凍庫',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'http-client',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'deviceID', time());
-            }
-            wp_send_json($response);
-        }
-
-        function del_http_client_dialog_data() {
-            $response = array();
-            wp_delete_post($_POST['_http_client_id'], true);
-            wp_send_json($response);
-        }
-        
         // Exception notification
         function display_notification_list($http_client_id=false) {
             ob_start();
