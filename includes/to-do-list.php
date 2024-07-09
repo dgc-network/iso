@@ -679,12 +679,14 @@ if (!class_exists('to_do_list')) {
                 if (empty($next_leadtime)) $next_leadtime=86400;
             }
         
-            // set_todo_from_doc_report() and frquence doc_report to generate a new todo
+            // set_todo_from_doc_report() and frquence doc_report
             if ($action_id==0) {  
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
-                if (!$next_job) $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-                if (!$next_job) $next_job = $doc_id;
-                //$todo_title = get_the_title($next_job);
+                if ($next_job==0) {
+                    $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+                    if ($doc_id) update_post_meta( $doc_id, 'todo_status', -1 );
+                    $next_job = $doc_id;
+                }
                 $next_leadtime = 86400;
             }
             
@@ -1108,7 +1110,6 @@ if (!class_exists('to_do_list')) {
 
         // Method for the callback function
         public function iso_helper_post_event_callback($params) {
-            $this->scheduler_event_test_code();
             $this->update_next_todo_and_actions($params);
         }
         
