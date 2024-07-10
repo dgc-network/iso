@@ -1532,16 +1532,19 @@ if (!class_exists('display_profiles')) {
                         <thead>
                             <th><?php echo __( 'Category', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
                         $query = $this->retrieve_doc_category_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
+                                $parent_category = get_post_meta(get_theID(), 'parent_category', true);
                                 ?>
                                 <tr id="edit-doc-category-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo $parent_category;?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1587,6 +1590,7 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_dialog($category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
+            $parent_category = get_post_meta($category_id, 'parent_category', true);
             ob_start();
             ?>
             <fieldset>
@@ -1595,6 +1599,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?>"</textarea>
+                <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
+                <select id="parent-category"><?php $this->select_sub_category_option_data();?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1647,6 +1653,31 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
+            return $options;
+        }
+
+        function select_sub_category_option_data($selected_option=0) {
+            $args = array(
+                'post_type'      => 'doc-category',
+                'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'iso-helper',
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            $options = '<option value="">Select category</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            $options .= '<option value="iso-helper">' . __( 'iso-helper', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="economic-growth">' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="environmental-protection">' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="social-responsibility">' . __( 'social responsibility', 'your-text-domain' ) . '</option>';
             return $options;
         }
     }
