@@ -415,6 +415,11 @@ if (!class_exists('display_documents')) {
 
             <!-- Define the import map -->
             <script type="importmap">
+            {
+                "imports": {
+                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                }
+            }
             </script>
 
             <pre class="mermaid">
@@ -439,7 +444,7 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
-            <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>
+            <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                         <?php
                     endwhile;
                     wp_reset_postdata();
