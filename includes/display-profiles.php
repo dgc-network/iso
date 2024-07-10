@@ -1617,12 +1617,14 @@ if (!class_exists('display_profiles')) {
             $response = array();
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
+                $parent_category = sanitize_text_field($_POST['_parent_category']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
                     'post_content' => sanitize_text_field($_POST['_category_content']),
                 );
                 wp_update_post( $data );
+                update_post_meta($category_id, 'parent_category', $parent_category);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

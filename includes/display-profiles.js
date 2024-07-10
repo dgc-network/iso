@@ -621,6 +621,7 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_category_title': $("#category-title").val(),
                             '_category_content': $("#category-content").val(),
+                            '_parent_category': $("#parent-category").val(),
                         },
                         success: function (response) {
                             $("#doc-category-dialog").dialog('close');
