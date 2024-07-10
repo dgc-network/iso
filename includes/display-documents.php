@@ -415,11 +415,6 @@ if (!class_exists('display_documents')) {
 
             <!-- Define the import map -->
             <script type="importmap">
-            {
-                "imports": {
-                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                }
-            }
             </script>
 
             <pre class="mermaid">
