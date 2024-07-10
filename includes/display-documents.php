@@ -14,7 +14,7 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            add_action( 'wp_footer', array( $this, 'enqueue_custom_scripts' ) );
+            //add_action( 'wp_footer', array( $this, 'enqueue_custom_scripts' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -429,6 +429,21 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
+
+            <!-- Define the import map -->
+            <script type="importmap">
+            {
+                "imports": {
+                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                }
+            }
+            </script>
+
+            <script type="module">
+                //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                import mermaid from '@wordpress/interactivity';
+                mermaid.initialize({ startOnLoad: true });
+            </script>
 
             <pre class="mermaid">
                 graph TD 
