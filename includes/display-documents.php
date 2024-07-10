@@ -452,7 +452,7 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
-            <?php echo $current_job_title;?> -->|<?php echo $action_title;?>| <?php echo $next_job_title;?>
+            <?php echo $current_job_title;?> --> <?php echo $next_job_title;?>
                         <?php
                     endwhile;
                     wp_reset_postdata();
