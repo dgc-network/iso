@@ -7,9 +7,11 @@ require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
 function display_economic_growth() {
+    ob_start();
     ?>
-    <p>I am here</p>
+    <div>My Custom Shortcode Content</div>
     <?php
+    return ob_get_clean();
 }
 add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
 
