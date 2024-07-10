@@ -1539,7 +1539,7 @@ if (!class_exists('display_profiles')) {
                         $query = $this->retrieve_doc_category_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $parent_category = get_post_meta(get_theID(), 'parent_category', true);
+                                $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
                                 ?>
                                 <tr id="edit-doc-category-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php the_title();?></td>
