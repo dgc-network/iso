@@ -8,7 +8,7 @@ require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
 function display_economic_growth() {
     ?>
-    <div>I am here</div>
+    <p>I am here</p>
     <?php
 }
 add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
