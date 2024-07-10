@@ -413,6 +413,15 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
+            <!-- Define the import map -->
+            <script type="importmap">
+            {
+                "imports": {
+                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                }
+            }
+            </script>
+
             <pre class="mermaid">
                 graph TD 
                 <?php
@@ -445,7 +454,8 @@ if (!class_exists('display_documents')) {
             </pre>
 
             <script type="module">
-                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                import mermaid from '@wordpress/interactivity';
                 mermaid.initialize({ startOnLoad: true });
             </script>
 
