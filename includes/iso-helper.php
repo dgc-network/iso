@@ -6,6 +6,13 @@ require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
+function display_economic_growth() {
+    ?>
+    <div>I am here</div>
+    <?php
+}
+add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
+
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
