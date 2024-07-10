@@ -1600,7 +1600,7 @@ if (!class_exists('display_profiles')) {
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?>"</textarea>
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
-                <select id="parent-category"><?php $this->select_sub_category_option_data();?></select>
+                <select id="parent-category"><?php $this->select_sub_category_option_data($parent_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
