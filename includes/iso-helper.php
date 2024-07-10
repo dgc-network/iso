@@ -23,7 +23,7 @@ function wp_enqueue_scripts_and_styles() {
     $version = '1.0.5.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-    wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', $version);
+    wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __FILE__), '', $version);
 
     wp_enqueue_script('wp-enqueue-js', plugins_url('/assets/js/wp-enqueue.js', __FILE__), array('jquery'), $version);
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
