@@ -1,39 +1,10 @@
 <?php
-/**
- * Plugin Name: iso
- * Plugin URI: https://wordpress.org/plugins/iso/
- * Description: The leading documents management plugin for iso system by shortcode
- * Author: dgc.network
- * Author URI: https://dgc.network/
- * Version: 1.0.5
- * Requires at least: 6.0
- * Tested up to: 6.5.3
- *
- * Text Domain: iso
- * Domain Path: /languages/
- */
-
 if (!defined('ABSPATH')) {
     exit;
 }
-/*
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-*/
-function register_session() {
-    if ( ! session_id() ) {
-        session_start();
-    }
-}
-add_action( 'init', 'register_session' );
-
-require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
-/*
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/to-do-list.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/display-profiles.php';
+require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
+require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
+require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
@@ -566,4 +537,4 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
     return $allcaps;
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-*/
+
