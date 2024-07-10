@@ -413,6 +413,14 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
+            <pre class="mermaid">
+            graph TD;
+                A-->B;
+                A-->C;
+                B-->D;
+                C-->D;
+            </pre>
+
             <!-- Define the import map -->
             <script type="importmap">
             {
@@ -450,7 +458,6 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 endif;    
                 ?>
-
             </pre>
 
             <script type="module">
