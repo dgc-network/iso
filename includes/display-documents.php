@@ -413,14 +413,6 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
 
-            <pre class="mermaid">
-            graph TD;
-                A-->B;
-                A-->C;
-                B-->D;
-                C-->D;
-            </pre>
-
             <!-- Define the import map -->
             <script type="importmap">
             {
@@ -452,7 +444,7 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
-            <?php echo $current_job_title;?> --> <?php echo $next_job_title;?>
+            <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>
                         <?php
                     endwhile;
                     wp_reset_postdata();
@@ -465,6 +457,14 @@ if (!class_exists('display_documents')) {
                 import mermaid from '@wordpress/interactivity';
                 mermaid.initialize({ startOnLoad: true });
             </script>
+
+            <pre class="mermaid">
+            graph TD;
+                A-->B;
+                A-->C;
+                B-->D;
+                C-->D;
+            </pre>
 
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
