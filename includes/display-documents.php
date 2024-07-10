@@ -454,8 +454,8 @@ if (!class_exists('display_documents')) {
 
             <script type="module">
                 //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-                import mermaid from '@wordpress/interactivity';
-                mermaid.initialize({ startOnLoad: true });
+                //import mermaid from '@wordpress/interactivity';
+                //mermaid.initialize({ startOnLoad: true });
             </script>
 
             <pre class="mermaid">
