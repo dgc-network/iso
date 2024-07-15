@@ -90,6 +90,7 @@ if (!class_exists('display_profiles')) {
                 <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
                 </select>
             <?php
         }
@@ -104,12 +105,16 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
+
+                $customers_class = new display_customers();
+                if ($_GET['_select_profile']=='4') echo $customers_class->display_customer_list();
+
                 $http_client = new http_client();
-                if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
-                if ($_GET['_select_profile']=='5') echo $http_client->display_iot_message_list();
+                //if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
+                //if ($_GET['_select_profile']=='5') echo $http_client->display_iot_message_list();
 
                 $open_ai_api = new open_ai_api();
-                if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
+                //if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
 
                 if ($_GET['_select_profile']=='7') {
                     // Example usage

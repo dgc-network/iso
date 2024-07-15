@@ -51,8 +51,10 @@ if (!class_exists('display_customers')) {
                 <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(3);?></div>
-                    <div style="text-align: right"></div>                        
+                    <div><?php $profiles_class->display_select_profile(4);?></div>
+                    <div style="text-align:right; display:flex;">
+                        <input type="text" id="search-customer" style="display:inline" placeholder="Search..." />
+                    </div>
                 </div>
 
                 <fieldset>
