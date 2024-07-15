@@ -73,7 +73,8 @@ if (!class_exists('erp_cards')) {
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->retrieve_customer_card_data();
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_customer_card_data($paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                         if ($query->have_posts()) :
@@ -276,7 +277,8 @@ if (!class_exists('erp_cards')) {
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->retrieve_vendor_card_data();
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_vendor_card_data($paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                         if ($query->have_posts()) :
