@@ -16,6 +16,13 @@ if (!class_exists('erp_cards')) {
             add_action( 'wp_ajax_del_customer_card_dialog_data', array( $this, 'del_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_customer_card_dialog_data', array( $this, 'del_customer_card_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
+
             add_action( 'wp_ajax_get_product_card_dialog_data', array( $this, 'get_product_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_product_card_dialog_data', array( $this, 'get_product_card_dialog_data' ) );
             add_action( 'wp_ajax_set_product_card_dialog_data', array( $this, 'set_product_card_dialog_data' ) );
@@ -30,12 +37,13 @@ if (!class_exists('erp_cards')) {
             add_action( 'wp_ajax_del_equipment_card_dialog_data', array( $this, 'del_equipment_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_equipment_card_dialog_data', array( $this, 'del_equipment_card_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
-            add_action( 'wp_ajax_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
-            add_action( 'wp_ajax_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_get_instrument_card_dialog_data', array( $this, 'get_instrument_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_instrument_card_dialog_data', array( $this, 'get_instrument_card_dialog_data' ) );
+            add_action( 'wp_ajax_set_instrument_card_dialog_data', array( $this, 'set_instrument_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_instrument_card_dialog_data', array( $this, 'set_instrument_card_dialog_data' ) );
+            add_action( 'wp_ajax_del_instrument_card_dialog_data', array( $this, 'del_instrument_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_instrument_card_dialog_data', array( $this, 'del_instrument_card_dialog_data' ) );
+
         }
 
         function enqueue_erp_cards_scripts() {
@@ -687,7 +695,7 @@ if (!class_exists('erp_cards')) {
                 <h2 style="display:inline;"><?php echo __( '設備列表', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(6);?></div>
+                    <div><?php $profiles_class->display_select_profile(7);?></div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-equipment" style="display:inline" placeholder="Search..." />
                     </div>
@@ -857,6 +865,210 @@ if (!class_exists('erp_cards')) {
         function select_equipment_card_options($selected_option=0) {
             $query = $this->retrieve_equipment_card_data();
             $options = '<option value="">Select equipment</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+        // Register instrument-card post type
+        function register_instrument_card_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Instrument', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                //'show_in_rest'  => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'instrumentr-card', $args );
+        }
+
+        function display_instrument_card_list() {
+            ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+
+            if ($is_site_admin || current_user_can('administrator')) {
+                // Check if the user is administrator
+                ?>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '儀器列表', 'your-text-domain' );?></h2>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $profiles_class->display_select_profile(8);?></div>
+                    <div style="text-align:right; display:flex;">
+                        <input type="text" id="search-instrument" style="display:inline" placeholder="Search..." />
+                    </div>
+                </div>
+
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        $query = $this->retrieve_instrument_card_data($paged);
+                        $total_posts = $query->found_posts;
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $instrument_code = get_post_meta(get_the_ID(), 'instrument_code', true);
+                                ?>
+                                <tr id="edit-instrument-card-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php echo $instrument_code;?></td>
+                                    <td><?php the_title();?></td>
+                                    <td><?php the_content();?></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-instrument-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div class="pagination">
+                        <?php
+                        // Display pagination links
+                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                        ?>
+                    </div>
+
+                </fieldset>
+                <div id="instrument-card-dialog" title="Instrument dialog"></div>
+                <?php
+            } else {
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
+            }
+            return ob_get_clean();
+        }
+
+        function retrieve_instrument_card_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            $args = array(
+                'post_type'      => 'instrument-card',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'meta_key'       => 'instrument_code', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('instrument-card');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+        
+            return $query;
+        }
+
+        function display_instrument_card_dialog($instrument_id=false) {
+            $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
+            $instrument_title = get_the_title($instrument_id);
+            $instrument_content = get_post_field('post_content', $instrument_id);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="instrument-id" value="<?php echo esc_attr($instrument_id);?>" />
+                <label for="instrument-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="instrument-code" value="<?php echo esc_attr($instrument_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="instrument-title" value="<?php echo esc_attr($instrument_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="instrument-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($instrument_content);?></textarea>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_instrument_card_dialog_data() {
+            $instrument_id = sanitize_text_field($_POST['_instrument_id']);
+            $response = array('html_contain' => $this->display_instrument_card_dialog($instrument_id));
+            wp_send_json($response);
+        }
+
+        function set_instrument_card_dialog_data() {
+            if( isset($_POST['_instrument_id']) ) {
+                $instrument_id = sanitize_text_field($_POST['_instrument_id']);
+                $instrument_code = sanitize_text_field($_POST['_instrument_code']);
+                $data = array(
+                    'ID'           => $instrument_id,
+                    'post_title'   => sanitize_text_field($_POST['_instrument_title']),
+                    'post_content' => sanitize_text_field($_POST['_instrument_content']),
+                );
+                wp_update_post( $data );
+                update_post_meta($instrument_id, 'instrument_code', $instrument_code);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New instrument',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'instrument-card',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'instrument_code', time());
+            }
+            $response = array('html_contain' => $this->display_instrument_card_list());
+            wp_send_json($response);
+        }
+
+        function del_instrument_card_dialog_data() {
+            wp_delete_post($_POST['_instrument_id'], true);
+            $response = array('html_contain' => $this->display_instrument_card_list());
+            wp_send_json($response);
+        }
+
+        function select_instrument_card_options($selected_option=0) {
+            $query = $this->retrieve_instrument_card_data();
+            $options = '<option value="">Select instrument</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_title()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
