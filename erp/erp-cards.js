@@ -14,12 +14,12 @@ jQuery(document).ready(function($) {
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-        
+/*        
             var searchValue = $("#search-customer").val();
             if (searchValue) {
                 queryParams.push("_search=" + searchValue);
             }
-        
+*/        
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
         
@@ -159,12 +159,23 @@ jQuery(document).ready(function($) {
     activate_vendor_card_list_data();
 
     function activate_vendor_card_list_data(){
-/*
         $("#select-profile").on("change", function() {
-            window.location.replace("?_select_profile="+$(this).val());
-            $(this).val('');
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
         });
-*/    
+
         $("#search-vendor").on( "change", function() {
 
             // Initialize an empty array to store query parameters
