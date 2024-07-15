@@ -91,6 +91,7 @@ if (!class_exists('display_profiles')) {
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
+                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '供應商資料', 'your-text-domain' );?></option>
                 </select>
             <?php
         }
