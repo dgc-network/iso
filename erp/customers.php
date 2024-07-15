@@ -8,7 +8,7 @@ if (!class_exists('display_customers')) {
         // Class constructor
         public function __construct() {
             add_shortcode( 'display-customers', array( $this, 'display_shortcode' ) );
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_customer_scripts' ) );
+            //add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_customer_scripts' ) );
 
             add_action( 'wp_ajax_get_customer_list_data', array( $this, 'get_customer_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_customer_list_data', array( $this, 'get_customer_list_data' ) );
