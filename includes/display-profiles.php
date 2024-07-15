@@ -1606,7 +1606,7 @@ if (!class_exists('display_profiles')) {
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
-                <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_sub_category_option_data($parent_category);?></select>
+                <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1620,7 +1620,6 @@ if (!class_exists('display_profiles')) {
         }
 
         function set_doc_category_dialog_data() {
-            $response = array();
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $parent_category = sanitize_text_field($_POST['_parent_category']);
@@ -1644,12 +1643,13 @@ if (!class_exists('display_profiles')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
             }
+            $response = array('html_contain' => $this->display_doc_category_list());
             wp_send_json($response);
         }
 
         function del_doc_category_dialog_data() {
-            $response = array();
             wp_delete_post($_POST['_category_id'], true);
+            $response = array('html_contain' => $this->display_doc_category_list());
             wp_send_json($response);
         }
 
@@ -1664,14 +1664,23 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
-        function select_sub_category_option_data($selected_option=0) {
+        function select_parent_category_options($selected_option=0) {
             $args = array(
                 'post_type'      => 'doc-category',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
+                    'relation' => 'OR',
                     array(
                         'key'   => 'parent_category',
-                        'value' => 'iso-helper',
+                        'value' => 'economic-growth',
+                    ),
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'environmental-protection',
+                    ),
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'social-responsibility',
                     ),
                 ),
             );
@@ -1682,7 +1691,7 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
-            $options .= '<option value="iso-helper">' . __( 'iso-helper', 'your-text-domain' ) . '</option>';
+            //$options .= '<option value="iso-helper">' . __( 'iso-helper', 'your-text-domain' ) . '</option>';
             $options .= '<option value="economic-growth">' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
             $options .= '<option value="environmental-protection">' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
             $options .= '<option value="social-responsibility">' . __( 'social responsibility', 'your-text-domain' ) . '</option>';

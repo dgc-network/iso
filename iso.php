@@ -28,6 +28,38 @@ function register_session() {
 }
 add_action( 'init', 'register_session' );
 
+function remove_admin_bar() {
+    if (!current_user_can('administrator') && !is_admin()) {
+      show_admin_bar(false);
+    }
+}
+add_action('after_setup_theme', 'remove_admin_bar');  
+
+function allow_subscribers_to_view_users($allcaps, $caps, $args) {
+    // Check if the user is trying to view other users
+    if (isset($args[0]) && $args[0] === 'list_users') {
+        // Check if the user has the "subscriber" role
+        $user = wp_get_current_user();
+        if (in_array('subscriber', $user->roles)) {
+            // Allow subscribers to view users
+            $allcaps['list_users'] = true;
+        }
+    }
+    return $allcaps;
+}
+add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
+
+function get_post_type_meta_keys($post_type) {
+    global $wpdb;
+    $query = $wpdb->prepare("
+        SELECT DISTINCT(meta_key)
+        FROM $wpdb->postmeta
+        INNER JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+        WHERE $wpdb->posts.post_type = %s
+    ", $post_type);
+    return $wpdb->get_col($query);
+}
+
 require_once plugin_dir_path( __FILE__ ) . 'erp/erp-cards.php';
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
@@ -63,13 +95,6 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
-function remove_admin_bar() {
-    if (!current_user_can('administrator') && !is_admin()) {
-      show_admin_bar(false);
-    }
-}
-add_action('after_setup_theme', 'remove_admin_bar');
-  
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

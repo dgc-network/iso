@@ -6,26 +6,6 @@ require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
-function display_iso_helper_logo() {
-    ob_start();
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $image_url = get_post_meta($site_id, 'image_url', true);
-    ?>
-    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <?php
-    return ob_get_clean();
-}
-
-function display_economic_growth() {
-    ob_start();
-    ?>
-    <div>My Custom Shortcode Content</div>
-    <?php
-    return ob_get_clean();
-}
-add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
-
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -53,13 +33,63 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
+function display_iso_helper_logo() {
+    ob_start();
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    ?>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <?php
+    return ob_get_clean();
+}
+
+function display_economic_growth() {
+    ob_start();
+    $args = array(
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,        
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array(
+                'key'   => 'parent_category',
+                'value' => 'economic-growth',
+            ),
+            array(
+                'key'   => 'parent_category',
+                'value' => 'environmental-protection',
+            ),
+            array(
+                'key'   => 'parent_category',
+                'value' => 'social-responsibility',
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    //$options = '<option value="">Select category</option>';
+    while ($query->have_posts()) : $query->the_post();
+        //$selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+        //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+        ?>
+        <?php the_content();?>        
+        <?php
+    
+    endwhile;
+    wp_reset_postdata();
+
+    return ob_get_clean();
+}
+add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
+add_shortcode( 'display-environmental-protection', 'display_economic_growth' ) ;
+add_shortcode( 'display-social-responsibility', 'display_economic_growth' ) ;
+/*
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
       show_admin_bar(false);
     }
 }
 add_action('after_setup_theme', 'remove_admin_bar');
-  
+*/  
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
@@ -532,29 +562,3 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
-
-function get_post_type_meta_keys($post_type) {
-    global $wpdb;
-    $query = $wpdb->prepare("
-        SELECT DISTINCT(meta_key)
-        FROM $wpdb->postmeta
-        INNER JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id
-        WHERE $wpdb->posts.post_type = %s
-    ", $post_type);
-    return $wpdb->get_col($query);
-}
-
-function allow_subscribers_to_view_users($allcaps, $caps, $args) {
-    // Check if the user is trying to view other users
-    if (isset($args[0]) && $args[0] === 'list_users') {
-        // Check if the user has the "subscriber" role
-        $user = wp_get_current_user();
-        if (in_array('subscriber', $user->roles)) {
-            // Allow subscribers to view users
-            $allcaps['list_users'] = true;
-        }
-    }
-    return $allcaps;
-}
-add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
-
