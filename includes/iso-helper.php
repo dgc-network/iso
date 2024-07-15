@@ -55,20 +55,11 @@ function display_economic_growth() {
                 'key'   => 'parent_category',
                 'value' => 'economic-growth',
             ),
-            array(
-                'key'   => 'parent_category',
-                'value' => 'environmental-protection',
-            ),
-            array(
-                'key'   => 'parent_category',
-                'value' => 'social-responsibility',
-            ),
         ),
     );
     $query = new WP_Query($args);
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        //$start_ai_url = '/display-documents/?_initial=7079';
         $start_ai_url = '/display-documents/?_initial='.get_the_title().'statement';
         ?>
         <?php the_content();?>
@@ -82,8 +73,64 @@ function display_economic_growth() {
     return ob_get_clean();
 }
 add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
-add_shortcode( 'display-environmental-protection', 'display_economic_growth' ) ;
-add_shortcode( 'display-social-responsibility', 'display_economic_growth' ) ;
+
+function display_environmental_protection() {
+    ob_start();
+    $args = array(
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,        
+        'meta_query'     => array(
+            array(
+                'key'   => 'parent_category',
+                'value' => 'environmental-protection',
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    while ($query->have_posts()) : $query->the_post();
+        $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+        $start_ai_url = '/display-documents/?_initial='.get_the_title().'statement';
+        ?>
+        <?php the_content();?>
+        <div class="wp-block-buttons">
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $category_url;?>"><?php the_title();?></a></div>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $start_ai_url;?>"><?php echo __( '啟動AI輔導', 'your-text-domain' );?></a></div>
+        </div>
+        <?php    
+    endwhile;
+    wp_reset_postdata();
+    return ob_get_clean();
+}
+add_shortcode( 'display-environmental-protection', 'display_environmental_protection' ) ;
+
+function display_social_responsibility() {
+    ob_start();
+    $args = array(
+        'post_type'      => 'doc-category',
+        'posts_per_page' => -1,        
+        'meta_query'     => array(
+            array(
+                'key'   => 'parent_category',
+                'value' => 'social-responsibility',
+            ),
+        ),
+    );
+    $query = new WP_Query($args);
+    while ($query->have_posts()) : $query->the_post();
+        $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+        $start_ai_url = '/display-documents/?_initial='.get_the_title().'statement';
+        ?>
+        <?php the_content();?>
+        <div class="wp-block-buttons">
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $category_url;?>"><?php the_title();?></a></div>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $start_ai_url;?>"><?php echo __( '啟動AI輔導', 'your-text-domain' );?></a></div>
+        </div>
+        <?php    
+    endwhile;
+    wp_reset_postdata();
+    return ob_get_clean();
+}
+add_shortcode( 'display-social-responsibility', 'display_social_responsibility' ) ;
 /*
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
