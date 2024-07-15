@@ -13,7 +13,7 @@ function display_iso_helper_logo() {
     $image_url = get_post_meta($site_id, 'image_url', true);
     ?>
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
-    <?
+    <?php
     return ob_get_clean();
 }
 

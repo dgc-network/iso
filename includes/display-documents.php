@@ -1312,7 +1312,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_vendor'):
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
                             <?php
                             break;
 
