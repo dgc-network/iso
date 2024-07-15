@@ -95,6 +95,15 @@ if (!class_exists('erp_cards')) {
                         </tbody>
                     </table>
                     <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div class="pagination">
+                        <?php
+                        // Display pagination links
+                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                        ?>
+                    </div>
+
                 </fieldset>
                 <div id="customer-card-dialog" title="Customer dialog"></div>
                 <?php
@@ -109,9 +118,59 @@ if (!class_exists('erp_cards')) {
         function retrieve_customer_card_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
             $args = array(
                 'post_type'      => 'customer-card',
-                //'posts_per_page' => -1,        
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'meta_key'       => 'customer_code', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('customer-card');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+        
+            return $query;
+        }
+/*        
+        function retrieve_customer_card_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'customer-card',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
@@ -152,7 +211,7 @@ if (!class_exists('erp_cards')) {
 
             return $query;
         }
-
+*/
         function display_customer_card_dialog($customer_id=false) {
             $customer_code = get_post_meta($customer_id, 'customer_code', true);
             $customer_title = get_the_title($customer_id);
@@ -166,7 +225,7 @@ if (!class_exists('erp_cards')) {
                 <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="customer-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="customer-content" rows="3" style="width:100%;"><?php echo esc_html($customer_content);?>"</textarea>
+                <textarea id="customer-content" rows="3" style="width:100%;"><?php echo esc_html($customer_content);?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();

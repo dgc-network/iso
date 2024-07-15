@@ -1603,7 +1603,7 @@ if (!class_exists('display_profiles')) {
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?>"</textarea>
+                <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_sub_category_option_data($parent_category);?></select>
             </fieldset>
