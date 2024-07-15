@@ -299,8 +299,7 @@ if (!class_exists('to_do_list')) {
                     'value'   => $search_query,
                     'compare' => 'LIKE',
                 );
-            }
-            
+            }            
             $args['meta_query'][] = $meta_query_all_keys;
 
             $query = new WP_Query($args);

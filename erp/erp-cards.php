@@ -136,17 +136,17 @@ if (!class_exists('erp_cards')) {
 
             // Check if $query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
-                $args['meta_query'][] = array(
-                    'relation' => 'OR',
-                );
-                // Loop through meta query array to find
-                foreach ($args['meta_query'] as $key => $meta_query) {
-                    $args['meta_query'][1][] = array( // Append to the OR relation
-                        'key'     => $meta_query,
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('customer-card');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
                         'value'   => $search_query,
                         'compare' => 'LIKE',
                     );
                 }            
+                $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
             }
 
