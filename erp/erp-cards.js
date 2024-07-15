@@ -282,4 +282,145 @@ jQuery(document).ready(function($) {
         });    
     }
 
+    // product-card scripts
+    activate_product_card_list_data();
+
+    function activate_product_card_list_data(){
+        $("#select-profile").on("change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        });
+
+        $("#search-product").on( "change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+        
+            var searchValue = $("#search-product").val();
+            if (searchValue) {
+                queryParams.push("_search=" + searchValue);
+            }
+        
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        
+            // Clear the values of all select elements after redirection
+            $("#search-product").val('');
+        
+        });
+
+        $("#new-product-card").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_product_card_dialog_data',
+                },
+                success: function (response) {
+                    $("#result-container").html(response.html_contain);
+                    activate_product_card_list_data();    
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-product-card-"]').on("click", function () {
+            const product_id = this.id.substring(18);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_product_card_dialog_data',
+                    '_product_id': product_id,
+                },
+                success: function (response) {
+                    $("#product-card-dialog").html(response.html_contain);
+                    $("#product-card-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#product-card-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_product_card_dialog_data',
+                            '_product_id': $("#product-id").val(),
+                            '_product_code': $("#product-code").val(),
+                            '_product_title': $("#product-title").val(),
+                            '_product_content': $("#product-content").val(),
+                        },
+                        success: function (response) {
+                            $("#product-card-dialog").dialog('close');
+                            $("#result-container").html(response.html_contain);
+                            activate_product_card_list_data();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this product?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_product_card_dialog_data',
+                                '_product_id': $("#product-id").val(),
+                            },
+                            success: function (response) {
+                                $("#product-card-dialog").dialog('close');
+                                $("#result-container").html(response.html_contain);
+                                activate_product_card_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
+    }
+
 });
