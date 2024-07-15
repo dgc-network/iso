@@ -5,7 +5,6 @@ jQuery(document).ready(function($) {
     function activate_customer_card_list_data(){
 
         $("#select-profile").on("change", function() {
-
             // Initialize an empty array to store query parameters
             var queryParams = [];
         
@@ -14,28 +13,15 @@ jQuery(document).ready(function($) {
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-/*        
-            var searchValue = $("#search-customer").val();
-            if (searchValue) {
-                queryParams.push("_search=" + searchValue);
-            }
-*/        
+
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
         
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
-/*        
-            // Clear the values of all select elements after redirection
-            $("#select-profile, #search-customer").val('');
-                    
-            window.location.replace("?_select_profile="+$(this).val());
-            $(this).val('');
-*/
         });
 
         $("#search-customer").on( "change", function() {
-
             // Initialize an empty array to store query parameters
             var queryParams = [];
         
@@ -177,7 +163,6 @@ jQuery(document).ready(function($) {
         });
 
         $("#search-vendor").on( "change", function() {
-
             // Initialize an empty array to store query parameters
             var queryParams = [];
         
