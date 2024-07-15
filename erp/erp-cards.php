@@ -178,6 +178,7 @@ if (!class_exists('erp_cards')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'customer_code', time());
             }
             $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
