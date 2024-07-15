@@ -277,12 +277,14 @@ if (!class_exists('erp_cards')) {
 
         function select_customer_cards($selected_option=0) {
             $query = $this->retrieve_customer_card_data();
+            //$options = '<select>';
             $options = '<option value="">Select customer</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
+            //$options .= '</select>';
             return $options;
         }
 

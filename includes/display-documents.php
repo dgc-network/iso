@@ -1139,6 +1139,7 @@ if (!class_exists('display_documents')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Caption', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
+                    <option value="select_customer" <?php echo ($field_type=='select_customer') ? 'selected' : ''?>><?php echo __( 'Customer', 'your-text-domain' );?></option>
                 </select>
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
@@ -1296,6 +1297,15 @@ if (!class_exists('display_documents')) {
                             echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
         
+                        case ($field_type=='select_customer'):
+                            $cards_class = new erp_cards();
+                            $default_value = ($default_value) ? $default_value : 'b';
+                            $field_value = ($field_value) ? $field_value : get_option('default_video_url');                            
+                            ?>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_cards($field_value);?></select>
+                            <?php
+                            break;
+            
                         case ($field_type=='heading'):
                             $default_value = ($default_value) ? $default_value : 'b';
                             ?>
