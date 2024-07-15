@@ -4,6 +4,11 @@ jQuery(document).ready(function($) {
 
     function activate_customer_card_list_data(){
 
+        $("#select-profile").on("change", function() {
+            window.location.replace("?_select_profile="+$(this).val());
+            $(this).val('');
+        });
+    
         $("#search-customer").on( "change", function() {
 
             // Initialize an empty array to store query parameters
@@ -130,6 +135,11 @@ jQuery(document).ready(function($) {
 
     function activate_vendor_card_list_data(){
 
+        $("#select-profile").on("change", function() {
+            window.location.replace("?_select_profile="+$(this).val());
+            $(this).val('');
+        });
+    
         $("#search-vendor").on( "change", function() {
 
             // Initialize an empty array to store query parameters
