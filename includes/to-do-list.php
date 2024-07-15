@@ -161,7 +161,7 @@ if (!class_exists('to_do_list')) {
             $current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -314,7 +314,7 @@ if (!class_exists('to_do_list')) {
             $current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
 
                 <div id="todo-setting-div" style="display:none">
@@ -507,7 +507,7 @@ if (!class_exists('to_do_list')) {
     
             ob_start();
             ?>
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -871,7 +871,7 @@ if (!class_exists('to_do_list')) {
             $x_value = $signature_record_list['x'];
             ?>
             <div class="ui-widget" id="result-container">
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
                 <div id="todo-setting-div" style="display:none">
                 <fieldset>

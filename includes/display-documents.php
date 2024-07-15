@@ -219,7 +219,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             ?>
             <div class="ui-widget" id="result-container">
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
                 <div id="document-setting-dialog" title="Document setting" style="display:none">
                 <fieldset>
@@ -392,7 +392,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <?php echo display_iso_helper_logo();?>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">
@@ -584,7 +584,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <?php echo display_iso_helper_logo();?>
                     <span><?php echo esc_html($doc_number);?></span>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                     <span><?php echo esc_html($doc_revision);?></span>
@@ -639,7 +639,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <?php echo display_iso_helper_logo();?>
                     <span><?php echo esc_html($doc_number);?></span>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                     <span><?php echo esc_html($doc_revision);?></span>            
@@ -851,7 +851,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <?php echo display_iso_helper_logo();?>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">        
@@ -1479,7 +1479,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                    <?php echo display_iso_helper_logo();?>
                     <span><?php echo esc_html($doc_number);?></span>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                     <span><?php echo esc_html($doc_revision);?></span>            

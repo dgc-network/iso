@@ -1077,7 +1077,29 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
-        
+        // employee-card
+        function select_employee_card_options($selected_option=0) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+            $users = get_users(); // Initialize with all users
+            $meta_query_args = array(
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
+            );
+            $users = get_users(array('meta_query' => $meta_query_args));
+
+            // Loop through the users
+            $options = '<option value="">Select employee</option>';
+            foreach ($users as $user) {
+                $selected = ($selected_option == $user->display_name) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->display_name) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
+            }
+            return $options;
+        }        
     }
     $cards_class = new erp_cards();
 }

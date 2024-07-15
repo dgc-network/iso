@@ -1,11 +1,29 @@
 // To-do list
 jQuery(document).ready(function($) {
 
+    $("#select-todo").on("change", function() {
+        // Initialize an empty array to store query parameters
+        var queryParams = [];
+    
+        // Check the selected value for each select element and add it to the queryParams array
+        var todoValue = $("#select-todo").val();
+        if (todoValue) {
+            queryParams.push("_select_todo=" + todoValue);
+        }
+
+        // Combine all query parameters into a single string
+        var queryString = queryParams.join("&");
+    
+        // Redirect to the new URL with all combined query parameters
+        window.location.href = "?" + queryString;
+    });
+
+/*
     $("#select-todo").on( "change", function() {
         window.location.replace("?_select_todo="+$(this).val());
         $(this).val('');
     });
-
+*/
     $("#search-todo").on( "change", function() {
         window.location.replace("?_search="+$(this).val());
         $(this).val('');

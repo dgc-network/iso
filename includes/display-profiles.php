@@ -13,9 +13,9 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_notification_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
             //add_action( 'wp_ajax_get_my_notification_list_data', array( $this, 'get_my_notification_list_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_my_notification_list_data', array( $this, 'get_my_job_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_my_notification_list_data', array( $this, 'get_my_notification_list_data' ) );
             add_action( 'wp_ajax_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
             add_action( 'wp_ajax_nopriv_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
@@ -95,7 +95,6 @@ if (!class_exists('display_profiles')) {
                 <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
                 <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
-                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '員工資料', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -117,16 +116,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='6') echo $cards_class->display_product_card_list();
                 if ($_GET['_select_profile']=='7') echo $cards_class->display_equipment_card_list();
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
-                if ($_GET['_select_profile']=='9') echo $cards_class->display_employee_card_list();
 
-                $http_client = new http_client();
-                //if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
-                //if ($_GET['_select_profile']=='5') echo $http_client->display_iot_message_list();
-
-                $open_ai_api = new open_ai_api();
-                //if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
-
-                if ($_GET['_select_profile']=='17') {
+                if ($_GET['_select_profile']=='99') {
                     // Example usage
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -190,7 +181,7 @@ if (!class_exists('display_profiles')) {
             $image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
-            <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+            <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile(0);?></div>
@@ -514,7 +505,7 @@ if (!class_exists('display_profiles')) {
             // Check if the user is administrator or initial...
             if ($is_site_admin || current_user_can('administrator') || $initial) {
                 ?>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_profile(1);?></div>
@@ -848,7 +839,7 @@ if (!class_exists('display_profiles')) {
             // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator') || $initial) {
                 ?>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1534,7 +1525,7 @@ if (!class_exists('display_profiles')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">

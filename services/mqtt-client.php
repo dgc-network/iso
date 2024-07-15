@@ -162,7 +162,7 @@ if (!class_exists('mqtt_client')) {
             // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator')) {
                 ?>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '座標訊息', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -279,7 +279,7 @@ if (!class_exists('mqtt_client')) {
             // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator')) {
                 ?>
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '溫濕度計設定', 'your-text-domain' );?></h2>
                 <fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">

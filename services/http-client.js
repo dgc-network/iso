@@ -82,16 +82,24 @@ jQuery(document).ready(function($) {
     activate_http_client_list_data();
 
     function activate_http_client_list_data(){
+        $("#select-todo").on("change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var todoValue = $("#select-todo").val();
+            if (todoValue) {
+                queryParams.push("_select_todo=" + todoValue);
+            }
 
-        //activate_notification_list_data($("#http-client-id").val());
-/*
-        $("#select-todo").on( "change", function() {
-            window.location.replace("?_select_todo="+$(this).val());
-            $(this).val('');
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
         });
-*/    
-        $("#search-http-client").on( "change", function() {
 
+        $("#search-http-client").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
         
@@ -113,7 +121,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
         
             // Clear the values of all select elements after redirection
-            $("#select-todo, #search-http-client").val('');
+            $("#search-http-client").val('');
         
         });
 

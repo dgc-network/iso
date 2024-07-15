@@ -132,7 +132,7 @@ if (!class_exists('http_client')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <div class="ui-widget" id="result-container">
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '溫濕度異常通知設定', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -274,7 +274,7 @@ if (!class_exists('http_client')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <div class="ui-widget" id="result-container">
-                <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+                <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
