@@ -423,4 +423,145 @@ jQuery(document).ready(function($) {
         });    
     }
 
+    // equipment-card scripts
+    activate_equipment_card_list_data();
+
+    function activate_equipment_card_list_data(){
+        $("#select-profile").on("change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        });
+
+        $("#search-equipment").on( "change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+        
+            var searchValue = $("#search-equipment").val();
+            if (searchValue) {
+                queryParams.push("_search=" + searchValue);
+            }
+        
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        
+            // Clear the values of all select elements after redirection
+            $("#search-equipment").val('');
+        
+        });
+
+        $("#new-equipment-card").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_equipment_card_dialog_data',
+                },
+                success: function (response) {
+                    $("#result-container").html(response.html_contain);
+                    activate_equipment_card_list_data();    
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-equipment-card-"]').on("click", function () {
+            const equipment_id = this.id.substring(20);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_equipment_card_dialog_data',
+                    '_equipment_id': equipment_id,
+                },
+                success: function (response) {
+                    $("#equipment-card-dialog").html(response.html_contain);
+                    $("#equipment-card-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#equipment-card-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_equipment_card_dialog_data',
+                            '_equipment_id': $("#equipment-id").val(),
+                            '_equipment_code': $("#equipment-code").val(),
+                            '_equipment_title': $("#equipment-title").val(),
+                            '_equipment_content': $("#equipment-content").val(),
+                        },
+                        success: function (response) {
+                            $("#equipment-card-dialog").dialog('close');
+                            $("#result-container").html(response.html_contain);
+                            activate_equipment_card_list_data();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this equipment?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_equipment_card_dialog_data',
+                                '_equipment_id': $("#equipment-id").val(),
+                            },
+                            success: function (response) {
+                                $("#equipment-card-dialog").dialog('close');
+                                $("#result-container").html(response.html_contain);
+                                activate_equipment_card_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
+    }
+
 });
