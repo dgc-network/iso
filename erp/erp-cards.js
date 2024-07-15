@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-customer-card-"]').on("click", function () {
-            const customer_id = this.id.substring(17);
+            const customer_id = this.id.substring(19);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,

@@ -82,7 +82,7 @@ if (!class_exists('erp_cards')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $customer_code = get_post_meta(get_the_ID(), 'customer_code', true);
                                 ?>
-                                <tr id="edit-customer-<?php the_ID();?>">
+                                <tr id="edit-customer-card-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo $customer_code;?></td>
                                     <td><?php the_title();?></td>
                                     <td><?php the_content();?></td>
