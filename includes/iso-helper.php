@@ -6,6 +6,16 @@ require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 
+function display_iso_helper_logo() {
+    $current_user_id = get_current_user_id();
+    $current_user = get_userdata($current_user_id);
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $image_url = get_post_meta($site_id, 'image_url', true);
+    ?>
+    <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
+    <?
+}
+
 function display_economic_growth() {
     ob_start();
     ?>

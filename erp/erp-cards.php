@@ -58,6 +58,7 @@ if (!class_exists('erp_cards')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
+                <?php display_iso_helper_logo();?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' );?></h2>
 
@@ -78,6 +79,8 @@ if (!class_exists('erp_cards')) {
                         <tbody>
                         <?php
                         $query = $this->retrieve_customer_card_data();
+                        $total_posts = $query->found_posts;
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $customer_code = get_post_meta(get_the_ID(), 'customer_code', true);
@@ -165,53 +168,7 @@ if (!class_exists('erp_cards')) {
         
             return $query;
         }
-/*        
-        function retrieve_customer_card_data($paged = 1) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'customer-card',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-                'meta_key'       => 'customer_code', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
 
-            );
-
-            if ($paged==0) $args['posts_per_page'] = -1;
-
-            $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $args['paged'] = 1;
-            if ($search_query) $args['s'] = $search_query;
-
-            $query = new WP_Query($args);
-
-            // Check if $query is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-                // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('customer-card');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }            
-                $args['meta_query'][] = $meta_query_all_keys;
-                $query = new WP_Query($args);
-            }
-
-            return $query;
-        }
-*/
         function display_customer_card_dialog($customer_id=false) {
             $customer_code = get_post_meta($customer_id, 'customer_code', true);
             $customer_title = get_the_title($customer_id);
@@ -239,7 +196,6 @@ if (!class_exists('erp_cards')) {
         }
 
         function set_customer_card_dialog_data() {
-            //$response = array();
             if( isset($_POST['_customer_id']) ) {
                 $customer_id = sanitize_text_field($_POST['_customer_id']);
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
@@ -269,7 +225,6 @@ if (!class_exists('erp_cards')) {
         }
 
         function del_customer_card_dialog_data() {
-            //$response = array();
             wp_delete_post($_POST['_customer_id'], true);
             $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
