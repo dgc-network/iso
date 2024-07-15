@@ -40,10 +40,8 @@ jQuery(document).ready(function($) {
                     'action': 'set_customer_card_dialog_data',
                 },
                 success: function (response) {
-                    //get_customer_card_list_data();
                     $("#result-container").html(response.html_contain);
-                    activate_customer_card_list_data();
-    
+                    activate_customer_card_list_data();    
                 },
                 error: function(error){
                     console.error(error);
@@ -65,8 +63,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#customer-card-dialog").html(response.html_contain);
                     $("#customer-card-dialog").dialog('open');
-                    //activate_notification_list_data(customer_id);
-
                 },
                 error: function (error) {
                     console.error(error);
@@ -90,14 +86,12 @@ jQuery(document).ready(function($) {
                             '_customer_id': $("#customer-id").val(),
                             '_customer_code': $("#customer-code").val(),
                             '_customer_title': $("#customer-title").val(),
-                            '_description': $("#description").val(),
+                            '_customer_content': $("#customer-content").val(),
                         },
                         success: function (response) {
                             $("#customer-card-dialog").dialog('close');
-                            //get_customer_card_list_data();
                             $("#result-container").html(response.html_contain);
                             activate_customer_card_list_data();
-
                         },
                         error: function (error) {
                             console.error(error);
@@ -117,10 +111,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#customer-card-dialog").dialog('close');
-                                //get_customer_card_list_data();
                                 $("#result-container").html(response.html_contain);
                                 activate_customer_card_list_data();
-
                             },
                             error: function (error) {
                                 console.error(error);
@@ -131,25 +123,6 @@ jQuery(document).ready(function($) {
                 },
             }
         });    
-    }
-
-    function get_customer_card_list_data(){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_customer_card_list_data',
-            },
-            success: function (response) {
-                $("#result-container").html(response.html_contain);
-                activate_customer_card_list_data();
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
     }
 
 });

@@ -11,8 +11,8 @@ if (!class_exists('erp_cards')) {
             //add_shortcode( 'display-customers', array( $this, 'display_customer_list' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_erp_cards_scripts' ) );
 
-            add_action( 'wp_ajax_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
+            //add_action( 'wp_ajax_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
             add_action( 'wp_ajax_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_set_customer_card_dialog_data', array( $this, 'set_customer_card_dialog_data' ) );
@@ -106,26 +106,51 @@ if (!class_exists('erp_cards')) {
             return ob_get_clean();
         }
 
-        function retrieve_customer_card_data() {
+        function retrieve_customer_card_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'customer-card',
-                'posts_per_page' => -1,        
+                //'posts_per_page' => -1,        
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
                 'meta_query'     => array(
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
                     ),
                 ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
+                'meta_key'       => 'customer_code', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
 
-        function get_customer_card_list_data() {
-            $response = array('html_contain' => $this->display_customer_card_list());
-            wp_send_json($response);
+            );
+
+            if ($paged==0) $args['posts_per_page'] = -1;
+
+            $search_query = sanitize_text_field($_GET['_search']);
+            if ($search_query) $args['paged'] = 1;
+            if ($search_query) $args['s'] = $search_query;
+
+            $query = new WP_Query($args);
+
+            // Check if $query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                $args['meta_query'][] = array(
+                    'relation' => 'OR',
+                );
+                // Loop through meta query array to find
+                foreach ($args['meta_query'] as $key => $meta_query) {
+                    $args['meta_query'][1][] = array( // Append to the OR relation
+                        'key'     => $meta_query,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }            
+                $query = new WP_Query($args);
+            }
+
+            return $query;
         }
 
         function display_customer_card_dialog($customer_id=false) {
@@ -191,9 +216,9 @@ if (!class_exists('erp_cards')) {
             wp_send_json($response);
         }
 
-        function select_customer_option_data($selected_option=0) {
+        function select_customer_cards($selected_option=0) {
             $query = $this->retrieve_customer_card_data();
-            $options = '<option value="">Select category</option>';
+            $options = '<option value="">Select customer</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
