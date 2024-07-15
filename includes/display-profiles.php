@@ -106,8 +106,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
 
-                $customers_class = new display_customers();
-                if ($_GET['_select_profile']=='4') echo $customers_class->display_customer_list();
+                $cards_class = new erp_cards();
+                if ($_GET['_select_profile']=='4') echo $cards_class->display_customer_card_list();
 
                 $http_client = new http_client();
                 //if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
