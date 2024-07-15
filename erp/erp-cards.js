@@ -40,7 +40,10 @@ jQuery(document).ready(function($) {
                     'action': 'set_customer_card_dialog_data',
                 },
                 success: function (response) {
-                    get_customer_card_list_data();
+                    //get_customer_card_list_data();
+                    $("#result-container").html(response.html_contain);
+                    activate_customer_card_list_data();
+    
                 },
                 error: function(error){
                     console.error(error);
@@ -62,7 +65,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#customer-card-dialog").html(response.html_contain);
                     $("#customer-card-dialog").dialog('open');
-                    activate_notification_list_data(customer_id);
+                    //activate_notification_list_data(customer_id);
 
                 },
                 error: function (error) {
@@ -91,7 +94,10 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#customer-card-dialog").dialog('close');
-                            get_customer_card_list_data();
+                            //get_customer_card_list_data();
+                            $("#result-container").html(response.html_contain);
+                            activate_customer_card_list_data();
+
                         },
                         error: function (error) {
                             console.error(error);
@@ -111,7 +117,10 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#customer-card-dialog").dialog('close');
-                                get_customer_card_list_data();
+                                //get_customer_card_list_data();
+                                $("#result-container").html(response.html_contain);
+                                activate_customer_card_list_data();
+
                             },
                             error: function (error) {
                                 console.error(error);

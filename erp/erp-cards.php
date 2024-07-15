@@ -124,7 +124,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function get_customer_card_list_data() {
-            $response = array('html_contain' => $this->display_customer_list());
+            $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
 
@@ -155,7 +155,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function set_customer_card_dialog_data() {
-            $response = array();
+            //$response = array();
             if( isset($_POST['_customer_id']) ) {
                 $customer_id = sanitize_text_field($_POST['_customer_id']);
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
@@ -179,17 +179,19 @@ if (!class_exists('erp_cards')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
             }
+            $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
 
         function del_customer_card_dialog_data() {
-            $response = array();
+            //$response = array();
             wp_delete_post($_POST['_customer_id'], true);
+            $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
 
         function select_customer_option_data($selected_option=0) {
-            $query = $this->retrieve_customer_data();
+            $query = $this->retrieve_customer_card_data();
             $options = '<option value="">Select category</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
