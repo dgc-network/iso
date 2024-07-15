@@ -1516,10 +1516,6 @@ if (!class_exists('display_profiles')) {
         // doc-category
         function display_doc_category_list() {
             ob_start();
-            $current_user_id = get_current_user_id();
-            $current_user = get_userdata($current_user_id);
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
 
             if ($is_site_admin || current_user_can('administrator')) {
@@ -1545,6 +1541,7 @@ if (!class_exists('display_profiles')) {
                         $query = $this->retrieve_doc_category_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
+                                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
                                 $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
                                 ?>
                                 <tr id="edit-doc-category-<?php the_ID();?>">
@@ -1596,6 +1593,7 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_dialog($category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
+            $category_url = get_post_meta($category_id, 'category_url', true);
             $parent_category = get_post_meta($category_id, 'parent_category', true);
             ob_start();
             ?>
@@ -1605,6 +1603,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
+                <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
             </fieldset>
@@ -1629,6 +1629,7 @@ if (!class_exists('display_profiles')) {
                     'post_content' => sanitize_text_field($_POST['_category_content']),
                 );
                 wp_update_post( $data );
+                update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'parent_category', $parent_category);
             } else {
                 $current_user_id = get_current_user_id();

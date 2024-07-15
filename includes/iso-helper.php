@@ -66,17 +66,16 @@ function display_economic_growth() {
         ),
     );
     $query = new WP_Query($args);
-    //$options = '<option value="">Select category</option>';
     while ($query->have_posts()) : $query->the_post();
-        //$selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-        //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+        $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+        $start_ai_url = '/display-documents/?_initial=7079';
         ?>
-        <?php the_content();?>        
-        <?php
-    
+        <?php the_content();?>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $category_url;?>"><?php the_title();?></a></div>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo $start_ai_url;?>"><?php echo __( '啟動AI輔導', 'your-text-domain' );?></a></div>
+        <?php    
     endwhile;
     wp_reset_postdata();
-
     return ob_get_clean();
 }
 add_shortcode( 'display-economic-growth', 'display_economic_growth' ) ;
