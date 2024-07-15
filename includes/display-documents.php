@@ -1319,28 +1319,28 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_product'):
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_product_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_equipment'):
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_instrument'):
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_employee'):
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
                             <?php
                             break;
             
