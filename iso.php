@@ -16,11 +16,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+*/
 function register_session() {
     if ( ! session_id() ) {
         session_start();
@@ -28,7 +28,7 @@ function register_session() {
 }
 add_action( 'init', 'register_session' );
 
-require_once plugin_dir_path( __FILE__ ) . 'erp/erp.php';
+require_once plugin_dir_path( __FILE__ ) . 'erp/erp-cards.php';
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
 /*
