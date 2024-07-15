@@ -7,18 +7,21 @@ if (!class_exists('erp_cards')) {
     class erp_cards {
         // Class constructor
         public function __construct() {
-            //add_shortcode( 'display-customers', array( $this, 'display_shortcode' ) );
-            //add_shortcode( 'display-customers', array( $this, 'display_customer_list' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_erp_cards_scripts' ) );
 
-            //add_action( 'wp_ajax_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_customer_card_list_data', array( $this, 'get_customer_card_list_data' ) );
             add_action( 'wp_ajax_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_set_customer_card_dialog_data', array( $this, 'set_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_customer_card_dialog_data', array( $this, 'set_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_del_customer_card_dialog_data', array( $this, 'del_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_customer_card_dialog_data', array( $this, 'del_customer_card_dialog_data' ) );
+
+            add_action( 'wp_ajax_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_vendor_card_dialog_data', array( $this, 'get_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_vendor_card_dialog_data', array( $this, 'set_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_vendor_card_dialog_data', array( $this, 'del_vendor_card_dialog_data' ) );
         }
 
         function enqueue_erp_cards_scripts() {
