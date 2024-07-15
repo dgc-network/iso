@@ -156,11 +156,11 @@ if (!class_exists('display_documents')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
 
-                // Display ISO document statement if initial ID is existed
+                // Display ISO document statement
                 if (isset($_GET['_initial'])) {
-                    $doc_id = sanitize_text_field($_GET['_initial']);
+                    $doc_number = sanitize_text_field($_GET['_initial']);
                     echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_iso_document_statement($doc_id);
+                    echo $this->display_iso_document_statement($doc_number);
                     echo '</div>';
                 }
 
@@ -1465,7 +1465,26 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
         
-        function display_iso_document_statement($doc_id){
+        function display_iso_document_statement($doc_number){
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'doc_number',
+                        'value'   => sanitize_text_field($doc_number),
+                        'compare' => '='
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            $doc_id = null; // Initialize the variable to avoid potential undefined variable errors
+
+            if ($query->have_posts()) {
+                $doc_id = $query->posts[0]->ID; // Get the ID of the first (and only) post
+                wp_reset_postdata();
+            }
+
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);

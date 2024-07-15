@@ -1622,6 +1622,7 @@ if (!class_exists('display_profiles')) {
         function set_doc_category_dialog_data() {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
+                $category_url = sanitize_text_field($_POST['_category_url']);
                 $parent_category = sanitize_text_field($_POST['_parent_category']);
                 $data = array(
                     'ID'           => $category_id,
