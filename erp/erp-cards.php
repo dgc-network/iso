@@ -58,7 +58,7 @@ if (!class_exists('erp_cards')) {
             if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
-                <?php display_iso_helper_logo();?>
+                <?php echo display_iso_helper_logo();?>
                 <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
                 <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' );?></h2>
 
