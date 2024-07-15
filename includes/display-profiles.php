@@ -92,7 +92,11 @@ if (!class_exists('display_profiles')) {
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
                 <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '供應商資料', 'your-text-domain' );?></option>
-                </select>
+                <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
+                <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
+                <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
+                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '員工資料', 'your-text-domain' );?></option>
+            </select>
             <?php
         }
 
@@ -109,6 +113,11 @@ if (!class_exists('display_profiles')) {
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='4') echo $cards_class->display_customer_card_list();
+                if ($_GET['_select_profile']=='5') echo $cards_class->display_vendor_card_list();
+                if ($_GET['_select_profile']=='6') echo $cards_class->display_product_card_list();
+                if ($_GET['_select_profile']=='7') echo $cards_class->display_equipment_card_list();
+                if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
+                if ($_GET['_select_profile']=='9') echo $cards_class->display_employee_card_list();
 
                 $http_client = new http_client();
                 //if ($_GET['_select_profile']=='4') echo $http_client->display_http_client_list();
@@ -117,7 +126,7 @@ if (!class_exists('display_profiles')) {
                 $open_ai_api = new open_ai_api();
                 //if ($_GET['_select_profile']=='6') $open_ai_api->enter_your_prompt();
 
-                if ($_GET['_select_profile']=='7') {
+                if ($_GET['_select_profile']=='17') {
                     // Example usage
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
