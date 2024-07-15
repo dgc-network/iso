@@ -28,7 +28,8 @@ function register_session() {
 }
 add_action( 'init', 'register_session' );
 
-require_once plugin_dir_path( __FILE__ ) . 'services/service-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'erp/erp.php';
+require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
 /*
 require_once plugin_dir_path( __FILE__ ) . 'includes/display-documents.php';
