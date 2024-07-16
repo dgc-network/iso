@@ -87,7 +87,7 @@ if (!class_exists('to_do_list')) {
                     exit;
                 }
 
-                if (!isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
+                if (!isset($_GET['_id']) || !isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
 
             } else {
                 user_did_not_login_yet();
