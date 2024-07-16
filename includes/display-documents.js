@@ -175,6 +175,11 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").toggle();
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
+            //const is_doc_report = $("#select-system-report").val();
+            //$("#is-doc-report").val(is_doc_report)
+        });
+
+        $("#select-system-report").on("change", function () {
             const is_doc_report = $("#select-system-report").val();
             $("#is-doc-report").val(is_doc_report)
         });
