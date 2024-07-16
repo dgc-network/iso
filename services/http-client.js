@@ -134,7 +134,9 @@ jQuery(document).ready(function($) {
                     'action': 'set_http_client_dialog_data',
                 },
                 success: function (response) {
-                    get_http_client_list_data();
+                    //get_http_client_list_data();
+                    $("#result-container").html(response.html_contain);
+                    activate_http_client_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -186,7 +188,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#http-client-dialog").dialog('close');
-                            get_http_client_list_data();
+                            //get_http_client_list_data();
+                            $("#result-container").html(response.html_contain);
+                            activate_http_client_list_data();
                         },
                         error: function (error) {
                             console.error(error);
@@ -206,7 +210,9 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#http-client-dialog").dialog('close');
-                                get_http_client_list_data();
+                                //get_http_client_list_data();
+                                $("#result-container").html(response.html_contain);
+                                activate_http_client_list_data();
                             },
                             error: function (error) {
                                 console.error(error);

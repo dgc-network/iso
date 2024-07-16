@@ -22,6 +22,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
             add_action( 'wp_ajax_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
+
             add_action( 'wp_ajax_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
             add_action( 'wp_ajax_get_notification_dialog_data', array( $this, 'get_notification_dialog_data' ) );
@@ -30,6 +31,7 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_nopriv_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
+
             add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
@@ -47,10 +49,8 @@ if (!class_exists('http_client')) {
         function enqueue_http_client_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-            //wp_enqueue_script('mqtt-js', "https://unpkg.com/mqtt/dist/mqtt.min.js");
             wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
             wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
-
             $version = time(); // Update this version number when you make changes
             wp_enqueue_script('http-client', plugins_url('http-client.js', __FILE__), array('jquery'), $version);
             wp_localize_script('http-client', 'ajax_object', array(
@@ -102,7 +102,6 @@ if (!class_exists('http_client')) {
                 'single' => true,
                 'type' => 'number',
             ));
-            // Register other metadata similarly...
         }
         
         function register_exception_notification_post_type() {
@@ -112,7 +111,7 @@ if (!class_exists('http_client')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                //'show_in_menu'  => false,
+                'show_in_menu'  => false,
             );
             register_post_type( 'notification', $args );
         }
@@ -184,9 +183,17 @@ if (!class_exists('http_client')) {
         }
         
         function retrieve_http_client_list() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'http-client',
                 'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
             );
             $query = new WP_Query($args);
             return $query;
@@ -230,7 +237,6 @@ if (!class_exists('http_client')) {
         }
 
         function set_http_client_dialog_data() {
-            $response = array();
             if( isset($_POST['_http_client_id']) ) {
                 $http_client_id = sanitize_text_field($_POST['_http_client_id']);
                 $data = array(
@@ -250,12 +256,13 @@ if (!class_exists('http_client')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'deviceID', time());
             }
+            $response = array('html_contain' => $this->display_http_client_list());
             wp_send_json($response);
         }
 
         function del_http_client_dialog_data() {
-            $response = array();
             wp_delete_post($_POST['_http_client_id'], true);
+            $response = array('html_contain' => $this->display_http_client_list());
             wp_send_json($response);
         }
         
