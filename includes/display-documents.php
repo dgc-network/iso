@@ -280,7 +280,7 @@ if (!class_exists('display_documents')) {
                             ?>
                             <tr id="edit-document-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
-                                <td><?php echo esc_html($doc_title);?></td>
+                                <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
                             </tr>
