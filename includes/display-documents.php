@@ -219,8 +219,9 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             ?>
             <div class="ui-widget" id="result-container">
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
+                
                 <div id="document-setting-dialog" title="Document setting" style="display:none">
                 <fieldset>
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
@@ -266,6 +267,10 @@ if (!class_exists('display_documents')) {
                                 $doc_title = '**' . $doc_title;
                             }
                             
+                            $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                            $unassigned = (!empty($action_query)) ? '' : '<span style="color:red;">(U)</span>';
+                            $doc_title = $unassigned . $doc_title;
+
                             //if ($is_doc_report>0) $doc_title = '*'.$doc_title;
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $todo_id = get_post_meta($doc_id, 'todo_status', true);
