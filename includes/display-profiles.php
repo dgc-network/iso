@@ -95,6 +95,7 @@ if (!class_exists('display_profiles')) {
                 <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
                 <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
+                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -106,6 +107,9 @@ if (!class_exists('display_profiles')) {
                 echo '<div class="ui-widget" id="result-container">';
 
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
+
+                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
+                if ($_GET['_select_profile']=='0') echo $this->display_todo_list();
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
@@ -116,6 +120,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='6') echo $cards_class->display_product_card_list();
                 if ($_GET['_select_profile']=='7') echo $cards_class->display_equipment_card_list();
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
+
+                $http_client = new http_client();
+                if ($_GET['_select_profile']=='9') echo $http_client->display_http_client_list();
 
                 if ($_GET['_select_profile']=='99') {
                     // Example usage
@@ -163,7 +170,7 @@ if (!class_exists('display_profiles')) {
                         delete_transient('oauth_callback_result'); // Clean up the transient
                     }
                 } else {
-                    if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
+                    //if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
                 }
 
                 echo '</div>';
