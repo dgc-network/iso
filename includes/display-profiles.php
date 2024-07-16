@@ -1553,7 +1553,7 @@ if (!class_exists('display_profiles')) {
                                 <tr id="edit-doc-category-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo $parent_category;?></td>
+                                    <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1609,8 +1609,14 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <?php
+                if (current_user_can('administrator')) {
+                    ?>
                 <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                }
+                ?>
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
             </fieldset>
