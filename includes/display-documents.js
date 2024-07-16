@@ -157,7 +157,8 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
             //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            const is_doc_report = 0;
+            const is_doc_report = $("#is-doc-report").val() > 0 ? 0 : 1;
+            //const is_doc_report = 0;
             $("#is-doc-report").val(is_doc_report)
         });
 
@@ -167,7 +168,8 @@ jQuery(document).ready(function($) {
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
             //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            const is_doc_report = 1;
+            const is_doc_report = $("#is-doc-report").val() > 0 ? 0 : 1;
+            //const is_doc_report = 1;
             $("#is-doc-report").val(is_doc_report)
         });
 
