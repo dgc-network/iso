@@ -687,7 +687,8 @@ if (!class_exists('http_client')) {
         }
 
         function select_user_id_option_data($selected_option = 0) {
-            $users = get_users();
+            $profiles_class = new display_profiles();
+            $users = $profiles_class->retrieve_users_by_site_id();
             $options = '<option value="">Select user</option>';            
             foreach ($users as $user) {
                 $selected = ($selected_option == $user->ID) ? 'selected' : '';

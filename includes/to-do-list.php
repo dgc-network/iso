@@ -46,7 +46,6 @@ if (!class_exists('to_do_list')) {
                 <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '啟動&授權', 'your-text-domain' );?></option>
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
-                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '溫濕度異常', 'your-text-domain' );?></option>
                 <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 </select>
@@ -81,7 +80,6 @@ if (!class_exists('to_do_list')) {
                 }
 
                 $http_client = new http_client();
-                if ($_GET['_select_todo']=='4') echo $http_client->display_http_client_list();
                 if ($_GET['_select_todo']=='5') echo $http_client->display_iot_message_list();
 
                 if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
