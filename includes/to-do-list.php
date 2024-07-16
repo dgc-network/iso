@@ -145,7 +145,7 @@ if (!class_exists('to_do_list')) {
         // Register action post type
         function register_action_post_type() {
             $labels = array(
-                'menu_name'          => _x('Actions', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('Actions', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
@@ -156,14 +156,14 @@ if (!class_exists('to_do_list')) {
         }
         
         function display_job_authorization() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $current_user = get_userdata( $current_user_id );
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo(1);?></div>
@@ -172,7 +172,7 @@ if (!class_exists('to_do_list')) {
                     </div>
                 </div>
 
-            <fieldset>
+                <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -226,7 +226,7 @@ if (!class_exists('to_do_list')) {
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     echo '</div>';
                 ?>
-            </fieldset>
+                </fieldset>
             </div>
             <?php
         }
@@ -240,6 +240,7 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);        
+            if ($search_query) $paged = 1;
 
             $args = array(
                 'post_type'      => 'document',
@@ -309,34 +310,23 @@ if (!class_exists('to_do_list')) {
         }
 
         function display_todo_list() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $current_user = get_userdata( $current_user_id );
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
-
-                <div id="todo-setting-div" style="display:none">
-                <fieldset>
-                    <label for="display-name">Name : </label>
-                    <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="site-title"> Site: </label>
-                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                </fieldset>
-                </div>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo(0);?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                        <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
 
-            <fieldset>
+                <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -401,7 +391,7 @@ if (!class_exists('to_do_list')) {
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     echo '</div>';
                 ?>
-            </fieldset>
+                </fieldset>
             </div>
             <?php
         }
@@ -427,6 +417,7 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
+            if ($search_query) $paged = 1;
 
             // Define the WP_Query arguments
             $args = array(
@@ -500,9 +491,9 @@ if (!class_exists('to_do_list')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
     
@@ -863,36 +854,26 @@ if (!class_exists('to_do_list')) {
         
         // signature_record
         function display_signature_record() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
-            $current_user = get_userdata( $current_user_id );
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user = get_userdata( $current_user_id );
             $signature_record_list = $this->get_signature_record_list();
             $html_contain = $signature_record_list['html'];
             $x_value = $signature_record_list['x'];
             ?>
             <div class="ui-widget" id="result-container">
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
-                <div id="todo-setting-div" style="display:none">
-                <fieldset>
-                    <label for="display-name">Name : </label>
-                    <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="site-title"> Site: </label>
-                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                </fieldset>
-                </div>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
             
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo(2);?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
-                        <span id="todo-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
                 <?php echo $html_contain;?>
-                <p style="background-color:lightblue;">Total Submissions: <?php echo $x_value;?></p>
+                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $x_value;?></p>
             </div>
             <?php
         }
@@ -907,7 +888,7 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <?php if(!$doc) {;?>
+                            <?php if(!$doc) {?>
                             <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                             <?php };?>
                             <th><?php echo __( 'Todo', 'your-text-domain' );?></th>

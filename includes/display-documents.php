@@ -14,7 +14,6 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            //add_action( 'wp_footer', array( $this, 'enqueue_custom_scripts' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -22,8 +21,10 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );
             add_action( 'wp_ajax_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
+
             add_action( 'wp_ajax_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
             add_action( 'wp_ajax_nopriv_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
+
             add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_get_doc_report_dialog_data', array( $this, 'get_doc_report_dialog_data' ) );
@@ -32,8 +33,10 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_doc_report_dialog_data', array( $this, 'set_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
+
             add_action( 'wp_ajax_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
+
             add_action( 'wp_ajax_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
             add_action( 'wp_ajax_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
@@ -42,8 +45,10 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_doc_field_dialog_data', array( $this, 'set_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_field_dialog_data', array( $this, 'del_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_field_dialog_data', array( $this, 'del_doc_field_dialog_data' ) );
+
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
+
             add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
             add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
             add_action( 'wp_ajax_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
@@ -208,28 +213,16 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            $paged = max(1, get_query_var('paged')); // Get the current page number
-            $query = $this->retrieve_document_list_data($paged);
-            $total_posts = $query->found_posts;
-            $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             $profiles_class = new display_profiles();
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
-                
-                <div id="document-setting-dialog" title="Document setting" style="display:none">
-                <fieldset>
-                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                    <label for="site-title"> Site: </label>
-                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" disabled />
-                </fieldset>
-                </div>
-            
+
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <select id="select-category"><?php echo $profiles_class->select_doc_category_option_data($_GET['_category']);?></select>
@@ -252,6 +245,11 @@ if (!class_exists('display_documents')) {
                     </thead>
                     <tbody>
                     <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_document_list_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = (int) get_the_ID();
@@ -268,9 +266,8 @@ if (!class_exists('display_documents')) {
                             }
                             
                             $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                            //$unassigned = (!empty($action_query)) ? '' : '<span style="color:red;">(U)</span>';
                             $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
-                            $doc_title = $unassigned . $doc_title;
+                            $doc_title .= $unassigned;
 
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $todo_id = get_post_meta($doc_id, 'todo_status', true);
@@ -315,6 +312,7 @@ if (!class_exists('display_documents')) {
             );
 
             $select_category = sanitize_text_field($_GET['_category']);
+            if ($select_category) $paged = 1;
             $category_filter = array(
                 'key'     => 'doc_category',
                 'value'   => $select_category,
@@ -322,6 +320,7 @@ if (!class_exists('display_documents')) {
             );
 
             $search_query = sanitize_text_field($_GET['_search']);
+            if ($search_query) $paged = 1;
             $number_filter = array(
                 'key'     => 'doc_number',
                 'value'   => $search_query,
@@ -392,6 +391,7 @@ if (!class_exists('display_documents')) {
                 <div style="text-align:right; display:flex;">    
                 </div>
             </div>
+
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -606,8 +606,8 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$site_id = get_post_meta($doc_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -660,8 +660,8 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$site_id = get_post_meta($doc_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -872,8 +872,8 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) $doc_title .= '(電子表單)';
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$site_id = get_post_meta($doc_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1518,9 +1518,9 @@ if (!class_exists('display_documents')) {
             $category_id = get_post_meta($doc_id, 'doc_category', true);
             $doc_category = get_the_title( $category_id );
             $count_category = $this->count_doc_category($category_id);
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">

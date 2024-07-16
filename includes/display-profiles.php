@@ -184,8 +184,8 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -193,7 +193,7 @@ if (!class_exists('display_profiles')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile(0);?></div>
                 <div style="text-align: right">
-                    <button type="submit" id="my-profile-submit">Submit</button>
+                    <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                 </div>
             </div>    
             <fieldset>
@@ -506,7 +506,7 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
 
             // Check if the user is administrator or initial...
@@ -517,7 +517,7 @@ if (!class_exists('display_profiles')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_profile(1);?></div>
                     <div style="text-align: right">
-                        <button type="submit" id="site-profile-submit">Submit</button>
+                        <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                     </div>
                 </div>        
 
@@ -837,10 +837,10 @@ if (!class_exists('display_profiles')) {
         // Site job
         function display_site_job_list($initial=false) {
             ob_start();
-            $current_user_id = get_current_user_id();
-            $current_user = get_userdata($current_user_id);
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$current_user_id = get_current_user_id();
+            //$current_user = get_userdata($current_user_id);
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
 
             // Check if the user is administrator
