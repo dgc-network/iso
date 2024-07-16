@@ -198,12 +198,12 @@ if (!class_exists('http_client')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+/*
         function get_http_client_list_data() {
             $response = array('html_contain' => $this->display_http_client_list());
             wp_send_json($response);
         }
-
+*/
         function display_http_client_dialog($http_client_id=false) {
             $deviceID = get_post_meta($http_client_id, 'deviceID', true);
             $description = get_post_field('post_content', $http_client_id);
@@ -246,6 +246,7 @@ if (!class_exists('http_client')) {
                 wp_update_post( $data );
             } else {
                 $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_title'    => time(),
                     'post_content'  => 'xxx公司，xxx冷凍庫',
@@ -255,6 +256,7 @@ if (!class_exists('http_client')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'deviceID', time());
+                update_post_meta($post_id, 'site_id', $site_id);
             }
             $response = array('html_contain' => $this->display_http_client_list());
             wp_send_json($response);
