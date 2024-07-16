@@ -57,6 +57,7 @@ if (!class_exists('to_do_list')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
+
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
                     $submit_user = get_post_meta($todo_id, 'submit_user', true);
@@ -71,6 +72,8 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
+                if (!isset($_GET['_select_todo'])) $_GET['_select_todo'] = '0';
+                if ($_GET['_select_todo']=='0') echo $this->display_todo_list();
                 if ($_GET['_select_todo']=='1') echo $this->display_job_authorization();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
                 if ($_GET['_select_todo']=='3') {
@@ -87,7 +90,7 @@ if (!class_exists('to_do_list')) {
                     exit;
                 }
 
-                if (!isset($_GET['_id']) || !isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
+                //if (!isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
 
             } else {
                 user_did_not_login_yet();
