@@ -268,7 +268,8 @@ if (!class_exists('display_documents')) {
                             }
                             
                             $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                            $unassigned = (!empty($action_query)) ? '' : '<span style="color:red;">(U)</span>';
+                            //$unassigned = (!empty($action_query)) ? '' : '<span style="color:red;">(U)</span>';
+                            $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             $doc_title = $unassigned . $doc_title;
 
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
