@@ -136,7 +136,7 @@ if (!class_exists('http_client')) {
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php //$todo_class->display_select_todo(4);?></div>
-                    <div><?php $profiles_class->display_select_todo(9);?></div>
+                    <div><?php $profiles_class->display_select_profile(9);?></div>
                     <div style="text-align: right"></div>                        
                 </div>
         
