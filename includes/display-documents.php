@@ -422,7 +422,8 @@ if (!class_exists('display_documents')) {
             </div>
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
-                <select id="select-system-report">
+                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
                     <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($is_doc_report==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3" <?php echo ($is_doc_report==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
@@ -431,7 +432,6 @@ if (!class_exists('display_documents')) {
                     <option value="-6" <?php echo ($is_doc_report==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
                     <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
-                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             </div>
 
             <!-- Define the import map -->

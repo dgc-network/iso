@@ -61,8 +61,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_user_data', array( $this, 'del_doc_user_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_user_data', array( $this, 'del_doc_user_data' ) );                                                                    
 
-            add_action( 'wp_ajax_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
+            //add_action( 'wp_ajax_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_doc_category_list_data', array( $this, 'get_doc_category_list_data' ) );
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
@@ -204,10 +204,10 @@ if (!class_exists('display_profiles')) {
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 
-                <label for="my-job-list"><?php echo __( 'My jobs: ', 'your-text-domain' );?></label>
+                <label for="my-job-list"><?php echo __( 'My jobs & authorization: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
-                <label for="my-notification-list"><?php echo __( 'My devices: ', 'your-text-domain' );?></label>
+                <label for="my-notification-list"><?php echo __( 'My devices & notification: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
             <?php
@@ -1015,7 +1015,6 @@ if (!class_exists('display_profiles')) {
         }
 
         function set_site_job_dialog_data() {
-            $response = array();
             if( isset($_POST['_doc_id']) ) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $data = array(
@@ -1053,15 +1052,16 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($new_action_id, 'next_job', -1);
                 update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
+            $response = array('html_contain' => $this->display_site_job_list());
             wp_send_json($response);
         }
 
         function del_site_job_dialog_data() {
-            $response = array();
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($doc_title) echo 'You cannot delete this document';
             else wp_delete_post($doc_id, true);
+            $response = array('html_contain' => $this->display_site_job_list());
             wp_send_json($response);
         }
 
@@ -1590,12 +1590,12 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+/*
         function get_doc_category_list_data() {
             $response = array('html_contain' => $this->display_doc_category_list());
             wp_send_json($response);
         }
-
+*/
         function display_doc_category_dialog($category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);

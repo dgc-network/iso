@@ -511,7 +511,9 @@ jQuery(document).ready(function($) {
                     'action': 'set_site_job_dialog_data',
                 },
                 success: function (response) {
-                    get_site_job_list_data();
+                    //get_site_job_list_data();
+                    $("#result-container").html(response.html_contain);
+                    activate_site_job_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -563,7 +565,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
-                            get_site_job_list_data();
+                            //get_site_job_list_data();
+                            $("#result-container").html(response.html_contain);
+                            activate_site_job_list_data();
                         },
                         error: function (error) {
                             console.error(error);
@@ -583,7 +587,9 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
-                                get_site_job_list_data();
+                                //get_site_job_list_data();
+                                $("#result-container").html(response.html_contain);
+                                activate_site_job_list_data();
                             },
                             error: function (error) {
                                 console.error(error);
@@ -595,7 +601,7 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-
+/*
     function get_site_job_list_data(){
         $.ajax({
             type: 'POST',
@@ -614,7 +620,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     // doc-action scripts
     function activate_job_action_list_data(doc_id=false) {
         $("#new-doc-action").on("click", function() {
@@ -946,7 +952,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+/*
     function get_doc_category_list_data(){
         $.ajax({
             type: 'POST',
@@ -965,6 +971,6 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     
 });
