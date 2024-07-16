@@ -51,7 +51,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
         }
-
+/*
         function enqueue_custom_scripts() {
             ?>
             <script type="importmap">
@@ -67,7 +67,7 @@ if (!class_exists('display_documents')) {
             </script>
             <?php
         }
-        
+*/        
         function enqueue_display_document_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
@@ -348,26 +348,6 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function get_document_dialog_data() {
-            $response = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-                $todo_status = get_post_meta($doc_id, 'todo_status', true);
-                $profiles_class = new display_profiles();
-                $is_site_admin = $profiles_class->is_site_admin();
-                if (current_user_can('administrator')) $is_site_admin = true;
-                $is_user_doc = $profiles_class->is_user_doc($doc_id);
-                $response['is_doc_report'] = $is_doc_report;
-                $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
-                $response['todo_status'] = $todo_status;
-                $response['is_site_admin'] = $is_site_admin;
-                $response['is_user_doc'] = $is_user_doc;
-            }
-            wp_send_json($response);
-        }
-        
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
@@ -395,8 +375,7 @@ if (!class_exists('display_documents')) {
                     <?php echo display_iso_helper_logo();?>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
-                <div style="text-align:right; display:flex;">
-    
+                <div style="text-align:right; display:flex;">    
                 </div>
             </div>
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
@@ -429,6 +408,21 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
+            <div id="system-report-div" style="display:none;">
+                <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
+                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <select id="is-doc-report">
+                    <option value="-1"><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
+                    <option value="-2"><?php echo __( '客戶清單', 'your-text-domain' );?></option>
+                    <option value="-3"><?php echo __( '供應商清單', 'your-text-domain' );?></option>
+                    <option value="-4"><?php echo __( '產品清單', 'your-text-domain' );?></option>
+                    <option value="-5"><?php echo __( '設備清單', 'your-text-domain' );?></option>
+                    <option value="-6"><?php echo __( '儀器清單', 'your-text-domain' );?></option>
+                    <option value="-7"><?php echo __( '員工清單', 'your-text-domain' );?></option>
+                    <option value="-8"><?php echo __( 'xx清單', 'your-text-domain' );?></option>
+                </select>
+                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
+            </div>
 
             <!-- Define the import map -->
             <script type="importmap">
@@ -440,7 +434,6 @@ if (!class_exists('display_documents')) {
             </script>
 
             <script type="module">
-                //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
                 import mermaid from '@wordpress/interactivity';
                 mermaid.initialize({ startOnLoad: true });
             </script>
@@ -467,7 +460,7 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         ?>
-            <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
+                        <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                         <?php
                     endwhile;
                     wp_reset_postdata();
@@ -504,6 +497,26 @@ if (!class_exists('display_documents')) {
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+        
+        function get_document_dialog_data() {
+            $response = array();
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+                $todo_status = get_post_meta($doc_id, 'todo_status', true);
+                $profiles_class = new display_profiles();
+                $is_site_admin = $profiles_class->is_site_admin();
+                if (current_user_can('administrator')) $is_site_admin = true;
+                $is_user_doc = $profiles_class->is_user_doc($doc_id);
+                $response['is_doc_report'] = $is_doc_report;
+                $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                $response['todo_status'] = $todo_status;
+                $response['is_site_admin'] = $is_site_admin;
+                $response['is_user_doc'] = $is_user_doc;
+            }
+            wp_send_json($response);
         }
         
         function set_document_dialog_data() {

@@ -1693,10 +1693,11 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
-            //$options .= '<option value="iso-helper">' . __( 'iso-helper', 'your-text-domain' ) . '</option>';
-            $options .= '<option value="economic-growth">' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
-            $options .= '<option value="environmental-protection">' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
-            $options .= '<option value="social-responsibility">' . __( 'social responsibility', 'your-text-domain' ) . '</option>';
+            if (current_user_can('administrator')) {
+                $options .= '<option value="economic-growth">' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="environmental-protection">' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="social-responsibility">' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
+            }
             return $options;
         }
     }
