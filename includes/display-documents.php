@@ -411,14 +411,14 @@ if (!class_exists('display_documents')) {
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
                 <select id="select-system-report">
-                    <option value="-1"><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
-                    <option value="-2"><?php echo __( '客戶清單', 'your-text-domain' );?></option>
-                    <option value="-3"><?php echo __( '供應商清單', 'your-text-domain' );?></option>
-                    <option value="-4"><?php echo __( '產品清單', 'your-text-domain' );?></option>
-                    <option value="-5"><?php echo __( '設備清單', 'your-text-domain' );?></option>
-                    <option value="-6"><?php echo __( '儀器清單', 'your-text-domain' );?></option>
-                    <option value="-7"><?php echo __( '員工清單', 'your-text-domain' );?></option>
-                    <option value="-8"><?php echo __( 'xx清單', 'your-text-domain' );?></option>
+                    <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
+                    <option value="-2" <?php echo ($is_doc_report==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
+                    <option value="-3" <?php echo ($is_doc_report==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
+                    <option value="-4" <?php echo ($is_doc_report==-4) ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
+                    <option value="-5" <?php echo ($is_doc_report==-5) ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
+                    <option value="-6" <?php echo ($is_doc_report==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
+                    <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
+                    <option value="-8" <?php echo ($is_doc_report==-8) ? 'selected' : ''?>><?php echo __( 'xx清單', 'your-text-domain' );?></option>
                 </select>
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             </div>
