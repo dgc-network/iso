@@ -14,8 +14,8 @@ if (!class_exists('http_client')) {
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
-            add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
+            //add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
@@ -135,7 +135,6 @@ if (!class_exists('http_client')) {
                 <h2 style="display:inline;"><?php echo __( '溫濕度異常通知設定', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php //$todo_class->display_select_todo(4);?></div>
                     <div><?php $profiles_class->display_select_profile(9);?></div>
                     <div style="text-align: right"></div>                        
                 </div>
