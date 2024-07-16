@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
             //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            const is_doc_report = $("#is-doc-report").val() > 0 ? 0 : 1;
+            const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
             //const is_doc_report = 0;
             $("#is-doc-report").val(is_doc_report)
         });
@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
             //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            const is_doc_report = $("#is-doc-report").val() > 0 ? 0 : 1;
+            const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
             //const is_doc_report = 1;
             $("#is-doc-report").val(is_doc_report)
         });
@@ -351,7 +351,21 @@ jQuery(document).ready(function($) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
                     if (response.todo_status==-1) {
-                        if (response.is_doc_report==1) {
+                        if (response.is_doc_report==-1) {
+                            window.location.replace('/display-document/');
+                        } else if (response.is_doc_report==-2) {
+                            window.location.replace('/display-profiles/?_select_profile=4');
+                        } else if (response.is_doc_report==-3) {
+                            window.location.replace('/display-profiles/?_select_profile=5');
+                        } else if (response.is_doc_report==-4) {
+                            window.location.replace('/display-profiles/?_select_profile=6');
+                        } else if (response.is_doc_report==-5) {
+                            window.location.replace('/display-profiles/?_select_profile=7');
+                        } else if (response.is_doc_report==-6) {
+                            window.location.replace('/display-profiles/?_select_profile=8');
+                        } else if (response.is_doc_report==-7) {
+                            window.location.replace('/display-profiles/?_select_profile=1');
+                        } else if (response.is_doc_report==1) {
                             // Get the current URL
                             var currentUrl = window.location.href;
                             // Create a URL object
@@ -390,7 +404,21 @@ jQuery(document).ready(function($) {
                             window.location.replace(modifiedUrl);
 
                         } else {
-                            if (response.is_doc_report==1) {
+                            if (response.is_doc_report==-1) {
+                                window.location.replace('/display-document/');
+                            } else if (response.is_doc_report==-2) {
+                                window.location.replace('/display-profiles/?_select_profile=4');
+                            } else if (response.is_doc_report==-3) {
+                                window.location.replace('/display-profiles/?_select_profile=5');
+                            } else if (response.is_doc_report==-4) {
+                                window.location.replace('/display-profiles/?_select_profile=6');
+                            } else if (response.is_doc_report==-5) {
+                                window.location.replace('/display-profiles/?_select_profile=7');
+                            } else if (response.is_doc_report==-6) {
+                                window.location.replace('/display-profiles/?_select_profile=8');
+                            } else if (response.is_doc_report==-7) {
+                                window.location.replace('/display-profiles/?_select_profile=1');
+                            } else if (response.is_doc_report==1) {
                                 // Get the current URL
                                 var currentUrl = window.location.href;
                                 // Create a URL object
@@ -398,7 +426,8 @@ jQuery(document).ready(function($) {
                                 // Add the new parameter
                                 url.searchParams.set('_doc_report', doc_id);                            
                                 // Get the modified URL
-                                var modifiedUrl = url.toString();                            
+                                var modifiedUrl = url.toString();
+
                                 // Reload the page with the modified URL
                                 window.location.replace(modifiedUrl);
 
