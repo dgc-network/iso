@@ -286,7 +286,27 @@ jQuery(document).ready(function($) {
         });
 
         $("#system-report-preview").on("click", function () {
-            window.location.replace('/display-document/');
+            if ($("#is-doc-report").val()==-1) {
+                window.location.replace('/display-document/');
+            }
+            if ($("#is-doc-report").val()==-2) {
+                window.location.replace('/display-profiles/?_select_profile=4');
+            }
+            if ($("#is-doc-report").val()==-3) {
+                window.location.replace('/display-profiles/?_select_profile=5');
+            }
+            if ($("#is-doc-report").val()==-4) {
+                window.location.replace('/display-profiles/?_select_profile=6');
+            }
+            if ($("#is-doc-report").val()==-5) {
+                window.location.replace('/display-profiles/?_select_profile=7');
+            }
+            if ($("#is-doc-report").val()==-6) {
+                window.location.replace('/display-profiles/?_select_profile=8');
+            }
+            if ($("#is-doc-report").val()==-7) {
+                window.location.replace('/display-profiles/?_select_profile=1');
+            }
         });
     
         $("#doc-report-preview").on("click", function () {

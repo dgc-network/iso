@@ -257,7 +257,8 @@ if (!class_exists('display_documents')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            if ($is_doc_report==1) $doc_title = '*'.$doc_title;
+                            if ($is_doc_report>0) $doc_title = '*'.$doc_title;
+                            if ($is_doc_report<0) $doc_title = '**'.$doc_title;
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $todo_id = get_post_meta($doc_id, 'todo_status', true);
                             $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
@@ -418,7 +419,6 @@ if (!class_exists('display_documents')) {
                     <option value="-5" <?php echo ($is_doc_report==-5) ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
                     <option value="-6" <?php echo ($is_doc_report==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
                     <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
-                    <option value="-8" <?php echo ($is_doc_report==-8) ? 'selected' : ''?>><?php echo __( 'xx清單', 'your-text-domain' );?></option>
                 </select>
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             </div>
