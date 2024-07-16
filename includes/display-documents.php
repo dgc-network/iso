@@ -410,7 +410,7 @@ if (!class_exists('display_documents')) {
             </div>
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
-                <select id="is-doc-report">
+                <select id="select-system-report">
                     <option value="-1"><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2"><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3"><?php echo __( '供應商清單', 'your-text-domain' );?></option>
@@ -437,6 +437,7 @@ if (!class_exists('display_documents')) {
                 mermaid.initialize({ startOnLoad: true });
             </script>
 
+            <div id="mermaid-div">
             <pre class="mermaid">
                 graph TD 
                 <?php
@@ -466,6 +467,7 @@ if (!class_exists('display_documents')) {
                 endif;    
                 ?>
             </pre>
+            </div>
 
             <div id="job-setting-div" style="display:none;">
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>

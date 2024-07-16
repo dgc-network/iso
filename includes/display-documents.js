@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
         }
         if ($('#is-doc-report').val()<0) {
             $("#system-report-div").show();
-            $(".mermaid").hide();
+            $("#mermaid-div").hide();
         } 
 
         $("#doc-frame-label").on("click", function () {
@@ -174,8 +174,9 @@ jQuery(document).ready(function($) {
             //$("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
             $("#system-report-div").toggle();
-            //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
-            //$("#is-doc-report").val(is_doc_report)
+            $("#mermaid-div").toggle()
+            const is_doc_report = $("#select-system-report").val();
+            $("#is-doc-report").val(is_doc_report)
         });
 
         $("#doc-frame-job-setting").on("click", function () {
