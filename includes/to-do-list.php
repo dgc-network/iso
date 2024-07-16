@@ -71,7 +71,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if (!isset($_GET['_select_todo'])) $_GET['_select_todo'] = '0';
+                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = '0';
                 if ($_GET['_select_todo']=='0') echo $this->display_todo_list();
                 if ($_GET['_select_todo']=='1') echo $this->display_job_authorization();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
@@ -87,8 +87,6 @@ if (!class_exists('to_do_list')) {
                     $this->list_all_scheduled_events();
                     exit;
                 }
-
-                //if (!isset($_GET['_select_todo']) || $_GET['_select_todo']=='0') echo $this->display_todo_list();
 
             } else {
                 user_did_not_login_yet();
@@ -881,6 +879,7 @@ if (!class_exists('to_do_list')) {
         function get_signature_record_list($doc=false, $report=false ) {
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
+            $x = 0;
             ob_start();
             ?>
             <fieldset>
@@ -921,6 +920,7 @@ if (!class_exists('to_do_list')) {
         
                             if ($current_site==$site_id) { // Aditional condition to filter the data
                                 $user_data = get_userdata( $submit_user );
+                                $x += 1;
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                     <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
@@ -952,7 +952,7 @@ if (!class_exists('to_do_list')) {
             <?php
             return array(
                 'html' => ob_get_clean(),
-                'x'    => $total_posts,                
+                'x'    => $x
             );
         }
         
