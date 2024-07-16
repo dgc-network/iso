@@ -183,7 +183,6 @@ if (!class_exists('display_documents')) {
                     echo '</div>';
                 }
             
-                // Display ISO document statement if initial ID is existed
                 if (isset($_GET['_doc_report'])) {
                     $doc_id = sanitize_text_field($_GET['_doc_report']);
                     echo '<div class="ui-widget" id="result-container">';
@@ -191,7 +190,6 @@ if (!class_exists('display_documents')) {
                     echo '</div>';
                 }
 
-                // Display ISO document statement if initial ID is existed
                 if (isset($_GET['_doc_frame'])) {
                     $doc_id = sanitize_text_field($_GET['_doc_frame']);
                     echo '<div class="ui-widget" id="result-container">';

@@ -131,14 +131,7 @@ function display_social_responsibility() {
     return ob_get_clean();
 }
 add_shortcode( 'display-social-responsibility', 'display_social_responsibility' ) ;
-/*
-function remove_admin_bar() {
-    if (!current_user_can('administrator') && !is_admin()) {
-      show_admin_bar(false);
-    }
-}
-add_action('after_setup_theme', 'remove_admin_bar');
-*/  
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

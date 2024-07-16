@@ -220,7 +220,7 @@ if (!class_exists('display_profiles')) {
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             ?>
-                <fieldset style="margin-top:5px;">
+            <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th>#</th>
@@ -274,7 +274,7 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 <div id="my-job-action-list" title="Action authorization"></div>
-                </fieldset>
+            </fieldset>
             <?php
             return ob_get_clean();
         }
@@ -506,7 +506,7 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
+            $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
 
             // Check if the user is administrator or initial...
