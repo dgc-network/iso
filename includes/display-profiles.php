@@ -109,7 +109,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
-                if ($_GET['_select_profile']=='0') echo $this->display_todo_list();
+                if ($_GET['_select_profile']=='0') echo $this->display_my_profile()();
                 if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
