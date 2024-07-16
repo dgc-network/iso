@@ -140,12 +140,17 @@ jQuery(document).ready(function($) {
             }
         });            
                 
-        if ($('#is-doc-report').val()==1) {
+        if ($('#is-doc-report').val()>0) {
             $("#doc-report-div").show();
             $("#doc-report-div1").show();
-        } else {
+        } 
+        if ($('#is-doc-report').val()==0){
             $("#doc-frame-div").show();
         }
+        if ($('#is-doc-report').val()<0) {
+            $("#system-report-div").show();
+            $(".mermaid").hide();
+        } 
 
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();

@@ -410,7 +410,6 @@ if (!class_exists('display_documents')) {
             </div>
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
-                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <select id="is-doc-report">
                     <option value="-1"><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2"><?php echo __( '客戶清單', 'your-text-domain' );?></option>
@@ -421,7 +420,7 @@ if (!class_exists('display_documents')) {
                     <option value="-7"><?php echo __( '員工清單', 'your-text-domain' );?></option>
                     <option value="-8"><?php echo __( 'xx清單', 'your-text-domain' );?></option>
                 </select>
-                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
+                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
             </div>
 
             <!-- Define the import map -->
