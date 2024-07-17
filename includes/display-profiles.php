@@ -204,10 +204,10 @@ if (!class_exists('display_profiles')) {
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 
-                <label for="my-job-list"><?php echo __( 'My jobs & authorizations: ', 'your-text-domain' );?></label>
+                <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
-                <label for="my-notification-list"><?php echo __( 'My devices & notifications: ', 'your-text-domain' );?></label>
+                <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
             <?php
