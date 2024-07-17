@@ -997,17 +997,17 @@ if (!class_exists('display_profiles')) {
             ob_start();
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-                <label for="job-number">Number:</label>
+                <label for="job-number"><?php echo __( 'Number:', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-title">Title:</label>
+                <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-content">Content:</label>
+                <label for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
                 <textarea id="job-content" rows="3" style="width:100%;"><?php echo esc_attr($job_content);?></textarea>
-                <div class="separator"></div>
+                <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
-                <label for="department">Department:</label>
+                <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
-                <div class="separator"></div>
+                <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
             <?php
             return ob_get_clean();
