@@ -837,14 +837,10 @@ if (!class_exists('display_profiles')) {
         // Site job
         function display_site_job_list($initial=false) {
             ob_start();
-            //$current_user_id = get_current_user_id();
-            //$current_user = get_userdata($current_user_id);
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
 
-            // Check if the user is administrator
             if ($is_site_admin || current_user_can('administrator') || $initial) {
+                // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
@@ -934,10 +930,17 @@ if (!class_exists('display_profiles')) {
                         'value' => $site_id,
                     ),
                     array(
-                        'key'   => 'is_doc_report',
-                        'value' => 0,
-                        'compare' => '>=', // Comparison operator to check for values greater than or equal to 0
-                        'type'    => 'NUMERIC' // Ensure that the comparison is done numerically        
+                        'relation' => 'OR',
+                        array(
+                            'key'   => 'is_doc_report',
+                            'value' => 0,
+                            'compare' => '>=', // Comparison operator to check for values greater than or equal to 0
+                            'type'    => 'NUMERIC' // Ensure that the comparison is done numerically        
+                        ),
+                        array(
+                            'key'   => 'is_doc_report',
+                            'compare' => 'NOT EXISTS',
+                        ),    
                     ),
                 ),
                 'meta_key'       => 'job_number', // Meta key for sorting
