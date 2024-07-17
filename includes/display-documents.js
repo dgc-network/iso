@@ -14,6 +14,10 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
+    $("#apply-site-admin").on("click", function () {
+        window.location.replace('/');
+    })
+    
     $("#initial-next-step").on("click", function () {
         doc_category = $("#doc-category").val();
         count_category = $("#count-category").val();
