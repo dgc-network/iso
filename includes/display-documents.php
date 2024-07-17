@@ -376,8 +376,8 @@ if (!class_exists('display_documents')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $image_url = get_post_meta($site_id, 'image_url', true);
+            //$site_id = get_post_meta($doc_id, 'site_id', true);
+            //$image_url = get_post_meta($site_id, 'image_url', true);
     
             ob_start();
             ?>
@@ -481,6 +481,8 @@ if (!class_exists('display_documents')) {
             </div>
 
             <div id="job-setting-div" style="display:none;">
+                <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
@@ -489,8 +491,6 @@ if (!class_exists('display_documents')) {
                 <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
                 <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
                 <?php echo $profiles_class->display_doc_action_list($doc_id);?>
-                <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
             </div>
 
             <div id="doc-report-div1" style="display:none;">            
