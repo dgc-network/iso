@@ -877,7 +877,8 @@ if (!class_exists('display_profiles')) {
                                 $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                                 $department = get_post_meta(get_the_ID(), 'department', true);
                                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                $content = get_the_content().'('.$doc_number.')';
+                                $content = get_the_content();
+                                if ($doc_number) $content .= '('.$doc_number.')';
                                 $users = $this->retrieve_users_by_doc_id(get_the_ID());
                                 $unassigned = (!empty($users)) ? '' : '<span style="color:red;">U</span>';
                                 ?>
@@ -927,9 +928,16 @@ if (!class_exists('display_profiles')) {
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
+                    'relation' => 'AND',
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
+                    ),
+                    array(
+                        'key'   => 'is_doc_report',
+                        'value' => 0,
+                        'compare' => '>=', // Comparison operator to check for values greater than or equal to 0
+                        'type'    => 'NUMERIC' // Ensure that the comparison is done numerically        
                     ),
                 ),
                 'meta_key'       => 'job_number', // Meta key for sorting
