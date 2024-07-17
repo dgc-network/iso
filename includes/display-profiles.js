@@ -298,6 +298,27 @@ jQuery(document).ready(function($) {
             });
         });
     
+        $("#site-title").on("change", function () {
+            new_site_title = $(this).val();
+            if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'set_new_site_by_title',
+                        '_new_site_title': new_site_title,
+                    },
+                    success: function (response) {
+                        $("#site-id").val(response.new_site_id);
+                    },
+                    error: function(error){
+                        console.error(error);                    
+                    }
+                });        
+            }
+        });
+        
         $("#site-profile-submit").on("click", function () {
             $.ajax({
                 type: 'POST',

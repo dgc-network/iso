@@ -56,23 +56,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
         }
-/*
-        function enqueue_custom_scripts() {
-            ?>
-            <script type="importmap">
-            {
-                "imports": {
-                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                }
-            }
-            </script>
-            <script type="module">
-                import mermaid from "@wordpress/interactivity";
-                mermaid.initialize({ startOnLoad: true });
-            </script>
-            <?php
-        }
-*/        
+
         function enqueue_display_document_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
@@ -1491,97 +1475,100 @@ if (!class_exists('display_documents')) {
         }
         
         function display_iso_document_statement($doc_number){
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => 1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'doc_number',
-                        'value'   => sanitize_text_field($doc_number),
-                        'compare' => '='
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            $doc_id = null; // Initialize the variable to avoid potential undefined variable errors
-
-            if ($query->have_posts()) {
-                $doc_id = $query->posts[0]->ID; // Get the ID of the first (and only) post
-                wp_reset_postdata();
-            }
-
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $category_id = get_post_meta($doc_id, 'doc_category', true);
-            $doc_category = get_the_title( $category_id );
-            $count_category = $this->count_doc_category($category_id);
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
-            ob_start();
-            ?>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php echo display_iso_helper_logo();?>
-                    <span><?php echo esc_html($doc_number);?></span>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                    <span><?php echo esc_html($doc_revision);?></span>            
-                </div>
-            </div>
-        
-            <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-            <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
-            <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
-            <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
-            <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
-            <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-        
-            <fieldset>
-                <label for="site-title"><?php echo __( '單位組織名稱(Site)', 'your-text-domain' );?></label>
-                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" disabled class="text ui-widget-content ui-corner-all" />
-                <?php
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if ($is_site_admin) {
                 $args = array(
-                    'post_type'      => 'doc-report',
-                    'posts_per_page' => -1,
+                    'post_type'      => 'document',
+                    'posts_per_page' => 1,
                     'meta_query'     => array(
                         array(
-                            'key'     => 'doc_id',
-                            'value'   => $doc_id,
+                            'key'     => 'doc_number',
+                            'value'   => sanitize_text_field($doc_number),
                             'compare' => '='
                         ),
                     ),
-                    'orderby'    => 'meta_value',
-                    'meta_key'   => 'index',
-                    'order'      => 'ASC',
                 );
                 $query = new WP_Query($args);
-                        
+                $doc_id = null; // Initialize the variable to avoid potential undefined variable errors
+    
                 if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $report_id = get_the_ID();
-                        $index = get_post_meta($report_id, 'index', true);
-                        $description = get_post_meta($report_id, 'description', true);
-                        $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
-                        $is_url = get_post_meta($report_id, 'is_url', true);
-                        $is_bold = get_post_meta($report_id, 'is_bold', true);
-                        if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
-                        if ($is_url) {
-                            echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
-                        } else {
-                            if ($is_bold==1) echo '<b>';
-                            echo $description;
-                            if ($is_bold==1) echo '</b>';
-                            echo '<br>';
-                        }
-                    endwhile;                
+                    $doc_id = $query->posts[0]->ID; // Get the ID of the first (and only) post
                     wp_reset_postdata();
                 }
+    
+                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                $category_id = get_post_meta($doc_id, 'doc_category', true);
+                $doc_category = get_the_title( $category_id );
+                $count_category = $this->count_doc_category($category_id);
+                ob_start();
                 ?>
-            </fieldset>
-            <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
-            <?php
-            return ob_get_clean();
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php echo display_iso_helper_logo();?>
+                        <span><?php echo esc_html($doc_number);?></span>
+                        <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                        <span><?php echo esc_html($doc_revision);?></span>            
+                    </div>
+                </div>
+            
+                <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+                <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
+                <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
+                <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
+                <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
+                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
+            
+                <fieldset>
+                    <?php
+                    $args = array(
+                        'post_type'      => 'doc-report',
+                        'posts_per_page' => -1,
+                        'meta_query'     => array(
+                            array(
+                                'key'     => 'doc_id',
+                                'value'   => $doc_id,
+                                'compare' => '='
+                            ),
+                        ),
+                        'orderby'    => 'meta_value',
+                        'meta_key'   => 'index',
+                        'order'      => 'ASC',
+                    );
+                    $query = new WP_Query($args);
+                            
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            $report_id = get_the_ID();
+                            $index = get_post_meta($report_id, 'index', true);
+                            $description = get_post_meta($report_id, 'description', true);
+                            $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
+                            $is_url = get_post_meta($report_id, 'is_url', true);
+                            $is_bold = get_post_meta($report_id, 'is_bold', true);
+                            if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
+                            if ($is_url) {
+                                echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
+                            } else {
+                                if ($is_bold==1) echo '<b>';
+                                echo $description;
+                                if ($is_bold==1) echo '</b>';
+                                echo '<br>';
+                            }
+                        endwhile;                
+                        wp_reset_postdata();
+                    }
+                    ?>
+                </fieldset>
+                <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
+                <?php
+                return ob_get_clean();
+    
+            } else {
+                return 'You are not site administrator!';
+            }
+
         }
         
         function set_initial_iso_document() {

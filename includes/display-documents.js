@@ -14,27 +14,6 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
-    $("#site-title").on("change", function () {
-        new_site_title = $(this).val();
-        if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_new_site_by_title',
-                    '_new_site_title': new_site_title,
-                },
-                success: function (response) {
-                    $("#site-id").val(response.new_site_id);
-                },
-                error: function(error){
-                    console.error(error);                    
-                }
-            });        
-        }
-    });
-    
     $("#initial-next-step").on("click", function () {
         doc_category = $("#doc-category").val();
         count_category = $("#count-category").val();
@@ -60,7 +39,7 @@ jQuery(document).ready(function($) {
             });        
         }
     });
-
+    
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val());
         $(this).val('');

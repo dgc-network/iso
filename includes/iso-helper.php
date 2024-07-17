@@ -405,7 +405,7 @@ function user_did_not_login_yet() {
             $site_title = get_the_title($site_id);
         }
         //$user = get_user_by( 'ID', $user_id );
-        $current_user = get_userdata( $user_id );
+        $user = get_userdata( $user_id );
         ?>
         <div class="ui-widget">
             <h2><?php echo __( 'User registration/login', 'your-text-domain' );?></h2>
@@ -413,7 +413,7 @@ function user_did_not_login_yet() {
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
-                <input type="text" id="user-email" value="<?php echo esc_attr($current_user->user_email);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="user-email" value="<?php echo esc_attr($user->user_email);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
@@ -522,6 +522,119 @@ function one_time_password_desktop_submit() {
         $one_time_password = sanitize_text_field($_POST['_one_time_password']);
         $line_user_id = sanitize_text_field($_POST['_line_user_id']);
 
+        if ((int)$one_time_password === (int)get_option('_one_time_password')) {
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                $line_user_id
+            ));
+
+            if ($user_id) {
+                $user = get_userdata($user_id);
+                $credentials = array(
+                    'user_login'    => $user->user_login,
+                    'user_password' => $line_user_id,
+                    'remember'      => true,
+                );
+
+                $user_signon = wp_signon($credentials, false);
+
+                if (!is_wp_error($user_signon)) {
+                    wp_set_current_user($user_id);
+                    wp_set_auth_cookie($user_id);
+                    do_action('wp_login', $user->user_login);
+
+                    $response = array('success' => true);
+                } else {
+                    $response = array('error' => $user_signon->get_error_message());
+                }
+            } else {
+                $response = array('error' => "Wrong line_user_id meta key");
+            }
+        } else {
+            $response = array('error' => "Wrong one-time password");
+        }
+    }
+    wp_send_json($response);
+}
+add_action('wp_ajax_one_time_password_desktop_submit', 'one_time_password_desktop_submit');
+add_action('wp_ajax_nopriv_one_time_password_desktop_submit', 'one_time_password_desktop_submit');
+
+function wp_login_submit() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_display_name']) && isset($_POST['_user_email']) && isset($_POST['_log']) && isset($_POST['_pwd'])) {
+        $user_login = sanitize_text_field($_POST['_log']);
+        $user_password = sanitize_text_field($_POST['_pwd']);
+        $display_name = sanitize_text_field($_POST['_display_name']);
+        $user_email = sanitize_text_field($_POST['_user_email']);
+
+        $credentials = array(
+            'user_login'    => $user_login,
+            'user_password' => $user_password,
+            'remember'      => true,
+        );
+
+        $user = wp_signon($credentials, false);
+
+        if (!is_wp_error($user)) {
+            wp_set_current_user($user->ID);
+            wp_set_auth_cookie($user->ID);
+            do_action('wp_login', $user->user_login);
+
+            wp_update_user(array(
+                'ID' => $user->ID,
+                'display_name' => $display_name,
+                'user_email' => $user_email,
+            ));
+
+            // is_site_id()?
+            $site_id = get_user_meta($user->ID, 'site_id', true);
+            if (!$site_id) {
+                if (isset($_POST['_site_id'])) $site_id = sanitize_text_field($_POST['_site_id']);
+                $user_ids = get_users_by_site_id($site_id);
+                if (!empty($user_ids)) $response = array('error' => 'site_id is wrong!');
+            }
+
+            update_user_meta( $user->ID, 'site_id', $site_id);
+
+            $response = array('success' => true);
+        } else {
+            $response = array('error' => $user->get_error_message());
+        }
+    }
+    wp_send_json($response);
+}
+add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
+add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
+
+function get_users_by_site_id($site_id) {
+    global $wpdb;
+
+    // Query to find user IDs with the matching site_id
+    $user_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "
+            SELECT user_id 
+            FROM $wpdb->usermeta 
+            WHERE meta_key = 'site_id' 
+            AND meta_value = %s
+            ",
+            $site_id
+        )
+    );
+
+    return $user_ids;
+}
+
+/*
+function one_time_password_desktop_submit() {
+    $response = array('success' => false, 'error' => 'Invalid data format');
+
+    if (isset($_POST['_one_time_password'])) {
+        $one_time_password = sanitize_text_field($_POST['_one_time_password']);
+        $line_user_id = sanitize_text_field($_POST['_line_user_id']);
+
         if ((int)$one_time_password == (int)get_option('_one_time_password')) {
             // Get user by 'line_user_id' meta
             global $wpdb;
@@ -532,10 +645,10 @@ function one_time_password_desktop_submit() {
 
             if ($user_id) {
                 // Do something with $user_id
-                $current_user = get_userdata( $user_id );
+                $user = get_userdata( $user_id );
 
                 $credentials = array(
-                    'user_login'    => $current_user->user_login,
+                    'user_login'    => $user->user_login,
                     'user_password' => $line_user_id,
                     'remember'      => true,
                 );
@@ -546,7 +659,7 @@ function one_time_password_desktop_submit() {
                     // Login successful
                     wp_set_current_user($user_id);
                     wp_set_auth_cookie($user_id);
-                    do_action('wp_login', $current_user->user_login);
+                    do_action('wp_login', $user->user_login);
 
                     $response = array('success' => true);
                 } else {
@@ -568,7 +681,7 @@ add_action('wp_ajax_nopriv_one_time_password_desktop_submit', 'one_time_password
 function wp_login_submit() {
     $response = array('success' => false, 'error' => 'Invalid data format');
 
-    if (isset($_POST['_site_id'])) {
+    if (isset($_POST['_display_name']) && isset($_POST['_user_email'])) {
         $user_login = sanitize_text_field($_POST['_log']);
         $user_password = sanitize_text_field($_POST['_pwd']);
 
@@ -586,11 +699,12 @@ function wp_login_submit() {
             wp_set_auth_cookie($user->ID);
             do_action('wp_login', $user->user_login);
 
-            $current_user = wp_update_user( array( 
+            wp_update_user( array( 
                 'ID' => $user->ID, 
                 'display_name' => sanitize_text_field($_POST['_display_name']),
                 'user_email' => sanitize_text_field($_POST['_user_email']),
             ) );
+
             // Add/update user metadata
             update_user_meta( $user->ID, 'site_id', sanitize_text_field($_POST['_site_id']));
 
@@ -604,3 +718,4 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
+*/
