@@ -1566,7 +1566,7 @@ if (!class_exists('display_documents')) {
                 return ob_get_clean();
     
             } else {
-                return 'You are not site administrator!';
+                return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button>';
             }
 
         }
