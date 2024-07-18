@@ -716,14 +716,15 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
         
-        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $index_key=false) {
+        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $filter_key_pair=array()) {
             ?>
                 <table style="width:100%;">
                     <thead>
                         <?php
                         $params = array(
                             'doc_id'     => $doc_id,
-                            'is_listing'  => true,
+                            'is_listing' => true,
+                            'filter_key_pair' => $filter_key_pair,
                         );                
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
@@ -873,8 +874,6 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) $doc_title .= '(電子表單)';
-            //$site_id = get_post_meta($doc_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1102,6 +1101,18 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC',
             );
+
+            if (!empty($params['filter_key_pair'])) {
+                // Construct the meta query array
+                //$meta_query = array('relation' => 'AND'); // Using AND relation by default
+                $filter_key_pair = $params['filter_key_pair'];
+                foreach ($filter_key_pair as $key => $value) {
+                    $args['meta_query'][] = array(
+                        'key'   => $key,
+                        'value' => $value,
+                    );
+                }    
+            }
 
             if (!empty($params['doc_id'])) {
                 $args['meta_query'][] = array(
@@ -1333,6 +1344,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_customer'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
                             <?php
                             break;
@@ -1340,6 +1352,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_vendor'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
                             <?php
                             break;
@@ -1347,6 +1360,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_product'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_product_card_options($field_value);?></select>
                             <?php
                             break;
@@ -1354,6 +1368,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_equipment'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
                             <?php
                             break;
@@ -1361,6 +1376,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_instrument'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
                             <?php
                             break;
@@ -1368,6 +1384,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employee'):
                             $cards_class = new erp_cards();
                             ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
                             <?php
                             break;
