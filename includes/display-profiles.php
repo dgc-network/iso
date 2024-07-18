@@ -214,7 +214,8 @@ if (!class_exists('display_profiles')) {
         
                 if (!empty($document_ids)) {
                     foreach ($document_ids as $doc_id) {
-                        echo 'Document ID: ' . get_the_title($doc_id) . '<br>';
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        echo $doc_title. ': Document ID: ' . $doc_id. '<br>';
                     }
                 } else {
                     echo 'No documents found with parent_report_id: -7';
