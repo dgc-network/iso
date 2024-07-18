@@ -654,8 +654,6 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            //$site_id = get_post_meta($doc_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
