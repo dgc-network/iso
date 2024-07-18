@@ -208,27 +208,13 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // retrieve the doc-id from document post to find the metakey "parent_report_id"== -7 first
                 // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
-                // Example usage
                 $parent_report_id = -7;
                 $filter_key_pair = array(
-                    '_employee_id'   => $current_user_id,
+                    '_employee'   => $current_user_id,
                 );
                 $document_ids = $this->get_documents_by_filter($parent_report_id, $filter_key_pair);
-
-                //$document_ids = $this->get_document_ids_by_parent_report_id($parent_report_id);
-/*        
-                if (!empty($document_ids)) {
-                    foreach ($document_ids as $doc_id) {
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        echo $doc_title. ':';
-                        $documents_class = new display_documents();
-                        echo '<fieldset>';
-                        echo $documents_class->display_doc_report_native_list($doc_id, false, $current_user_id);
-                        echo '</fieldset>';
-                    }
-                }                
-*/                    
                 ?>
+
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
@@ -249,7 +235,6 @@ if (!class_exists('display_profiles')) {
                         'compare' => '='
                     ),
                 ),
-                //'meta_query'     => $meta_query,
                 'fields'         => 'ids', // Only retrieve the post IDs
             );
             
@@ -257,17 +242,14 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             
             if ($query->have_posts()) {
-                //if (!empty($document_ids)) {
-                    foreach ($query->posts as $doc_id) {
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        echo $doc_title. ':';
-                        $documents_class = new display_documents();
-                        echo '<fieldset>';
-                        echo $documents_class->display_doc_report_native_list($doc_id, false, $filter_key_pair);
-                        echo '</fieldset>';
-                    }
-                //}                
-
+                foreach ($query->posts as $doc_id) {
+                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                    echo $doc_title. ':';
+                    $documents_class = new display_documents();
+                    echo '<fieldset>';
+                    echo $documents_class->display_doc_report_native_list($doc_id, false, $filter_key_pair);
+                    echo '</fieldset>';
+                }
                 return $query->posts; // Return the array of post IDs
             } else {
                 return array(); // Return an empty array if no posts are found

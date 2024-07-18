@@ -747,7 +747,6 @@ if (!class_exists('display_documents')) {
                             'search_doc_report' => $search_doc_report,
                             'filter_key_pair' => $filter_key_pair,
                         );                
-                        //$query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $paged);
                         $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
