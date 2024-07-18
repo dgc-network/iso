@@ -215,18 +215,16 @@ if (!class_exists('display_profiles')) {
                 if (!empty($document_ids)) {
                     foreach ($document_ids as $doc_id) {
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        echo $doc_title. ': Document ID: ' . $doc_id. '<br>';
+                        echo $doc_title. ':';
                         $documents_class = new display_documents();
-                        //$result['doc_fields'] = $documents_class->display_doc_field_keys($doc_id);
+                        echo '<fieldset>';
                         echo $documents_class->display_doc_report_native_list($doc_id);
+                        echo '</fieldset>';
                     }
                 } else {
                     echo 'No documents found with parent_report_id: -7';
-                }
-                
-
+                }                
                 ?>
-
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
