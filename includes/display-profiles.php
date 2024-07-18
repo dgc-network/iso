@@ -221,8 +221,6 @@ if (!class_exists('display_profiles')) {
                         echo $documents_class->display_doc_report_native_list($doc_id);
                         echo '</fieldset>';
                     }
-                } else {
-                    echo 'No documents found with parent_report_id: -7';
                 }                
                 ?>
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
