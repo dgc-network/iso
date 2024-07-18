@@ -1101,7 +1101,7 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC',
             );
-
+/*
             if (!empty($params['filter_key_pair'])) {
                 // Construct the meta query array
                 //$meta_query = array('relation' => 'AND'); // Using AND relation by default
@@ -1113,7 +1113,7 @@ if (!class_exists('display_documents')) {
                     );
                 }    
             }
-
+*/
             if (!empty($params['doc_id'])) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_id',
