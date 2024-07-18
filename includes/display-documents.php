@@ -294,7 +294,7 @@ if (!class_exists('display_documents')) {
             );
 
             $select_category = sanitize_text_field($_GET['_category']);
-            if ($select_category) $paged = 1;
+            //if ($select_category) $paged = 1;
             $category_filter = array(
                 'key'     => 'doc_category',
                 'value'   => $select_category,
@@ -313,7 +313,7 @@ if (!class_exists('display_documents')) {
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             );
-            if ($search_query) $paged = 1;
+            //if ($search_query) $paged = 1;
 
             $args = array(
                 'post_type'      => 'document',
