@@ -772,6 +772,18 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
+                                        } elseif ($field_type=='_customer') {
+                                            echo esc_html(get_the_title($field_value));
+                                        } elseif ($field_type=='_vendor') {
+                                            echo esc_html(get_the_title($field_value));
+                                        } elseif ($field_type=='_product') {
+                                            echo esc_html(get_the_title($field_value));
+                                        } elseif ($field_type=='_equipment') {
+                                            echo esc_html(get_the_title($field_value));
+                                        } elseif ($field_type=='_instrument') {
+                                            echo esc_html(get_the_title($field_value));
+                                        } elseif ($field_type=='_employee') {
+                                            echo esc_html(get_the_title($field_value));
                                         } else {
                                             echo esc_html($field_value);
                                         }
@@ -934,7 +946,7 @@ if (!class_exists('display_documents')) {
                     'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
-                $this->display_doc_field_result($params);
+                $this->display_doc_field_in_dialog($params);
             ?>
             <hr>
             <?php
@@ -1296,7 +1308,7 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function display_doc_field_result($args) {
+        function display_doc_field_in_dialog($args) {
 
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
@@ -1364,7 +1376,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
                             <?php
                             break;
 
@@ -1372,7 +1384,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
                             <?php
                             break;
 
@@ -1380,7 +1392,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_product_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
                             <?php
                             break;
 
@@ -1388,7 +1400,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
                             <?php
                             break;
 
@@ -1396,7 +1408,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
                             <?php
                             break;
 
@@ -1404,7 +1416,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
                             <?php
                             break;
             
