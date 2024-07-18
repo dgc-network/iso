@@ -783,8 +783,8 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='_instrument') {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employee') {
-                                            echo get_the_title($field_value);
-                                            //echo esc_html($field_value);
+                                            $user = get_userdata($field_value);
+                                            echo $user->display_name;
                                         } else {
                                             echo esc_html($field_value);
                                         }

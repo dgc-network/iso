@@ -154,10 +154,6 @@ if (!class_exists('to_do_list')) {
         }
         
         function display_job_authorization() {
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
-            //$current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -308,10 +304,6 @@ if (!class_exists('to_do_list')) {
         }
 
         function display_todo_list() {
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
-            //$current_user = get_userdata( $current_user_id );
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -852,10 +844,6 @@ if (!class_exists('to_do_list')) {
         
         // signature_record
         function display_signature_record() {
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
-            //$current_user = get_userdata( $current_user_id );
             $signature_record_list = $this->get_signature_record_list();
             $html_contain = $signature_record_list['html'];
             $x_value = $signature_record_list['x'];
