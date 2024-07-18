@@ -430,7 +430,7 @@ jQuery(document).ready(function($) {
                 }
             }
         });
-
+/*
         initializeFullWidthDialog("#new-user-dialog");
         initializeFullWidthDialog("#site-user-dialog");
 
@@ -483,7 +483,7 @@ jQuery(document).ready(function($) {
                 }
             }
         });
-/*    
+*/
         $("#new-user-dialog").dialog({
             width: 390,
             modal: true,
@@ -542,7 +542,6 @@ jQuery(document).ready(function($) {
                 },
             }
         });    
-*/
     }
 
     function get_site_profile_data(){
