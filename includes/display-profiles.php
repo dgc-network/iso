@@ -241,6 +241,7 @@ if (!class_exists('display_profiles')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1, // Retrieve all matching posts
                 'meta_query'     => array(
+                    'relation' => 'AND',
                     array(
                         'key'     => 'parent_report_id',
                         'value'   => $parent_report_id,
@@ -249,7 +250,17 @@ if (!class_exists('display_profiles')) {
                 ),
                 'fields'         => 'ids', // Only retrieve the post IDs
             );
-            
+
+            if (!current_user_can('administrator')) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $args['meta_query'][] = array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '='
+                );
+            }
+
             // Execute the query
             $query = new WP_Query($args);
             
