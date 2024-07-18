@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
     });
     
     $("#select-category").on( "change", function() {
-        window.location.replace("?_category="+$(this).val());
+        window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');
     });
 
