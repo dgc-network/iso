@@ -159,12 +159,12 @@ jQuery(document).ready(function($) {
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
         });
-
+/*
         $("#select-parent-report").on("change", function () {
             const parent_report_id = $("#select-parent-report").val();            
             $("#parent-report-id").val(parent_report_id)
         });
-
+*/
         $("#select-system-report").on("change", function () {
             const is_doc_report = $("#select-system-report").val();
             $("#is-doc-report").val(is_doc_report)

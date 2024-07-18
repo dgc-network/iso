@@ -401,7 +401,7 @@ if (!class_exists('display_documents')) {
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="parent-report-label" class="button"><?php echo __( 'Parent report', 'your-text-domain' );?></label>
-                <select id="select-parent-report"  class="text ui-widget-content ui-corner-all">
+                <select id="parent-report-id"  class="text ui-widget-content ui-corner-all">
                     <option><?php echo __( 'Select a parent report', 'your-text-domain' );?></option>
                     <option value="-1" <?php echo ($parent_report_id==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($parent_report_id==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
