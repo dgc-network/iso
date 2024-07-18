@@ -218,7 +218,7 @@ if (!class_exists('display_profiles')) {
                         echo $doc_title. ': Document ID: ' . $doc_id. '<br>';
                         $documents_class = new display_documents();
                         //$result['doc_fields'] = $documents_class->display_doc_field_keys($doc_id);
-                        echo $documents_class->display_doc_report_list($doc_id);
+                        echo $documents_class->display_doc_report_native_list($doc_id);
                     }
                 } else {
                     echo 'No documents found with parent_report_id: -7';

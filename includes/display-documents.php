@@ -649,7 +649,74 @@ if (!class_exists('display_documents')) {
         }
         
         // doc-report
-        function display_doc_report_native_list($doc_id=false, $search_doc_report=false) {
+        function display_doc_report_list($doc_id=false, $search_doc_report=false) {
+
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            ob_start();
+            ?>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <?php echo display_iso_helper_logo();?>
+                    <span><?php echo esc_html($doc_number);?></span>
+                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                    <span><?php echo esc_html($doc_revision);?></span>            
+                </div>
+                <div style="text-align:right; display:flex;">
+                    <input type="button" id="signature-record" value="<?php echo __( '文件簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                </div>
+            </div>
+        
+            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+            
+            <div id="signature-record-div" style="display:none;">
+                <?php $todo_class = new to_do_list();?>
+                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
+                <?php echo $signature_record_list['html']?>
+            </div>
+        
+                <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
+                    <fieldset>
+                        <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
+                        <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                        <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
+                        <?php echo $this->display_doc_field_list($doc_id);?>
+                    </fieldset>
+                </div>        
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div></div>                    
+                    <div style="text-align:right; display:flex;">
+                        <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
+                        <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                    </div>
+                </div>
+
+            <fieldset>
+                <?php
+                $this->display_doc_report_native_list($doc_id, $search_doc_report);
+                ?>
+            
+                <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+        
+        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $index_key=false) {
             ?>
                 <table style="width:100%;">
                     <thead>
@@ -718,77 +785,9 @@ if (!class_exists('display_documents')) {
                         ?>
                     </tbody>
                 </table>
-
             <?php
         }
 
-        function display_doc_report_list($doc_id=false, $search_doc_report=false) {
-
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            ob_start();
-            ?>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php echo display_iso_helper_logo();?>
-                    <span><?php echo esc_html($doc_number);?></span>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                    <span><?php echo esc_html($doc_revision);?></span>            
-                </div>
-                <div style="text-align:right; display:flex;">
-                    <input type="button" id="signature-record" value="<?php echo __( '文件簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-                </div>
-            </div>
-        
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-            
-            <div id="signature-record-div" style="display:none;">
-                <?php $todo_class = new to_do_list();?>
-                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
-                <?php echo $signature_record_list['html']?>
-            </div>
-        
-                <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
-                    <fieldset>
-                        <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
-                        <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                        <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
-                        <?php echo $this->display_doc_field_list($doc_id);?>
-                    </fieldset>
-                </div>        
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div></div>                    
-                    <div style="text-align:right; display:flex;">
-                        <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
-                        <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-                    </div>
-                </div>
-
-            <fieldset>
-                <?php
-                $this->display_doc_report_native_list($doc_id=false, $search_doc_report=false);
-                ?>
-            
-                <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-
-                <div class="pagination">
-                    <?php
-                    // Display pagination links
-                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                    ?>
-                </div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-        
         function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
             $args = array(
                 'post_type'      => 'doc-report',
