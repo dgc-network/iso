@@ -226,11 +226,12 @@ if (!class_exists('display_profiles')) {
 
             if (!empty($filter_key_pair)) {
                 foreach ($filter_key_pair as $key => $value) {
-                    if ($key=='_customer') $parent_report_id=-1;
-                    if ($key=='_vendor') $parent_report_id=-2;
-                    if ($key=='_product') $parent_report_id=-3;
-                    if ($key=='_equipment') $parent_report_id=-4;
-                    if ($key=='_instrument') $parent_report_id=-5;
+                    if ($key=='_document') $parent_report_id=-1;
+                    if ($key=='_customer') $parent_report_id=-2;
+                    if ($key=='_vendor') $parent_report_id=-3;
+                    if ($key=='_product') $parent_report_id=-4;
+                    if ($key=='_equipment') $parent_report_id=-5;
+                    if ($key=='_instrument') $parent_report_id=-6;
                     if ($key=='_employee') $parent_report_id=-7;
                 }    
             }
