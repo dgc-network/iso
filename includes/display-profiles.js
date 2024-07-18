@@ -398,12 +398,98 @@ jQuery(document).ready(function($) {
             });
         });
 
+        // jQuery UI Dialog initialization
+        $("#new-user-dialog").dialog({
+            width: $(window).width() <= 600 ? '100%' : '80%',
+            modal: true,
+            autoOpen: false,
+            open: function(event, ui) {
+                if ($(window).width() <= 600) {
+                    $(this).parent().css({
+                        "width": "100%",
+                        "max-width": "100%"
+                    });
+                } else {
+                    $(this).parent().css({
+                        "width": "80%",
+                        "max-width": "800px"
+                    });
+                }
+            },
+            resize: function(event, ui) {
+                if ($(window).width() <= 600) {
+                    $(this).parent().css({
+                        "width": "100%",
+                        "max-width": "100%"
+                    });
+                } else {
+                    $(this).parent().css({
+                        "width": "80%",
+                        "max-width": "800px"
+                    });
+                }
+            }
+        });
+
+        initializeFullWidthDialog("#new-user-dialog");
+        initializeFullWidthDialog("#site-user-dialog");
+
+        // Define the site-user-dialog with specific buttons and actions
+        $("#site-user-dialog").dialog({
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_site_user_dialog_data',
+                            '_user_id': $("#user-id").val(),
+                            '_display_name': $("#display-name").val(),
+                            '_user_email': $("#user-email").val(),
+                            '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                            '_select_site': $("#select-site").val(),
+                        },
+                        success: function (response) {
+                            $("#site-user-dialog").dialog('close');
+                            window.location.replace(window.location.href);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this site user?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_site_user_dialog_data',
+                                '_user_id': $("#user-id").val(),
+                            },
+                            success: function (response) {
+                                $("#site-user-dialog").dialog('close');
+                                get_site_profile_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+/*    
         $("#new-user-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
         });
-    
+
         $("#site-user-dialog").dialog({
             width: 390,
             modal: true,
@@ -456,6 +542,7 @@ jQuery(document).ready(function($) {
                 },
             }
         });    
+*/
     }
 
     function get_site_profile_data(){

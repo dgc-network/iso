@@ -1,3 +1,37 @@
+function initializeFullWidthDialog(selector) {
+    $(selector).dialog({
+        width: $(window).width() <= 600 ? '100%' : '80%',
+        modal: true,
+        autoOpen: false,
+        open: function(event, ui) {
+            if ($(window).width() <= 600) {
+                $(this).parent().css({
+                    "width": "100%",
+                    "max-width": "100%"
+                });
+            } else {
+                $(this).parent().css({
+                    "width": "80%",
+                    "max-width": "800px"
+                });
+            }
+        },
+        resize: function(event, ui) {
+            if ($(window).width() <= 600) {
+                $(this).parent().css({
+                    "width": "100%",
+                    "max-width": "100%"
+                });
+            } else {
+                $(this).parent().css({
+                    "width": "80%",
+                    "max-width": "800px"
+                });
+            }
+        }
+    });
+}
+
 jQuery(document).ready(function($) {
     // JavaScript to detect mobile browser
     if (/Mobi/.test(navigator.userAgent)) {
