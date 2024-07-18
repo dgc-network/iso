@@ -795,9 +795,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
 
-        //function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
         function retrieve_doc_report_list_data($params) {
-
             // Construct the meta query array
             $meta_query = array('relation' => 'AND'); // Using AND relation by default
     
@@ -817,71 +815,45 @@ if (!class_exists('display_documents')) {
 
             if (!empty($params['search_doc_report'])) {
                 $search_doc_report = $params['search_doc_report'];
-            }
-
-            if (!empty($params['filter_key_pair'])) {
-                $filter_key_pair = $params['filter_key_pair'];
-                foreach ($filter_key_pair as $key => $value) {
-/*                    
-                    $args['meta_query'][] = array(
-                        'key'   => $key,
-                        'value' => $value,
+                if ($search_doc_report) {
+                    $meta_query[] = array(
+                        'relation' => 'OR',
                     );
-*/                    
                 }    
             }
-/*
-            foreach ($filter_key_pair as $key => $value) {
-                $meta_query[] = array(
-                    'key'     => $key,
-                    'value'   => $value,
-                    'compare' => '='
-                );
-            }
 
-            // Set up the query arguments
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => $meta_query,
-                'fields'         => 'ids', // Only retrieve the post IDs
-            );
-*/            
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => $meta_query,
-/*
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'doc_id',
-                        'value'   => $doc_id,
-                        'compare' => '='
-                    ),
-                ),
-*/                
                 'orderby'        => array(), // Initialize orderby parameter as an array
             );
         
             $order_field_name = ''; // Initialize variable to store the meta key for ordering
             $order_field_value = ''; // Initialize variable to store the order direction
         
-            if ($search_doc_report) {
-                $args['meta_query'][] = array(
-                    'relation' => 'OR',
-                );
-            }
-        
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
         
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                    $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
-        
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+
+                    if (!empty($params['filter_key_pair'])) {
+                        $filter_key_pair = $params['filter_key_pair'];
+                        foreach ($filter_key_pair as $key => $value) {
+                            if ($key==$field_type) {
+                                $args['meta_query'][] = array(
+                                    'key'   => $field_name,
+                                    'value' => $value,
+                                );    
+                            }
+                        }    
+                    }
+                        
                     // Check if the order_field_value is valid
+                    $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
                     if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
                         // Add the field_name and order_field_value to orderby array
                         $args['orderby'][$field_name] = $order_field_value;
