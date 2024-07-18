@@ -797,8 +797,16 @@ if (!class_exists('display_documents')) {
 
         //function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
         function retrieve_doc_report_list_data($params) {
+
+            // Construct the meta query array
+            $meta_query = array('relation' => 'AND'); // Using AND relation by default
+    
             if (!empty($params['doc_id'])) {
                 $doc_id = $params['doc_id'];
+                $meta_query[] = array(
+                    'key'   => 'doc_id',
+                    'value' => $doc_id,
+                );
             }
 
             if (!empty($params['paged'])) {
@@ -822,11 +830,29 @@ if (!class_exists('display_documents')) {
 */                    
                 }    
             }
+/*
+            foreach ($filter_key_pair as $key => $value) {
+                $meta_query[] = array(
+                    'key'     => $key,
+                    'value'   => $value,
+                    'compare' => '='
+                );
+            }
 
+            // Set up the query arguments
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => $meta_query,
+                'fields'         => 'ids', // Only retrieve the post IDs
+            );
+*/            
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
+                'meta_query'     => $meta_query,
+/*
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -835,6 +861,7 @@ if (!class_exists('display_documents')) {
                         'compare' => '='
                     ),
                 ),
+*/                
                 'orderby'        => array(), // Initialize orderby parameter as an array
             );
         
