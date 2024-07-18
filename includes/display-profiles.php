@@ -269,19 +269,36 @@ if (!class_exists('display_profiles')) {
         }
         
         function get_document_ids_by_parent_report_id($parent_report_id = false) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
+                    'relation' => 'AND',
                     array(
                         'key'     => 'parent_report_id',
                         'value'   => $parent_report_id,
                         'compare' => '='
                     ),
+/*
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    ),
+*/                    
                 ),
                 'fields'         => 'ids', // Only retrieve the post IDs
             );
-        
+            if (!current_user_can('administrator')) {
+                $args['meta_query'][] = array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '='
+                );
+            }
+
             $query = new WP_Query($args);
         
             if ($query->have_posts()) {
