@@ -358,11 +358,9 @@ if (!class_exists('display_documents')) {
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $parent_report_id = get_post_meta($doc_id, 'parent_report_id', true);
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-            //$site_id = get_post_meta($doc_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
-    
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -402,12 +400,25 @@ if (!class_exists('display_documents')) {
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
+                <label id="parent-report-label" class="button"><?php echo __( 'Parent report', 'your-text-domain' );?></label>
+                <select id="select-parent-report"  class="text ui-widget-content ui-corner-all">
+                    <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
+                    <option value="-1" <?php echo ($parent_report_id==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
+                    <option value="-2" <?php echo ($parent_report_id==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
+                    <option value="-3" <?php echo ($parent_report_id==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
+                    <option value="-4" <?php echo ($parent_report_id==-4) ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
+                    <option value="-5" <?php echo ($parent_report_id==-5) ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
+                    <option value="-6" <?php echo ($parent_report_id==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
+                    <option value="-7" <?php echo ($parent_report_id==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
+                </select>
+
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
+                    <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
                     <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($is_doc_report==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3" <?php echo ($is_doc_report==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
@@ -537,6 +548,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta( $doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
                 update_post_meta( $doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta( $doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
+                update_post_meta( $doc_id, 'parent_report_id', sanitize_text_field($_POST['_parent_report_id']));
 
                 $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
                 update_post_meta( $doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);

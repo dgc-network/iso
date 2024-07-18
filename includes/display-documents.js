@@ -139,7 +139,6 @@ jQuery(document).ready(function($) {
             $("#doc-report-div").toggle();
             $("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
-            //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
             const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
             //const is_doc_report = 0;
             $("#is-doc-report").val(is_doc_report)
@@ -150,7 +149,6 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").toggle();
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
-            //const is_doc_report = $("#is-doc-report").val() == 1 ? 0 : 1;
             const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
             //const is_doc_report = 1;
             $("#is-doc-report").val(is_doc_report)
@@ -160,8 +158,11 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").toggle();
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
-            //const is_doc_report = $("#select-system-report").val();
-            //$("#is-doc-report").val(is_doc_report)
+        });
+
+        $("#select-parent-report").on("change", function () {
+            const parent_report_id = this.val();            
+            $("#parent-report-id").val(parent_report_id)
         });
 
         $("#select-system-report").on("change", function () {
@@ -211,6 +212,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+            ajaxData['_parent_report_id'] = $("#parent-report-id").val();
             ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
             ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
             ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
