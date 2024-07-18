@@ -724,7 +724,6 @@ if (!class_exists('display_documents')) {
                         $params = array(
                             'doc_id'     => $doc_id,
                             'is_listing' => true,
-                            'filter_key_pair' => $filter_key_pair,
                         );                
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
@@ -742,7 +741,14 @@ if (!class_exists('display_documents')) {
                     <tbody>
                         <?php
                         $paged = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $paged);
+                        $params = array(
+                            'doc_id'     => $doc_id,
+                            'paged'     => $paged,
+                            'search_doc_report' => $search_doc_report,
+                            'filter_key_pair' => $filter_key_pair,
+                        );                
+                        //$query = $this->retrieve_doc_report_list_data($doc_id, $search_doc_report, $paged);
+                        $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
             
@@ -789,7 +795,34 @@ if (!class_exists('display_documents')) {
             <?php
         }
 
-        function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
+        //function retrieve_doc_report_list_data($doc_id = false, $search_doc_report = false, $paged = 1) {
+        function retrieve_doc_report_list_data($params) {
+            if (!empty($params['doc_id'])) {
+                $doc_id = $params['doc_id'];
+            }
+
+            if (!empty($params['paged'])) {
+                $paged = $params['paged'];
+            } else {
+                $paged = 1;
+            }
+
+            if (!empty($params['search_doc_report'])) {
+                $search_doc_report = $params['search_doc_report'];
+            }
+
+            if (!empty($params['filter_key_pair'])) {
+                $filter_key_pair = $params['filter_key_pair'];
+                foreach ($filter_key_pair as $key => $value) {
+/*                    
+                    $args['meta_query'][] = array(
+                        'key'   => $key,
+                        'value' => $value,
+                    );
+*/                    
+                }    
+            }
+
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -1101,19 +1134,7 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC',
             );
-/*
-            if (!empty($params['filter_key_pair'])) {
-                // Construct the meta query array
-                //$meta_query = array('relation' => 'AND'); // Using AND relation by default
-                $filter_key_pair = $params['filter_key_pair'];
-                foreach ($filter_key_pair as $key => $value) {
-                    $args['meta_query'][] = array(
-                        'key'   => $key,
-                        'value' => $value,
-                    );
-                }    
-            }
-*/
+
             if (!empty($params['doc_id'])) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_id',
