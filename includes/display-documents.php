@@ -773,15 +773,20 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
                                         } elseif ($field_type=='_customer') {
-                                            echo esc_html(get_the_title($field_value));
+                                            $customer_code = get_post_meta($field_value, 'customer_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$customer_code.')');
                                         } elseif ($field_type=='_vendor') {
-                                            echo esc_html(get_the_title($field_value));
+                                            $vendor_code = get_post_meta($field_value, 'vendor_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$vendor_code.')');
                                         } elseif ($field_type=='_product') {
-                                            echo esc_html(get_the_title($field_value));
+                                            $product_code = get_post_meta($field_value, 'product_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$product_code.')');
                                         } elseif ($field_type=='_equipment') {
-                                            echo esc_html(get_the_title($field_value));
+                                            $equipment_code = get_post_meta($field_value, 'equipment_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$equipment_code.')');
                                         } elseif ($field_type=='_instrument') {
-                                            echo esc_html(get_the_title($field_value));
+                                            $instrument_code = get_post_meta($field_value, 'instrument_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
                                         } elseif ($field_type=='_employee') {
                                             $user = get_userdata($field_value);
                                             echo $user->display_name;

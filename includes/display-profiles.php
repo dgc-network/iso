@@ -600,10 +600,11 @@ if (!class_exists('display_profiles')) {
 
                 <fieldset>
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                    <label for="site-title"><?php echo __( '單位組織名稱：', 'your-text-domain' );?></label>
+                    <label for="site-title"><?php echo __( '組織名稱：', 'your-text-domain' );?></label>
                     <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                     <div id="site-hint" style="display:none; color:#999;"></div>
 
+                    <label for="site-logo"><?php echo __( 'LOGO:', 'your-text-domain' );?></label>
                     <div id="site-image-container">
                         <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
                     </div>
@@ -615,7 +616,7 @@ if (!class_exists('display_profiles')) {
                     </fieldset>
                     </div>
 
-                    <label for="site-members"><?php echo __( '單位組織成員：', 'your-text-domain' );?></label>
+                    <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <fieldset style="margin-top:5px;">
                     <table class="ui-widget" style="width:100%;">
                         <thead>
@@ -716,6 +717,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
@@ -743,9 +745,6 @@ if (!class_exists('display_profiles')) {
                     </table>
                 </fieldset>
                 <?php
-                // retrieve the doc-id from document post to find the metakey == -7 first then 
-                // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
-
                 if (current_user_can('administrator')) {
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
