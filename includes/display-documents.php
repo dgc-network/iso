@@ -402,7 +402,7 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="parent-report-label" class="button"><?php echo __( 'Parent report', 'your-text-domain' );?></label>
                 <select id="select-parent-report"  class="text ui-widget-content ui-corner-all">
-                    <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
+                    <option><?php echo __( 'Select a parent report', 'your-text-domain' );?></option>
                     <option value="-1" <?php echo ($parent_report_id==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($parent_report_id==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3" <?php echo ($parent_report_id==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>

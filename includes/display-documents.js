@@ -161,7 +161,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#select-parent-report").on("change", function () {
-            const parent_report_id = this.val();            
+            const parent_report_id = $("#select-parent-report").val();            
             $("#parent-report-id").val(parent_report_id)
         });
 
