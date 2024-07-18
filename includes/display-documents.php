@@ -716,7 +716,7 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
         
-        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $filter_key_pair=array()) {
+        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $key_pairs=array()) {
             ?>
                 <table style="width:100%;">
                     <thead>
@@ -745,7 +745,7 @@ if (!class_exists('display_documents')) {
                             'doc_id'     => $doc_id,
                             'paged'     => $paged,
                             'search_doc_report' => $search_doc_report,
-                            'filter_key_pair' => $filter_key_pair,
+                            'key_pairs' => $key_pairs,
                         );                
                         $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
@@ -837,8 +837,8 @@ if (!class_exists('display_documents')) {
                 $search_doc_report = $params['search_doc_report'];
             }
 
-            if (!empty($params['filter_key_pair'])) {
-                $filter_key_pair = $params['filter_key_pair'];
+            if (!empty($params['key_pairs'])) {
+                $key_pairs = $params['key_pairs'];
             }
 
             $args = array(
@@ -859,8 +859,8 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if ($filter_key_pair) {
-                        foreach ($filter_key_pair as $key => $value) {
+                    if ($key_pairs) {
+                        foreach ($key_pairs as $key => $value) {
                             if ($key==$field_type) {
                                 $args['meta_query'][0][] = array(
                                     'key'   => $field_name,

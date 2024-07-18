@@ -206,10 +206,10 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // retrieve the doc-id from document post to find the metakey "parent_report_id"== -7 first
                 // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
-                $filter_key_pair = array(
+                $key_pairs = array(
                     '_employee'   => $current_user_id,
                 );
-                $this->get_documents_by_filter($filter_key_pair);
+                $this->get_documents_by_filter($key_pairs);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
@@ -222,10 +222,10 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_documents_by_filter($filter_key_pair = array()) {
+        function get_documents_by_filter($key_pairs = array()) {
 
-            if (!empty($filter_key_pair)) {
-                foreach ($filter_key_pair as $key => $value) {
+            if (!empty($key_pairs)) {
+                foreach ($key_pairs as $key => $value) {
                     if ($key=='_document') $parent_report_id=-1;
                     if ($key=='_customer') $parent_report_id=-2;
                     if ($key=='_vendor') $parent_report_id=-3;
@@ -259,7 +259,7 @@ if (!class_exists('display_profiles')) {
                     echo $doc_title. ':';
                     $documents_class = new display_documents();
                     echo '<fieldset>';
-                    echo $documents_class->display_doc_report_native_list($doc_id, false, $filter_key_pair);
+                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
                     echo '</fieldset>';
                 }
                 return $query->posts; // Return the array of post IDs
