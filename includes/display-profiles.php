@@ -199,8 +199,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
-                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 
                 <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
@@ -208,21 +206,35 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // retrieve the doc-id from document post to find the metakey "parent_report_id"== -7 first
                 // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
-                $parent_report_id = -7;
+                //$parent_report_id = -7;
                 $filter_key_pair = array(
                     '_employee'   => $current_user_id,
                 );
-                $document_ids = $this->get_documents_by_filter($parent_report_id, $filter_key_pair);
+                $this->get_documents_by_filter($parent_report_id, $filter_key_pair);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
+
+                <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
         }
 
         function get_documents_by_filter($parent_report_id=false, $filter_key_pair = array()) {
+
+            if (!empty($filter_key_pair)) {
+                foreach ($filter_key_pair as $key => $value) {
+                    if ($key=='_customer') $parent_report_id=-1;
+                    if ($key=='_vendor') $parent_report_id=-2;
+                    if ($key=='_product') $parent_report_id=-3;
+                    if ($key=='_equipment') $parent_report_id=-4;
+                    if ($key=='_instrument') $parent_report_id=-5;
+                    if ($key=='_employee') $parent_report_id=-7;
+                }    
+            }
 
             // Set up the query arguments
             $args = array(
