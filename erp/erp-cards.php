@@ -254,8 +254,10 @@ if (!class_exists('erp_cards')) {
             $query = $this->retrieve_customer_card_data();
             $options = '<option value="">Select customer</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                //$selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -458,8 +460,10 @@ if (!class_exists('erp_cards')) {
             $query = $this->retrieve_vendor_card_data();
             $options = '<option value="">Select vendor</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                //$selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -662,8 +666,10 @@ if (!class_exists('erp_cards')) {
             $query = $this->retrieve_product_card_data();
             $options = '<option value="">Select product</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                //$selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -866,8 +872,10 @@ if (!class_exists('erp_cards')) {
             $query = $this->retrieve_equipment_card_data();
             $options = '<option value="">Select equipment</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                //$selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1070,8 +1078,10 @@ if (!class_exists('erp_cards')) {
             $query = $this->retrieve_instrument_card_data();
             $options = '<option value="">Select instrument</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_title()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                //$selected = ($selected_option == get_the_title()) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr(get_the_title()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1095,8 +1105,10 @@ if (!class_exists('erp_cards')) {
             // Loop through the users
             $options = '<option value="">Select employee</option>';
             foreach ($users as $user) {
-                $selected = ($selected_option == $user->display_name) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($user->display_name) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
+                //$selected = ($selected_option == $user->display_name) ? 'selected' : '';
+                //$options .= '<option value="' . esc_attr($user->display_name) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
+                $selected = ($selected_option == $user->ID) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
             }
             return $options;
         }        
