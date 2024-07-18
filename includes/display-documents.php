@@ -511,14 +511,14 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+                //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                 $todo_status = get_post_meta($doc_id, 'todo_status', true);
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
                 if (current_user_can('administrator')) $is_site_admin = true;
                 $is_user_doc = $profiles_class->is_user_doc($doc_id);
                 $response['is_doc_report'] = $is_doc_report;
-                $response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
+                //$response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
                 $response['todo_status'] = $todo_status;
                 $response['is_site_admin'] = $is_site_admin;
                 $response['is_user_doc'] = $is_user_doc;
