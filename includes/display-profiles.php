@@ -184,8 +184,6 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -207,6 +205,24 @@ if (!class_exists('display_profiles')) {
                 <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
+                <?php
+                // retrieve the doc-id from document post to find the metakey "parent_report_id"== -7 first
+                // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
+                // Example usage
+                $parent_report_id = -7;
+                $document_ids = $this->get_document_ids_by_parent_report_id($parent_report_id);
+        
+                if (!empty($document_ids)) {
+                    foreach ($document_ids as $doc_id) {
+                        echo 'Document ID: ' . get_the_title($doc_id) . '<br>';
+                    }
+                } else {
+                    echo 'No documents found with parent_report_id: -7';
+                }
+                
+
+                ?>
+
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
             </fieldset>
@@ -214,6 +230,29 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
+        function get_document_ids_by_parent_report_id($parent_report_id = false) {
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'parent_report_id',
+                        'value'   => $parent_report_id,
+                        'compare' => '='
+                    ),
+                ),
+                'fields'         => 'ids', // Only retrieve the post IDs
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                return $query->posts; // Return the array of post IDs
+            } else {
+                return array(); // Return an empty array if no posts are found
+            }
+        }
+        
         function display_my_job_list() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -639,29 +678,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <?php
-                if (current_user_can('administrator')) {
-                    $current_user_id = get_current_user_id();
-                    $site_id = get_user_meta($current_user_id, 'site_id', true);
-                    ?>
-                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                    <?php
-                    $site_args = array(
-                        'post_type'      => 'site',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        $selected = ($site_id == $site->ID) ? 'selected' : '';
-                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-                    }
-                    echo '</select>';
-                }
-                ?>
-                <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
@@ -688,6 +704,33 @@ if (!class_exists('display_profiles')) {
                         </tbody>
                     </table>
                 </fieldset>
+                <?php
+                // retrieve the doc-id from document post to find the metakey == -7 first then 
+                // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
+
+                if (current_user_can('administrator')) {
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    ?>
+                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
+                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                    <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                    }
+                    echo '</select>';
+                }
+                ?>
+                <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
+                <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+
             </fieldset>
             </div>
             <?php
