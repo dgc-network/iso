@@ -809,7 +809,15 @@ if (!class_exists('display_documents')) {
 
         function retrieve_doc_report_list_data($params) {
             // Construct the meta query array
-            $meta_query = array('relation' => 'AND'); // Using AND relation by default
+            $meta_query = array(
+                'relation' => 'AND',
+                array(
+                    'relation' => 'OR',
+                ),
+                array(
+                    'relation' => 'OR',
+                ),
+            );
     
             if (!empty($params['doc_id'])) {
                 $doc_id = $params['doc_id'];
@@ -827,11 +835,10 @@ if (!class_exists('display_documents')) {
 
             if (!empty($params['search_doc_report'])) {
                 $search_doc_report = $params['search_doc_report'];
-                if ($search_doc_report) {
-                    $meta_query[] = array(
-                        'relation' => 'OR',
-                    );
-                }    
+            }
+
+            if (!empty($params['filter_key_pair'])) {
+                $filter_key_pair = $params['filter_key_pair'];
             }
 
             $args = array(
@@ -852,18 +859,17 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if (!empty($params['filter_key_pair'])) {
-                        $filter_key_pair = $params['filter_key_pair'];
+                    if ($filter_key_pair) {
                         foreach ($filter_key_pair as $key => $value) {
                             if ($key==$field_type) {
-                                $args['meta_query'][] = array(
+                                $args['meta_query'][0][] = array(
                                     'key'   => $field_name,
                                     'value' => $value,
                                 );    
                             }
                         }    
                     }
-                        
+
                     // Check if the order_field_value is valid
                     $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
                     if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
