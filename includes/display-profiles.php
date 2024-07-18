@@ -206,11 +206,10 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // retrieve the doc-id from document post to find the metakey "parent_report_id"== -7 first
                 // retrieve the doc-report result filtered by above doc-id and employee-id==user_id
-                //$parent_report_id = -7;
                 $filter_key_pair = array(
                     '_employee'   => $current_user_id,
                 );
-                $this->get_documents_by_filter($parent_report_id, $filter_key_pair);
+                $this->get_documents_by_filter($filter_key_pair);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
@@ -223,7 +222,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_documents_by_filter($parent_report_id=false, $filter_key_pair = array()) {
+        function get_documents_by_filter($filter_key_pair = array()) {
 
             if (!empty($filter_key_pair)) {
                 foreach ($filter_key_pair as $key => $value) {
@@ -1448,7 +1447,6 @@ if (!class_exists('display_profiles')) {
                 'meta_query' => array(
                     array(
                         'key'     => 'user_doc_ids',
-                        //'value'   => '"' . $doc_id . '"',
                         'value'   => $doc_id,
                         'compare' => 'LIKE'
                     )
