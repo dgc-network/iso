@@ -6,12 +6,7 @@ jQuery(document).ready(function($) {
         var pattern = /^(http|https):\/\/[^ "]+$/;
         return pattern.test(str);
     }
-/*    
-    $("#select-profile").on("change", function() {
-        window.location.replace("?_select_profile="+$(this).val());
-        $(this).val('');
-    });
-*/
+
     activate_my_profile_data();
     activate_site_profile_data();
     activate_site_job_list_data();
@@ -73,9 +68,6 @@ jQuery(document).ready(function($) {
                     success: function (response) {
                         console.log(response);
                         window.location.replace(window.location.href);
-                        //$("#my-job-action-list").dialog('close');
-                        //$("#my-job-list").html(response.html_contain);
-                        //activate_my_profile_data();
                     },
                     error: function (error) {
                         console.error(error);
@@ -176,9 +168,6 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             console.log(response);
                             window.location.replace(window.location.href);
-                            //$("#my-notification-dialog").dialog('close');
-                            //$("#my-notification-list").html(response.my_notification_list);
-                            //activate_my_profile_data();
                         },
                         error: function (error) {
                             console.error(error);
@@ -187,7 +176,7 @@ jQuery(document).ready(function($) {
                     });
                 },
                 "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this notification?")) {
+                    if (window.confirm("Are you sure you want to delete this notification settings?")) {
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
@@ -199,9 +188,6 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 console.log(response);
                                 window.location.replace(window.location.href);
-                                //$("#my-notification-dialog").dialog('close');
-                                //$("#my-notification-list").html(response.my_notification_list);
-                                //activate_my_profile_data();
                             },
                             error: function (error) {
                                 console.error(error);
@@ -375,7 +361,7 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_user_doc_data',
+                                    'action': 'set_site_user_doc_data',
                                     _doc_id : doc_id,
                                     _user_id : user_id,
                                     _is_user_doc : $("#is-user-doc-"+doc_id).is(":checked") ? 1 : 0,
@@ -398,92 +384,6 @@ jQuery(document).ready(function($) {
             });
         });
 
-        // jQuery UI Dialog initialization
-        $("#new-user-dialog").dialog({
-            width: $(window).width() <= 600 ? '100%' : '80%',
-            modal: true,
-            autoOpen: false,
-            open: function(event, ui) {
-                if ($(window).width() <= 600) {
-                    $(this).parent().css({
-                        "width": "100%",
-                        "max-width": "100%"
-                    });
-                } else {
-                    $(this).parent().css({
-                        "width": "80%",
-                        "max-width": "800px"
-                    });
-                }
-            },
-            resize: function(event, ui) {
-                if ($(window).width() <= 600) {
-                    $(this).parent().css({
-                        "width": "100%",
-                        "max-width": "100%"
-                    });
-                } else {
-                    $(this).parent().css({
-                        "width": "80%",
-                        "max-width": "800px"
-                    });
-                }
-            }
-        });
-/*
-        initializeFullWidthDialog("#new-user-dialog");
-        initializeFullWidthDialog("#site-user-dialog");
-
-        // Define the site-user-dialog with specific buttons and actions
-        $("#site-user-dialog").dialog({
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_site_user_dialog_data',
-                            '_user_id': $("#user-id").val(),
-                            '_display_name': $("#display-name").val(),
-                            '_user_email': $("#user-email").val(),
-                            '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
-                            '_select_site': $("#select-site").val(),
-                        },
-                        success: function (response) {
-                            $("#site-user-dialog").dialog('close');
-                            window.location.replace(window.location.href);
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this site user?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_site_user_dialog_data',
-                                '_user_id': $("#user-id").val(),
-                            },
-                            success: function (response) {
-                                $("#site-user-dialog").dialog('close');
-                                get_site_profile_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-*/
         $("#new-user-dialog").dialog({
             width: 390,
             modal: true,
@@ -672,7 +572,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
-                            //get_site_job_list_data();
                             $("#result-container").html(response.html_contain);
                             activate_site_job_list_data();
                         },
@@ -694,7 +593,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
-                                //get_site_job_list_data();
                                 $("#result-container").html(response.html_contain);
                                 activate_site_job_list_data();
                             },
@@ -708,26 +606,7 @@ jQuery(document).ready(function($) {
             }
         });    
     }
-/*
-    function get_site_job_list_data(){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_site_job_list_data',
-            },
-            success: function (response) {
-                $("#result-container").html(response.html_contain);
-                activate_site_job_list_data();
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/
+
     // doc-action scripts
     function activate_job_action_list_data(doc_id=false) {
         $("#new-doc-action").on("click", function() {
@@ -740,7 +619,6 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    //get_job_action_list_data(doc_id);
                     $("#doc-action-list").html(response.html_contain);
                     activate_job_action_list_data(doc_id);
                 },
@@ -793,7 +671,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            //get_job_action_list_data(doc_id);
                             $("#doc-action-list").html(response.html_contain);
                             activate_job_action_list_data(doc_id);
                         },
@@ -816,7 +693,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                //get_job_action_list_data(doc_id);
                                 $("#doc-action-list").html(response.html_contain);
                                 activate_job_action_list_data(doc_id);
                             },
@@ -832,26 +708,6 @@ jQuery(document).ready(function($) {
 
     }
 
-    function get_job_action_list_data(doc_id=false) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_action_list_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {
-                $("#doc-action-list").html(response.html_contain);
-                activate_job_action_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-
     // doc-user scripts
     function activate_doc_user_list_data(doc_id=false) {
         $("#new-doc-user").on("click", function() {
@@ -860,7 +716,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_new_user_list_data',
+                    'action': 'get_new_user_list',
                 },
                 success: function (response) {
                     $("#new-user-list-dialog").html(response.html_contain);
@@ -880,7 +736,6 @@ jQuery(document).ready(function($) {
                                 success: function (response) {
                                     console.log(response)
                                     $("#new-user-list-dialog").dialog('close');
-                                    //get_doc_user_list_data(doc_id);
                                     $("#doc-user-list").html(response.html_contain);
                                     activate_doc_user_list_data(doc_id);
                     
@@ -913,10 +768,9 @@ jQuery(document).ready(function($) {
                         '_user_id': user_id,
                     },
                     success: function (response) {
-                        //get_doc_user_list_data(doc_id);
                         $("#doc-user-list").html(response.html_contain);
                         activate_doc_user_list_data(doc_id);
-                            },
+                    },
                     error: function (error) {
                         console.error(error);
                         alert(error);
@@ -931,26 +785,6 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     }
-
-    function get_doc_user_list_data(doc_id=false) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_user_list_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {
-                $("#doc-user-list").html(response.html_contain);
-                activate_doc_user_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }    
 
     // doc-category scripts
     function activate_doc_category_list_data(){
@@ -980,7 +814,6 @@ jQuery(document).ready(function($) {
                     'action': 'set_doc_category_dialog_data',
                 },
                 success: function (response) {
-                    //get_doc_category_list_data();
                     $("#result-container").html(response.html_contain);
                     activate_doc_category_list_data();
                     },
@@ -1032,7 +865,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-category-dialog").dialog('close');
-                            //get_doc_category_list_data();
                             $("#result-container").html(response.html_contain);
                             activate_doc_category_list_data();
                         },
@@ -1054,7 +886,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-category-dialog").dialog('close');
-                                //get_doc_category_list_data();
                                 $("#result-container").html(response.html_contain);
                                 activate_doc_category_list_data();
                             },
@@ -1068,25 +899,4 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*
-    function get_doc_category_list_data(){
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_category_list_data',
-            },
-            success: function (response) {
-                $("#result-container").html(response.html_contain);
-                activate_doc_category_list_data();
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/
-    
 });

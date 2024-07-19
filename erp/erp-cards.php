@@ -204,11 +204,12 @@ if (!class_exists('erp_cards')) {
                 <label for="customer-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="customer-content" rows="3" style="width:100%;"><?php echo esc_html($customer_content);?></textarea>
                 <?php
+                // transaction data vs card key/value
                 $key_pairs = array(
                     '_customer'   => $customer_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_documents_by_filter($key_pairs);
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -414,11 +415,12 @@ if (!class_exists('erp_cards')) {
                 <label for="vendor-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="vendor-content" rows="3" style="width:100%;"><?php echo esc_html($vendor_content);?></textarea>
                 <?php
+                // transaction data vs card key/value
                 $key_pairs = array(
                     '_vendor'   => $vendor_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_documents_by_filter($key_pairs);
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -624,11 +626,12 @@ if (!class_exists('erp_cards')) {
                 <label for="product-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="product-content" rows="3" style="width:100%;"><?php echo esc_html($product_content);?></textarea>
                 <?php
+                // transaction data vs card key/value
                 $key_pairs = array(
                     '_product'   => $product_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_documents_by_filter($key_pairs);
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -834,11 +837,12 @@ if (!class_exists('erp_cards')) {
                 <label for="equipment-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="equipment-content" rows="3" style="width:100%;"><?php echo esc_html($equipment_content);?></textarea>
                 <?php
+                // transaction data vs card key/value
                 $key_pairs = array(
                     '_equipment'   => $equipment_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_documents_by_filter($key_pairs);
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -1044,11 +1048,12 @@ if (!class_exists('erp_cards')) {
                 <label for="instrument-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($instrument_content);?></textarea>
                 <?php
+                // transaction data vs card key/value
                 $key_pairs = array(
                     '_instrument'   => $instrument_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_documents_by_filter($key_pairs);
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
                 ?>
             </fieldset>
             <?php

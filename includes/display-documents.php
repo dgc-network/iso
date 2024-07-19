@@ -498,6 +498,14 @@ if (!class_exists('display_documents')) {
                     <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                 </div>
             </div>
+            <?php
+                // transaction data vs card key/value
+                $key_pairs = array(
+                    '_document'   => $doc_id,
+                );
+                $profiles_class = new display_profiles();
+                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+            ?>
             <hr>
             <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
