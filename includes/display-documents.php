@@ -769,6 +769,10 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
+                                        } elseif ($field_type=='_document') {
+                                            $doc_title = get_post_meta($field_value, 'doc_title', true);
+                                            $doc_number = get_post_meta($field_value, 'doc_number', true);
+                                            echo esc_html($doc_title.'('.$doc_number.')');
                                         } elseif ($field_type=='_customer') {
                                             $customer_code = get_post_meta($field_value, 'customer_code', true);
                                             echo esc_html(get_the_title($field_value).'('.$customer_code.')');
