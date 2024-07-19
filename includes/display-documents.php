@@ -787,7 +787,7 @@ if (!class_exists('display_documents')) {
                                             echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
                                         } elseif ($field_type=='_department') {
                                             $instrument_code = get_post_meta($field_value, 'department_code', true);
-                                            echo esc_html(get_the_title($field_value).'('.$department_code.')');
+                                            echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employee') {
                                             $user = get_userdata($field_value);
                                             echo $user->display_name;

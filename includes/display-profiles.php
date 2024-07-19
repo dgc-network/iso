@@ -87,7 +87,7 @@ if (!class_exists('display_profiles')) {
                 <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
-                <option value="10" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
+                <option value="10" <?php echo ($select_option==10) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
             </select>
             <?php
         }
