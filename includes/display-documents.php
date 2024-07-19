@@ -625,7 +625,7 @@ if (!class_exists('display_documents')) {
                     '_document'   => $doc_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
             ?>
             <?php
             return ob_get_clean();

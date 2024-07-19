@@ -216,7 +216,7 @@ if (!class_exists('erp_cards')) {
                     '_customer'   => $customer_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -427,7 +427,7 @@ if (!class_exists('erp_cards')) {
                     '_vendor'   => $vendor_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -638,7 +638,7 @@ if (!class_exists('erp_cards')) {
                     '_product'   => $product_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -849,7 +849,7 @@ if (!class_exists('erp_cards')) {
                     '_equipment'   => $equipment_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -1060,7 +1060,7 @@ if (!class_exists('erp_cards')) {
                     '_instrument'   => $instrument_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php
@@ -1271,7 +1271,7 @@ if (!class_exists('erp_cards')) {
                     '_department'   => $department_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_key_value($key_pairs);
+                $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
             </fieldset>
             <?php

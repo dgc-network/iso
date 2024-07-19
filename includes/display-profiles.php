@@ -201,7 +201,7 @@ if (!class_exists('display_profiles')) {
                 $key_pairs = array(
                     '_employee'   => $current_user_id,
                 );
-                $this->get_transactions_by_card_key_value($key_pairs);
+                $this->get_transactions_by_card_value($key_pairs);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
@@ -214,10 +214,45 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_transactions_by_card_key_value($key_pairs = array()) {
+        function get_transactions_by_card_value($key_pairs = array()) {
+
+            // Define the query arguments
+
+            
 
             if (!empty($key_pairs)) {
                 foreach ($key_pairs as $key => $value) {
+
+                    $args = array(
+                        'post_type'  => 'doc-field',
+                        'posts_per_page' => -1, // Retrieve all posts
+                        'meta_query' => array(
+                            array(
+                                'key'   => 'field_type',
+                                'value' => $key,
+                                'compare' => '='
+                            )
+                        ),
+                        'fields' => 'ids' // Only return post IDs
+                    );
+                
+                    // Execute the query
+                    $query = new WP_Query($args);
+
+                    if ($query->have_posts()) {
+                        foreach ($query->posts as $doc_id) {
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            echo $doc_title. ':';
+                            $documents_class = new display_documents();
+                            echo '<fieldset>';
+                            echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
+                            echo '</fieldset>';
+                        }
+                        return $query->posts; // Return the array of post IDs
+                    }
+        
+        
+/*
                     if ($key=='_document') $parent_report_id=-1;
                     if ($key=='_customer') $parent_report_id=-2;
                     if ($key=='_vendor') $parent_report_id=-3;
@@ -225,9 +260,12 @@ if (!class_exists('display_profiles')) {
                     if ($key=='_equipment') $parent_report_id=-5;
                     if ($key=='_instrument') $parent_report_id=-6;
                     if ($key=='_employee') $parent_report_id=-7;
+*/
                 }    
             }
+            return array(); // Return an empty array if no posts are found
 
+/*
             // Set up the query arguments
             $args = array(
                 'post_type'      => 'document',
@@ -255,7 +293,7 @@ if (!class_exists('display_profiles')) {
 
             // Execute the query
             $query = new WP_Query($args);
-            
+
             if ($query->have_posts()) {
                 foreach ($query->posts as $doc_id) {
                     $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -269,6 +307,7 @@ if (!class_exists('display_profiles')) {
             } else {
                 return array(); // Return an empty array if no posts are found
             }
+*/            
         }
         
         function display_my_job_list() {
