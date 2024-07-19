@@ -880,11 +880,10 @@ jQuery(document).ready(function($) {
                                 success: function (response) {
                                     console.log(response)
                                     $("#new-user-list-dialog").dialog('close');
-                                    //$("#site-job-dialog").html(response.html_contain);
-                                    get_doc_user_list_data(doc_id);
-                                    //$("#doc-user-list").html(response.html_contain);
-                                    //activate_doc_user_list_data(doc_id);
-
+                                    //get_doc_user_list_data(doc_id);
+                                    $("#doc-user-list").html(response.html_contain);
+                                    activate_doc_user_list_data(doc_id);
+                    
                                 },
                                 error: function (error) {
                                     console.error(error);
@@ -914,8 +913,10 @@ jQuery(document).ready(function($) {
                         '_user_id': user_id,
                     },
                     success: function (response) {
-                        get_doc_user_list_data(doc_id);
-                    },
+                        //get_doc_user_list_data(doc_id);
+                        $("#doc-user-list").html(response.html_contain);
+                        activate_doc_user_list_data(doc_id);
+                            },
                     error: function (error) {
                         console.error(error);
                         alert(error);

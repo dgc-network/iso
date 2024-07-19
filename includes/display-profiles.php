@@ -43,8 +43,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
+            //add_action( 'wp_ajax_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_doc_action_list_data', array( $this, 'get_doc_action_list_data' ) );                                                                    
             add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );                                                                    
             add_action( 'wp_ajax_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );
@@ -52,8 +52,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
 
-            add_action( 'wp_ajax_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );                                                                    
+            //add_action( 'wp_ajax_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_doc_user_list_data', array( $this, 'get_doc_user_list_data' ) );                                                                    
             add_action( 'wp_ajax_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_new_user_list_data', array( $this, 'get_new_user_list_data' ) );                                                                    
             add_action( 'wp_ajax_add_doc_user_data', array( $this, 'add_doc_user_data' ) );
@@ -1280,7 +1280,7 @@ if (!class_exists('display_profiles')) {
 
             return $query;
         }
-
+/*
         function get_doc_action_list_data() {
             $response = array();
             if (isset($_POST['_doc_id'])) {
@@ -1289,7 +1289,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+*/
         function display_doc_action_dialog($action_id=false){
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
@@ -1503,14 +1503,14 @@ if (!class_exists('display_profiles')) {
         
             return $users;
         }
-
+/*
         function get_doc_user_list_data() {
             $response = array();
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
         }
-
+*/
         function get_new_user_list_data() {
             $response = array();
             $response['html_contain'] = $this->display_new_doc_user_list();
@@ -1556,6 +1556,8 @@ if (!class_exists('display_profiles')) {
                 $response['message'] = 'Document ID already exists for this user.';
             }
 
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
         }
 
@@ -1598,6 +1600,8 @@ if (!class_exists('display_profiles')) {
                 $response['message'] = 'Document ID does not exist for this user.';
             }
 
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
         }
 
