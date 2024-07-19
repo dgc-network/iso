@@ -592,7 +592,9 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    get_doc_field_list_data(doc_id);
+                    //get_doc_field_list_data(doc_id);
+                    $('#fields-container').html(response.html_contain);
+                    activate_doc_field_list_data(doc_id);
                 },
                 error: function(error){
                     console.error(error);                    
@@ -655,6 +657,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_doc_field_dialog_data',
+                            '_doc_id': doc_id,
                             '_field_id': $("#field-id").val(),
                             '_field_name': $("#field-name").val(),
                             '_field_title': $("#field-title").val(),
@@ -666,7 +669,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            get_doc_field_list_data(doc_id);
+                            //get_doc_field_list_data(doc_id);
+                            $('#fields-container').html(response.html_contain);
+                            activate_doc_field_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -682,11 +687,14 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_doc_field_dialog_data',
+                                '_doc_id': doc_id,
                                 '_field_id': $("#field-id").val(),
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                get_doc_field_list_data(doc_id);
+                                //get_doc_field_list_data(doc_id);
+                                $('#fields-container').html(response.html_contain);
+                                activate_doc_field_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
@@ -1012,34 +1020,6 @@ jQuery(document).ready(function($) {
                     }
                 });
             }    
-/*
-            const ajaxData = {
-                'action': 'duplicate_doc_report_data',
-            };
-            ajaxData['_report_id'] = report_id;
-            $.each(response.doc_fields, function (index, value) {
-                const field_name_tag = '#' + value.field_name;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
-                }
-            });
-                    
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function (response) {
-                    get_doc_report_list_data($("#doc-id").val());
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-*/            
         });
 
         $("#signature-record").on("click", function () {
