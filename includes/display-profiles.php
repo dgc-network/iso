@@ -914,7 +914,6 @@ if (!class_exists('display_profiles')) {
                             <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Department', 'your-text-domain' );?></th>
-                            <th>A</th>
                         </thead>
                         <tbody>
                         <?php
@@ -930,15 +929,18 @@ if (!class_exists('display_profiles')) {
                                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                 $content = get_the_content();
                                 if ($doc_number) $content .= '('.$doc_number.')';
-                                $users = $this->retrieve_users_by_doc_id(get_the_ID());
-                                $unassigned = (!empty($users)) ? '' : '<span style="color:red;">U</span>';
+                                // display the warning if the job without assigned actions
+                                $action_query = $this->retrieve_doc_action_list_data($doc_id);
+                                $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
+                                // display the warning if the job without assigned users
+                                $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
+                                $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">U</span>';
                                 ?>
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
-                                    <td style="text-align:center;"><?php the_title();?></td>
+                                    <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
                                     <td width="70%"><?php echo esc_html($content);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($department);?></td>
-                                    <td style="text-align:center;"><?php echo $unassigned;?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($department.$users_unassigned);?></td>
                                 </tr>
                                 <?php 
                             endwhile;

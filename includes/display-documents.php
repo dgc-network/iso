@@ -241,7 +241,7 @@ if (!class_exists('display_documents')) {
                             } elseif ($is_doc_report < 0) {
                                 $doc_title = '**' . $doc_title;
                             }
-                            
+                            // display the warning if the document without assigned actions
                             $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                             $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             $doc_title .= $unassigned;
