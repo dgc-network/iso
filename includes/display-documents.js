@@ -755,6 +755,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_doc_action_dialog_data',
+                            '_doc_id': doc_id,
                             '_action_id': $("#action-id").val(),
                             '_action_title': $("#action-title").val(),
                             '_action_content': $("#action-content").val(),
@@ -781,6 +782,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_doc_action_dialog_data',
+                                '_doc_id': doc_id,
                                 '_action_id': $("#action-id").val(),
                             },
                             success: function (response) {
