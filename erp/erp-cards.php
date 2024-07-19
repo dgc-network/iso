@@ -1279,7 +1279,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function get_department_card_dialog_data() {
-            $instrument_id = sanitize_text_field($_POST['_department_id']);
+            $department_id = sanitize_text_field($_POST['_department_id']);
             $response = array('html_contain' => $this->display_department_card_dialog($department_id));
             wp_send_json($response);
         }
