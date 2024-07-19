@@ -27,7 +27,7 @@ if (!class_exists('display_documents')) {
 
             add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
-            
+
             add_action( 'wp_ajax_get_doc_report_dialog_data', array( $this, 'get_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_dialog_data', array( $this, 'get_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_set_doc_report_dialog_data', array( $this, 'set_doc_report_dialog_data' ) );
@@ -38,8 +38,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
 
-            //add_action( 'wp_ajax_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_doc_field_list_data', array( $this, 'get_doc_field_list_data' ) );
             add_action( 'wp_ajax_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_set_doc_field_dialog_data', array( $this, 'set_doc_field_dialog_data' ) );
@@ -196,10 +194,6 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             $profiles_class = new display_profiles();
             ?>
             <div class="ui-widget" id="result-container">
@@ -295,7 +289,6 @@ if (!class_exists('display_documents')) {
             );
 
             $select_category = sanitize_text_field($_GET['_category']);
-            //if ($select_category) $paged = 1;
             $category_filter = array(
                 'key'     => 'doc_category',
                 'value'   => $select_category,
@@ -314,7 +307,6 @@ if (!class_exists('display_documents')) {
                 'value'   => $search_query,
                 'compare' => 'LIKE',
             );
-            //if ($search_query) $paged = 1;
 
             $args = array(
                 'post_type'      => 'document',
@@ -404,7 +396,7 @@ if (!class_exists('display_documents')) {
                 <label id="parent-report-label" class="button"><?php echo __( 'Parent report', 'your-text-domain' );?></label>
                 <select id="parent-report-id"  class="text ui-widget-content ui-corner-all">
                     <option><?php echo __( 'Select a parent report', 'your-text-domain' );?></option>
-                    <option value="-1" <?php echo ($parent_report_id==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
+                    <option value="-1" <?php echo ($parent_report_id==-1) ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($parent_report_id==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3" <?php echo ($parent_report_id==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
                     <option value="-4" <?php echo ($parent_report_id==-4) ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
@@ -420,7 +412,7 @@ if (!class_exists('display_documents')) {
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
                     <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
-                    <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( 'ISO表單', 'your-text-domain' );?></option>
+                    <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
                     <option value="-2" <?php echo ($is_doc_report==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
                     <option value="-3" <?php echo ($is_doc_report==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
                     <option value="-4" <?php echo ($is_doc_report==-4) ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
@@ -520,14 +512,12 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
                 $todo_status = get_post_meta($doc_id, 'todo_status', true);
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
                 if (current_user_can('administrator')) $is_site_admin = true;
                 $is_user_doc = $profiles_class->is_user_doc($doc_id);
                 $response['is_doc_report'] = $is_doc_report;
-                //$response['doc_report_frequence_setting'] = $doc_report_frequence_setting;
                 $response['todo_status'] = $todo_status;
                 $response['is_site_admin'] = $is_site_admin;
                 $response['is_user_doc'] = $is_user_doc;
@@ -609,8 +599,6 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            //$site_id = get_post_meta($doc_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -1192,16 +1180,7 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query;
         }
-/*        
-        function get_doc_field_list_data() {
-            $response = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $response['html_contain'] = $this->display_doc_field_list($doc_id);
-            }
-            wp_send_json($response);
-        }
-*/        
+
         function display_doc_field_dialog($field_id=false) {
             $field_name = get_post_meta($field_id, 'field_name', true);
             $field_title = get_post_meta($field_id, 'field_title', true);

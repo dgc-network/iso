@@ -557,30 +557,6 @@ jQuery(document).ready(function($) {
     }
 
     // doc-field scripts
-    function get_doc_field_list_data(doc_id=false) {
-        const ajaxData = {
-            'action': 'get_doc_field_list_data',
-        };
-    
-        if (doc_id) ajaxData['_doc_id'] = doc_id;
-        //if (site_id) ajaxData['_site_id'] = site_id;
-    
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: 'json',
-            data: ajaxData,
-            success: function (response) {
-                $('#fields-container').html(response.html_contain);
-                activate_doc_field_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-    
     function activate_doc_field_list_data(doc_id=false){
         $("#new-doc-field").on("click", function() {
             $.ajax({
@@ -592,7 +568,6 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    //get_doc_field_list_data(doc_id);
                     $('#fields-container').html(response.html_contain);
                     activate_doc_field_list_data(doc_id);
                 },
@@ -665,11 +640,9 @@ jQuery(document).ready(function($) {
                             '_default_value': $("#default-value").val(),
                             '_listing_style': $("#listing-style").val(),
                             '_order_field': $('#order-field').is(":checked") ? 'ASC' : '',
-                            //'_order_field': $("#order-field").val(),
                         },
                         success: function (response) {
                             $("#doc-field-dialog").dialog('close');
-                            //get_doc_field_list_data(doc_id);
                             $('#fields-container').html(response.html_contain);
                             activate_doc_field_list_data(doc_id);
                         },
@@ -692,7 +665,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-field-dialog").dialog('close');
-                                //get_doc_field_list_data(doc_id);
                                 $('#fields-container').html(response.html_contain);
                                 activate_doc_field_list_data(doc_id);
                             },
