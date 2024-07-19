@@ -241,7 +241,7 @@ if (!class_exists('display_profiles')) {
 
                     if ($query->have_posts()) {
                         foreach ($query->posts as $field_id) {
-                            $doc_id = get_post_meta($field_id, 'doc_title', true);
+                            $doc_id = get_post_meta($field_id, 'doc_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             echo $doc_title. ':';
                             $documents_class = new display_documents();
