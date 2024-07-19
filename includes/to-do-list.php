@@ -503,7 +503,7 @@ if (!class_exists('to_do_list')) {
                     'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
                 $documents_class = new display_documents();
-                $documents_class->display_doc_field_in_dialog($params);
+                $documents_class->display_doc_field_contains($params);
             } else {
                 // document_dialog data
                 $profiles_class = new display_profiles();

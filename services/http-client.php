@@ -135,7 +135,7 @@ if (!class_exists('http_client')) {
                 <h2 style="display:inline;"><?php echo __( '溫濕度異常通知設定', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(9);?></div>
+                    <div><?php $profiles_class->display_select_profile(10);?></div>
                     <div style="text-align: right"></div>                        
                 </div>
         

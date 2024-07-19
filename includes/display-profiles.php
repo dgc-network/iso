@@ -86,7 +86,8 @@ if (!class_exists('display_profiles')) {
                 <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
                 <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
-                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
+                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
+                <option value="10" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -111,9 +112,10 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='6') echo $cards_class->display_product_card_list();
                 if ($_GET['_select_profile']=='7') echo $cards_class->display_equipment_card_list();
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
+                if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
 
                 $http_client = new http_client();
-                if ($_GET['_select_profile']=='9') echo $http_client->display_http_client_list();
+                if ($_GET['_select_profile']=='10') echo $http_client->display_http_client_list();
 
                 if ($_GET['_select_profile']=='99') {
                     // Example usage

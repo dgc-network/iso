@@ -785,6 +785,9 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='_instrument') {
                                             $instrument_code = get_post_meta($field_value, 'instrument_code', true);
                                             echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
+                                        } elseif ($field_type=='_department') {
+                                            $instrument_code = get_post_meta($field_value, 'department_code', true);
+                                            echo esc_html(get_the_title($field_value).'('.$department_code.')');
                                         } elseif ($field_type=='_employee') {
                                             $user = get_userdata($field_value);
                                             echo $user->display_name;
@@ -956,7 +959,7 @@ if (!class_exists('display_documents')) {
                     'doc_id'     => $doc_id,
                     'report_id'     => $report_id,
                 );                
-                $this->display_doc_field_in_dialog($params);
+                $this->display_doc_field_contains($params);
             ?>
             <hr>
             <?php
@@ -1296,9 +1299,8 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-        function display_doc_field_keys($doc_id=false, $site_id=false) {
+        function display_doc_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
-            if ($site_id) $params = array('site_id' => $site_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();
             if ($query->have_posts()) {
@@ -1313,7 +1315,7 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function display_doc_field_in_dialog($args) {
+        function display_doc_field_contains($args) {
 
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
@@ -1421,6 +1423,15 @@ if (!class_exists('display_documents')) {
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
+                            <?php
+                            break;
+
+
+                        case ($field_type=='_department'):
+                            $cards_class = new erp_cards();
+                            ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
 

@@ -705,5 +705,146 @@ jQuery(document).ready(function($) {
         });    
     }
 
+    // department-card scripts
+    activate_department_card_list_data();
+
+    function activate_department_card_list_data(){
+        $("#select-profile").on("change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        });
+
+        $("#search-department").on( "change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+        
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+        
+            var searchValue = $("#search-department").val();
+            if (searchValue) {
+                queryParams.push("_search=" + searchValue);
+            }
+        
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+        
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        
+            // Clear the values of all select elements after redirection
+            $("#search-department").val('');
+        
+        });
+
+        $("#new-department-card").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_department_card_dialog_data',
+                },
+                success: function (response) {
+                    $("#result-container").html(response.html_contain);
+                    activate_department_card_list_data();    
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-department-card-"]').on("click", function () {
+            const department_id = this.id.substring(21);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_department_card_dialog_data',
+                    '_department_id': department_id,
+                },
+                success: function (response) {
+                    $("#department-card-dialog").html(response.html_contain);
+                    $("#department-card-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#department-card-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_department_card_dialog_data',
+                            '_department_id': $("#department-id").val(),
+                            '_department_code': $("#department-code").val(),
+                            '_department_title': $("#department-title").val(),
+                            '_department_content': $("#department-content").val(),
+                        },
+                        success: function (response) {
+                            $("#department-card-dialog").dialog('close');
+                            $("#result-container").html(response.html_contain);
+                            activate_department_card_list_data();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this department?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_department_card_dialog_data',
+                                '_department_id': $("#department-id").val(),
+                            },
+                            success: function (response) {
+                                $("#department-card-dialog").dialog('close');
+                                $("#result-container").html(response.html_contain);
+                                activate_department_card_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });    
+    }
+
     
 });
