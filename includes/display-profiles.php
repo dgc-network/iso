@@ -34,8 +34,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_user_doc_data', array( $this, 'set_user_doc_data' ) );
 
-            add_action( 'wp_ajax_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
+            //add_action( 'wp_ajax_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_site_job_list_data', array( $this, 'get_site_job_list_data' ) );
             add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
@@ -1053,12 +1053,12 @@ if (!class_exists('display_profiles')) {
 
             return $query;
         }
-
+/*
         function get_site_job_list_data() {
             $response = array('html_contain' => $this->display_site_job_list());
             wp_send_json($response);
         }
-
+*/
         function display_site_job_dialog($doc_id=false) {
             $documents_class = new display_documents();
             $job_number = get_post_meta($doc_id, 'job_number', true);
@@ -1348,12 +1348,16 @@ if (!class_exists('display_profiles')) {
                 update_post_meta( $post_id, 'next_job', -1);
                 update_post_meta( $post_id, 'next_leadtime', 86400);
             }
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response['html_contain'] = $this->display_doc_action_list($doc_id);
             wp_send_json($response);
         }
 
         function del_doc_action_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_action_id'], true);
+            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response['html_contain'] = $this->display_doc_action_list($doc_id);
             wp_send_json($response);
         }
 

@@ -711,7 +711,9 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    get_doc_action_list_data(doc_id);
+                    //get_doc_action_list_data(doc_id);
+                    $("#doc-action-list").html(response.html_contain);
+                    activate_doc_action_list_data(doc_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -761,7 +763,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            get_doc_action_list_data(doc_id);
+                            //get_doc_action_list_data(doc_id);
+                            $("#doc-action-list").html(response.html_contain);
+                            activate_doc_action_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -781,7 +785,9 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                get_doc_action_list_data(doc_id);
+                                //get_doc_action_list_data(doc_id);
+                                $("#doc-action-list").html(response.html_contain);
+                                activate_doc_action_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);

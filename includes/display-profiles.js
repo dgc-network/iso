@@ -740,7 +740,9 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    get_job_action_list_data(doc_id);
+                    //get_job_action_list_data(doc_id);
+                    $("#doc-action-list").html(response.html_contain);
+                    activate_job_action_list_data(doc_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -782,6 +784,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_doc_action_dialog_data',
+                            '_doc_id': doc_id,
                             '_action_id': $("#action-id").val(),
                             '_action_title': $("#action-title").val(),
                             '_action_content': $("#action-content").val(),
@@ -790,7 +793,9 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            get_job_action_list_data(doc_id);
+                            //get_job_action_list_data(doc_id);
+                            $("#doc-action-list").html(response.html_contain);
+                            activate_job_action_list_data(doc_id);
                         },
                         error: function (error) {
                             console.error(error);                    
@@ -806,11 +811,14 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_doc_action_dialog_data',
+                                '_doc_id': doc_id,
                                 '_action_id': $("#action-id").val(),
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                get_job_action_list_data(doc_id);
+                                //get_job_action_list_data(doc_id);
+                                $("#doc-action-list").html(response.html_contain);
+                                activate_job_action_list_data(doc_id);
                             },
                             error: function(error){
                                 console.error(error);
