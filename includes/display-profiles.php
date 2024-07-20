@@ -240,13 +240,19 @@ if (!class_exists('display_profiles')) {
                             $doc_id = get_post_meta($field_id, 'doc_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             // Ensure the doc ID is unique
-                            if (!isset($doc_ids[$doc_id])) {
+                            if (!isset($doc_ids[$doc_id])) {                                
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
-                                echo $doc_title. ':';
                                 $documents_class = new display_documents();
-                                echo '<fieldset>';
-                                echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
-                                echo '</fieldset>';
+                                $params = array(
+                                    'doc_id'     => $doc_id,
+                                    'is_listing' => true,
+                                );                
+                                if (!empty($documents_class->retrieve_doc_field_data($params))) {
+                                    echo $doc_title. ':';
+                                    echo '<fieldset>';
+                                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
+                                    echo '</fieldset>';    
+                                }        
                             }
                         }
                         return $query->posts; // Return the array of post IDs
