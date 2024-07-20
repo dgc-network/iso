@@ -393,6 +393,7 @@ if (!class_exists('display_documents')) {
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
+                <?php /*?>
                 <label id="parent-report-label" class="button"><?php echo __( 'Parent report', 'your-text-domain' );?></label>
                 <select id="parent-report-id"  class="text ui-widget-content ui-corner-all">
                     <option><?php echo __( 'Select a parent report', 'your-text-domain' );?></option>
@@ -404,6 +405,7 @@ if (!class_exists('display_documents')) {
                     <option value="-6" <?php echo ($parent_report_id==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
                     <option value="-7" <?php echo ($parent_report_id==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
+                <?php */?>
 
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>

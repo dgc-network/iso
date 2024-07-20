@@ -215,14 +215,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function get_transactions_by_card_value($key_pairs = array()) {
-
-            // Define the query arguments
-
-            
-
             if (!empty($key_pairs)) {
                 foreach ($key_pairs as $key => $value) {
-
                     $args = array(
                         'post_type'  => 'doc-field',
                         'posts_per_page' => -1, // Retrieve all posts
@@ -239,76 +233,27 @@ if (!class_exists('display_profiles')) {
                     // Execute the query
                     $query = new WP_Query($args);
 
+                    $doc_ids = array();
+
                     if ($query->have_posts()) {
                         foreach ($query->posts as $field_id) {
                             $doc_id = get_post_meta($field_id, 'doc_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            echo $doc_title. ':';
-                            $documents_class = new display_documents();
-                            echo '<fieldset>';
-                            echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
-                            echo '</fieldset>';
+                            // Ensure the doc ID is unique
+                            if (!isset($doc_ids[$doc_id])) {
+                                $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
+                                echo $doc_title. ':';
+                                $documents_class = new display_documents();
+                                echo '<fieldset>';
+                                echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
+                                echo '</fieldset>';
+                            }
                         }
                         return $query->posts; // Return the array of post IDs
                     }
-        
-        
-/*
-                    if ($key=='_document') $parent_report_id=-1;
-                    if ($key=='_customer') $parent_report_id=-2;
-                    if ($key=='_vendor') $parent_report_id=-3;
-                    if ($key=='_product') $parent_report_id=-4;
-                    if ($key=='_equipment') $parent_report_id=-5;
-                    if ($key=='_instrument') $parent_report_id=-6;
-                    if ($key=='_employee') $parent_report_id=-7;
-*/
                 }    
             }
             return array(); // Return an empty array if no posts are found
-
-/*
-            // Set up the query arguments
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'parent_report_id',
-                        'value'   => $parent_report_id,
-                        'compare' => '='
-                    ),
-                ),
-                'fields'         => 'ids', // Only retrieve the post IDs
-            );
-
-            if (!current_user_can('administrator')) {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $args['meta_query'][] = array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '='
-                );
-            }
-
-            // Execute the query
-            $query = new WP_Query($args);
-
-            if ($query->have_posts()) {
-                foreach ($query->posts as $doc_id) {
-                    $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                    echo $doc_title. ':';
-                    $documents_class = new display_documents();
-                    echo '<fieldset>';
-                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
-                    echo '</fieldset>';
-                }
-                return $query->posts; // Return the array of post IDs
-            } else {
-                return array(); // Return an empty array if no posts are found
-            }
-*/            
         }
         
         function display_my_job_list() {
