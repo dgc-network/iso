@@ -827,14 +827,6 @@ if (!class_exists('display_documents')) {
                 $paged = 1;
             }
 
-            if (!empty($params['search_doc_report'])) {
-                $search_doc_report = $params['search_doc_report'];
-            }
-
-            if (!empty($params['key_pairs'])) {
-                $key_pairs = $params['key_pairs'];
-            }
-
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -853,7 +845,8 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if ($key_pairs) {
+                    if (!empty($params['key_pairs'])) {
+                        $key_pairs = $params['key_pairs'];
                         foreach ($key_pairs as $key => $value) {
                             if ($key==$field_type) {
                                 $args['meta_query'][0][] = array(
@@ -873,7 +866,8 @@ if (!class_exists('display_documents')) {
                         $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
                     }
         
-                    if ($search_doc_report) {
+                    if (!empty($params['search_doc_report'])) {
+                        $search_doc_report = $params['search_doc_report'];
                         $args['meta_query'][1][] = array( // Append to the OR relation
                             'key'     => $field_name,
                             'value'   => $search_doc_report,

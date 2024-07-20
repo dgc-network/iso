@@ -245,9 +245,9 @@ if (!class_exists('display_profiles')) {
                                 $documents_class = new display_documents();
                                 $params = array(
                                     'doc_id'     => $doc_id,
-                                    'is_listing' => true,
+                                    'key_pairs' => $key_pairs,
                                 );                
-                                if (!empty($documents_class->retrieve_doc_field_data($params))) {
+                                if (!empty($documents_class->retrieve_doc_report_list_data($params))) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
                                     echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
