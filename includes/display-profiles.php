@@ -246,8 +246,9 @@ if (!class_exists('display_profiles')) {
                                 $params = array(
                                     'doc_id'     => $doc_id,
                                     'key_pairs' => $key_pairs,
-                                );                
-                                if (!empty($documents_class->retrieve_doc_report_list_data($params))) {
+                                );
+                                $doc_report = $documents_class->retrieve_doc_report_list_data($params);
+                                if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
                                     echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
