@@ -1057,6 +1057,7 @@ if (!class_exists('display_profiles')) {
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
+                <select id="department-id"><?php echo $cards_class->select_department_card_options($department_id);?></select>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
