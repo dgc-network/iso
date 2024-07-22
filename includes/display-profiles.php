@@ -882,11 +882,11 @@ if (!class_exists('display_profiles')) {
         }
 
         // Site job
-        function display_site_job_list($initial=false) {
+        function display_site_job_list() {
             ob_start();
             $is_site_admin = $this->is_site_admin();
 
-            if ($is_site_admin || current_user_can('administrator') || $initial) {
+            if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -909,7 +909,11 @@ if (!class_exists('display_profiles')) {
                         </thead>
                         <tbody>
                         <?php
-                        $paged = max(1, get_query_var('paged')); // Get the current page number
+                        //$paged = max(1, get_query_var('paged')); // Get the current page number
+                        global $wp_query;
+                        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                        //echo 'Paged: ' . $paged; // Output: Paged: 5
+
                         $query = $this->retrieve_site_job_list_data($paged);
                         $total_posts = $query->found_posts;
                         $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
@@ -928,7 +932,7 @@ if (!class_exists('display_profiles')) {
                                 $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                                 // display the warning if the job without assigned users
                                 $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
-                                $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">U</span>';
+                                $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
                                 ?>
                                 <tr id="edit-site-job-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
