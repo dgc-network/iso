@@ -568,7 +568,7 @@ jQuery(document).ready(function($) {
                             '_job_number': $("#job-number").val(),
                             '_job_title': $("#job-title").val(),
                             '_job_content': $("#job-content").val(),
-                            '_department': $("#department").val(),
+                            '_department_id': $("#department_id").val(),
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');

@@ -917,7 +917,9 @@ if (!class_exists('display_profiles')) {
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                                $department = get_post_meta(get_the_ID(), 'department', true);
+                                //$department = get_post_meta(get_the_ID(), 'department', true);
+                                $department_id = get_post_meta(get_the_ID(), 'department_id', true);
+                                $department = get_the_title($department_id);
                                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                 $content = get_the_content();
                                 if ($doc_number) $content .= '('.$doc_number.')';
@@ -1037,10 +1039,12 @@ if (!class_exists('display_profiles')) {
 
         function display_site_job_dialog($doc_id=false) {
             $documents_class = new display_documents();
+            $cards_class = new erp_cards();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
+            $department_id = get_post_meta($doc_id, 'department_id', true);
             ob_start();
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
@@ -1054,6 +1058,7 @@ if (!class_exists('display_profiles')) {
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
                 <input type="text" id="department" value="<?php echo esc_attr($department);?>" class="text ui-widget-content ui-corner-all" />
+                <select id="department-id"><?php echo $card_class->select_department_card_options($department_id);?></select>
                 <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
             <?php
@@ -1079,7 +1084,7 @@ if (!class_exists('display_profiles')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
-                update_post_meta($doc_id, 'department', sanitize_text_field($_POST['_department']));
+                update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1114,7 +1119,7 @@ if (!class_exists('display_profiles')) {
         function del_site_job_dialog_data() {
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            if ($doc_title) echo 'You cannot delete this document';
+            if ($doc_title) echo 'You cannot delete this job';
             else wp_delete_post($doc_id, true);
             $response = array('html_contain' => $this->display_site_job_list());
             wp_send_json($response);
