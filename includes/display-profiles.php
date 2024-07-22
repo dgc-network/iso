@@ -928,7 +928,7 @@ if (!class_exists('display_profiles')) {
                                 $content = get_the_content();
                                 if ($doc_number) $content .= '('.$doc_number.')';
                                 // display the warning if the job without assigned actions
-                                $action_query = $this->retrieve_doc_action_list_data($doc_id);
+                                $action_query = $this->retrieve_doc_action_list_data(get_the_ID());
                                 $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                                 // display the warning if the job without assigned users
                                 $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
