@@ -932,7 +932,7 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                     <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
                                     <td width="70%"><?php echo esc_html($content);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($department.$users_unassigned);?></td>
+                                    <td style="text-align:center;"><?php echo $department.$users_unassigned;?></td>
                                 </tr>
                                 <?php 
                             endwhile;
