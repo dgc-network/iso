@@ -1006,7 +1006,7 @@ if (!class_exists('display_profiles')) {
             if ($paged==0) $args['posts_per_page'] = -1;
 
             $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $args['paged'] = 1;
+            //if ($search_query) $args['paged'] = 1;
 
             if ($search_query) {
                 $args['meta_query'][] = array(
