@@ -159,12 +159,7 @@ jQuery(document).ready(function($) {
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
         });
-/*
-        $("#select-parent-report").on("change", function () {
-            const parent_report_id = $("#select-parent-report").val();            
-            $("#parent-report-id").val(parent_report_id)
-        });
-*/
+
         $("#select-system-report").on("change", function () {
             const is_doc_report = $("#select-system-report").val();
             $("#is-doc-report").val(is_doc_report)
@@ -205,14 +200,13 @@ jQuery(document).ready(function($) {
             ajaxData['_job_number'] = $("#job-number").val();
             ajaxData['_job_title'] = $("#job-title").val();
             ajaxData['_job_content'] = $("#job-content").val();
-            ajaxData['_department'] = $("#department").val();
+            ajaxData['_department_id'] = $("#department-id").val();
             ajaxData['_doc_number'] = $("#doc-number").val();
             ajaxData['_doc_title'] = $("#doc-title").val();
             ajaxData['_doc_revision'] = $("#doc-revision").val();
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-            //ajaxData['_parent_report_id'] = $("#parent-report-id").val();
             ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
             ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
             ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();

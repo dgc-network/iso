@@ -339,11 +339,13 @@ if (!class_exists('display_documents')) {
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
+            $cards_class = new erp_cards();
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $department = get_post_meta($doc_id, 'department', true);
+            $department_id = get_post_meta($doc_id, 'department_id', true);
 
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -458,7 +460,7 @@ if (!class_exists('display_documents')) {
 
             <div id="job-setting-div" style="display:none;">
                 <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                <input type="text" id="department" value="<?php echo esc_html($department);?>" class="text ui-widget-content ui-corner-all" />
+                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
                 <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
@@ -519,7 +521,7 @@ if (!class_exists('display_documents')) {
                 $job_number = sanitize_text_field($_POST['_job_number']);
                 if ($job_number) update_post_meta( $doc_id, 'job_number', $job_number);
                 else update_post_meta( $doc_id, 'job_number', sanitize_text_field($_POST['_doc_number']));
-                update_post_meta( $doc_id, 'department', sanitize_text_field($_POST['_department']));
+                update_post_meta( $doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
 
                 update_post_meta( $doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
                 update_post_meta( $doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
