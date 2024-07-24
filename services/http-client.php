@@ -653,7 +653,6 @@ if (!class_exists('http_client')) {
             // Parameters to pass to the notification function
             $params = [
                 'user_id' => $user_id,
-                //'topic' => $topic,
                 'text_message' => $text_message,
             ];
         
