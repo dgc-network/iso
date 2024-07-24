@@ -435,7 +435,7 @@ if (!class_exists('to_do_list')) {
         
             // Fetch the document IDs
             $document_ids = $query->posts;
-            return $document_ids;
+            //return $document_ids;
 
             if (empty($document_ids)) {
                 return array(); // Return an empty array if no documents match the criteria
@@ -473,44 +473,7 @@ if (!class_exists('to_do_list')) {
             // Return the array of filtered document IDs
             return $filtered_document_ids;
         }
-/*        
-        function get_documents_with_conditions() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array(); // Ensure $user_doc_ids is an array
-            }
-        
-            global $wpdb;
-        
-            // Convert the user_doc_ids array to a comma-separated list
-            $user_doc_ids_placeholder = implode(',', array_fill(0, count($user_doc_ids), '%d'));
-            
-            // Query to fetch document IDs with the given conditions
-            $query = $wpdb->prepare(
-                "
-                SELECT p.ID 
-                FROM $wpdb->posts p
-                INNER JOIN $wpdb->postmeta pm1 ON (p.ID = pm1.post_id AND pm1.meta_key = 'site_id' AND pm1.meta_value = %d)
-                LEFT JOIN $wpdb->postmeta pm2 ON (p.ID = pm2.post_id AND pm2.meta_key = 'doc_number')
-                INNER JOIN $wpdb->postmeta pm3 ON (p.ID = pm3.post_id AND pm3.meta_key = 'job_number')
-                WHERE p.post_type = 'document' 
-                AND p.post_status = 'publish'
-                AND pm2.post_id IS NULL
-                AND p.ID IN ($user_doc_ids_placeholder)
-                ",
-                array_merge(array($site_id), $user_doc_ids)
-            );
-        
-            // Fetch the document IDs
-            $document_ids = $wpdb->get_col($query);
-        
-            // Return the array of document IDs
-            return $document_ids;
-        }
-*/        
+
         function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -541,7 +504,7 @@ if (!class_exists('to_do_list')) {
             );
 
             $document_ids = $this->get_documents_with_conditions();
-            $user_doc_ids = array_unique(array_merge($user_doc_ids, $document_ids));
+            //$user_doc_ids = array_unique(array_merge($user_doc_ids, $document_ids));
 
             if (!$is_site_admin) {
                 $args['post__in'] = $user_doc_ids; // Array of document post IDs
