@@ -468,11 +468,13 @@ if (!class_exists('to_do_list')) {
                         'value'   => $user_doc_ids,
                         'compare' => 'IN',    
                     ),
+/*
                     array(
                         'key'     => 'doc_id',
                         'value'   => $document_ids,
                         'compare' => 'IN',    
                     ),
+*/
                 );
             }
 
