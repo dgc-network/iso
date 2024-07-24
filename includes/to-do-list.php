@@ -445,6 +445,7 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
+                'fields' => 'ids', // Only get post IDs
             );
 /*            
             $args['meta_query'] = array(
