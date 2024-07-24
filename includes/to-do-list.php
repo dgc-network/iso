@@ -445,6 +445,14 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_status',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    ),
+                ),
                 'fields' => 'ids', // Only get post IDs
             );
 /*            
