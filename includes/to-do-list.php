@@ -467,14 +467,17 @@ if (!class_exists('to_do_list')) {
                     'relation' => 'OR',
                     array(
                         'key'     => 'doc_id',
-                        'value'   => $user_doc_ids,
+                        //'value'   => $user_doc_ids,
+                        'value'   => array(),
                         'compare' => 'IN',    
                     ),
+/*
                     array(
                         'key'     => 'doc_id',
                         'value'   => $document_ids,
                         'compare' => 'IN',    
                     ),
+*/
                 );
             }
 
