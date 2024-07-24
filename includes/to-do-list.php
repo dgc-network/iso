@@ -459,6 +459,7 @@ if (!class_exists('to_do_list')) {
             );
 
             $document_ids = $this->get_documents_with_conditions();
+            $document_ids = array();
 
             if (!$is_site_admin) {
                 $args['meta_query'][] = array(
@@ -468,13 +469,11 @@ if (!class_exists('to_do_list')) {
                         'value'   => $user_doc_ids,
                         'compare' => 'IN',    
                     ),
-/*
                     array(
                         'key'     => 'doc_id',
                         'value'   => $document_ids,
                         'compare' => 'IN',    
                     ),
-*/
                 );
             }
 
