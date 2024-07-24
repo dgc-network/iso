@@ -442,6 +442,10 @@ if (!class_exists('to_do_list')) {
             }
         
             // Second query to filter by todo_status
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+            );
             $args['meta_query'] = array(
                 'relation' => 'AND',
                 array(
