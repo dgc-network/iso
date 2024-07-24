@@ -507,7 +507,13 @@ if (!class_exists('to_do_list')) {
             //$user_doc_ids = array_unique(array_merge($user_doc_ids, $document_ids));
 
             if (!$is_site_admin) {
-                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+                $args['meta_query'][] = array(
+                    'key'     => 'doc_id',
+                    'value'   => $user_doc_ids,
+                    'compare' => 'IN',
+                );
+
+                //$args['post__in'] = $user_doc_ids; // Array of document post IDs
             }
 
             // Add meta query for searching across all meta keys
