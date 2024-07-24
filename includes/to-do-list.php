@@ -505,11 +505,10 @@ if (!class_exists('to_do_list')) {
             );
 
             $document_ids = $this->get_documents_with_conditions();
-            //$user_doc_ids = array_unique(array_merge($user_doc_ids, $document_ids));
 
             if (!$is_site_admin) {
                 $args['meta_query'][] = array(
-                    'relation' => 'AND',
+                    'relation' => 'OR',
                     array(
                         'key'     => 'doc_id',
                         'value'   => $user_doc_ids,
@@ -521,8 +520,6 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',    
                     ),
                 );
-
-                //$args['post__in'] = $user_doc_ids; // Array of document post IDs
             }
 
             // Add meta query for searching across all meta keys
