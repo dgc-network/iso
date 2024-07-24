@@ -400,14 +400,11 @@ if (!class_exists('to_do_list')) {
 
         function get_documents_with_conditions() {
             $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
         
             if (!is_array($user_doc_ids)) {
-                //return $user_doc_ids;
                 $user_doc_ids = array(); // Ensure $user_doc_ids is an array                
             }
-            //if (empty($initial_doc_ids)) return array();
         
             $args = array(
                 'post_type'      => 'document',
@@ -460,7 +457,6 @@ if (!class_exists('to_do_list')) {
             );
 
             $document_ids = $this->get_documents_with_conditions();
-            //$document_ids = array();
 
             if (!$is_site_admin) {
                 // Initialize the meta_query array
@@ -489,24 +485,7 @@ if (!class_exists('to_do_list')) {
                     $args['meta_query'][] = $meta_query;
                 }
             }
-/*            
-            if (!$is_site_admin) {
-                $args['meta_query'][] = array(
-                    'relation' => 'OR',
-                    array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids,
-                        //'value'   => array(),
-                        'compare' => 'IN',    
-                    ),
-                    array(
-                        'key'     => 'doc_id',
-                        'value'   => $document_ids,
-                        'compare' => 'IN',    
-                    ),
-                );
-            }
-*/
+
             // Add meta query for searching across all meta keys
             $document_meta_keys = get_post_type_meta_keys('todo');
             $meta_query_all_keys = array('relation' => 'OR');
