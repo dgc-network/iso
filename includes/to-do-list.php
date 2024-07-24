@@ -435,7 +435,7 @@ if (!class_exists('to_do_list')) {
         
             // Fetch the document IDs
             $document_ids = $query->posts;
-            //return $document_ids;
+            return $document_ids;
 
             if (empty($document_ids)) {
                 return array(); // Return an empty array if no documents match the criteria
