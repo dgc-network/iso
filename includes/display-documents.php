@@ -1328,10 +1328,10 @@ if (!class_exists('display_documents')) {
                         if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                             // Use a regular expression to match the number inside the parentheses
                             if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                                $topic = $matches[1]; // Extract the number from the first capturing group
-                                $default_value = get_option($topic);
+                                $device_id = $matches[1]; // Extract the number from the first capturing group
+                                $default_value = get_option($device_id);
                                 // Find the post by title
-                                $post = get_page_by_title($topic, OBJECT, 'http-client');
+                                $post = get_page_by_title($device_id, OBJECT, 'http-client');
                                 $default_value = get_post_meta($post->ID, 'temperature', true);
                             }
                         }
@@ -1339,10 +1339,10 @@ if (!class_exists('display_documents')) {
                         if (substr($default_value, 0, strlen('hygrometer')) == 'hygrometer') {
                             // Use a regular expression to match the number inside the parentheses
                             if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                                $topic = $matches[1]; // Extract the number from the first capturing group
-                                $default_value = get_option($topic);
+                                $device_id = $matches[1]; // Extract the number from the first capturing group
+                                $default_value = get_option($device_id);
                                 // Find the post by title
-                                $post = get_page_by_title($topic, OBJECT, 'http-client');
+                                $post = get_page_by_title($device_id, OBJECT, 'http-client');
                                 $default_value = get_post_meta($post->ID, 'humidity', true);
                             }
                         }
