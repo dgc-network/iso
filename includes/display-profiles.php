@@ -1088,6 +1088,15 @@ if (!class_exists('display_profiles')) {
                 wp_update_post( $data );
                 update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
                 update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
+                
+                // Sanitize the input from POST request
+                $job_number = sanitize_text_field($_POST['_job_number']);
+                // Check if job_number is null
+                if ($job_number == null || $job_number === '') {
+                    // If null or empty, delete the meta key
+                    delete_post_meta($doc_id, 'job_number');
+                }
+
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
