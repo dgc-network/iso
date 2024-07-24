@@ -518,8 +518,8 @@ jQuery(document).ready(function($) {
                     'action': 'set_site_job_dialog_data',
                 },
                 success: function (response) {
-                    //get_site_job_list_data();
-                    $("#result-container").html(response.html_contain);
+                    //$("#result-container").html(response.html_contain);
+                    window.location.replace(window.location.href);
                     activate_site_job_list_data();
                 },
                 error: function(error){
@@ -572,7 +572,8 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#site-job-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
+                            //$("#result-container").html(response.html_contain);
+                            window.location.replace(window.location.href);
                             activate_site_job_list_data();
                         },
                         error: function (error) {
@@ -593,7 +594,8 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#site-job-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
+                                //$("#result-container").html(response.html_contain);
+                                window.location.replace(window.location.href);
                                 activate_site_job_list_data();
                             },
                             error: function (error) {
