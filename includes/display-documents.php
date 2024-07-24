@@ -759,7 +759,8 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='_document') {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
                                             $doc_number = get_post_meta($field_value, 'doc_number', true);
-                                            echo esc_html($doc_title.'('.$doc_number.')');
+                                            $doc_revision = get_post_meta($field_value, 'doc_revision', true);
+                                            echo esc_html($doc_title.'('.$doc_number.'-'.$doc_revision.')');
                                         } elseif ($field_type=='_customer') {
                                             $customer_code = get_post_meta($field_value, 'customer_code', true);
                                             echo esc_html(get_the_title($field_value).'('.$customer_code.')');
@@ -1499,7 +1500,8 @@ if (!class_exists('display_documents')) {
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_title.'('.$doc_number.')') . '</option>';
+                $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_title.'('.$doc_number.'-'.$doc_revision.')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
