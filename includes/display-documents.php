@@ -1324,6 +1324,7 @@ if (!class_exists('display_documents')) {
                     } else {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
+                        if ($default_value=='me') $default_value=get_current_user_id();
 
                         if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                             // Use a regular expression to match the number inside the parentheses
