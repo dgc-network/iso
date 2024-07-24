@@ -404,8 +404,9 @@ if (!class_exists('to_do_list')) {
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
         
             if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array(); // Ensure $user_doc_ids is an array
+                $user_doc_ids = array(); // Ensure $user_doc_ids is an array                
             }
+            if (empty($initial_doc_ids)) return array();
         
             $args = array(
                 'post_type'      => 'document',
