@@ -407,46 +407,10 @@ if (!class_exists('to_do_list')) {
                 $user_doc_ids = array(); // Ensure $user_doc_ids is an array
             }
         
-            // First query to get document IDs that match the primary conditions
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'post__in'       => $user_doc_ids, // Filter by user_doc_ids
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',
-                    ),
-                    array(
-                        'key'     => 'doc_number',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                    array(
-                        'key'     => 'job_number',
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-                'fields' => 'ids', // Only get post IDs
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Fetch the document IDs
-            $document_ids = $query->posts;
-            //return $document_ids;
-
-            if (empty($document_ids)) {
-                return array(); // Return an empty array if no documents match the criteria
-            }
-        
-            // Second query to filter by todo_status
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
-                    'relation' => 'AND',
                     array(
                         'key'     => 'todo_status',
                         'value'   => $user_doc_ids,
@@ -455,24 +419,14 @@ if (!class_exists('to_do_list')) {
                 ),
                 'fields' => 'ids', // Only get post IDs
             );
-/*            
-            $args['meta_query'] = array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'todo_status',
-                    'value'   => $document_ids,
-                    'compare' => 'IN',
-                ),
-            );
-*/        
             // Perform the second query to get documents filtered by todo_status
             $query = new WP_Query($args);
         
             // Fetch the final set of document IDs
-            $filtered_document_ids = $query->posts;
+            $document_ids = $query->posts;
         
             // Return the array of filtered document IDs
-            return $filtered_document_ids;
+            return $document_ids;
         }
 
         function retrieve_todo_list_data($paged = 1){
@@ -484,7 +438,6 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
-            //if ($search_query) $paged = 1;
 
             // Define the WP_Query arguments
             $args = array(
