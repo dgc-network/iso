@@ -398,6 +398,118 @@ if (!class_exists('to_do_list')) {
             return false;
         }
 
+        function get_documents_with_conditions() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+        
+            if (!is_array($user_doc_ids)) {
+                $user_doc_ids = array(); // Ensure $user_doc_ids is an array
+            }
+        
+            // First query to get document IDs that match the primary conditions
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'post__in'       => $user_doc_ids, // Filter by user_doc_ids
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                    array(
+                        'key'     => 'doc_number',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'job_number',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+                'fields' => 'ids', // Only get post IDs
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Fetch the document IDs
+            $document_ids = $query->posts;
+        
+            if (empty($document_ids)) {
+                return array(); // Return an empty array if no documents match the criteria
+            }
+        
+            // Second query to filter by todo_status
+            $args['meta_query'] = array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'todo_status',
+                    'value'   => $document_ids,
+                    'compare' => 'IN',
+                ),
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => 'doc_number',
+                    'compare' => 'NOT EXISTS',
+                ),
+                array(
+                    'key'     => 'job_number',
+                    'compare' => 'EXISTS',
+                ),
+            );
+        
+            // Perform the second query to get documents filtered by todo_status
+            $query = new WP_Query($args);
+        
+            // Fetch the final set of document IDs
+            $filtered_document_ids = $query->posts;
+        
+            // Return the array of filtered document IDs
+            return $filtered_document_ids;
+        }
+/*        
+        function get_documents_with_conditions() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+        
+            if (!is_array($user_doc_ids)) {
+                $user_doc_ids = array(); // Ensure $user_doc_ids is an array
+            }
+        
+            global $wpdb;
+        
+            // Convert the user_doc_ids array to a comma-separated list
+            $user_doc_ids_placeholder = implode(',', array_fill(0, count($user_doc_ids), '%d'));
+            
+            // Query to fetch document IDs with the given conditions
+            $query = $wpdb->prepare(
+                "
+                SELECT p.ID 
+                FROM $wpdb->posts p
+                INNER JOIN $wpdb->postmeta pm1 ON (p.ID = pm1.post_id AND pm1.meta_key = 'site_id' AND pm1.meta_value = %d)
+                LEFT JOIN $wpdb->postmeta pm2 ON (p.ID = pm2.post_id AND pm2.meta_key = 'doc_number')
+                INNER JOIN $wpdb->postmeta pm3 ON (p.ID = pm3.post_id AND pm3.meta_key = 'job_number')
+                WHERE p.post_type = 'document' 
+                AND p.post_status = 'publish'
+                AND pm2.post_id IS NULL
+                AND p.ID IN ($user_doc_ids_placeholder)
+                ",
+                array_merge(array($site_id), $user_doc_ids)
+            );
+        
+            // Fetch the document IDs
+            $document_ids = $wpdb->get_col($query);
+        
+            // Return the array of document IDs
+            return $document_ids;
+        }
+*/        
         function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -407,7 +519,7 @@ if (!class_exists('to_do_list')) {
             $is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $paged = 1;
+            //if ($search_query) $paged = 1;
 
             // Define the WP_Query arguments
             $args = array(
@@ -427,13 +539,11 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
+            $document_ids = $this->get_documents_with_conditions();
+            $user_doc_ids = array_unique(array_merge($user_doc_ids, $document_ids));
+
             if (!$is_site_admin) {
-                // Add a new meta query
-                $args['meta_query'][] = array(
-                    'key'     => 'doc_id',
-                    'value'   => $user_doc_ids, // Value is the array of user doc IDs
-                    'compare' => 'IN',
-                );    
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
             }
 
             // Add meta query for searching across all meta keys
@@ -481,9 +591,6 @@ if (!class_exists('to_do_list')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
         
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$image_url = get_post_meta($site_id, 'image_url', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
     
