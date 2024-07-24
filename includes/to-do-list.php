@@ -446,6 +446,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
             );
+/*            
             $args['meta_query'] = array(
                 'relation' => 'AND',
                 array(
@@ -453,23 +454,8 @@ if (!class_exists('to_do_list')) {
                     'value'   => $document_ids,
                     'compare' => 'IN',
                 ),
-/*                
-                array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'doc_number',
-                    'compare' => 'NOT EXISTS',
-                ),
-                array(
-                    'key'     => 'job_number',
-                    'compare' => 'EXISTS',
-                ),
-*/                
             );
-        
+*/        
             // Perform the second query to get documents filtered by todo_status
             $query = new WP_Query($args);
         
