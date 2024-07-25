@@ -1824,10 +1824,7 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $paged = max(1, get_query_var('paged')); // Get the current page number
-                $query = $this->retrieve_iso_clause_list_data($category_id, $paged);
-                $total_posts = $query->found_posts;
-                $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                $query = $this->retrieve_iso_clause_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $clause_title = get_the_title();
@@ -1846,14 +1843,6 @@ if (!class_exists('display_profiles')) {
                 </tbody>
             </table>
             <div id="new-iso-clause" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            <div class="pagination">
-                <?php
-                // Display pagination links
-                if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                ?>
-            </div>
             </fieldset>
             </div>
             <div id="iso-clause-dialog" title="Clause dialog"></div>
@@ -1861,11 +1850,12 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_iso_clause_list_data($category_id = false, $paged = 1) {
+        function retrieve_iso_clause_list_data($category_id = false) {
             $args = array(
                 'post_type'      => 'iso-clause',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
+                'posts_per_page' => -1,
+                //'posts_per_page' => get_option('operation_row_counts'),
+                //'paged'          => $paged,
                 'meta_query'     => array(
                     array(
                         'key'   => 'category_id',
@@ -1876,20 +1866,15 @@ if (!class_exists('display_profiles')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-        
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
-            }
-        
+/*        
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                $args['paged'] = 1;
                 $args['s'] = $search_query;
             }
-        
+*/        
             $query = new WP_Query($args);
-        
+/*        
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Add meta query for searching across all meta keys
@@ -1905,7 +1890,7 @@ if (!class_exists('display_profiles')) {
                 $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
             }
-        
+*/        
             return $query;
         }
 
