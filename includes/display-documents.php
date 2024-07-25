@@ -13,7 +13,6 @@ if (!class_exists('display_documents')) {
             add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
-            add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -124,19 +123,6 @@ if (!class_exists('display_documents')) {
                 'show_in_menu'  => false,
             );
             register_post_type( 'doc-field', $args );
-        }
-        
-        // Register doc category post type
-        function register_doc_category_post_type() {
-            $labels = array(
-                'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'doc-category', $args );
         }
         
         // Shortcode to display

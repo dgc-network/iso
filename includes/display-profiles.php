@@ -9,6 +9,8 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
+            add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
+            add_action( 'init', array( $this, 'register_iso_clause_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -1088,7 +1090,7 @@ if (!class_exists('display_profiles')) {
                 wp_update_post( $data );
                 update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
                 update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
-                
+
                 // Sanitize the input from POST request
                 $job_number = sanitize_text_field($_POST['_job_number']);
                 // Check if job_number is null
@@ -1583,6 +1585,18 @@ if (!class_exists('display_profiles')) {
         }
 
         // doc-category
+        function register_doc_category_post_type() {
+            $labels = array(
+                'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'doc-category', $args );
+        }
+        
         function display_doc_category_list() {
             ob_start();
             $is_site_admin = $this->is_site_admin();
@@ -1669,9 +1683,10 @@ if (!class_exists('display_profiles')) {
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <?php
                 if (current_user_can('administrator')) {
+                    echo $this->display_iso_clause_list($category_id);
                     ?>
-                <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
-                <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
+                    <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
                 }
                 ?>
@@ -1764,12 +1779,124 @@ if (!class_exists('display_profiles')) {
             endwhile;
             wp_reset_postdata();
             if (current_user_can('administrator')) {
-                $options .= '<option value="economic-growth">' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="environmental-protection">' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="social-responsibility">' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
+                $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
+                $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
+                $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
+                $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
             }
             return $options;
         }
+
+        // iso-clause
+        function register_iso_clause_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Clause', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'iso-clause', $args );
+        }
+
+        function display_iso_clause_list($category_id=false) {
+            ob_start();
+            ?>
+            <div id="iso_clause-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( '#', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'clause', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query = $this->retrieve_iso_clause_list_data($category_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $action_title = get_the_title();
+                        $action_content = get_post_field('post_content', get_the_ID());
+                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $next_job_title = get_the_title($next_job);
+                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        ?>
+                        <tr id="edit-iso-clause-<?php the_ID();?>">
+                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                            <td><?php echo esc_html($action_content);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="new-iso-clause" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            </fieldset>
+            </div>
+            <div id="iso-clause-dialog" title="Clause dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_iso_clause_data($category_id = false, $paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            $args = array(
+                'post_type'      => 'iso-clause',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                    ),
+                ),
+                'meta_key'       => 'clause_no', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('iso-clause');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+        
+            return $query;
+        }
+
+
     }
     $profiles_class = new display_profiles();
 }
