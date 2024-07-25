@@ -1943,6 +1943,7 @@ if (!class_exists('display_profiles')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($clause_id, 'clause_no', $clause_no);
+                update_post_meta($clause_id, 'category_id', $category_id);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
