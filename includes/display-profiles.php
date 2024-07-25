@@ -1918,8 +1918,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
-                <label for="category-id"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
-                <select id="category-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($category_id);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
