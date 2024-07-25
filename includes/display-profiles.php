@@ -1957,7 +1957,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_iso_clause_options($selected_option=0) {
-            $query = $this->retrieve_iso_clause_data();
+            $query = $this->retrieve_iso_clause_list_data();
             $options = '<option value="">Select clause</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
