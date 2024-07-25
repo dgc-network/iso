@@ -965,8 +965,8 @@ jQuery(document).ready(function($) {
                             '_clause_title': $("#clause-title").val(),
                         },
                         success: function (response) {
-                            $("#iso-clause-list").html(response.html_contain);
                             $("#iso-clause-dialog").dialog('close');
+                            $("#iso-clause-list").html(response.html_contain);
                             //$("#result-container").html(response.html_contain);
                             activate_iso_clause_list_data(category_id)
                         },
@@ -988,8 +988,8 @@ jQuery(document).ready(function($) {
                                 '_clause_id': $("#clause-id").val(),
                             },
                             success: function (response) {
-                                $("#iso-clause-list").html(response.html_contain);
                                 $("#iso-clause-dialog").dialog('close');
+                                $("#iso-clause-list").html(response.html_contain);
                                 //$("#result-container").html(response.html_contain);
                                 activate_iso_clause_list_data(category_id)
                             },
