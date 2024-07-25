@@ -839,7 +839,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
-                },
+                    activate_iso_clause_list_data(category_id)                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
@@ -890,6 +890,101 @@ jQuery(document).ready(function($) {
                                 $("#doc-category-dialog").dialog('close');
                                 $("#result-container").html(response.html_contain);
                                 activate_doc_category_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
+        });
+    }
+
+    // iso-clause scripts
+    function activate_iso_clause_list_data(category_id){
+        $("#new-iso-clause").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_iso_clause_dialog_data',
+                },
+                success: function (response) {
+                    $("#result-container").html(response.html_contain);
+                    activate_iso_clause_list_data(category_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-iso-clause-"]').on("click", function () {
+            const clause_id = this.id.substring(16);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_iso_clause_dialog_data',
+                    '_clause_id': clause_id,
+                },
+                success: function (response) {
+                    $("#iso-clause-dialog").html(response.html_contain);
+                    $("#iso-clause-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#iso-clause-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_iso_clause_dialog_data',
+                            '_clause_id': $("#clause-id").val(),
+                            '_clause_no': $("#clause-no").val(),
+                            '_clause_title': $("#clause-title").val(),
+                        },
+                        success: function (response) {
+                            $("#iso-clause-dialog").dialog('close');
+                            $("#result-container").html(response.html_contain);
+                            activate_iso_clause_list_data(category_id)
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this ISO clause?")) {
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_iso_clause_dialog_data',
+                                '_clause_id': $("#clause-id").val(),
+                            },
+                            success: function (response) {
+                                $("#iso-clause-dialog").dialog('close');
+                                $("#result-container").html(response.html_contain);
+                                activate_iso_clause_list_data(category_id)
                             },
                             error: function (error) {
                                 console.error(error);

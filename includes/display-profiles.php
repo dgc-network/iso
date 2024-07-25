@@ -62,6 +62,13 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
+
+            add_action( 'wp_ajax_get_iso_clause_dialog_data', array( $this, 'get_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_iso_clause_dialog_data', array( $this, 'get_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_set_iso_clause_dialog_data', array( $this, 'set_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_clause_dialog_data', array( $this, 'set_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
         }
 
         function enqueue_display_profile_scripts() {
@@ -1682,9 +1689,10 @@ if (!class_exists('display_profiles')) {
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <?php
-                if (current_user_can('administrator')) {
-                    echo $this->display_iso_clause_list($category_id);
+                if (current_user_can('administrator')) {                    
                     ?>
+                    <label for="iso-clause-list"><?php echo __( 'ISO clauses: ', 'your-text-domain' );?></label>
+                    <?php echo $this->display_iso_clause_list($category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
@@ -1896,6 +1904,62 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
+        function display_iso_clause_dialog($clause_id=false) {
+            $clause_no = get_post_meta($clause_id, 'clause_no', true);
+            $clause_title = get_the_title($clause_id);
+            $clause_content = get_post_field('post_content', $clause_id);
+            $category_id = get_post_meta($clause_id, 'category_id', true);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="clause-id" value="<?php echo esc_attr($clause_id);?>" />
+                <label for="clause-no"><?php echo __( 'No: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="clause-title"><?php echo __( 'Clause: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
+                <label for="category-id"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <select id="category-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($category_id);?></select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function set_iso_clause_dialog_data() {
+            if( isset($_POST['_clause_id']) ) {
+                $clause_no = sanitize_text_field($_POST['_clause_no']);
+                $data = array(
+                    'ID'           => $clause_id,
+                    'post_title'   => sanitize_text_field($_POST['_clause_title']),
+                    'post_content' => sanitize_text_field($_POST['_clause_content']),
+                );
+                wp_update_post( $data );
+                update_post_meta($clause_id, 'clause_no', $clause_no);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New clause',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'iso-clause',
+                );    
+                $post_id = wp_insert_post($new_post);
+                $category_id = sanitize_text_field($_POST['_category_id']);
+                update_post_meta($post_id, 'category_id', $category_id);
+                update_post_meta($post_id, 'clause_no', '-');
+            }
+            $response = array('html_contain' => $this->display_iso_clause_list());
+            wp_send_json($response);
+        }
+
+        function del_iso_clause_dialog_data() {
+            wp_delete_post($_POST['_clause_id'], true);
+            $response = array('html_contain' => $this->display_iso_clause_list());
+            wp_send_json($response);
+        }
 
     }
     $profiles_class = new display_profiles();
