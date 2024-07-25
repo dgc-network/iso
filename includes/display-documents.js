@@ -315,7 +315,18 @@ jQuery(document).ready(function($) {
         });
 
         $("#document-dialog-exit").on("click", function () {
-            window.location.replace(window.location.href);
+            //window.location.replace(window.location.href);
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_doc_frame');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+
         });
 
     }
