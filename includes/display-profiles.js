@@ -913,8 +913,10 @@ jQuery(document).ready(function($) {
                     'action': 'set_iso_clause_dialog_data',
                 },
                 success: function (response) {
-                    $("#result-container").html(response.html_contain);
-                    activate_iso_clause_list_data(category_id);
+                    //$("#result-container").html(response.html_contain);
+                    $("#iso-clause-dialog").html(response.html_contain);
+                    $("#iso-clause-dialog").dialog('open');
+                    //activate_iso_clause_list_data(category_id);
                 },
                 error: function(error){
                     console.error(error);
