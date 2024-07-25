@@ -200,6 +200,8 @@ if (!class_exists('erp_cards')) {
             $customer_code = get_post_meta($customer_id, 'customer_code', true);
             $customer_title = get_the_title($customer_id);
             $customer_content = get_post_field('post_content', $customer_id);
+            $company_phone = get_post_meta($customer_id, 'company_phone', true);
+            $company_fax = get_post_meta($customer_id, 'company_fax', true);
             ob_start();
             ?>
             <fieldset>
@@ -218,6 +220,10 @@ if (!class_exists('erp_cards')) {
                 $profiles_class = new display_profiles();
                 $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
+                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' );?></label>
+                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -233,6 +239,8 @@ if (!class_exists('erp_cards')) {
             if( isset($_POST['_customer_id']) ) {
                 $customer_id = sanitize_text_field($_POST['_customer_id']);
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
+                $company_phone = sanitize_text_field($_POST['_company_phone']);
+                $company_fax = sanitize_text_field($_POST['_company_fax']);
                 $data = array(
                     'ID'           => $customer_id,
                     'post_title'   => sanitize_text_field($_POST['_customer_title']),
@@ -240,6 +248,8 @@ if (!class_exists('erp_cards')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($customer_id, 'customer_code', $customer_code);
+                update_post_meta($customer_id, 'company_phone', $company_phone);
+                update_post_meta($customer_id, 'company_fax', $company_fax);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -411,6 +421,8 @@ if (!class_exists('erp_cards')) {
             $vendor_code = get_post_meta($vendor_id, 'vendor_code', true);
             $vendor_title = get_the_title($vendor_id);
             $vendor_content = get_post_field('post_content', $vendor_id);
+            $company_phone = get_post_meta($vendor_id, 'company_phone', true);
+            $company_fax = get_post_meta($vendor_id, 'company_fax', true);
             ob_start();
             ?>
             <fieldset>
@@ -429,6 +441,10 @@ if (!class_exists('erp_cards')) {
                 $profiles_class = new display_profiles();
                 $profiles_class->get_transactions_by_card_value($key_pairs);
                 ?>
+                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' );?></label>
+                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -444,6 +460,8 @@ if (!class_exists('erp_cards')) {
             if( isset($_POST['_vendor_id']) ) {
                 $vendor_id = sanitize_text_field($_POST['_vendor_id']);
                 $vendor_code = sanitize_text_field($_POST['_vendor_code']);
+                $company_phone = sanitize_text_field($_POST['_company_phone']);
+                $company_fax = sanitize_text_field($_POST['_company_fax']);
                 $data = array(
                     'ID'           => $vendor_id,
                     'post_title'   => sanitize_text_field($_POST['_vendor_title']),
@@ -451,6 +469,8 @@ if (!class_exists('erp_cards')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($vendor_id, 'vendor_code', $vendor_code);
+                update_post_meta($vendor_id, 'company_phone', $company_phone);
+                update_post_meta($vendor_id, 'company_fax', $company_fax);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

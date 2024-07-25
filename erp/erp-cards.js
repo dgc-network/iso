@@ -103,6 +103,8 @@ jQuery(document).ready(function($) {
                             '_customer_code': $("#customer-code").val(),
                             '_customer_title': $("#customer-title").val(),
                             '_customer_content': $("#customer-content").val(),
+                            '_company_phone': $("#company-phone").val(),
+                            '_company_fax': $("#company-fax").val(),
                         },
                         success: function (response) {
                             $("#customer-card-dialog").dialog('close');
@@ -244,6 +246,8 @@ jQuery(document).ready(function($) {
                             '_vendor_code': $("#vendor-code").val(),
                             '_vendor_title': $("#vendor-title").val(),
                             '_vendor_content': $("#vendor-content").val(),
+                            '_company_phone': $("#company-phone").val(),
+                            '_company_fax': $("#company-fax").val(),
                         },
                         success: function (response) {
                             $("#vendor-card-dialog").dialog('close');
