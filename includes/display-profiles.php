@@ -1854,6 +1854,29 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
+                'meta_key'       => 'clause_no', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            // Add category_id to meta_query if it is not false
+            if ($category_id !== false) {
+                $args['meta_query'] = array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                    ),
+                );
+            }
+        
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*        
+        function retrieve_iso_clause_list_data($category_id = false) {
+            $args = array(
+                'post_type'      => 'iso-clause',
+                'posts_per_page' => -1,
                 'meta_query'     => array(
                     array(
                         'key'   => 'category_id',
@@ -1867,7 +1890,7 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function display_iso_clause_dialog($clause_id=false) {
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
             $clause_title = get_the_title($clause_id);
@@ -1934,11 +1957,13 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_iso_clause_options($selected_option=0) {
-            $query = $this->retrieve_iso_clause_data($category_id);
+            $query = $this->retrieve_iso_clause_data();
             $options = '<option value="">Select clause</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                $category_id = get_post_meta(get_the_ID(), 'category_id', true);
+                $clause_no = get_the_title($category_id).':'.$clause_no;
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
