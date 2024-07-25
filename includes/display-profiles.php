@@ -1687,7 +1687,7 @@ if (!class_exists('display_profiles')) {
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="category-content" rows="3" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <?php
                 if (current_user_can('administrator')) {                    
                     ?>
@@ -1813,7 +1813,7 @@ if (!class_exists('display_profiles')) {
         function display_iso_clause_list($category_id=false) {
             ob_start();
             ?>
-            <div id="iso_clause-list">
+            <div id="iso-clause-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1851,13 +1851,14 @@ if (!class_exists('display_profiles')) {
         }
 
         function retrieve_iso_clause_list_data($category_id = false, $paged = 1) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
             
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
+/*
                 'meta_query'     => array(
                     array(
                         'key'   => 'category_id',
@@ -1867,6 +1868,7 @@ if (!class_exists('display_profiles')) {
                 'meta_key'       => 'clause_no', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
+*/                
             );
         
             if ($paged == 0) {

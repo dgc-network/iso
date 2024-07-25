@@ -911,6 +911,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_iso_clause_dialog_data',
+                    '_category_id': $("#category-id").val(),
                 },
                 success: function (response) {
                     //$("#result-container").html(response.html_contain);
