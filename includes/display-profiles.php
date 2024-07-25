@@ -1925,6 +1925,13 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
+        function get_iso_clause_dialog_data() {
+            $response = array();
+            $clause_id = sanitize_text_field($_POST['_clause_id']);
+            $response['html_contain'] = $this->display_iso_clause_dialog($clause_id);
+            wp_send_json($response);
+        }
+
         function set_iso_clause_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             if( isset($_POST['_clause_id']) ) {
