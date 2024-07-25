@@ -1854,8 +1854,6 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
-                //'posts_per_page' => get_option('operation_row_counts'),
-                //'paged'          => $paged,
                 'meta_query'     => array(
                     array(
                         'key'   => 'category_id',
@@ -1866,31 +1864,7 @@ if (!class_exists('display_profiles')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-/*        
-            // Sanitize and handle search query
-            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
-            if (!empty($search_query)) {
-                $args['s'] = $search_query;
-            }
-*/        
             $query = new WP_Query($args);
-/*        
-            // Check if query is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-                // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('iso-clause');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                $args['meta_query'][] = $meta_query_all_keys;
-                $query = new WP_Query($args);
-            }
-*/        
             return $query;
         }
 
@@ -1957,6 +1931,18 @@ if (!class_exists('display_profiles')) {
             wp_delete_post($_POST['_clause_id'], true);
             $response = array('html_contain' => $this->display_iso_clause_list($category_id));
             wp_send_json($response);
+        }
+
+        function select_iso_clause_options($selected_option=0) {
+            $query = $this->retrieve_iso_clause_data($category_id);
+            $options = '<option value="">Select clause</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
         }
 
     }

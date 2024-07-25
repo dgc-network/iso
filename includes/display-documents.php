@@ -742,6 +742,9 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
+                                        } elseif ($field_type=='_clause') {
+                                            $clause_no = get_post_meta($field_value, 'clause_no', true);
+                                            echo esc_html($clause_no.'-'.get_the_title($field_value));
                                         } elseif ($field_type=='_document') {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
                                             $doc_number = get_post_meta($field_value, 'doc_number', true);
@@ -1182,6 +1185,7 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="_clause" <?php echo ($field_type=='_clause') ? 'selected' : ''?>><?php echo __( '_clause', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
@@ -1354,6 +1358,14 @@ if (!class_exists('display_documents')) {
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
                             echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
                             echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            break;
+
+                        case ($field_type=='_clause'):
+                            $profiles_class = new display_profiles();
+                            ?>
+                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_iso_clause_options($field_value);?></select>
+                            <?php
                             break;
 
                         case ($field_type=='_document'):
