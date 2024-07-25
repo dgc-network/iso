@@ -1824,7 +1824,10 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $query = $this->retrieve_iso_clause_list_data($category_id);
+                $paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_iso_clause_list_data($category_id, $paged);
+                $total_posts = $query->found_posts;
+                $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $clause_title = get_the_title();
@@ -1832,7 +1835,7 @@ if (!class_exists('display_profiles')) {
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
+                            <td><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                         </tr>
                         <?php
@@ -1843,6 +1846,14 @@ if (!class_exists('display_profiles')) {
                 </tbody>
             </table>
             <div id="new-iso-clause" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <div class="pagination">
+                <?php
+                // Display pagination links
+                if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                ?>
+            </div>
             </fieldset>
             </div>
             <div id="iso-clause-dialog" title="Clause dialog"></div>
