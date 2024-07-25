@@ -314,6 +314,10 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $("#document-dialog-exit").on("click", function () {
+            window.location.replace(window.location.href);
+        });
+
     }
 
     function get_document_dialog_data(doc_id){

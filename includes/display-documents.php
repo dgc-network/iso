@@ -470,6 +470,9 @@ if (!class_exists('display_documents')) {
             <hr>
             <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+            <div style="text-align: right">
+                <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
+            </div>
             </fieldset>
             <?php
             return ob_get_clean();
