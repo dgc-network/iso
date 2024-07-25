@@ -967,7 +967,6 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#iso-clause-dialog").dialog('close');
                             $("#iso-clause-list").html(response.html_contain);
-                            //$("#result-container").html(response.html_contain);
                             activate_iso_clause_list_data(category_id)
                         },
                         error: function (error) {
@@ -990,7 +989,6 @@ jQuery(document).ready(function($) {
                             success: function (response) {
                                 $("#iso-clause-dialog").dialog('close');
                                 $("#iso-clause-list").html(response.html_contain);
-                                //$("#result-container").html(response.html_contain);
                                 activate_iso_clause_list_data(category_id)
                             },
                             error: function (error) {

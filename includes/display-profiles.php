@@ -1851,14 +1851,10 @@ if (!class_exists('display_profiles')) {
         }
 
         function retrieve_iso_clause_list_data($category_id = false, $paged = 1) {
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
-/*
                 'meta_query'     => array(
                     array(
                         'key'   => 'category_id',
@@ -1868,7 +1864,6 @@ if (!class_exists('display_profiles')) {
                 'meta_key'       => 'clause_no', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
-*/                
             );
         
             if ($paged == 0) {
@@ -1933,6 +1928,7 @@ if (!class_exists('display_profiles')) {
         function set_iso_clause_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             if( isset($_POST['_clause_id']) ) {
+                $clause_id = sanitize_text_field($_POST['_clause_id']);
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
                 $data = array(
                     'ID'           => $clause_id,
