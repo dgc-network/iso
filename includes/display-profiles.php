@@ -1845,7 +1845,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_iso_clause_data($category_id = false, $paged = 1) {
+        function retrieve_iso_clause_list_data($category_id = false, $paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
