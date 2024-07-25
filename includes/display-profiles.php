@@ -1827,16 +1827,13 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_iso_clause_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $next_job_title = get_the_title($next_job);
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        $clause_title = get_the_title();
+                        $clause_content = get_post_field('post_content', get_the_ID());
+                        $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
-                            <td><?php echo esc_html($action_content);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
+                            <td><?php echo esc_html($clause_title);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -1927,6 +1924,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function set_iso_clause_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
             if( isset($_POST['_clause_id']) ) {
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
                 $data = array(
@@ -1947,17 +1945,17 @@ if (!class_exists('display_profiles')) {
                     'post_type'     => 'iso-clause',
                 );    
                 $post_id = wp_insert_post($new_post);
-                $category_id = sanitize_text_field($_POST['_category_id']);
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta($post_id, 'clause_no', '-');
             }
-            $response = array('html_contain' => $this->display_iso_clause_list());
+            $response = array('html_contain' => $this->display_iso_clause_list($category_id));
             wp_send_json($response);
         }
 
         function del_iso_clause_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
             wp_delete_post($_POST['_clause_id'], true);
-            $response = array('html_contain' => $this->display_iso_clause_list());
+            $response = array('html_contain' => $this->display_iso_clause_list($category_id));
             wp_send_json($response);
         }
 

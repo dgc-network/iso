@@ -914,8 +914,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     //$("#result-container").html(response.html_contain);
-                    $("#iso-clause-dialog").html(response.html_contain);
-                    $("#iso-clause-dialog").dialog('open');
+                    $("#iso-clause-list").html(response.html_contain);
+                    //$("#iso-clause-dialog").dialog('open');
                     //activate_iso_clause_list_data(category_id);
                 },
                 error: function(error){
@@ -958,6 +958,7 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_iso_clause_dialog_data',
+                            '_category_id': $("#category-id").val(),
                             '_clause_id': $("#clause-id").val(),
                             '_clause_no': $("#clause-no").val(),
                             '_clause_title': $("#clause-title").val(),
@@ -981,6 +982,7 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_iso_clause_dialog_data',
+                                '_category_id': $("#category-id").val(),
                                 '_clause_id': $("#clause-id").val(),
                             },
                             success: function (response) {
