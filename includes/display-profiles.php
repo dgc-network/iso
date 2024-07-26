@@ -1999,7 +1999,7 @@ if (!class_exists('display_profiles')) {
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                 $category_id = get_post_meta(get_the_ID(), 'category_id', true);
-                $clause_no = get_the_title($category_id).':'.$clause_no;
+                //$clause_no = get_the_title($category_id).':'.$clause_no;
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
