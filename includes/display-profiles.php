@@ -1721,7 +1721,7 @@ if (!class_exists('display_profiles')) {
                 <?php
                 if (current_user_can('administrator')) {                    
                     ?>
-                    <label for="iso-clause-list"><?php echo __( 'ISO clauses: ', 'your-text-domain' );?></label>
+                    <label for="iso-clause-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
                     <?php echo $this->display_iso_clause_list($category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
@@ -1849,7 +1849,7 @@ if (!class_exists('display_profiles')) {
                 <thead>
                     <tr>
                         <th><?php echo __( '#', 'your-text-domain' );?></th>
-                        <th style="width:85%;"><?php echo __( 'clause', 'your-text-domain' );?></th>
+                        <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
