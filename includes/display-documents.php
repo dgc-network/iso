@@ -752,7 +752,7 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='_clause') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
                                             $category_id = get_post_meta($field_value, 'category_id', true);
-                                            $clause_no = get_the_title($category_id).':'.$clause_no;
+                                            //$clause_no = get_the_title($category_id).':'.$clause_no;
                                             echo esc_html($clause_no.'-'.get_the_title($field_value));
                                         } elseif ($field_type=='_document') {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
