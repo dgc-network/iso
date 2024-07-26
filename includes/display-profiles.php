@@ -646,9 +646,9 @@ if (!class_exists('display_profiles')) {
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="organization-address"><?php echo __( '組織地址：', 'your-text-domain' );?></label>
-                    <input type="number" id="organization-address" value="<?php echo $organization_address;?>" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" id="organization-address" value="<?php echo $organization_address;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="number-of-people"><?php echo __( '人數：', 'your-text-domain' );?></label>
-                    <input type="text" id="number-of-people" value="<?php echo $number_of_people;?>" class="text ui-widget-content ui-corner-all" />
+                    <input type="number" id="number-of-people" value="<?php echo $number_of_people;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="validation-scope"><?php echo __( '驗證範圍：', 'your-text-domain' );?></label>
                     <input type="text" id="validation-scope" value="<?php echo $validation_scope;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="verification-standards"><?php echo __( '驗證標準：', 'your-text-domain' );?></label>
