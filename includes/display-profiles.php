@@ -1849,7 +1849,7 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-
+/*
         function retrieve_iso_clause_list_data($category_id = false) {
             // Base arguments for the WP_Query
             $args = array(
@@ -1900,9 +1900,9 @@ if (!class_exists('display_profiles')) {
         
             return $clauses;
         }
-/*        
+*/
         // Example usage
-        $query = retrieve_iso_clause_list_data($category_id);
+        //$query = retrieve_iso_clause_list_data($category_id);
         
         function retrieve_iso_clause_list_data($category_id = false) {
             $args = array(
@@ -1926,7 +1926,7 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             return $query;
         }
-*/
+
         function display_iso_clause_dialog($clause_id=false) {
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
             $clause_title = get_the_title($clause_id);
@@ -1992,8 +1992,8 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_iso_clause_options($selected_option=0) {
-            $query = $this->retrieve_iso_clause_list_data();
+        function select_iso_clause_options($selected_option=0, $category_id=false) {
+            $query = $this->retrieve_iso_clause_list_data($category_id);
             $options = '<option value="">Select clause</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';

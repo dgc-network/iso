@@ -1304,6 +1304,8 @@ if (!class_exists('display_documents')) {
 
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $category_id = get_post_meta($doc_category, 'parent_category', true);
 
             $params = array(
                 'doc_id'     => $doc_id,
@@ -1373,7 +1375,7 @@ if (!class_exists('display_documents')) {
                             $profiles_class = new display_profiles();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_iso_clause_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_iso_clause_options($field_value, $category_id);?></select>
                             <?php
                             break;
 
