@@ -1306,6 +1306,10 @@ if (!class_exists('display_documents')) {
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $site_title = get_the_title($site_id);
+            if ($site_title=='iso-helper.com') $category_id = $doc_category;
 
             $params = array(
                 'doc_id'     => $doc_id,
