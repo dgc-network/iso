@@ -650,36 +650,34 @@ if (!class_exists('display_documents')) {
         
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div></div>
+                <div style="text-align:right; display:flex;">
+                    <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
+                    <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                </div>
+            </div>
+
             <div id="signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
                 <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
                 <?php echo $signature_record_list['html']?>
             </div>
         
-                <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
-                    <fieldset>
-                        <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
-                        <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                        <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
-                        <?php echo $this->display_doc_field_list($doc_id);?>
-                    </fieldset>
-                </div>        
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div></div>                    
-                    <div style="text-align:right; display:flex;">
-                        <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
-                        <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
-                    </div>
-                </div>
+            <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
+                <fieldset>
+                    <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
+                    <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
+                    <?php echo $this->display_doc_field_list($doc_id);?>
+                </fieldset>
+            </div>        
 
             <fieldset>
                 <?php
                 $this->display_doc_report_native_list($doc_id, $search_doc_report);
-                ?>
-            
+                ?>            
                 <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-
                 <div class="pagination">
                     <?php
                     // Display pagination links
