@@ -315,6 +315,13 @@ jQuery(document).ready(function($) {
                     '_site_id': $("#site-id").val(),
                     '_site_title': $("#site-title").val(),
                     '_image_url': $("#image-url").val(),
+                    '_organization_number': $("#organization-number").val(),
+                    '_organization_address': $("#organization-address").val(),
+                    '_number_of_people': $("#number-of-people").val(),
+                    '_validation_scope': $("#validation-scope").val(),
+                    '_verification_standards': $("#verification-standards").val(),
+                    '_contact_person': $("#contact-person").val(),
+                    '_contact_number': $("#contact-number").val(),
                 },
                 success: function (response) {
                     if (response.success) {

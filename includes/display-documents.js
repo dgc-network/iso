@@ -790,7 +790,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+/*
     function get_doc_action_list_data(doc_id) {
         $.ajax({
             type: 'POST',
@@ -810,7 +810,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     // doc-report scripts
     function activate_doc_report_list_data(doc_id){
         $("#doc-report-setting").on("click", function () {
