@@ -1819,7 +1819,7 @@ if (!class_exists('display_profiles')) {
                 <thead>
                     <tr>
                         <th><?php echo __( '#', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'clause', 'your-text-domain' );?></th>
+                        <th style="width:85%;"><?php echo __( 'clause', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
