@@ -608,7 +608,7 @@ if (!class_exists('display_documents')) {
                     '_document'   => $doc_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_card_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value($key_pairs);
             ?>
             <?php
             return ob_get_clean();
@@ -826,6 +826,13 @@ if (!class_exists('display_documents')) {
                 $paged = 1;
             }
 
+            if (!empty($params['key_pairs'])) {
+                $meta_query[] = array(
+                    'key'   => 'todo_status',
+                    'value' => -1,
+                );
+            }
+            
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -833,7 +840,7 @@ if (!class_exists('display_documents')) {
                 'meta_query'     => $meta_query,
                 'orderby'        => array(), // Initialize orderby parameter as an array
             );
-        
+                    
             $order_field_name = ''; // Initialize variable to store the meta key for ordering
             $order_field_value = ''; // Initialize variable to store the order direction
         

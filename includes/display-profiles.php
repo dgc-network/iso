@@ -210,7 +210,7 @@ if (!class_exists('display_profiles')) {
                 $key_pairs = array(
                     '_employee'   => $current_user_id,
                 );
-                $this->get_transactions_by_card_value($key_pairs);
+                $this->get_transactions_by_key_value($key_pairs);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
@@ -223,7 +223,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_transactions_by_card_value($key_pairs = array()) {
+        function get_transactions_by_key_value($key_pairs = array()) {
             if (!empty($key_pairs)) {
                 foreach ($key_pairs as $key => $value) {
                     $args = array(
