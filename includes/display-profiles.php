@@ -1868,7 +1868,7 @@ if (!class_exists('display_profiles')) {
                         $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         ?>
-                        <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php esc_attr(get_the_ID());?>">
+                        <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
