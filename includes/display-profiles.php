@@ -69,6 +69,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_iso_clause_dialog_data', array( $this, 'set_iso_clause_dialog_data' ) );
             add_action( 'wp_ajax_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
+            add_action( 'wp_ajax_sort_iso_clause_list_data', array( $this, 'sort_iso_clause_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_iso_clause_list_data', array( $this, 'sort_iso_clause_list_data' ) );
         }
 
         function enqueue_display_profile_scripts() {
