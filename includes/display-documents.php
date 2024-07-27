@@ -1608,14 +1608,14 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                 <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
                 <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />
-                
+
                 <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
                 <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             
                 <fieldset>
                     <?php
-                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category);
+                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
