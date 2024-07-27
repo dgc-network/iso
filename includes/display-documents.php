@@ -133,8 +133,10 @@ if (!class_exists('display_documents')) {
                 // Display ISO document statement
                 if (isset($_GET['_initial'])) {
                     $doc_number = sanitize_text_field($_GET['_initial']);
+                    $doc_category = sanitize_text_field($_GET['_initial']);
                     echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_iso_document_statement($doc_number);
+                    //echo $this->display_iso_document_statement($doc_number);
+                    echo $this->display_iso_document_statement($doc_category);
                     echo '</div>';
                 }
 
@@ -832,11 +834,12 @@ if (!class_exists('display_documents')) {
                     'value' => -1,
                 );
             }
-            
+
             $args = array(
                 'post_type'      => 'doc-report',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
+                'posts_per_page' => -1,
+                //'posts_per_page' => get_option('operation_row_counts'),
+                //'paged'          => $paged,
                 'meta_query'     => $meta_query,
                 'orderby'        => array(), // Initialize orderby parameter as an array
             );
@@ -1566,7 +1569,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function count_doc_category($doc_category){
+        function count_doc_by_category($doc_category){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
@@ -1587,10 +1590,12 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
         
-        function display_iso_document_statement($doc_number){
+        //function display_iso_document_statement($doc_number){
+        function display_iso_document_statement($doc_category){
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if ($is_site_admin) {
+/*
                 $args = array(
                     'post_type'      => 'document',
                     'posts_per_page' => 1,
@@ -1615,7 +1620,9 @@ if (!class_exists('display_documents')) {
                 $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                 $category_id = get_post_meta($doc_id, 'doc_category', true);
                 $doc_category = get_the_title( $category_id );
-                $count_category = $this->count_doc_category($category_id);
+                $count_doc_by_category = $this->count_doc_by_category($category_id);
+*/
+                $count_doc_by_category = $this->count_doc_by_category($doc_category);
                 ob_start();
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1631,11 +1638,12 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="doc-category" value="<?php echo esc_attr($doc_category);?>" />
                 <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($category_id);?>" />
                 <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
-                <input type="hidden" id="count-category" value="<?php echo esc_attr($count_category);?>" />
+                <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($count_doc_by_category);?>" />
                 <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
             
                 <fieldset>
                     <?php
+/*                    
                     $args = array(
                         'post_type'      => 'doc-report',
                         'posts_per_page' => -1,
@@ -1651,21 +1659,27 @@ if (!class_exists('display_documents')) {
                         'order'      => 'ASC',
                     );
                     $query = new WP_Query($args);
-                            
+*/
+                    $query = $this->retrieve_iso_clause_list_data($doc_category);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
+                            $clause_no = get_post_meta($report_id, 'clause_no', true);
+                            $clause_title = get_the_title($report_id);
+
                             $index = get_post_meta($report_id, 'index', true);
                             $description = get_post_meta($report_id, 'description', true);
                             $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
                             $is_url = get_post_meta($report_id, 'is_url', true);
                             $is_bold = get_post_meta($report_id, 'is_bold', true);
-                            if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
+                            //if ($is_checkbox==1) echo '<input type="checkbox" id="'.$index.'" checked /> 適用';
+                            if ($is_checkbox==1) echo '<input type="checkbox" id="'.$clause_no.'" checked /> 適用';
                             if ($is_url) {
                                 echo '<span class="is-url">：<a href="'.$is_url.'">'.$description.'</a></span><br>';
                             } else {
                                 if ($is_bold==1) echo '<b>';
-                                echo $description;
+                                //echo $description;
+                                echo $clause_title;
                                 if ($is_bold==1) echo '</b>';
                                 echo '<br>';
                             }

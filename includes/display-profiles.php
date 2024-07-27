@@ -1850,6 +1850,8 @@ if (!class_exists('display_profiles')) {
                     <tr>
                         <th><?php echo __( '#', 'your-text-domain' );?></th>
                         <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Heading', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Checkbox', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1860,10 +1862,14 @@ if (!class_exists('display_profiles')) {
                         $clause_title = get_the_title();
                         $clause_content = get_post_field('post_content', get_the_ID());
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                        $is_heading = get_post_meta(get_the_ID(), 'is_heading', true);
+                        $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>">
                             <td><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
+                            <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
+                            <td style="text-align:center;"><input type="checkbox" <?php echo ($is_checkbox) ? 'checked' : '';?> /></td>
                         </tr>
                         <?php
                     endwhile;
@@ -1879,61 +1885,7 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-/*
-        function retrieve_iso_clause_list_data($category_id = false) {
-            // Base arguments for the WP_Query
-            $args = array(
-                'post_type'      => 'iso-clause',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'relation' => 'AND'
-                ),
-            );
-        
-            // Add category_id to meta_query if it is not false
-            if ($category_id !== false) {
-                $args['meta_query'][] = array(
-                    'key'   => 'category_id',
-                    'value' => $category_id,
-                );
-            }
-        
-            // Add clause_no to meta_query
-            $args['meta_query'][] = array(
-                'key' => 'clause_no',
-                'compare' => 'EXISTS'
-            );
-        
-            // Create a new query
-            $query = new WP_Query($args);
-        
-            // Add filter to modify the SQL query
-            add_filter('posts_clauses', array( $this, 'modify_iso_clause_query_clauses', 10, 2));
 
-            return $query;
-        }
-        
-        function modify_iso_clause_query_clauses($clauses, $query) {
-            global $wpdb;
-        
-            // Check if the current query is the one we want to modify
-            if ($query->query_vars['post_type'] == 'iso-clause') {
-                // Join the meta table twice for category_id and clause_no
-                $clauses['join'] .= " 
-                    LEFT JOIN {$wpdb->postmeta} AS mt1 ON ({$wpdb->posts}.ID = mt1.post_id AND mt1.meta_key = 'category_id') 
-                    LEFT JOIN {$wpdb->postmeta} AS mt2 ON ({$wpdb->posts}.ID = mt2.post_id AND mt2.meta_key = 'clause_no') 
-                ";
-        
-                // Modify the orderby clause to order by category_id and clause_no
-                $clauses['orderby'] = "mt1.meta_value ASC, mt2.meta_value ASC";
-            }
-        
-            return $clauses;
-        }
-*/
-        // Example usage
-        //$query = retrieve_iso_clause_list_data($category_id);
-        
         function retrieve_iso_clause_list_data($category_id = false) {
             $args = array(
                 'post_type'      => 'iso-clause',
@@ -1958,10 +1910,12 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_iso_clause_dialog($clause_id=false) {
+            $category_id = get_post_meta($clause_id, 'category_id', true);
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
             $clause_title = get_the_title($clause_id);
             $clause_content = get_post_field('post_content', $clause_id);
-            $category_id = get_post_meta($clause_id, 'category_id', true);
+            $is_heading = get_post_meta($clause_id, 'is_heading', true);
+            $is_checkbox = get_post_meta($clause_id, 'is_checkbox', true);
             ob_start();
             ?>
             <fieldset>
@@ -1972,6 +1926,10 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
+                <input type="checkbox" id="is-heading" <?php echo ($is_heading) ? 'checked' : '';?> />
+                <label for="is-heading"><?php echo __( 'Is heading', 'your-text-domain' );?></label>
+                <input type="checkbox" id="is-checkbox" <?php echo ($is_checkbox) ? 'checked' : '';?> />
+                <label for="is-checkbox"><?php echo __( 'Is checkbox', 'your-text-domain' );?></label>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1989,6 +1947,8 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_clause_id']) ) {
                 $clause_id = sanitize_text_field($_POST['_clause_id']);
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
+                $is_heading = sanitize_text_field($_POST['_is_heading']);
+                $is_checkbox = sanitize_text_field($_POST['_is_checkbox']);
                 $data = array(
                     'ID'           => $clause_id,
                     'post_title'   => sanitize_text_field($_POST['_clause_title']),
@@ -1997,6 +1957,8 @@ if (!class_exists('display_profiles')) {
                 wp_update_post( $data );
                 update_post_meta($clause_id, 'clause_no', $clause_no);
                 update_post_meta($clause_id, 'category_id', $category_id);
+                update_post_meta($clause_id, 'is_heading', $is_heading);
+                update_post_meta($clause_id, 'is_checkbox', $is_checkbox);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

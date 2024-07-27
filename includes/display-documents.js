@@ -20,8 +20,8 @@ jQuery(document).ready(function($) {
     
     $("#initial-next-step").on("click", function () {
         doc_category = $("#doc-category").val();
-        count_category = $("#count-category").val();
-        if (window.confirm("Are you sure you want to add "+count_category+" "+ doc_category+" new documents?")) {
+        count_doc_by_category = $("#count-doc-by-category").val();
+        if (window.confirm("Are you sure you want to add "+count_doc_by_category+" "+ doc_category+" new documents?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,

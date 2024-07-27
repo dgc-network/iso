@@ -968,6 +968,8 @@ jQuery(document).ready(function($) {
                             '_clause_id': $("#clause-id").val(),
                             '_clause_no': $("#clause-no").val(),
                             '_clause_title': $("#clause-title").val(),
+                            '_is_heading': $("#is-heading").is(":checked") ? 1 : 0,
+                            '_is_checkbox': $("#is-checkbox").is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#iso-clause-dialog").dialog('close');
