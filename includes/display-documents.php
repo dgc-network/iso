@@ -1666,7 +1666,13 @@ if (!class_exists('display_documents')) {
                             $report_id = get_the_ID();
                             $clause_no = get_post_meta($report_id, 'clause_no', true);
                             $clause_title = get_the_title($report_id);
-
+                            $is_heading = get_post_meta($report_id, 'is_heading', true);
+                            if ($is_heading) {
+                                echo '<b>'.$clause_no.' '.$clause_title.'</b>';
+                            } else {
+                                echo '<input type="checkbox" id="'.$clause_no.'" checked />'.' '.$clause_title;
+                            }
+/*
                             $index = get_post_meta($report_id, 'index', true);
                             $description = get_post_meta($report_id, 'description', true);
                             $is_checkbox = get_post_meta($report_id, 'is_checkbox', true);
@@ -1683,6 +1689,7 @@ if (!class_exists('display_documents')) {
                                 if ($is_bold==1) echo '</b>';
                                 echo '<br>';
                             }
+*/                            
                         endwhile;                
                         wp_reset_postdata();
                     }
