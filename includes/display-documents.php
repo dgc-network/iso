@@ -1660,7 +1660,7 @@ if (!class_exists('display_documents')) {
                     );
                     $query = new WP_Query($args);
 */
-                    $query = $this->retrieve_iso_clause_list_data($doc_category);
+                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
