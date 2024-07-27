@@ -1853,7 +1853,6 @@ if (!class_exists('display_profiles')) {
                         <th><?php echo __( '#', 'your-text-domain' );?></th>
                         <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Heading', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Checkbox', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-iso-clause-list">
@@ -1872,7 +1871,6 @@ if (!class_exists('display_profiles')) {
                             <td><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
-                            <td style="text-align:center;"><?php echo esc_html($sorting_key);?></td>
                         </tr>
                         <?php
                     endwhile;
