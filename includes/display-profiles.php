@@ -1866,7 +1866,7 @@ if (!class_exists('display_profiles')) {
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         $is_heading = get_post_meta(get_the_ID(), 'is_heading', true);
                         $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
-                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        //$sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td><?php echo esc_html($clause_no);?></td>
@@ -1895,7 +1895,9 @@ if (!class_exists('display_profiles')) {
                 'posts_per_page' => -1,
                 //'meta_key'       => 'clause_no', // Meta key for sorting
                 //'orderby'        => 'meta_value', // Sort by meta value
-                //'order'          => 'ASC', // Sorting order (ascending)
+                'meta_key'       => 'sorting_key',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                'order'          => 'ASC', // Sorting order (ascending)
             );
         
             // Add category_id to meta_query if it is not false
