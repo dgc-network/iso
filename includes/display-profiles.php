@@ -1895,7 +1895,7 @@ if (!class_exists('display_profiles')) {
                 //'orderby'        => 'meta_value', // Sort by meta value
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
-                'order'          => 'DESC', // Sorting order (ascending)
+                'order'          => 'ASC', // Sorting order (ascending)
             );
         
             // Add category_id to meta_query if it is not false
