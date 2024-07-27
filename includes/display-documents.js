@@ -19,9 +19,9 @@ jQuery(document).ready(function($) {
     })
     
     $("#initial-next-step").on("click", function () {
-        doc_category = $("#doc-category").val();
-        count_doc_by_category = $("#count-doc-by-category").val();
-        if (window.confirm("Are you sure you want to add "+count_doc_by_category+" "+ doc_category+" new documents?")) {
+        doc_category_title = $("#doc-category-title").val();
+        get_doc_count_by_category = $("#count-doc-by-category").val();
+        if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ doc_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_initial_iso_document',
                     '_doc_category_id': $("#doc-category-id").val(),
-                    '_doc_site_id': $("#doc-site-id").val(),
+                    //'_doc_site_id': $("#doc-site-id").val(),
                 },
                 success: function (response) {
                     console.log(response)
