@@ -60,7 +60,8 @@ function display_economic_growth() {
     $query = new WP_Query($args);
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        $start_ai_url = '/display-documents/?_initial='.get_the_title().'statement';
+        //$start_ai_url = '/display-documents/?_initial='.get_the_title().'statement';
+        $start_ai_url = '/display-documents/?_initial='.get_the_ID();
         ?>
         <?php the_content();?>
         <div class="wp-block-buttons">
