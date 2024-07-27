@@ -1854,7 +1854,7 @@ if (!class_exists('display_profiles')) {
                         <th><?php echo __( 'Checkbox', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="sortable-iso-clause-list">
                 <?php
                 $query = $this->retrieve_iso_clause_list_data($category_id);
                 if ($query->have_posts()) :
@@ -1864,12 +1864,13 @@ if (!class_exists('display_profiles')) {
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         $is_heading = get_post_meta(get_the_ID(), 'is_heading', true);
                         $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
+                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         ?>
-                        <tr id="edit-iso-clause-<?php the_ID();?>">
+                        <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php esc_attr(get_the_ID());?>">
                             <td><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
-                            <td style="text-align:center;"><input type="checkbox" <?php echo ($is_checkbox) ? 'checked' : '';?> /></td>
+                            <td style="text-align:center;"><?php echo esc_html($sorting_key);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -1890,9 +1891,9 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
-                'meta_key'       => 'clause_no', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
+                //'meta_key'       => 'clause_no', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                //'order'          => 'ASC', // Sorting order (ascending)
             );
         
             // Add category_id to meta_query if it is not false
@@ -1971,7 +1972,8 @@ if (!class_exists('display_profiles')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
-                update_post_meta($post_id, 'clause_no', '-');
+                //update_post_meta($post_id, 'clause_no', '-');
+                update_post_meta( $post_id, 'sorting_key', -1);
             }
             $response = array('html_contain' => $this->display_iso_clause_list($category_id));
             wp_send_json($response);
@@ -1981,6 +1983,18 @@ if (!class_exists('display_profiles')) {
             $category_id = sanitize_text_field($_POST['_category_id']);
             wp_delete_post($_POST['_clause_id'], true);
             $response = array('html_contain' => $this->display_iso_clause_list($category_id));
+            wp_send_json($response);
+        }
+
+        function sort_iso_clause_list_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_clause_id_array']) && is_array($_POST['_clause_id_array'])) {
+                $clause_id_array = array_map('absint', $_POST['_clause_id_array']);        
+                foreach ($clause_id_array as $index => $clause_id) {
+                    update_post_meta( $clause_id, 'sorting_key', $index);
+                }
+                $response = array('success' => true);
+            }
             wp_send_json($response);
         }
 

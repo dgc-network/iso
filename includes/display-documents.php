@@ -1118,7 +1118,8 @@ if (!class_exists('display_documents')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $order_field = get_post_meta(get_the_ID(), 'order_field', true);
                                 if ($order_field=='ASC') $order_field='checked';
-                                echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                                //echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                                echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' name="order_field"></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';

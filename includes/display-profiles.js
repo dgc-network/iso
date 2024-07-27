@@ -931,6 +931,27 @@ jQuery(document).ready(function($) {
             });    
         });
     
+        $('#sortable-iso-clause-list').sortable({
+            update: function(event, ui) {
+                const clause_id_array = $(this).sortable('toArray', { attribute: 'data-clause-id' });                
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: 'json',
+                    data: {
+                        action: 'sort_iso_clause_list_data',
+                        _clause_id_array: clause_id_array,
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
         $('[id^="edit-iso-clause-"]').on("click", function () {
             const clause_id = this.id.substring(16);
             $.ajax({

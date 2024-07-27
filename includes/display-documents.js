@@ -607,7 +607,7 @@ jQuery(document).ready(function($) {
                 });
             }
         });
-            
+
         $('[id^="edit-doc-field-"]').on( "click", function() {
             const field_id = this.id.substring(15);
             $.ajax({
