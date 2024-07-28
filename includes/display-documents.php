@@ -1621,17 +1621,18 @@ if (!class_exists('display_documents')) {
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                             $clause_title = get_the_title();
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                            $field_value = get_post_meta($site_id, $doc_category_id.$clause_no, true);
+                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
+                            $field_value = get_post_meta($site_id, $field_key, true);
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
-                                echo '<input type="text" data-key="'.$doc_category_id.$clause_no.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
+                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
                                 echo $clause_title;
-                                echo '<textarea data-key="'.$doc_category_id.$clause_no.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
+                                echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
                             }
-                            if ($field_type=='radio') echo '<input type="radio" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" name="'.$doc_category_id.$clause_no.'" />'.' '.$clause_title.'<br>';
+                            if ($field_type=='radio') echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.$field_key.'" />'.' '.$clause_title.'<br>';
                         endwhile;                
                         wp_reset_postdata();
                     }
@@ -1683,10 +1684,10 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
                     $keyValuePairs = array_map('absint', $_POST['_keyValuePairs']);
-                    foreach ($keyValuePairs as $key => $value) {
+                    foreach ($keyValuePairs as $field_key => $field_value) {
                         //$clause_no = get_post_meta($clause_id, 'clause_no', true);
                         //update_post_meta( $site_id, $doc_category.$clause_no, $index);
-                        update_post_meta( $site_id, $key, $value);
+                        update_post_meta( $site_id, $field_key, $field_value);
                     }
                     $response = array('success' => true);
                 }
