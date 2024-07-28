@@ -1688,6 +1688,37 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
+                    $keyValuePairs = $_POST['_keyValuePairs'];
+                    $processedKeyValuePairs = [];
+                
+                    foreach ($keyValuePairs as $pair) {
+                        foreach ($pair as $field_key => $field_value) {
+                            // Sanitize the key and value
+                            $field_key = sanitize_text_field($field_key);
+                            $field_value = sanitize_text_field($field_value);
+                
+                            // Update post meta
+                            update_post_meta($site_id, $field_key, $field_value);
+                
+                            // Add the sanitized pair to the processed array
+                            $processedKeyValuePairs[$field_key] = $field_value;
+                        }
+                    }
+                
+                    // Prepare the response
+                    $response = array('success' => true, 'data' => $processedKeyValuePairs);
+                } else {
+                    // Handle the error case
+                    $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
+                }
+/*                
+                // Send the JSON response
+                wp_send_json($response);
+                
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
                     // Sanitize each key-value pair
                     $keyValuePairs = array_map(function($item) {
                         return array_map('sanitize_text_field', $item);
