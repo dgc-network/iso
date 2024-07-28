@@ -26,13 +26,14 @@ jQuery(document).ready(function($) {
     $("#statement-next-step").on("click", function () {
         doc_category_title = $("#doc-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
+
         // Initialize an empty array to store the key-value pairs
         const keyValuePairs = [];
 
         // Select all elements with the specified class and iterate over them
         $('.your-class-name').each(function() {
             // Get the key from the data attribute
-            const key = $(this).data('data-key');
+            const key = $(this).data('key');
             
             // Get the value (for input elements) or text content (for others)
             const value = $(this).val() || $(this).text();
