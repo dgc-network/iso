@@ -1623,10 +1623,11 @@ if (!class_exists('display_documents')) {
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
+                            if (!$field_value) $field_value=$field_key;
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
-                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" />';
+                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
                                 echo $clause_title;

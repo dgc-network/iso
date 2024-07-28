@@ -32,7 +32,7 @@ jQuery(document).ready(function($) {
         // Select all elements with the specified class and iterate over them
         $('.your-class-name').each(function() {
             // Get the key from the data attribute
-            const key = $(this).data('key');
+            const key = $(this).data('data-key');
             
             // Get the value (for input elements) or text content (for others)
             const value = $(this).val() || $(this).text();
