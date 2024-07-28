@@ -1623,11 +1623,24 @@ if (!class_exists('display_documents')) {
                             $clause_no = get_post_meta($report_id, 'clause_no', true);
                             $clause_title = get_the_title($report_id);
                             $is_heading = get_post_meta($report_id, 'is_heading', true);
+                            $field_type = get_post_meta($report_id, 'field_type', true);
+                            if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
+                            if ($field_type=='text') {
+                                echo $clause_title;
+                                echo '<input type="text" id="'.$clause_no.'" class="text ui-widget-content ui-corner-all" />';
+                            }
+                            if ($field_type=='textarea') {
+                                echo $clause_title;
+                                echo '<textarea id="'.$clause_no.'" class="text ui-widget-content ui-corner-all" rows="3"></textarea>';
+                            }
+                            if ($field_type=='radio') '<input type="radio" id="'.$clause_no.'" name="'.$clause_no.'" />'.' '.$clause_title.'<br>';
+/*
                             if ($is_heading) {
                                 echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             } else {
                                 echo '<input type="checkbox" id="'.$clause_no.'" checked />'.' '.$clause_title.'<br>';
                             }
+*/                                
                         endwhile;                
                         wp_reset_postdata();
                     }
