@@ -1850,9 +1850,9 @@ if (!class_exists('display_profiles')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( '#', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Clause', 'your-text-domain' );?></th>
                         <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Heading', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-iso-clause-list">
@@ -1865,10 +1865,10 @@ if (!class_exists('display_profiles')) {
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         $is_heading = get_post_meta(get_the_ID(), 'is_heading', true);
                         $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
-                        //$sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td><?php echo esc_html($clause_no);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
                         </tr>
@@ -1891,8 +1891,6 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
-                //'meta_key'       => 'clause_no', // Meta key for sorting
-                //'orderby'        => 'meta_value', // Sort by meta value
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -1919,14 +1917,22 @@ if (!class_exists('display_profiles')) {
             $clause_content = get_post_field('post_content', $clause_id);
             $is_heading = get_post_meta($clause_id, 'is_heading', true);
             $is_checkbox = get_post_meta($clause_id, 'is_checkbox', true);
+            $field_type = get_post_meta($clause_id, 'field_type', true);
             ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="clause-id" value="<?php echo esc_attr($clause_id);?>" />
-                <label for="clause-no"><?php echo __( 'No: ', 'your-text-domain' );?></label>
-                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="clause-title"><?php echo __( 'Clause: ', 'your-text-domain' );?></label>
+                <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="field-type"><?php echo __( 'Clause: ', 'your-text-domain' );?></label>
+                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                </select>
+                <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
                 <input type="checkbox" id="is-heading" <?php echo ($is_heading) ? 'checked' : '';?> />
@@ -1952,6 +1958,7 @@ if (!class_exists('display_profiles')) {
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
                 $is_heading = sanitize_text_field($_POST['_is_heading']);
                 $is_checkbox = sanitize_text_field($_POST['_is_checkbox']);
+                $field_type = sanitize_text_field($_POST['_field_type']);
                 $data = array(
                     'ID'           => $clause_id,
                     'post_title'   => sanitize_text_field($_POST['_clause_title']),
@@ -1974,7 +1981,6 @@ if (!class_exists('display_profiles')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
-                //update_post_meta($post_id, 'clause_no', '-');
                 update_post_meta( $post_id, 'sorting_key', -1);
             }
             $response = array('html_contain' => $this->display_iso_clause_list($category_id));
