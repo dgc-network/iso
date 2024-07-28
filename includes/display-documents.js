@@ -19,8 +19,8 @@ jQuery(document).ready(function($) {
     })
     
     $("#statement-prev-step").on("click", function () {
-        //window.location.replace('/');
-        window.location.replace(window.location.href);
+        window.location.replace('/');
+        //window.location.replace(window.location.href);
     })
     
     $("#statement-next-step").on("click", function () {

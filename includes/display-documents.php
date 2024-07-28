@@ -1633,7 +1633,7 @@ if (!class_exists('display_documents')) {
                                 echo $clause_title;
                                 echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
                             }
-                            if ($field_type=='radio') echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.$field_key.'" />'.' '.$clause_title.'<br>';
+                            if ($field_type=='radio') echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" />'.' '.$clause_title.'<br>';
                         endwhile;                
                         wp_reset_postdata();
                     }
@@ -1684,7 +1684,8 @@ if (!class_exists('display_documents')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
-                    $keyValuePairs = array_map('absint', $_POST['_keyValuePairs']);
+                    //$keyValuePairs = array_map('absint', $_POST['_keyValuePairs']);
+                    $keyValuePairs = $_POST['_keyValuePairs'];
                     foreach ($keyValuePairs as $field_key => $field_value) {
                         //$clause_no = get_post_meta($clause_id, 'clause_no', true);
                         //update_post_meta( $site_id, $doc_category.$clause_no, $index);
