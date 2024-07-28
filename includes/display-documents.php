@@ -1687,15 +1687,13 @@ if (!class_exists('display_documents')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
-                    //$keyValuePairs = array_map('absint', $_POST['_keyValuePairs']);
                     $keyValuePairs = sanitize_text_field($_POST['_keyValuePairs']);
                     foreach ($keyValuePairs as $field_key => $field_value) {
-                        //$clause_no = get_post_meta($clause_id, 'clause_no', true);
-                        //update_post_meta( $site_id, $doc_category.$clause_no, $index);
                         update_post_meta( $site_id, $field_key, $field_value);
                     }
                     //$response = array('success' => true);
-                    $response = $keyValuePairs;
+                    $response = array('success' => $keyValuePairs);
+                    //$response = $keyValuePairs;
                 }
     
             }
