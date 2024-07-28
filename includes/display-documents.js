@@ -18,18 +18,42 @@ jQuery(document).ready(function($) {
         window.location.replace('/');
     })
     
-    $("#initial-next-step").on("click", function () {
+    $("#statement-prev-step").on("click", function () {
+        //window.location.replace('/');
+        window.location.replace(window.location.href);
+    })
+    
+    $("#statement-next-step").on("click", function () {
         doc_category_title = $("#doc-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
+        // Initialize an empty array to store the key-value pairs
+        const keyValuePairs = [];
+
+        // Select all elements with the specified class and iterate over them
+        $('.your-class-name').each(function() {
+            // Get the key from the data attribute
+            const key = $(this).data('key');
+            
+            // Get the value (for input elements) or text content (for others)
+            const value = $(this).val() || $(this).text();
+    
+            // Add the key-value pair to the array
+            keyValuePairs.push({ [key]: value });
+        });
+    
+        // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
+        console.log(keyValuePairs);
+    
         if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ doc_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_initial_iso_document',
+                    'action': 'set_iso_document_statement',
                     '_doc_category_id': $("#doc-category-id").val(),
-                    //'_doc_site_id': $("#doc-site-id").val(),
+                    '_is_duplicated': true,
+                    _keyValuePairs : keyValuePairs,
                 },
                 success: function (response) {
                     console.log(response)
@@ -41,6 +65,28 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });        
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_iso_document_statement',
+                    '_doc_category_id': $("#doc-category-id").val(),
+                    _keyValuePairs : keyValuePairs,
+                    //'_is_duplicated': true,
+                },
+                success: function (response) {
+                    console.log(response)
+                    //window.location.replace(window.location.href);
+                    window.location.replace('/');
+                },
+                error: function(error){
+                    console.error(error);                    
+                    alert(error);
+                }
+            });        
+
         }
     });
     

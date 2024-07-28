@@ -1922,17 +1922,17 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="clause-id" value="<?php echo esc_attr($clause_id);?>" />
+                <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="field-type"><?php echo __( 'Clause: ', 'your-text-domain' );?></label>
+                <label for="field-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                     <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                 </select>
-                <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
-                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
                 <input type="checkbox" id="is-heading" <?php echo ($is_heading) ? 'checked' : '';?> />

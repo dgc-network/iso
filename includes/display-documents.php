@@ -49,8 +49,8 @@ if (!class_exists('display_documents')) {
 
             add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
             add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
-            add_action( 'wp_ajax_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
-            add_action( 'wp_ajax_nopriv_set_initial_iso_document', array( $this, 'set_initial_iso_document' ) );
+            add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
         }
@@ -1049,6 +1049,7 @@ if (!class_exists('display_documents')) {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         // put the custom function here to support the default value for the new record
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
+                        if ($default_value=='me') $default_value=$current_user_id;
                         update_post_meta( $post_id, $field_name, $default_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1609,44 +1610,35 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                 <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
                 <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />
-
-                <input type="hidden" id="doc-site-id" value="<?php echo esc_attr($doc_site);?>" />
-                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-                <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             
                 <fieldset>
                     <?php
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $query = $profiles_class->retrieve_iso_clause_list_data($doc_category_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
-                            $report_id = get_the_ID();
-                            $clause_no = get_post_meta($report_id, 'clause_no', true);
-                            $clause_title = get_the_title($report_id);
-                            $is_heading = get_post_meta($report_id, 'is_heading', true);
-                            $field_type = get_post_meta($report_id, 'field_type', true);
+                            $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                            $clause_title = get_the_title();
+                            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                            $field_value = get_post_meta($site_id, $doc_category_id.$clause_no, true);
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
-                                echo '<input type="text" id="'.$clause_no.'" class="text ui-widget-content ui-corner-all" />';
+                                echo '<input type="text" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" value="'.$field_value.'" class="text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
                                 echo $clause_title;
-                                echo '<textarea id="'.$clause_no.'" class="text ui-widget-content ui-corner-all" rows="3"></textarea>';
+                                echo '<textarea class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" class="text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
                             }
-                            if ($field_type=='radio') '<input type="radio" id="'.$clause_no.'" name="'.$clause_no.'" />'.' '.$clause_title.'<br>';
-/*
-                            if ($is_heading) {
-                                echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
-                            } else {
-                                echo '<input type="checkbox" id="'.$clause_no.'" checked />'.' '.$clause_title.'<br>';
-                            }
-*/                                
+                            if ($field_type=='radio') '<input type="radio" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" name="'.$doc_category_id.$clause_no.'" />'.' '.$clause_title.'<br>';
                         endwhile;                
                         wp_reset_postdata();
                     }
                     ?>
                 </fieldset>
-                <button id="initial-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
+                <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( '上ㄧ步(Prev)', 'your-text-domain' );?></button>
+                <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
                 <?php
                 return ob_get_clean();
     
@@ -1656,32 +1648,49 @@ if (!class_exists('display_documents')) {
 
         }
         
-        function set_initial_iso_document() {
+        function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
         
             if (isset($_POST['_doc_category_id'])) {
                 $doc_category = sanitize_text_field($_POST['_doc_category_id']);
-                $args = array(
-                    'post_type'      => 'document',
-                    'posts_per_page' => -1,
-                    'meta_query'     => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'doc_category',
-                            'value'   => $doc_category,
-                            'compare' => '=',
+                $is_duplicated = sanitize_text_field($_POST['_is_duplicated']);
+                if ($is_duplicated) {
+                    $args = array(
+                        'post_type'      => 'document',
+                        'posts_per_page' => -1,
+                        'meta_query'     => array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'doc_category',
+                                'value'   => $doc_category,
+                                'compare' => '=',
+                            ),
                         ),
-                    ),
-                );
-                
-                $query = new WP_Query($args);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                    $this->get_shared_document(get_the_ID());
-                    endwhile;
-                    wp_reset_postdata();
+                    );
+                    
+                    $query = new WP_Query($args);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                        $this->get_shared_document(get_the_ID());
+                        endwhile;
+                        wp_reset_postdata();
+                        $response = array('success' => true);
+                    endif;
+    
+                }
+
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
+                    $keyValuePairs = array_map('absint', $_POST['_keyValuePairs']);
+                    foreach ($keyValuePairs as $key => $value) {
+                        //$clause_no = get_post_meta($clause_id, 'clause_no', true);
+                        //update_post_meta( $site_id, $doc_category.$clause_no, $index);
+                        update_post_meta( $site_id, $key, $value);
+                    }
                     $response = array('success' => true);
-                endif;
+                }
+    
             }
             wp_send_json($response);
         }
