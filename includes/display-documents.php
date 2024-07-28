@@ -1625,13 +1625,13 @@ if (!class_exists('display_documents')) {
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
-                                echo '<input type="text" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" value="'.$field_value.'" class="text ui-widget-content ui-corner-all" />';
+                                echo '<input type="text" data-key="'.$doc_category_id.$clause_no.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
                                 echo $clause_title;
-                                echo '<textarea class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" class="text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
+                                echo '<textarea data-key="'.$doc_category_id.$clause_no.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
                             }
-                            if ($field_type=='radio') '<input type="radio" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" name="'.$doc_category_id.$clause_no.'" />'.' '.$clause_title.'<br>';
+                            if ($field_type=='radio') echo '<input type="radio" class="your-class-name" data-key="'.$doc_category_id.$clause_no.'" name="'.$doc_category_id.$clause_no.'" />'.' '.$clause_title.'<br>';
                         endwhile;                
                         wp_reset_postdata();
                     }
