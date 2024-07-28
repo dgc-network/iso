@@ -35,6 +35,32 @@ jQuery(document).ready(function($) {
             // Get the key from the data attribute
             const key = $(this).data('key');
             
+            let value;
+            
+            // Check if the element is a checkbox or radio button
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                // Set the value to 1 if checked, otherwise set it to 0
+                value = $(this).is(':checked') ? 1 : 0;
+            } else {
+                // Get the value (for input elements) or text content (for others)
+                value = $(this).val() || $(this).text();
+            }
+        
+            // Add the key-value pair to the array
+            keyValuePairs.push({ [key]: value });
+        });
+        
+        // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
+        console.log(keyValuePairs);
+/*        
+        // Initialize an empty array to store the key-value pairs
+        const keyValuePairs = [];
+
+        // Select all elements with the specified class and iterate over them
+        $('.your-class-name').each(function() {
+            // Get the key from the data attribute
+            const key = $(this).data('key');
+            
             // Get the value (for input elements) or text content (for others)
             const value = $(this).val() || $(this).text();
     
@@ -44,7 +70,7 @@ jQuery(document).ready(function($) {
     
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
-    
+*/    
         if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ doc_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',

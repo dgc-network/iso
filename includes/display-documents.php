@@ -1711,51 +1711,6 @@ if (!class_exists('display_documents')) {
                     // Handle the error case
                     $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
                 }
-/*                
-                // Send the JSON response
-                wp_send_json($response);
-                
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-
-                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
-                    // Sanitize each key-value pair
-                    $keyValuePairs = array_map(function($item) {
-                        return array_map('sanitize_text_field', $item);
-                    }, $_POST['_keyValuePairs']);
-                
-                    foreach ($keyValuePairs as $pair) {
-                        // Ensure each pair has both a key and a value
-                        if (isset($pair['key']) && isset($pair['value'])) {
-                            $field_key = $pair['key'];
-                            $field_value = $pair['value'];
-                            update_post_meta($site_id, $field_key, $field_value);
-                        }
-                    }
-                
-                    // Prepare the response
-                    $response = array('success' => true, 'data' => $keyValuePairs);
-                } else {
-                    // Handle the error case
-                    $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
-                }
-/*                
-                // Send the JSON response
-                wp_send_json($response);
-                
-
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
-                    $keyValuePairs = sanitize_text_field($_POST['_keyValuePairs']);
-                    foreach ($keyValuePairs as $field_key => $field_value) {
-                        update_post_meta( $site_id, $field_key, $field_value);
-                    }
-                    //$response = array('success' => true);
-                    $response = array('success' => json_encode($keyValuePairs));
-                    //$response = $keyValuePairs;
-                }
-*/    
             }
             wp_send_json($response);
         }
