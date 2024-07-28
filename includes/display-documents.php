@@ -1692,7 +1692,7 @@ if (!class_exists('display_documents')) {
                         update_post_meta( $site_id, $field_key, $field_value);
                     }
                     //$response = array('success' => true);
-                    $response = array('success' => $keyValuePairs);
+                    $response = array('success' => json_encode($keyValuePairs));
                     //$response = $keyValuePairs;
                 }
     
