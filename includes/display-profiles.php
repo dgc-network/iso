@@ -1870,7 +1870,7 @@ if (!class_exists('display_profiles')) {
                         <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
-                            <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
+                            <td style="text-align:center;"><?php echo esc_html($field_type);?><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
                         </tr>
                         <?php
                     endwhile;
