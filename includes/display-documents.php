@@ -1626,7 +1626,7 @@ if (!class_exists('display_documents')) {
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
-                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
+                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
                                 echo $clause_title;
