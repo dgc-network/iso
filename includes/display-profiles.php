@@ -1868,7 +1868,7 @@ if (!class_exists('display_profiles')) {
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><input type="checkbox" <?php echo ($is_heading) ? 'checked' : '';?> /></td>
                         </tr>
@@ -1969,6 +1969,7 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($clause_id, 'category_id', $category_id);
                 update_post_meta($clause_id, 'is_heading', $is_heading);
                 update_post_meta($clause_id, 'is_checkbox', $is_checkbox);
+                update_post_meta($clause_id, 'field_type', $field_type);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
