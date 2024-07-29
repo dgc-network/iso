@@ -1352,6 +1352,34 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
+        function select_employee_card_options($selected_options = array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            // Retrieve users based on site_id
+            $meta_query_args = array(
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
+            );
+            $users = get_users(array('meta_query' => $meta_query_args));
+        
+            // Initialize options HTML
+            $options = '';
+        
+            // Loop through the users
+            foreach ($users as $user) {
+                // Check if the current user ID is in the selected options array
+                $selected = in_array($user->ID, $selected_options) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . '</option>';
+            }
+        
+            // Return the options HTML
+            return $options;
+        }
+/*        
         // employee-card
         function select_employee_card_options($selected_option=0) {
             $current_user_id = get_current_user_id();
@@ -1368,13 +1396,14 @@ if (!class_exists('erp_cards')) {
             $users = get_users(array('meta_query' => $meta_query_args));
 
             // Loop through the users
-            $options = '<option value="">Select employee</option>';
+            //$options = '<option value="">Select employee</option>';
             foreach ($users as $user) {
                 $selected = ($selected_option == $user->ID) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
             }
             return $options;
-        }        
+        }
+*/            
     }
     $cards_class = new erp_cards();
 }

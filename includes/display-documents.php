@@ -778,9 +778,31 @@ if (!class_exists('display_documents')) {
                                             $instrument_code = get_post_meta($field_value, 'department_code', true);
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employee') {
-                                            $user = get_userdata($field_value);
+
+                                            // Check if $field_value is an array of selected user IDs
+                                            if (is_array($field_value)) {
+                                                // Loop through each selected user ID
+                                                foreach ($field_value as $user_id) {
+                                                    // Get user data
+                                                    $user = get_userdata($user_id);
+                                                    
+                                                    // Check if the user data is retrieved successfully
+                                                    if ($user) {
+                                                        // Display the user's display name
+                                                        echo esc_html($user->display_name) . ', ';
+                                                    } else {
+                                                        // Optionally handle the case where user data is not found
+                                                        echo 'User not found for ID: ' . esc_html($user_id) . ', ';
+                                                    }
+                                                }
+                                            } else {
+                                                // Handle the case where $field_value is not an array
+                                                echo 'Selected value is not an array.';
+                                            }
+                                            
+                                            //$user = get_userdata($field_value);
                                             //echo $user->display_name;
-                                            echo $field_value;
+                                            //echo $field_value;
                                         } else {
                                             echo esc_html($field_value);
                                         }
