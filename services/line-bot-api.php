@@ -28,7 +28,7 @@ if (!class_exists('line_bot_api')) {
             $this->channel_id = get_option('line_bot_channel_id');
             $this->channel_access_token = get_option('line_bot_token_option');
             add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
-            add_action( 'init', array( $this, 'handle_line_callback' ) );
+            //add_action( 'init', array( $this, 'handle_line_callback' ) );
             add_action( 'wp', array( $this, 'check_otp_form' ) );
 
         }
