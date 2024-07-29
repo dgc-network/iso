@@ -165,6 +165,7 @@ if (!class_exists('line_bot_api')) {
                 // Log the user in
                 wp_set_current_user($user->ID);
                 wp_set_auth_cookie($user->ID);
+                do_action('wp_login', $user->user_login);
                 error_log('User logged in with ID: ' . $user->ID);
         
                 // Flush the output buffer and set cookies
