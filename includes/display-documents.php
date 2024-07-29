@@ -850,14 +850,14 @@ if (!class_exists('display_documents')) {
             } else {
                 $paged = 1;
             }
-
+/*
             if (!empty($params['key_pairs'])) {
                 $meta_query[] = array(
                     'key'   => 'todo_status',
                     'value' => -1,
                 );
             }
-
+*/
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => -1,
