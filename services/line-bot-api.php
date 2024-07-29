@@ -112,8 +112,8 @@ if (!class_exists('line_bot_api')) {
             ob_start();
         
             // Example Line user ID (replace with actual logic to get the Line user ID)
-            $line_user_id = 'example_line_user_id';
-        
+            $line_user_id = 'U1b08294900a36077765643d8ae14a402';
+
             // Check if the user is already logged in
             if (is_user_logged_in()) {
                 error_log('User is already logged in');
