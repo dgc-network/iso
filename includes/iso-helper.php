@@ -401,7 +401,8 @@ function user_did_not_login_yet() {
     // Log the user in
     wp_set_current_user($user->ID);
     wp_set_auth_cookie($user->ID);
-    wp_redirect(home_url());
+    echo '<h1>Hi, '.$user->display_name.'</h1>';
+    //wp_redirect(home_url());
     exit;
 
     
