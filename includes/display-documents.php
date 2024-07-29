@@ -881,7 +881,8 @@ if (!class_exists('display_documents')) {
                         $key_pairs = $params['key_pairs'];
                         foreach ($key_pairs as $key => $value) {
                             if ($key==$field_type) {
-                                if (is_array($value)) {
+                                //if (is_array($value)) {
+                                if ($field_type=='_employee') {
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
                                         'value'   => $value,
