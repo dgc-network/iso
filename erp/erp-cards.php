@@ -1353,6 +1353,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_employee_card_options($selected_options = array()) {
+            if (!is_array($selected_options)) {
+                $selected_options = array();
+            }
+            
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
