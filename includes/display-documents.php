@@ -779,7 +779,8 @@ if (!class_exists('display_documents')) {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employee') {
                                             $user = get_userdata($field_value);
-                                            echo $user->display_name;
+                                            //echo $user->display_name;
+                                            echo $field_value;
                                         } else {
                                             echo esc_html($field_value);
                                         }

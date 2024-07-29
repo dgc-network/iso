@@ -22,17 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 if (!class_exists('line_bot_api')) {
     class line_bot_api {
         private $channel_id;
-        //private $channel_access_token;
-        public $channel_access_token;
+        private $channel_access_token;
+        //public $channel_access_token;
 
         public function __construct() {
             $this->channel_id = get_option('line_bot_channel_id');
             $this->channel_access_token = get_option('line_bot_token_option');
             add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
-            add_action( 'init', array( $this, 'handle_line_callback' ) );
-            add_action( 'wp', array( $this, 'check_otp_form' ) );
-            add_action('template_redirect', array( $this, 'line_user_login'));
-            add_action('wp_footer', array( $this, 'check_login_status'));                
+            //add_action( 'init', array( $this, 'handle_line_callback' ) );
+            //add_action( 'wp', array( $this, 'check_otp_form' ) );
+            //add_action('template_redirect', array( $this, 'line_user_login'));
+            //add_action('wp_footer', array( $this, 'check_login_status'));                
         }
 
         function line_bot_register_settings() {
@@ -45,15 +45,6 @@ if (!class_exists('line_bot_api')) {
             );
 
             // Register fields for Line bot section
-            add_settings_field(
-                'line-bot-channel-id',
-                'Line bot Channel ID',
-                array( $this, 'line_bot_channel_id_callback' ),
-                'web-service-settings',
-                'line-bot-section-settings'
-            );
-            register_setting('web-service-settings', 'line-bot-channel-id');
-
             add_settings_field(
                 'line-bot-token-option',
                 'Line bot Token',
@@ -84,11 +75,6 @@ if (!class_exists('line_bot_api')) {
 
         function line_bot_section_settings_callback() {
             echo '<p>Settings for Line bot.</p>';
-        }
-
-        function line_bot_channel_id_callback() {
-            $value = get_option('line_bot_channel_id');
-            echo '<input type="text" id="line-bot-channel-id" name="line_bot_channel_id" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
         function line_bot_token_option_callback() {
