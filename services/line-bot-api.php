@@ -108,6 +108,77 @@ if (!class_exists('line_bot_api')) {
 
         // login callback
         function line_user_login() {
+            session_start();
+        
+            // Set a cooldown period (e.g., 10 seconds)
+            $cooldown_period = 10;
+        
+            // Get the last execution time from the session
+            $last_execution = isset($_SESSION['last_line_user_login']) ? $_SESSION['last_line_user_login'] : 0;
+            $current_time = time();
+        
+            // Check if the cooldown period has passed
+            if (($current_time - $last_execution) < $cooldown_period) {
+                error_log('Throttled: too many requests');
+                return; // Exit if within cooldown period
+            }
+        
+            // Update the last execution time
+            $_SESSION['last_line_user_login'] = $current_time;
+        
+            // Start output buffering to avoid premature output
+            ob_start();
+        
+            // Example Line user ID (replace with actual logic to get the Line user ID)
+            $line_user_id = 'example_line_user_id';
+        
+            // Check if the user is already logged in
+            if (is_user_logged_in()) {
+                error_log('User is already logged in');
+                ob_end_flush();
+                return;
+            }
+        
+            // Attempt to find the user by their login
+            $user = get_user_by('login', $line_user_id);
+        
+            if (!$user) {
+                // User does not exist, create a new user
+                $user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id . '@example.com');
+                if (is_wp_error($user_id)) {
+                    // Handle user creation error
+                    error_log('Failed to create user: ' . $user_id->get_error_message());
+                    ob_end_flush();
+                    return;
+                }
+                $user = get_user_by('id', $user_id);
+                error_log('Created new user with ID: ' . $user_id);
+            } else {
+                error_log('User exists with ID: ' . $user->ID);
+            }
+        
+            if ($user) {
+                // Log the user in
+                wp_set_current_user($user->ID);
+                wp_set_auth_cookie($user->ID);
+                error_log('User logged in with ID: ' . $user->ID);
+        
+                // Flush the output buffer and set cookies
+                ob_end_flush();
+        
+                // Redirect to avoid direct output and refresh session
+                wp_redirect(home_url());
+                exit;
+            } else {
+                error_log('User authentication failed');
+                ob_end_flush();
+                return;
+            }
+        }
+/*        
+        add_action('template_redirect', 'line_user_login');
+        
+        function line_user_login() {
             // Start output buffering to avoid premature output
             ob_start();
         
@@ -157,7 +228,7 @@ if (!class_exists('line_bot_api')) {
                 return;
             }
         }
-        
+*/        
         function check_login_status() {
             if (is_user_logged_in()) {
                 echo '<h1>Hi, ' . wp_get_current_user()->display_name . '</h1>';
