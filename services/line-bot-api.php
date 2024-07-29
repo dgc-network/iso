@@ -131,7 +131,7 @@ if (!class_exists('line_bot_api')) {
                 ));
                 $profile_data = json_decode(wp_remote_retrieve_body($profile_response), true);
                 $line_user_id = $profile_data['userId'];
-        
+
                 // Check if user exists, if not, create a new user
                 $user = get_user_by('login', $line_user_id);
                 if (!$user) {
