@@ -883,6 +883,12 @@ if (!class_exists('display_documents')) {
                             if ($key==$field_type) {
                                 //if (is_array($value)) {
                                 if ($field_type=='_employee') {
+                                    $args['meta_query'][0][] = array(
+                                        'key'     => $field_name,
+                                        'value'   => sprintf(':"%s";', $value),
+                                        'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                    );
+                                    
 /*
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
