@@ -387,62 +387,6 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 
 // User did not login system yet
 function user_did_not_login_yet() {
-
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
-    $line_user_id = 'U1b08294900a36077765643d8ae14a402';
-    
-    // Check if user exists, if not, create a new user
-    $user = get_user_by('login', $line_user_id);
-    if (!$user) {
-        //$user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id . '@example.com');
-        $user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id);
-        $user = get_user_by('id', $user_id);
-    }
-
-    // Log the user in
-    wp_set_current_user($user->ID);
-    wp_set_auth_cookie($user->ID);
-    //echo '<h1>Hi, '.$user->display_name.'</h1>';
-    wp_redirect(home_url());
-    exit;
-
-    
-    
-    //echo '<a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=YOUR_CHANNEL_ID&redirect_uri=YOUR_CALLBACK_URL&state=YOUR_CSRF_TOKEN&scope=profile%20openid%20email"><img src="https://d.line-scdn.net/r/line_lp/button_login.png"></a>';
-/*
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-*/    
-    // Get user profile
-    $line_bot_api = new line_bot_api();
-    $profile_response = wp_remote_get('https://api.line.me/v2/profile', array(
-        'headers' => array(
-            //'Authorization' => 'Bearer ' . $access_token
-            'Authorization' => 'Bearer ' . $line_bot_api->channel_access_token,
-        )
-    ));
-    $profile_data = json_decode(wp_remote_retrieve_body($profile_response), true);
-    $line_user_id = $profile_data['userId'];
-    $line_user_id = 'U1b08294900a36077765643d8ae14a402';
-    
-    // Check if user exists, if not, create a new user
-    $user = get_user_by('login', $line_user_id);
-    if (!$user) {
-        //$user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id . '@example.com');
-        $user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id);
-        $user = get_user_by('id', $user_id);
-    }
-
-    // Log the user in
-    wp_set_current_user($user->ID);
-    wp_set_auth_cookie($user->ID);
-    wp_redirect(home_url());
-    exit;
-
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
         $array = get_users( array( 'meta_value' => $_GET['_id'] ));
