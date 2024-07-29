@@ -21,14 +21,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
-/*
 function register_session() {
     if ( ! session_id() ) {
         session_start();
     }
 }
 add_action( 'init', 'register_session' );
-*/
+
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
       show_admin_bar(false);
