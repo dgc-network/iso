@@ -1453,7 +1453,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
+                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
                             <?php
                             break;
             
@@ -1623,7 +1623,7 @@ if (!class_exists('display_documents')) {
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            if (!$field_value) $field_value=$field_key;
+                            //if (!$field_value) $field_value=$field_key;
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;

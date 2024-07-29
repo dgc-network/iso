@@ -9,6 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
+            add_action( 'init', array( $this, 'register_site_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
             add_action( 'init', array( $this, 'register_iso_clause_post_type' ) );
 
@@ -556,6 +557,18 @@ if (!class_exists('display_profiles')) {
         }
 
         // site-profile setting scripts
+        function register_site_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Site', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'site', $args );
+        }
+
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();

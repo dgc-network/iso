@@ -52,25 +52,7 @@ jQuery(document).ready(function($) {
         
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
-/*        
-        // Initialize an empty array to store the key-value pairs
-        const keyValuePairs = [];
 
-        // Select all elements with the specified class and iterate over them
-        $('.your-class-name').each(function() {
-            // Get the key from the data attribute
-            const key = $(this).data('key');
-            
-            // Get the value (for input elements) or text content (for others)
-            const value = $(this).val() || $(this).text();
-    
-            // Add the key-value pair to the array
-            keyValuePairs.push({ [key]: value });
-        });
-    
-        // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
-        console.log(keyValuePairs);
-*/    
         if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ doc_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
@@ -85,7 +67,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     console.log(response)
                     //window.location.replace(window.location.href);
-                    window.location.replace('/');
+                    window.location.replace('/display_profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
@@ -101,12 +83,11 @@ jQuery(document).ready(function($) {
                     'action': 'set_iso_document_statement',
                     '_doc_category_id': $("#doc-category-id").val(),
                     _keyValuePairs : keyValuePairs,
-                    //'_is_duplicated': true,
                 },
                 success: function (response) {
                     console.log(response)
                     //window.location.replace(window.location.href);
-                    window.location.replace('/');
+                    window.location.replace('/display_profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
