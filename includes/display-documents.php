@@ -883,11 +883,13 @@ if (!class_exists('display_documents')) {
                             if ($key==$field_type) {
                                 //if (is_array($value)) {
                                 if ($field_type=='_employee') {
+/*
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
                                         'value'   => $value,
                                         'compare' => 'IN', // Use 'IN' to match any of the values in the array
                                     );
+*/
                                 } else {
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
