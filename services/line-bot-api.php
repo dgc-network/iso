@@ -21,11 +21,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if (!class_exists('line_bot_api')) {
     class line_bot_api {
+        private $channel_id;
         private $channel_access_token;
 
         public function __construct() {
-            add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
+            $this->channel_id = get_option('line_bot_channel_id');
             $this->channel_access_token = get_option('line_bot_token_option');
+            add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
+            add_action( 'init', array( $this, 'handle_line_callback' ) );
+            add_action( 'wp', array( $this, 'check_otp_form' ) );
+
         }
 
         function line_bot_register_settings() {
@@ -36,8 +41,17 @@ if (!class_exists('line_bot_api')) {
                 array( $this, 'line_bot_section_settings_callback' ),
                 'web-service-settings'
             );
-        
+
             // Register fields for Line bot section
+            add_settings_field(
+                'line-bot-channel-id',
+                'Line bot Channel ID',
+                array( $this, 'line_bot_channel_id_callback' ),
+                'web-service-settings',
+                'line-bot-section-settings'
+            );
+            register_setting('web-service-settings', 'line-bot-channel-id');
+
             add_settings_field(
                 'line-bot-token-option',
                 'Line bot Token',
@@ -46,7 +60,7 @@ if (!class_exists('line_bot_api')) {
                 'line-bot-section-settings'
             );
             register_setting('web-service-settings', 'line-bot-token-option');
-        
+
             add_settings_field(
                 'line-official-account',
                 'Line official account',
@@ -55,7 +69,7 @@ if (!class_exists('line_bot_api')) {
                 'line-bot-section-settings'
             );
             register_setting('web-service-settings', 'line-official-account');
-        
+
             add_settings_field(
                 'line-official-qr-code',
                 'Line official qr-code',
@@ -69,26 +83,116 @@ if (!class_exists('line_bot_api')) {
         function line_bot_section_settings_callback() {
             echo '<p>Settings for Line bot.</p>';
         }
-        
-        function line_bot_token_option_callback() {
-            $value = get_option('line_bot_token_option');
-            echo '<input type="text" id="line_bot_token_option" name="line_bot_token_option" style="width:100%;" value="' . esc_attr($value) . '" />';
-        }
-        
-        function line_official_account_callback() {
-            $value = get_option('line_official_account');
-            echo '<input type="text" id="line_official_account" name="line_official_account" style="width:100%;" value="' . esc_attr($value) . '" />';
-        }
-        
-        function line_official_qr_code_callback() {
-            $value = get_option('line_official_qr_code');
-            echo '<input type="text" id="line_official_qr_code" name="line_official_qr_code" style="width:100%;" value="' . esc_attr($value) . '" />';
+
+        function line_bot_channel_id_callback() {
+            $value = get_option('line_bot_channel_id');
+            echo '<input type="text" id="line-bot-channel-id" name="line_bot_channel_id" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
-        /**
-         * @param array<string, mixed> $message
-         * @return void
-         */
+        function line_bot_token_option_callback() {
+            $value = get_option('line_bot_token_option');
+            echo '<input type="text" id="line-bot-token-option" name="line_bot_token_option" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+
+        function line_official_account_callback() {
+            $value = get_option('line_official_account');
+            echo '<input type="text" id="line-official-account" name="line_official_account" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+
+        function line_official_qr_code_callback() {
+            $value = get_option('line_official_qr_code');
+            echo '<input type="text" id="line-official-qr-code" name="line_official_qr_code" style="width:100%;" value="' . esc_attr($value) . '" />';
+        }
+
+        // login callback
+        function handle_line_callback() {
+/*            
+            if (isset($_GET['code']) && isset($_GET['state'])) {
+                $code = $_GET['code'];
+                // Exchange code for access token
+                $token_response = wp_remote_post('https://api.line.me/oauth2/v2.1/token', array(
+                    'body' => array(
+                        'grant_type' => 'authorization_code',
+                        'code' => $code,
+                        'redirect_uri' => 'YOUR_CALLBACK_URL',
+                        'client_id' => 'YOUR_CHANNEL_ID',
+                        'client_secret' => 'YOUR_CHANNEL_SECRET'
+                    )
+                ));
+                $token_data = json_decode(wp_remote_retrieve_body($token_response), true);
+                $access_token = $token_data['access_token'];
+*/        
+                // Get user profile
+                $profile_response = wp_remote_get('https://api.line.me/v2/profile', array(
+                    'headers' => array(
+                        //'Authorization' => 'Bearer ' . $access_token
+                        'Authorization' => 'Bearer ' . $this->channel_access_token,
+                    )
+                ));
+                $profile_data = json_decode(wp_remote_retrieve_body($profile_response), true);
+                $line_user_id = $profile_data['userId'];
+        
+                // Check if user exists, if not, create a new user
+                $user = get_user_by('login', $line_user_id);
+                if (!$user) {
+                    //$user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id . '@example.com');
+                    $user_id = wp_create_user($line_user_id, wp_generate_password(), $line_user_id);
+                    $user = get_user_by('id', $user_id);
+                }
+        
+                // Log the user in
+                wp_set_current_user($user->ID);
+                wp_set_auth_cookie($user->ID);
+                wp_redirect(home_url());
+                exit;
+//            }
+        }
+        
+        function generate_otp() {
+            return rand(100000, 999999); // Simple 6-digit OTP
+        }
+
+        function send_otp_to_line($line_user_id, $otp) {
+            //$access_token = 'YOUR_LINE_CHANNEL_ACCESS_TOKEN';
+            $message = array(
+                'to' => $line_user_id,
+                'messages' => array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Your OTP is: ' . $otp
+                    )
+                )
+            );
+        
+            wp_remote_post('https://api.line.me/v2/bot/message/push', array(
+                'headers' => array(
+                    'Content-Type' => 'application/json',
+                    //'Authorization' => 'Bearer ' . $access_token
+                    'Authorization' => 'Bearer ' . $this->channel_access_token,
+                ),
+                'body' => json_encode($message)
+            ));
+        }
+        
+        function check_otp_form() {
+            if (isset($_POST['otp'])) {
+                $entered_otp = sanitize_text_field($_POST['otp']);
+                $stored_otp = get_user_meta(get_current_user_id(), 'otp', true);
+        
+                if ($entered_otp === $stored_otp) {
+                    // OTP verified
+                    delete_user_meta(get_current_user_id(), 'otp'); // Remove OTP after verification
+                    // Redirect to the desired page
+                    wp_redirect(home_url());
+                    exit;
+                } else {
+                    // OTP verification failed
+                    echo 'Invalid OTP.';
+                }
+            }
+        }
+        
+        // line-bot-api
         public function broadcastMessage($message) {
     
             $header = array(

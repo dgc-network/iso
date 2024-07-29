@@ -377,6 +377,8 @@ function proceed_to_registration_login($line_user_id, $display_name) {
             <input type="hidden" id="pwd" value="<?php echo esc_attr($line_user_id);?>" />
             <hr>
             <input type="submit" id="wp-login-submit" class="button button-primary" value="Submit" />
+            <a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=YOUR_CHANNEL_ID&redirect_uri=YOUR_CALLBACK_URL&state=YOUR_CSRF_TOKEN&scope=profile%20openid%20email"><img src="https://d.line-scdn.net/r/line_lp/button_login.png"></a>
+
         </fieldset>
     </div>
     <?php        
