@@ -390,6 +390,10 @@ function user_did_not_login_yet() {
     
     //echo '<a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=YOUR_CHANNEL_ID&redirect_uri=YOUR_CALLBACK_URL&state=YOUR_CSRF_TOKEN&scope=profile%20openid%20email"><img src="https://d.line-scdn.net/r/line_lp/button_login.png"></a>';
 
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    
     // Get user profile
     $line_bot_api = new line_bot_api();
     $profile_response = wp_remote_get('https://api.line.me/v2/profile', array(
