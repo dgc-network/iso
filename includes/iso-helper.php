@@ -388,6 +388,10 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 // User did not login system yet
 function user_did_not_login_yet() {
 
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
     $line_user_id = 'U1b08294900a36077765643d8ae14a402';
     
     // Check if user exists, if not, create a new user
