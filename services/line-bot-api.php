@@ -22,7 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if (!class_exists('line_bot_api')) {
     class line_bot_api {
         private $channel_id;
-        private $channel_access_token;
+        //private $channel_access_token;
+        public $channel_access_token;
 
         public function __construct() {
             $this->channel_id = get_option('line_bot_channel_id');
