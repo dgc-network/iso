@@ -387,6 +387,8 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 
 // User did not login system yet
 function user_did_not_login_yet() {
+    echo '<a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=YOUR_CHANNEL_ID&redirect_uri=YOUR_CALLBACK_URL&state=YOUR_CSRF_TOKEN&scope=profile%20openid%20email"><img src="https://d.line-scdn.net/r/line_lp/button_login.png"></a>';
+
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
         $array = get_users( array( 'meta_value' => $_GET['_id'] ));
