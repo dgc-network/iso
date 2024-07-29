@@ -28,7 +28,7 @@ if (!class_exists('line_bot_api')) {
             $this->channel_id = get_option('line_bot_channel_id');
             $this->channel_access_token = get_option('line_bot_token_option');
             add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
-            //add_action( 'init', array( $this, 'handle_line_callback' ) );
+            add_action( 'init', array( $this, 'handle_line_callback' ) );
             add_action( 'wp', array( $this, 'check_otp_form' ) );
 
         }
@@ -106,8 +106,8 @@ if (!class_exists('line_bot_api')) {
 
         // login callback
         function handle_line_callback() {
-/*            
             if (isset($_GET['code']) && isset($_GET['state'])) {
+/*            
                 $code = $_GET['code'];
                 // Exchange code for access token
                 $token_response = wp_remote_post('https://api.line.me/oauth2/v2.1/token', array(
@@ -145,7 +145,7 @@ if (!class_exists('line_bot_api')) {
                 wp_set_auth_cookie($user->ID);
                 wp_redirect(home_url());
                 exit;
-//            }
+            }
         }
         
         function generate_otp() {
