@@ -14,6 +14,8 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
+    $('.multiple-select').select2();
+
     $("#apply-site-admin").on("click", function () {
         window.location.replace('/');
     })

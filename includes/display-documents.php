@@ -971,6 +971,7 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 </div>
                 <input type="checkbox" id="proceed-to-todo" />
@@ -979,8 +980,8 @@ if (!class_exists('display_documents')) {
             } else {
                 ?>
                 <div>
-                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                     <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 <?php
             }
@@ -1453,7 +1454,7 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
+                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
                             <?php
                             break;
             
