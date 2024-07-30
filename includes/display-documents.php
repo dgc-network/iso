@@ -951,8 +951,9 @@ if (!class_exists('display_documents')) {
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report) $doc_title .= '(電子表單)';
+            if ($is_doc_report) $doc_title .= '('.$doc_number.')';
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
