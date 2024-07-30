@@ -1903,6 +1903,7 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
+                'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -1910,7 +1911,7 @@ if (!class_exists('display_profiles')) {
         
             // Add category_id to meta_query if it is not false
             if ($category_id !== false) {
-                $args['meta_query'] = array(
+                $args['meta_query'][] = array(
                     array(
                         'key'   => 'category_id',
                         'value' => $category_id,
@@ -1919,12 +1920,17 @@ if (!class_exists('display_profiles')) {
             }
 
             if ($is_report_only == false) {
-                $args['meta_query'] = array(
+                $args['meta_query'][] = array(
+                    'relation' => 'OR',
                     array(
-                        'key'   => 'is_report_only',
-                        'value' => '0',
-                        'compare' => '=',
+                        'key'     => 'is_report_only',
+                        'value'   => '0',
+                        'compare' => '='
                     ),
+                    array(
+                        'key'     => 'is_report_only',
+                        'compare' => 'NOT EXISTS'
+                    )
                 );
             }
 
