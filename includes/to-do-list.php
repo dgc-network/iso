@@ -1194,7 +1194,7 @@ if (!class_exists('to_do_list')) {
                         foreach ($events as $event) {
                             echo '<tr>';
                             echo '<td>' . esc_html($hook_name) . '</td>';
-                            echo '<td>' . date('Y-m-d H:i:s', $timestamp) . '</td>';
+                            echo '<td>' . date('Y/m/d H:i:s', $timestamp) . '</td>';
                             echo '<td>' . json_encode($event['args']) . '</td>';
                             echo '</tr>';
                         }

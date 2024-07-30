@@ -311,7 +311,7 @@ if (!class_exists('http_client')) {
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 // Get post creation time
-                                $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
+                                $post_time = get_post_time('Y/m/d H:i:s', false, get_the_ID());
                                 $topic = get_the_title();
                                 $message = get_the_content();
                                 $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
@@ -643,9 +643,9 @@ if (!class_exists('http_client')) {
         
             // Check if a notification has been sent today
             $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $deviceID, true);
-            $today = wp_date('Y-m-d');
+            $today = wp_date('Y/m/d');
         
-            if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
+            if ($last_notification_time && wp_date('Y/m/d', $last_notification_time) === $today) {
                 // Notification already sent today, do not send again
                 return;
             }
