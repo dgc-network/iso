@@ -850,14 +850,14 @@ if (!class_exists('display_documents')) {
             } else {
                 $paged = 1;
             }
-/*
+
             if (!empty($params['key_pairs'])) {
                 $meta_query[] = array(
                     'key'   => 'todo_status',
                     'value' => -1,
                 );
             }
-*/
+
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => -1,
@@ -888,26 +888,12 @@ if (!class_exists('display_documents')) {
                                         'value'   => sprintf(':"%s";', $value),
                                         'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                     );
-                                    
-/*
-                                    $args['meta_query'][0][] = array(
-                                        'key'   => $field_name,
-                                        'value'   => $value,
-                                        'compare' => 'IN', // Use 'IN' to match any of the values in the array
-                                    );
-*/
                                 } else {
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
                                         'value' => $value,
                                     );
                                 }
-/*
-                                $args['meta_query'][0][] = array(
-                                    'key'   => $field_name,
-                                    'value' => $value,
-                                );
-*/
                             }
                         }    
                     }
