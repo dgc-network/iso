@@ -68,8 +68,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    //window.location.replace(window.location.href);
-                    window.location.replace('/display_profiles/');
+                    window.location.replace('/display-profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
@@ -88,8 +87,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    //window.location.replace(window.location.href);
-                    window.location.replace('/display_profiles/');
+                    window.location.replace('/display-profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
@@ -756,7 +754,6 @@ jQuery(document).ready(function($) {
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
-                    //get_doc_action_list_data(doc_id);
                     $("#doc-action-list").html(response.html_contain);
                     activate_doc_action_list_data(doc_id);
                 },
@@ -809,7 +806,6 @@ jQuery(document).ready(function($) {
                         },
                         success: function (response) {
                             $("#doc-action-dialog").dialog('close');
-                            //get_doc_action_list_data(doc_id);
                             $("#doc-action-list").html(response.html_contain);
                             activate_doc_action_list_data(doc_id);
                         },
@@ -832,7 +828,6 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#doc-action-dialog").dialog('close');
-                                //get_doc_action_list_data(doc_id);
                                 $("#doc-action-list").html(response.html_contain);
                                 activate_doc_action_list_data(doc_id);
                             },
@@ -846,27 +841,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*
-    function get_doc_action_list_data(doc_id) {
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: "json",
-            data: {
-                'action': 'get_doc_action_list_data',
-                '_doc_id': doc_id,
-            },
-            success: function (response) {
-                $("#doc-action-list").html(response.html_contain);
-                activate_doc_action_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/
+
     // doc-report scripts
     function activate_doc_report_list_data(doc_id){
         $("#doc-report-setting").on("click", function () {

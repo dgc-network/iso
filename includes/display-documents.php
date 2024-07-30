@@ -1675,8 +1675,14 @@ if (!class_exists('display_documents')) {
                     }
                     ?>
                 </fieldset>
-                <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( '上ㄧ步(Prev)', 'your-text-domain' );?></button>
-                <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( '下ㄧ步(Next)', 'your-text-domain' );?></button>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Save', 'your-text-domain' );?></button>
+                    </div>
+                    <div style="text-align: right">
+                        <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                    </div>
+                </div>    
                 <?php
                 return ob_get_clean();
     
