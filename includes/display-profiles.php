@@ -1922,8 +1922,8 @@ if (!class_exists('display_profiles')) {
                 $args['meta_query'] = array(
                     array(
                         'key'   => 'is_report_only',
-                        'value' => $is_report_only,
-                        //'compare' => '!=',
+                        'value' => '0',
+                        'compare' => '=',
                     ),
                 );
             }
