@@ -777,7 +777,7 @@ if (!class_exists('display_documents')) {
                                         } elseif ($field_type=='_department') {
                                             $instrument_code = get_post_meta($field_value, 'department_code', true);
                                             echo esc_html(get_the_title($field_value));
-                                        } elseif ($field_type=='_employee') {
+                                        } elseif ($field_type=='_employees') {
 
                                             // Check if $field_value is an array of selected user IDs
                                             if (is_array($field_value)) {
@@ -882,7 +882,7 @@ if (!class_exists('display_documents')) {
                         foreach ($key_pairs as $key => $value) {
                             if ($key==$field_type) {
                                 //if (is_array($value)) {
-                                if ($field_type=='_employee') {
+                                if ($field_type=='_employees') {
                                     $args['meta_query'][0][] = array(
                                         'key'     => $field_name,
                                         'value'   => sprintf(':"%s";', $value),
@@ -1245,7 +1245,7 @@ if (!class_exists('display_documents')) {
                     <option value="_equipment" <?php echo ($field_type=='_equipment') ? 'selected' : ''?>><?php echo __( '_equipment', 'your-text-domain' );?></option>
                     <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
-                    <option value="_employee" <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( '_employee', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1482,11 +1482,11 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
 
-                        case ($field_type=='_employee'):
+                        case ($field_type=='_employees'):
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_employee_card_options($field_value);?></select>
+                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
                             <?php
                             break;
             
