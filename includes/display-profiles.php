@@ -1875,7 +1875,7 @@ if (!class_exists('display_profiles')) {
                         $clause_title = get_the_title();
                         $clause_content = get_post_field('post_content', get_the_ID());
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                        $is_heading = get_post_meta(get_the_ID(), 'is_heading', true);
+                        $is_report_only = get_post_meta(get_the_ID(), 'is_report_only', true);
                         $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
@@ -1899,7 +1899,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_iso_clause_list_data($category_id = false) {
+        function retrieve_iso_clause_list_data($category_id = false, $is_report_only = true) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
@@ -1917,7 +1917,17 @@ if (!class_exists('display_profiles')) {
                     ),
                 );
             }
-        
+
+            if ($is_report_only == false) {
+                $args['meta_query'] = array(
+                    array(
+                        'key'   => 'is_report_only',
+                        'value' => $is_report_only,
+                        'compare' => '!=',
+                    ),
+                );
+            }
+
             $query = new WP_Query($args);
             return $query;
         }
@@ -1926,10 +1936,10 @@ if (!class_exists('display_profiles')) {
             $category_id = get_post_meta($clause_id, 'category_id', true);
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
             $clause_title = get_the_title($clause_id);
-            $clause_content = get_post_field('post_content', $clause_id);
-            $is_heading = get_post_meta($clause_id, 'is_heading', true);
-            $is_checkbox = get_post_meta($clause_id, 'is_checkbox', true);
             $field_type = get_post_meta($clause_id, 'field_type', true);
+            $clause_content = get_post_field('post_content', $clause_id);
+            $is_report_only = get_post_meta($clause_id, 'is_report_only', true);
+            $is_checkbox = get_post_meta($clause_id, 'is_checkbox', true);
             ob_start();
             ?>
             <fieldset>
@@ -1947,8 +1957,8 @@ if (!class_exists('display_profiles')) {
                 </select>
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
-                <input type="checkbox" id="is-heading" <?php echo ($is_heading) ? 'checked' : '';?> />
-                <label for="is-heading"><?php echo __( 'Is heading', 'your-text-domain' );?></label>
+                <input type="checkbox" id="is-report-only" <?php echo ($is_report_only) ? 'checked' : '';?> />
+                <label for="is-report-only"><?php echo __( 'Is report only', 'your-text-domain' );?></label>
                 <input type="checkbox" id="is-checkbox" <?php echo ($is_checkbox) ? 'checked' : '';?> />
                 <label for="is-checkbox"><?php echo __( 'Is checkbox', 'your-text-domain' );?></label>
             </fieldset>
@@ -1968,9 +1978,9 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_clause_id']) ) {
                 $clause_id = sanitize_text_field($_POST['_clause_id']);
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
-                $is_heading = sanitize_text_field($_POST['_is_heading']);
-                $is_checkbox = sanitize_text_field($_POST['_is_checkbox']);
                 $field_type = sanitize_text_field($_POST['_field_type']);
+                $is_report_only = sanitize_text_field($_POST['_is_report_only']);
+                $is_checkbox = sanitize_text_field($_POST['_is_checkbox']);
                 $data = array(
                     'ID'           => $clause_id,
                     'post_title'   => sanitize_text_field($_POST['_clause_title']),
@@ -1979,9 +1989,9 @@ if (!class_exists('display_profiles')) {
                 wp_update_post( $data );
                 update_post_meta($clause_id, 'clause_no', $clause_no);
                 update_post_meta($clause_id, 'category_id', $category_id);
-                update_post_meta($clause_id, 'is_heading', $is_heading);
-                update_post_meta($clause_id, 'is_checkbox', $is_checkbox);
                 update_post_meta($clause_id, 'field_type', $field_type);
+                update_post_meta($clause_id, 'is_report_only', $is_report_only);
+                update_post_meta($clause_id, 'is_checkbox', $is_checkbox);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -2026,13 +2036,11 @@ if (!class_exists('display_profiles')) {
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                 $category_id = get_post_meta(get_the_ID(), 'category_id', true);
-                //$clause_no = get_the_title($category_id).':'.$clause_no;
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
         }
-
     }
     $profiles_class = new display_profiles();
 }
