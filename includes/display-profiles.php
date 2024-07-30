@@ -1923,7 +1923,7 @@ if (!class_exists('display_profiles')) {
                     array(
                         'key'   => 'is_report_only',
                         'value' => $is_report_only,
-                        'compare' => '!=',
+                        //'compare' => '!=',
                     ),
                 );
             }
