@@ -464,7 +464,7 @@ if (!class_exists('display_documents')) {
                 <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
                 <div id="frquence-start-time-div" style="display:none;">
                     <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y/m/d', $doc_report_frequence_start_time);?>" />
+                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
                     <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
                     <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                 </div>
@@ -1082,7 +1082,7 @@ if (!class_exists('display_documents')) {
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         // put the custom function here to support the default value for the new record
-                        if ($default_value=='today') $default_value=wp_date('Y/m/d', time());
+                        if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
                         if ($default_value=='me') $default_value=$current_user_id;
                         update_post_meta( $post_id, $field_name, $default_value);
                     endwhile;
@@ -1372,7 +1372,7 @@ if (!class_exists('display_documents')) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        if ($default_value=='today') $default_value=wp_date('Y/m/d', time());
+                        if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
                         if ($default_value=='me') {
                             $current_user_id = get_current_user_id();
                             $user = get_userdata($current_user_id);

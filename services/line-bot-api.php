@@ -560,7 +560,7 @@ if (!class_exists('line_bot_api')) {
                 return false;
             }
             // Upload to tmp folder.
-            $filename = 'user-feedback-' . date('Y/m/d-H-i-s');
+            $filename = 'user-feedback-' . date('Y-m-d-H-i-s');
             $tempfile = wp_tempnam($filename, sys_get_temp_dir());
             if (!$tempfile) {
                 return false;
