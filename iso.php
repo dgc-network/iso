@@ -60,6 +60,11 @@ function get_post_type_meta_keys($post_type) {
     return $wpdb->get_col($query);
 }
 
+function isURL($str) {
+    $pattern = '/^(http|https):\/\/[^ "]+$/';
+    return preg_match($pattern, $str) === 1;
+}
+
 require_once plugin_dir_path( __FILE__ ) . 'erp/erp-cards.php';
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
