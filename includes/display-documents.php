@@ -1347,7 +1347,8 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function get_field_default_value($field_id) {
+        function get_field_default_value($field_id=false) {
+            $current_user_id = get_current_user_id();
             $default_value = get_post_meta($field_id, 'default_value', true);
 
             if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
