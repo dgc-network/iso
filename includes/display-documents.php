@@ -1411,7 +1411,7 @@ if (!class_exists('display_documents')) {
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
-                        $field_value = $this->get_field_default_value(get_the_ID());
+                        //$field_value = $this->get_field_default_value(get_the_ID());
 /*
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
