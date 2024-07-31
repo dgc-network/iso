@@ -1353,13 +1353,38 @@ if (!class_exists('display_documents')) {
 
             if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
             if ($default_value=='me') $default_value=array($current_user_id);
-/*
-            if ($default_value=='me') {
-                $current_user_id = get_current_user_id();
-                $user = get_userdata($current_user_id);
-                $default_value = $user->display_name;
+
+            if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
+                // Use a regular expression to match the number inside the parentheses
+                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
+                    $device_id = $matches[1]; // Extract the number from the first capturing group
+            
+                    // Retrieve the option value using the device_id
+                    //$default_value = get_option($device_id);
+            
+                    // Find the post by title
+                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
+                    if ($post) {
+                        // Retrieve the post meta value
+                        $temperature = get_post_meta($post->ID, 'temperature', true);
+            
+                        // Check if the temperature meta value exists
+                        if (!empty($temperature)) {
+                            $default_value = $temperature;
+                        } else {
+                            // Handle the case where the temperature meta value is not found
+                            $default_value = 'Temperature meta not found';
+                        }
+                    } else {
+                        // Handle the case where the post is not found
+                        $default_value = 'Post not found';
+                    }
+                } else {
+                    // Handle the case where the regular expression does not match
+                    $default_value = 'Invalid device ID format';
+                }
             }
-*/
+            
 /*
             if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                 // Use a regular expression to match the number inside the parentheses
@@ -1407,40 +1432,12 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                    //$default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
                         $field_value = $this->get_field_default_value(get_the_ID());
-/*
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
-                        if ($default_value=='me') $default_value=array($current_user_id);
-                        if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
-                            // Use a regular expression to match the number inside the parentheses
-                            if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                                $device_id = $matches[1]; // Extract the number from the first capturing group
-                                $default_value = get_option($device_id);
-                                // Find the post by title
-                                $post = get_page_by_title($device_id, OBJECT, 'http-client');
-                                $default_value = get_post_meta($post->ID, 'temperature', true);
-                            }
-                        }
-
-                        if (substr($default_value, 0, strlen('hygrometer')) == 'hygrometer') {
-                            // Use a regular expression to match the number inside the parentheses
-                            if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                                $device_id = $matches[1]; // Extract the number from the first capturing group
-                                $default_value = get_option($device_id);
-                                // Find the post by title
-                                $post = get_page_by_title($device_id, OBJECT, 'http-client');
-                                $default_value = get_post_meta($post->ID, 'humidity', true);
-                            }
-                        }
-
-                        $field_value = $default_value;
-*/                        
                     }
 
                     switch (true) {
