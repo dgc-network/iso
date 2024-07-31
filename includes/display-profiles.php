@@ -569,10 +569,6 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_profile($initial=false) {
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-            
             ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
