@@ -1354,7 +1354,8 @@ if (!class_exists('display_documents')) {
             if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
             if ($default_value=='me') $default_value=array($current_user_id);
 
-            if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
+            if (strpos($default_value, 'thermometer') === 0) {
+            //if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
 /*                
                 // Use a regular expression to match the number inside the parentheses
                 if (preg_match('/-(\d+)$/', $default_value, $matches)) {
