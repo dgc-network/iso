@@ -1080,10 +1080,13 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $default_value = $this->get_field_default_value(get_the_ID());
+/*                        
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         // put the custom function here to support the default value for the new record
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
                         if ($default_value=='me') $default_value=array($current_user_id);
+*/                        
                         update_post_meta( $post_id, $field_name, $default_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1344,8 +1347,44 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function display_doc_field_contains($args) {
+        function get_field_default_value($field_id) {
+            $default_value = get_post_meta($field_id, 'default_value', true);
 
+            if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
+            if ($default_value=='me') $default_value=array($current_user_id);
+/*
+            if ($default_value=='me') {
+                $current_user_id = get_current_user_id();
+                $user = get_userdata($current_user_id);
+                $default_value = $user->display_name;
+            }
+*/
+            if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
+                // Use a regular expression to match the number inside the parentheses
+                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
+                    $device_id = $matches[1]; // Extract the number from the first capturing group
+                    $default_value = get_option($device_id);
+                    // Find the post by title
+                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
+                    $default_value = get_post_meta($post->ID, 'temperature', true);
+                }
+            }
+
+            if (substr($default_value, 0, strlen('hygrometer')) == 'hygrometer') {
+                // Use a regular expression to match the number inside the parentheses
+                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
+                    $device_id = $matches[1]; // Extract the number from the first capturing group
+                    $default_value = get_option($device_id);
+                    // Find the post by title
+                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
+                    $default_value = get_post_meta($post->ID, 'humidity', true);
+                }
+            }
+
+            return $default_value;
+        }
+
+        function display_doc_field_contains($args) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
@@ -1371,14 +1410,11 @@ if (!class_exists('display_documents')) {
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
                     } else {
+                        $field_value = $this->get_field_default_value(get_the_ID());
+/*
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
-                        if ($default_value=='me') {
-                            $current_user_id = get_current_user_id();
-                            $user = get_userdata($current_user_id);
-                            $default_value = $user->display_name;
-                        }
-
+                        if ($default_value=='me') $default_value=array($current_user_id);
                         if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                             // Use a regular expression to match the number inside the parentheses
                             if (preg_match('/-(\d+)$/', $default_value, $matches)) {
@@ -1402,6 +1438,7 @@ if (!class_exists('display_documents')) {
                         }
 
                         $field_value = $default_value;
+*/                        
                     }
 
                     switch (true) {
