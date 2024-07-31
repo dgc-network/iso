@@ -664,7 +664,7 @@ if (!class_exists('to_do_list')) {
                 update_post_meta( $new_report_id, 'doc_id', $doc_id);
                 update_post_meta( $new_report_id, 'todo_status', $next_job);
                 update_post_meta( $doc_id, 'todo_status', -1);
-                // Update the post
+                // Update the post meta
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
@@ -673,7 +673,8 @@ if (!class_exists('to_do_list')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = sanitize_text_field($_POST[$field_name]);
+                        //$field_value = sanitize_text_field($_POST[$field_name]);
+                        $field_value = $_POST[$field_name];
                         update_post_meta( $new_report_id, $field_name, $field_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1043,7 +1044,7 @@ if (!class_exists('to_do_list')) {
             $selected = ($selected_option === "yearly") ? 'selected' : '';
             $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "half-yearly") ? 'selected' : '';
-            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
+            //$options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "bimonthly") ? 'selected' : '';
             $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "weekly") ? 'selected' : '';

@@ -1083,7 +1083,7 @@ if (!class_exists('display_documents')) {
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         // put the custom function here to support the default value for the new record
                         if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
-                        if ($default_value=='me') $default_value=$current_user_id;
+                        if ($default_value=='me') $default_value=array($current_user_id);
                         update_post_meta( $post_id, $field_name, $default_value);
                     endwhile;
                     wp_reset_postdata();
