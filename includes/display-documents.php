@@ -1357,6 +1357,7 @@ if (!class_exists('display_documents')) {
             if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
                 // Use a regular expression to match the number inside the parentheses
                 if (preg_match('/-(\d+)$/', $default_value, $matches)) {
+/*
                     $device_id = $matches[1]; // Extract the number from the first capturing group
             
                     // Retrieve the option value using the device_id
@@ -1379,6 +1380,7 @@ if (!class_exists('display_documents')) {
                         // Handle the case where the post is not found
                         $default_value = 'Post not found';
                     }
+*/
                 } else {
                     // Handle the case where the regular expression does not match
                     $default_value = 'Invalid device ID format';
