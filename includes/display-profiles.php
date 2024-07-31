@@ -110,7 +110,7 @@ if (!class_exists('display_profiles')) {
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
 
-                if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
+                //if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
                 if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
@@ -569,6 +569,10 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_profile($initial=false) {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            
             ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
