@@ -110,7 +110,7 @@ if (!class_exists('display_profiles')) {
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
 
-                if ($_GET['_update_post_type_iso_clause_to_audit_item']) $this->update_post_type_iso_clause_to_audit_item();
+                if (isset($_GET['_update_post_type_iso_clause_to_audit_item'])) $this->update_post_type_iso_clause_to_audit_item();
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
                 if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
