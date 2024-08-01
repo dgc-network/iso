@@ -11,7 +11,7 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
             add_action( 'init', array( $this, 'register_site_post_type' ) );
             add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
-            add_action( 'init', array( $this, 'register_iso_clause_post_type' ) );
+            add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -64,14 +64,14 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_iso_clause_dialog_data', array( $this, 'get_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_iso_clause_dialog_data', array( $this, 'get_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_set_iso_clause_dialog_data', array( $this, 'set_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_iso_clause_dialog_data', array( $this, 'set_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_iso_clause_dialog_data', array( $this, 'del_iso_clause_dialog_data' ) );
-            add_action( 'wp_ajax_sort_iso_clause_list_data', array( $this, 'sort_iso_clause_list_data' ) );
-            add_action( 'wp_ajax_nopriv_sort_iso_clause_list_data', array( $this, 'sort_iso_clause_list_data' ) );
+            add_action( 'wp_ajax_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
         }
 
         function enqueue_display_profile_scripts() {
@@ -110,7 +110,7 @@ if (!class_exists('display_profiles')) {
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
 
-                if (isset($_GET['_update_post_type_iso_clause_to_audit_item'])) $this->update_post_type_iso_clause_to_audit_item();
+                if (isset($_GET['_update_post_type_audit_item_to_audit_item'])) $this->update_post_type_audit_item_to_audit_item();
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
                 if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
@@ -617,7 +617,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function display_audit_item_list() {
+        function display_audit_item_list_by_category() {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -656,7 +656,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function update_post_type_iso_clause_to_audit_item() {
+        function update_post_type_audit_item_to_audit_item() {
             // Arguments for the query to fetch all 'iso-clause' posts
             $args = array(
                 'post_type'      => 'iso-clause',
@@ -694,7 +694,7 @@ if (!class_exists('display_profiles')) {
         }
         
         // Uncomment the following line to run the update function (remove the line or comment it back after running it once)
-        // update_post_type_iso_clause_to_audit_item();
+        // update_post_type_audit_item_to_audit_item();
         
         function display_site_profile($initial=false) {
             ob_start();
@@ -744,7 +744,7 @@ if (!class_exists('display_profiles')) {
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <?php echo $this->display_site_user_list();?>
 
-                    <?php echo $this->display_audit_item_list();?>
+                    <?php echo $this->display_audit_item_list_by_category();?>
 <?php /*?>
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -1825,8 +1825,8 @@ if (!class_exists('display_profiles')) {
                 <?php
                 if (current_user_can('administrator')) {                    
                     ?>
-                    <label for="iso-clause-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
-                    <?php echo $this->display_iso_clause_list($category_id);?>
+                    <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
+                    <?php echo $this->display_audit_item_list($category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
@@ -1931,8 +1931,8 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
-        // iso-clause
-        function register_iso_clause_post_type() {
+        // audit-item
+        function register_audit_item_post_type() {
             $labels = array(
                 'menu_name'     => _x('Clause', 'admin menu', 'textdomain'),
             );
@@ -1941,13 +1941,13 @@ if (!class_exists('display_profiles')) {
                 'public'        => true,
                 'show_in_menu'  => false,
             );
-            register_post_type( 'iso-clause', $args );
+            register_post_type( 'audit-item', $args );
         }
 
-        function display_iso_clause_list($category_id=false) {
+        function display_audit_item_list($category_id=false) {
             ob_start();
             ?>
-            <div id="iso-clause-list">
+            <div id="audit-item-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1957,9 +1957,9 @@ if (!class_exists('display_profiles')) {
                         <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
-                <tbody id="sortable-iso-clause-list">
+                <tbody id="sortable-audit-item-list">
                 <?php
-                $query = $this->retrieve_iso_clause_list_data($category_id);
+                $query = $this->retrieve_audit_item_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $clause_title = get_the_title();
@@ -1969,7 +1969,7 @@ if (!class_exists('display_profiles')) {
                         $is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
-                        <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
+                        <tr id="edit-audit-item-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
                             <td><?php echo esc_html($clause_title);?></td>
                             <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
@@ -1981,15 +1981,15 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-iso-clause" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <div id="new-audit-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             </div>
-            <div id="iso-clause-dialog" title="Clause dialog"></div>
+            <div id="audit-item-dialog" title="Clause dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_iso_clause_list_data($category_id = false, $display_on_report_only = true) {
+        function retrieve_audit_item_list_data($category_id = false, $display_on_report_only = true) {
             $args = array(
                 'post_type'      => 'audit-item',
                 'posts_per_page' => -1,
@@ -2028,7 +2028,7 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
-        function display_iso_clause_dialog($clause_id=false) {
+        function display_audit_item_dialog($clause_id=false) {
             $category_id = get_post_meta($clause_id, 'category_id', true);
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
             $clause_title = get_the_title($clause_id);
@@ -2062,14 +2062,14 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_iso_clause_dialog_data() {
+        function get_audit_item_dialog_data() {
             $response = array();
             $clause_id = sanitize_text_field($_POST['_clause_id']);
-            $response['html_contain'] = $this->display_iso_clause_dialog($clause_id);
+            $response['html_contain'] = $this->display_audit_item_dialog($clause_id);
             wp_send_json($response);
         }
 
-        function set_iso_clause_dialog_data() {
+        function set_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             if( isset($_POST['_clause_id']) ) {
                 $clause_id = sanitize_text_field($_POST['_clause_id']);
@@ -2102,18 +2102,18 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta( $post_id, 'sorting_key', -1);
             }
-            $response = array('html_contain' => $this->display_iso_clause_list($category_id));
+            $response = array('html_contain' => $this->display_audit_item_list($category_id));
             wp_send_json($response);
         }
 
-        function del_iso_clause_dialog_data() {
+        function del_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             wp_delete_post($_POST['_clause_id'], true);
-            $response = array('html_contain' => $this->display_iso_clause_list($category_id));
+            $response = array('html_contain' => $this->display_audit_item_list($category_id));
             wp_send_json($response);
         }
 
-        function sort_iso_clause_list_data() {
+        function sort_audit_item_list_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_clause_id_array']) && is_array($_POST['_clause_id_array'])) {
                 $clause_id_array = array_map('absint', $_POST['_clause_id_array']);        
@@ -2125,8 +2125,8 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_iso_clause_options($selected_option=0, $category_id=false) {
-            $query = $this->retrieve_iso_clause_list_data($category_id);
+        function select_audit_item_options($selected_option=0, $category_id=false) {
+            $query = $this->retrieve_audit_item_list_data($category_id);
             $options = '<option value="">Select clause</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';

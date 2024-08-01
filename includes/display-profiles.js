@@ -846,7 +846,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
-                    activate_iso_clause_list_data(category_id)                },
+                    activate_audit_item_list_data(category_id)                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
@@ -909,20 +909,20 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // iso-clause scripts
-    function activate_iso_clause_list_data(category_id){
-        $("#new-iso-clause").on("click", function() {
+    // audit-item scripts
+    function activate_audit_item_list_data(category_id){
+        $("#new-audit-item").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_iso_clause_dialog_data',
+                    'action': 'set_audit_item_dialog_data',
                     '_category_id': $("#category-id").val(),
                 },
                 success: function (response) {
-                    $("#iso-clause-list").html(response.html_contain);
-                    activate_iso_clause_list_data(category_id);
+                    $("#audit-item-list").html(response.html_contain);
+                    activate_audit_item_list_data(category_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -931,7 +931,7 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('#sortable-iso-clause-list').sortable({
+        $('#sortable-audit-item-list').sortable({
             update: function(event, ui) {
                 const clause_id_array = $(this).sortable('toArray', { attribute: 'data-clause-id' });                
                 $.ajax({
@@ -939,7 +939,7 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
-                        action: 'sort_iso_clause_list_data',
+                        action: 'sort_audit_item_list_data',
                         _clause_id_array: clause_id_array,
                     },
                     success: function(response) {
@@ -952,19 +952,19 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $('[id^="edit-iso-clause-"]').on("click", function () {
+        $('[id^="edit-audit-item-"]').on("click", function () {
             const clause_id = this.id.substring(16);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_iso_clause_dialog_data',
+                    'action': 'get_audit_item_dialog_data',
                     '_clause_id': clause_id,
                 },
                 success: function (response) {
-                    $("#iso-clause-dialog").html(response.html_contain);
-                    $("#iso-clause-dialog").dialog('open');
+                    $("#audit-item-dialog").html(response.html_contain);
+                    $("#audit-item-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);
@@ -973,7 +973,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#iso-clause-dialog").dialog({
+        $("#audit-item-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -984,7 +984,7 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_iso_clause_dialog_data',
+                            'action': 'set_audit_item_dialog_data',
                             '_category_id': $("#category-id").val(),
                             '_clause_id': $("#clause-id").val(),
                             '_clause_no': $("#clause-no").val(),
@@ -994,9 +994,9 @@ jQuery(document).ready(function($) {
                             '_is_radio_option': $("#is-checkbox").is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
-                            $("#iso-clause-dialog").dialog('close');
-                            $("#iso-clause-list").html(response.html_contain);
-                            activate_iso_clause_list_data(category_id)
+                            $("#audit-item-dialog").dialog('close');
+                            $("#audit-item-list").html(response.html_contain);
+                            activate_audit_item_list_data(category_id)
                         },
                         error: function (error) {
                             console.error(error);
@@ -1011,14 +1011,14 @@ jQuery(document).ready(function($) {
                             url: ajax_object.ajax_url,
                             dataType: "json",
                             data: {
-                                'action': 'del_iso_clause_dialog_data',
+                                'action': 'del_audit_item_dialog_data',
                                 '_category_id': $("#category-id").val(),
                                 '_clause_id': $("#clause-id").val(),
                             },
                             success: function (response) {
-                                $("#iso-clause-dialog").dialog('close');
-                                $("#iso-clause-list").html(response.html_contain);
-                                activate_iso_clause_list_data(category_id)
+                                $("#audit-item-dialog").dialog('close');
+                                $("#audit-item-list").html(response.html_contain);
+                                activate_audit_item_list_data(category_id)
                             },
                             error: function (error) {
                                 console.error(error);

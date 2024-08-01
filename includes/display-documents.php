@@ -1479,7 +1479,7 @@ if (!class_exists('display_documents')) {
                             $profiles_class = new display_profiles();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_iso_clause_options($field_value, $category_id);?></select>
+                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_audit_item_options($field_value, $category_id);?></select>
                             <?php
                             break;
 
@@ -1699,7 +1699,7 @@ if (!class_exists('display_documents')) {
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $display_on_report_only = false;
-                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category_id, $display_on_report_only);
+                    $query = $profiles_class->retrieve_audit_item_list_data($doc_category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
