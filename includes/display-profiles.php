@@ -650,7 +650,7 @@ if (!class_exists('display_profiles')) {
             foreach ($parent_category_summary as $category_id) {
                 echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
                 $documents_class = new display_documents();
-                echo $documents_class->display_iso_statement($category_id);
+                echo $documents_class->display_iso_statement_list($category_id);
             }
             
             return ob_get_clean();
