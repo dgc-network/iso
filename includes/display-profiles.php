@@ -634,12 +634,10 @@ if (!class_exists('display_profiles')) {
                     // Get the parent_category meta value for the current post
                     $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
         
-                    // If the parent_category is set, add it to the summary array
                     if ($parent_category) {
-                        if (isset($parent_category_summary[$parent_category])) {
-                            $parent_category_summary[$parent_category]++;
-                        } else {
-                            $parent_category_summary[$parent_category] = 1;
+                        // Add the parent category to the summary array if not already added
+                        if (!array_key_exists($parent_category, $parent_category_summary)) {
+                            $parent_category_summary[] = $parent_category;
                         }
                     }
                 }        
@@ -744,7 +742,7 @@ if (!class_exists('display_profiles')) {
 
                     <label for="audit-items"><?php echo __( '稽核項目：', 'your-text-domain' );?></label>
                     <?php echo $this->display_audit_item_list();?>
-
+<?php /*?>
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="organization-address"><?php echo __( '組織地址：', 'your-text-domain' );?></label>
@@ -759,6 +757,7 @@ if (!class_exists('display_profiles')) {
                     <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="contact-number"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
                     <input type="text" id="contact-number" value="<?php echo $contact_number;?>" class="text ui-widget-content ui-corner-all" />
+<?php */?>
 
                 </fieldset>
                 <?php
