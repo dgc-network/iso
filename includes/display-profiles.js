@@ -990,8 +990,8 @@ jQuery(document).ready(function($) {
                             '_clause_no': $("#clause-no").val(),
                             '_clause_title': $("#clause-title").val(),
                             '_field_type': $("#field-type").val(),
-                            '_is_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
-                            '_is_checkbox': $("#is-checkbox").is(":checked") ? 1 : 0,
+                            '_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
+                            '_is_radio_option': $("#is-checkbox").is(":checked") ? 1 : 0,
                         },
                         success: function (response) {
                             $("#iso-clause-dialog").dialog('close');

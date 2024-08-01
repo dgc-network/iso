@@ -568,10 +568,136 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site', $args );
         }
 
+        function display_site_user_list() {
+            ob_start();
+            ?>
+                <fieldset style="margin-top:5px;">
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php        
+                        $users = get_users(); // Initialize with all users
+                        // If the current user is not an administrator, filter by site_id
+                        if (!current_user_can('administrator')) {
+                            $meta_query_args = array(
+                                array(
+                                    'key'     => 'site_id',
+                                    'value'   => $site_id,
+                                    'compare' => '=',
+                                ),
+                            );
+                            $users = get_users(array('meta_query' => $meta_query_args));
+                        }
+                        // Loop through the users
+                        foreach ($users as $user) {
+                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
+                            $user_site = get_user_meta($user->ID, 'site_id', true);
+                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+                            ?>
+                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
+                                <td style="text-align:center;"><?php echo $display_name; ?></td>
+                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
+                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                </fieldset>
+                <?php $this->display_new_user_dialog();?>
+                <div id="site-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function display_audit_item_list() {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            // Initialize an empty array to hold the parent_category counts
+            $parent_category_summary = array();
+
+            $query = $this->retrieve_doc_category_data();
+            // Check if the query has posts
+            if ($query->have_posts()) {
+                // Loop through the posts
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the parent_category meta value for the current post
+                    $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+        
+                    // If the parent_category is set, add it to the summary array
+                    if ($parent_category) {
+                        if (isset($parent_category_summary[$parent_category])) {
+                            $parent_category_summary[$parent_category]++;
+                        } else {
+                            $parent_category_summary[$parent_category] = 1;
+                        }
+                    }
+                }        
+                // Reset the post data
+                wp_reset_postdata();
+            }
+
+            foreach ($parent_category_summary as $category_id) {
+                echo get_the_title($category_id);
+            }
+        
+            return ob_get_clean();
+        }
+
+        function update_post_type_iso_clause_to_audit_item() {
+            // Arguments for the query to fetch all 'iso-clause' posts
+            $args = array(
+                'post_type'      => 'iso-clause',
+                'posts_per_page' => -1,
+                'post_status'    => 'any', // Fetch all posts, regardless of their status
+            );
+        
+            // Custom query to fetch all 'iso-clause' posts
+            $query = new WP_Query($args);
+        
+            // Check if there are any posts to update
+            if ($query->have_posts()) {
+                // Loop through each post
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the current post ID
+                    $post_id = get_the_ID();
+        
+                    // Update the post type
+                    $updated_post = array(
+                        'ID'        => $post_id,
+                        'post_type' => 'audit-item',
+                    );
+        
+                    // Perform the update
+                    wp_update_post($updated_post);
+                }
+        
+                // Reset post data
+                wp_reset_postdata();
+            } else {
+                echo 'No posts found to update.';
+            }
+        }
+        
+        // Uncomment the following line to run the update function (remove the line or comment it back after running it once)
+        // update_post_type_iso_clause_to_audit_item();
+        
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
-            $current_user = get_userdata($current_user_id);
+            //$current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
@@ -614,48 +740,10 @@ if (!class_exists('display_profiles')) {
                     </div>
 
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
-                    <fieldset style="margin-top:5px;">
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php        
-                        $users = get_users(); // Initialize with all users
-                        // If the current user is not an administrator, filter by site_id
-                        if (!current_user_can('administrator')) {
-                            $meta_query_args = array(
-                                array(
-                                    'key'     => 'site_id',
-                                    'value'   => $site_id,
-                                    'compare' => '=',
-                                ),
-                            );
-                            $users = get_users(array('meta_query' => $meta_query_args));
-                        }
-                        // Loop through the users
-                        foreach ($users as $user) {
-                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
-                            $user_site = get_user_meta($user->ID, 'site_id', true);
-                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
-                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
-                            ?>
-                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                                <td style="text-align:center;"><?php echo $display_name; ?></td>
-                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
-                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
-                            </tr>
-                            <?php
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    </fieldset>
-                    <?php $this->display_new_user_dialog();?>
-                    <div id="site-user-dialog" title="User dialog"></div>
+                    <?php echo $this->display_site_user_list();?>
+
+                    <label for="audit-items"><?php echo __( '稽核項目：', 'your-text-domain' );?></label>
+                    <?php echo $this->display_audit_item_list();?>
 
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -1875,8 +1963,8 @@ if (!class_exists('display_profiles')) {
                         $clause_title = get_the_title();
                         $clause_content = get_post_field('post_content', get_the_ID());
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                        $is_report_only = get_post_meta(get_the_ID(), 'is_report_only', true);
-                        $is_checkbox = get_post_meta(get_the_ID(), 'is_checkbox', true);
+                        $display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
+                        $is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
                         <tr id="edit-iso-clause-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
@@ -1899,7 +1987,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_iso_clause_list_data($category_id = false, $is_report_only = true) {
+        function retrieve_iso_clause_list_data($category_id = false, $display_on_report_only = true) {
             $args = array(
                 'post_type'      => 'iso-clause',
                 'posts_per_page' => -1,
@@ -1919,16 +2007,16 @@ if (!class_exists('display_profiles')) {
                 );
             }
 
-            if ($is_report_only == false) {
+            if ($display_on_report_only == false) {
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
                     array(
-                        'key'     => 'is_report_only',
+                        'key'     => 'display_on_report_only',
                         'value'   => '0',
                         'compare' => '='
                     ),
                     array(
-                        'key'     => 'is_report_only',
+                        'key'     => 'display_on_report_only',
                         'compare' => 'NOT EXISTS'
                     )
                 );
@@ -1944,8 +2032,8 @@ if (!class_exists('display_profiles')) {
             $clause_title = get_the_title($clause_id);
             $field_type = get_post_meta($clause_id, 'field_type', true);
             $clause_content = get_post_field('post_content', $clause_id);
-            $is_report_only = get_post_meta($clause_id, 'is_report_only', true);
-            $is_checkbox = get_post_meta($clause_id, 'is_checkbox', true);
+            $display_on_report_only = get_post_meta($clause_id, 'display_on_report_only', true);
+            $is_radio_option = get_post_meta($clause_id, 'is_radio_option', true);
             ob_start();
             ?>
             <fieldset>
@@ -1963,10 +2051,10 @@ if (!class_exists('display_profiles')) {
                 </select>
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
-                <input type="checkbox" id="is-report-only" <?php echo ($is_report_only) ? 'checked' : '';?> />
-                <label for="is-report-only"><?php echo __( 'Is report only', 'your-text-domain' );?></label>
-                <input type="checkbox" id="is-checkbox" <?php echo ($is_checkbox) ? 'checked' : '';?> />
-                <label for="is-checkbox"><?php echo __( 'Is checkbox', 'your-text-domain' );?></label>
+                <input type="checkbox" id="is-report-only" <?php echo ($display_on_report_only) ? 'checked' : '';?> />
+                <label for="is-report-only"><?php echo __( 'Display on report only', 'your-text-domain' );?></label>
+                <input type="checkbox" id="is-checkbox" <?php echo ($is_radio_option) ? 'checked' : '';?> />
+                <label for="is-checkbox"><?php echo __( 'Is radio option', 'your-text-domain' );?></label>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1985,8 +2073,8 @@ if (!class_exists('display_profiles')) {
                 $clause_id = sanitize_text_field($_POST['_clause_id']);
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
                 $field_type = sanitize_text_field($_POST['_field_type']);
-                $is_report_only = sanitize_text_field($_POST['_is_report_only']);
-                $is_checkbox = sanitize_text_field($_POST['_is_checkbox']);
+                $display_on_report_only = sanitize_text_field($_POST['_display_on_report_only']);
+                $is_radio_option = sanitize_text_field($_POST['_is_radio_option']);
                 $data = array(
                     'ID'           => $clause_id,
                     'post_title'   => sanitize_text_field($_POST['_clause_title']),
@@ -1996,8 +2084,8 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($clause_id, 'clause_no', $clause_no);
                 update_post_meta($clause_id, 'category_id', $category_id);
                 update_post_meta($clause_id, 'field_type', $field_type);
-                update_post_meta($clause_id, 'is_report_only', $is_report_only);
-                update_post_meta($clause_id, 'is_checkbox', $is_checkbox);
+                update_post_meta($clause_id, 'display_on_report_only', $display_on_report_only);
+                update_post_meta($clause_id, 'is_radio_option', $is_radio_option);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

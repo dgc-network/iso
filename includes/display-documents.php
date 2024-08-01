@@ -130,14 +130,21 @@ if (!class_exists('display_documents')) {
             // Check if the user is logged in
             if (is_user_logged_in()) {
 
-                // Display ISO document statement
+                // Display ISO statement
                 if (isset($_GET['_initial'])) {
-                    $doc_number = sanitize_text_field($_GET['_initial']);
-                    $doc_category = sanitize_text_field($_GET['_initial']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    //echo $this->display_iso_document_statement($doc_number);
-                    echo $this->display_iso_document_statement($doc_category);
-                    echo '</div>';
+                    $doc_category_id = sanitize_text_field($_GET['_initial']);
+                    $doc_category_title = get_the_title($doc_category_id);
+                    ?>
+                    <div class="ui-widget" id="result-container">';
+                        <div style="display:flex; justify-content:space-between; margin:5px;">
+                            <div>
+                                <?php echo display_iso_helper_logo();?>
+                                <h2 style="display:inline;"><?php echo esc_html($doc_category_title.'適用性聲明書');?></h2>
+                            </div>
+                        </div>
+                        <?php echo $this->display_iso_statement_list($doc_category_id);?>
+                    </div>
+                    <?php
                 }
 
                 // Get shared document if shared doc ID is existed
@@ -1667,7 +1674,7 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
         
-        function display_iso_document_statement($doc_category_id){
+        function display_iso_statement_list($doc_category_id){
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             $doc_category_title = get_the_title($doc_category_id);
@@ -1675,13 +1682,6 @@ if (!class_exists('display_documents')) {
                 $get_doc_count_by_category = $this->get_doc_count_by_category($doc_category_id);
                 ob_start();
                 ?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <?php echo display_iso_helper_logo();?>
-                        <h2 style="display:inline;"><?php echo esc_html($doc_category_title.'適用性聲明書');?></h2>
-                    </div>
-                </div>
-            
                 <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                 <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
                 <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />
@@ -1690,8 +1690,8 @@ if (!class_exists('display_documents')) {
                     <?php
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
-                    $is_report_only = false;
-                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category_id, $is_report_only);
+                    $display_on_report_only = false;
+                    $query = $profiles_class->retrieve_iso_clause_list_data($doc_category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
@@ -1699,7 +1699,6 @@ if (!class_exists('display_documents')) {
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            //if (!$field_value) $field_value=$field_key;
                             if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
                             if ($field_type=='text') {
                                 echo $clause_title;
