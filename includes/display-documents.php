@@ -1689,7 +1689,7 @@ if (!class_exists('display_documents')) {
         function display_audit_item_list_with_inputs($doc_category_id){
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
-            if ($is_site_admin) {
+            if ($is_site_admin || current_user_can('administrator')) {
                 ob_start();
                 ?>
                 <fieldset>
