@@ -649,7 +649,7 @@ if (!class_exists('display_profiles')) {
         
             $documents_class = new display_documents();
             foreach ($parent_category_summary as $category_id) {
-                $query = $profiles_class->retrieve_audit_item_list_data($category_id);
+                $query = $this->retrieve_audit_item_list_data($category_id);
                 if ($query->have_posts()) {
                     echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
                     echo $documents_class->display_audit_item_list_with_inputs($category_id);
