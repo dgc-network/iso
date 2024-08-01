@@ -110,7 +110,7 @@ if (!class_exists('display_profiles')) {
             if (is_user_logged_in()) {
                 echo '<div class="ui-widget" id="result-container">';
 
-                //if ($_GET['_initial']=='true') echo $this->display_site_profile(true);
+                if ($_GET['_update_post_type_iso_clause_to_audit_item']) $this->update_post_type_iso_clause_to_audit_item();
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
                 if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
@@ -647,9 +647,9 @@ if (!class_exists('display_profiles')) {
                 wp_reset_postdata();
             }
         
+            $documents_class = new display_documents();
             foreach ($parent_category_summary as $category_id) {
                 echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
-                $documents_class = new display_documents();
                 echo $documents_class->display_iso_statement_list($category_id);
             }
             
