@@ -617,7 +617,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function display_audit_item_list_by_category() {
+        function display_audit_item_list_in_category_summary() {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -650,7 +650,7 @@ if (!class_exists('display_profiles')) {
             $documents_class = new display_documents();
             foreach ($parent_category_summary as $category_id) {
                 echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
-                echo $documents_class->display_iso_statement_list($category_id);
+                echo $documents_class->display_audit_item_list_with_inputs($category_id);
             }
             
             return ob_get_clean();
@@ -744,7 +744,7 @@ if (!class_exists('display_profiles')) {
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <?php echo $this->display_site_user_list();?>
 
-                    <?php echo $this->display_audit_item_list_by_category();?>
+                    <?php echo $this->display_audit_item_list_in_category_summary();?>
 <?php /*?>
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -1962,7 +1962,7 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_audit_item_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $clause_title = get_the_title();
+                        $audit_item_title = get_the_title();
                         $clause_content = get_post_field('post_content', get_the_ID());
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         $display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
@@ -1971,7 +1971,7 @@ if (!class_exists('display_profiles')) {
                         ?>
                         <tr id="edit-audit-item-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
-                            <td><?php echo esc_html($clause_title);?></td>
+                            <td><?php echo esc_html($audit_item_title);?></td>
                             <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
                         </tr>
                         <?php
@@ -2031,7 +2031,7 @@ if (!class_exists('display_profiles')) {
         function display_audit_item_dialog($clause_id=false) {
             $category_id = get_post_meta($clause_id, 'category_id', true);
             $clause_no = get_post_meta($clause_id, 'clause_no', true);
-            $clause_title = get_the_title($clause_id);
+            $audit_item_title = get_the_title($clause_id);
             $field_type = get_post_meta($clause_id, 'field_type', true);
             $clause_content = get_post_field('post_content', $clause_id);
             $display_on_report_only = get_post_meta($clause_id, 'display_on_report_only', true);
@@ -2043,7 +2043,7 @@ if (!class_exists('display_profiles')) {
                 <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
                 <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <input type="text" id="clause-title" value="<?php echo esc_attr($clause_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="clause-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                     <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>

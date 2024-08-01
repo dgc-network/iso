@@ -131,9 +131,10 @@ if (!class_exists('display_documents')) {
             if (is_user_logged_in()) {
 
                 // Display ISO statement
-                if (isset($_GET['_initial'])) {
-                    $doc_category_id = sanitize_text_field($_GET['_initial']);
+                if (isset($_GET['_statement'])) {
+                    $doc_category_id = sanitize_text_field($_GET['_statement']);
                     $doc_category_title = get_the_title($doc_category_id);
+                    $get_doc_count_by_category = $this->get_doc_count_by_category($doc_category_id);
                     ?>
                     <div class="ui-widget" id="result-container">';
                         <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -142,7 +143,10 @@ if (!class_exists('display_documents')) {
                                 <h2 style="display:inline;"><?php echo esc_html($doc_category_title.'適用性聲明書');?></h2>
                             </div>
                         </div>
-                        <?php echo $this->display_iso_statement_list($doc_category_id);?>
+                        <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
+                        <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
+                        <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />            
+                        <?php echo $this->display_audit_item_list_with_inputs($doc_category_id);?>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Save', 'your-text-domain' );?></button>
@@ -184,7 +188,7 @@ if (!class_exists('display_documents')) {
                 }
 
                 // Display document list if no specific document IDs are existed
-                if (!isset($_GET['_doc_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_initial'])) {
+                if (!isset($_GET['_doc_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_statement'])) {
                     echo $this->display_document_list();
                 }
             
@@ -1682,18 +1686,12 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
         
-        function display_iso_statement_list($doc_category_id){
+        function display_audit_item_list_with_inputs($doc_category_id){
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
-            $doc_category_title = get_the_title($doc_category_id);
             if ($is_site_admin) {
-                $get_doc_count_by_category = $this->get_doc_count_by_category($doc_category_id);
                 ob_start();
                 ?>
-                <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
-                <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
-                <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />
-            
                 <fieldset>
                     <?php
                     $current_user_id = get_current_user_id();
@@ -1703,22 +1701,23 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                            $clause_title = get_the_title();
+                            $is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
+                            $audit_item_title = '<li>'.get_the_title().' '.$clause_no.'</li>';
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            if ($field_type=='heading') echo '<b>'.$clause_no.' '.$clause_title.'</b><br>';
+                            if ($field_type=='heading') echo '<b>'.$audit_item_title.'</b><br>';
                             if ($field_type=='text') {
-                                echo $clause_title;
+                                echo $audit_item_title;
                                 echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
-                                echo $clause_title;
+                                echo $audit_item_title;
                                 echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
                             }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
-                                echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.$clause_title.'<br>';
+                                echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.$audit_item_title.'<br>';
                             }
                         endwhile;                
                         wp_reset_postdata();
