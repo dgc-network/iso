@@ -634,15 +634,12 @@ if (!class_exists('display_profiles')) {
             
                     // Get the parent_category meta value for the current post
                     $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+                    if ($site_title=='iso-helper.com') $parent_category = get_the_ID();
             
                     if ($parent_category) {
                         // Add the parent category to the summary array if not already added
                         if (!in_array($parent_category, $parent_category_summary)) {
-                            if ($site_title=='iso-helper.com') {
-                                $parent_category_summary[] = get_the_ID();
-                            } else {
-                                $parent_category_summary[] = $parent_category;
-                            }
+                            $parent_category_summary[] = $parent_category;
                         }
                     }
                 }        
