@@ -1991,7 +1991,7 @@ if (!class_exists('display_profiles')) {
 
         function retrieve_iso_clause_list_data($category_id = false, $display_on_report_only = true) {
             $args = array(
-                'post_type'      => 'iso-clause',
+                'post_type'      => 'audit-item',
                 'posts_per_page' => -1,
                 'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
@@ -2096,7 +2096,7 @@ if (!class_exists('display_profiles')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'iso-clause',
+                    'post_type'     => 'audit-item',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
