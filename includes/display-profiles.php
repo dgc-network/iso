@@ -621,6 +621,7 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $site_title = get_the_title($site_id);
             // Initialize an empty array to hold the parent_category counts
             $parent_category_summary = array();
         
@@ -637,7 +638,11 @@ if (!class_exists('display_profiles')) {
                     if ($parent_category) {
                         // Add the parent category to the summary array if not already added
                         if (!in_array($parent_category, $parent_category_summary)) {
-                            $parent_category_summary[] = $parent_category;
+                            if ($site_title=='iso-helper.com') {
+                                $parent_category_summary[] = get_the_ID();
+                            } else {
+                                $parent_category_summary[] = $parent_category;
+                            }
                         }
                     }
                 }        
