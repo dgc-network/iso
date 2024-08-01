@@ -648,47 +648,14 @@ if (!class_exists('display_profiles')) {
             }
         
             foreach ($parent_category_summary as $category_id) {
-                echo get_the_title($category_id) . '<br>';
+                echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
+                $documents_class = new display_documents();
+                echo $documents_class->display_iso_statement($category_id);
             }
             
             return ob_get_clean();
         }
-/*        
-        function display_audit_item_list() {
-            ob_start();
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            // Initialize an empty array to hold the parent_category counts
-            $parent_category_summary = array();
 
-            $query = $this->retrieve_doc_category_data();
-            // Check if the query has posts
-            if ($query->have_posts()) {
-                // Loop through the posts
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the parent_category meta value for the current post
-                    $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
-        
-                    if ($parent_category) {
-                        // Add the parent category to the summary array if not already added
-                        if (!array_key_exists($parent_category, $parent_category_summary)) {
-                            $parent_category_summary[] = $parent_category;
-                        }
-                    }
-                }        
-                // Reset the post data
-                wp_reset_postdata();
-            }
-
-            foreach ($parent_category_summary as $category_id) {
-                echo get_the_title($category_id);
-            }
-        
-            return ob_get_clean();
-        }
-*/
         function update_post_type_iso_clause_to_audit_item() {
             // Arguments for the query to fetch all 'iso-clause' posts
             $args = array(
@@ -777,7 +744,6 @@ if (!class_exists('display_profiles')) {
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <?php echo $this->display_site_user_list();?>
 
-                    <label for="audit-items"><?php echo __( '稽核項目：', 'your-text-domain' );?></label>
                     <?php echo $this->display_audit_item_list();?>
 <?php /*?>
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
