@@ -1701,23 +1701,23 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                            $is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
-                            $audit_item_title = '<li>'.get_the_title().' '.$clause_no.'</li>';
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            if ($field_type=='heading') echo '<b>'.$audit_item_title.'</b><br>';
-                            if ($field_type=='text') {
-                                echo $audit_item_title;
-                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
-                            }
-                            if ($field_type=='textarea') {
-                                echo $audit_item_title;
-                                echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
-                            }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
-                                echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.$audit_item_title.'<br>';
+                                echo '<input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.get_the_title().'<br>';
+                            } else {
+                                $audit_item_title = '<li>'.get_the_title().' '.$clause_no.'</li>';
+                                if ($field_type=='heading') echo '<b>'.$audit_item_title.'</b>';
+                                if ($field_type=='text') {
+                                    echo $audit_item_title;
+                                    echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
+                                }
+                                if ($field_type=='textarea') {
+                                    echo $audit_item_title;
+                                    echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3">'.$field_value.'</textarea>';
+                                }
                             }
                         endwhile;                
                         wp_reset_postdata();
