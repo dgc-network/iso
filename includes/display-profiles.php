@@ -569,6 +569,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_user_list() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             ob_start();
             ?>
                 <fieldset style="margin-top:5px;">
