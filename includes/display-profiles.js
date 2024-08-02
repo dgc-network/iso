@@ -866,6 +866,39 @@ jQuery(document).ready(function($) {
             });
         });
 
+        //$(document).ready(function() {
+            // Extract category_id from URL
+            const currentUrl = new URL(window.location.href);
+            const params = new URLSearchParams(currentUrl.search);
+            const category_id = params.get('_category_id');
+        
+            if (category_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'get_doc_category_dialog_data',
+                        '_category_id': category_id,
+                    },
+                    success: function(response) {
+                        // Update the URL in the browser without reloading the page
+                        const newUrl = `${currentUrl.pathname}?${params.toString()}`;
+                        window.history.pushState({ path: newUrl }, '', newUrl);
+        
+                        // Update the dialog with the received content
+                        $("#doc-category-dialog").html(response.html_contain);
+                        $("#doc-category-dialog").dialog('open');
+                        activate_audit_item_list_data(category_id);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        //});
+        
         $("#doc-category-dialog").dialog({
             width: 390,
             modal: true,
