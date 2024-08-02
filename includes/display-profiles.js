@@ -875,7 +875,7 @@ jQuery(document).ready(function($) {
             //const paged = params.get('paged');
             // Extract page number from URL path
             const pathSegments = currentUrl.pathname.split('/');
-            let paged = null;
+            let paged = 1;
             const pageIndex = pathSegments.indexOf('page');
             if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
                 paged = parseInt(pathSegments[pageIndex + 1], 10);
