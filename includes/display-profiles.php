@@ -1989,14 +1989,15 @@ if (!class_exists('display_profiles')) {
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         if ($field_type=='heading') {
                             $audit_item_title = '<b>'.$audit_item_title.'</b>';
+                            $clause_no = '<b>'.$clause_no.'</b>';
                             $field_type='';
                         }
                         ?>
                         <tr id="edit-audit-item-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
-                            <td><?php echo esc_html($audit_item_title);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
-                            <td style="text-align:center;"><input type="checkbox" $is_checked /></td>
+                            <td><?php echo $audit_item_title;?></td>
+                            <td style="text-align:center;"><?php echo $clause_no;?></td>
+                            <td style="text-align:center;"><input type="checkbox" <?php echo $is_checked;?> /></td>
                         </tr>
                         <?php
                     endwhile;
