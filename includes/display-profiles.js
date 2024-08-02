@@ -844,6 +844,14 @@ jQuery(document).ready(function($) {
                     '_category_id': category_id,
                 },
                 success: function (response) {
+                    // Initialize an empty array to store query parameters
+                    var queryParams = [];
+                    queryParams.push("_category_id=" + category_id);
+                    // Combine all query parameters into a single string
+                    var queryString = queryParams.join("&")                
+                    // Redirect to the new URL with all combined query parameters
+                    window.location.href = "?" + queryString;
+        
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
                     activate_audit_item_list_data(category_id)                },
