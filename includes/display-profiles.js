@@ -844,14 +844,17 @@ jQuery(document).ready(function($) {
                     '_category_id': category_id,
                 },
                 success: function (response) {
-                    // Initialize an empty array to store query parameters
-                    var queryParams = [];
-                    queryParams.push("_category_id=" + category_id);
-                    // Combine all query parameters into a single string
-                    var queryString = queryParams.join("&")                
-                    // Redirect to the new URL with all combined query parameters
-                    window.location.href = "?" + queryString;
-        
+                    // Get the current URL
+                    const currentUrl = new URL(window.location.href);
+                    // Get the current search parameters
+                    const params = new URLSearchParams(currentUrl.search);                
+                    // Add or update the _category_id parameter
+                    params.set("_category_id", category_id);                
+                    // Construct the new URL with the updated parameters
+                    const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
+                    // Redirect to the new URL
+                    window.location.href = newUrl;
+
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
                     activate_audit_item_list_data(category_id)                },
