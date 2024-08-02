@@ -1819,7 +1819,7 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
-        function display_doc_category_dialog($category_id=false) {
+        function display_doc_category_dialog($paged=1, $category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
@@ -1836,7 +1836,7 @@ if (!class_exists('display_profiles')) {
                 if (current_user_can('administrator')) {                    
                     ?>
                     <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
-                    <?php echo $this->display_audit_item_list($category_id);?>
+                    <?php echo $this->display_audit_item_list($paged, $category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
@@ -1852,7 +1852,8 @@ if (!class_exists('display_profiles')) {
         function get_doc_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $response['html_contain'] = $this->display_doc_category_dialog($category_id);
+            $paged = sanitize_text_field($_POST['paged']);
+            $response['html_contain'] = $this->display_doc_category_dialog($paged, $category_id);
             wp_send_json($response);
         }
 
@@ -1954,7 +1955,7 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'audit-item', $args );
         }
 
-        function display_audit_item_list($category_id=false) {
+        function display_audit_item_list($paged=1, $category_id=false) {
             ob_start();
             ?>
             <div id="audit-item-list">
@@ -1970,7 +1971,7 @@ if (!class_exists('display_profiles')) {
                 <tbody id="sortable-audit-item-list">
                 <?php
                 
-                $paged = max(1, get_query_var('paged')); // Get the current page number
+                //$paged = max(1, get_query_var('paged')); // Get the current page number
                 //$paged = 0;
                 $query = $this->retrieve_audit_item_list_data($paged, $category_id);
                 $total_posts = $query->found_posts;
@@ -2131,14 +2132,14 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta( $post_id, 'sorting_key', -1);
             }
-            $response = array('html_contain' => $this->display_audit_item_list($category_id));
+            $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
             wp_send_json($response);
         }
 
         function del_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             wp_delete_post($_POST['_clause_id'], true);
-            $response = array('html_contain' => $this->display_audit_item_list($category_id));
+            $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
             wp_send_json($response);
         }
 

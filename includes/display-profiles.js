@@ -871,6 +871,7 @@ jQuery(document).ready(function($) {
             const currentUrl = new URL(window.location.href);
             const params = new URLSearchParams(currentUrl.search);
             const category_id = params.get('_category_id');
+            const paged = params.get('paged');
         
             if (category_id) {
                 $.ajax({
@@ -880,6 +881,7 @@ jQuery(document).ready(function($) {
                     data: {
                         'action': 'get_doc_category_dialog_data',
                         '_category_id': category_id,
+                        'paged': paged
                     },
                     success: function(response) {
                         // Update the URL in the browser without reloading the page
