@@ -1017,6 +1017,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#audit-item-dialog").html(response.html_contain);
                     $("#audit-item-dialog").dialog('open');
+                    $("#clause-content").val(decodeURIComponent($("#clause-content").val()));
                 },
                 error: function (error) {
                     console.error(error);
@@ -1049,7 +1050,7 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_clause_id': $("#clause-id").val(),
                             '_clause_title': $("#clause-title").val(),
-                            '_clause_content': $("#clause-content").val(),
+                            '_clause_content': encodeURIComponent($("#clause-content").val()),
                             '_clause_no': $("#clause-no").val(),
                             '_field_type': $("#field-type").val(),
                             '_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
