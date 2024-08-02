@@ -1032,6 +1032,7 @@ jQuery(document).ready(function($) {
             buttons: {
                 "Save": function () {
                     // Extract page number from URL path
+                    const currentUrl = new URL(window.location.href);
                     const pathSegments = currentUrl.pathname.split('/');
                     let paged = 1;
                     const pageIndex = pathSegments.indexOf('page');
@@ -1068,6 +1069,7 @@ jQuery(document).ready(function($) {
                 "Delete": function () {
                     if (window.confirm("Are you sure you want to delete this ISO clause?")) {
                         // Extract page number from URL path
+                        const currentUrl = new URL(window.location.href);
                         const pathSegments = currentUrl.pathname.split('/');
                         let paged = 1;
                         const pageIndex = pathSegments.indexOf('page');
