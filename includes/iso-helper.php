@@ -132,6 +132,14 @@ function display_social_responsibility() {
 }
 add_shortcode( 'display-social-responsibility', 'display_social_responsibility' ) ;
 
+function display_without_permission() {
+    //ob_start();
+    ?>
+    <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+    <?php
+    //return ob_get_clean();    
+}
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
