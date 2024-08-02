@@ -2132,12 +2132,14 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta( $post_id, 'sorting_key', -1);
             }
+            $paged = sanitize_text_field($_POST['paged']);
             $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
             wp_send_json($response);
         }
 
         function del_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
+            $paged = sanitize_text_field($_POST['paged']);
             wp_delete_post($_POST['_clause_id'], true);
             $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
             wp_send_json($response);
