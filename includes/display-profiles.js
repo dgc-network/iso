@@ -849,11 +849,14 @@ jQuery(document).ready(function($) {
                     // Get the current search parameters
                     const params = new URLSearchParams(currentUrl.search);                
                     // Add or update the _category_id parameter
-                    params.set("_category_id", category_id);                
+                    params.set("_category_id", category_id);
+                    // Construct the new URL with the updated parameters
                     // Construct the new URL with the updated parameters
                     const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
+                    // Update the URL in the browser without reloading the page
+                    window.history.pushState({ path: newUrl }, '', newUrl);                
                     // Redirect to the new URL
-                    window.location.href = newUrl;
+                    //window.location.href = newUrl;
 
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
