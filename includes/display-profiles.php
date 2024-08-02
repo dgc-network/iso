@@ -1745,57 +1745,63 @@ if (!class_exists('display_profiles')) {
         }
         
         function display_doc_category_list() {
-            ob_start();
             $is_site_admin = $this->is_site_admin();
-
             if ($is_site_admin || current_user_can('administrator')) {
-                // Check if the user is administrator
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(3);?></div>
-                    <div style="text-align: right"></div>                        
-                </div>
-
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Category', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $query = $this->retrieve_doc_category_data();
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-                                $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
-                                ?>
-                                <tr id="edit-doc-category-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                </fieldset>
-                <div id="doc-category-dialog" title="Category dialog"></div>
-                <?php
+                if (isset($_GET['_category_id'])) {
+                    echo $this->display_doc_category_dialog($_GET['_category_id']);
+                } else {
+                    ob_start();
+                    // Check if the user is administrator
+                    ?>
+                    <?php echo display_iso_helper_logo();?>
+                    <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+    
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div><?php $this->display_select_profile(3);?></div>
+                        <div style="text-align: right"></div>                        
+                    </div>
+    
+                    <fieldset>
+                        <table class="ui-widget" style="width:100%;">
+                            <thead>
+                                <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                                <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                                <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
+                            </thead>
+                            <tbody>
+                            <?php
+                            $query = $this->retrieve_doc_category_data();
+                            if ($query->have_posts()) :
+                                while ($query->have_posts()) : $query->the_post();
+                                    $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+                                    $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+                                    ?>
+                                    <tr id="edit-doc-category-<?php the_ID();?>">
+                                        <td style="text-align:center;"><?php the_title();?></td>
+                                        <td><?php the_content();?></td>
+                                        <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
+                                    </tr>
+                                    <?php 
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                            ?>
+                            </tbody>
+                        </table>
+                        <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    </fieldset>
+                    <div id="doc-category-dialog" title="Category dialog"></div>
+                    <?php
+                    return ob_get_clean();        
+                }
+    
             } else {
+                ob_start();
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
+                return ob_get_clean();
             }
-            return ob_get_clean();
         }
 
         function retrieve_doc_category_data() {

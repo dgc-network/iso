@@ -855,8 +855,6 @@ jQuery(document).ready(function($) {
                     const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
                     // Update the URL in the browser without reloading the page
                     window.history.pushState({ path: newUrl }, '', newUrl);                
-                    // Redirect to the new URL
-                    //window.location.href = newUrl;
 
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
