@@ -1747,9 +1747,9 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_list() {
             $is_site_admin = $this->is_site_admin();
             if ($is_site_admin || current_user_can('administrator')) {
-                if (isset($_GET['_category_id'])) {
-                    echo $this->display_doc_category_dialog($_GET['_category_id']);
-                } else {
+                //if (isset($_GET['_category_id'])) {
+                //    echo $this->display_doc_category_dialog($_GET['_category_id']);
+                //} else {
                     ob_start();
                     // Check if the user is administrator
                     ?>
@@ -1793,7 +1793,7 @@ if (!class_exists('display_profiles')) {
                     <div id="doc-category-dialog" title="Category dialog"></div>
                     <?php
                     return ob_get_clean();        
-                }
+                //}
     
             } else {
                 ob_start();
@@ -1973,6 +1973,7 @@ if (!class_exists('display_profiles')) {
                 <?php
                 
                 $paged = max(1, get_query_var('paged')); // Get the current page number
+                $paged = 0;
                 $query = $this->retrieve_audit_item_list_data($paged, $category_id);
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
