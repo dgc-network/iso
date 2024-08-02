@@ -872,8 +872,15 @@ jQuery(document).ready(function($) {
             const currentUrl = new URL(window.location.href);
             const params = new URLSearchParams(currentUrl.search);
             const category_id = params.get('_category_id');
-            const paged = params.get('paged');
-        
+            //const paged = params.get('paged');
+            // Extract page number from URL path
+            const pathSegments = currentUrl.pathname.split('/');
+            let paged = null;
+            const pageIndex = pathSegments.indexOf('page');
+            if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                paged = parseInt(pathSegments[pageIndex + 1], 10);
+            }
+                
             if (category_id) {
                 $.ajax({
                     type: 'POST',
