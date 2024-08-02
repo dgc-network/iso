@@ -2118,7 +2118,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'           => $clause_id,
                     'post_title'   => sanitize_text_field($_POST['_clause_title']),
-                    'post_content' => sanitize_text_field($_POST['_clause_content']),
+                    'post_content' => sanitize_textarea_field($_POST['_clause_content']),
                 );
                 wp_update_post( $data );
                 update_post_meta($clause_id, 'category_id', $category_id);
