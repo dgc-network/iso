@@ -165,11 +165,11 @@ if (!class_exists('erp_cards')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-        
+
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
-        
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {

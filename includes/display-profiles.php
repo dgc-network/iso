@@ -650,8 +650,9 @@ if (!class_exists('display_profiles')) {
             }
         
             $documents_class = new display_documents();
+            $paged = 0;
             foreach ($parent_category_summary as $category_id) {
-                $query = $this->retrieve_audit_item_list_data($category_id);
+                $query = $this->retrieve_audit_item_list_data($paged, $category_id);
                 if ($query->have_posts()) {
                     echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
                     echo $documents_class->display_audit_item_list_with_inputs($category_id);
@@ -1964,7 +1965,12 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody id="sortable-audit-item-list">
                 <?php
-                $query = $this->retrieve_audit_item_list_data($category_id);
+                
+                $paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_audit_item_list_data($paged, $category_id);
+                $total_posts = $query->found_posts;
+                $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $audit_item_title = get_the_title();
@@ -1987,6 +1993,14 @@ if (!class_exists('display_profiles')) {
                 </tbody>
             </table>
             <div id="new-audit-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <div class="pagination">
+                <?php
+                // Display pagination links
+                if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                ?>
+            </div>
             </fieldset>
             </div>
             <div id="audit-item-dialog" title="Clause dialog"></div>
@@ -1994,16 +2008,21 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_audit_item_list_data($category_id = false, $display_on_report_only = true) {
+        function retrieve_audit_item_list_data($paged=1, $category_id=false, $display_on_report_only=true) {
             $args = array(
                 'post_type'      => 'audit-item',
-                'posts_per_page' => -1,
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
                 'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
         
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
             // Add category_id to meta_query if it is not false
             if ($category_id !== false) {
                 $args['meta_query'][] = array(
@@ -2131,7 +2150,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_audit_item_options($selected_option=0, $category_id=false) {
-            $query = $this->retrieve_audit_item_list_data($category_id);
+            $paged = 0;
+            $query = $this->retrieve_audit_item_list_data($paged, $category_id);
             $options = '<option value="">Select clause</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';

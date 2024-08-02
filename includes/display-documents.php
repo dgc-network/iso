@@ -1697,7 +1697,8 @@ if (!class_exists('display_documents')) {
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $display_on_report_only = false;
-                    $query = $profiles_class->retrieve_audit_item_list_data($doc_category_id, $display_on_report_only);
+                    $paged = 0;
+                    $query = $profiles_class->retrieve_audit_item_list_data($paged, $doc_category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
