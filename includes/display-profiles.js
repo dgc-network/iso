@@ -924,7 +924,6 @@ jQuery(document).ready(function($) {
                             '_category_content': $("#category-content").val(),
                             '_category_url': $("#category-url").val(),
                             '_parent_category': $("#parent-category").val(),
-                            'paged': paged
                         },
                         success: function (response) {
                             $("#doc-category-dialog").dialog('close');
@@ -946,7 +945,6 @@ jQuery(document).ready(function($) {
                             data: {
                                 'action': 'del_doc_category_dialog_data',
                                 '_category_id': $("#category-id").val(),
-                                'paged': paged
                             },
                             success: function (response) {
                                 $("#doc-category-dialog").dialog('close');
@@ -1047,6 +1045,7 @@ jQuery(document).ready(function($) {
                             '_field_type': $("#field-type").val(),
                             '_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
                             '_is_radio_option': $("#is-checkbox").is(":checked") ? 1 : 0,
+                            'paged': paged
                         },
                         success: function (response) {
                             $("#audit-item-dialog").dialog('close');
@@ -1069,6 +1068,7 @@ jQuery(document).ready(function($) {
                                 'action': 'del_audit_item_dialog_data',
                                 '_category_id': $("#category-id").val(),
                                 '_clause_id': $("#clause-id").val(),
+                                'paged': paged
                             },
                             success: function (response) {
                                 $("#audit-item-dialog").dialog('close');
