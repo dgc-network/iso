@@ -1836,7 +1836,7 @@ if (!class_exists('display_profiles')) {
                 if (current_user_can('administrator')) {                    
                     ?>
                     <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
-                    <?php //echo $this->display_audit_item_list($paged, $category_id);?>
+                    <?php echo $this->display_audit_item_list($paged, $category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
@@ -1963,9 +1963,9 @@ if (!class_exists('display_profiles')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Clause', 'your-text-domain' );?></th>
-                        <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                        <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Clause', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-audit-item-list">
@@ -1987,9 +1987,9 @@ if (!class_exists('display_profiles')) {
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         ?>
                         <tr id="edit-audit-item-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
-                            <td><?php echo esc_html($audit_item_title);?></td>
                             <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
+                            <td><?php echo esc_html($audit_item_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($clause_no);?></td>
                         </tr>
                         <?php
                     endwhile;

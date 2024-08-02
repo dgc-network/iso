@@ -842,6 +842,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_doc_category_dialog_data',
                     '_category_id': category_id,
+                    'paged': 1
                 },
                 success: function (response) {
                     // Get the current URL
