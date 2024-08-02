@@ -2088,7 +2088,7 @@ if (!class_exists('display_profiles')) {
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                 </select>
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="clause-content" rows="3" style="width:100%;"><?php echo nl2br(esc_html($clause_content));?></textarea>
+                <textarea id="clause-content" rows="3" style="width:100%;"><?php echo nl2br(esc_textarea($clause_content));?></textarea>
                 <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
                 <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <input type="checkbox" id="is-report-only" <?php echo ($display_on_report_only) ? 'checked' : '';?> />
