@@ -1836,7 +1836,7 @@ if (!class_exists('display_profiles')) {
                 if (current_user_can('administrator')) {                    
                     ?>
                     <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
-                    <?php echo $this->display_audit_item_list($paged, $category_id);?>
+                    <?php //echo $this->display_audit_item_list($paged, $category_id);?>
                     <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
                     <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                     <?php
