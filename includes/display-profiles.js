@@ -871,7 +871,6 @@ jQuery(document).ready(function($) {
         const currentUrl = new URL(window.location.href);
         const params = new URLSearchParams(currentUrl.search);
         const category_id = params.get('_category_id');
-        //const paged = params.get('paged');
         // Extract page number from URL path
         const pathSegments = currentUrl.pathname.split('/');
         let paged = 1;
@@ -879,7 +878,7 @@ jQuery(document).ready(function($) {
         if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
             paged = parseInt(pathSegments[pageIndex + 1], 10);
         }
-            
+
         if (category_id) {
             $.ajax({
                 type: 'POST',
@@ -1032,6 +1031,14 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {
                 "Save": function () {
+                    // Extract page number from URL path
+                    const pathSegments = currentUrl.pathname.split('/');
+                    let paged = 1;
+                    const pageIndex = pathSegments.indexOf('page');
+                    if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                        paged = parseInt(pathSegments[pageIndex + 1], 10);
+                    }
+
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -1060,6 +1067,14 @@ jQuery(document).ready(function($) {
                 },
                 "Delete": function () {
                     if (window.confirm("Are you sure you want to delete this ISO clause?")) {
+                        // Extract page number from URL path
+                        const pathSegments = currentUrl.pathname.split('/');
+                        let paged = 1;
+                        const pageIndex = pathSegments.indexOf('page');
+                        if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                            paged = parseInt(pathSegments[pageIndex + 1], 10);
+                        }
+
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
