@@ -2078,6 +2078,8 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="clause-id" value="<?php echo esc_attr($clause_id);?>" />
+                <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                     <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
@@ -2085,8 +2087,6 @@ if (!class_exists('display_profiles')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                 </select>
-                <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <input type="text" id="clause-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_html($clause_content);?></textarea>
                 <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
@@ -2121,8 +2121,8 @@ if (!class_exists('display_profiles')) {
                     'post_content' => sanitize_text_field($_POST['_clause_content']),
                 );
                 wp_update_post( $data );
-                update_post_meta($clause_id, 'clause_no', $clause_no);
                 update_post_meta($clause_id, 'category_id', $category_id);
+                update_post_meta($clause_id, 'clause_no', $clause_no);
                 update_post_meta($clause_id, 'field_type', $field_type);
                 update_post_meta($clause_id, 'display_on_report_only', $display_on_report_only);
                 update_post_meta($clause_id, 'is_radio_option', $is_radio_option);
