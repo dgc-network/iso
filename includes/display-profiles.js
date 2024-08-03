@@ -964,6 +964,15 @@ jQuery(document).ready(function($) {
     // audit-item scripts
     function activate_audit_item_list_data(category_id){
         $("#new-audit-item").on("click", function() {
+            // Extract page number from URL path
+            const currentUrl = new URL(window.location.href);
+            const pathSegments = currentUrl.pathname.split('/');
+            let paged = 1;
+            const pageIndex = pathSegments.indexOf('page');
+            if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                paged = parseInt(pathSegments[pageIndex + 1], 10);
+            }
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -971,6 +980,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_audit_item_dialog_data',
                     '_category_id': $("#category-id").val(),
+                    'paged': paged
                 },
                 success: function (response) {
                     $("#audit-item-list").html(response.html_contain);
@@ -1043,9 +1053,6 @@ jQuery(document).ready(function($) {
                         paged = parseInt(pathSegments[pageIndex + 1], 10);
                     }
 
-                    //var data = $("#clause-content").val();
-                    //data = encodeURIComponent(data);
-
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -1055,7 +1062,6 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_clause_id': $("#clause-id").val(),
                             '_clause_title': $("#clause-title").val(),
-                            //'_clause_content': data,
                             '_clause_content': $("#clause-content").val(),
                             '_clause_no': $("#clause-no").val(),
                             '_field_type': $("#field-type").val(),
