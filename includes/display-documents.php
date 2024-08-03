@@ -1454,7 +1454,6 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    //$default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
@@ -1479,10 +1478,19 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_clause'):
                             $profiles_class = new display_profiles();
-                            ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_audit_item_options($field_value, $category_id);?></select>
-                            <?php
+                            if ($field_title=='audit-content') {
+                                $field_title = get_the_title($field_value);
+                                $placeholder = get_post_field('post_content', $field_value);
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"></textarea>
+                                <?php
+                            } else {
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_audit_item_options($field_value, $category_id);?></select>
+                                <?php    
+                            }
                             break;
 
                         case ($field_type=='_document'):
