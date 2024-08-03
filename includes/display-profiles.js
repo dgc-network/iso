@@ -995,14 +995,14 @@ jQuery(document).ready(function($) {
     
         $('#sortable-audit-item-list').sortable({
             update: function(event, ui) {
-                const clause_id_array = $(this).sortable('toArray', { attribute: 'data-clause-id' });                
+                const audit_id_array = $(this).sortable('toArray', { attribute: 'data-audit-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
                         action: 'sort_audit_item_list_data',
-                        _clause_id_array: clause_id_array,
+                        _audit_id_array: audit_id_array,
                     },
                     success: function(response) {
                         console.log(response);
@@ -1015,21 +1015,18 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-audit-item-"]').on("click", function () {
-            const clause_id = this.id.substring(16);
+            const audit_id = this.id.substring(16);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_audit_item_dialog_data',
-                    '_clause_id': clause_id,
+                    '_audit_id': audit_id,
                 },
                 success: function (response) {
                     $("#audit-item-dialog").html(response.html_contain);
                     $("#audit-item-dialog").dialog('open');
-                    //var data = $("#clause-content").val();
-                    //var receivedData = decodeURIComponent(data);
-                    //$("#clause-content").val(receivedData);
                 },
                 error: function (error) {
                     console.error(error);
@@ -1060,9 +1057,9 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_audit_item_dialog_data',
                             '_category_id': $("#category-id").val(),
-                            '_clause_id': $("#clause-id").val(),
-                            '_clause_title': $("#clause-title").val(),
-                            '_clause_content': $("#clause-content").val(),
+                            '_audit_id': $("#audit-id").val(),
+                            '_audit_title': $("#audit-title").val(),
+                            '_audit_content': $("#audit-content").val(),
                             '_clause_no': $("#clause-no").val(),
                             '_field_type': $("#field-type").val(),
                             '_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
@@ -1098,7 +1095,7 @@ jQuery(document).ready(function($) {
                             data: {
                                 'action': 'del_audit_item_dialog_data',
                                 '_category_id': $("#category-id").val(),
-                                '_clause_id': $("#clause-id").val(),
+                                '_audit_id': $("#audit-id").val(),
                                 'paged': paged
                             },
                             success: function (response) {

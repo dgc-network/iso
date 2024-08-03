@@ -661,7 +661,7 @@ if (!class_exists('display_profiles')) {
             
             return ob_get_clean();
         }
-
+/*
         function update_post_type_audit_item_to_audit_item() {
             // Arguments for the query to fetch all 'iso-clause' posts
             $args = array(
@@ -698,7 +698,7 @@ if (!class_exists('display_profiles')) {
                 echo 'No posts found to update.';
             }
         }
-        
+*/        
         // Uncomment the following line to run the update function (remove the line or comment it back after running it once)
         // update_post_type_audit_item_to_audit_item();
         
@@ -1981,7 +1981,7 @@ if (!class_exists('display_profiles')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $audit_item_title = get_the_title();
-                        $clause_content = get_post_field('post_content', get_the_ID());
+                        $audit_content = get_post_field('post_content', get_the_ID());
                         $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                         $display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
                         $is_checked = ($display_on_report_only) ? 'checked' : '';
@@ -1993,7 +1993,7 @@ if (!class_exists('display_profiles')) {
                             $field_type='';
                         }
                         ?>
-                        <tr id="edit-audit-item-<?php the_ID();?>" data-clause-id="<?php echo esc_attr(get_the_ID());?>">
+                        <tr id="edit-audit-item-<?php the_ID();?>" data-audit-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
                             <td><?php echo $audit_item_title;?></td>
                             <td style="text-align:center;"><?php echo $clause_no;?></td>
@@ -2066,20 +2066,20 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
-        function display_audit_item_dialog($clause_id=false) {
-            $category_id = get_post_meta($clause_id, 'category_id', true);
-            $clause_no = get_post_meta($clause_id, 'clause_no', true);
-            $audit_item_title = get_the_title($clause_id);
-            $field_type = get_post_meta($clause_id, 'field_type', true);
-            $clause_content = get_post_field('post_content', $clause_id);
-            $display_on_report_only = get_post_meta($clause_id, 'display_on_report_only', true);
-            $is_radio_option = get_post_meta($clause_id, 'is_radio_option', true);
+        function display_audit_item_dialog($audit_id=false) {
+            $category_id = get_post_meta($audit_id, 'category_id', true);
+            $clause_no = get_post_meta($audit_id, 'clause_no', true);
+            $audit_item_title = get_the_title($audit_id);
+            $field_type = get_post_meta($audit_id, 'field_type', true);
+            $audit_content = get_post_field('post_content', $audit_id);
+            $display_on_report_only = get_post_meta($audit_id, 'display_on_report_only', true);
+            $is_radio_option = get_post_meta($audit_id, 'is_radio_option', true);
             ob_start();
             ?>
             <fieldset>
-                <input type="hidden" id="clause-id" value="<?php echo esc_attr($clause_id);?>" />
-                <label for="clause-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <input type="text" id="clause-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="hidden" id="audit-id" value="<?php echo esc_attr($audit_id);?>" />
+                <label for="audit-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <input type="text" id="audit-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                     <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
@@ -2087,8 +2087,8 @@ if (!class_exists('display_profiles')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                 </select>
-                <label for="clause-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="clause-content" rows="3" style="width:100%;"><?php echo esc_textarea($clause_content);?></textarea>
+                <label for="audit-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="audit-content" rows="3" style="width:100%;"><?php echo esc_textarea($audit_content);?></textarea>
                 <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
                 <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
                 <input type="checkbox" id="is-report-only" <?php echo ($display_on_report_only) ? 'checked' : '';?> />
@@ -2102,30 +2102,30 @@ if (!class_exists('display_profiles')) {
 
         function get_audit_item_dialog_data() {
             $response = array();
-            $clause_id = sanitize_text_field($_POST['_clause_id']);
-            $response['html_contain'] = $this->display_audit_item_dialog($clause_id);
+            $audit_id = sanitize_text_field($_POST['_audit_id']);
+            $response['html_contain'] = $this->display_audit_item_dialog($audit_id);
             wp_send_json($response);
         }
 
         function set_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
-            if( isset($_POST['_clause_id']) ) {
-                $clause_id = sanitize_text_field($_POST['_clause_id']);
+            if( isset($_POST['_audit_id']) ) {
+                $audit_id = sanitize_text_field($_POST['_audit_id']);
                 $clause_no = sanitize_text_field($_POST['_clause_no']);
                 $field_type = sanitize_text_field($_POST['_field_type']);
                 $display_on_report_only = sanitize_text_field($_POST['_display_on_report_only']);
                 $is_radio_option = sanitize_text_field($_POST['_is_radio_option']);
                 $data = array(
-                    'ID'           => $clause_id,
-                    'post_title'   => sanitize_text_field($_POST['_clause_title']),
-                    'post_content' => sanitize_textarea_field($_POST['_clause_content']),
+                    'ID'           => $audit_id,
+                    'post_title'   => sanitize_text_field($_POST['_audit_title']),
+                    'post_content' => sanitize_textarea_field($_POST['_audit_content']),
                 );
                 wp_update_post( $data );
-                update_post_meta($clause_id, 'category_id', $category_id);
-                update_post_meta($clause_id, 'clause_no', $clause_no);
-                update_post_meta($clause_id, 'field_type', $field_type);
-                update_post_meta($clause_id, 'display_on_report_only', $display_on_report_only);
-                update_post_meta($clause_id, 'is_radio_option', $is_radio_option);
+                update_post_meta($audit_id, 'category_id', $category_id);
+                update_post_meta($audit_id, 'clause_no', $clause_no);
+                update_post_meta($audit_id, 'field_type', $field_type);
+                update_post_meta($audit_id, 'display_on_report_only', $display_on_report_only);
+                update_post_meta($audit_id, 'is_radio_option', $is_radio_option);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -2148,17 +2148,17 @@ if (!class_exists('display_profiles')) {
         function del_audit_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             $paged = sanitize_text_field($_POST['paged']);
-            wp_delete_post($_POST['_clause_id'], true);
+            wp_delete_post($_POST['_audit_id'], true);
             $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
             wp_send_json($response);
         }
 
         function sort_audit_item_list_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_clause_id_array']) && is_array($_POST['_clause_id_array'])) {
-                $clause_id_array = array_map('absint', $_POST['_clause_id_array']);        
-                foreach ($clause_id_array as $index => $clause_id) {
-                    update_post_meta( $clause_id, 'sorting_key', $index);
+            if (isset($_POST['_audit_id_array']) && is_array($_POST['_audit_id_array'])) {
+                $audit_id_array = array_map('absint', $_POST['_audit_id_array']);        
+                foreach ($audit_id_array as $index => $audit_id) {
+                    update_post_meta( $audit_id, 'sorting_key', $index);
                 }
                 $response = array('success' => true);
             }

@@ -768,7 +768,7 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
-                                        } elseif ($field_type=='_clause') {
+                                        } elseif ($field_type=='_audit') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
                                             echo esc_html(get_the_title($field_value).' '.$clause_no);
                                         } elseif ($field_type=='_document') {
@@ -1072,7 +1072,7 @@ if (!class_exists('display_documents')) {
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $field_value = $_POST[$field_name];
                         update_post_meta( $report_id, $field_name, $field_value);
-                        if ($field_type=='_clause' && $default_value=='_content'){
+                        if ($field_type=='_audit' && $default_value=='_content'){
                             $field_name .= $default_value;
                             $field_value = $_POST[$field_name];
                             update_post_meta( $report_id, $field_name, $field_value);
@@ -1265,7 +1265,7 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="_clause" <?php echo ($field_type=='_clause') ? 'selected' : ''?>><?php echo __( '_clause', 'your-text-domain' );?></option>
+                    <option value="_audit" <?php echo ($field_type=='_audit') ? 'selected' : ''?>><?php echo __( '_audit', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
@@ -1483,7 +1483,7 @@ if (!class_exists('display_documents')) {
                             echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
 
-                        case ($field_type=='_clause'):
+                        case ($field_type=='_audit'):
                             $profiles_class = new display_profiles();
                             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                             if ($default_value=='_content') {
