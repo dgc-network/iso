@@ -1067,9 +1067,16 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $field_value = $_POST[$field_name];
                         update_post_meta( $report_id, $field_name, $field_value);
+                        if ($field_type=='_clause' && $default_value=='_content'){
+                            $field_name .= $default_value;
+                            $field_value = $_POST[$field_name];
+                            update_post_meta( $report_id, $field_name, $field_value);
+                        }
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1478,12 +1485,16 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_clause'):
                             $profiles_class = new display_profiles();
-                            if ($field_title=='audit-content') {
+                            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                            if ($default_value=='_content') {
+                                $field_name .= $default_value;
                                 $field_title = get_the_title($field_value);
+                                $clause_no = get_post_meta($field_value, 'clause_no', true);
                                 $placeholder = get_post_field('post_content', $field_value);
+                                $content_value = get_post_meta($report_id, $field_name, true);
                                 ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"></textarea>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
+                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($field_value);?></textarea>
                                 <?php
                             } else {
                                 ?>
