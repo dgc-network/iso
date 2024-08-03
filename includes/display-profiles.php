@@ -2168,12 +2168,18 @@ if (!class_exists('display_profiles')) {
         function select_audit_item_options($selected_option=0, $category_id=false) {
             $paged = 0;
             $query = $this->retrieve_audit_item_list_data($paged, $category_id);
-            $options = '<option value="">Select clause</option>';
+            $options = '<option value="">Select '.get_the_title($category_id).' audit item</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                $category_id = get_post_meta(get_the_ID(), 'category_id', true);
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
+                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                if ($field_type=='heading'){
+                    $audit_item = '<b>'.get_the_title().'</b>';
+                } else {
+                    $audit_item = get_the_title().' '.$clause_no;
+                }
+                //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($clause_no.'-'.get_the_title()) . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $audit_item . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
