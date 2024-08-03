@@ -1487,6 +1487,8 @@ if (!class_exists('display_documents')) {
                             $profiles_class = new display_profiles();
                             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                             if ($default_value=='_content') {
+                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
+                                <?php
                                 $field_name .= $default_value;
                                 $field_title = get_the_title($field_value);
                                 $clause_no = get_post_meta($field_value, 'clause_no', true);
@@ -1494,7 +1496,7 @@ if (!class_exists('display_documents')) {
                                 $content_value = get_post_meta($report_id, $field_name, true);
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($field_value);?></textarea>
+                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
                                 <?php
                             } else {
                                 ?>
