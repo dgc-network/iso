@@ -797,6 +797,7 @@ jQuery(document).ready(function($) {
 
     // doc-category scripts
     function activate_doc_category_list_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -813,7 +814,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#new-doc-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -845,6 +846,7 @@ jQuery(document).ready(function($) {
                     'paged': 1
                 },
                 success: function (response) {
+/*                    
                     // Get the current URL
                     const currentUrl = new URL(window.location.href);
                     // Get the current search parameters
@@ -856,7 +858,7 @@ jQuery(document).ready(function($) {
                     const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
                     // Update the URL in the browser without reloading the page
                     window.history.pushState({ path: newUrl }, '', newUrl);                
-
+*/
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
                     activate_audit_item_list_data(category_id)                },
@@ -866,7 +868,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         // Extract category_id from URL
         const currentUrl = new URL(window.location.href);
         const params = new URLSearchParams(currentUrl.search);
@@ -905,7 +907,7 @@ jQuery(document).ready(function($) {
                 }
             });
         }
-        
+*/        
         $("#doc-category-dialog").dialog({
             width: 390,
             modal: true,
