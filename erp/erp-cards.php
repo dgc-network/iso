@@ -146,9 +146,17 @@ if (!class_exists('erp_cards')) {
         
                         // Map the old parent_category value to the new iso-category post ID
                         $parent_category = get_post_meta($current_post_id, 'parent_category', true);
+                        $current_user_id = get_current_user_id();
+                        $site_id = get_user_meta($current_user_id, 'site_id', true);
+                        $site_title = get_the_title($site_id);
+                        if ($site_title=='iso-helper.com') $parent_category = $current_post_id;
+            
                         if ($parent_category) {
                             $category_mapping[$parent_category] = $new_post_id;
                         }
+
+                        update_post_meta(get_the_ID(), 'parent_category', $new_post_id);
+
                     }
                 }
         
