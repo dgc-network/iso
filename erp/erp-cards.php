@@ -145,7 +145,10 @@ if (!class_exists('erp_cards')) {
                         }
         
                         // Map the old parent_category value to the new iso-category post ID
+                        $category_mapping[$current_post_id] = $new_post_id;
+/*
                         $parent_category = get_post_meta($current_post_id, 'parent_category', true);
+
                         $current_user_id = get_current_user_id();
                         $site_id = get_user_meta($current_user_id, 'site_id', true);
                         $site_title = get_the_title($site_id);
@@ -156,7 +159,7 @@ if (!class_exists('erp_cards')) {
                         }
 
                         update_post_meta(get_the_ID(), 'parent_category', $new_post_id);
-
+*/
                     }
                 }
         
