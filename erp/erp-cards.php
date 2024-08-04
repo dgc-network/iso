@@ -134,7 +134,7 @@ if (!class_exists('erp_cards')) {
                                 <tr id="edit-iso-category-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
+                                    <td style="text-align:center;"><?php echo $parent_category;?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -274,14 +274,14 @@ if (!class_exists('erp_cards')) {
             endwhile;
             wp_reset_postdata();
 */            
-            if (current_user_can('administrator')) {
+            //if (current_user_can('administrator')) {
                 $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
                 $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
                 $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
                 $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
                 $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
                 $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
-            }
+            //}
             return $options;
         }
 
