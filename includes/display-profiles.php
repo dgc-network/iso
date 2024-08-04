@@ -560,140 +560,6 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site', $args );
         }
 
-        function display_site_user_list() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            ob_start();
-            ?>
-                <fieldset style="margin-top:5px;">
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php        
-                        $users = get_users(); // Initialize with all users
-                        // If the current user is not an administrator, filter by site_id
-                        if (!current_user_can('administrator')) {
-                            $meta_query_args = array(
-                                array(
-                                    'key'     => 'site_id',
-                                    'value'   => $site_id,
-                                    'compare' => '=',
-                                ),
-                            );
-                            $users = get_users(array('meta_query' => $meta_query_args));
-                        }
-                        // Loop through the users
-                        foreach ($users as $user) {
-                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
-                            $user_site = get_user_meta($user->ID, 'site_id', true);
-                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
-                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
-                            ?>
-                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                                <td style="text-align:center;"><?php echo $display_name; ?></td>
-                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
-                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
-                            </tr>
-                            <?php
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                </fieldset>
-                <?php $this->display_new_user_dialog();?>
-                <div id="site-user-dialog" title="User dialog"></div>
-            <?php
-            return ob_get_clean();
-        }
-
-        function display_audit_item_list_in_category_summary() {
-            ob_start();
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $site_title = get_the_title($site_id);
-            // Initialize an empty array to hold the parent_category counts
-            $parent_category_summary = array();
-        
-            $query = $this->retrieve_doc_category_data();
-            // Check if the query has posts
-            if ($query->have_posts()) {
-                // Loop through the posts
-                while ($query->have_posts()) {
-                    $query->the_post();
-            
-                    // Get the parent_category meta value for the current post
-                    $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
-                    //if ($site_title=='iso-helper.com') $parent_category = get_the_ID();
-            
-                    if ($parent_category) {
-                        // Add the parent category to the summary array if not already added
-                        if (!in_array($parent_category, $parent_category_summary)) {
-                            $parent_category_summary[] = $parent_category;
-                        }
-                    }
-                }        
-                // Reset the post data
-                wp_reset_postdata();
-            }
-        
-            $documents_class = new display_documents();
-            $paged = 0;
-            foreach ($parent_category_summary as $category_id) {
-                $query = $this->retrieve_audit_item_list_data($paged, $category_id);
-                if ($query->have_posts()) {
-                    echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
-                    echo $documents_class->display_audit_item_list_with_inputs($category_id);
-                }
-            }
-            
-            return ob_get_clean();
-        }
-/*
-        function update_post_type_audit_item_to_audit_item() {
-            // Arguments for the query to fetch all 'iso-clause' posts
-            $args = array(
-                'post_type'      => 'iso-clause',
-                'posts_per_page' => -1,
-                'post_status'    => 'any', // Fetch all posts, regardless of their status
-            );
-        
-            // Custom query to fetch all 'iso-clause' posts
-            $query = new WP_Query($args);
-        
-            // Check if there are any posts to update
-            if ($query->have_posts()) {
-                // Loop through each post
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the current post ID
-                    $post_id = get_the_ID();
-        
-                    // Update the post type
-                    $updated_post = array(
-                        'ID'        => $post_id,
-                        'post_type' => 'audit-item',
-                    );
-        
-                    // Perform the update
-                    wp_update_post($updated_post);
-                }
-        
-                // Reset post data
-                wp_reset_postdata();
-            } else {
-                echo 'No posts found to update.';
-            }
-        }
-*/        
-        // Uncomment the following line to run the update function (remove the line or comment it back after running it once)
-        // update_post_type_audit_item_to_audit_item();
-        
         function display_site_profile($initial=false) {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -742,7 +608,7 @@ if (!class_exists('display_profiles')) {
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <?php echo $this->display_site_user_list();?>
 
-                    <?php echo $this->display_audit_item_list_in_category_summary();?>
+                    <?php echo $this->display_audit_item_list_in_category();?>
 <?php /*?>
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -812,6 +678,105 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
+        function display_audit_item_list_in_category() {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $site_title = get_the_title($site_id);
+            // Initialize an empty array to hold the parent_category counts
+            $parent_category_summary = array();
+        
+            $query = $this->retrieve_doc_category_data();
+            // Check if the query has posts
+            if ($query->have_posts()) {
+                // Loop through the posts
+                while ($query->have_posts()) {
+                    $query->the_post();
+            
+                    // Get the parent_category meta value for the current post
+                    $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+                    //if ($site_title=='iso-helper.com') $parent_category = get_the_ID();
+            
+                    if ($parent_category) {
+                        // Add the parent category to the summary array if not already added
+                        if (!in_array($parent_category, $parent_category_summary)) {
+                            $parent_category_summary[] = $parent_category;
+                        }
+                    }
+                }        
+                // Reset the post data
+                wp_reset_postdata();
+            }
+        
+            $cards_class = new erp_cards();
+            $documents_class = new display_documents();
+            $paged = 0;
+            foreach ($parent_category_summary as $category_id) {
+                $query = $cards_class->retrieve_audit_item_list_data($paged, $category_id);
+                if ($query->have_posts()) {
+                    echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
+                    echo $documents_class->display_audit_item_list_with_inputs($category_id);
+                }
+            }
+            
+            return ob_get_clean();
+        }
+
+        function display_site_user_list() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            ob_start();
+            ?>
+                <fieldset style="margin-top:5px;">
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php        
+                        $users = get_users(); // Initialize with all users
+                        // If the current user is not an administrator, filter by site_id
+                        if (!current_user_can('administrator')) {
+                            $meta_query_args = array(
+                                array(
+                                    'key'     => 'site_id',
+                                    'value'   => $site_id,
+                                    'compare' => '=',
+                                ),
+                            );
+                            $users = get_users(array('meta_query' => $meta_query_args));
+                        }
+                        // Loop through the users
+                        foreach ($users as $user) {
+                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
+                            $user_site = get_user_meta($user->ID, 'site_id', true);
+                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+                            ?>
+                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
+                                <td style="text-align:center;"><?php echo $display_name; ?></td>
+                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
+                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                </fieldset>
+                <?php $this->display_new_user_dialog();?>
+                <div id="site-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
         function display_site_user_dialog($user_id=false) {
             $user_data = get_userdata($user_id);
             $is_site_admin = $this->is_site_admin($user_id);
@@ -916,25 +881,6 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function set_site_admin_data($user_id=false, $is_site_admin=false) {
-            if (!$user_id) $user_id = get_current_user_id();
-            $site_id = get_user_meta($user_id, 'site_id', true);
-            $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
-            if (!is_array($site_admin_ids)) $site_admin_ids = array();
-            $site_exists = in_array($site_id, $site_admin_ids);
-
-            // Check the condition and update 'site_admin_ids' accordingly
-            if ($is_site_admin && !$site_exists) {
-                // Add $site_id to 'site_admin_ids'
-                $site_admin_ids[] = $site_id;
-            } elseif (!$is_site_admin && $site_exists) {
-                // Remove $site_id from 'site_admin_ids'
-                $site_admin_ids = array_diff($site_admin_ids, array($site_id));
-            }        
-            // Update 'site_admin_ids' meta value
-            update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
-        }
-
         function del_site_user_dialog_data() {
             $response = array();
             if (isset($_POST['_user_id'])) {
@@ -970,6 +916,25 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             </div>
             <?php
+        }
+
+        function set_site_admin_data($user_id=false, $is_site_admin=false) {
+            if (!$user_id) $user_id = get_current_user_id();
+            $site_id = get_user_meta($user_id, 'site_id', true);
+            $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+            if (!is_array($site_admin_ids)) $site_admin_ids = array();
+            $site_exists = in_array($site_id, $site_admin_ids);
+
+            // Check the condition and update 'site_admin_ids' accordingly
+            if ($is_site_admin && !$site_exists) {
+                // Add $site_id to 'site_admin_ids'
+                $site_admin_ids[] = $site_id;
+            } elseif (!$is_site_admin && $site_exists) {
+                // Remove $site_id from 'site_admin_ids'
+                $site_admin_ids = array_diff($site_admin_ids, array($site_id));
+            }        
+            // Update 'site_admin_ids' meta value
+            update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
         }
 
         function is_site_admin($user_id=false, $site_id=false) {

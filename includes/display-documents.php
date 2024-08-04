@@ -1707,6 +1707,7 @@ if (!class_exists('display_documents')) {
         }
         
         function display_audit_item_list_with_inputs($doc_category_id){
+            $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if ($is_site_admin || current_user_can('administrator')) {
@@ -1718,7 +1719,7 @@ if (!class_exists('display_documents')) {
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $display_on_report_only = false;
                     $paged = 0;
-                    $query = $profiles_class->retrieve_audit_item_list_data($paged, $doc_category_id, $display_on_report_only);
+                    $query = $cards_class->retrieve_audit_item_list_data($paged, $doc_category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);

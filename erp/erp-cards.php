@@ -30,6 +30,7 @@ if (!class_exists('erp_cards')) {
             add_action( 'wp_ajax_nopriv_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
             add_action( 'wp_ajax_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
+
             add_action( 'wp_ajax_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
 
@@ -98,7 +99,7 @@ if (!class_exists('erp_cards')) {
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     array(
-                        'key'     => 'parent-category',
+                        'key'     => 'parent_category',
                         'value'   => $parent_categories,
                         'compare' => 'IN',
                     ),
