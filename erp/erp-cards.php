@@ -86,7 +86,72 @@ if (!class_exists('erp_cards')) {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('erp-cards-nonce'), // Generate nonce
             ));                
-        }        
+        }
+
+        function copy_doc_category_to_iso_document() {
+            // Define the categories to match
+            $parent_categories = array('economic-growth', 'environmental-protection', 'social-responsibility');
+        
+            // Retrieve the posts of type 'doc-category' with the specified 'parent-category' meta values
+            $args = array(
+                'post_type'      => 'doc-category',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'parent-category',
+                        'value'   => $parent_categories,
+                        'compare' => 'IN',
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the current post ID and data
+                    $current_post_id = get_the_ID();
+                    $current_post    = get_post($current_post_id);
+        
+                    // Prepare the new post data
+                    $new_post = array(
+                        'post_title'    => $current_post->post_title,
+                        'post_content'  => $current_post->post_content,
+                        'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
+                        'post_author'   => $current_post->post_author,
+                        'post_type'     => 'iso-document',
+                        'post_date'     => $current_post->post_date,
+                        'post_date_gmt' => $current_post->post_date_gmt,
+                    );
+        
+                    // Insert the new post and get the new post ID
+                    $new_post_id = wp_insert_post($new_post);
+        
+                    if ($new_post_id) {
+                        // Get all meta data for the current post
+                        $post_meta = get_post_meta($current_post_id);
+        
+                        // Copy each meta field to the new post
+                        foreach ($post_meta as $meta_key => $meta_values) {
+                            foreach ($meta_values as $meta_value) {
+                                add_post_meta($new_post_id, $meta_key, $meta_value);
+                            }
+                        }
+                    }
+                }
+        
+                // Reset post data
+                wp_reset_postdata();
+            }
+        }
+        
+        // Hook the function to a WordPress action or call it directly for one-time use
+        //add_action('admin_init', 'copy_doc_category_to_iso_document');
+        // Or call the function directly for one-time use
+        // copy_doc_category_to_iso_document();
+        
 
         // iso-category
         function register_iso_category_post_type() {
@@ -472,7 +537,7 @@ if (!class_exists('erp_cards')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => 'New clause',
+                    'post_title'    => 'New item',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
