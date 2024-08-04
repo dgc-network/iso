@@ -116,6 +116,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='90') echo $cards_class->display_iso_category_list();
+                if ($_GET['_select_profile']=='91') echo $cards_class->copy_doc_category_to_iso_document();
 
                 $http_client = new http_client();
                 if ($_GET['_select_profile']=='10') echo $http_client->display_http_client_list();
