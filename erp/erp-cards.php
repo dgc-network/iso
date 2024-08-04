@@ -314,7 +314,7 @@ if (!class_exists('erp_cards')) {
                 <?php
                 return ob_get_clean();        
             } else {
-                display_permission_page();
+                display_no_permission_page();
             }
         }
 

@@ -1445,9 +1445,9 @@ if (!class_exists('display_documents')) {
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $site_title = get_the_title($site_id);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$site_title = get_the_title($site_id);
             //if ($site_title=='iso-helper.com') $category_id = $doc_category;
 
             $params = array(
@@ -1487,7 +1487,21 @@ if (!class_exists('display_documents')) {
                             $profiles_class = new display_profiles();
                             $cards_class = new erp_cards();
                             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                            if ($default_value=='_content') {
+                            if ($default_value=='_plan') {
+/*                                
+                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
+                                <?php
+                                $field_name .= $default_value;
+                                $field_title = get_the_title($field_value);
+                                $clause_no = get_post_meta($field_value, 'clause_no', true);
+                                $placeholder = get_post_field('post_content', $field_value);
+                                $content_value = get_post_meta($report_id, $field_name, true);
+*/                                
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options();?></select>
+                                <?php
+                            } elseif ($default_value=='_content'){
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
                                 $field_name .= $default_value;
