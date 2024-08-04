@@ -112,8 +112,8 @@ if (!class_exists('erp_cards')) {
                 <h2 style="display:inline;"><?php echo __( 'ISO類別', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(99);?></div>
-                    <div style="text-align: right"></div>                        
+                    <div><?php $profiles_class->display_select_profile();?></div>
+                    <div style="text-align:right"></div>                        
                 </div>
 
                 <fieldset>
@@ -131,7 +131,7 @@ if (!class_exists('erp_cards')) {
                                 $category_url = get_post_meta(get_the_ID(), 'category_url', true);
                                 $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
                                 ?>
-                                <tr id="edit-doc-category-<?php the_ID();?>">
+                                <tr id="edit-iso-category-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php the_title();?></td>
                                     <td><?php the_content();?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
@@ -143,9 +143,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="new-iso-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 </fieldset>
-                <div id="doc-category-dialog" title="Category dialog"></div>
+                <div id="iso-category-dialog" title="Category dialog"></div>
                 <?php
                 return ob_get_clean();        
             } else {
