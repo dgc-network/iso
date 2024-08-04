@@ -81,14 +81,10 @@ function display_iso_statement($atts) {
             <?php the_content(); ?>
             <div class="wp-block-buttons">
                 <div class="wp-block-button">
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>">
-                        <?php esc_html(the_title()); ?>
-                    </a>
+                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
                 </div>
                 <div class="wp-block-button">
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>">
-                        <?php echo esc_html(__( '啟動AI輔導', 'your-text-domain' )); ?>
-                    </a>
+                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>                                            
                 </div>
             </div>
         </div>
