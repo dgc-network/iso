@@ -88,7 +88,7 @@ if (!class_exists('erp_cards')) {
             ));                
         }
 
-        function copy_doc_category_to_iso_document() {
+        function copy_doc_category_to_iso_category() {
             // Define the categories to match
             $parent_categories = array('economic-growth', 'environmental-protection', 'social-responsibility');
         
@@ -121,7 +121,7 @@ if (!class_exists('erp_cards')) {
                         'post_content'  => $current_post->post_content,
                         'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
                         'post_author'   => $current_post->post_author,
-                        'post_type'     => 'iso-document',
+                        'post_type'     => 'iso-category',
                         'post_date'     => $current_post->post_date,
                         'post_date_gmt' => $current_post->post_date_gmt,
                     );
