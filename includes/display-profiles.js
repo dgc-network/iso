@@ -797,7 +797,7 @@ jQuery(document).ready(function($) {
 
     // doc-category scripts
     function activate_doc_category_list_data(){
-/*        
+
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -814,7 +814,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-*/
+
         $("#new-doc-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -846,19 +846,6 @@ jQuery(document).ready(function($) {
                     'paged': 1
                 },
                 success: function (response) {
-/*                    
-                    // Get the current URL
-                    const currentUrl = new URL(window.location.href);
-                    // Get the current search parameters
-                    const params = new URLSearchParams(currentUrl.search);                
-                    // Add or update the _category_id parameter
-                    params.set("_category_id", category_id);
-                    // Construct the new URL with the updated parameters
-                    // Construct the new URL with the updated parameters
-                    const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
-                    // Update the URL in the browser without reloading the page
-                    window.history.pushState({ path: newUrl }, '', newUrl);                
-*/
                     $("#doc-category-dialog").html(response.html_contain);
                     $("#doc-category-dialog").dialog('open');
                     activate_audit_item_list_data(category_id)                },
@@ -868,46 +855,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-/*
-        // Extract category_id from URL
-        const currentUrl = new URL(window.location.href);
-        const params = new URLSearchParams(currentUrl.search);
-        const category_id = params.get('_category_id');
-        // Extract page number from URL path
-        const pathSegments = currentUrl.pathname.split('/');
-        let paged = 1;
-        const pageIndex = pathSegments.indexOf('page');
-        if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
-            paged = parseInt(pathSegments[pageIndex + 1], 10);
-        }
 
-        if (category_id) {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_category_dialog_data',
-                    '_category_id': category_id,
-                    'paged': paged
-                },
-                success: function(response) {
-                    // Update the URL in the browser without reloading the page
-                    const newUrl = `${currentUrl.pathname}?${params.toString()}`;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
-    
-                    // Update the dialog with the received content
-                    $("#doc-category-dialog").html(response.html_contain);
-                    $("#doc-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id);
-                },
-                error: function(error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        }
-*/        
         $("#doc-category-dialog").dialog({
             width: 390,
             modal: true,
