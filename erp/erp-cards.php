@@ -9,6 +9,22 @@ if (!class_exists('erp_cards')) {
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_erp_cards_scripts' ) );
 
+            add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
+
+            add_action( 'wp_ajax_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
+            add_action( 'wp_ajax_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
+
             add_action( 'wp_ajax_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_set_customer_card_dialog_data', array( $this, 'set_customer_card_dialog_data' ) );
@@ -54,8 +70,6 @@ if (!class_exists('erp_cards')) {
         }
 
         function enqueue_erp_cards_scripts() {
-            //wp_enqueue_style('select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
-            //wp_enqueue_script('select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), null, true);
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
             $version = time(); // Update this version number when you make changes
@@ -66,7 +80,445 @@ if (!class_exists('erp_cards')) {
             ));                
         }        
 
-        // Register customer-card post type
+        // iso-category
+        function register_iso_category_post_type() {
+            $labels = array(
+                'menu_name'     => _x('iso-category', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'iso-category', $args );
+        }
+        
+        function display_iso_category_list() {
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) {
+                ob_start();
+                // Check if the user is administrator
+                ?>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( 'ISO類別', 'your-text-domain' );?></h2>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $profiles_class->display_select_profile(99);?></div>
+                    <div style="text-align: right"></div>                        
+                </div>
+
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $query = $this->retrieve_iso_category_data();
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+                                $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+                                ?>
+                                <tr id="edit-doc-category-<?php the_ID();?>">
+                                    <td style="text-align:center;"><?php the_title();?></td>
+                                    <td><?php the_content();?></td>
+                                    <td style="text-align:center;"><?php echo get_the_title($parent_category);?></td>
+                                </tr>
+                                <?php 
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                </fieldset>
+                <div id="doc-category-dialog" title="Category dialog"></div>
+                <?php
+                return ob_get_clean();        
+            } else {
+                display_permission_page();
+            }
+        }
+
+        function retrieve_iso_category_data() {
+            $args = array(
+                'post_type'      => 'iso-category',
+                'posts_per_page' => -1,        
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_iso_category_dialog($paged=1, $category_id=false) {
+            $category_title = get_the_title($category_id);
+            $category_content = get_post_field('post_content', $category_id);
+            $category_url = get_post_meta($category_id, 'category_url', true);
+            $parent_category = get_post_meta($category_id, 'parent_category', true);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
+                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <?php
+                if (current_user_can('administrator')) {                    
+                    ?>
+                    <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
+                    <?php echo $this->display_audit_item_list($paged, $category_id);?>
+                    <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
+                    <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
+                    <?php
+                }
+                ?>
+                <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
+                <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_iso_category_dialog_data() {
+            $response = array();
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $paged = sanitize_text_field($_POST['paged']);
+            $response['html_contain'] = $this->display_iso_category_dialog($paged, $category_id);
+            wp_send_json($response);
+        }
+
+        function set_iso_category_dialog_data() {
+            if( isset($_POST['_category_id']) ) {
+                $category_id = sanitize_text_field($_POST['_category_id']);
+                $category_url = sanitize_text_field($_POST['_category_url']);
+                $parent_category = sanitize_text_field($_POST['_parent_category']);
+                $data = array(
+                    'ID'           => $category_id,
+                    'post_title'   => sanitize_text_field($_POST['_category_title']),
+                    'post_content' => sanitize_text_field($_POST['_category_content']),
+                );
+                wp_update_post( $data );
+                update_post_meta($category_id, 'category_url', $category_url);
+                update_post_meta($category_id, 'parent_category', $parent_category);
+            } else {
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_title'    => 'New category',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'iso-category',
+                );    
+                $post_id = wp_insert_post($new_post);
+            }
+            $response = array('html_contain' => $this->display_iso_category_list());
+            wp_send_json($response);
+        }
+
+        function del_iso_category_dialog_data() {
+            wp_delete_post($_POST['_category_id'], true);
+            $response = array('html_contain' => $this->display_iso_category_list());
+            wp_send_json($response);
+        }
+
+        function select_iso_category_options($selected_option=0) {
+            $query = $this->retrieve_iso_category_data();
+            $options = '<option value="">Select iso category</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+        function select_parent_category_options($selected_option=0) {
+            $options = '<option value="">Select category</option>';
+/*
+            $args = array(
+                'post_type'      => 'iso-category',
+                'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    'relation' => 'OR',
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'economic-growth',
+                    ),
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'environmental-protection',
+                    ),
+                    array(
+                        'key'   => 'parent_category',
+                        'value' => 'social-responsibility',
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+*/            
+            if (current_user_can('administrator')) {
+                $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
+                $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
+                $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
+                $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
+                $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
+            }
+            return $options;
+        }
+
+        // audit-item
+        function register_audit_item_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Clause', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'audit-item', $args );
+        }
+
+        function display_audit_item_list($paged=1, $category_id=false) {
+            ob_start();
+            ?>
+            <div id="audit-item-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                        <th style="width:85%;"><?php echo __( 'Items', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Clause', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Report', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody id="sortable-audit-item-list">
+                <?php
+                
+                //$paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_audit_item_list_data($paged, $category_id);
+                $total_posts = $query->found_posts;
+                $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $audit_item_title = get_the_title();
+                        $audit_content = get_post_field('post_content', get_the_ID());
+                        $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                        $display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
+                        $is_checked = ($display_on_report_only) ? 'checked' : '';
+                        $is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        if ($field_type=='heading') {
+                            $audit_item_title = '<b>'.$audit_item_title.'</b>';
+                            $clause_no = '<b>'.$clause_no.'</b>';
+                            $field_type='';
+                        }
+                        ?>
+                        <tr id="edit-audit-item-<?php the_ID();?>" data-audit-id="<?php echo esc_attr(get_the_ID());?>">
+                            <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
+                            <td><?php echo $audit_item_title;?></td>
+                            <td style="text-align:center;"><?php echo $clause_no;?></td>
+                            <td style="text-align:center;"><input type="checkbox" <?php echo $is_checked;?> /></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <div id="new-audit-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <div class="pagination">
+                <?php
+                // Display pagination links
+                if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                ?>
+            </div>
+            </fieldset>
+            </div>
+            <div id="audit-item-dialog" title="Clause dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_audit_item_list_data($paged=1, $category_id=false, $display_on_report_only=true) {
+            $args = array(
+                'post_type'      => 'audit-item',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(),
+                'meta_key'       => 'sorting_key',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
+            // Add category_id to meta_query if it is not false
+            if ($category_id !== false) {
+                $args['meta_query'][] = array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                    ),
+                );
+            }
+
+            if ($display_on_report_only == false) {
+                $args['meta_query'][] = array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => 'display_on_report_only',
+                        'value'   => '0',
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'display_on_report_only',
+                        'compare' => 'NOT EXISTS'
+                    )
+                );
+            }
+
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_audit_item_dialog($audit_id=false) {
+            $category_id = get_post_meta($audit_id, 'category_id', true);
+            $clause_no = get_post_meta($audit_id, 'clause_no', true);
+            $audit_item_title = get_the_title($audit_id);
+            $field_type = get_post_meta($audit_id, 'field_type', true);
+            $audit_content = get_post_field('post_content', $audit_id);
+            $display_on_report_only = get_post_meta($audit_id, 'display_on_report_only', true);
+            $is_radio_option = get_post_meta($audit_id, 'is_radio_option', true);
+            ob_start();
+            ?>
+            <fieldset>
+                <input type="hidden" id="audit-id" value="<?php echo esc_attr($audit_id);?>" />
+                <label for="audit-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <input type="text" id="audit-title" value="<?php echo esc_attr($audit_item_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="field-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
+                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                </select>
+                <label for="audit-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="audit-content" rows="3" style="width:100%;"><?php echo esc_textarea($audit_content);?></textarea>
+                <label for="clause-no"><?php echo __( 'Clause No: ', 'your-text-domain' );?></label>
+                <input type="text" id="clause-no" value="<?php echo esc_attr($clause_no);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="checkbox" id="is-report-only" <?php echo ($display_on_report_only) ? 'checked' : '';?> />
+                <label for="is-report-only"><?php echo __( 'Display on report only', 'your-text-domain' );?></label>
+                <input type="checkbox" id="is-checkbox" <?php echo ($is_radio_option) ? 'checked' : '';?> />
+                <label for="is-checkbox"><?php echo __( 'Is radio option', 'your-text-domain' );?></label>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_audit_item_dialog_data() {
+            $response = array();
+            $audit_id = sanitize_text_field($_POST['_audit_id']);
+            $response['html_contain'] = $this->display_audit_item_dialog($audit_id);
+            wp_send_json($response);
+        }
+
+        function set_audit_item_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            if( isset($_POST['_audit_id']) ) {
+                $audit_id = sanitize_text_field($_POST['_audit_id']);
+                $clause_no = sanitize_text_field($_POST['_clause_no']);
+                $field_type = sanitize_text_field($_POST['_field_type']);
+                $display_on_report_only = sanitize_text_field($_POST['_display_on_report_only']);
+                $is_radio_option = sanitize_text_field($_POST['_is_radio_option']);
+                $data = array(
+                    'ID'           => $audit_id,
+                    'post_title'   => sanitize_text_field($_POST['_audit_title']),
+                    'post_content' => sanitize_textarea_field($_POST['_audit_content']),
+                );
+                wp_update_post( $data );
+                update_post_meta($audit_id, 'category_id', $category_id);
+                update_post_meta($audit_id, 'clause_no', $clause_no);
+                update_post_meta($audit_id, 'field_type', $field_type);
+                update_post_meta($audit_id, 'display_on_report_only', $display_on_report_only);
+                update_post_meta($audit_id, 'is_radio_option', $is_radio_option);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New clause',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'audit-item',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'category_id', $category_id);
+                update_post_meta( $post_id, 'sorting_key', -1);
+            }
+            $paged = sanitize_text_field($_POST['paged']);
+            $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
+            wp_send_json($response);
+        }
+
+        function del_audit_item_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $paged = sanitize_text_field($_POST['paged']);
+            wp_delete_post($_POST['_audit_id'], true);
+            $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
+            wp_send_json($response);
+        }
+
+        function sort_audit_item_list_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_audit_id_array']) && is_array($_POST['_audit_id_array'])) {
+                $audit_id_array = array_map('absint', $_POST['_audit_id_array']);        
+                foreach ($audit_id_array as $index => $audit_id) {
+                    update_post_meta( $audit_id, 'sorting_key', $index);
+                }
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+
+        function select_audit_item_options($selected_option=0, $category_id=false) {
+            $paged = 0;
+            $query = $this->retrieve_audit_item_list_data($paged, $category_id);
+            $options = '<option value="">Select '.get_the_title($category_id).' audit item</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                if ($field_type=='heading'){
+                    $audit_item = '<b>'.get_the_title().'</b>';
+                } else {
+                    $audit_item = get_the_title().' '.$clause_no;
+                }
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $audit_item . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+        // customer-card
         function register_customer_card_post_type() {
             $labels = array(
                 'menu_name'     => _x('Customer', 'admin menu', 'textdomain'),

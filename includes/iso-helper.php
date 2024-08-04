@@ -132,7 +132,7 @@ function display_social_responsibility() {
 }
 add_shortcode( 'display-social-responsibility', 'display_social_responsibility' ) ;
 
-function display_without_permission() {
+function display_permission_page() {
     //ob_start();
     ?>
     <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>

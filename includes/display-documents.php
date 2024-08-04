@@ -209,7 +209,7 @@ if (!class_exists('display_documents')) {
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <select id="select-category"><?php echo $profiles_class->select_doc_category_option_data($_GET['_category']);?></select>
+                        <select id="select-category"><?php echo $profiles_class->select_doc_category_options($_GET['_category']);?></select>
                     </div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
@@ -390,7 +390,7 @@ if (!class_exists('display_documents')) {
             <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
             <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_option_data($doc_category);?></select>
+            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
             <div id="doc-frame-div" style="display:none;">
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
@@ -1448,7 +1448,7 @@ if (!class_exists('display_documents')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
-            if ($site_title=='iso-helper.com') $category_id = $doc_category;
+            //if ($site_title=='iso-helper.com') $category_id = $doc_category;
 
             $params = array(
                 'doc_id'     => $doc_id,
@@ -1485,6 +1485,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_audit'):
                             $profiles_class = new display_profiles();
+                            $cards_class = new erp_cards();
                             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                             if ($default_value=='_content') {
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
@@ -1501,7 +1502,7 @@ if (!class_exists('display_documents')) {
                             } else {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_audit_item_options($field_value, $category_id);?></select>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>
                                 <?php    
                             }
                             break;
