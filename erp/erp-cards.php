@@ -1909,8 +1909,18 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_department_user_list($department_id=false) {
-            $user_ids = array();
+            $user_ids = array();            
             if ($department_id==false) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    $meta_query_args = array(
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                );
+                $users = get_users(array('meta_query' => $meta_query_args));
                 foreach ($users as $user) {
                     $user_ids[] = $user->ID;
                 }    
