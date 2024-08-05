@@ -116,12 +116,12 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
-                if ($_GET['_select_profile']=='iso-category-migration') echo $cards_class->copy_doc_category_to_iso_category();
+                //if ($_GET['_select_profile']=='iso-category-migration') echo $cards_class->copy_doc_category_to_iso_category();
 
                 $http_client = new http_client();
                 if ($_GET['_select_profile']=='10') echo $http_client->display_http_client_list();
 
-                if ($_GET['_select_profile']=='99') {
+                if ($_GET['_select_profile']=='business-central') {
                     // Example usage
                     $current_user_id = get_current_user_id();
                     $site_id = get_user_meta($current_user_id, 'site_id', true);

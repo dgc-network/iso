@@ -1835,6 +1835,8 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="department-content" rows="3" style="width:100%;"><?php echo esc_html($department_content);?></textarea>
+                <label for="department-members"><?php echo __( '部門成員：', 'your-text-domain' );?></label>
+                <?php echo $this->display_department_user_list($department_id);?>
                 <?php
                 // transaction data vs card key/value
                 $key_pairs = array(
@@ -1900,6 +1902,195 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
+        function display_department_user_list($department_id=false) {
+            $department_user_ids = get_post_meta($department_id, 'department_user_ids', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            ob_start();
+            ?>
+                <fieldset style="margin-top:5px;">
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                        <?php        
+/*                        
+                        $users = get_users(); // Initialize with all users
+                        // If the current user is not an administrator, filter by site_id
+                        if (!current_user_can('administrator')) {
+                            $meta_query_args = array(
+                                array(
+                                    'key'     => 'site_id',
+                                    'value'   => $site_id,
+                                    'compare' => '=',
+                                ),
+                            );
+                            $users = get_users(array('meta_query' => $meta_query_args));
+                        }
+*/                            
+                        // Loop through the users
+                        foreach ($department_user_ids as $user_id) {
+                            $user_data = get_userdata($user_id);
+                            $profiles_class = new display_profiles();
+                            $is_site_admin = $profiles_class->is_site_admin($user_id, $site_id);
+
+                            //$user_site = get_user_meta($user->ID, 'site_id', true);
+                            //$display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+                            ?>
+                            <tr id="edit-department-user-<?php echo $user_id; ?>">
+                                <td style="text-align:center;"><?php echo $user_data->display_name; ?></td>
+                                <td style="text-align:center;"><?php echo $user_data->user_email; ?></td>
+                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="new-department-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                </fieldset>
+                <?php //$this->display_new_user_dialog();?>
+                <div id="department-user-dialog" title="User dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function display_department_user_dialog($user_id=false) {
+            $user_data = get_userdata($user_id);
+            $is_site_admin = $this->is_site_admin($user_id);
+            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+            ob_start();
+            ?>
+            <div id="site-user-dialog-backup">
+            <fieldset>
+                <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
+                <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
+                <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th></th>
+                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $query = $this->retrieve_site_job_list_data(0);
+                            if ($query->have_posts()) {
+                                while ($query->have_posts()) : $query->the_post();
+                                    $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
+                                    $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                                    echo '<tr id="check-user-job-' . get_the_ID() . '">';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                    echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
+                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                    echo '</tr>';
+                                endwhile;
+                                wp_reset_postdata();
+                            }        
+                            ?>
+                        </tbody>
+                    </table>
+                </fieldset>
+                <?php
+                if (current_user_can('administrator')) {
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    ?>
+                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
+                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                    <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                    }
+                    echo '</select>';
+                }
+                ?>
+                <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
+                <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+
+            </fieldset>
+            </div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_department_user_dialog_data() {
+            $response = array();
+            if (isset($_POST['_user_id'])) {
+                $user_id = (int)$_POST['_user_id'];
+                $response = array('html_contain' => $this->display_site_user_dialog($user_id));
+            }
+            wp_send_json($response);
+        }
+
+        function set_department_user_dialog_data() {
+            $response = array();            
+            if (isset($_POST['_user_id'])) {
+                $user_id = absint($_POST['_user_id']);
+                $current_user = array(
+                    'ID'           => $user_id,
+                    'display_name' => sanitize_text_field($_POST['_display_name']),
+                    'user_email'   => sanitize_email($_POST['_user_email']),
+                );        
+                // Update user data
+                $result = wp_update_user($current_user);
+
+                if (is_wp_error($result)) {
+                    $response['error'] = $result->get_error_message();
+                } else {
+                    // Update user meta
+                    $is_site_admin = sanitize_text_field($_POST['_is_site_admin']);
+                    update_user_meta($user_id, 'site_id', sanitize_text_field($_POST['_select_site']));
+                    $this->set_site_admin_data($user_id, $is_site_admin);
+                    $response = array('success' => true);
+                }
+            }            
+            wp_send_json($response);
+        }
+
+        function del_department_user_dialog_data() {
+            $response = array();
+            if (isset($_POST['_user_id'])) {
+                $user_id = absint($_POST['_user_id']);
+                // Check if the user ID is valid
+                if ($user_id > 0) {
+                    // Attempt to delete the user
+                    $result = wp_delete_user($user_id, true);
+
+                    if (is_wp_error($result)) {
+                        // If an error occurs while deleting the user, set the error message in the response
+                        $response['error'] = $result->get_error_message();
+                    } else {
+                        // If the user is successfully deleted, set success to true in the response
+                        $response = array('success' => true);
+                    }
+                } else {
+                    // If the provided user ID is invalid, set an error message in the response
+                    $response['error'] = 'Invalid user ID provided.';
+                }
+            } else {
+                // If user_id is not provided in the POST request, set an error message in the response
+                $response['error'] = 'User ID is missing in the request.';
+            }
+            wp_send_json($response);
+        }
+
+        // employees
         function select_multiple_employees_options($selected_options = array()) {
             if (!is_array($selected_options)) {
                 $selected_options = array();
