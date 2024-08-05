@@ -1910,12 +1910,12 @@ if (!class_exists('erp_cards')) {
 
         function display_department_user_list($department_id=false) {
             $user_ids = array();
-            if ($department_id) {
-                $user_ids = get_post_meta($department_id, 'user_ids', true);
-            } else {
+            if ($department_id==false) {
                 foreach ($users as $user) {
                     $user_ids[] = $user->ID;
                 }    
+            } else {
+                $user_ids = get_post_meta($department_id, 'user_ids', true);
             }
             ob_start();
             ?>
