@@ -1186,26 +1186,28 @@ jQuery(document).ready(function($) {
                     $("#department-user-dialog").html(response.html_contain);
                     $("#department-user-dialog").dialog('open');
                     $('[id^="edit-department-user-"]').on("click", function () {
-                        const user_id = this.id.substring(21);
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'add_department_user_dialog_data',
-                                '_department_id': $("#department-id").val(),
-                                '_user_id': user_id,
-                            },
-                            success: function (response) {
-                                $("#department-user-dialog").dialog('close');
-                                $("#department-user-list").html(response.html_contain);
-                                activate_department_user_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
+                        if (window.confirm("Are you sure you want to add this user?")) {
+                            const user_id = this.id.substring(21);
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'add_department_user_dialog_data',
+                                    '_department_id': $("#department-id").val(),
+                                    '_user_id': user_id,
+                                },
+                                success: function (response) {
+                                    $("#department-user-dialog").dialog('close');
+                                    $("#department-user-list").html(response.html_contain);
+                                    activate_department_user_list_data();
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
                     });                        
                 },
                 error: function (error) {
@@ -1216,25 +1218,27 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-department-user-"]').on("click", function () {
-            const user_id = this.id.substring(21);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'del_department_user_dialog_data',
-                    '_department_id': $("#department-id").val(),
-                    '_user_id': user_id,
-                },
-                success: function (response) {
-                    $("#department-user-list").html(response.html_contain);
-                    activate_department_user_list_data();
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
+            if (window.confirm("Are you sure you want to delete this user?")) {
+                const user_id = this.id.substring(21);
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_department_user_dialog_data',
+                        '_department_id': $("#department-id").val(),
+                        '_user_id': user_id,
+                    },
+                    success: function (response) {
+                        $("#department-user-list").html(response.html_contain);
+                        activate_department_user_list_data();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
         });
 
         $("#department-user-dialog").dialog({
