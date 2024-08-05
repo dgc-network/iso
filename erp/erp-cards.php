@@ -1909,6 +1909,14 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_department_user_list($department_id=false) {
+            $user_ids = array();
+            if ($department_id) {
+                $user_ids = get_post_meta($department_id, 'user_ids', true);
+            } else {
+                foreach ($users as $user) {
+                    $user_ids[] = $user->ID;
+                }    
+            }
             ob_start();
             ?>
             <div id="department-user-list">
@@ -1920,14 +1928,6 @@ if (!class_exists('erp_cards')) {
                         </thead>
                         <tbody>
                         <?php
-                        $user_ids = array();
-                        if ($department_id) {
-                            $user_ids = get_post_meta($department_id, 'user_ids', true);
-                        } else {
-                            foreach ($users as $user) {
-                                $user_ids[] = $user->ID;
-                            }    
-                        }
                         foreach ($user_ids as $user_id) {
                             $user_data = get_userdata($user_id);
                             ?>
@@ -1989,6 +1989,8 @@ if (!class_exists('erp_cards')) {
                 $response['message'] = 'Invalid user ID or department ID.';
             }
         
+            $department_id = absint($_POST['_department_id']);
+            $response = array('html_contain' => $this->display_department_user_list($department_id));
             wp_send_json($response);
         }
 
@@ -2027,6 +2029,8 @@ if (!class_exists('erp_cards')) {
                 $response['message'] = 'Invalid user ID or department ID.';
             }
         
+            $department_id = absint($_POST['_department_id']);
+            $response = array('html_contain' => $this->display_department_user_list($department_id));
             wp_send_json($response);
         }
         
