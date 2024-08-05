@@ -1056,6 +1056,28 @@ if (!class_exists('display_documents')) {
             wp_send_json($result);
         }
         
+        function update_doc_report_dialog_data($report_id=false, $field_id=false) {
+            $field_type = get_post_meta($field_id, 'field_type', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $field_name = get_post_meta($field_id, 'field_name', true);
+            $field_value = $_POST[$field_name];
+            update_post_meta( $report_id, $field_name, $field_value);
+            if ($field_type=='_audit' && $default_value=='_plan'){
+                // save the iso-category, generate the audit-items
+                $cards_class = new erp_cards();
+                $audit_item_ids = $cards_class->get_audit_item_id_by_category($field_value);
+                $field_name .= $default_value;
+                $field_value = $_POST[$field_name];
+                update_post_meta( $report_id, $field_name, $field_value);
+            }
+            if ($field_type=='_audit' && $default_value=='_content'){
+                $field_name .= $default_value;
+                $field_value = $_POST[$field_name];
+                update_post_meta( $report_id, $field_name, $field_value);
+            }
+
+        }
+        
         function set_doc_report_dialog_data() {
             if( isset($_POST['_report_id']) ) {
                 // Update the post
@@ -1067,16 +1089,27 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
+                        $this->update_doc_report_dialog_data($report_id, get_the_ID());
+/*
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $field_value = $_POST[$field_name];
                         update_post_meta( $report_id, $field_name, $field_value);
+                        if ($field_type=='_audit' && $default_value=='_plan'){
+                            // save the iso-category, generate the audit-items
+                            $cards_class = new erp_cards();
+                            $audit_item_ids = $cards_class->get_audit_item_id_by_category($field_value);
+                            $field_name .= $default_value;
+                            $field_value = $_POST[$field_name];
+                            update_post_meta( $report_id, $field_name, $field_value);
+                        }
                         if ($field_type=='_audit' && $default_value=='_content'){
                             $field_name .= $default_value;
                             $field_value = $_POST[$field_name];
                             update_post_meta( $report_id, $field_name, $field_value);
                         }
+*/
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1499,7 +1532,7 @@ if (!class_exists('display_documents')) {
 */                                
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options();?></select>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } elseif ($default_value=='_content'){
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />

@@ -146,20 +146,6 @@ if (!class_exists('erp_cards')) {
         
                         // Map the old parent_category value to the new iso-category post ID
                         $category_mapping[$current_post_id] = $new_post_id;
-/*
-                        $parent_category = get_post_meta($current_post_id, 'parent_category', true);
-
-                        $current_user_id = get_current_user_id();
-                        $site_id = get_user_meta($current_user_id, 'site_id', true);
-                        $site_title = get_the_title($site_id);
-                        if ($site_title=='iso-helper.com') $parent_category = $current_post_id;
-            
-                        if ($parent_category) {
-                            $category_mapping[$parent_category] = $new_post_id;
-                        }
-
-                        update_post_meta(get_the_ID(), 'parent_category', $new_post_id);
-*/
                     }
                 }
         
@@ -183,76 +169,6 @@ if (!class_exists('erp_cards')) {
             }
         }
         
-        // Hook the function to a WordPress action or call it directly for one-time use
-        //add_action('admin_init', 'copy_doc_category_to_iso_category');
-        // Or call the function directly for one-time use
-        // copy_doc_category_to_iso_category();
-/*        
-        function copy_doc_category_to_iso_category() {
-            // Define the categories to match
-            $parent_categories = array('economic-growth', 'environmental-protection', 'social-responsibility');
-        
-            // Retrieve the posts of type 'doc-category' with the specified 'parent-category' meta values
-            $args = array(
-                'post_type'      => 'doc-category',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'parent_category',
-                        'value'   => $parent_categories,
-                        'compare' => 'IN',
-                    ),
-                ),
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the current post ID and data
-                    $current_post_id = get_the_ID();
-                    $current_post    = get_post($current_post_id);
-        
-                    // Prepare the new post data
-                    $new_post = array(
-                        'post_title'    => $current_post->post_title,
-                        'post_content'  => $current_post->post_content,
-                        'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
-                        'post_author'   => $current_post->post_author,
-                        'post_type'     => 'iso-category',
-                        'post_date'     => $current_post->post_date,
-                        'post_date_gmt' => $current_post->post_date_gmt,
-                    );
-        
-                    // Insert the new post and get the new post ID
-                    $new_post_id = wp_insert_post($new_post);
-        
-                    if ($new_post_id) {
-                        // Get all meta data for the current post
-                        $post_meta = get_post_meta($current_post_id);
-        
-                        // Copy each meta field to the new post
-                        foreach ($post_meta as $meta_key => $meta_values) {
-                            foreach ($meta_values as $meta_value) {
-                                add_post_meta($new_post_id, $meta_key, $meta_value);
-                            }
-                        }
-                    }
-                }
-        
-                // Reset post data
-                wp_reset_postdata();
-            }
-        }
-        
-        // Hook the function to a WordPress action or call it directly for one-time use
-        //add_action('admin_init', 'copy_doc_category_to_iso_document');
-        // Or call the function directly for one-time use
-        // copy_doc_category_to_iso_document();
-*/        
-
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
@@ -412,41 +328,12 @@ if (!class_exists('erp_cards')) {
 
         function select_parent_category_options($selected_option=0) {
             $options = '<option value="">Select category</option>';
-/*
-            $args = array(
-                'post_type'      => 'iso-category',
-                'posts_per_page' => -1,        
-                'meta_query'     => array(
-                    'relation' => 'OR',
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'economic-growth',
-                    ),
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'environmental-protection',
-                    ),
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'social-responsibility',
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-*/            
-            //if (current_user_can('administrator')) {
-                $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
-                $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
-                $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
-                $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
-            //}
+            $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
+            $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
+            $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
+            $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
             return $options;
         }
 
@@ -691,6 +578,42 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
+        function get_audit_item_id_by_category($field_value) {
+            $args = array(
+                'post_type'  => 'audit-items',
+                'meta_query' => array(
+                    array(
+                        'key'   => 'category-id',
+                        'value' => $field_value,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only retrieve the post IDs
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Retrieve the post IDs
+            $post_ids = $query->posts;
+        
+            wp_reset_postdata();
+        
+            return $post_ids;
+        }
+/*        
+        // Usage
+        $field_value = 'your_category_value';
+        $audit_item_ids = get_audit_item_id_by_category($field_value);
+        
+        // Print the audit item IDs
+        if (!empty($audit_item_ids)) {
+            foreach ($audit_item_ids as $audit_item_id) {
+                echo 'Audit Item ID: ' . $audit_item_id . '<br>';
+            }
+        } else {
+            echo 'No audit items found for the given category-id.';
+        }
+*/        
         // customer-card
         function register_customer_card_post_type() {
             $labels = array(

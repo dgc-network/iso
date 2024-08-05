@@ -140,169 +140,6 @@ if (!class_exists('to_do_list')) {
             <?php
         }
         
-        // Register action post type
-        function register_action_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Actions', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'action', $args );
-        }
-        
-        function display_job_authorization() {
-            ?>
-            <div class="ui-widget" id="result-container">
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo(1);?></div>
-                    <div style="text-align: right">
-                        <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
-                    </div>
-                </div>
-
-                <fieldset>
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_job_authorization_data($paged);
-                    $total_posts = $query->found_posts;
-                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $doc_id = get_the_ID();
-                            $job_title = get_the_title();
-                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                            if ($job_number) $job_title .= '('.$job_number.')';
-
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            if ($doc_number) $doc_title .= '('.$doc_number.')';
-
-                            $profiles_class = new display_profiles();
-                            $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
-
-                            $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-                            $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-                            if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
-                            ?>
-                            <tr id="edit-todo-<?php echo $doc_id; ?>">
-                                <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
-                                <td><?php echo esc_html($doc_title); ?></td>
-                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
-                            </tr>
-                            <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                <?php
-                    // Display pagination links
-                    echo '<div class="pagination">';
-                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                    echo '</div>';
-                ?>
-                </fieldset>
-            </div>
-            <?php
-        }
-
-        function retrieve_job_authorization_data($paged = 1){
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-
-            $search_query = sanitize_text_field($_GET['_search']);        
-            if ($search_query) $paged = 1;
-
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_key'       => 'job_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',
-                    ),
-                    array(
-                        'key'     => 'doc_number',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'relation' => 'OR',
-                        array(
-                            'key'     => 'todo_status',
-                            'compare' => 'NOT EXISTS',
-                        ),
-                        array(
-                            'key'     => 'todo_status',
-                            'value'   => -2,
-                            'compare' => '=',
-                        ),
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'todo_status',
-                                'value'   => -1,
-                                'compare' => '=',
-                            ),
-                            array(
-                                'key'     => 'is_doc_report',
-                                'value'   => 1,
-                                'compare' => '=',
-                            ),
-                        ),
-                    ),
-                ),
-            );
-
-            if (!$is_site_admin) {
-                $args['post__in'] = $user_doc_ids; // Array of document post IDs
-            }
-
-            // Add meta query for searching across all meta keys
-            $document_meta_keys = get_post_type_meta_keys('document');
-            $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($document_meta_keys as $meta_key) {
-                $meta_query_all_keys[] = array(
-                    'key'     => $meta_key,
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                );
-            }            
-            $args['meta_query'][] = $meta_query_all_keys;
-
-            $query = new WP_Query($args);
-
-            return $query;
-        }
-
         function display_todo_list() {
             ?>
             <div class="ui-widget" id="result-container">
@@ -387,48 +224,6 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function is_todo_authorized($todo_id=false) {
-            $query = $this->retrieve_todo_action_list_data($todo_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $profiles_class = new display_profiles();
-                    if ($profiles_class->is_action_authorized(get_the_ID())) return true;
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return false;
-        }
-
-        function get_documents_with_conditions() {
-            $current_user_id = get_current_user_id();
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array(); // Ensure $user_doc_ids is an array                
-            }
-        
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'todo_status',
-                        'value'   => $user_doc_ids,
-                        'compare' => 'IN',
-                    ),
-                ),
-                'fields' => 'ids', // Only get post IDs
-            );
-            // Perform the second query to get documents filtered by todo_status
-            $query = new WP_Query($args);
-        
-            // Fetch the final set of document IDs
-            $document_ids = $query->posts;
-        
-            // Return the array of filtered document IDs
-            return $document_ids;
-        }
-
         function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -457,7 +252,7 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
-            $document_ids = $this->get_documents_with_conditions();
+            $document_ids = $this->get_document_ids();
 
             if (!$is_site_admin) {
                 // Initialize the meta_query array
@@ -619,6 +414,199 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
         
+        // job-authorization
+        function display_job_authorization() {
+            ?>
+            <div class="ui-widget" id="result-container">
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
+
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div><?php $this->display_select_todo(1);?></div>
+                    <div style="text-align: right">
+                        <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
+                    </div>
+                </div>
+
+                <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_job_authorization_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $doc_id = get_the_ID();
+                            $job_title = get_the_title();
+                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                            if ($job_number) $job_title .= '('.$job_number.')';
+
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            if ($doc_number) $doc_title .= '('.$doc_number.')';
+
+                            $profiles_class = new display_profiles();
+                            $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
+
+                            $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+                            $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
+                            if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
+                            ?>
+                            <tr id="edit-todo-<?php echo $doc_id; ?>">
+                                <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
+                                <td><?php echo esc_html($doc_title); ?></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
+                            </tr>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php
+                    // Display pagination links
+                    echo '<div class="pagination">';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    echo '</div>';
+                ?>
+                </fieldset>
+            </div>
+            <?php
+        }
+
+        function retrieve_job_authorization_data($paged = 1){
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+
+            $search_query = sanitize_text_field($_GET['_search']);        
+            if ($search_query) $paged = 1;
+
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_key'       => 'job_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                    array(
+                        'key'     => 'doc_number',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'todo_status',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'todo_status',
+                            'value'   => -2,
+                            'compare' => '=',
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'todo_status',
+                                'value'   => -1,
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'is_doc_report',
+                                'value'   => 1,
+                                'compare' => '=',
+                            ),
+                        ),
+                    ),
+                ),
+            );
+
+            if (!$is_site_admin) {
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+            }
+
+            // Add meta query for searching across all meta keys
+            $document_meta_keys = get_post_type_meta_keys('document');
+            $meta_query_all_keys = array('relation' => 'OR');
+            foreach ($document_meta_keys as $meta_key) {
+                $meta_query_all_keys[] = array(
+                    'key'     => $meta_key,
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                );
+            }            
+            $args['meta_query'][] = $meta_query_all_keys;
+
+            $query = new WP_Query($args);
+
+            return $query;
+        }
+        
+        function is_todo_authorized($todo_id=false) {
+            $query = $this->retrieve_todo_action_list_data($todo_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $profiles_class = new display_profiles();
+                    if ($profiles_class->is_action_authorized(get_the_ID())) return true;
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return false;
+        }
+
+        function get_document_ids() {
+            $current_user_id = get_current_user_id();
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+        
+            if (!is_array($user_doc_ids)) {
+                $user_doc_ids = array(); // Ensure $user_doc_ids is an array                
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'todo_status',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    ),
+                ),
+                'fields' => 'ids', // Only get post IDs
+            );
+            // Perform the second query to get documents filtered by todo_status
+            $query = new WP_Query($args);
+        
+            // Fetch the final set of document IDs
+            $document_ids = $query->posts;
+        
+            // Return the array of filtered document IDs
+            return $document_ids;
+        }
+
         // to-do-list misc
         function update_todo_dialog_data($action_id=false, $user_id=false) {
             // action button is clicked
@@ -672,10 +660,14 @@ if (!class_exists('to_do_list')) {
                 $query = $documents_class->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
+                        $documents_class->update_doc_report_dialog_data($new_report_id, get_the_ID());
+/*
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        //$field_value = sanitize_text_field($_POST[$field_name]);
                         $field_value = $_POST[$field_name];
                         update_post_meta( $new_report_id, $field_name, $field_value);
+*/
                     endwhile;
                     wp_reset_postdata();
                 }            
@@ -880,6 +872,19 @@ if (!class_exists('to_do_list')) {
             }    
         }
 
+        // Register action post type
+        function register_action_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Actions', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+                'show_in_menu'  => false,
+            );
+            register_post_type( 'action', $args );
+        }
+
         function retrieve_todo_action_list_data($todo_id=0) {
             $args = array(
                 'post_type'      => 'action',
@@ -1044,7 +1049,7 @@ if (!class_exists('to_do_list')) {
             $selected = ($selected_option === "yearly") ? 'selected' : '';
             $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "half-yearly") ? 'selected' : '';
-            //$options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
+            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "bimonthly") ? 'selected' : '';
             $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "weekly") ? 'selected' : '';
@@ -1092,13 +1097,15 @@ if (!class_exists('to_do_list')) {
                     break;
                 case 'bimonthly':
                     // Calculate timestamp for next occurrence (every 2 months)
-                    $next_occurrence = strtotime('+2 months', $start_time);
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    //$next_occurrence = strtotime('+2 months', $start_time);
+                    //wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
                     break;
                 case 'half-yearly':
                     // Calculate timestamp for next occurrence (every 6 months)
-                    $next_occurrence = strtotime('+6 months', $start_time);
-                    wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    //$next_occurrence = strtotime('+6 months', $start_time);
+                    //wp_schedule_single_event($next_occurrence, $hook_name, array($args));
+                    wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
                     break;
                 case 'yearly':
                     // Use a custom interval for yearly scheduling
@@ -1125,13 +1132,38 @@ if (!class_exists('to_do_list')) {
                 'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
                 'display'  => __('Monthly'),
             );
+            $schedules['bimonthly'] = array(
+                'interval' => 60.5 * DAY_IN_SECONDS, // Approximate monthly interval
+                'display'  => __('Every Two Months'),
+            );
+            $schedules['half_yearly'] = array(
+                'interval' => 182.5 * DAY_IN_SECONDS, // Approximate half-year interval
+                'display'  => __('Every Six Months'),
+            );
             $schedules['yearly'] = array(
                 'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
                 'display'  => __('Yearly'),
             );
             return $schedules;
         }
-
+        //add_filter('cron_schedules', 'iso_helper_cron_schedules');
+/*        
+        function iso_helper_cron_schedules($schedules) {
+            $schedules['biweekly'] = array(
+                'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
+                'display'  => __('Every Two Weeks'),
+            );
+            $schedules['monthly'] = array(
+                'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
+                'display'  => __('Monthly'),
+            );
+            $schedules['yearly'] = array(
+                'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
+                'display'  => __('Yearly'),
+            );
+            return $schedules;
+        }
+*/
         // Method for the callback function
         public function iso_helper_post_event_callback($params) {
             $this->update_next_todo_and_actions($params);
@@ -1207,7 +1239,7 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to display this.';
             }
         }
-
+/*
         public function scheduler_event_test_code() {
             $new_post = array(
                 'post_title'    => time(),
@@ -1218,7 +1250,7 @@ if (!class_exists('to_do_list')) {
             );    
             $post_id = wp_insert_post($new_post);
         }
-
+*/
         public function process_authorized_action_posts_daily() {
             // process the todo-list first
             $args = array(
@@ -1312,7 +1344,7 @@ if (!class_exists('to_do_list')) {
             }
 
         }
-    
+/*    
         public function get_todo_action_id_by_job_action_id($action_id) {
             $args = array(
                 'post_type'      => 'action',
@@ -1334,6 +1366,7 @@ if (!class_exists('to_do_list')) {
     
             return false; // Return false if no matching post is found
         }
+*/            
     }
     $todo_class = new to_do_list();
 }
