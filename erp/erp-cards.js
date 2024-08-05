@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
     // doc-category scripts
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
-/*        
+
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-*/
+
         $("#new-iso-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -1109,6 +1109,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#department-card-dialog").html(response.html_contain);
                     $("#department-card-dialog").dialog('open');
+                    activate_department_user_list_data();
                 },
                 error: function (error) {
                     console.error(error);
@@ -1171,5 +1172,75 @@ jQuery(document).ready(function($) {
         });    
     }
 
+    // department-user scripts
+    function activate_department_user_list_data(){
+        $("#new-department-user").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_department_user_list_data',
+                },
+                success: function (response) {
+                    $("#department-user-dialog").html(response.html_contain);
+                    $("#department-user-dialog").dialog('open');
+                    $('[id^="edit-department-user-"]').on("click", function () {
+                        const user_id = this.id.substring(21);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'add_department_user_dialog_data',
+                                '_department_id': $("#department-id").val(),
+                                '_user_id': user_id,
+                            },
+                            success: function (response) {
+                                $("#department-user-dialog").dialog('close');
+                                $("#department-user-list").html(response.html_contain);
+                                activate_department_user_list_data();
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    });                        
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
     
+        $('[id^="edit-department-user-"]').on("click", function () {
+            const user_id = this.id.substring(21);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'del_department_user_dialog_data',
+                    '_department_id': $("#department-id").val(),
+                    '_user_id': user_id,
+                },
+                success: function (response) {
+                    $("#department-user-list").html(response.html_contain);
+                    activate_department_user_list_data();
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#department-user-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+        });    
+    }    
 });
