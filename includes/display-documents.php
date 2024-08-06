@@ -1079,7 +1079,7 @@ if (!class_exists('display_documents')) {
                 'post_type'  => 'audit-item',
                 'meta_query' => array(
                     array(
-                        'key'   => 'category-id',
+                        'key'   => 'category_id',
                         'value' => $category_id,
                         'compare' => '='
                     )
