@@ -1775,28 +1775,7 @@ if (!class_exists('display_documents')) {
         
             return $total_posts;
         }
-/*        
-        function get_doc_count_by_category($iso_category_id){
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'doc_category',
-                        'value'   => $doc_category_id,
-                        'compare' => '=',
-                    ),
-                ),
-            );    
-            $query = new WP_Query($args);    
-            $total_posts = $query->found_posts;
-            return $total_posts;
-        }
-*/        
+
         function display_audit_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
@@ -1816,7 +1795,7 @@ if (!class_exists('display_documents')) {
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                             $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $category_id.$clause_no.$sorting_key);
+                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'clause'.$site_id.$category_id.$clause_no.$sorting_key);
                             $field_value = get_post_meta($site_id, $field_key, true);
                             if ($field_type=='heading') echo '<div><b>'.get_the_title().'</b></div>';
                             if ($field_type=='text') {
@@ -1825,8 +1804,8 @@ if (!class_exists('display_documents')) {
                             }
                             if ($field_type=='textarea') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
-                                //echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
-                                echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
+                                echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
+                                //echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
                             }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
@@ -1849,8 +1828,8 @@ if (!class_exists('display_documents')) {
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
         
-            if (isset($_POST['_doc_category_id'])) {
-                $doc_category = sanitize_text_field($_POST['_doc_category_id']);
+            if (isset($_POST['_iso_category_id'])) {
+                $iso_category = sanitize_text_field($_POST['_iso_category_id']);
                 $is_duplicated = sanitize_text_field($_POST['_is_duplicated']);
                 if ($is_duplicated) {
                     $args = array(

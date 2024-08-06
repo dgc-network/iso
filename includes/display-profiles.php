@@ -661,6 +661,32 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
                 update_post_meta($site_id, 'contact_number', sanitize_text_field($_POST['_contact_number']) );
                 $response = array('success' => true);
+
+                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
+                    $keyValuePairs = $_POST['_keyValuePairs'];
+                    $processedKeyValuePairs = [];
+                
+                    foreach ($keyValuePairs as $pair) {
+                        foreach ($pair as $field_key => $field_value) {
+                            // Sanitize the key and value
+                            $field_key = sanitize_text_field($field_key);
+                            $field_value = sanitize_text_field($field_value);
+                
+                            // Update post meta
+                            update_post_meta($site_id, $field_key, $field_value);
+                
+                            // Add the sanitized pair to the processed array
+                            $processedKeyValuePairs[$field_key] = $field_value;
+                        }
+                    }
+                
+                    // Prepare the response
+                    $response = array('success' => true, 'data' => $processedKeyValuePairs);
+                } else {
+                    // Handle the error case
+                    $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
+                }
+
             } else {
                 // Set up the new post data
                 $current_user_id = get_current_user_id();
@@ -708,13 +734,62 @@ if (!class_exists('display_profiles')) {
                 $query = $cards_class->retrieve_audit_item_list_data($paged, $category_id);
                 if ($query->have_posts()) {
                     echo get_the_title($category_id).__( '稽核項目：', 'your-text-domain' );
-                    echo $documents_class->display_audit_item_list_with_inputs($category_id);
+                    //echo $documents_class->display_audit_item_list_with_inputs($category_id);
+                    echo $this->display_audit_item_list_with_inputs($category_id);
                 }
-            }
-            
+            }            
             return ob_get_clean();
         }
 
+        function display_audit_item_list_with_inputs($category_id){
+            $cards_class = new erp_cards();
+            $profiles_class = new display_profiles();
+            //$is_site_admin = $profiles_class->is_site_admin();
+            $is_site_admin = $this->is_site_admin();
+            if ($is_site_admin || current_user_can('administrator')) {
+                ob_start();
+                ?>
+                <fieldset>
+                    <?php
+                    $current_user_id = get_current_user_id();
+                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    $display_on_report_only = false;
+                    $paged = 0;
+                    $query = $cards_class->retrieve_audit_item_list_data($paged, $category_id, $display_on_report_only);
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                            $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
+                            $field_value = get_post_meta($site_id, $field_key, true);
+                            if ($field_type=='heading') echo '<div><b>'.get_the_title().'</b></div>';
+                            if ($field_type=='text') {
+                                echo '<li>'.get_the_title().' '.$clause_no.'</li>';
+                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
+                            }
+                            if ($field_type=='textarea') {
+                                echo '<li>'.get_the_title().' '.$clause_no.'</li>';
+                                //echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
+                                echo '<div>受稽單位：<select data-key="'.$field_key.'">'.$cards_class->select_department_card_options($field_value).'</select></div>';
+                            }
+                            if ($field_type=='radio') {
+                                $checked = ($field_value==1) ? 'checked' : '';                                
+                                echo '<br><input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.get_the_title();
+                            }
+                        endwhile;                
+                        wp_reset_postdata();
+                    }
+                    ?>
+                </fieldset>
+                <?php
+                return ob_get_clean();
+    
+            } else {
+                return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
+            }
+        }
+        
         function display_site_user_list() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);

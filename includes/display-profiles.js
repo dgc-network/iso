@@ -306,6 +306,32 @@ jQuery(document).ready(function($) {
         });
         
         $("#site-profile-submit").on("click", function () {
+            // Initialize an empty array to store the key-value pairs
+            const keyValuePairs = [];
+
+            // Select all elements with the specified class and iterate over them
+            $('.your-class-name').each(function() {
+                // Get the key from the data attribute
+                const key = $(this).data('key');
+                
+                let value;
+                
+                // Check if the element is a checkbox or radio button
+                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                    // Set the value to 1 if checked, otherwise set it to 0
+                    value = $(this).is(':checked') ? 1 : 0;
+                } else {
+                    // Get the value (for input elements) or text content (for others)
+                    value = $(this).val() || $(this).text();
+                }
+            
+                // Add the key-value pair to the array
+                keyValuePairs.push({ [key]: value });
+            });
+            
+            // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
+            console.log(keyValuePairs);
+    
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -315,6 +341,7 @@ jQuery(document).ready(function($) {
                     '_site_id': $("#site-id").val(),
                     '_site_title': $("#site-title").val(),
                     '_image_url': $("#image-url").val(),
+                    _keyValuePairs : keyValuePairs,
                     '_organization_number': $("#organization-number").val(),
                     '_organization_address': $("#organization-address").val(),
                     '_number_of_people': $("#number-of-people").val(),
