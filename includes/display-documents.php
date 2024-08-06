@@ -1066,16 +1066,16 @@ if (!class_exists('display_documents')) {
                 // save the iso-category, generate the audit-items
                 $cards_class = new erp_cards();
                 $audit_item_ids = $cards_class->get_audit_item_id_by_category($field_value);
-                $field_name .= $default_value;
-                $field_value = $_POST[$field_name];
-                update_post_meta( $report_id, $field_name, $field_value);
+                //$field_name .= $default_value;
+                //$field_value = $_POST[$field_name];
+                //update_post_meta( $report_id, $field_name, $field_value);
+                update_post_meta( $report_id, '_audit_plan', $audit_item_ids);
             }
             if ($field_type=='_audit' && $default_value=='_content'){
                 $field_name .= $default_value;
                 $field_value = $_POST[$field_name];
                 update_post_meta( $report_id, $field_name, $field_value);
             }
-
         }
         
         function set_doc_report_dialog_data() {
