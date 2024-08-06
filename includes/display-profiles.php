@@ -1709,14 +1709,14 @@ if (!class_exists('display_profiles')) {
                         <thead>
                             <th><?php echo __( 'Category', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
                         $query = $this->retrieve_doc_category_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+                                //$category_url = get_post_meta(get_the_ID(), 'category_url', true);
                                 $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
                                 ?>
                                 <tr id="edit-doc-category-<?php the_ID();?>">
@@ -1772,19 +1772,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <?php
-/*
-                if (current_user_can('administrator')) {                    
-                    ?>
-                    <label for="audit-item-list"><?php echo __( 'Audit items: ', 'your-text-domain' );?></label>
-                    <?php echo $this->display_audit_item_list($paged, $category_id);?>
-                    <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
-                    <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
-                    <?php
-                }
-*/                
-                ?>
-                <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
+                <label for="parent-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($parent_category);?></select>
             </fieldset>
             <?php
@@ -1845,45 +1833,6 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
-/*
-        function select_parent_category_options($selected_option=0) {
-            $args = array(
-                'post_type'      => 'doc-category',
-                'posts_per_page' => -1,        
-                'meta_query'     => array(
-                    'relation' => 'OR',
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'economic-growth',
-                    ),
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'environmental-protection',
-                    ),
-                    array(
-                        'key'   => 'parent_category',
-                        'value' => 'social-responsibility',
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            $options = '<option value="">Select category</option>';
-            while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            if (current_user_can('administrator')) {
-                $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
-                $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
-                $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
-                $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
-                $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
-            }
-            return $options;
-        }
-*/            
     }
     $profiles_class = new display_profiles();
 }

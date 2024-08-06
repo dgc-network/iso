@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    // doc-category scripts
+    // iso-category scripts
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
 

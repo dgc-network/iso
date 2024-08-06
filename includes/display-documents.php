@@ -136,7 +136,7 @@ if (!class_exists('display_documents')) {
                     $iso_category_title = get_the_title($iso_category_id);
                     $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
                     ?>
-                    <div class="ui-widget" id="result-container">';
+                    <div class="ui-widget" id="result-container">
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <?php echo display_iso_helper_logo();?>
@@ -1725,10 +1725,12 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function get_doc_count_by_category($iso_category_id) {
+        function get_doc_count_by_category($iso_category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
+            $post = get_page_by_title('iso-helper.com', OBJECT, 'site');
+            $site_id = $post->ID;
+
             // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
             $doc_category_args = array(
                 'post_type'      => 'doc-category',
