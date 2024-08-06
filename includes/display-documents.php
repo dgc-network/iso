@@ -1073,6 +1073,7 @@ if (!class_exists('display_documents')) {
                 // generate the audit-item-ids by iso-category-id & department-id
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
+                update_post_meta($report_id, '_iso_category', $field_value);
             }
             if ($field_type=='_audit' && $default_value=='_content'){
                 $field_name .= $default_value;
@@ -1505,7 +1506,7 @@ if (!class_exists('display_documents')) {
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } elseif ($default_value=='_content'){
-                                if ($report_id) $field_value = get_post_meta($report_id, 'audit_plan', true);                                    
+                                if ($prev_report_id) $field_value = get_post_meta($prev_report_id, 'audit_item', true);                                    
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
                                 //$field_name .= $default_value;
