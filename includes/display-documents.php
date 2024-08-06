@@ -1380,6 +1380,7 @@ if (!class_exists('display_documents')) {
 
         function get_field_default_value($field_id=false) {
             $current_user_id = get_current_user_id();
+            $field_name = get_post_meta($field_id, 'field_name', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
 
             if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
@@ -1490,30 +1491,37 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                             if ($default_value=='_plan') {
-/*                                
-                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
-                                <?php
-                                $field_name .= $default_value;
-                                $field_title = get_the_title($field_value);
-                                $clause_no = get_post_meta($field_value, 'clause_no', true);
-                                $placeholder = get_post_field('post_content', $field_value);
-                                $content_value = get_post_meta($report_id, $field_name, true);
-*/                                
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } elseif ($default_value=='_content'){
+                                if ($report_id) $field_value = get_post_meta($report_id, $field_name.'_plan', true);                                    
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
-                                $field_name .= $default_value;
+                                //$field_name .= $default_value;
                                 $field_title = get_the_title($field_value);
                                 $clause_no = get_post_meta($field_value, 'clause_no', true);
                                 $placeholder = get_post_field('post_content', $field_value);
-                                $content_value = get_post_meta($report_id, $field_name, true);
+                                $content_value = get_post_meta($report_id, $field_name.'_content', true);
                                 ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <textarea id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
+                                <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
+                                <?php
+                            } elseif ($default_value=='_non_compliance'){
+                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
+                                <?php
+                                //$field_name .= $default_value;
+                                $field_title = get_the_title($field_value);
+                                $clause_no = get_post_meta($field_value, 'clause_no', true);
+                                $placeholder = get_post_field('post_content', $field_value);
+                                $content_value = get_post_meta($report_id, $field_name.'_content', true);
+                                $non_compliance_value = get_post_meta($report_id, $field_name.'_non_compliance', true);
+                                ?>
+                                <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
+                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合項目', 'your-text-domain' );?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
                                 <?php
                             } else {
                                 ?>

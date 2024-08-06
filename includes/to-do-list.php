@@ -818,8 +818,8 @@ if (!class_exists('to_do_list')) {
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
         
-            // Try to!! Create the new To-do with audit-items If meta "audit_items_plan" of $prev_report_id is present
-            if ($prev_report_id) $audit_plan_items = get_post_meta($prev_report_id, 'audit_items_plan', true);
+            // Try to!! Create the new To-do with audit-items If meta "audit_item_plan" of $prev_report_id is present
+            if ($prev_report_id) $audit_plan_items = get_post_meta($prev_report_id, 'audit_item_plan', true);
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
