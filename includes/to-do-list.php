@@ -343,7 +343,7 @@ if (!class_exists('to_do_list')) {
                 // doc_report_dialog data
                 $params = array(
                     'doc_id'     => $doc_id,
-                    'report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
+                    'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
                 $documents_class = new display_documents();
                 $documents_class->display_doc_field_contains($params);
@@ -713,7 +713,7 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
             $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
-            $audit_plan_item = isset($args['audit_plan_item']) ? $args['audit_plan_item'] : 0;
+            $audit_plan = isset($args['audit_plan']) ? $args['audit_plan'] : 0;
 
             // Create a new To-do for next_job
             $new_post = array(
@@ -725,7 +725,7 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta( $new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta( $new_todo_id, 'prev_report_id', $prev_report_id );
-            if ($audit_plan_item) update_post_meta( $new_todo_id, 'audit_plan_item', $audit_plan_item );
+            if ($audit_plan) update_post_meta( $new_todo_id, 'audit_plan', $audit_plan );
         
             if ($next_job>0) {
                 update_post_meta( $new_todo_id, 'doc_id', $next_job );
@@ -818,8 +818,8 @@ if (!class_exists('to_do_list')) {
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
         
-            // Try to!! Create the new To-do with audit-items If meta "audit_item_plan" of $prev_report_id is present
-            if ($prev_report_id) $audit_plan_items = get_post_meta($prev_report_id, 'audit_item_plan', true);
+            // Try to!! Create the new To-do with audit-items If meta "audit_item" of $prev_report_id is present
+            if ($prev_report_id) $audit_plan_items = get_post_meta($prev_report_id, 'audit_item', true);
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
@@ -829,8 +829,8 @@ if (!class_exists('to_do_list')) {
                 'next_leadtime' => $next_leadtime,
             );        
             if ($audit_plan_items){
-                foreach ($audit_plan_items as $audit_plan_item) {
-                    $params['audit_plan_item'] = $audit_plan_item;
+                foreach ($audit_plan_items as $audit_plan) {
+                    $params['audit_plan'] = $audit_plan;
                     $this->create_new_todo_for_next_job($params);
                 }
             } else {

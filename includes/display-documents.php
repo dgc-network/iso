@@ -998,7 +998,7 @@ if (!class_exists('display_documents')) {
             <?php
                 $params = array(
                     'doc_id'     => $doc_id,
-                    'report_id'     => $report_id,
+                    'prev_report_id'     => $report_id,
                 );                
                 $this->display_doc_field_contains($params);
             ?>
@@ -1450,7 +1450,7 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_contains($args) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-            $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
+            $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
             $params = array(
@@ -1465,27 +1465,13 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if ($report_id) {
-                        $field_value = get_post_meta($report_id, $field_name, true);
+                    if ($prev_report_id) {
+                        $field_value = get_post_meta($prev_report_id, $field_name, true);
                     } else {
                         $field_value = $this->get_field_default_value(get_the_ID());
                     }
 
                     switch (true) {
-                        case ($field_type=='video'):
-                            echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
-                            $field_value = ($field_value) ? $field_value : get_option('default_video_url');
-                            echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
-                            echo '<textarea class="video-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                            break;
-        
-                        case ($field_type=='image'):
-                            echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
-                            $field_value = ($field_value) ? $field_value : get_option('default_image_url');
-                            echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
-                            echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
-                            break;
-
                         case ($field_type=='_audit'):
                             $profiles_class = new display_profiles();
                             $cards_class = new erp_cards();
@@ -1496,7 +1482,7 @@ if (!class_exists('display_documents')) {
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } elseif ($default_value=='_content'){
-                                if ($report_id) $field_value = get_post_meta($report_id, $field_name.'_plan', true);                                    
+                                if ($report_id) $field_value = get_post_meta($report_id, 'audit_plan', true);                                    
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
                                 //$field_name .= $default_value;
@@ -1595,6 +1581,20 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
             
+                        case ($field_type=='video'):
+                            echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                            $field_value = ($field_value) ? $field_value : get_option('default_video_url');
+                            echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
+                            echo '<textarea class="video-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            break;
+            
+                        case ($field_type=='image'):
+                            echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                            $field_value = ($field_value) ? $field_value : get_option('default_image_url');
+                            echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
+                            echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            break;
+    
                         case ($field_type=='heading'):
                             $default_value = ($default_value) ? $default_value : 'b';
                             ?>
