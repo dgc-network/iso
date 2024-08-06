@@ -1766,7 +1766,7 @@ if (!class_exists('display_documents')) {
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                             $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            if ($field_type=='heading') echo '<h4>'.get_the_title().'</h4>';
+                            if ($field_type=='heading') echo '<div><b>'.get_the_title().'</b></div>';
                             if ($field_type=='text') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
                                 echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
