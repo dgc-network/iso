@@ -679,29 +679,18 @@ if (!class_exists('display_profiles')) {
         }
         
         function display_audit_item_list_in_category() {
-/*            
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-*/            
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
             // Initialize an empty array to hold the parent_category counts
-            $parent_category_summary = array();
-        
+            $parent_category_summary = array();        
             $query = $this->retrieve_doc_category_data();
-            // Check if the query has posts
             if ($query->have_posts()) {
-                // Loop through the posts
                 while ($query->have_posts()) {
                     $query->the_post();
-            
                     // Get the parent_category meta value for the current post
                     $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
-                    //if ($site_title=='iso-helper.com') $parent_category = get_the_ID();
-            
                     if ($parent_category) {
                         // Add the parent category to the summary array if not already added
                         if (!in_array($parent_category, $parent_category_summary)) {
@@ -709,7 +698,6 @@ if (!class_exists('display_profiles')) {
                         }
                     }
                 }        
-                // Reset the post data
                 wp_reset_postdata();
             }
         

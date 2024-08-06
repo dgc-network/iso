@@ -1746,7 +1746,7 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
         
-        function display_audit_item_list_with_inputs($doc_category_id){
+        function display_audit_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
@@ -1759,14 +1759,14 @@ if (!class_exists('display_documents')) {
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $display_on_report_only = false;
                     $paged = 0;
-                    $query = $cards_class->retrieve_audit_item_list_data($paged, $doc_category_id, $display_on_report_only);
+                    $query = $cards_class->retrieve_audit_item_list_data($paged, $category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $doc_category_id.$clause_no);
+                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $category_id.$clause_no);
                             $field_value = get_post_meta($site_id, $field_key, true);
-                            if ($field_type=='heading') echo '<br><b>'.get_the_title().'</b>';
+                            if ($field_type=='heading') echo '<h4>'.get_the_title().'</h4>';
                             if ($field_type=='text') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
                                 echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
@@ -1774,6 +1774,7 @@ if (!class_exists('display_documents')) {
                             if ($field_type=='textarea') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
                                 echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
+                                echo '受稽單位：<select>'.$cards_class->select_department_card_options().'</select>';
                             }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
