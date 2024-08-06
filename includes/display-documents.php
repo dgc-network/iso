@@ -1090,26 +1090,6 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $this->update_doc_report_dialog_data($report_id, get_the_ID());
-/*
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = $_POST[$field_name];
-                        update_post_meta( $report_id, $field_name, $field_value);
-                        if ($field_type=='_audit' && $default_value=='_plan'){
-                            // save the iso-category, generate the audit-items
-                            $cards_class = new erp_cards();
-                            $audit_item_ids = $cards_class->get_audit_item_id_by_category($field_value);
-                            $field_name .= $default_value;
-                            $field_value = $_POST[$field_name];
-                            update_post_meta( $report_id, $field_name, $field_value);
-                        }
-                        if ($field_type=='_audit' && $default_value=='_content'){
-                            $field_name .= $default_value;
-                            $field_value = $_POST[$field_name];
-                            update_post_meta( $report_id, $field_name, $field_value);
-                        }
-*/
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1138,12 +1118,6 @@ if (!class_exists('display_documents')) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                         $default_value = $this->get_field_default_value(get_the_ID());
-/*                        
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        // put the custom function here to support the default value for the new record
-                        if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
-                        if ($default_value=='me') $default_value=array($current_user_id);
-*/                        
                         update_post_meta( $post_id, $field_name, $default_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1478,11 +1452,6 @@ if (!class_exists('display_documents')) {
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$site_title = get_the_title($site_id);
-            //if ($site_title=='iso-helper.com') $category_id = $doc_category;
-
             $params = array(
                 'doc_id'     => $doc_id,
                 'is_editing'  => true,
