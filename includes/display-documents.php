@@ -1058,13 +1058,19 @@ if (!class_exists('display_documents')) {
         }
         
         function update_doc_report_dialog_data($report_id=false, $field_id=false) {
+            // standard field-name
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $field_name = get_post_meta($field_id, 'field_name', true);
             $field_value = $_POST[$field_name];
             update_post_meta($report_id, $field_name, $field_value);
+
+            // additional field-name
+            if ($field_type=='_department'){
+                update_post_meta($report_id, '_department', $field_value);
+            }
             if ($field_type=='_audit' && $default_value=='_plan'){
-                // generate the audit-item-ids and save
+                // generate the audit-item-ids by iso-category-id & department-id
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
             }
@@ -1075,9 +1081,10 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        function get_audit_item_id_by_category($category_id=false) {
+        function get_audit_item_id_by_category($category_id=false, $document_id=false) {
             $args = array(
                 'post_type'  => 'audit-item',
+                'posts_per_page' => -1,
                 'meta_query' => array(
                     array(
                         'key'   => 'category_id',

@@ -738,7 +738,6 @@ if (!class_exists('to_do_list')) {
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
         
             // Try to!! Create the new To-do with audit-items If meta "_audit_plan" of $prev_report_id is present
-            if ($prev_report_id) $audit_ids = get_post_meta($prev_report_id, '_audit_plan', true);
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
@@ -747,8 +746,11 @@ if (!class_exists('to_do_list')) {
                 'next_job' => $next_job,
                 'next_leadtime' => $next_leadtime,
             );        
-            if ($audit_ids){
-                foreach ($audit_ids as $audit_id) {
+            if ($prev_report_id) $audit_ids = get_post_meta($prev_report_id, '_audit_plan', true);
+            if ($prev_report_id) $department_id = get_post_meta($prev_report_id, '_department_id', true);
+            $filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id);
+            if ($filtered_audit_ids){
+                foreach ($filtered_audit_ids as $audit_id) {
                     $params['audit_id'] = $audit_id;
                     $this->create_new_todo_for_next_job($params);
                 }
@@ -826,6 +828,23 @@ if (!class_exists('to_do_list')) {
 */            
         }
 
+        function get_filtered_audit_ids_by_department($audit_ids=array(), $department_id=false) {
+            $filtered_audit_ids = array();
+            foreach ($audit_ids as $audit_id) {
+                $clause_no = get_post_meta($audit_id, 'clause_no', true);
+                $sorting_key = get_post_meta($audit_id, 'sorting_key', true);
+                $field_type = get_post_meta($audit_id, 'field_type', true);
+                $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
+                $field_value = get_post_meta($site_id, $field_key, true);
+            
+                if ($department_id == $field_value) {
+                    $filtered_audit_ids[] = $audit_id;
+                }
+            }            
+            // Now $filtered_audit_ids contains the filtered audit IDs
+            return $filtered_audit_ids;
+        }
+        
         function create_new_todo_for_next_job($args = array()) {
 
             $todo_title = isset($args['todo_title']) ? $args['todo_title'] : 0;
