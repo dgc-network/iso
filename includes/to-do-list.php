@@ -757,75 +757,6 @@ if (!class_exists('to_do_list')) {
             } else {
                 $this->create_new_todo_for_next_job($params);
             }
-/*
-            // Create a new To-do for next_job
-            $new_post = array(
-                'post_title'    => $todo_title,
-                'post_status'   => 'publish',
-                'post_author'   => $user_id,
-                'post_type'     => 'todo',
-            );    
-            $new_todo_id = wp_insert_post($new_post);
-            if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-            update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
-        
-            if ($next_job>0) {
-                update_post_meta($new_todo_id, 'doc_id', $next_job );
-                $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-                if ($todo_id) {
-                    $doc_number = get_post_meta($next_job, 'doc_number', true);
-                    // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
-                    if (empty($doc_number)) {
-                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                        update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                    }
-                }
-            }
-
-            if ($next_job==-1 || $next_job==-2) {
-                update_post_meta($new_todo_id, 'submit_user', $user_id);
-                update_post_meta($new_todo_id, 'submit_action', $action_id);
-                update_post_meta($new_todo_id, 'submit_time', time());
-                if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
-                if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
-                if ($doc_id) update_post_meta($doc_id, 'todo_status', $next_job );
-                // Notice the persons in site
-                $this->notice_the_persons_in_site($new_todo_id, $next_job);
-            }
-        
-            if ($next_job>0) {
-                // Create the new Action list for next_job 
-                $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_doc_action_list_data($next_job);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $new_post = array(
-                            'post_title'    => get_the_title(),
-                            'post_content'  => get_post_field('post_content', get_the_ID()),
-                            'post_status'   => 'publish',
-                            'post_author'   => $user_id,
-                            'post_type'     => 'action',
-                        );    
-                        $new_action_id = wp_insert_post($new_post);
-                        $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
-                        update_post_meta($new_action_id, 'todo_id', $new_todo_id);
-                        update_post_meta($new_action_id, 'next_job', $new_next_job);
-                        update_post_meta($new_action_id, 'next_leadtime', $new_next_leadtime);
-                        update_post_meta($new_action_id, 'doc_action_id', get_the_ID());
-                        
-                        //Update the action_authorized_ids
-                        $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
-                        if ($action_authorized_ids){
-                            update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
-                        }
-                    endwhile;
-                    wp_reset_postdata();
-                }
-                // Notice the persons in charge the job
-                $this->notice_the_responsible_persons($new_todo_id);
-            }
-*/            
         }
 
         function get_filtered_audit_ids_by_department($audit_ids=array(), $department_id=false) {
@@ -865,7 +796,7 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-            if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
+            //if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
         
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
@@ -899,7 +830,8 @@ if (!class_exists('to_do_list')) {
                     while ($query->have_posts()) : $query->the_post();
                         $new_post = array(
                             'post_title'    => get_the_title(),
-                            'post_content'  => get_post_field('post_content', get_the_ID()),
+                            //'post_content'  => get_post_field('post_content', get_the_ID()),
+                            'post_content'  => get_the_content(),
                             'post_status'   => 'publish',
                             'post_author'   => $user_id,
                             'post_type'     => 'action',
