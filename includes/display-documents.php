@@ -1774,7 +1774,7 @@ if (!class_exists('display_documents')) {
                             if ($field_type=='textarea') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
                                 echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
-                                echo '受稽單位：<select>'.$cards_class->select_department_card_options().'</select>';
+                                echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
                             }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
