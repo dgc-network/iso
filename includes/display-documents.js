@@ -910,20 +910,22 @@ jQuery(document).ready(function($) {
     }
     
     function activate_doc_report_dialog_data(response){
+/*        
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
             }
         });
-    
+*/    
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
                 'action': 'set_doc_report_dialog_data',
             };
-            ajaxData['_action_id'] = action_id;
             ajaxData['_report_id'] = $("#report-id").val();
-            ajaxData['_proceed_to_todo'] = $("#proceed-to-todo").is(":checked") ? 1 : 0;
+            ajaxData['_action_id'] = action_id;
+            ajaxData['_proceed_to_todo'] = 1;
+            //ajaxData['_proceed_to_todo'] = $("#proceed-to-todo").is(":checked") ? 1 : 0;
         
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
@@ -933,6 +935,44 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_audit') {
                         ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
+                        ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
+                        ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
+                    }
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: ajaxData,
+                success: function(response) {
+                    get_doc_report_list_data($("#doc-id").val());
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', errorThrown);
+                    alert('AJAX request failed. Please try again.');
+                }
+            });
+        });
+
+        $('[id^="save-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(16);
+            const ajaxData = {
+                'action': 'set_doc_report_dialog_data',
+            };
+            ajaxData['_report_id'] = report_id;
+        
+            $.each(response.doc_fields, function(index, value) {
+                const field_name_tag = '#' + value.field_name;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    if (value.field_type === '_audit') {
+                        ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
+                        ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
+                        ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
                     }
                 }
             });
