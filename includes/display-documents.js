@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
     })
     
     $("#statement-next-step").on("click", function () {
-        doc_category_title = $("#doc-category-title").val();
+        iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
 
         // Initialize an empty array to store the key-value pairs
@@ -55,14 +55,14 @@ jQuery(document).ready(function($) {
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
 
-        if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ doc_category_title+" new documents?")) {
+        if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'set_iso_document_statement',
-                    '_doc_category_id': $("#doc-category-id").val(),
+                    '_iso_category_id': $("#iso-category-id").val(),
                     '_is_duplicated': true,
                     _keyValuePairs : keyValuePairs,
                 },
@@ -82,7 +82,7 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_iso_document_statement',
-                    '_doc_category_id': $("#doc-category-id").val(),
+                    '_iso_category_id': $("#iso-category-id").val(),
                     _keyValuePairs : keyValuePairs,
                 },
                 success: function (response) {

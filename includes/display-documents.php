@@ -132,21 +132,21 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
-                    $doc_category_id = sanitize_text_field($_GET['_statement']);
-                    $doc_category_title = get_the_title($doc_category_id);
-                    $get_doc_count_by_category = $this->get_doc_count_by_category($doc_category_id);
+                    $iso_category_id = sanitize_text_field($_GET['_statement']);
+                    $iso_category_title = get_the_title($iso_category_id);
+                    $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
                     ?>
                     <div class="ui-widget" id="result-container">';
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <?php echo display_iso_helper_logo();?>
-                                <h2 style="display:inline;"><?php echo esc_html($doc_category_title.'適用性聲明書');?></h2>
+                                <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
                             </div>
                         </div>
                         <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
-                        <input type="hidden" id="doc-category-title" value="<?php echo esc_attr($doc_category_title);?>" />
-                        <input type="hidden" id="doc-category-id" value="<?php echo esc_attr($doc_category_id);?>" />            
-                        <?php echo $this->display_audit_item_list_with_inputs($doc_category_id);?>
+                        <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
+                        <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
+                        <?php echo $this->display_audit_item_list_with_inputs($iso_category_id);?>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Save', 'your-text-domain' );?></button>
@@ -1725,7 +1725,56 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function get_doc_count_by_category($doc_category_id){
+        function get_doc_count_by_category($iso_category_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
+            $doc_category_args = array(
+                'post_type'      => 'doc-category',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'parent_category',
+                        'value'   => $iso_category_id,
+                        'compare' => '='
+                    ),
+                ),
+                'fields' => 'ids', // Only get post IDs
+            );
+            $doc_category_query = new WP_Query($doc_category_args);
+            $doc_category_ids = $doc_category_query->posts;
+        
+            // If no "doc-category" posts are found, return 0
+            if (empty($doc_category_ids)) {
+                return 0;
+            }
+        
+            // Retrieve the "document" posts that have "doc_category" meta matching the retrieved IDs
+            $document_args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'doc_category',
+                        'value'   => $doc_category_ids,
+                        'compare' => 'IN',
+                    ),
+                ),
+            );
+            $document_query = new WP_Query($document_args);
+            $total_posts = $document_query->found_posts;
+        
+            return $total_posts;
+        }
+/*        
+        function get_doc_count_by_category($iso_category_id){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
@@ -1745,7 +1794,7 @@ if (!class_exists('display_documents')) {
             $total_posts = $query->found_posts;
             return $total_posts;
         }
-        
+*/        
         function display_audit_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
@@ -1763,8 +1812,9 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
+                            $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                             $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $category_id.$clause_no);
+                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', $category_id.$clause_no.$sorting_key);
                             $field_value = get_post_meta($site_id, $field_key, true);
                             if ($field_type=='heading') echo '<div><b>'.get_the_title().'</b></div>';
                             if ($field_type=='text') {
@@ -1773,7 +1823,7 @@ if (!class_exists('display_documents')) {
                             }
                             if ($field_type=='textarea') {
                                 echo '<li>'.get_the_title().' '.$clause_no.'</li>';
-                                echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
+                                //echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
                                 echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
                             }
                             if ($field_type=='radio') {
