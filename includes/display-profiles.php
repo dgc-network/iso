@@ -769,9 +769,10 @@ if (!class_exists('display_profiles')) {
                                 echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
                             }
                             if ($field_type=='textarea') {
-                                echo '<li>'.get_the_title().' '.$clause_no.'</li>';
+                                echo '<li>'.get_the_title().' '.$clause_no.' ';
+                                echo __( '受稽單位：', 'your-text-domain' ).'<select data-key="'.$field_key.'" class="your-class-name">'.$cards_class->select_department_card_options($field_value).'</select>';
+                                echo '</li>';
                                 //echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
-                                echo ' 受稽單位：<select data-key="'.$field_key.'" class="your-class-name">'.$cards_class->select_department_card_options($field_value).'</select>';
                             }
                             if ($field_type=='radio') {
                                 $checked = ($field_value==1) ? 'checked' : '';                                
