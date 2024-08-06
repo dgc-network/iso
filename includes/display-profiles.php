@@ -652,14 +652,14 @@ if (!class_exists('display_profiles')) {
                     'post_title' => $site_title,
                 );        
                 wp_update_post($post_data);
-                update_post_meta( $site_id, 'image_url', $_POST['_image_url'] );
-                update_post_meta( $site_id, 'organization_number', sanitize_text_field($_POST['_organization_number']) );
-                update_post_meta( $site_id, 'organization_address', sanitize_text_field($_POST['_organization_address']) );
-                update_post_meta( $site_id, 'number_of_people', sanitize_text_field($_POST['_number_of_people']) );
-                update_post_meta( $site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
-                update_post_meta( $site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
-                update_post_meta( $site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
-                update_post_meta( $site_id, 'contact_number', sanitize_text_field($_POST['_contact_number']) );
+                update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
+                update_post_meta($site_id, 'organization_number', sanitize_text_field($_POST['_organization_number']) );
+                update_post_meta($site_id, 'organization_address', sanitize_text_field($_POST['_organization_address']) );
+                update_post_meta($site_id, 'number_of_people', sanitize_text_field($_POST['_number_of_people']) );
+                update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
+                update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
+                update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
+                update_post_meta($site_id, 'contact_number', sanitize_text_field($_POST['_contact_number']) );
                 $response = array('success' => true);
             } else {
                 // Set up the new post data
@@ -1435,9 +1435,9 @@ if (!class_exists('display_profiles')) {
                     'post_type'     => 'action',
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta( $post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
-                update_post_meta( $post_id, 'next_job', -1);
-                update_post_meta( $post_id, 'next_leadtime', 86400);
+                update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
+                update_post_meta($post_id, 'next_job', -1);
+                update_post_meta($post_id, 'next_leadtime', 86400);
             }
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $response['html_contain'] = $this->display_doc_action_list($doc_id);

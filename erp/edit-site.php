@@ -113,7 +113,7 @@ function save_site_image_content($post_id) {
     }
 
     if (isset($_POST['image_url'])) {
-        update_post_meta( $post_id, 'image_url', sanitize_text_field($_POST['image_url']));
+        update_post_meta($post_id, 'image_url', sanitize_text_field($_POST['image_url']));
     }
 }
 add_action('save_post', 'save_site_image_content');
@@ -167,25 +167,25 @@ function save_site_settings_content($post_id) {
     }
 
     if (isset($_POST['cust_no'])) {
-        update_post_meta( $post_id, 'cust_no', sanitize_text_field($_POST['cust_no']));
+        update_post_meta($post_id, 'cust_no', sanitize_text_field($_POST['cust_no']));
     }
     if (isset($_POST['contact'])) {
-        update_post_meta( $post_id, 'contact', sanitize_text_field($_POST['contact']));
+        update_post_meta($post_id, 'contact', sanitize_text_field($_POST['contact']));
     }
     if (isset($_POST['email'])) {
-        update_post_meta( $post_id, 'email', sanitize_text_field($_POST['email']));
+        update_post_meta($post_id, 'email', sanitize_text_field($_POST['email']));
     }
     if (isset($_POST['phone'])) {
-        update_post_meta( $post_id, 'phone', sanitize_text_field($_POST['phone']));
+        update_post_meta($post_id, 'phone', sanitize_text_field($_POST['phone']));
     }
     if (isset($_POST['address'])) {
-        update_post_meta( $post_id, 'address', sanitize_text_field($_POST['address']));
+        update_post_meta($post_id, 'address', sanitize_text_field($_POST['address']));
     }
     if (isset($_POST['country'])) {
-        update_post_meta( $post_id, 'country', sanitize_text_field($_POST['country']));
+        update_post_meta($post_id, 'country', sanitize_text_field($_POST['country']));
     }
     if (isset($_POST['site_url'])) {
-        update_post_meta( $post_id, 'site_url', sanitize_text_field($_POST['site_url']));
+        update_post_meta($post_id, 'site_url', sanitize_text_field($_POST['site_url']));
     }
 }
 add_action('save_post', 'save_site_settings_content');
@@ -259,25 +259,25 @@ function import_sites_from_encona_csv() {
 
         // Add custom fields (metadata)
         if ($post_id && $cust_no) {
-            update_post_meta( $post_id, 'cust_no', $cust_no);
+            update_post_meta($post_id, 'cust_no', $cust_no);
         }
         if ($post_id && $item1) {
-            update_post_meta( $post_id, 'item1', $item1);
+            update_post_meta($post_id, 'item1', $item1);
         }
         if ($post_id && $item2) {
-            update_post_meta( $post_id, 'item2', $item2);
+            update_post_meta($post_id, 'item2', $item2);
         }
         if ($post_id && $contact) {
-            update_post_meta( $post_id, 'contact', $contact);
+            update_post_meta($post_id, 'contact', $contact);
         }
         if ($post_id && $email) {
-            update_post_meta( $post_id, 'email', $email);
+            update_post_meta($post_id, 'email', $email);
         }
         if ($post_id && $phone) {
-            update_post_meta( $post_id, 'phone', $phone);
+            update_post_meta($post_id, 'phone', $phone);
         }
         if ($post_id && $address) {
-            update_post_meta( $post_id, 'address', $address);
+            update_post_meta($post_id, 'address', $address);
         }
     }
 }
@@ -312,11 +312,11 @@ function import_sites_from_csv() {
 
         // Add custom fields (metadata)
         if ($post_id && $cust_no) {
-            update_post_meta( $post_id, 'cust_no', $cust_no);
+            update_post_meta($post_id, 'cust_no', $cust_no);
         }
 
         if ($post_id && $country) {
-            update_post_meta( $post_id, 'country', $country);
+            update_post_meta($post_id, 'country', $country);
         }
     }
 }

@@ -538,7 +538,7 @@ if (!class_exists('erp_cards')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
-                update_post_meta( $post_id, 'sorting_key', -1);
+                update_post_meta($post_id, 'sorting_key', -1);
             }
             $paged = sanitize_text_field($_POST['paged']);
             $response = array('html_contain' => $this->display_audit_item_list($paged, $category_id));
@@ -558,7 +558,7 @@ if (!class_exists('erp_cards')) {
             if (isset($_POST['_audit_id_array']) && is_array($_POST['_audit_id_array'])) {
                 $audit_id_array = array_map('absint', $_POST['_audit_id_array']);        
                 foreach ($audit_id_array as $index => $audit_id) {
-                    update_post_meta( $audit_id, 'sorting_key', $index);
+                    update_post_meta($audit_id, 'sorting_key', $index);
                 }
                 $response = array('success' => true);
             }
@@ -584,42 +584,6 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
-        function get_audit_item_id_by_category($field_value) {
-            $args = array(
-                'post_type'  => 'audit-items',
-                'meta_query' => array(
-                    array(
-                        'key'   => 'category-id',
-                        'value' => $field_value,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' // Only retrieve the post IDs
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Retrieve the post IDs
-            $post_ids = $query->posts;
-        
-            wp_reset_postdata();
-        
-            return $post_ids;
-        }
-/*        
-        // Usage
-        $field_value = 'your_category_value';
-        $audit_item_ids = get_audit_item_id_by_category($field_value);
-        
-        // Print the audit item IDs
-        if (!empty($audit_item_ids)) {
-            foreach ($audit_item_ids as $audit_item_id) {
-                echo 'Audit Item ID: ' . $audit_item_id . '<br>';
-            }
-        } else {
-            echo 'No audit items found for the given category-id.';
-        }
-*/        
         // customer-card
         function register_customer_card_post_type() {
             $labels = array(

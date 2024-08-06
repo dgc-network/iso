@@ -247,7 +247,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $query = new WP_Query($args);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        update_post_meta( get_the_ID(), 'doc_title', get_the_title());
+                        update_post_meta(get_the_ID(), 'doc_title', get_the_title());
                     endwhile;
                     wp_reset_postdata();
                 endif;    
