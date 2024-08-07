@@ -335,7 +335,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
-            <?php/*
+            <?php /*
             <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />

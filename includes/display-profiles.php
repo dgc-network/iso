@@ -608,7 +608,7 @@ if (!class_exists('display_profiles')) {
                     <?php echo $this->display_site_user_list();?>
 
                     <?php echo $this->display_audit_item_list_in_category();?>
-<?php /*?>
+<?php /*
                     <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
                     <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="organization-address"><?php echo __( '組織地址：', 'your-text-domain' );?></label>
@@ -623,7 +623,7 @@ if (!class_exists('display_profiles')) {
                     <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="contact-number"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
                     <input type="text" id="contact-number" value="<?php echo $contact_number;?>" class="text ui-widget-content ui-corner-all" />
-<?php */?>
+*/?>
 
                 </fieldset>
                 <?php

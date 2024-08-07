@@ -1025,7 +1025,7 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 </div>
-                <?php/*
+                <?php /*
                 <input type="checkbox" id="proceed-to-todo" />
                 <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
                 */?>
