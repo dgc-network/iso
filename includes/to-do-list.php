@@ -309,9 +309,10 @@ if (!class_exists('to_do_list')) {
             }
             
             if ( $post_type === 'todo' ) {
-                $report_id = get_post_meta($todo_id, 'report_id', true);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                //$report_id = get_post_meta($todo_id, 'report_id', true);
+                //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             }
             
             if ( $post_type === 'document' ) {
@@ -334,9 +335,11 @@ if (!class_exists('to_do_list')) {
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <?php/*
             <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+            */?>
             <fieldset>
             <?php
             if ($is_doc_report) {

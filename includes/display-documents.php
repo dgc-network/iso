@@ -1025,8 +1025,10 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 </div>
+                <?php/*
                 <input type="checkbox" id="proceed-to-todo" />
                 <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
+                */?>
                 <?php
             } else {
                 ?>
@@ -1057,51 +1059,6 @@ if (!class_exists('display_documents')) {
             wp_send_json($result);
         }
         
-        function update_doc_report_dialog_data($report_id=false, $field_id=false) {
-            // standard field-name
-            $field_type = get_post_meta($field_id, 'field_type', true);
-            $default_value = get_post_meta($field_id, 'default_value', true);
-            $field_name = get_post_meta($field_id, 'field_name', true);
-            $field_value = $_POST[$field_name];
-            update_post_meta($report_id, $field_name, $field_value);
-
-            // additional field-name
-            if ($field_type=='_department'){
-                update_post_meta($report_id, '_department', $field_value);
-            }
-            if ($field_type=='_audit' && $default_value=='_plan'){
-                // generate the audit-item-ids by iso-category-id & department-id
-                $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
-                update_post_meta($report_id, '_audit_plan', $audit_item_ids);
-                update_post_meta($report_id, '_iso_category', $field_value);
-            }
-            if ($field_type=='_audit' && $default_value=='_content'){
-                $field_name .= $default_value;
-                $field_value = $_POST[$field_name];
-                update_post_meta($report_id, $field_name, $field_value);
-            }
-        }
-        
-        function get_audit_item_id_by_category($category_id=false, $document_id=false) {
-            $args = array(
-                'post_type'  => 'audit-item',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key'   => 'category_id',
-                        'value' => $category_id,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' // Only retrieve the post IDs
-            );        
-            $query = new WP_Query($args);        
-            // Retrieve the post IDs
-            $post_ids = $query->posts;        
-            wp_reset_postdata();        
-            return $post_ids;
-        }
-
         function set_doc_report_dialog_data() {
             if( isset($_POST['_report_id']) ) {
                 // Update the post
@@ -1156,6 +1113,51 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
+        function update_doc_report_dialog_data($report_id=false, $field_id=false) {
+            // standard field-name
+            $field_type = get_post_meta($field_id, 'field_type', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $field_name = get_post_meta($field_id, 'field_name', true);
+            $field_value = $_POST[$field_name];
+            update_post_meta($report_id, $field_name, $field_value);
+
+            // additional field-name
+            if ($field_type=='_department'){
+                update_post_meta($report_id, '_department', $field_value);
+            }
+            if ($field_type=='_audit' && $default_value=='_plan'){
+                // generate the audit-item-ids by iso-category-id & department-id
+                $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
+                update_post_meta($report_id, '_audit_plan', $audit_item_ids);
+                update_post_meta($report_id, '_iso_category', $field_value);
+            }
+            if ($field_type=='_audit' && $default_value=='_content'){
+                $field_name .= $default_value;
+                $field_value = $_POST[$field_name];
+                update_post_meta($report_id, $field_name, $field_value);
+            }
+        }
+        
+        function get_audit_item_id_by_category($category_id=false, $document_id=false) {
+            $args = array(
+                'post_type'  => 'audit-item',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only retrieve the post IDs
+            );        
+            $query = new WP_Query($args);        
+            // Retrieve the post IDs
+            $post_ids = $query->posts;        
+            wp_reset_postdata();        
+            return $post_ids;
+        }
+
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
@@ -1993,7 +1995,9 @@ if (!class_exists('display_documents')) {
             );    
             $todo_id = wp_insert_post($new_post);    
         
-            update_post_meta($todo_id, 'report_id', $report_id);
+            //update_post_meta($todo_id, 'report_id', $report_id);
+            update_post_meta($todo_id, 'doc_id', $doc_id);
+            //update_post_meta($todo_id, 'prev_report_id', $report_id);
             update_post_meta($todo_id, 'submit_user', $current_user_id);
             update_post_meta($todo_id, 'submit_action', $action_id);
             update_post_meta($todo_id, 'submit_time', time());

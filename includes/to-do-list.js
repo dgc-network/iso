@@ -94,8 +94,8 @@ jQuery(document).ready(function($) {
                 'action': 'set_todo_dialog_data',
             };
             ajaxData['_action_id'] = action_id;
-            ajaxData['_doc_id'] = $("#doc-id").val();
-            ajaxData['_report_id'] = $("#report-id").val();
+            //ajaxData['_doc_id'] = $("#doc-id").val();
+            //ajaxData['_report_id'] = $("#report-id").val();
         
             $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
