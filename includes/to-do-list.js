@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-
+/*
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -114,6 +114,7 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+*/
         });
 
         $("#todo-dialog-exit").on("click", function () {
