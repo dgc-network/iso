@@ -763,13 +763,15 @@ if (!class_exists('to_do_list')) {
                 $category_id = get_post_meta($prev_report_id, '_iso_category', true);
                 $filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
             }
-            if (is_array($filtered_audit_ids)) {
-                foreach ($filtered_audit_ids as $audit_id) {
-                    $params['audit_id'] = $audit_id;
-                    $this->create_new_todo_for_next_job($params);
-                }
-            } else {
+            if (empty($filtered_audit_ids)) {
                 $this->create_new_todo_for_next_job($params);
+            } else {
+                if (is_array($filtered_audit_ids)) {
+                    foreach ($filtered_audit_ids as $audit_id) {
+                        $params['audit_id'] = $audit_id;
+                        $this->create_new_todo_for_next_job($params);
+                    }
+                }    
             }
         }
 
