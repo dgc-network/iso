@@ -91,7 +91,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             //ajaxData['_doc_id'] = $("#doc-id").val();
             //ajaxData['_report_id'] = $("#report-id").val();
-        
+/*        
             $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
