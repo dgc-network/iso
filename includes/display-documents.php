@@ -1480,6 +1480,7 @@ if (!class_exists('display_documents')) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
             $params = array(
@@ -1513,7 +1514,7 @@ if (!class_exists('display_documents')) {
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } elseif ($default_value=='_content'){
-                                if ($prev_report_id) $field_value = get_post_meta($prev_report_id, 'audit_item', true);                                    
+                                if ($todo_id) $field_value = get_post_meta($todo_id, 'audit_item', true);                                    
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
                                 //$field_name .= $default_value;

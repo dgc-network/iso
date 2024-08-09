@@ -317,6 +317,7 @@ if (!class_exists('to_do_list')) {
                 $params = array(
                     'doc_id'          => $doc_id,
                     'prev_report_id'  => $prev_report_id,
+                    'todo_id'  => $todo_id,
                 );                
 
             }
@@ -805,8 +806,9 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-            if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
             if ($next_job>0) update_post_meta($new_todo_id, 'doc_id', $next_job );
+
+            if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
 
             if ($next_job>0) {
                 //update_post_meta($new_todo_id, 'doc_id', $next_job );
