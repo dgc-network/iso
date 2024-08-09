@@ -761,7 +761,7 @@ if (!class_exists('to_do_list')) {
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
-                'prev_report_id' => $new_report_id,
+                'prev_report_id' => $prev_report_id,
                 'todo_title' => $todo_title,
                 'todo_id' => $todo_id,
                 'next_job' => $next_job,
