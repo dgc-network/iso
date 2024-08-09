@@ -43,7 +43,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
+                //activate_todo_dialog_data(response.doc_fields);
+                activate_todo_dialog_data(response);
             },
             error: function (error) {
                 console.error(error);
@@ -74,7 +75,8 @@ jQuery(document).ready(function($) {
         }
     }
 */    
-    function activate_todo_dialog_data(doc_fields){
+    //function activate_todo_dialog_data(doc_fields){
+    function activate_todo_dialog_data(response){
 /*        
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
@@ -91,8 +93,9 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             //ajaxData['_doc_id'] = $("#doc-id").val();
             //ajaxData['_report_id'] = $("#report-id").val();
-/*        
-            $.each(doc_fields, function(index, value) {
+
+            //$.each(doc_fields, function(index, value) {
+            $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
@@ -100,7 +103,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
             });
-/*
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -114,7 +117,7 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-*/
+
         });
 
         $("#todo-dialog-exit").on("click", function () {
