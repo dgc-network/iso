@@ -407,7 +407,7 @@ if (!class_exists('to_do_list')) {
                 if ( $post_type === 'document' ) {
                     $doc_id = $todo_id;
                 }
-                    
+
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }
@@ -723,6 +723,7 @@ if (!class_exists('to_do_list')) {
             $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
 
             // Find the next_job, next_leadtime, and 
             if ($action_id > 0) {
@@ -752,6 +753,7 @@ if (!class_exists('to_do_list')) {
                 'action_id' => $action_id,
                 'prev_report_id' => $new_report_id,
                 'todo_title' => $todo_title,
+                'todo_id' => $todo_id,
                 'next_job' => $next_job,
                 'next_leadtime' => $next_leadtime,
             );        
@@ -771,27 +773,6 @@ if (!class_exists('to_do_list')) {
             }
         }
 
-        function get_filtered_audit_ids_by_department($audit_ids=array(), $department_id=false, $category_id=false) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $filtered_audit_ids = array();
-            if (is_array($audit_ids)) {
-                foreach ($audit_ids as $audit_id) {
-                    $clause_no = get_post_meta($audit_id, 'clause_no', true);
-                    $sorting_key = get_post_meta($audit_id, 'sorting_key', true);
-                    $field_type = get_post_meta($audit_id, 'field_type', true);
-                    $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
-                    $field_value = get_post_meta($site_id, $field_key, true);
-                
-                    if ($department_id == $field_value) {
-                        $filtered_audit_ids[] = $audit_id;
-                    }
-                }
-            }
-            // Now $filtered_audit_ids contains the filtered audit IDs
-            return $filtered_audit_ids;
-        }
-        
         function create_new_todo_for_next_job($args = array()) {
 
             $todo_title = isset($args['todo_title']) ? $args['todo_title'] : 0;
@@ -813,9 +794,10 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
             if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
-        
+            if ($next_job>0) update_post_meta($new_todo_id, 'doc_id', $next_job );
+
             if ($next_job>0) {
-                update_post_meta($new_todo_id, 'doc_id', $next_job );
+                //update_post_meta($new_todo_id, 'doc_id', $next_job );
                 $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
                 if ($todo_id) {
                     $doc_number = get_post_meta($next_job, 'doc_number', true);
@@ -837,7 +819,7 @@ if (!class_exists('to_do_list')) {
                 // Notice the persons in site
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
             }
-        
+
             if ($next_job>0) {
                 // Create the new Action list for next_job 
                 $profiles_class = new display_profiles();
@@ -871,9 +853,8 @@ if (!class_exists('to_do_list')) {
                 // Notice the persons in charge the job
                 $this->notice_the_responsible_persons($new_todo_id);
             }
-
         }
-        
+
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
@@ -960,6 +941,27 @@ if (!class_exists('to_do_list')) {
                     'messages' => [$flexMessage],
                 ]);            
             }    
+        }
+
+        function get_filtered_audit_ids_by_department($audit_ids=array(), $department_id=false, $category_id=false) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $filtered_audit_ids = array();
+            if (is_array($audit_ids)) {
+                foreach ($audit_ids as $audit_id) {
+                    $clause_no = get_post_meta($audit_id, 'clause_no', true);
+                    $sorting_key = get_post_meta($audit_id, 'sorting_key', true);
+                    $field_type = get_post_meta($audit_id, 'field_type', true);
+                    $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
+                    $field_value = get_post_meta($site_id, $field_key, true);
+                
+                    if ($department_id == $field_value) {
+                        $filtered_audit_ids[] = $audit_id;
+                    }
+                }
+            }
+            // Now $filtered_audit_ids contains the filtered audit IDs
+            return $filtered_audit_ids;
         }
 
         // signature_record
