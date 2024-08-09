@@ -18,12 +18,6 @@ jQuery(document).ready(function($) {
         window.location.href = "?" + queryString;
     });
 
-/*
-    $("#select-todo").on( "change", function() {
-        window.location.replace("?_select_todo="+$(this).val());
-        $(this).val('');
-    });
-*/
     $("#search-todo").on( "change", function() {
         window.location.replace("?_search="+$(this).val());
         $(this).val('');
@@ -58,7 +52,7 @@ jQuery(document).ready(function($) {
         });
 
     });            
-
+/*
     var docFieldsValue = $("#doc-fields").val();
 
     // Check if docFieldsValue exists, is a non-empty string, and is a valid JSON array
@@ -79,7 +73,7 @@ jQuery(document).ready(function($) {
             console.error('Error parsing docFields:', error);
         }
     }
-    
+*/    
     function activate_todo_dialog_data(doc_fields){
 /*        
         $(".datepicker").datepicker({
@@ -101,7 +95,7 @@ jQuery(document).ready(function($) {
             $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    //ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }
