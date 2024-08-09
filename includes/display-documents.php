@@ -1053,7 +1053,7 @@ if (!class_exists('display_documents')) {
                     $result['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $result['doc_id'] = $doc_id;
-                    $result['doc_fields'] = $this->display_doc_field_keys($doc_id);
+                    $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
                 }
             }
             wp_send_json($result);
@@ -1070,7 +1070,7 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $this->update_doc_report_dialog_data($report_id, get_the_ID());
+                        $this->update_doc_field_contains($report_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1113,7 +1113,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function update_doc_report_dialog_data($report_id=false, $field_id=false) {
+        function update_doc_field_contains($report_id=false, $field_id=false) {
             // standard field-name
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
@@ -1388,7 +1388,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-        function display_doc_field_keys($doc_id=false) {
+        function get_doc_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();

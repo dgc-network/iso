@@ -81,12 +81,13 @@ jQuery(document).ready(function($) {
     }
     
     function activate_todo_dialog_data(doc_fields){
+/*        
         $(".datepicker").datepicker({
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
             }
         });
-
+*/
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
 

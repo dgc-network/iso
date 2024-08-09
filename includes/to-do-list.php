@@ -403,7 +403,7 @@ if (!class_exists('to_do_list')) {
                 $result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
-                $result['doc_fields'] = $documents_class->display_doc_field_keys($doc_id);
+                $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }
             wp_send_json($result);
         }
@@ -691,7 +691,7 @@ if (!class_exists('to_do_list')) {
                 $query = $documents_class->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $documents_class->update_doc_report_dialog_data($new_report_id, get_the_ID());
+                        $documents_class->update_doc_field_contains($new_report_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 }            

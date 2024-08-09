@@ -388,10 +388,12 @@ function user_did_not_login_yet() {
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo esc_attr($user->user_email);?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                
                 <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                 <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
                 <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
+*/?>                
                 <input type="hidden" id="log" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" id="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <hr>

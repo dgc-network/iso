@@ -934,9 +934,9 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_audit') {
-                        ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
-                        ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
-                        ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
+                        //ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
+                        //ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
+                        //ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
                     }
                 }
             });
@@ -970,9 +970,9 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_audit') {
-                        ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
-                        ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
-                        ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
+                        //ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
+                        //ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
+                        //ajaxData[value.field_name+'_report'] = $(field_name_tag+'_report').val();
                     }
                 }
             });
