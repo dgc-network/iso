@@ -997,8 +997,8 @@ if (!class_exists('display_documents')) {
             <fieldset>
             <?php
                 $params = array(
-                    'doc_id'     => $doc_id,
-                    'prev_report_id'     => $report_id,
+                    'doc_id'    => $doc_id,
+                    'report_id' => $report_id,
                 );                
                 $this->display_doc_field_contains($params);
             ?>
@@ -1076,9 +1076,11 @@ if (!class_exists('display_documents')) {
                 }
                 $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
                 $action_id = sanitize_text_field($_POST['_action_id']);
+/*
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
+*/
                 if ($proceed_to_todo==1) $this->set_todo_from_doc_report($action_id, $report_id);
             } else {
                 // Create the post
@@ -1476,6 +1478,7 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_contains($args) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+            $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
@@ -1491,7 +1494,9 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if ($prev_report_id) {
+                    if ($report_id) {
+                        $field_value = get_post_meta($report_id, $field_name, true);
+                    } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_name, true);
                     } else {
                         $field_value = $this->get_field_default_value(get_the_ID());

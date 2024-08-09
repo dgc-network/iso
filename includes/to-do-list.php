@@ -308,28 +308,30 @@ if (!class_exists('to_do_list')) {
                 return 'post type is '.$post_type.'. Wrong type!';
             }
             
+            $params = array();
             if ( $post_type === 'todo' ) {
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                 //$report_id = get_post_meta($todo_id, 'report_id', true);
                 //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $params = array(
+                    'doc_id'          => $doc_id,
+                    'prev_report_id'  => $prev_report_id,
+                );                
+
             }
             
             if ( $post_type === 'document' ) {
                 $doc_id = $todo_id;
+                $params = array(
+                    'doc_id'          => $doc_id,
+                );                
             }
 
             if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
-        
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-        
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
+                
+            //$profiles_class = new display_profiles();
+            //$is_site_admin = $profiles_class->is_site_admin();
     
             ob_start();
             ?>
@@ -342,16 +344,24 @@ if (!class_exists('to_do_list')) {
             */?>
             <fieldset>
             <?php
+            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) {
                 // doc_report_dialog data
+/*                
                 $params = array(
                     'doc_id'     => $doc_id,
                     'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
+*/                
                 $documents_class = new display_documents();
                 $documents_class->display_doc_field_contains($params);
             } else {
                 // document_dialog data
+                $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
                 $profiles_class = new display_profiles();
                 ?>
                 <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
