@@ -101,7 +101,7 @@ jQuery(document).ready(function($) {
             $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    //ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                 }

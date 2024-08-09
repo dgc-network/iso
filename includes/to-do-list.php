@@ -412,7 +412,7 @@ if (!class_exists('to_do_list')) {
             if( isset($_POST['_action_id']) ) {
                 // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                //$this->update_todo_dialog_data($action_id);
+                $this->update_todo_dialog_data($action_id);
             }
             wp_send_json($response);
         }
