@@ -412,7 +412,7 @@ if (!class_exists('to_do_list')) {
             if( isset($_POST['_action_id']) ) {
                 // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->update_todo_dialog_data($action_id);
+                //$this->update_todo_dialog_data($action_id);
             }
             wp_send_json($response);
         }
@@ -704,7 +704,7 @@ if (!class_exists('to_do_list')) {
                 'todo_id' => $todo_id,
                 'prev_report_id' => $new_report_id,
             );        
-            //if ($next_job>0) $this->update_next_todo_and_actions($params);
+            if ($next_job>0) $this->update_next_todo_and_actions($params);
 
         }
         
