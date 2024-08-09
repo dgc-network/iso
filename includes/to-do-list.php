@@ -704,7 +704,7 @@ if (!class_exists('to_do_list')) {
                 'todo_id' => $todo_id,
                 'prev_report_id' => $new_report_id,
             );        
-            if ($next_job>0) $this->update_next_todo_and_actions($params);
+            //if ($next_job>0) $this->update_next_todo_and_actions($params);
 
         }
         
