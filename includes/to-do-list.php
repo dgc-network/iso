@@ -318,7 +318,7 @@ if (!class_exists('to_do_list')) {
             if ( $post_type === 'document' ) {
                 $doc_id = $todo_id;
             }
-            
+
             if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
         
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -401,7 +401,13 @@ if (!class_exists('to_do_list')) {
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
                 $result['html_contain'] = $this->display_todo_dialog($todo_id);
+
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $post_type = get_post_type( $todo_id );
+                if ( $post_type === 'document' ) {
+                    $doc_id = $todo_id;
+                }
+                    
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }
