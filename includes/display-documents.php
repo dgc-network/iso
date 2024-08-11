@@ -969,8 +969,9 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report) $doc_title .= '('.$doc_number.')';
+            //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            //if ($is_doc_report) $doc_title .= '('.$doc_number.')';
+            $doc_title .= '('.$doc_number.')';
             ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -979,10 +980,10 @@ if (!class_exists('display_documents')) {
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">        
-                <?php if ($todo_status){?>
+                <?php //if ($todo_status){?>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('表單簽核記錄', 'your-text-domain')?></button>
                     <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-                <?php }?>
+                <?php //}?>
                 </div>
             </div>
         
@@ -1049,12 +1050,12 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_report_id'])) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
-                if ($todo_status<1) {
+                //if ($todo_status<1) {
                     $result['html_contain'] = $this->display_doc_report_dialog($report_id);
-                    $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $result['doc_id'] = $doc_id;
+                    //$doc_id = get_post_meta($report_id, 'doc_id', true);
+                    //$result['doc_id'] = $doc_id;
                     $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                }
+                //}
             }
             wp_send_json($result);
         }

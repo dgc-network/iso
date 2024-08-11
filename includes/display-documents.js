@@ -909,14 +909,32 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_report_dialog_data(response){
-/*        
-        $(".datepicker").datepicker({
-            onSelect: function(dateText, inst) {
-                $(this).val(dateText);
+    function get_doc_report_dialog_data(report_id){
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_doc_report_dialog_data',
+                _report_id: report_id,
+            },
+            success: function (response) {
+                if (response.html_contain === undefined || response.html_contain === null) {
+                    alert("The report is in To-do process. Please wait for publishing.");
+                } else {
+                    $('#result-container').html(response.html_contain);
+                }
+                //$("#doc-id").val(response.doc_id);
+                
+                activate_doc_report_dialog_data(response)
+            },
+            error: function (error) {
+                console.error(error);
             }
         });
-*/    
+    }
+
+    function activate_doc_report_dialog_data(response){
+
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
@@ -925,7 +943,6 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = $("#report-id").val();
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
-            //ajaxData['_proceed_to_todo'] = $("#proceed-to-todo").is(":checked") ? 1 : 0;
         
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
@@ -1098,30 +1115,5 @@ jQuery(document).ready(function($) {
             $(".image-url").toggle()
             $(".image-display").attr("src", $(".image-url").val());
         });
-
-    }
-    
-    function get_doc_report_dialog_data(report_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_doc_report_dialog_data',
-                _report_id: report_id,
-            },
-            success: function (response) {
-                if (response.html_contain === undefined || response.html_contain === null) {
-                    alert("The report is in To-do process. Please wait for publishing.");
-                } else {
-                    $('#result-container').html(response.html_contain);
-                }
-                //$("#doc-id").val(response.doc_id);
-                
-                activate_doc_report_dialog_data(response)
-            },
-            error: function (error) {
-                console.error(error);
-            }
-        });
-    }
+    }    
 });
