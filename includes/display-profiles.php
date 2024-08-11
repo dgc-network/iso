@@ -914,7 +914,7 @@ if (!class_exists('display_profiles')) {
                         echo '<select id="select-site" class="text ui-widget-content ui-corner-all" >';
                         foreach ($site_ids as $site_id) {
                             $selected = ($site_id == $current_site_id) ? 'selected' : '';
-                            echo '<option value="' . esc_attr($site-_id) . '" ' . $selected . '>' . esc_html(get_the_title($site_id)) . '</option>';
+                            echo '<option value="' . esc_attr($site_id) . '" ' . $selected . '>' . esc_html(get_the_title($site_id)) . '</option>';
                         }
                         echo '</select>';
                     }
