@@ -1571,7 +1571,7 @@ if (!class_exists('display_documents')) {
                                 // retrieve the audit-items by iso-category and heading
                                 $department_id = get_post_meta($report_id, '_department', true);
                                 $category_id = get_post_meta($report_id, '_iso_category', true);
-                                //$filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
+                                //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>

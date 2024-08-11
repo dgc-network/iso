@@ -767,14 +767,16 @@ if (!class_exists('to_do_list')) {
                 'todo_id' => $todo_id,
                 'next_job' => $next_job,
                 'next_leadtime' => $next_leadtime,
-            );        
+            );
+            //$filtered_audit_ids = array();
             if ($prev_report_id) {
                 $audit_ids = get_post_meta($prev_report_id, '_audit_plan', true);
                 $department_id = get_post_meta($prev_report_id, '_department', true);
                 $category_id = get_post_meta($prev_report_id, '_iso_category', true);
-                $filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
+                $filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
             }
-            if (empty($filtered_audit_ids)) {
+            //if (empty($filtered_audit_ids)) {
+            if (!$filtered_audit_ids) {
                 if (!is_array($filtered_audit_ids)) {
                     $this->create_new_todo_for_next_job($params);
                 }
@@ -996,11 +998,12 @@ if (!class_exists('to_do_list')) {
             }    
         }
 
-        function get_filtered_audit_ids_by_department($audit_ids=array(), $department_id=false, $category_id=false) {
+        function filtered_audit_ids_by_department($audit_ids=array(), $department_id=false, $category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $filtered_audit_ids = array();
             if (is_array($audit_ids)) {
+                $filtered_audit_ids = array();
                 foreach ($audit_ids as $audit_id) {
                     $clause_no = get_post_meta($audit_id, 'clause_no', true);
                     $sorting_key = get_post_meta($audit_id, 'sorting_key', true);
@@ -1012,9 +1015,10 @@ if (!class_exists('to_do_list')) {
                         $filtered_audit_ids[] = $audit_id;
                     }
                 }
+                return $filtered_audit_ids;
             }
             // Now $filtered_audit_ids contains the filtered audit IDs
-            return $filtered_audit_ids;
+            return false;
         }
 
         // signature_record
