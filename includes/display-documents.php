@@ -1138,7 +1138,7 @@ if (!class_exists('display_documents')) {
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
             }
-            if ($field_type=='_department'){
+            if ($field_type=='_department' && $default_value=='_notification'){
                 update_post_meta($report_id, '_department', $field_value);
             }
             if ($field_type=='_audit' && $default_value=='_plan'){
