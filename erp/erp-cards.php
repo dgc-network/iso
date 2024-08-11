@@ -206,7 +206,7 @@ if (!class_exists('erp_cards')) {
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
                         </thead>
@@ -244,6 +244,8 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'post_type'      => 'iso-category',
                 'posts_per_page' => -1,        
+                'orderby'        => 'title',  // Order by post title
+                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
             );
             $query = new WP_Query($args);
             return $query;

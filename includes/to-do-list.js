@@ -3,17 +3,14 @@ jQuery(document).ready(function($) {
 
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
-        var queryParams = [];
-    
+        var queryParams = [];    
         // Check the selected value for each select element and add it to the queryParams array
         var todoValue = $("#select-todo").val();
         if (todoValue) {
             queryParams.push("_select_todo=" + todoValue);
         }
-
         // Combine all query parameters into a single string
-        var queryString = queryParams.join("&");
-    
+        var queryString = queryParams.join("&");    
         // Redirect to the new URL with all combined query parameters
         window.location.href = "?" + queryString;
     });
@@ -43,7 +40,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                //activate_todo_dialog_data(response.doc_fields);
                 activate_todo_dialog_data(response);
             },
             error: function (error) {
@@ -75,15 +71,8 @@ jQuery(document).ready(function($) {
         }
     }
 */    
-    //function activate_todo_dialog_data(doc_fields){
     function activate_todo_dialog_data(response){
-/*        
-        $(".datepicker").datepicker({
-            onSelect: function(dateText, inst) {
-                $(this).val(dateText);
-            }
-        });
-*/
+
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
 
@@ -91,16 +80,20 @@ jQuery(document).ready(function($) {
                 'action': 'set_todo_dialog_data',
             };
             ajaxData['_action_id'] = action_id;
-            //ajaxData['_doc_id'] = $("#doc-id").val();
-            //ajaxData['_report_id'] = $("#report-id").val();
 
-            //$.each(doc_fields, function(index, value) {
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
+                    if (value.field_type === '_audit') {
+                        ajaxData[value.field_name+'_content'] = $(field_name_tag+'_content').val();
+                        ajaxData[value.field_name+'_non_compliance'] = $(field_name_tag+'_non_compliance').val();
+                        ajaxData[value.field_name+'_cause_analysis'] = $(field_name_tag+'_cause_analysis').val();
+                        ajaxData[value.field_name+'_corrective_plan'] = $(field_name_tag+'_corrective_plan').val();
+                        ajaxData[value.field_name+'_summary'] = $(field_name_tag+'_summary').val();
+                    }
                 }
             });
 
