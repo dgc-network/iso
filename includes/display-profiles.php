@@ -915,7 +915,7 @@ if (!class_exists('display_profiles')) {
                         echo '</select>';
                     }
                     ?>
-                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
+                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> disabled />
                     <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
                     <?php
                 }
