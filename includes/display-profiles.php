@@ -1844,6 +1844,9 @@ if (!class_exists('display_profiles')) {
                         'value' => $site_id,
                     ),
                 ),
+                'orderby'        => 'title',  // Order by post title
+                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
+
             );
             $query = new WP_Query($args);
             return $query;
@@ -1853,8 +1856,7 @@ if (!class_exists('display_profiles')) {
             $cards_class = new erp_cards();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
-            //$category_url = get_post_meta($category_id, 'category_url', true);
-            $parent_category = get_post_meta($category_id, 'parent_category', true);
+            $iso_category = get_post_meta($category_id, 'iso_category', true);
             ob_start();
             ?>
             <fieldset>
@@ -1863,8 +1865,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <label for="parent-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
-                <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($parent_category);?></select>
+                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
+                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($iso_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1882,15 +1884,15 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_url = sanitize_text_field($_POST['_category_url']);
-                $parent_category = sanitize_text_field($_POST['_parent_category']);
+                $iso_category = sanitize_text_field($_POST['_iso_category']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
                     'post_content' => sanitize_text_field($_POST['_category_content']),
                 );
                 wp_update_post( $data );
-                update_post_meta($category_id, 'category_url', $category_url);
-                update_post_meta($category_id, 'parent_category', $parent_category);
+                //update_post_meta($category_id, 'category_url', $category_url);
+                update_post_meta($category_id, 'iso_category', $iso_category);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

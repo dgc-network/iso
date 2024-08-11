@@ -853,7 +853,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
                     activate_doc_category_list_data();
-                    },
+                },
                 error: function(error){
                     console.error(error);
                     alert(error);
@@ -898,8 +898,8 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_category_title': $("#category-title").val(),
                             '_category_content': $("#category-content").val(),
-                            '_category_url': $("#category-url").val(),
-                            '_parent_category': $("#parent-category").val(),
+                            //'_category_url': $("#category-url").val(),
+                            '_iso_category': $("#iso-category").val(),
                         },
                         success: function (response) {
                             $("#doc-category-dialog").dialog('close');
