@@ -1543,7 +1543,7 @@ if (!class_exists('display_documents')) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合項目', 'your-text-domain' );?></label>
+                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合事項', 'your-text-domain' );?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
                                 <?php
                             } elseif ($default_value=='_corrective'){
@@ -1560,7 +1560,7 @@ if (!class_exists('display_documents')) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合項目', 'your-text-domain' );?></label>
+                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合事項', 'your-text-domain' );?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
                                 <label for="<?php echo esc_attr($field_name.'_cause_analysis');?>"><?php echo __( '原因分析', 'your-text-domain' );?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_cause_analysis');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($cause_analysis_value);?></textarea>

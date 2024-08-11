@@ -884,8 +884,11 @@ if (!class_exists('display_profiles')) {
                 <?php
                 if (current_user_can('administrator')) {
                     $current_user_id = get_current_user_id();
-                    $site_id = get_user_meta($current_user_id, 'site_id', true);
+                    $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                     ?>
+                    <input type="checkbox" id="multi-site-enabled" <?php echo $multi_site_enabled;?> />
+                    <label for="multi-site-enabled"><?php echo __( 'Multi-site-enabled', 'your-text-domain' );?></label><br>
+
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" >
                         <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
@@ -896,14 +899,28 @@ if (!class_exists('display_profiles')) {
                     );
                     $sites = get_posts($site_args);    
                     foreach ($sites as $site) {
-                        $selected = ($site_id == $site->ID) ? 'selected' : '';
+                        $selected = ($current_site_id == $site->ID) ? 'selected' : '';
                         echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
                     }
-                    echo '</select>';
+                    //echo '</select>';
+                    ?>
+                    </select>
+                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+                    <?php
+                } else {
+                    $site_ids = get_user_meta($user_id, 'site_admin_ids', true);
+                    if (!empty($site_ids)) {
+                        echo '<select id="select-site" class="text ui-widget-content ui-corner-all" >';
+                        foreach ($site_ids as $site_id) {
+                            $selected = ($site_id == $current_site_id) ? 'selected' : '';
+                            echo '<option value="' . esc_attr($site-_id) . '" ' . $selected . '>' . esc_html(get_the_title($site_id)) . '</option>';
+                        }
+                        echo '</select>';
+                    }
+
                 }
                 ?>
-                <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
 
             </fieldset>
             </div>
