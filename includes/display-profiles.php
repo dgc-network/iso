@@ -886,9 +886,6 @@ if (!class_exists('display_profiles')) {
                     $current_user_id = get_current_user_id();
                     $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                     ?>
-                    <input type="checkbox" id="multi-site-enabled" <?php echo $multi_site_enabled;?> />
-                    <label for="multi-site-enabled"><?php echo __( 'Multi-site-enabled', 'your-text-domain' );?></label><br>
-
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" >
                         <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
@@ -902,7 +899,6 @@ if (!class_exists('display_profiles')) {
                         $selected = ($current_site_id == $site->ID) ? 'selected' : '';
                         echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
                     }
-                    //echo '</select>';
                     ?>
                     </select>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
@@ -918,7 +914,10 @@ if (!class_exists('display_profiles')) {
                         }
                         echo '</select>';
                     }
-
+                    ?>
+                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+                    <?php
                 }
                 ?>
 
