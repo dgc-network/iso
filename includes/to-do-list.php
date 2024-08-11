@@ -775,7 +775,9 @@ if (!class_exists('to_do_list')) {
                 $filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
             }
             if (empty($filtered_audit_ids)) {
-                $this->create_new_todo_for_next_job($params);
+                if (!is_array($filtered_audit_ids)) {
+                    $this->create_new_todo_for_next_job($params);
+                }
             } else {
                 if (is_array($filtered_audit_ids)) {
                     foreach ($filtered_audit_ids as $audit_id) {
