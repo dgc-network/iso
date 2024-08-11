@@ -1124,6 +1124,20 @@ if (!class_exists('display_documents')) {
             update_post_meta($report_id, $field_name, $field_value);
 
             // additional field-name
+            if ($field_type=='_employees'){
+                $employee_ids = get_post_meta($report_id, '_employees', true);
+                // Check if $employee_ids is an array, if not, initialize it as an empty array
+                if (!is_array($employee_ids)) {
+                    $employee_ids = array();
+                }                
+                // Check if $field_value is not already in the $employee_ids array
+                if (!in_array($field_value, $employee_ids)) {
+                    // Add $field_value to the $employee_ids array
+                    $employee_ids[] = $field_value;                
+                    // Update the meta field with the new array of employee IDs
+                    update_post_meta($report_id, '_employees', $employee_ids);
+                }
+            }
             if ($field_type=='_department'){
                 update_post_meta($report_id, '_department', $field_value);
             }
@@ -1133,10 +1147,13 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
                 update_post_meta($report_id, '_iso_category', $field_value);
             }
-            if ($field_type=='_audit' && $default_value=='_content'){
+            if ($field_type=='_audit' && ($default_value=='_content' || $default_value=='_corrective')){
                 $field_name .= $default_value;
                 $field_value = $_POST[$field_name];
                 update_post_meta($report_id, $field_name, $field_value);
+            }
+            if ($field_type=='_audit' && $default_value=='_summary'){
+                // summarize the audit-items, make a report
             }
         }
         
@@ -1261,7 +1278,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '!=',
                 );
             }
-
+/*
             if (!empty($params['is_editing'])) {
                 $args['meta_query'][] = array(
                     'key'     => 'field_type',
@@ -1269,7 +1286,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '!=',
                 );
             }
-
+*/
             $query = new WP_Query($args);
             return $query;
         }
@@ -1485,7 +1502,7 @@ if (!class_exists('display_documents')) {
             $category_id = get_post_meta($doc_category, 'parent_category', true);
             $params = array(
                 'doc_id'     => $doc_id,
-                'is_editing'  => true,
+                //'is_editing'  => true,
             );                
             $query = $this->retrieve_doc_field_data($params);
 
@@ -1522,11 +1539,14 @@ if (!class_exists('display_documents')) {
                                 $clause_no = get_post_meta($field_value, 'clause_no', true);
                                 $placeholder = get_post_field('post_content', $field_value);
                                 $content_value = get_post_meta($report_id, $field_name.'_content', true);
+                                $non_compliance_value = get_post_meta($report_id, $field_name.'_non_compliance', true);
                                 ?>
                                 <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
+                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合項目', 'your-text-domain' );?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
                                 <?php
-                            } elseif ($default_value=='_non_compliance'){
+                            } elseif ($default_value=='_corrective'){
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
                                 //$field_name .= $default_value;
@@ -1535,13 +1555,23 @@ if (!class_exists('display_documents')) {
                                 $placeholder = get_post_field('post_content', $field_value);
                                 $content_value = get_post_meta($report_id, $field_name.'_content', true);
                                 $non_compliance_value = get_post_meta($report_id, $field_name.'_non_compliance', true);
+                                $cause_analysis_value = get_post_meta($report_id, $field_name.'_cause_analysis', true);
+                                $corrective_plan_value = get_post_meta($report_id, $field_name.'_corrective_plan', true);
                                 ?>
                                 <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
                                 <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合項目', 'your-text-domain' );?></label>
                                 <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
+                                <label for="<?php echo esc_attr($field_name.'_cause_analysis');?>"><?php echo __( '原因分析', 'your-text-domain' );?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_cause_analysis');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($cause_analysis_value);?></textarea>
+                                <label for="<?php echo esc_attr($field_name.'_corrective_plan');?>"><?php echo __( '矯正預防', 'your-text-domain' );?></label>
+                                <textarea id="<?php echo esc_attr($field_name.'_corrective_plan');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($corrective_plan_value);?></textarea>
                                 <?php
-                            } else {
+                            } elseif ($default_value=='_summary'){
+                                // retrieve the audit-items by iso-category and heading
+                                $department_id = get_post_meta($report_id, '_department', true);
+                                $category_id = get_post_meta($report_id, '_iso_category', true);
+                                //$filtered_audit_ids = $this->get_filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>

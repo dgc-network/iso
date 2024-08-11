@@ -873,12 +873,8 @@ if (!class_exists('to_do_list')) {
         function notice_the_responsible_persons($todo_id=0) {
             $todo_title = get_the_title($todo_id);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            $report_id = get_post_meta($todo_id, 'report_id', true);
-            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) $doc_title .= '(電子表單)';
             $doc_title .= '('.$doc_number.')';
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
@@ -910,6 +906,47 @@ if (!class_exists('to_do_list')) {
                     'messages' => [$flexMessage],
                 ]);
             }
+
+            // Check if Employees or Department in report
+            $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+            if ($report_id) {
+                $department_id = get_post_meta($report_id, '_department', true);
+                $user_ids = get_post_meta($department_id, 'user_ids', true);
+                if (is_array($user_ids)) {
+                    foreach ($user_ids as $user_id) {
+                        $user = get_userdata($user_id);
+                        $params = [
+                            'display_name' => $user->display_name,
+                            'link_uri' => $link_uri,
+                            'text_message' => $text_message,
+                        ];        
+                        $flexMessage = set_flex_message($params);
+                        $line_bot_api->pushMessage([
+                            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+                            'messages' => [$flexMessage],
+                        ]);
+                    }    
+                }
+
+                $user_ids = get_post_meta($report_id, '_employees', true);
+                if (is_array($user_ids)) {
+                    foreach ($user_ids as $user_id) {
+                        $user = get_userdata($user_id);
+                        $params = [
+                            'display_name' => $user->display_name,
+                            'link_uri' => $link_uri,
+                            'text_message' => $text_message,
+                        ];        
+                        $flexMessage = set_flex_message($params);
+                        $line_bot_api->pushMessage([
+                            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+                            'messages' => [$flexMessage],
+                        ]);
+                    }    
+                }
+
+            }
+
         }
 
         // Notice the persons in site

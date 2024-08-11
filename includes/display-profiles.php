@@ -555,7 +555,7 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'site', $args );
         }
