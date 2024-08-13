@@ -88,7 +88,7 @@ jQuery(document).ready(function($) {
         });            
     });
 
-    $("#select-site").on("change", function() {
+    $("#select-nda-site").on("change", function() {
         // Get the selected value from the dropdown
         var siteID = $(this).val();
 

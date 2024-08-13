@@ -614,10 +614,10 @@ function check_user_site_id($user_id=false) {
     }
     ?>
     <div class="ui-widget" id="result-container">
-        <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
         <div style="display:flex;">
             <?php echo __( '甲方：', 'your-text-domain' );?>
-            <select id="select-site" >
+            <select id="select-nda-site" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
                     $site_args = array(
