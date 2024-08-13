@@ -392,14 +392,17 @@ function check_user_site_id($user_id=false) {
             </select>
         </div>
         <div style="display:flex;">
-        </div>
-        <div style="display:flex; justify-content:space-between; margin:5px;">
             <?php echo __( '乙方：', 'your-text-domain' );?>
             <input type="text" value="<?php echo $user->display_name;?>" />
             <?php echo __( '身分證字號：', 'your-text-domain' );?>
             <input type="text" />
         </div>
-        <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <textarea id="nda-content" rows="8"></textarea>
+        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+        </div>
         <div style="text-align: right">
         </div>
     </div>
