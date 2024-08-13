@@ -1023,13 +1023,14 @@ if (!class_exists('to_do_list')) {
 
         // signature_record
         function display_signature_record() {
+/*            
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
-            
-            $signature_record_list = $this->get_signature_record_list();
-            $html_contain = $signature_record_list['html'];
-            $x_value = $signature_record_list['x'];
+*/            
+            //$signature_record_list = $this->get_signature_record_list();
+            //$html_contain = $signature_record_list['html'];
+            //$x_value = $signature_record_list['x'];
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
