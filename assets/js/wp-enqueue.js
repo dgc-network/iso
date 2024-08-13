@@ -91,6 +91,7 @@ jQuery(document).ready(function($) {
     $("#select-nda-site").on("change", function() {
         // Get the selected value from the dropdown
         var siteID = $(this).val();
+        alert(siteID);
 
         // Check if a site is selected
         if (siteID) {
