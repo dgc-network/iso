@@ -358,60 +358,6 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 }
 
 // User did not login system yet
-function is_user_not_in_site() {
-
-}
-
-function check_user_site_id($user_id=false) {
-    if (empty($user_id)) $user_id=get_current_user_id();
-    $user = get_userdata($user_id);
-    // Get the site_id meta for the user
-    $site_id = get_user_meta($user_id, 'site_id', true);
-    
-    // Check if site_id does not exist or is empty
-    if (empty($site_id)) {
-        //return true;
-    }
-    ?>
-    <div class="ui-widget" id="result-container">
-        <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-        <div style="display:flex;">
-            <?php echo __( '甲方：', 'your-text-domain' );?>
-            <select id="select-site" >
-                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                <?php
-                    $site_args = array(
-                        'post_type'      => 'site',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
-                    }
-                ?>
-            </select>
-        </div>
-        <div style="display:flex;">
-            <?php echo __( '乙方：', 'your-text-domain' );?>
-            <input type="text" value="<?php echo $user->display_name;?>" />
-            <?php echo __( '身分證字號：', 'your-text-domain' );?>
-            <input type="text" />
-        </div>
-        <textarea id="nda-content" rows="8"></textarea>
-        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-        </div>
-        <div style="text-align: right">
-        </div>
-    </div>
-    <?php
-    exit;
-    //return false;
-}
-
-// User did not login system yet
 function user_did_not_login_yet() {
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
@@ -655,3 +601,76 @@ function get_users_by_site_id($site_id) {
     );
     return $user_ids;
 }
+
+function check_user_site_id($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    // Get the site_id meta for the user
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    
+    // Check if site_id does not exist or is empty
+    if (empty($site_id)) {
+        //return true;
+    }
+    ?>
+    <div class="ui-widget" id="result-container">
+        <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+        <div style="display:flex;">
+            <?php echo __( '甲方：', 'your-text-domain' );?>
+            <select id="select-site" >
+                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
+                    }
+                ?>
+            </select>
+        </div>
+        <div style="display:flex;">
+            <?php echo __( '乙方：', 'your-text-domain' );?>
+            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" />
+            <?php echo __( '身分證字號：', 'your-text-domain' );?>
+            <input type="text" id="social-security-id" />
+        </div>
+        <textarea id="site-content" rows="12" class="text ui-widget-content ui-corner-all"></textarea>
+        <div style="display:flex;">
+            <?php echo __( '日期：', 'your-text-domain' );?>
+            <input type="date" id="nda-date" />
+        </div>
+        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+        </div>
+        <div style="text-align: right">
+        </div>
+    </div>
+    <?php
+    exit;
+    //return false;
+}
+
+function get_site_content() {
+    // Check if the site_id is passed
+    if(isset($_POST['site_id'])) {
+        $site_id = intval($_POST['site_id']);
+
+        // Retrieve the post content
+        $post = get_post($site_id);
+
+        if($post && $post->post_type == 'site') {
+            wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
+        } else {
+            wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
+        }
+    } else {
+        wp_send_json_error(array('message' => 'No site ID provided.'));
+    }
+}
+add_action('wp_ajax_get_site_content', 'get_site_content');
+add_action('wp_ajax_nopriv_get_site_content', 'get_site_content');

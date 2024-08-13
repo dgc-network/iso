@@ -87,20 +87,38 @@ jQuery(document).ready(function($) {
             }
         });            
     });
-    
-    $("#select-site").on("change", function() {
-        // Initialize an empty array to store query parameters
-        var queryParams = [];    
-        // Check the selected value for each select element and add it to the queryParams array
-        var todoValue = $("#select-todo").val();
-        if (todoValue) {
-            queryParams.push("_select_todo=" + todoValue);
-        }
-        // Combine all query parameters into a single string
-        var queryString = queryParams.join("&");    
-        // Redirect to the new URL with all combined query parameters
-        window.location.href = "?" + queryString;
-    });
 
-})
+    $("#select-site").on("change", function() {
+        // Get the selected value from the dropdown
+        var siteID = $(this).val();
+
+        // Check if a site is selected
+        if (siteID) {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url, // Ensure this is set in your localized script
+                data: {
+                    'action': 'get_site_content', // Define a custom action in your functions.php
+                    'site_id': siteID,
+                },
+                success: function(response) {
+                    if(response.success) {
+                        // Display the post content in a designated div or element
+                        $("#site-content").html(response.data.content);
+                    } else {
+                        // Handle the case where no content is returned or an error occurred
+                        $("#site-content").html('<p>No content found for the selected site.</p>');
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert("An error occurred while retrieving the site content.");
+                }
+            });
+        } else {
+            // Clear the content area if no site is selected
+            $("#site-content").empty();
+        }
+    });
+});
 
