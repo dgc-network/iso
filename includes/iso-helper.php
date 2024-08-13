@@ -369,10 +369,31 @@ function check_user_site_id($user_id=false) {
     
     // Check if site_id does not exist or is empty
     if (empty($site_id)) {
-        return true;
+        //return true;
     }
-
-    return false;
+    ?>
+    <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <div><?php echo __( '甲方：', 'your-text-domain' );?>
+        <select id="select-site" >
+            <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
+                    }
+                ?>
+        </select>
+        <div style="text-align: right">
+            <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        </div>
+    </div>    
+    <?php
+    //return false;
 }
 
 // User did not login system yet
