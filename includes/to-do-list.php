@@ -1038,7 +1038,7 @@ if (!class_exists('to_do_list')) {
                     </div>
                 </div>
                 <?php echo $html_contain;?>
-                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $x_value;?></p>
+                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_signature_records();?></p>
             </div>
             <?php
         }
@@ -1072,8 +1072,8 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            $report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+                            //$report_id = get_post_meta(get_the_ID(), 'report_id', true);
+                            //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                             $site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -1125,6 +1125,24 @@ if (!class_exists('to_do_list')) {
             );
         }
         
+        function count_signature_records(){
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true);
+            $x = 0;
+            $query = $this->retrieve_signature_record_data();
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $site_id = get_post_meta($doc_id, 'site_id', true);
+                    if ($current_site==$site_id) { // Aditional condition to filter the data
+                        $x += 1;
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return $x;
+        }
+        
         function retrieve_signature_record_data($doc_id=false, $report_id=false, $paged=1){
             $args = array(
                 'post_type'      => 'todo',
@@ -1155,7 +1173,8 @@ if (!class_exists('to_do_list')) {
         
             if ($report_id) {
                 $args['meta_query'][] = array(
-                    'key'   => 'report_id',
+                    //'key'   => 'report_id',
+                    'key'   => 'prev_report_id',
                     'value' => $report_id,
                 );
             }
