@@ -617,9 +617,9 @@ function check_user_site_id($user_id=false) {
     
     // Check if site_id does not exist or is empty
     if (empty($site_id)) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 function display_user_site_id($user_id=false) {
