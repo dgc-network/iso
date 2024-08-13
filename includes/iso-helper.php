@@ -617,6 +617,19 @@ function check_user_site_id($user_id=false) {
     
     // Check if site_id does not exist or is empty
     if (empty($site_id)) {
+        return true;
+    }
+    return false;
+}
+
+function display_user_site_id($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    // Get the site_id meta for the user
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    
+    // Check if site_id does not exist or is empty
+    if (empty($site_id)) {
         //return true;
     }
     ?>

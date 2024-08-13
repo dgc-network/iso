@@ -682,8 +682,6 @@ if (!class_exists('display_documents')) {
 
             <div id="signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
-                <?php //echo $signature_record_list['html']?>
                 <?php echo $todo_class->get_signature_record_list($doc_id);?>
             </div>
         
