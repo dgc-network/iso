@@ -1037,7 +1037,8 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
-                <?php echo $html_contain;?>
+                <?php //echo $html_contain;?>
+                <?php echo $this->get_signature_record_list();?>
                 <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_signature_records();?></p>
             </div>
             <?php
@@ -1119,10 +1120,13 @@ if (!class_exists('to_do_list')) {
                 </div>
             </fieldset>
             <?php
+            return ob_get_clean();
+/*            
             return array(
                 'html' => ob_get_clean(),
                 'x'    => $x
             );
+*/            
         }
         
         function count_signature_records(){
