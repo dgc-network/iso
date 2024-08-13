@@ -364,6 +364,7 @@ function is_user_not_in_site() {
 
 function check_user_site_id($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
     // Get the site_id meta for the user
     $site_id = get_user_meta($user_id, 'site_id', true);
     
@@ -373,8 +374,7 @@ function check_user_site_id($user_id=false) {
     }
     ?>
     <div class="ui-widget" id="result-container">
-    <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-    <div style="display:flex; justify-content:space-between; margin:5px;">
+        <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
         <div style="display:flex;">
             <?php echo __( '甲方：', 'your-text-domain' );?>
             <select id="select-site" >
@@ -391,10 +391,17 @@ function check_user_site_id($user_id=false) {
                 ?>
             </select>
         </div>
-        <div style="text-align: right">
-            <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <div style="display:flex;">
         </div>
-    </div>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <?php echo __( '乙方：', 'your-text-domain' );?>
+            <input type="text" value="<?php echo $user->display_name;?>" />
+            <?php echo __( '身分證字號：', 'your-text-domain' );?>
+            <input type="text" />
+        </div>
+        <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <div style="text-align: right">
+        </div>
     </div>
     <?php
     exit;
