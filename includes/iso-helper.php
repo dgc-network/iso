@@ -26,6 +26,7 @@ function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', $version);
 
     wp_enqueue_script('wp-enqueue-js', plugins_url('/assets/js/wp-enqueue.js', __DIR__), array('jquery'), $version);
+    wp_enqueue_script('iso-helper', plugins_url('iso-helper.js', __FILE__), array('jquery'), $version);
     wp_localize_script('wp-enqueue-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso_documents_nonce'), // Generate nonce
