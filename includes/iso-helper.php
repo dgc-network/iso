@@ -637,7 +637,10 @@ function check_user_site_id($user_id=false) {
             <?php echo __( '身分證字號：', 'your-text-domain' );?>
             <input type="text" id="social-security-id" />
         </div>
-        <textarea id="site-content" rows="12" class="text ui-widget-content ui-corner-all"></textarea>
+        <div id="site-content">
+            <!-- The site content will be displayed here -->
+        </div>
+        <textarea id="nda-content" rows="12" class="text ui-widget-content ui-corner-all"></textarea>
         <div style="display:flex;">
             <?php echo __( '日期：', 'your-text-domain' );?>
             <input type="date" id="nda-date" />
