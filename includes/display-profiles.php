@@ -98,9 +98,9 @@ if (!class_exists('display_profiles')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
-                echo '<div class="ui-widget" id="result-container">';
+                if (check_user_site_id()) return;
 
-                //if (isset($_GET['_update_post_type_audit_item_to_audit_item'])) $this->update_post_type_audit_item_to_audit_item();
+                echo '<div class="ui-widget" id="result-container">';
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
                 if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
@@ -116,7 +116,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
-                //if ($_GET['_select_profile']=='iso-category-migration') echo $cards_class->copy_doc_category_to_iso_category();
 
                 $http_client = new http_client();
                 if ($_GET['_select_profile']=='10') echo $http_client->display_http_client_list();
@@ -166,8 +165,6 @@ if (!class_exists('display_profiles')) {
                         echo '</pre>';
                         delete_transient('oauth_callback_result'); // Clean up the transient
                     }
-                } else {
-                    //if (!isset($_GET['_select_profile']) || $_GET['_select_profile']=='0') echo $this->display_my_profile();
                 }
 
                 echo '</div>';

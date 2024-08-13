@@ -358,6 +358,24 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 }
 
 // User did not login system yet
+function is_user_not_in_site() {
+
+}
+
+function check_user_site_id($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    // Get the site_id meta for the user
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    
+    // Check if site_id does not exist or is empty
+    if (empty($site_id)) {
+        return true;
+    }
+
+    return false;
+}
+
+// User did not login system yet
 function user_did_not_login_yet() {
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
