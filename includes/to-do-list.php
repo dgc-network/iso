@@ -1129,7 +1129,7 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
             $x = 0;
-            $query = $this->retrieve_signature_record_data();
+            $query = $this->retrieve_signature_record_data(false, false, 0);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1163,7 +1163,9 @@ if (!class_exists('to_do_list')) {
                 'meta_key'       => 'submit_time',
                 'order'          => 'DESC',
             );
-        
+
+            if ($paged==0) $args['posts_per_page'] = -1;
+
             if ($doc_id) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_id',
