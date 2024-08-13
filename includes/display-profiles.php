@@ -844,7 +844,6 @@ if (!class_exists('display_profiles')) {
             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
             ob_start();
             ?>
-            <div id="site-user-dialog-backup">
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
@@ -919,7 +918,6 @@ if (!class_exists('display_profiles')) {
                 ?>
 
             </fieldset>
-            </div>
             <?php
             return ob_get_clean();
         }

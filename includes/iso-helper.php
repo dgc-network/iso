@@ -372,11 +372,13 @@ function check_user_site_id($user_id=false) {
         //return true;
     }
     ?>
+    <div class="ui-widget" id="result-container">
     <h2 style="display:inline;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
     <div style="display:flex; justify-content:space-between; margin:5px;">
-        <div><?php echo __( '甲方：', 'your-text-domain' );?>
-        <select id="select-site" >
-            <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+        <div style="display:flex;">
+            <?php echo __( '甲方：', 'your-text-domain' );?>
+            <select id="select-site" >
+                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
                     $site_args = array(
                         'post_type'      => 'site',
@@ -387,12 +389,15 @@ function check_user_site_id($user_id=false) {
                         echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
                     }
                 ?>
-        </select>
+            </select>
+        </div>
         <div style="text-align: right">
             <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
         </div>
-    </div>    
+    </div>
+    </div>
     <?php
+    exit;
     //return false;
 }
 
