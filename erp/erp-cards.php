@@ -820,6 +820,65 @@ if (!class_exists('erp_cards')) {
         }
 
         function set_customer_card_dialog_data() {
+            if (isset($_POST['_customer_id'])) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $customer_id = sanitize_text_field($_POST['_customer_id']);
+                $customer_code = sanitize_text_field($_POST['_customer_code']);
+                $company_phone = sanitize_text_field($_POST['_company_phone']);
+                $company_fax = sanitize_text_field($_POST['_company_fax']);
+        
+                $data = array(
+                    'ID'           => $customer_id,
+                    'post_title'   => sanitize_text_field($_POST['_customer_title']),
+                    'post_content' => sanitize_text_field($_POST['_customer_content']),
+                );
+                wp_update_post($data);
+        
+                // Retrieve the existing site_customer_data
+                $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
+                
+                // Check if site_customer_data is an array and the site_id key exists
+                if (!is_array($site_customer_data)) {
+                    $site_customer_data = array();
+                }
+                
+                // Update or add the site_id key with the customer_code value
+                $site_customer_data[$site_id] = $customer_code;
+        
+                // Update the meta field with the modified array
+                update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
+                update_post_meta($customer_id, 'company_phone', $company_phone);
+                update_post_meta($customer_id, 'company_fax', $company_fax);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $customer_code = time();
+                
+                $new_post = array(
+                    'post_title'    => 'New customer',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'site-profile',
+                );    
+                
+                $post_id = wp_insert_post($new_post);
+                
+                // Initialize the site_customer_data array with the site_id and customer_code
+                $site_customer_data = array(
+                    $site_id => $customer_code,
+                );
+                
+                // Store the array as a serialized meta value
+                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+            }
+        
+            $response = array('html_contain' => $this->display_customer_card_list());
+            wp_send_json($response);
+        }
+/*        
+        function set_customer_card_dialog_data() {
             if( isset($_POST['_customer_id']) ) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -841,8 +900,6 @@ if (!class_exists('erp_cards')) {
                 
                 // Store the array as a serialized meta value
                 update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
-
-                //update_post_meta($customer_id, 'customer_code', $customer_code);
                 update_post_meta($customer_id, 'company_phone', $company_phone);
                 update_post_meta($customer_id, 'company_fax', $company_fax);
             } else {
@@ -868,25 +925,11 @@ if (!class_exists('erp_cards')) {
                 
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_customer_data', $site_customer_data);
-/*                
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $new_post = array(
-                    'post_title'    => 'New customer',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'customer-card',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'customer_code', time());
-*/                
             }
             $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
-
+*/
         function del_customer_card_dialog_data() {
             wp_delete_post($_POST['_customer_id'], true);
             $response = array('html_contain' => $this->display_customer_card_list());
