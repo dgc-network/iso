@@ -699,6 +699,8 @@ if (!class_exists('erp_cards')) {
                 );
                 $query = new WP_Query($args);
             }
+            return $query;
+
         }
 /*            
             $args = array(
