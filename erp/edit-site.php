@@ -29,7 +29,7 @@ function register_site_post_type() {
         'has_archive'   => true,
         'menu_icon'     => 'dashicons-admin-multisite',
     );
-    register_post_type( 'site', $args );
+    register_post_type( 'site-profile', $args );
 }
 add_action('init', 'register_site_post_type');
 

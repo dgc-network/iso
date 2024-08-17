@@ -9,7 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
+            add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -63,8 +63,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_site_content', array( $this, 'get_site_content' ) );
-            add_action( 'wp_ajax_nopriv_get_site_content', array( $this, 'get_site_content' ) );
+            add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
+            add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
     
         }
 
@@ -166,7 +166,7 @@ if (!class_exists('display_profiles')) {
             //return false;
         }
         
-        function get_site_content() {
+        function get_site_profile_content() {
             // Check if the site_id is passed
             if(isset($_POST['site_id'])) {
                 $site_id = intval($_POST['site_id']);
@@ -646,9 +646,8 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                //'show_in_menu'  => false,
             );
-            register_post_type( 'site', $args );
+            register_post_type( 'site-profile', $args );
         }
 
         function display_site_profile($initial=false) {

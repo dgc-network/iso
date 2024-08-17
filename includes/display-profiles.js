@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 url: ajax_object.ajax_url, // Ensure this is set in your localized script
                 data: {
-                    'action': 'get_site_content', // Define a custom action in your functions.php
+                    'action': 'get_site_profile_content', // Define a custom action in your functions.php
                     'site_id': siteID,
                 },
                 success: function(response) {
