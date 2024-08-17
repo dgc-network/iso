@@ -1927,6 +1927,22 @@ if (!class_exists('display_profiles')) {
         }
 
         function rename_site_to_site_profile() {
+            // Remove all posts of the post type 'site-profile' first
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => -1,
+                'fields'         => 'ids', // Retrieve only the IDs of the posts
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                foreach ($query->posts as $post_id) {
+                    wp_delete_post($post_id, true); // Force delete the post
+                }
+            }
+        
+            // Now rename the 'site' post type to 'site-profile'
             $args = array(
                 'post_type'      => 'site',
                 'posts_per_page' => -1,
