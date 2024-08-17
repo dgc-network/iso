@@ -149,7 +149,6 @@ if (!class_exists('display_profiles')) {
                 <div id="site-content">
                     <!-- The site content will be displayed here -->
                 </div>
-                <textarea id="nda-content" rows="12" class="text ui-widget-content ui-corner-all"></textarea>
                 <div style="display:flex;">
                     <?php echo __( '日期：', 'your-text-domain' );?>
                     <input type="date" id="nda-date" />
@@ -163,7 +162,7 @@ if (!class_exists('display_profiles')) {
                 </div>
             </div>
             <?php
-            exit;
+            //exit;
             //return false;
         }
         
