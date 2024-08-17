@@ -681,10 +681,10 @@ if (!class_exists('erp_cards')) {
                 'meta_query'     => array(
                     array(
                         'key'     => 'site_customer_data',
-                        'value'   => $site_id,
-                        'compare' => 'IN',
-                        //'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
-                        //'compare' => 'LIKE',
+                        //'value'   => $site_id,
+                        //'compare' => 'IN',
+                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
+                        'compare' => 'LIKE',
                     ),
                 ),
             );
