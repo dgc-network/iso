@@ -671,6 +671,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function retrieve_customer_card_data($paged = 1) {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
