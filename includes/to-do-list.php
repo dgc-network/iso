@@ -9,9 +9,9 @@ if (!class_exists('to_do_list')) {
         public function __construct() {
             add_shortcode( 'to-do-list', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_to_do_list_scripts' ) );
-            add_action( 'init', array( $this, 'register_todo_post_type' ) );
-            add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
-            add_action( 'init', array( $this, 'register_action_post_type' ) );
+            //add_action( 'init', array( $this, 'register_todo_post_type' ) );
+            //add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
+            //add_action( 'init', array( $this, 'register_action_post_type' ) );
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -55,7 +55,9 @@ if (!class_exists('to_do_list')) {
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
-            if (is_user_logged_in()) {
+            if (!is_user_logged_in()) user_did_not_login_yet();                
+            elseif (is_user_not_in_site()) display_site_profile_NDA();
+            else {
 
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
@@ -88,8 +90,6 @@ if (!class_exists('to_do_list')) {
                     exit;
                 }
 
-            } else {
-                user_did_not_login_yet();
             }
         }
 

@@ -9,10 +9,10 @@ if (!class_exists('display_documents')) {
         public function __construct() {
             add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
-            add_action( 'init', array( $this, 'register_document_post_type' ) );
-            add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
-            add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
-            add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
+            //add_action( 'init', array( $this, 'register_document_post_type' ) );
+            //add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
+            //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
+            //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
@@ -128,7 +128,9 @@ if (!class_exists('display_documents')) {
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
-            if (is_user_logged_in()) {
+            if (!is_user_logged_in()) user_did_not_login_yet();                
+            elseif (is_user_not_in_site()) display_site_profile_NDA();
+            else {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
@@ -192,8 +194,6 @@ if (!class_exists('display_documents')) {
                     echo $this->display_document_list();
                 }
             
-            } else {
-                user_did_not_login_yet();
             }
         }
 

@@ -63,11 +63,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
-            add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
-            add_action( 'wp_ajax_set_nda_submit_data', array( $this, 'set_nda_submit_data' ) );
-            add_action( 'wp_ajax_nopriv_set_nda_submit_data', array( $this, 'set_nda_submit_data' ) );
-    
         }
 
         function enqueue_display_profile_scripts() {
@@ -100,107 +95,11 @@ if (!class_exists('display_profiles')) {
             <?php
         }
 
-        function is_user_not_in_site($user_id=false) {
-            if (empty($user_id)) $user_id=get_current_user_id();
-            $user = get_userdata($user_id);
-            // Get the site_id meta for the user
-            $site_id = get_user_meta($user_id, 'site_id', true);
-            
-            // Check if site_id does not exist or is empty
-            if (empty($site_id)) {
-                return true;
-            }
-            return false;
-        }
-        
-        function display_site_profile_NDA($user_id=false) {
-            if (empty($user_id)) $user_id=get_current_user_id();
-            $user = get_userdata($user_id);
-            // Get the site_id meta for the user
-            $site_id = get_user_meta($user_id, 'site_id', true);
-            
-            // Check if site_id does not exist or is empty
-            if (empty($site_id)) {
-                //return true;
-            }
-            ?>
-            <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-                <div style="display:flex;">
-                    <?php echo __( '甲方：', 'your-text-domain' );?>
-                    <select id="select-nda-site" style="margin-right:25px;">
-                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                        <?php
-                            $site_args = array(
-                                'post_type'      => 'site-profile',
-                                'posts_per_page' => -1,
-                            );
-                            $sites = get_posts($site_args);    
-                            foreach ($sites as $site) {
-                                echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
-                            }
-                        ?>
-                    </select>
-                    <?php echo __( '統一編號：', 'your-text-domain' );?>
-                    <input type="text" id="unified-number" />
-                </div>
-                <div style="display:flex;">
-                    <?php echo __( '乙方：', 'your-text-domain' );?>
-                    <input type="text" id="display-name" value="<?php echo $user->display_name;?>" style="margin-right:25px;" />
-                    <?php echo __( '身分證字號：', 'your-text-domain' );?>
-                    <input type="text" id="identify-number" />
-                    <input type="hidden" id="user-id" />
-                </div>
-                <div id="site-content">
-                    <!-- The site content will be displayed here -->
-                </div>
-                <div style="display:flex;">
-                    <?php echo __( '日期：', 'your-text-domain' );?>
-                    <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
-                </div>
-                <hr>
-                <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-                <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-            </div>
-            <?php
-        }
-        
-        function set_nda_submit_data() {
-            $response = array();
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
-                $user_id = intval($_POST['_user_id']);        
-                $site_id = intval($_POST['_site_id']);        
-                update_user_meta( $user_id, 'site_id', $site_id);
-                update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
-                update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
-            }
-            wp_send_json($response);
-        }
-        
-        function get_site_profile_content() {
-            // Check if the site_id is passed
-            if(isset($_POST['site_id'])) {
-                $site_id = intval($_POST['site_id']);
-        
-                // Retrieve the post content
-                $post = get_post($site_id);
-        
-                if($post && $post->post_type == 'site-profile') {
-                    wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
-                } else {
-                    wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
-                }
-            } else {
-                wp_send_json_error(array('message' => 'No site ID provided.'));
-            }
-        }
-        
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_did_not_login_yet();                
-            elseif ($this->is_user_not_in_site()) $this->display_site_profile_NDA();
-            //elseif (!$this->is_user_not_in_site()) $this->display_site_profile_NDA();
+            elseif (is_user_not_in_site()) display_site_profile_NDA();
             else {
                 if (isset($_GET['_rename_site_to_site_profile'])) $this->rename_site_to_site_profile();
                 
