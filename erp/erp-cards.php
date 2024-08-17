@@ -721,7 +721,7 @@ if (!class_exists('erp_cards')) {
                 // Re-run the query with the updated arguments
                 $query = new WP_Query($args);
             }
-        
+/*        
             $posts = $query->posts;
         
             // Sort the posts by the customer_code value in the meta 'site_customer_data'
@@ -736,7 +736,7 @@ if (!class_exists('erp_cards')) {
                 // Compare the customer codes
                 return $customer_code_a <=> $customer_code_b;
             });
-        
+*/        
             return $query; // Return the query object or just $posts, depending on your need
         }
 /*        
