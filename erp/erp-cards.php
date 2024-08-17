@@ -680,7 +680,9 @@ if (!class_exists('erp_cards')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     array(
-                        //'key'     => 'site_customer_data',
+                        'key'     => 'site_customer_data',
+                        'value'   => $site_id,
+                        'compare' => 'IN',
                         //'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
                         //'compare' => 'LIKE',
                     ),
