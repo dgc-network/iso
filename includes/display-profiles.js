@@ -1,6 +1,35 @@
 // display-profiles
 jQuery(document).ready(function($) {
 
+    $("#nda-submit").on("click", function () {
+
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_nda_submit_data',
+                '_site_id': $("#select-nda-sitel").val(),
+                '_unified_number': $("#unified-number").val(),
+                '_display_name': $("#display-name").val(),
+                '_identity_number': $("#identity-number").val(),
+                '_user_id': $("#user-id").val(),
+            },
+            success: function (response) {
+                console.log(response);
+                window.location.replace('/');
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });
+
+    $("#nda-exit").on("click", function () {
+        window.location.replace('/');
+    });
+
     $("#select-nda-site").on("change", function() {
         // Get the selected value from the dropdown
         var siteID = $(this).val();

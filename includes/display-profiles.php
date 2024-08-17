@@ -65,6 +65,8 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
+            add_action( 'wp_ajax_set_nda_submit_data', array( $this, 'set_nda_submit_data' ) );
+            add_action( 'wp_ajax_nopriv_set_nda_submit_data', array( $this, 'set_nda_submit_data' ) );
     
         }
 
@@ -126,7 +128,7 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
                 <div style="display:flex;">
                     <?php echo __( '甲方：', 'your-text-domain' );?>
-                    <select id="select-nda-site" >
+                    <select id="select-nda-site" style="margin-right:25px;">
                         <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                         <?php
                             $site_args = array(
@@ -139,33 +141,40 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
-                    <?php echo __( ' 統一編號：', 'your-text-domain' );?>
-                    <input type="text" id="social-security-id" />
+                    <?php echo __( '統一編號：', 'your-text-domain' );?>
+                    <input type="text" id="unified-number" />
                 </div>
                 <div style="display:flex;">
                     <?php echo __( '乙方：', 'your-text-domain' );?>
-                    <input type="text" id="display-name" value="<?php echo $user->display_name;?>" />
-                    <?php echo __( ' 身分證字號：', 'your-text-domain' );?>
-                    <input type="text" id="social-security-id" />
+                    <input type="text" id="display-name" value="<?php echo $user->display_name;?>" style="margin-right:25px;" />
+                    <?php echo __( '身分證字號：', 'your-text-domain' );?>
+                    <input type="text" id="identify-number" />
+                    <input type="hidden" id="user-id" />
                 </div>
                 <div id="site-content">
                     <!-- The site content will be displayed here -->
                 </div>
                 <div style="display:flex;">
                     <?php echo __( '日期：', 'your-text-domain' );?>
-                    <input type="date" id="nda-date" />
+                    <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
+                <hr>
                 <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                 <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-        
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                </div>
-                <div style="text-align: right">
-                </div>
             </div>
             <?php
-            //exit;
-            //return false;
+        }
+        
+        function set_nda_submit_data() {
+            $response = array();
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
+                $user_id = intval($_POST['_user_id']);        
+                $site_id = intval($_POST['_site_id']);        
+                update_user_meta( $user_id, 'site_id', $site_id);
+                update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
+                update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+            }
+            wp_send_json($response);
         }
         
         function get_site_profile_content() {
