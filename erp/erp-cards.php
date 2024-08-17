@@ -587,18 +587,6 @@ if (!class_exists('erp_cards')) {
         }
 
         // customer-card
-        function register_customer_card_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Customer', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'customer-card', $args );
-        }
-
         function display_customer_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
@@ -681,86 +669,77 @@ if (!class_exists('erp_cards')) {
             }
             return ob_get_clean();
         }
-/*        
-        function display_customer_card_list() {
-            ob_start();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
 
-            if ($is_site_admin || current_user_can('administrator')) {
-                // Check if the user is administrator
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(4);?></div>
-                    <div style="text-align:right; display:flex;">
-                        <input type="text" id="search-customer" style="display:inline" placeholder="Search..." />
-                    </div>
-                </div>
-
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Code', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $paged = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_customer_card_data($paged);
-                        $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-
-                                //$customer_code = get_post_meta(get_the_ID(), 'customer_code', true);
-                                $site_customer_data = get_post_meta(get_the_ID(), 'site_customer_data', true);
-
-                                // Check if site_customer_data is an array and contains the customer_code
-                                if (is_array($site_customer_data) && isset($site_customer_data['customer_code'])) {
-                                    $customer_code = $site_customer_data['customer_code'];
-                                } else {
-                                    // Handle the case where customer_code doesn't exist or site_customer_data is not an array
-                                    $customer_code = ''; // or any default value you prefer
-                                }
-
-                                ?>
-                                <tr id="edit-customer-card-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo $customer_code;?></td>
-                                    <td><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    <div class="pagination">
-                        <?php
-                        // Display pagination links
-                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                        ?>
-                    </div>
-
-                </fieldset>
-                <div id="customer-card-dialog" title="Customer dialog"></div>
-                <?php
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
+        function retrieve_customer_card_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'site_customer_data',
+                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
+                        'compare' => 'LIKE',
+                    ),
+                ),
+            );
+            
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
-            return ob_get_clean();
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if the result is empty and the search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Retrieve all meta keys associated with the post type 'site-profile'
+                $meta_keys = get_post_type_meta_keys('site-profile');
+                
+                // Prepare meta query to search across all meta keys
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+        
+                // Add this meta query to the original arguments
+                $args['meta_query'][] = $meta_query_all_keys;
+        
+                // Re-run the query with the updated arguments
+                $query = new WP_Query($args);
+            }
+        
+            $posts = $query->posts;
+        
+            // Sort the posts by the customer_code value in the meta 'site_customer_data'
+            usort($posts, function($a, $b) {
+                $site_customer_data_a = get_post_meta($a->ID, 'site_customer_data', true);
+                $site_customer_data_b = get_post_meta($b->ID, 'site_customer_data', true);
+            
+                // Extract the customer_code for each post
+                $customer_code_a = $site_customer_data_a['customer_code'] ?? 0;
+                $customer_code_b = $site_customer_data_b['customer_code'] ?? 0;
+            
+                // Compare the customer codes
+                return $customer_code_a <=> $customer_code_b;
+            });
+        
+            return $query; // Return the query object or just $posts, depending on your need
         }
-*/
+/*        
         function retrieve_customer_card_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -805,35 +784,7 @@ if (!class_exists('erp_cards')) {
                 return $customer_code_a <=> $customer_code_b;
             });
             
-            // Now $posts is sorted by the customer_code value
-/*
-            if (!empty($posts)) {
-                foreach ($posts as $post) {
-                    setup_postdata($post);
-                    // Your loop code here
-                }
-                wp_reset_postdata();
-            }
-/*            
-            
-            $args = array(
-                'post_type'      => 'customer-card',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-                'meta_key'       => 'customer_code', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
-            );
-*/
-            //$query = new WP_Query($args);
-        
-            // Check if query is empty and search query is not empty
+            // Check if result is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Add meta query for searching across all meta keys
                 //$meta_keys = get_post_type_meta_keys('customer-card');
@@ -852,7 +803,7 @@ if (!class_exists('erp_cards')) {
         
             return $query;
         }
-
+*/
         function display_customer_card_dialog($customer_id = false) {
             ob_start();
             
@@ -901,49 +852,7 @@ if (!class_exists('erp_cards')) {
             <?php
             return ob_get_clean();
         }
-/*        
-        function display_customer_card_dialog($customer_id=false) {
-            ob_start();
-            $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
 
-            // Check if site_customer_data is an array and contains the customer_code
-            if (is_array($site_customer_data) && isset($site_customer_data['customer_code'])) {
-                $customer_code = $site_customer_data['customer_code'];
-            } else {
-                // Handle the case where customer_code doesn't exist or site_customer_data is not an array
-                $customer_code = ''; // or any default value you prefer
-            }
-
-            $customer_title = get_the_title($customer_id);
-            $customer_content = get_post_field('post_content', $customer_id);
-            $company_phone = get_post_meta($customer_id, 'company_phone', true);
-            $company_fax = get_post_meta($customer_id, 'company_fax', true);
-            ?>
-            <fieldset>
-                <input type="hidden" id="customer-id" value="<?php echo esc_attr($customer_id);?>" />
-                <label for="customer-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="customer-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="customer-content" rows="3" style="width:100%;"><?php echo esc_html($customer_content);?></textarea>
-                <?php
-                // transaction data vs card key/value
-                $key_pairs = array(
-                    '_customer'   => $customer_id,
-                );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
-                ?>
-                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
-                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' );?></label>
-                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax);?>" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-*/
         function get_customer_card_dialog_data() {
             $customer_id = sanitize_text_field($_POST['_customer_id']);
             $response = array('html_contain' => $this->display_customer_card_dialog($customer_id));
@@ -1008,59 +917,7 @@ if (!class_exists('erp_cards')) {
             $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
-/*        
-        function set_customer_card_dialog_data() {
-            if( isset($_POST['_customer_id']) ) {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $customer_id = sanitize_text_field($_POST['_customer_id']);
-                $customer_code = sanitize_text_field($_POST['_customer_code']);
-                $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_fax = sanitize_text_field($_POST['_company_fax']);
-                $data = array(
-                    'ID'           => $customer_id,
-                    'post_title'   => sanitize_text_field($_POST['_customer_title']),
-                    'post_content' => sanitize_text_field($_POST['_customer_content']),
-                );
-                wp_update_post( $data );
-                // Create an associative array to store the key-value pair
-                $site_customer_data = array(
-                    'site_id' => $site_id,
-                    'customer_code' => $customer_code,
-                );
-                
-                // Store the array as a serialized meta value
-                update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
-                update_post_meta($customer_id, 'company_phone', $company_phone);
-                update_post_meta($customer_id, 'company_fax', $company_fax);
-            } else {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $customer_code = time();
-                
-                $new_post = array(
-                    'post_title'    => 'New customer',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'site-profile',
-                );    
-                
-                $post_id = wp_insert_post($new_post);
-                
-                // Create an associative array to store the key-value pair
-                $site_customer_data = array(
-                    'site_id' => $site_id,
-                    'customer_code' => $customer_code,
-                );
-                
-                // Store the array as a serialized meta value
-                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
-            }
-            $response = array('html_contain' => $this->display_customer_card_list());
-            wp_send_json($response);
-        }
-*/
+
         function del_customer_card_dialog_data() {
             wp_delete_post($_POST['_customer_id'], true);
             $response = array('html_contain' => $this->display_customer_card_list());
@@ -1078,7 +935,7 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
-        // Register vendor-card post type
+        // Register vendor-card post type        
         function register_vendor_card_post_type() {
             $labels = array(
                 'menu_name'     => _x('Vendor', 'admin menu', 'textdomain'),
