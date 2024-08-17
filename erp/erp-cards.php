@@ -740,17 +740,17 @@ if (!class_exists('erp_cards')) {
                 return isset($site_customer_data[$site_id]);
             });
         
-            // Sort the posts by the customer_code value in the meta 'site_customer_data'
-            usort($posts, function($a, $b) {
+            // Sort posts based on the value associated with site_id
+            usort($filtered_posts, function($a, $b) use ($site_id) {
                 $site_customer_data_a = get_post_meta($a->ID, 'site_customer_data', true);
                 $site_customer_data_b = get_post_meta($b->ID, 'site_customer_data', true);
-            
-                // Extract the customer_code for each post
-                $customer_code_a = $site_customer_data_a['customer_code'] ?? 0;
-                $customer_code_b = $site_customer_data_b['customer_code'] ?? 0;
-            
-                // Compare the customer codes
-                return $customer_code_a <=> $customer_code_b;
+                
+                // Extract values associated with site_id
+                $value_a = isset($site_customer_data_a[$site_id]) ? $site_customer_data_a[$site_id] : 0;
+                $value_b = isset($site_customer_data_b[$site_id]) ? $site_customer_data_b[$site_id] : 0;
+                
+                // Compare values for sorting
+                return $value_a <=> $value_b;
             });
 
             // Create a new WP_Query-like object with filtered posts
