@@ -98,7 +98,7 @@ if (!class_exists('display_profiles')) {
             <?php
         }
 
-        function check_user_site_id($user_id=false) {
+        function is_user_not_in_site($user_id=false) {
             if (empty($user_id)) $user_id=get_current_user_id();
             $user = get_userdata($user_id);
             // Get the site_id meta for the user
@@ -106,12 +106,12 @@ if (!class_exists('display_profiles')) {
             
             // Check if site_id does not exist or is empty
             if (empty($site_id)) {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         
-        function display_site_NDA($user_id=false) {
+        function display_site_profile_NDA($user_id=false) {
             if (empty($user_id)) $user_id=get_current_user_id();
             $user = get_userdata($user_id);
             // Get the site_id meta for the user
@@ -139,11 +139,13 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
+                    <?php echo __( ' 統一編號：', 'your-text-domain' );?>
+                    <input type="text" id="social-security-id" />
                 </div>
                 <div style="display:flex;">
                     <?php echo __( '乙方：', 'your-text-domain' );?>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" />
-                    <?php echo __( '身分證字號：', 'your-text-domain' );?>
+                    <?php echo __( ' 身分證字號：', 'your-text-domain' );?>
                     <input type="text" id="social-security-id" />
                 </div>
                 <div id="site-content">
@@ -187,14 +189,13 @@ if (!class_exists('display_profiles')) {
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
-            if (is_user_logged_in()) {
-                $this->display_site_NDA();
-            } else {
-                user_did_not_login_yet();
+            if (is_user_logged_in()) user_did_not_login_yet();                
+            //elseif (is_user_not_in_site()) $this->display_site_profile_NDA();
+            elseif (!is_user_not_in_site()) $this->display_site_profile_NDA();
+            else {
                 if (isset($_GET['_rename_site_to_site_profile'])) $this->rename_site_to_site_profile();
-
-                //if (check_user_site_id()) display_site_NDA();
-
+                
+                //$this->display_site_profile_NDA();
 
                 echo '<div class="ui-widget" id="result-container">';
 
