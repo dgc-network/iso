@@ -84,7 +84,7 @@ if (!class_exists('display_profiles')) {
                 <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
                 <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                 <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
-                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '供應商資料', 'your-text-domain' );?></option>
+                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '廠商資料', 'your-text-domain' );?></option>
                 <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
                 <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
