@@ -98,7 +98,7 @@ if (!class_exists('display_profiles')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
-                if (isset($_GET['_copy_site_to_site_profile'])) $this->copy_site_to_site_profile();
+                if (isset($_GET['_rename_site_to_site_profile'])) $this->rename_site_to_site_profile();
 
                 //if (check_user_site_id()) display_user_site_id();
 
@@ -1926,6 +1926,33 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
+        function rename_site_to_site_profile() {
+            $args = array(
+                'post_type'      => 'site',
+                'posts_per_page' => -1,
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the current post ID
+                    $current_post_id = get_the_ID();
+        
+                    // Update the post type to 'site-profile'
+                    wp_update_post(array(
+                        'ID'        => $current_post_id,
+                        'post_type' => 'site-profile',
+                    ));
+                }
+        
+                // Reset post data
+                wp_reset_postdata();
+            }
+        }
+        
         function copy_site_to_site_profile() {
             $args = array(
                 'post_type'      => 'site',
