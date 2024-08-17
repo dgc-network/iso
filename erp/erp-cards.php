@@ -840,7 +840,7 @@ if (!class_exists('erp_cards')) {
                 );
                 
                 // Store the array as a serialized meta value
-                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+                update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
 
                 //update_post_meta($customer_id, 'customer_code', $customer_code);
                 update_post_meta($customer_id, 'company_phone', $company_phone);
