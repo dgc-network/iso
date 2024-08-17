@@ -674,6 +674,29 @@ if (!class_exists('erp_cards')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
+            global $wpdb;
+            $query = "
+                SELECT DISTINCT p.ID
+                FROM {$wpdb->prefix}posts p
+                INNER JOIN {$wpdb->prefix}postmeta pm ON p.ID = pm.post_id
+                WHERE pm.meta_key = 'site_customer_data'
+                AND pm.meta_value LIKE '%:\"$site_id\";%'
+                AND p.post_type = 'site-profile'
+                AND p.post_status = 'publish'
+            ";
+            $post_ids = $wpdb->get_col($query);
+        
+            if ($post_ids) {
+                $args = array(
+                    'post_type'      => 'site-profile',
+                    'post__in'       => $post_ids,
+                    'posts_per_page' => get_option('operation_row_counts'),
+                    'paged'          => $paged,
+                );
+                $query = new WP_Query($args);
+            }
+        }
+/*            
             $args = array(
                 'post_type'      => 'site-profile',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -688,7 +711,8 @@ if (!class_exists('erp_cards')) {
                     ),
                 ),
             );
-            
+*/            
+/*
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
