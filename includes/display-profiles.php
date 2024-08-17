@@ -98,7 +98,7 @@ if (!class_exists('display_profiles')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
-                if (check_user_site_id()) display_user_site_id();
+                //if (check_user_site_id()) display_user_site_id();
                 //display_user_site_id();
 
                 echo '<div class="ui-widget" id="result-container">';
