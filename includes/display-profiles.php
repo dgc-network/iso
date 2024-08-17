@@ -9,7 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            //add_action( 'init', array( $this, 'register_site_post_type' ) );
+            //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -549,7 +549,7 @@ if (!class_exists('display_profiles')) {
         }
 
         // site-profile setting scripts
-        function register_site_post_type() {
+        function register_site_profile_post_type() {
             $labels = array(
                 'menu_name'     => _x('Site', 'admin menu', 'textdomain'),
             );
@@ -1928,7 +1928,7 @@ if (!class_exists('display_profiles')) {
 
         function copy_site_to_site_profile() {
             $args = array(
-                'post_type'      => 'site-profile',
+                'post_type'      => 'site',
                 'posts_per_page' => -1,
             );
         
@@ -1967,9 +1967,6 @@ if (!class_exists('display_profiles')) {
                             }
                         }
         
-                        $curtain_model_price = get_post_meta($new_post_id, 'curtain_model_price', true);
-                        update_post_meta($new_post_id, 'product_item_price', $curtain_model_price);
-
                     }
                 }
         
