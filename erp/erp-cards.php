@@ -640,7 +640,18 @@ if (!class_exists('erp_cards')) {
                                 <tr id="edit-customer-card-<?php the_ID(); ?>">
                                     <td style="text-align:center;"><?php echo esc_html($customer_code); ?></td>
                                     <td><?php the_title(); ?></td>
-                                    <td><?php the_content(); ?></td>
+                                    <?php /*<td><?php the_content(); ?></td>*/?>
+                                    <td>
+                                        <?php 
+                                        if (is_array($site_customer_data)) {
+                                            echo '<pre>';
+                                            print_r($site_customer_data);
+                                            echo '</pre>';
+                                        } else {
+                                            echo esc_html($site_customer_data); // In case it's not an array, just display it normally
+                                        }
+                                        ?>
+                                    </td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -671,54 +682,19 @@ if (!class_exists('erp_cards')) {
         }
 
         function retrieve_customer_card_data($paged = 1) {
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-            
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
-            global $wpdb;
-            $query = "
-                SELECT DISTINCT p.ID
-                FROM {$wpdb->prefix}posts p
-                INNER JOIN {$wpdb->prefix}postmeta pm ON p.ID = pm.post_id
-                WHERE pm.meta_key = 'site_customer_data'
-                AND pm.meta_value LIKE '%:\"$site_id\";%'
-                AND p.post_type = 'site-profile'
-                AND p.post_status = 'publish'
-            ";
-            $post_ids = $wpdb->get_col($query);
-        
-            if ($post_ids) {
-                $args = array(
-                    'post_type'      => 'site-profile',
-                    'post__in'       => $post_ids,
-                    'posts_per_page' => get_option('operation_row_counts'),
-                    'paged'          => $paged,
-                );
-                $query = new WP_Query($args);
-            }
-            return $query;
-
-        }
-/*            
             $args = array(
                 'post_type'      => 'site-profile',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
                     array(
-                        'key'     => 'site_customer_data',
-                        //'value'   => $site_id,
-                        //'compare' => 'IN',
-                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
-                        'compare' => 'LIKE',
+                        //'key'     => 'site_customer_data',
+                        //'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
+                        //'compare' => 'LIKE',
                     ),
                 ),
             );
-*/            
-/*
+
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
