@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
     $("#select-nda-site").on("change", function() {
         // Get the selected value from the dropdown
         var siteID = $(this).val();
-        alert('ID:'+siteID);
+        //alert('ID:'+siteID);
 
         // Check if a site is selected
         if (siteID) {
@@ -19,6 +19,7 @@ jQuery(document).ready(function($) {
                     if(response.success) {
                         // Display the post content in a designated div or element
                         $("#site-content").html(response.data.content);
+                        console.log(response.data.content);
                     } else {
                         // Handle the case where no content is returned or an error occurred
                         $("#site-content").html('<p>No content found for the selected site.</p>');

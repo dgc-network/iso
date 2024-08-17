@@ -188,11 +188,13 @@ if (!class_exists('display_profiles')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (is_user_logged_in()) {
+                $this->display_site_NDA();
+            } else {
+                user_did_not_login_yet();
                 if (isset($_GET['_rename_site_to_site_profile'])) $this->rename_site_to_site_profile();
 
                 //if (check_user_site_id()) display_site_NDA();
 
-                $this->display_site_NDA();
 
                 echo '<div class="ui-widget" id="result-container">';
 
@@ -262,8 +264,6 @@ if (!class_exists('display_profiles')) {
                 }
 
                 echo '</div>';
-            } else {
-                user_did_not_login_yet();
             }
         }
 
