@@ -94,7 +94,7 @@ if (!class_exists('erp_cards')) {
                 'nonce'    => wp_create_nonce('erp-cards-nonce'), // Generate nonce
             ));                
         }
-
+/*
         function copy_doc_category_to_iso_category() {
             // Define the categories to match
             $parent_categories = array('economic-growth', 'environmental-protection', 'social-responsibility');
@@ -174,7 +174,7 @@ if (!class_exists('erp_cards')) {
                 }
             }
         }
-        
+*/        
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
@@ -183,7 +183,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'iso-category', $args );
         }
@@ -353,7 +353,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'audit-item', $args );
         }
@@ -1197,227 +1197,7 @@ if (!class_exists('erp_cards')) {
             wp_reset_postdata();
             return $options;
         }
-/*
-        function register_vendor_card_post_type() {
-            $labels = array(
-                'menu_name'     => _x('Vendor', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-                'show_in_menu'  => false,
-            );
-            register_post_type( 'vendor-card', $args );
-        }
 
-        function display_vendor_card_list() {
-            ob_start();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-
-            if ($is_site_admin || current_user_can('administrator')) {
-                // Check if the user is administrator
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '供應商列表', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(5);?></div>
-                    <div style="text-align:right; display:flex;">
-                        <input type="text" id="search-vendor" style="display:inline" placeholder="Search..." />
-                    </div>
-                </div>
-
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Code', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $paged = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_vendor_card_data($paged);
-                        $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $vendor_code = get_post_meta(get_the_ID(), 'vendor_code', true);
-                                ?>
-                                <tr id="edit-vendor-card-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo $vendor_code;?></td>
-                                    <td><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div id="new-vendor-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    <div class="pagination">
-                        <?php
-                        // Display pagination links
-                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                        ?>
-                    </div>
-
-                </fieldset>
-                <div id="vendor-card-dialog" title="Vendor dialog"></div>
-                <?php
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
-            return ob_get_clean();
-        }
-
-        function retrieve_vendor_card_data($paged = 1) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            
-            $args = array(
-                'post_type'      => 'vendor-card',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-                'meta_key'       => 'vendor_code', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
-            );
-        
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
-            }
-        
-            // Sanitize and handle search query
-            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
-            if (!empty($search_query)) {
-                $args['paged'] = 1;
-                $args['s'] = $search_query;
-            }
-        
-            $query = new WP_Query($args);
-        
-            // Check if query is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-                // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('vendor-card');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                $args['meta_query'][] = $meta_query_all_keys;
-                $query = new WP_Query($args);
-            }
-        
-            return $query;
-        }
-
-        function display_vendor_card_dialog($vendor_id=false) {
-            $vendor_code = get_post_meta($vendor_id, 'vendor_code', true);
-            $vendor_title = get_the_title($vendor_id);
-            $vendor_content = get_post_field('post_content', $vendor_id);
-            $company_phone = get_post_meta($vendor_id, 'company_phone', true);
-            $company_fax = get_post_meta($vendor_id, 'company_fax', true);
-            ob_start();
-            ?>
-            <fieldset>
-                <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id);?>" />
-                <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="vendor-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="vendor-content" rows="3" style="width:100%;"><?php echo esc_html($vendor_content);?></textarea>
-                <?php
-                // transaction data vs card key/value
-                $key_pairs = array(
-                    '_vendor'   => $vendor_id,
-                );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
-                ?>
-                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
-                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' );?></label>
-                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax);?>" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
-        function get_vendor_card_dialog_data() {
-            $vendor_id = sanitize_text_field($_POST['_vendor_id']);
-            $response = array('html_contain' => $this->display_vendor_card_dialog($vendor_id));
-            wp_send_json($response);
-        }
-
-        function set_vendor_card_dialog_data() {
-            if( isset($_POST['_vendor_id']) ) {
-                $vendor_id = sanitize_text_field($_POST['_vendor_id']);
-                $vendor_code = sanitize_text_field($_POST['_vendor_code']);
-                $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_fax = sanitize_text_field($_POST['_company_fax']);
-                $data = array(
-                    'ID'           => $vendor_id,
-                    'post_title'   => sanitize_text_field($_POST['_vendor_title']),
-                    'post_content' => sanitize_text_field($_POST['_vendor_content']),
-                );
-                wp_update_post( $data );
-                update_post_meta($vendor_id, 'vendor_code', $vendor_code);
-                update_post_meta($vendor_id, 'company_phone', $company_phone);
-                update_post_meta($vendor_id, 'company_fax', $company_fax);
-            } else {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $new_post = array(
-                    'post_title'    => 'New vendor',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'vendor-card',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'vendor_code', time());
-            }
-            $response = array('html_contain' => $this->display_vendor_card_list());
-            wp_send_json($response);
-        }
-
-        function del_vendor_card_dialog_data() {
-            wp_delete_post($_POST['_vendor_id'], true);
-            $response = array('html_contain' => $this->display_vendor_card_list());
-            wp_send_json($response);
-        }
-
-        function select_vendor_card_options($selected_option=0) {
-            $query = $this->retrieve_vendor_card_data();
-            $options = '<option value="">Select vendor</option>';
-            while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            return $options;
-        }
-*/
         // Register product-card post type
         function register_product_card_post_type() {
             $labels = array(
@@ -1426,7 +1206,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'product-card', $args );
         }
@@ -1533,6 +1313,9 @@ if (!class_exists('erp_cards')) {
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
                 // Add meta query for searching across all meta keys
                 $meta_keys = get_post_type_meta_keys('product-card');
                 $meta_query_all_keys = array('relation' => 'OR');
@@ -1637,7 +1420,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'equipment-card', $args );
         }
@@ -1744,6 +1527,9 @@ if (!class_exists('erp_cards')) {
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
                 // Add meta query for searching across all meta keys
                 $meta_keys = get_post_type_meta_keys('equipment-card');
                 $meta_query_all_keys = array('relation' => 'OR');
@@ -1848,7 +1634,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'instrument-card', $args );
         }
@@ -1955,6 +1741,9 @@ if (!class_exists('erp_cards')) {
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
                 // Add meta query for searching across all meta keys
                 $meta_keys = get_post_type_meta_keys('instrument-card');
                 $meta_query_all_keys = array('relation' => 'OR');
@@ -2059,7 +1848,7 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
+                //'show_in_menu'  => false,
             );
             register_post_type( 'department-card', $args );
         }
@@ -2166,6 +1955,9 @@ if (!class_exists('erp_cards')) {
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
                 // Add meta query for searching across all meta keys
                 $meta_keys = get_post_type_meta_keys('department-card');
                 $meta_query_all_keys = array('relation' => 'OR');
