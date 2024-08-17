@@ -682,15 +682,44 @@ if (!class_exists('erp_cards')) {
         }
 
         function retrieve_customer_card_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+
             $args = array(
                 'post_type'      => 'site-profile',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
                     array(
-                        //'key'     => 'site_customer_data',
-                        //'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
-                        //'compare' => 'LIKE',
+                        'key'     => 'site_customer_data',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            $filtered_posts = array_filter($query->posts, function($post) use ($site_id) {
+                $site_customer_data = get_post_meta($post->ID, 'site_customer_data', true);
+                return isset($site_customer_data[$site_id]);
+            });
+        
+            // Create a new WP_Query-like object with filtered posts
+            $filtered_query = new WP_Query();
+            $filtered_query->posts = $filtered_posts;
+            $filtered_query->post_count = count($filtered_posts);
+        
+            return $filtered_query;
+
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'site_customer_data',
+                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
+                        'compare' => 'LIKE',
                     ),
                 ),
             );
