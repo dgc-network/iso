@@ -97,7 +97,7 @@ function user_custom_fields(WP_User $user) {
                     <?php
                         $site_id = get_user_meta($user->ID, 'site_id', true);
                         $site_args = array(
-                            'post_type'      => 'site',
+                            'post_type'      => 'site-profile',
                             'posts_per_page' => -1,
                         );
                         $sites = get_posts($site_args);    

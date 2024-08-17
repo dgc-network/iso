@@ -9,8 +9,8 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            add_action( 'init', array( $this, 'register_site_post_type' ) );
-            add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
+            //add_action( 'init', array( $this, 'register_site_post_type' ) );
+            //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -89,7 +89,7 @@ if (!class_exists('display_profiles')) {
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="10" <?php echo ($select_option==10) ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
+                <option value="http-client" <?php echo ($select_option=="http-client") ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -119,7 +119,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
 
                 $http_client = new http_client();
-                if ($_GET['_select_profile']=='10') echo $http_client->display_http_client_list();
+                if ($_GET['_select_profile']=='http-client') echo $http_client->display_http_client_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
@@ -693,7 +693,7 @@ if (!class_exists('display_profiles')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'site',
+                    'post_type'     => 'site-profile',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_user_meta( $current_user_id, 'site_id', $post_id );
@@ -888,7 +888,7 @@ if (!class_exists('display_profiles')) {
                         <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                     <?php
                     $site_args = array(
-                        'post_type'      => 'site',
+                        'post_type'      => 'site-profile',
                         'posts_per_page' => -1,
                     );
                     $sites = get_posts($site_args);    
@@ -1922,6 +1922,60 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
             return $options;
         }
+
+        function copy_site_to_site_profile() {
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => -1,
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the current post ID and data
+                    $current_post_id = get_the_ID();
+                    $current_post    = get_post($current_post_id);
+        
+                    // Prepare the new post data
+                    $new_post = array(
+                        'post_title'    => $current_post->post_title,
+                        'post_content'  => $current_post->post_content,
+                        'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
+                        'post_author'   => $current_post->post_author,
+                        'post_type'     => 'site-profile',
+                        'post_date'     => $current_post->post_date,
+                        'post_date_gmt' => $current_post->post_date_gmt,
+                    );
+        
+                    // Insert the new post and get the new post ID
+                    $new_post_id = wp_insert_post($new_post);
+        
+                    if ($new_post_id) {
+                        // Get all meta data for the current post
+                        $post_meta = get_post_meta($current_post_id);
+        
+                        // Copy each meta field to the new post
+                        foreach ($post_meta as $meta_key => $meta_values) {
+                            foreach ($meta_values as $meta_value) {
+                                add_post_meta($new_post_id, $meta_key, $meta_value);
+                            }
+                        }
+        
+                        $curtain_model_price = get_post_meta($new_post_id, 'curtain_model_price', true);
+                        update_post_meta($new_post_id, 'product_item_price', $curtain_model_price);
+
+                    }
+                }
+        
+                // Reset post data
+                wp_reset_postdata();
+            }
+        }
+
+
     }
     $profiles_class = new display_profiles();
 }

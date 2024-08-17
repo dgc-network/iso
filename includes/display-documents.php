@@ -1760,7 +1760,7 @@ if (!class_exists('display_documents')) {
                         'post_title'    => $new_site_title,
                         'post_status'   => 'publish',
                         'post_author'   => $current_user_id,
-                        'post_type'     => 'site',
+                        'post_type'     => 'site-profile',
                     );
                     $new_site_id = wp_insert_post($new_site_args);
                     

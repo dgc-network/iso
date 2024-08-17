@@ -8,14 +8,14 @@ if (!class_exists('erp_cards')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_erp_cards_scripts' ) );
-            add_action( 'init', array( $this, 'register_iso_category_post_type' ) );
-            add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
-            add_action( 'init', array( $this, 'register_customer_card_post_type' ) );
-            add_action( 'init', array( $this, 'register_vendor_card_post_type' ) );
-            add_action( 'init', array( $this, 'register_product_card_post_type' ) );
-            add_action( 'init', array( $this, 'register_equipment_card_post_type' ) );
-            add_action( 'init', array( $this, 'register_instrument_card_post_type' ) );
-            add_action( 'init', array( $this, 'register_department_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_iso_category_post_type' ) );
+            //add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
+            //add_action( 'init', array( $this, 'register_customer_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_vendor_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_product_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_equipment_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_instrument_card_post_type' ) );
+            //add_action( 'init', array( $this, 'register_department_card_post_type' ) );
 
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );

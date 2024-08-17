@@ -250,7 +250,7 @@ function import_sites_from_encona_csv() {
         // Create post data
         $post_data = array(
             'post_title' => $title,
-            'post_type' => 'site',
+            'post_type' => 'site-profile',
             // Add any additional post data here
         );
 
@@ -303,7 +303,7 @@ function import_sites_from_csv() {
         // Create post data
         $post_data = array(
             'post_title' => $title,
-            'post_type' => 'site',
+            'post_type' => 'site-profile',
             // Add any additional post data here
         );
 
@@ -324,7 +324,7 @@ function import_sites_from_csv() {
 function get_site_list_data() {
     $search_query = sanitize_text_field($_POST['_site_title']);
     $args = array(
-        'post_type'      => 'site',
+        'post_type'      => 'site-profile',
         'posts_per_page' => -1,
         's'              => $search_query,
     );

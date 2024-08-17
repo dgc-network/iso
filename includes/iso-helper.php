@@ -641,7 +641,7 @@ function display_user_site_id($user_id=false) {
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
                     $site_args = array(
-                        'post_type'      => 'site',
+                        'post_type'      => 'site-profile',
                         'posts_per_page' => -1,
                     );
                     $sites = get_posts($site_args);    
