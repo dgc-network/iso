@@ -740,15 +740,6 @@ if (!class_exists('erp_cards')) {
                 return isset($site_customer_data[$site_id]);
             });
         
-            // Create a new WP_Query-like object with filtered posts
-            $filtered_query = new WP_Query();
-            $filtered_query->posts = $filtered_posts;
-            $filtered_query->post_count = count($filtered_posts);
-        
-            return $filtered_query;
-/*
-            $posts = $query->posts;
-        
             // Sort the posts by the customer_code value in the meta 'site_customer_data'
             usort($posts, function($a, $b) {
                 $site_customer_data_a = get_post_meta($a->ID, 'site_customer_data', true);
@@ -762,8 +753,12 @@ if (!class_exists('erp_cards')) {
                 return $customer_code_a <=> $customer_code_b;
             });
 
-            return $query; // Return the query object or just $posts, depending on your need
-*/            
+            // Create a new WP_Query-like object with filtered posts
+            $filtered_query = new WP_Query();
+            $filtered_query->posts = $filtered_posts;
+            $filtered_query->post_count = count($filtered_posts);
+        
+            return $filtered_query;
         }
 
         function display_customer_card_dialog($customer_id = false) {
