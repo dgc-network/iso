@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                //alert(error);
+                alert(error);
             }
         });            
     });            
@@ -83,11 +83,11 @@ jQuery(document).ready(function($) {
             },
             error: function (error) {
                 console.error(error);
-                //alert(error);
+                alert(error);
             }
         });            
     });
-
+/*
     $("#select-nda-site").on("change", function() {
         // Get the selected value from the dropdown
         var siteID = $(this).val();
@@ -121,5 +121,6 @@ jQuery(document).ready(function($) {
             $("#site-content").empty();
         }
     });
+*/    
 });
 

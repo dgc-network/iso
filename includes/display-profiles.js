@@ -1,6 +1,40 @@
 // display-profiles
 jQuery(document).ready(function($) {
 
+    $("#select-nda-site").on("change", function() {
+        // Get the selected value from the dropdown
+        var siteID = $(this).val();
+        alert('ID:'+siteID);
+
+        // Check if a site is selected
+        if (siteID) {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url, // Ensure this is set in your localized script
+                data: {
+                    'action': 'get_site_content', // Define a custom action in your functions.php
+                    'site_id': siteID,
+                },
+                success: function(response) {
+                    if(response.success) {
+                        // Display the post content in a designated div or element
+                        $("#site-content").html(response.data.content);
+                    } else {
+                        // Handle the case where no content is returned or an error occurred
+                        $("#site-content").html('<p>No content found for the selected site.</p>');
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert("An error occurred while retrieving the site content.");
+                }
+            });
+        } else {
+            // Clear the content area if no site is selected
+            $("#site-content").empty();
+        }
+    });
+
     // Function to check if the string is a valid URL
     function isURL(str) {
         var pattern = /^(http|https):\/\/[^ "]+$/;
@@ -286,6 +320,7 @@ jQuery(document).ready(function($) {
     
         $("#site-title").on("change", function () {
             new_site_title = $(this).val();
+/*            
             if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
                 $.ajax({
                     type: 'POST',
@@ -303,6 +338,7 @@ jQuery(document).ready(function($) {
                     }
                 });        
             }
+*/                
         });
         
         $("#site-profile-submit").on("click", function () {
