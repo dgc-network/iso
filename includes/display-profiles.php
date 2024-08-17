@@ -101,10 +101,6 @@ if (!class_exists('display_profiles')) {
             if (!is_user_logged_in()) user_did_not_login_yet();                
             elseif (is_user_not_in_site()) display_site_profile_NDA();
             else {
-                if (isset($_GET['_rename_site_to_site_profile'])) $this->rename_site_to_site_profile();
-                
-                //$this->display_site_profile_NDA();
-
                 echo '<div class="ui-widget" id="result-container">';
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
