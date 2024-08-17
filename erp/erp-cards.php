@@ -697,33 +697,6 @@ if (!class_exists('erp_cards')) {
                 ),
             );
         
-            $query = new WP_Query($args);
-        
-            $filtered_posts = array_filter($query->posts, function($post) use ($site_id) {
-                $site_customer_data = get_post_meta($post->ID, 'site_customer_data', true);
-                return isset($site_customer_data[$site_id]);
-            });
-        
-            // Create a new WP_Query-like object with filtered posts
-            $filtered_query = new WP_Query();
-            $filtered_query->posts = $filtered_posts;
-            $filtered_query->post_count = count($filtered_posts);
-        
-            return $filtered_query;
-
-            $args = array(
-                'post_type'      => 'site-profile',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'site_customer_data',
-                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
-                        'compare' => 'LIKE',
-                    ),
-                ),
-            );
-
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
@@ -739,6 +712,9 @@ if (!class_exists('erp_cards')) {
         
             // Check if the result is empty and the search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
                 // Retrieve all meta keys associated with the post type 'site-profile'
                 $meta_keys = get_post_type_meta_keys('site-profile');
                 
@@ -759,6 +735,18 @@ if (!class_exists('erp_cards')) {
                 $query = new WP_Query($args);
             }
 
+            $filtered_posts = array_filter($query->posts, function($post) use ($site_id) {
+                $site_customer_data = get_post_meta($post->ID, 'site_customer_data', true);
+                return isset($site_customer_data[$site_id]);
+            });
+        
+            // Create a new WP_Query-like object with filtered posts
+            $filtered_query = new WP_Query();
+            $filtered_query->posts = $filtered_posts;
+            $filtered_query->post_count = count($filtered_posts);
+        
+            return $filtered_query;
+/*
             $posts = $query->posts;
         
             // Sort the posts by the customer_code value in the meta 'site_customer_data'
@@ -775,72 +763,9 @@ if (!class_exists('erp_cards')) {
             });
 
             return $query; // Return the query object or just $posts, depending on your need
+*/            
         }
-/*        
-        function retrieve_customer_card_data($paged = 1) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
 
-            $args = array(
-                'post_type'      => 'site-profile',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'site_customer_data',
-                        'value'   => sprintf(':"%s";', $site_id), // Search for serialized site_id
-                        'compare' => 'LIKE',
-                    ),
-                ),
-            );
-            
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
-            }
-
-            // Sanitize and handle search query
-            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
-            if (!empty($search_query)) {
-                $args['paged'] = 1;
-                $args['s'] = $search_query;
-            }
-
-            $query = new WP_Query($args);
-
-            $posts = $query->posts;
-
-            usort($posts, function($a, $b) {
-                $site_customer_data_a = get_post_meta($a->ID, 'site_customer_data', true);
-                $site_customer_data_b = get_post_meta($b->ID, 'site_customer_data', true);
-            
-                // Extract the customer_code for each post
-                $customer_code_a = $site_customer_data_a['customer_code'] ?? 0;
-                $customer_code_b = $site_customer_data_b['customer_code'] ?? 0;
-            
-                // Compare the customer codes
-                return $customer_code_a <=> $customer_code_b;
-            });
-            
-            // Check if result is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-                // Add meta query for searching across all meta keys
-                //$meta_keys = get_post_type_meta_keys('customer-card');
-                $meta_keys = get_post_type_meta_keys('site-profile');
-                $meta_query_all_keys = array('relation' => 'OR');
-                foreach ($meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                $args['meta_query'][] = $meta_query_all_keys;
-                $query = new WP_Query($args);
-            }
-        
-            return $query;
-        }
-*/
         function display_customer_card_dialog($customer_id = false) {
             ob_start();
             
