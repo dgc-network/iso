@@ -189,7 +189,7 @@ if (!class_exists('display_profiles')) {
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
-            if (is_user_logged_in()) user_did_not_login_yet();                
+            if (!is_user_logged_in()) user_did_not_login_yet();                
             //elseif (is_user_not_in_site()) $this->display_site_profile_NDA();
             elseif (!is_user_not_in_site()) $this->display_site_profile_NDA();
             else {
