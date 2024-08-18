@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function register_site_post_type() {
     $labels = array(
         'name'               => _x( 'Sites', 'post type general name', 'your-text-domain' ),
-        'singular_name'      => _x( 'Site', 'post type singular name', 'your-text-domain' ),
+        'singular_name'      => _x( 'site-profile', 'post type singular name', 'your-text-domain' ),
         'add_new'            => _x( 'Add New Site', 'book', 'your-text-domain' ),
         'add_new_item'       => __( 'Add New Site', 'your-text-domain' ),
         'edit_item'          => __( 'Edit Site', 'your-text-domain' ),
@@ -77,7 +77,7 @@ function add_site_image_metabox() {
         'site_image_id',
         'Site Image',
         'site_image_content',
-        'site',
+        'site-profile',
         'side',
         'high'
     );
@@ -123,7 +123,7 @@ function add_site_settings_metabox() {
         'site_settings_id',
         'Site Settings',
         'site_settings_content',
-        'site',
+        'site-profile',
         'normal',
         'high'
     );

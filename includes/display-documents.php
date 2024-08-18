@@ -1748,7 +1748,7 @@ if (!class_exists('display_documents')) {
                 $new_site_title = sanitize_text_field($_POST['_new_site_title']);
                 
                 // Check if a site with the same title already exists
-                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site');
+                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site-profile');
                 
                 if ($existing_site) {
                     // A site with the same title already exists
@@ -1780,7 +1780,7 @@ if (!class_exists('display_documents')) {
         function get_doc_count_by_category($iso_category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $post = get_page_by_title('iso-helper.com', OBJECT, 'site');
+            $post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
             $site_id = $post->ID;
 
             // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
