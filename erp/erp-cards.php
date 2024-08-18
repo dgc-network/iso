@@ -777,7 +777,7 @@ if (!class_exists('erp_cards')) {
             $customer_content = get_post_field('post_content', $customer_id);
             $company_phone = get_post_meta($customer_id, 'company_phone', true);
             $company_address = get_post_meta($customer_id, 'company_address', true);
-            $company_fax = get_post_meta($customer_id, 'company_fax', true);
+            $unified_number = get_post_meta($customer_id, 'unified_number', true);
             ?>
             <fieldset>
                 <input type="hidden" id="customer-id" value="<?php echo esc_attr($customer_id); ?>" />
@@ -797,6 +797,8 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' ); ?></label>
+                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -816,6 +818,7 @@ if (!class_exists('erp_cards')) {
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
                 $company_address = $_POST['_company_address'];
+                $unified_number = sanitize_text_field($_POST['_unified_number']);
         
                 $data = array(
                     'ID'           => $customer_id,
@@ -838,6 +841,7 @@ if (!class_exists('erp_cards')) {
                 update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
                 update_post_meta($customer_id, 'company_phone', $company_phone);
                 update_post_meta($customer_id, 'company_address', $company_address);
+                update_post_meta($customer_id, 'unified_number', $unified_number);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1101,6 +1105,7 @@ if (!class_exists('erp_cards')) {
             $vendor_content = get_post_field('post_content', $vendor_id);
             $company_phone = get_post_meta($vendor_id, 'company_phone', true);
             $company_address = get_post_meta($vendor_id, 'company_address', true);
+            $unified_number = get_post_meta($vendor_id, 'unified_number', true);
             ?>
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id); ?>" />
@@ -1120,6 +1125,8 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' ); ?></label>
+                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1139,6 +1146,7 @@ if (!class_exists('erp_cards')) {
                 $vendor_code = sanitize_text_field($_POST['_vendor_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
                 $company_address = $_POST['_company_address'];
+                $unified_number = sanitize_text_field($_POST['_unified_number']);
         
                 $data = array(
                     'ID'           => $vendor_id,
@@ -1161,6 +1169,7 @@ if (!class_exists('erp_cards')) {
                 update_post_meta($vendor_id, 'site_vendor_data', $site_vendor_data);
                 update_post_meta($vendor_id, 'company_phone', $company_phone);
                 update_post_meta($vendor_id, 'company_address', $company_address);
+                update_post_meta($vendor_id, 'unified_number', $unified_number);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
