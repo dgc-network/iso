@@ -851,10 +851,12 @@ if (!class_exists('erp_cards')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $customer_code = time();
-                
+                $post = get_page_by_title('iso-helper.com', OBJECT, 'site');
+                $post_content = get_post_field('post_content', $post->ID);
+    
                 $new_post = array(
                     'post_title'    => 'New customer',
-                    'post_content'  => 'Your post content goes here.',
+                    'post_content'  => $post_content,
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'site-profile',
@@ -1182,10 +1184,12 @@ if (!class_exists('erp_cards')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $vendor_code = time();
-                
+                $post = get_page_by_title('iso-helper.com', OBJECT, 'site');
+                $post_content = get_post_field('post_content', $post->ID);
+
                 $new_post = array(
                     'post_title'    => 'New vendor',
-                    'post_content'  => 'Your post content goes here.',
+                    'post_content'  => $post_content,
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'site-profile',
