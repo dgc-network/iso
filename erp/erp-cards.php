@@ -929,7 +929,7 @@ if (!class_exists('erp_cards')) {
                 <h2 style="display:inline;"><?php echo __( '廠商列表', 'your-text-domain' ); ?></h2>
         
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile(4); ?></div>
+                    <div><?php $profiles_class->display_select_profile(5); ?></div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-vendor" style="display:inline" placeholder="Search..." />
                     </div>
