@@ -869,6 +869,15 @@ if (!class_exists('erp_cards')) {
                 
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+
+                // Initialize the site_vendor_data array with the post_id and customer_code
+                $site_vendor_data = array(
+                    $post_id => $customer_code,
+                );
+                
+                // Store the array as a serialized meta value
+                update_post_meta($site_id, 'site_vendor_data', $site_vendor_data);
+
             }
         
             $response = array('html_contain' => $this->display_customer_card_list());
@@ -1175,6 +1184,15 @@ if (!class_exists('erp_cards')) {
                 
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
+
+                // Initialize the site_customer_data array with the post_id and vendor_code
+                $site_customer_data = array(
+                    $post_id => $vendor_code,
+                );
+                
+                // Store the array as a serialized meta value
+                update_post_meta($site_id, 'site_customer_data', $site_customer_data);
+
             }
         
             $response = array('html_contain' => $this->display_vendor_card_list());
