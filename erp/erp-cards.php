@@ -796,7 +796,7 @@ if (!class_exists('erp_cards')) {
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
-                <textarea id="customer-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -815,12 +815,11 @@ if (!class_exists('erp_cards')) {
                 $customer_id = sanitize_text_field($_POST['_customer_id']);
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_address = sanitize_text_field($_POST['_company_address']);
+                $company_address = $_POST['_company_address'];
         
                 $data = array(
                     'ID'           => $customer_id,
                     'post_title'   => sanitize_text_field($_POST['_customer_title']),
-                    //'post_content' => sanitize_text_field($_POST['_customer_content']),
                 );
                 wp_update_post($data);
         
@@ -1139,7 +1138,7 @@ if (!class_exists('erp_cards')) {
                 $vendor_id = sanitize_text_field($_POST['_vendor_id']);
                 $vendor_code = sanitize_text_field($_POST['_vendor_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_address = sanitize_text_field($_POST['_company_address']);
+                $company_address = $_POST['_company_address'];
         
                 $data = array(
                     'ID'           => $vendor_id,
