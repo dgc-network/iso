@@ -898,7 +898,7 @@ if (!class_exists('erp_cards')) {
                 unset($site_customer_data[$site_id]);
                 
                 // Update the post meta with the modified array
-                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+                update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
             }
 
             //wp_delete_post($_POST['_customer_id'], true);
@@ -1229,7 +1229,7 @@ if (!class_exists('erp_cards')) {
                 unset($site_vendor_data[$site_id]);
                 
                 // Update the post meta with the modified array
-                update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
+                update_post_meta($vendor_id, 'site_vendor_data', $site_vendor_data);
             }
 /*
 
