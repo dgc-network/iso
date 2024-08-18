@@ -885,7 +885,23 @@ if (!class_exists('erp_cards')) {
         }
 
         function del_customer_card_dialog_data() {
-            wp_delete_post($_POST['_customer_id'], true);
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+            $customer_id = sanitize_text_field($_POST['_customer_id']);
+            // Retrieve the current site_customer_data array
+            $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
+    
+            // Check if it's an array and contains the 'customer_code' key
+            if (is_array($site_customer_data) && isset($site_customer_data[$site_id])) {
+                // Remove the 'customer_code' key
+                unset($site_customer_data[$site_id]);
+                
+                // Update the post meta with the modified array
+                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+            }
+
+            //wp_delete_post($_POST['_customer_id'], true);
             $response = array('html_contain' => $this->display_customer_card_list());
             wp_send_json($response);
         }
@@ -1200,7 +1216,36 @@ if (!class_exists('erp_cards')) {
         }
 
         function del_vendor_card_dialog_data() {
-            wp_delete_post($_POST['_vendor_id'], true);
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+            $vendor_id = sanitize_text_field($_POST['_vendor_id']);
+            // Retrieve the current site_vendor_data array
+            $site_vendor_data = get_post_meta($vendor_id, 'site_vendor_data', true);
+    
+            // Check if it's an array and contains the 'vendor_code' key
+            if (is_array($site_vendor_data) && isset($site_vendor_data[$site_id])) {
+                // Remove the 'vendor_code' key
+                unset($site_vendor_data[$site_id]);
+                
+                // Update the post meta with the modified array
+                update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
+            }
+/*
+
+            // Retrieve the current site_customer_data array
+            $site_customer_data = get_post_meta($post_id, 'site_customer_data', true);
+    
+            // Check if it's an array and contains the 'customer_code' key
+            if (is_array($site_customer_data) && isset($site_customer_data['customer_code'])) {
+                // Remove the 'customer_code' key
+                unset($site_customer_data['customer_code']);
+                
+                // Update the post meta with the modified array
+                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+            }
+*/
+            //wp_delete_post($_POST['_vendor_id'], true);
             $response = array('html_contain' => $this->display_vendor_card_list());
             wp_send_json($response);
         }
