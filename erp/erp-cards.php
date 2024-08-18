@@ -610,7 +610,8 @@ if (!class_exists('erp_cards')) {
                             <tr>
                                 <th><?php echo __( 'Code', 'your-text-domain' ); ?></th>
                                 <th><?php echo __( 'Title', 'your-text-domain' ); ?></th>
-                                <th><?php echo __( 'Description', 'your-text-domain' ); ?></th>
+                                <th><?php echo __( 'Phone', 'your-text-domain' ); ?></th>
+                                <th><?php echo __( 'Address', 'your-text-domain' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -624,7 +625,9 @@ if (!class_exists('erp_cards')) {
                             while ($query->have_posts()) : $query->the_post();
         
                                 $site_customer_data = get_post_meta(get_the_ID(), 'site_customer_data', true);
-        
+                                $company_phone = get_post_meta(get_the_ID(), 'company_phone', true);
+                                $company_address = get_post_meta(get_the_ID(), 'company_address', true);
+
                                 // Assuming site_customer_data is an associative array with site_id as a key
                                 $current_user_id = get_current_user_id();
                                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -638,20 +641,10 @@ if (!class_exists('erp_cards')) {
         
                                 ?>
                                 <tr id="edit-customer-card-<?php the_ID(); ?>">
-                                    <td style="text-align:center;"><?php echo esc_html($customer_code); ?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($customer_code);?></td>
                                     <td><?php the_title(); ?></td>
-                                    <?php /*<td><?php the_content(); ?></td>*/?>
-                                    <td>
-                                        <?php 
-                                        if (is_array($site_customer_data)) {
-                                            echo '<pre>';
-                                            print_r($site_customer_data);
-                                            echo '</pre>';
-                                        } else {
-                                            echo esc_html($site_customer_data); // In case it's not an array, just display it normally
-                                        }
-                                        ?>
-                                    </td>
+                                    <td style="text-align:center;"><?php echo esc_html($company_phone);?></td>
+                                    <td><?php echo esc_html($company_address);; ?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -770,7 +763,7 @@ if (!class_exists('erp_cards')) {
         
             // Retrieve the site_customer_data meta field
             $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
-        
+
             // Check if site_customer_data is an array and contains the site_id key
             if (is_array($site_customer_data) && isset($site_customer_data[$site_id])) {
                 $customer_code = $site_customer_data[$site_id];
@@ -783,6 +776,7 @@ if (!class_exists('erp_cards')) {
             $customer_title = get_the_title($customer_id);
             $customer_content = get_post_field('post_content', $customer_id);
             $company_phone = get_post_meta($customer_id, 'company_phone', true);
+            $company_address = get_post_meta($customer_id, 'company_address', true);
             $company_fax = get_post_meta($customer_id, 'company_fax', true);
             ?>
             <fieldset>
@@ -791,8 +785,6 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title); ?>" class="text ui-widget-content ui-corner-all" />
-                <label for="customer-content"><?php echo __( 'Description: ', 'your-text-domain' ); ?></label>
-                <textarea id="customer-content" rows="3" style="width:100%;"><?php echo esc_html($customer_content); ?></textarea>
                 <?php
                 // transaction data vs card key/value
                 $key_pairs = array(
@@ -803,8 +795,8 @@ if (!class_exists('erp_cards')) {
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax); ?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
+                <textarea id="customer-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -823,12 +815,12 @@ if (!class_exists('erp_cards')) {
                 $customer_id = sanitize_text_field($_POST['_customer_id']);
                 $customer_code = sanitize_text_field($_POST['_customer_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_fax = sanitize_text_field($_POST['_company_fax']);
+                $company_address = sanitize_text_field($_POST['_company_address']);
         
                 $data = array(
                     'ID'           => $customer_id,
                     'post_title'   => sanitize_text_field($_POST['_customer_title']),
-                    'post_content' => sanitize_text_field($_POST['_customer_content']),
+                    //'post_content' => sanitize_text_field($_POST['_customer_content']),
                 );
                 wp_update_post($data);
         
@@ -846,7 +838,7 @@ if (!class_exists('erp_cards')) {
                 // Update the meta field with the modified array
                 update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
                 update_post_meta($customer_id, 'company_phone', $company_phone);
-                update_post_meta($customer_id, 'company_fax', $company_fax);
+                update_post_meta($customer_id, 'company_address', $company_address);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -943,7 +935,8 @@ if (!class_exists('erp_cards')) {
                             <tr>
                                 <th><?php echo __( 'Code', 'your-text-domain' ); ?></th>
                                 <th><?php echo __( 'Title', 'your-text-domain' ); ?></th>
-                                <th><?php echo __( 'Description', 'your-text-domain' ); ?></th>
+                                <th><?php echo __( 'Phone', 'your-text-domain' ); ?></th>
+                                <th><?php echo __( 'Address', 'your-text-domain' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -957,6 +950,8 @@ if (!class_exists('erp_cards')) {
                             while ($query->have_posts()) : $query->the_post();
         
                                 $site_vendor_data = get_post_meta(get_the_ID(), 'site_vendor_data', true);
+                                $company_phone = get_post_meta(get_the_ID(), 'company_phone', true);
+                                $company_address = get_post_meta(get_the_ID(), 'company_address', true);
         
                                 // Assuming site_vendor_data is an associative array with site_id as a key
                                 $current_user_id = get_current_user_id();
@@ -971,20 +966,10 @@ if (!class_exists('erp_cards')) {
         
                                 ?>
                                 <tr id="edit-vendor-card-<?php the_ID(); ?>">
-                                    <td style="text-align:center;"><?php echo esc_html($vendor_code); ?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($vendor_code);?></td>
                                     <td><?php the_title(); ?></td>
-                                    <?php /*<td><?php the_content(); ?></td>*/?>
-                                    <td>
-                                        <?php 
-                                        if (is_array($site_vendor_data)) {
-                                            echo '<pre>';
-                                            print_r($site_vendor_data);
-                                            echo '</pre>';
-                                        } else {
-                                            echo esc_html($site_vendor_data); // In case it's not an array, just display it normally
-                                        }
-                                        ?>
-                                    </td>
+                                    <td style="text-align:center;"><?php echo esc_html($company_phone);?></td>
+                                    <td><?php echo esc_html($company_address); ?></td>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -1116,7 +1101,7 @@ if (!class_exists('erp_cards')) {
             $vendor_title = get_the_title($vendor_id);
             $vendor_content = get_post_field('post_content', $vendor_id);
             $company_phone = get_post_meta($vendor_id, 'company_phone', true);
-            $company_fax = get_post_meta($vendor_id, 'company_fax', true);
+            $company_address = get_post_meta($vendor_id, 'company_address', true);
             ?>
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id); ?>" />
@@ -1124,8 +1109,6 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code); ?>" class="text ui-widget-content ui-corner-all" />
                 <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title); ?>" class="text ui-widget-content ui-corner-all" />
-                <label for="vendor-content"><?php echo __( 'Description: ', 'your-text-domain' ); ?></label>
-                <textarea id="vendor-content" rows="3" style="width:100%;"><?php echo esc_html($vendor_content); ?></textarea>
                 <?php
                 // transaction data vs card key/value
                 $key_pairs = array(
@@ -1136,8 +1119,8 @@ if (!class_exists('erp_cards')) {
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-fax"><?php echo __( 'Fax: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="company-fax" value="<?php echo esc_attr($company_fax); ?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
+                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1156,12 +1139,11 @@ if (!class_exists('erp_cards')) {
                 $vendor_id = sanitize_text_field($_POST['_vendor_id']);
                 $vendor_code = sanitize_text_field($_POST['_vendor_code']);
                 $company_phone = sanitize_text_field($_POST['_company_phone']);
-                $company_fax = sanitize_text_field($_POST['_company_fax']);
+                $company_address = sanitize_text_field($_POST['_company_address']);
         
                 $data = array(
                     'ID'           => $vendor_id,
                     'post_title'   => sanitize_text_field($_POST['_vendor_title']),
-                    'post_content' => sanitize_text_field($_POST['_vendor_content']),
                 );
                 wp_update_post($data);
         
@@ -1179,7 +1161,7 @@ if (!class_exists('erp_cards')) {
                 // Update the meta field with the modified array
                 update_post_meta($vendor_id, 'site_vendor_data', $site_vendor_data);
                 update_post_meta($vendor_id, 'company_phone', $company_phone);
-                update_post_meta($vendor_id, 'company_fax', $company_fax);
+                update_post_meta($vendor_id, 'company_address', $company_address);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

@@ -423,9 +423,9 @@ jQuery(document).ready(function($) {
                             '_customer_id': $("#customer-id").val(),
                             '_customer_code': $("#customer-code").val(),
                             '_customer_title': $("#customer-title").val(),
-                            '_customer_content': $("#customer-content").val(),
+                            //'_customer_content': $("#customer-content").val(),
                             '_company_phone': $("#company-phone").val(),
-                            '_company_fax': $("#company-fax").val(),
+                            '_company_address': $("#company-address").val(),
                         },
                         success: function (response) {
                             $("#customer-card-dialog").dialog('close');
@@ -566,9 +566,9 @@ jQuery(document).ready(function($) {
                             '_vendor_id': $("#vendor-id").val(),
                             '_vendor_code': $("#vendor-code").val(),
                             '_vendor_title': $("#vendor-title").val(),
-                            '_vendor_content': $("#vendor-content").val(),
+                            //'_vendor_content': $("#vendor-content").val(),
                             '_company_phone': $("#company-phone").val(),
-                            '_company_fax': $("#company-fax").val(),
+                            '_company_address': $("#company-address").val(),
                         },
                         success: function (response) {
                             $("#vendor-card-dialog").dialog('close');
