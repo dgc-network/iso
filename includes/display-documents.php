@@ -418,6 +418,21 @@ if (!class_exists('display_documents')) {
                     <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
             </div>
+
+            <!-- Define the import map -->
+            <script type="importmap">
+            {
+                "imports": {
+                    "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                }
+            }
+            </script>
+
+            <!-- Initialize Mermaid.js -->
+            <script type="module">
+                import mermaid from 'mermaid';
+                mermaid.initialize({ startOnLoad: true });
+            </script>
 <?php /*
             <!-- Define the import map -->
             <script type="importmap">
@@ -427,13 +442,12 @@ if (!class_exists('display_documents')) {
                 }
             }
             </script>
-*/?>
 
             <script type="module">
                 import mermaid from '@wordpress/interactivity';
                 mermaid.initialize({ startOnLoad: true });
             </script>
-
+*/?>
             <div id="mermaid-div">
             <pre class="mermaid">
                 graph TD 
