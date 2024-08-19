@@ -787,11 +787,11 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title); ?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_customer'   => $customer_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
@@ -1115,11 +1115,11 @@ if (!class_exists('erp_cards')) {
                 <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title); ?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_vendor'   => $vendor_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
@@ -1406,11 +1406,11 @@ if (!class_exists('erp_cards')) {
                 <textarea id="product-content" rows="3" style="width:100%;"><?php echo esc_html($product_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_product'   => $product_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -1620,11 +1620,11 @@ if (!class_exists('erp_cards')) {
                 <textarea id="equipment-content" rows="3" style="width:100%;"><?php echo esc_html($equipment_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_equipment'   => $equipment_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -1834,11 +1834,11 @@ if (!class_exists('erp_cards')) {
                 <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($instrument_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_instrument'   => $instrument_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -2050,11 +2050,11 @@ if (!class_exists('erp_cards')) {
                 <?php echo $this->display_department_user_list($department_id);?>
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_department'   => $department_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php

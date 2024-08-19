@@ -664,11 +664,11 @@ if (!class_exists('display_documents')) {
 
             <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_document'   => $doc_id,
                 );
                 $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value($key_pairs);
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
             ?>
             <?php
             return ob_get_clean();
@@ -750,7 +750,7 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
         
-        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $key_pairs=array()) {
+        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $key_value_pair=array()) {
             ?>
                 <table style="width:100%;">
                     <thead>
@@ -779,7 +779,7 @@ if (!class_exists('display_documents')) {
                             'doc_id'     => $doc_id,
                             'paged'     => $paged,
                             'search_doc_report' => $search_doc_report,
-                            'key_pairs' => $key_pairs,
+                            'key_value_pair' => $key_value_pair,
                         );                
                         $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
@@ -906,7 +906,7 @@ if (!class_exists('display_documents')) {
                 $paged = 1;
             }
 
-            if (!empty($params['key_pairs'])) {
+            if (!empty($params['key_value_pair'])) {
                 $meta_query[] = array(
                     'key'   => 'todo_status',
                     'value' => -1,
@@ -932,9 +932,9 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
-                    if (!empty($params['key_pairs'])) {
-                        $key_pairs = $params['key_pairs'];
-                        foreach ($key_pairs as $key => $value) {
+                    if (!empty($params['key_value_pair'])) {
+                        $key_value_pair = $params['key_value_pair'];
+                        foreach ($key_value_pair as $key => $value) {
                             if ($key==$field_type) {
                                 //if (is_array($value)) {
                                 if ($field_type=='_employees') {
@@ -1164,6 +1164,12 @@ if (!class_exists('display_documents')) {
                     // Update the meta field with the new array of employee IDs
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
+            }
+            if ($field_type=='_max' && $default_value=='_notification'){
+                update_post_meta($report_id, '_max', $field_value);
+            }
+            if ($field_type=='_min' && $default_value=='_notification'){
+                update_post_meta($report_id, '_min', $field_value);
             }
             if ($field_type=='_department' && $default_value=='_notification'){
                 update_post_meta($report_id, '_department', $field_value);

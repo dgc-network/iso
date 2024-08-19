@@ -90,7 +90,6 @@ if (!class_exists('display_profiles')) {
                 <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="http-client" <?php echo ($select_option=="http-client") ? 'selected' : ''?>><?php echo __( '溫濕度設定', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -118,8 +117,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
 
-                $http_client = new http_client();
-                if ($_GET['_select_profile']=='http-client') echo $http_client->display_http_client_list();
+                //$http_client = new iot_messages();
+                //if ($_GET['_select_profile']=='http-client') echo $http_client->display_http_client_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
@@ -198,10 +197,10 @@ if (!class_exists('display_profiles')) {
 
                 <?php
                 // transaction data vs card key/value
-                $key_pairs = array(
+                $key_value_pair = array(
                     '_employees'   => $current_user_id,
                 );
-                $this->get_transactions_by_key_value($key_pairs);
+                $this->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
 
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
@@ -214,9 +213,9 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_transactions_by_key_value($key_pairs = array()) {
-            if (!empty($key_pairs)) {
-                foreach ($key_pairs as $key => $value) {
+        function get_transactions_by_key_value_pair($key_value_pair = array()) {
+            if (!empty($key_value_pair)) {
+                foreach ($key_value_pair as $key => $value) {
                     $args = array(
                         'post_type'  => 'doc-field',
                         'posts_per_page' => -1, // Retrieve all posts
@@ -243,14 +242,14 @@ if (!class_exists('display_profiles')) {
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
                                 $documents_class = new display_documents();
                                 $params = array(
-                                    'doc_id'     => $doc_id,
-                                    'key_pairs' => $key_pairs,
+                                    'doc_id'         => $doc_id,
+                                    'key_value_pair' => $key_value_pair,
                                 );
                                 $doc_report = $documents_class->retrieve_doc_report_list_data($params);
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
-                                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_pairs);
+                                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_value_pair);
                                     echo '</fieldset>';    
                                 }        
                             }

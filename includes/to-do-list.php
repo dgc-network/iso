@@ -81,8 +81,8 @@ if (!class_exists('to_do_list')) {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
                 }
 
-                $http_client = new http_client();
-                if ($_GET['_select_todo']=='5') echo $http_client->display_iot_message_list();
+                $iot_messages = new iot_messages();
+                if ($_GET['_select_todo']=='5') echo $iot_messages->display_iot_message_list();
 
                 if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
                     $this->remove_iso_helper_scheduled_events($_GET['_remove_iso_helper_scheduled_events']);
