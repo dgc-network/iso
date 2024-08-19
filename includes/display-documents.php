@@ -347,9 +347,29 @@ if (!class_exists('display_documents')) {
         function add_mermaid_script_to_head() {
             ?>
             <head>
-                <!-- Direct module script without import map -->
+                <!-- Define the import map -->
+                <script type="importmap">
+                {
+                    "imports": {
+                        "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                    }
+                }
+                </script>
+
+                <!-- Add a check for the import map -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        if ('importMap' in document) {
+                            console.log('Import map is available.');
+                        } else {
+                            console.error('Import map is not available.');
+                        }
+                    });
+                </script>
+
+                <!-- Module script -->
                 <script type="module">
-                    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                    import mermaid from '@wordpress/interactivity';
                     mermaid.initialize({ startOnLoad: true });
                 </script>
             </head>
