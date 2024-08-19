@@ -7,7 +7,7 @@ if (!class_exists('display_documents')) {
     class display_documents {
         // Class constructor
         public function __construct() {
-            //add_action('wp_head', array( $this, 'add_mermaid_script_to_head'));
+            add_action('wp_head', array( $this, 'add_mermaid_script_to_head'));
             add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
