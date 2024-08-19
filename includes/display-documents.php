@@ -418,6 +418,13 @@ if (!class_exists('display_documents')) {
                     <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
             </div>
+<?php /*
+
+            <script type="module">
+                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                mermaid.initialize({ startOnLoad: true });
+            </script>
+<?php /*
 
             <!-- Define the import map -->
             <script type="importmap">
