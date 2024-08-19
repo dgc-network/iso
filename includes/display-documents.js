@@ -180,10 +180,15 @@ jQuery(document).ready(function($) {
         if ($('#is-doc-report').val()>0) {
             $("#doc-report-div").show();
             $("#doc-report-div1").show();
-        } 
+        }
+        if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '') {
+            $("#doc-frame-div").show();
+        }
+/*        
         if ($('#is-doc-report').val()==0){
             $("#doc-frame-div").show();
         }
+*/            
         if ($('#is-doc-report').val()<0) {
             $("#system-report-div").show();
             $("#mermaid-div").hide();

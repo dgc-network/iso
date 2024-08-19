@@ -401,7 +401,7 @@ if (!class_exists('display_documents')) {
             <div id="doc-report-div" style="display:none;">
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <?php echo $this->display_doc_field_list($doc_id);?>
+                <?php //echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
             <div id="system-report-div" style="display:none;">
@@ -1234,7 +1234,6 @@ if (!class_exists('display_documents')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $order_field = get_post_meta(get_the_ID(), 'order_field', true);
                                 if ($order_field=='ASC') $order_field='checked';
-                                //echo '<tr class="doc-field-list-'.$x.'" id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' name="order_field"></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
