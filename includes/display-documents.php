@@ -1027,10 +1027,6 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 </div>
-                <?php /*
-                <input type="checkbox" id="proceed-to-todo" />
-                <label for="proceed-to-todo"><?php echo __('Proceed to Todo', 'your-text-domain')?></label>
-                */?>
                 <?php
             } else {
                 ?>
@@ -1284,15 +1280,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '!=',
                 );
             }
-/*
-            if (!empty($params['is_editing'])) {
-                $args['meta_query'][] = array(
-                    'key'     => 'field_type',
-                    'value'   => '',
-                    'compare' => '!=',
-                );
-            }
-*/
+
             $query = new WP_Query($args);
             return $query;
         }
@@ -1323,6 +1311,8 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
+                    <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
                     <option value="_audit" <?php echo ($field_type=='_audit') ? 'selected' : ''?>><?php echo __( '_audit', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
@@ -1508,7 +1498,6 @@ if (!class_exists('display_documents')) {
             $category_id = get_post_meta($doc_category, 'parent_category', true);
             $params = array(
                 'doc_id'     => $doc_id,
-                //'is_editing'  => true,
             );                
             $query = $this->retrieve_doc_field_data($params);
 
