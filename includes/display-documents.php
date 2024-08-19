@@ -1072,7 +1072,7 @@ if (!class_exists('display_documents')) {
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 //if ($todo_status<1) {
                     $result['html_contain'] = $this->display_doc_report_dialog($report_id);
-                    //$doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $doc_id = get_post_meta($report_id, 'doc_id', true);
                     //$result['doc_id'] = $doc_id;
                     $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
                 //}
@@ -1088,7 +1088,7 @@ if (!class_exists('display_documents')) {
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
-                //$query = $this->retrieve_doc_field_data($params);
+                $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $this->update_doc_field_contains($report_id, get_the_ID());
