@@ -1,4 +1,5 @@
 // display documents
+/*
 jQuery(document).ready(function($) {
     // Dynamically load the Mermaid script
     $.getScript('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
@@ -10,7 +11,7 @@ jQuery(document).ready(function($) {
             console.error("Mermaid script failed to load.");
         });
 });
-
+*/
 jQuery(document).ready(function($) {
     function copyToClipboard(text) {
         // Create a temporary textarea element
