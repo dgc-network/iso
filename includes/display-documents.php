@@ -1091,17 +1091,12 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $this->update_doc_field_contains($report_id, get_the_ID());
+                        //$this->update_doc_field_contains($report_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 }
-                $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
                 $action_id = sanitize_text_field($_POST['_action_id']);
-/*
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-*/
+                $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
                 if ($proceed_to_todo==1) $this->set_todo_from_doc_report($action_id, $report_id);
             } else {
                 // Create the post
