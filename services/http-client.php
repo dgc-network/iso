@@ -32,10 +32,10 @@ if (!class_exists('http_client')) {
             add_action( 'wp_ajax_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
 
-            add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
-            add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
-            add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
-            add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
+            //add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
+            //add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
+            //add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
 
             add_filter('cron_schedules', array( $this, 'custom_cron_schedules'));
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
@@ -320,7 +320,7 @@ if (!class_exists('http_client')) {
                                 $latitude = get_post_meta(get_the_ID(), 'latitude', true);
                                 $longitude = get_post_meta(get_the_ID(), 'longitude', true);
                                 ?>
-                                <tr id="edit-geolocation-message-<?php the_ID();?>">
+                                <tr id="edit-iot-message-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>

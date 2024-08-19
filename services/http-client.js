@@ -1,7 +1,8 @@
 jQuery(document).ready(function($) {
+/*    
     // geolocation-message scripts
     var map, marker;
-    activate_geolocation_message_list_data();
+    //activate_geolocation_message_list_data();
 
     function set_geolocation_message_data(data) {
         // Use AJAX to call a WordPress function to create a new post
@@ -27,7 +28,7 @@ jQuery(document).ready(function($) {
 
     function activate_geolocation_message_list_data(){
 
-        $('[id^="edit-geolocation-message-"]').on("click", function () {
+        $('[id^="edit-iot-message-"]').on("click", function () {
             const geolocation_message_id = this.id.substring(25);
             $.ajax({
                 type: 'POST',
@@ -77,7 +78,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     // http-client scripts
     activate_http_client_list_data();
 
