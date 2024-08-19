@@ -1088,10 +1088,10 @@ if (!class_exists('display_documents')) {
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
-                $query = $this->retrieve_doc_field_data($params);
+                //$query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$this->update_doc_field_contains($report_id, get_the_ID());
+                        $this->update_doc_field_contains($report_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 }
