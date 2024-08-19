@@ -1,17 +1,4 @@
 // display documents
-/*
-jQuery(document).ready(function($) {
-    // Dynamically load the Mermaid script
-    $.getScript('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
-        .done(function() {
-            // Initialize Mermaid after the script is successfully loaded
-            mermaid.initialize({ startOnLoad: true });
-        })
-        .fail(function() {
-            console.error("Mermaid script failed to load.");
-        });
-});
-*/
 jQuery(document).ready(function($) {
     function copyToClipboard(text) {
         // Create a temporary textarea element
@@ -162,14 +149,13 @@ jQuery(document).ready(function($) {
         if ($('#is-doc-report').val()>0) {
             $("#doc-report-div").show();
             $("#doc-report-div1").show();
-        } else {
-            if ($('#is-doc-report').val()<0) {
-                $("#system-report-div").show();
-                $("#mermaid-div").hide();
-            } else {
-                $("#doc-frame-div").show();
-            }    
+            $("#doc-frame-div").hide();
         }
+        if ($('#is-doc-report').val()<0) {
+            $("#system-report-div").show();
+            $("#mermaid-div").hide();
+            $("#doc-frame-div").hide();
+        }    
 
         $('[id^="reset-document-"]').on("click", function () {
             const doc_id = this.id.substring(15);

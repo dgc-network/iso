@@ -425,7 +425,7 @@ if (!class_exists('display_documents')) {
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-            <div id="doc-frame-div" style="display:none;">
+            <div id="doc-frame-div">
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
