@@ -346,6 +346,25 @@ if (!class_exists('display_documents')) {
         
         function add_mermaid_script_to_head() {
             ?>
+            <!-- Define the import map first -->
+            <script type="importmap">
+            {
+                "imports": {
+                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
+                }
+            }
+            </script>
+        
+            <!-- Module script must come after import map -->
+            <script type="module">
+                import mermaid from '@wordpress/interactivity';
+                mermaid.initialize({ startOnLoad: true });
+            </script>
+            <?php
+        }
+/*        
+        function add_mermaid_script_to_head() {
+            ?>
             <head>
                 <!-- Define the import map -->
                 <script type="importmap">
@@ -375,7 +394,7 @@ if (!class_exists('display_documents')) {
             </head>
             <?php
         }
-        
+*/        
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
@@ -988,8 +1007,6 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) $doc_title .= '('.$doc_number.')';
             $doc_title .= '('.$doc_number.')';
             ob_start();
             ?>
@@ -999,17 +1016,14 @@ if (!class_exists('display_documents')) {
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">        
-                <?php //if ($todo_status){?>
                     <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('表單簽核記錄', 'your-text-domain')?></button>
                     <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-                <?php //}?>
                 </div>
             </div>
         
             <div id="report-signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
                 <?php $signature_record_list = $todo_class->get_signature_record_list(false, $report_id);?>
-                <?php //echo $signature_record_list['html']?>
                 <?php echo $todo_class->get_signature_record_list(false, $report_id);?>
             </div>
         
@@ -1069,13 +1083,10 @@ if (!class_exists('display_documents')) {
             $result = array();
             if (isset($_POST['_report_id'])) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
-                $todo_status = get_post_meta($report_id, 'todo_status', true);
-                //if ($todo_status<1) {
-                    $result['html_contain'] = $this->display_doc_report_dialog($report_id);
-                    $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    //$result['doc_id'] = $doc_id;
-                    $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                //}
+                //$todo_status = get_post_meta($report_id, 'todo_status', true);
+                $result['html_contain'] = $this->display_doc_report_dialog($report_id);
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
             }
             wp_send_json($result);
         }
