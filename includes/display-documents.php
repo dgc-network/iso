@@ -427,11 +427,12 @@ if (!class_exists('display_documents')) {
                 }
             }
             </script>
-*/?>
+
             <script type="module">
                 import mermaid from '@wordpress/interactivity';
                 mermaid.initialize({ startOnLoad: true });
             </script>
+*/?>
 
             <div id="mermaid-div">
             <pre class="mermaid">
