@@ -181,6 +181,10 @@ jQuery(document).ready(function($) {
             $("#doc-report-div").show();
             $("#doc-report-div1").show();
         }
+        if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '' || $('#is-doc-report').val() === null || $('#is-doc-report').val() === undefined) {
+            $("#doc-frame-div").show();
+        }
+/*        
         if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '') {
             $("#doc-frame-div").show();
         }
