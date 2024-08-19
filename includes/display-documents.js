@@ -146,6 +146,18 @@ jQuery(document).ready(function($) {
 
     function activate_document_dialog_data(doc_id){
 
+        if ($('#is-doc-report').val()>0) {
+            $("#doc-report-div").show();
+            $("#doc-report-div1").show();
+        } else {
+            if ($('#is-doc-report').val()<0) {
+                $("#system-report-div").show();
+                $("#mermaid-div").hide();
+            } else {
+                $("#doc-frame-div").show();
+            }    
+        }
+
         $('[id^="reset-document-"]').on("click", function () {
             const doc_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to reset this document status?")) {
@@ -177,10 +189,7 @@ jQuery(document).ready(function($) {
             }
         });            
                 
-        if ($('#is-doc-report').val()>0) {
-            $("#doc-report-div").show();
-            $("#doc-report-div1").show();
-        }
+/*        
         if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '' || $('#is-doc-report').val() === null || $('#is-doc-report').val() === undefined) {
             $("#doc-frame-div").show();
         }
@@ -193,10 +202,6 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").show();
         }
 */            
-        if ($('#is-doc-report').val()<0) {
-            $("#system-report-div").show();
-            $("#mermaid-div").hide();
-        } 
 
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
