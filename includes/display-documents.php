@@ -346,10 +346,13 @@ if (!class_exists('display_documents')) {
         
         function add_mermaid_script_to_head() {
             ?>
-            <script type="module">
-                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-                mermaid.initialize({ startOnLoad: true });
-            </script>
+            <head>
+                <!-- Direct module script without import map -->
+                <script type="module">
+                    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                    mermaid.initialize({ startOnLoad: true });
+                </script>
+            </head>
             <?php
         }
         
@@ -429,43 +432,6 @@ if (!class_exists('display_documents')) {
                 </select>
             </div>
 
-<?php /*
-
-            <script type="module">
-                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-                mermaid.initialize({ startOnLoad: true });
-            </script>
-<?php /*
-
-            <!-- Define the import map -->
-            <script type="importmap">
-            {
-                "imports": {
-                    "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                }
-            }
-            </script>
-
-            <!-- Initialize Mermaid.js -->
-            <script type="module">
-                import mermaid from 'mermaid';
-                mermaid.initialize({ startOnLoad: true });
-            </script>
-<?php /*
-            <!-- Define the import map -->
-            <script type="importmap">
-            {
-                "imports": {
-                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                }
-            }
-            </script>
-
-            <script type="module">
-                import mermaid from '@wordpress/interactivity';
-                mermaid.initialize({ startOnLoad: true });
-            </script>
-*/?>
             <div id="mermaid-div">
             <pre class="mermaid">
                 graph TD 
