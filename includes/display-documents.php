@@ -401,7 +401,7 @@ if (!class_exists('display_documents')) {
             <div id="doc-report-div" style="display:none;">
                 <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <?php //echo $this->display_doc_field_list($doc_id);?>
+                <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
             </div>
             <div id="system-report-div" style="display:none;">
