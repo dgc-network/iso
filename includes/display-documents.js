@@ -1,5 +1,5 @@
 // display documents
-$(document).ready(function() {
+jQuery(document).ready(function($) {
     // Dynamically load the Mermaid script
     $.getScript('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
         .done(function() {
