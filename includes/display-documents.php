@@ -235,7 +235,7 @@ if (!class_exists('display_documents')) {
                     $paged = max(1, get_query_var('paged')); // Get the current page number
                     $query = $this->retrieve_document_list_data($paged);
                     $total_posts = $query->found_posts;
-                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
@@ -251,11 +251,12 @@ if (!class_exists('display_documents')) {
                             } elseif ($is_doc_report < 0) {
                                 $doc_title = '**' . $doc_title;
                             }
+/*                            
                             // display the warning if the document without assigned actions
                             $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                             $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             $doc_title .= $unassigned;
-
+*/
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $todo_id = get_post_meta($doc_id, 'todo_status', true);
                             $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
