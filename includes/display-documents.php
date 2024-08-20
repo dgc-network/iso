@@ -1172,11 +1172,12 @@ if (!class_exists('display_documents')) {
                     // Add $field_value to the $employee_ids array
                     $employee_ids[] = $field_value;
                     // Update the meta field with the new array of employee IDs
+                    update_post_meta($report_id, $field_name, $employee_ids);
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
                 if ($default_value=='me'){
-                    //$employee_ids = array(get_current_user_id());
-                    $employee_ids[] = get_current_user_id();
+                    $employee_ids = array(get_current_user_id());
+                    //$employee_ids[] = get_current_user_id();
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
             }
