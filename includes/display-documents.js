@@ -138,7 +138,18 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
-        get_document_dialog_data(doc_id)
+        // Get the current URL
+        var currentUrl = window.location.href;
+        // Create a URL object
+        var url = new URL(currentUrl);
+        // Add the new parameter
+        url.searchParams.set('_doc_id', doc_id);                            
+        // Get the modified URL
+        var modifiedUrl = url.toString();                            
+        // Reload the page with the modified URL
+        window.location.replace(modifiedUrl);
+        //get_document_dialog_data(doc_id)
+
     });            
 
     activate_document_dialog_data($("#doc-id").val())

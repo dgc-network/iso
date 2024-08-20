@@ -225,7 +225,9 @@ if (!class_exists('display_documents')) {
                             <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
                             <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
                             <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
+<?php /*                            
                             <th><?php echo __( '待辦狀態', 'your-text-domain' );?></th>
+*/?>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -264,7 +266,9 @@ if (!class_exists('display_documents')) {
                                 <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
                                 <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
+<?php /*                                
                                 <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
+*/?>                                
                             </tr>
                             <?php
                         endwhile;
@@ -978,12 +982,12 @@ if (!class_exists('display_documents')) {
         }
         
         function display_doc_report_dialog($report_id=false) {
+            ob_start();
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title .= '('.$doc_number.')';
-            ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
