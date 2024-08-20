@@ -1039,6 +1039,7 @@ if (!class_exists('display_documents')) {
             ?>
             <hr>
             <?php
+            // Action buttons
             if (empty($todo_status)){
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1083,10 +1084,17 @@ if (!class_exists('display_documents')) {
             $result = array();
             if (isset($_POST['_report_id'])) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
-                //$todo_status = get_post_meta($report_id, 'todo_status', true);
-                $result['html_contain'] = $this->display_doc_report_dialog($report_id);
-                $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $result['doc_fields'] = $this->get_doc_field_keys($doc_id);
+                $_document = get_post_meta($report_id, '_document', true);
+                $todo_status = get_post_meta($report_id, 'todo_status', true);
+                if ($_document) {
+                    $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
+                    if ($is_doc_report==1) $result['html_contain'] = $this->display_doc_report_list($_document);
+                    else $result['html_contain'] = $this->display_doc_frame_contain($_document);
+                } else {
+                    $result['html_contain'] = $this->display_doc_report_dialog($report_id);
+                    $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $result['doc_fields'] = $this->get_doc_field_keys($doc_id);    
+                }
             }
             wp_send_json($result);
         }
@@ -1160,10 +1168,17 @@ if (!class_exists('display_documents')) {
                 // Check if $field_value is not already in the $employee_ids array
                 if (!in_array($field_value, $employee_ids)) {
                     // Add $field_value to the $employee_ids array
-                    $employee_ids[] = $field_value;                
+                    $employee_ids[] = $field_value;
                     // Update the meta field with the new array of employee IDs
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
+                if ($default_value=='me'){
+                    $employee_ids = array(get_current_user_id());
+                    update_post_meta($report_id, '_employees', $employee_ids);
+                }
+            }
+            if ($field_type=='_document'){
+                update_post_meta($report_id, '_document', $field_value);
             }
             if ($field_type=='_max'){
                 update_post_meta($report_id, '_max', $field_value);
