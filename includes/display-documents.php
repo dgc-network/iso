@@ -345,6 +345,10 @@ if (!class_exists('display_documents')) {
                 'order'          => 'ASC',
             );
 
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
             $query = new WP_Query($args);
             return $query;
         }
@@ -1752,7 +1756,7 @@ if (!class_exists('display_documents')) {
         
         // document misc
         function select_document_list_options($selected_option=0) {
-            $query = $this->retrieve_document_list_data();
+            $query = $this->retrieve_document_list_data(0);
             $options = '<option value="">Select document</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';

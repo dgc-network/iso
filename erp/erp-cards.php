@@ -94,87 +94,7 @@ if (!class_exists('erp_cards')) {
                 'nonce'    => wp_create_nonce('erp-cards-nonce'), // Generate nonce
             ));                
         }
-/*
-        function copy_doc_category_to_iso_category() {
-            // Define the categories to match
-            $parent_categories = array('economic-growth', 'environmental-protection', 'social-responsibility');
-        
-            // Retrieve the posts of type 'doc-category' with the specified 'parent-category' meta values
-            $args = array(
-                'post_type'      => 'doc-category',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'parent_category',
-                        'value'   => $parent_categories,
-                        'compare' => 'IN',
-                    ),
-                ),
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Create an array to map old parent_category values to new iso-category IDs
-            $category_mapping = array();
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the current post ID and data
-                    $current_post_id = get_the_ID();
-                    $current_post    = get_post($current_post_id);
-        
-                    // Prepare the new post data
-                    $new_post = array(
-                        'post_title'    => $current_post->post_title,
-                        'post_content'  => $current_post->post_content,
-                        'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
-                        'post_author'   => $current_post->post_author,
-                        'post_type'     => 'iso-category',
-                        'post_date'     => $current_post->post_date,
-                        'post_date_gmt' => $current_post->post_date_gmt,
-                    );
-        
-                    // Insert the new post and get the new post ID
-                    $new_post_id = wp_insert_post($new_post);
-        
-                    if ($new_post_id) {
-                        // Get all meta data for the current post
-                        $post_meta = get_post_meta($current_post_id);
-        
-                        // Copy each meta field to the new post
-                        foreach ($post_meta as $meta_key => $meta_values) {
-                            foreach ($meta_values as $meta_value) {
-                                add_post_meta($new_post_id, $meta_key, $meta_value);
-                            }
-                        }
-        
-                        // Map the old parent_category value to the new iso-category post ID
-                        $category_mapping[$current_post_id] = $new_post_id;
-                    }
-                }
-        
-                // Reset post data
-                wp_reset_postdata();
-            }
-        
-            // Update audit-item posts
-            $audit_items = get_posts(array(
-                'post_type' => 'audit-item',
-                'posts_per_page' => -1,
-            ));
-        
-            foreach ($audit_items as $audit_item) {
-                $audit_item_id = $audit_item->ID;
-                $current_category_id = get_post_meta($audit_item_id, 'category_id', true);
-        
-                if (isset($category_mapping[$current_category_id])) {
-                    update_post_meta($audit_item_id, 'category_id', $category_mapping[$current_category_id]);
-                }
-            }
-        }
-*/        
+
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
@@ -183,7 +103,6 @@ if (!class_exists('erp_cards')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                //'show_in_menu'  => false,
             );
             register_post_type( 'iso-category', $args );
         }
@@ -689,20 +608,20 @@ if (!class_exists('erp_cards')) {
                     ),
                 ),
             );
-        
+
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
-        
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
                 $args['paged'] = 1;
                 $args['s'] = $search_query;
             }
-        
+
             $query = new WP_Query($args);
-        
+
             // Check if the result is empty and the search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Remove the initial search query
@@ -904,7 +823,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_customer_card_options($selected_option=0) {
-            $query = $this->retrieve_customer_card_data();
+            $query = $this->retrieve_customer_card_data(0);
             $options = '<option value="">Select customer</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1225,27 +1144,13 @@ if (!class_exists('erp_cards')) {
                 // Update the post meta with the modified array
                 update_post_meta($vendor_id, 'site_vendor_data', $site_vendor_data);
             }
-/*
 
-            // Retrieve the current site_customer_data array
-            $site_customer_data = get_post_meta($post_id, 'site_customer_data', true);
-    
-            // Check if it's an array and contains the 'customer_code' key
-            if (is_array($site_customer_data) && isset($site_customer_data['customer_code'])) {
-                // Remove the 'customer_code' key
-                unset($site_customer_data['customer_code']);
-                
-                // Update the post meta with the modified array
-                update_post_meta($post_id, 'site_customer_data', $site_customer_data);
-            }
-*/
-            //wp_delete_post($_POST['_vendor_id'], true);
             $response = array('html_contain' => $this->display_vendor_card_list());
             wp_send_json($response);
         }
 
         function select_vendor_card_options($selected_option=0) {
-            $query = $this->retrieve_vendor_card_data();
+            $query = $this->retrieve_vendor_card_data(0);
             $options = '<option value="">Select vendor</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1459,7 +1364,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_product_card_options($selected_option=0) {
-            $query = $this->retrieve_product_card_data();
+            $query = $this->retrieve_product_card_data(0);
             $options = '<option value="">Select product</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1673,7 +1578,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_equipment_card_options($selected_option=0) {
-            $query = $this->retrieve_equipment_card_data();
+            $query = $this->retrieve_equipment_card_data(0);
             $options = '<option value="">Select equipment</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1887,7 +1792,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_instrument_card_options($selected_option=0) {
-            $query = $this->retrieve_instrument_card_data();
+            $query = $this->retrieve_instrument_card_data(0);
             $options = '<option value="">Select instrument</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -2103,7 +2008,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function select_department_card_options($selected_option=0) {
-            $query = $this->retrieve_department_card_data();
+            $query = $this->retrieve_department_card_data(0);
             $options = '<option value="">Select department</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
