@@ -362,39 +362,7 @@ if (!class_exists('display_documents')) {
             </script>
             <?php
         }
-/*        
-        function add_mermaid_script_to_head() {
-            ?>
-            <head>
-                <!-- Define the import map -->
-                <script type="importmap">
-                {
-                    "imports": {
-                        "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                    }
-                }
-                </script>
 
-                <!-- Add a check for the import map -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        if ('importMap' in document) {
-                            console.log('Import map is available.');
-                        } else {
-                            console.error('Import map is not available.');
-                        }
-                    });
-                </script>
-
-                <!-- Module script -->
-                <script type="module">
-                    import mermaid from '@wordpress/interactivity';
-                    mermaid.initialize({ startOnLoad: true });
-                </script>
-            </head>
-            <?php
-        }
-*/        
         function display_document_dialog($doc_id=false) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
@@ -443,19 +411,26 @@ if (!class_exists('display_documents')) {
             <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
             <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
+
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
             <div id="doc-frame-div">
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+                <?php
+                // transaction data vs card key/value
+                $key_value_pair = array(
+                    '_document'   => $doc_id,
+                );
+                $profiles_class = new display_profiles();
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                ?>
+
+<?php /*
                 <label id="doc-frame-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label>
+*/?>                
             </div>
-            <div id="doc-report-div" style="display:none;">
-                <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-                <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <?php echo $this->display_doc_field_list($doc_id);?>
-                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
-            </div>
+
             <div id="system-report-div" style="display:none;">
                 <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
@@ -470,6 +445,12 @@ if (!class_exists('display_documents')) {
                     <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
             </div>
+
+            <div id="doc-report-div" style="display:none;">
+                <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+                <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                <?php echo $this->display_doc_field_list($doc_id);?>
+                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
 
             <div id="mermaid-div">
             <pre class="mermaid">
@@ -526,6 +507,8 @@ if (!class_exists('display_documents')) {
                     <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                 </div>
             </div>
+            </div>
+
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -662,14 +645,6 @@ if (!class_exists('display_documents')) {
                 <?php echo $doc_frame; ?>
             </fieldset>
 
-            <?php
-                // transaction data vs card key/value
-                $key_value_pair = array(
-                    '_document'   => $doc_id,
-                );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
-            ?>
             <?php
             return ob_get_clean();
         }
