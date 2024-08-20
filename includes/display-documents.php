@@ -1165,10 +1165,10 @@ if (!class_exists('display_documents')) {
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
             }
-            if ($field_type=='_max' && $default_value=='_notification'){
+            if ($field_type=='_max'){
                 update_post_meta($report_id, '_max', $field_value);
             }
-            if ($field_type=='_min' && $default_value=='_notification'){
+            if ($field_type=='_min'){
                 update_post_meta($report_id, '_min', $field_value);
             }
             if ($field_type=='_department' && $default_value=='_notification'){
@@ -1536,6 +1536,7 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_name, true);
@@ -1549,7 +1550,6 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_audit'):
                             $profiles_class = new display_profiles();
                             $cards_class = new erp_cards();
-                            $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                             if ($default_value=='_plan') {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
@@ -1664,7 +1664,12 @@ if (!class_exists('display_documents')) {
                             $cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                            <?php if ($default_value=='me') {?>
+                                <?php $user=get_userdata($field_value);?>
+                                <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
+                            <?php } else {?>
+                                <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                            <?php }?>
                             <?php
                             break;
             
