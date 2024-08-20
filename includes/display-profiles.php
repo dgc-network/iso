@@ -560,13 +560,14 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
-            $organization_number = get_post_meta($site_id, 'organization_number', true);
-            $organization_address = get_post_meta($site_id, 'organization_address', true);
-            $number_of_people = get_post_meta($site_id, 'number_of_people', true);
+            $site_content = get_post_field('post_content', $site_id);
+            $unified_number = get_post_meta($site_id, 'unified_number', true);
+            $company_phone = get_post_meta($site_id, 'company_phone', true);
+            $company_address = get_post_meta($site_id, 'company_address', true);
+            
             $validation_scope = get_post_meta($site_id, 'validation_scope', true);
             $verification_standards = get_post_meta($site_id, 'verification_standards', true);
             $contact_person = get_post_meta($site_id, 'contact_person', true);
-            $contact_number = get_post_meta($site_id, 'contact_number', true);
                         
             // Check if the user is administrator or initial...
             if ($is_site_admin || current_user_can('administrator') || $initial) {
@@ -602,23 +603,23 @@ if (!class_exists('display_profiles')) {
                     <?php echo $this->display_site_user_list();?>
 
                     <?php echo $this->display_audit_item_list_in_category();?>
+
+                    <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
+                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo $site_content; ?></textarea>
+                    <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
+                    <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
+                    <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                    <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 <?php /*
-                    <label for="organization-number"><?php echo __( '組織編號：', 'your-text-domain' );?></label>
-                    <input type="text" id="organization-number" value="<?php echo $organization_number;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="organization-address"><?php echo __( '組織地址：', 'your-text-domain' );?></label>
-                    <input type="text" id="organization-address" value="<?php echo $organization_address;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="number-of-people"><?php echo __( '人數：', 'your-text-domain' );?></label>
-                    <input type="number" id="number-of-people" value="<?php echo $number_of_people;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="validation-scope"><?php echo __( '驗證範圍：', 'your-text-domain' );?></label>
                     <input type="text" id="validation-scope" value="<?php echo $validation_scope;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="verification-standards"><?php echo __( '驗證標準：', 'your-text-domain' );?></label>
                     <input type="text" id="verification-standards" value="<?php echo $verification_standards;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
                     <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="contact-number"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
-                    <input type="text" id="contact-number" value="<?php echo $contact_number;?>" class="text ui-widget-content ui-corner-all" />
 */?>
-
                 </fieldset>
                 <?php
             } else {
@@ -646,13 +647,13 @@ if (!class_exists('display_profiles')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
-                update_post_meta($site_id, 'organization_number', sanitize_text_field($_POST['_organization_number']) );
-                update_post_meta($site_id, 'organization_address', sanitize_text_field($_POST['_organization_address']) );
-                update_post_meta($site_id, 'number_of_people', sanitize_text_field($_POST['_number_of_people']) );
+                update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
+                update_post_meta($site_id, 'company_address', sanitize_text_field($_POST['_company_address']) );
+                update_post_meta($site_id, 'site_content', sanitize_text_field($_POST['_site_content']) );
                 update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
                 update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
                 update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
-                update_post_meta($site_id, 'contact_number', sanitize_text_field($_POST['_contact_number']) );
+                update_post_meta($site_id, 'company_phone', sanitize_text_field($_POST['_company_phone']) );
                 $response = array('success' => true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {

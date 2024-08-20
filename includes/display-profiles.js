@@ -344,13 +344,13 @@ jQuery(document).ready(function($) {
                     '_site_title': $("#site-title").val(),
                     '_image_url': $("#image-url").val(),
                     _keyValuePairs : keyValuePairs,
-                    '_organization_number': $("#organization-number").val(),
-                    '_organization_address': $("#organization-address").val(),
-                    '_number_of_people': $("#number-of-people").val(),
+                    '_unified_number': $("#unified-number").val(),
+                    '_company_address': $("#company-address").val(),
+                    '_site_content': $("#site-content").val(),
                     '_validation_scope': $("#validation-scope").val(),
                     '_verification_standards': $("#verification-standards").val(),
                     '_contact_person': $("#contact-person").val(),
-                    '_contact_number': $("#contact-number").val(),
+                    '_company_phone': $("#company-phone").val(),
                 },
                 success: function (response) {
                     if (response.success) {
