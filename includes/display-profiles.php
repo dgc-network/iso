@@ -1163,6 +1163,13 @@ if (!class_exists('display_profiles')) {
                         'value' => $site_id,
                     ),
                     array(
+                        'key'   => 'is_doc_report',
+                        'value' => 1,
+                        'compare' => '=',
+                        'type'    => 'NUMERIC'
+                    ),
+/*                    
+                    array(
                         'relation' => 'OR',
                         array(
                             'key'   => 'is_doc_report',
@@ -1175,6 +1182,7 @@ if (!class_exists('display_profiles')) {
                             'compare' => 'NOT EXISTS',
                         ),    
                     ),
+*/                    
                 ),
                 'meta_key'       => 'job_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
