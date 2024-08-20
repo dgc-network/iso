@@ -202,10 +202,10 @@ if (!class_exists('display_profiles')) {
                 );
                 $this->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-
+<?php /*
                 <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
                 <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
-
+*/?>
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -1163,26 +1163,19 @@ if (!class_exists('display_profiles')) {
                         'value' => $site_id,
                     ),
                     array(
-                        'key'   => 'is_doc_report',
-                        'value' => 1,
-                        'compare' => '=',
-                        'type'    => 'NUMERIC'
-                    ),
-/*                    
-                    array(
                         'relation' => 'OR',
                         array(
                             'key'   => 'is_doc_report',
-                            'value' => 0,
-                            'compare' => '>=', // Comparison operator to check for values greater than or equal to 0
-                            'type'    => 'NUMERIC' // Ensure that the comparison is done numerically        
+                            'value' => 1,
+                            'compare' => '=',
+                            'type'    => 'NUMERIC'
                         ),
                         array(
                             'key'   => 'is_doc_report',
                             'compare' => 'NOT EXISTS',
                         ),    
                     ),
-*/                    
+
                 ),
                 'meta_key'       => 'job_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
