@@ -408,6 +408,19 @@ jQuery(document).ready(function($) {
                 _is_admin: $("#is-admin").val()
             },
             success: function (response) {
+                // Get the current URL
+                var currentUrl = window.location.href;
+                // Create a URL object
+                var url = new URL(currentUrl);
+                // Add the new parameter
+                url.searchParams.set('_doc_id', doc_id);                            
+                // Get the modified URL
+                var modifiedUrl = url.toString();                            
+                // Reload the page with the modified URL
+                window.location.replace(modifiedUrl);
+
+
+/*
                 if (response.todo_status>0 && $("#is-admin").val()!=1) {
                     alert("The document is in To-do process. Please wait for publishing.");
                 } else {
@@ -508,6 +521,7 @@ jQuery(document).ready(function($) {
                         }
                     }
                 }
+*/                    
             },
             error: function (error) {
                 console.error(error);
