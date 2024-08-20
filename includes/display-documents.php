@@ -1088,8 +1088,10 @@ if (!class_exists('display_documents')) {
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 if ($_document) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
-                    if ($is_doc_report==1) $result['html_contain'] = $this->display_doc_report_list($_document);
-                    else $result['html_contain'] = $this->display_doc_frame_contain($_document);
+                    if ($todo_status==-1) {
+                        if ($is_doc_report==1) $result['html_contain'] = $this->display_doc_report_list($_document);
+                        else $result['html_contain'] = $this->display_doc_frame_contain($_document);    
+                    }
                 } else {
                     $result['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -1173,7 +1175,8 @@ if (!class_exists('display_documents')) {
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
                 if ($default_value=='me'){
-                    $employee_ids = array(get_current_user_id());
+                    //$employee_ids = array(get_current_user_id());
+                    $employee_ids[] = get_current_user_id();
                     update_post_meta($report_id, '_employees', $employee_ids);
                 }
             }
