@@ -1148,10 +1148,38 @@ if (!class_exists('display_documents')) {
 
             // additional field-name
             if ($field_type=='_employees'){
+                $employee_ids = get_post_meta($report_id, $field_name . '_employees', true);
+
+                // Ensure $employee_ids is an array, or initialize it as an empty array
+                if (!is_array($employee_ids)) {
+                    $employee_ids = array();
+                }
+                
+                // Ensure $field_value is an array, or wrap it in an array
+                if (!is_array($field_value)) {
+                    $field_value = array($field_value);
+                }
+                
+                // Loop through each value in $field_value to check and add to $employee_ids
+                foreach ($field_value as $value) {
+                    // Check if the value is not already in the $employee_ids array
+                    if (!in_array($value, $employee_ids)) {
+                        // Add the value to the $employee_ids array
+                        $employee_ids[] = $value;
+                    }
+                }
+                
+                // Update the meta field with the new array of employee IDs
+                update_post_meta($report_id, $field_name, $employee_ids);
+                update_post_meta($report_id, $field_name . '_employees', $employee_ids);
+/*                
                 $employee_ids = get_post_meta($report_id, $field_name.'_employees', true);
                 // Check if $employee_ids is an array, if not, initialize it as an empty array
                 if (!is_array($employee_ids)) {
                     $employee_ids = array();
+                }                
+                if (!is_array($field_value)) {
+                    $field_value = array();
                 }                
                 // Check if $field_value is not already in the $employee_ids array
                 if (!in_array($field_value, $employee_ids)) {
@@ -1161,6 +1189,7 @@ if (!class_exists('display_documents')) {
                     update_post_meta($report_id, $field_name, $employee_ids);
                     update_post_meta($report_id, $field_name.'_employees', $employee_ids);
                 }
+*/                    
                 if ($default_value=='me'){
                     $employee_ids = array(get_current_user_id());
                     update_post_meta($report_id, $field_name.'_employees', $employee_ids);
