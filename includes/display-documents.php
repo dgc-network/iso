@@ -720,7 +720,7 @@ if (!class_exists('display_documents')) {
 
             <fieldset>
                 <?php
-                $this->display_doc_report_native_list($doc_id, $search_doc_report);
+                $this->get_doc_report_native_list($doc_id, $search_doc_report);
                 ?>            
                 <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <div class="pagination">
@@ -736,7 +736,7 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
         
-        function display_doc_report_native_list($doc_id=false, $search_doc_report=false, $key_value_pair=array()) {
+        function get_doc_report_native_list($doc_id=false, $search_doc_report=false, $key_value_pair=array()) {
             ?>
                 <table style="width:100%;">
                     <thead>
@@ -799,7 +799,7 @@ if (!class_exists('display_documents')) {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
                                             $doc_number = get_post_meta($field_value, 'doc_number', true);
                                             $doc_revision = get_post_meta($field_value, 'doc_revision', true);
-                                            echo esc_html($doc_title.'('.$doc_number.'-'.$doc_revision.')');
+                                            echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
                                         } elseif ($field_type=='_customer') {
                                             $customer_code = get_post_meta($field_value, 'customer_code', true);
                                             echo esc_html(get_the_title($field_value).'('.$customer_code.')');
@@ -1148,7 +1148,7 @@ if (!class_exists('display_documents')) {
 
             // additional field-name
             if ($field_type=='_employees'){
-                $employee_ids = get_post_meta($report_id, '_employees', true);
+                $employee_ids = get_post_meta($report_id, $field_name.'_employees', true);
                 // Check if $employee_ids is an array, if not, initialize it as an empty array
                 if (!is_array($employee_ids)) {
                     $employee_ids = array();
@@ -1159,31 +1159,30 @@ if (!class_exists('display_documents')) {
                     $employee_ids[] = $field_value;
                     // Update the meta field with the new array of employee IDs
                     update_post_meta($report_id, $field_name, $employee_ids);
-                    update_post_meta($report_id, '_employees', $employee_ids);
+                    update_post_meta($report_id, $field_name.'_employees', $employee_ids);
                 }
                 if ($default_value=='me'){
                     $employee_ids = array(get_current_user_id());
-                    //$employee_ids[] = get_current_user_id();
-                    update_post_meta($report_id, '_employees', $employee_ids);
+                    update_post_meta($report_id, $field_name.'_employees', $employee_ids);
                 }
             }
             if ($field_type=='_document'){
-                update_post_meta($report_id, '_document', $field_value);
+                update_post_meta($report_id, $field_name.'_document', $field_value);
             }
             if ($field_type=='_max'){
-                update_post_meta($report_id, '_max', $field_value);
+                update_post_meta($report_id, $field_name.'_max', $field_value);
             }
             if ($field_type=='_min'){
-                update_post_meta($report_id, '_min', $field_value);
+                update_post_meta($report_id, $field_name.'_min', $field_value);
             }
             if ($field_type=='_department' && $default_value=='_notification'){
-                update_post_meta($report_id, '_department', $field_value);
+                update_post_meta($report_id, $field_name.'_department', $field_value);
             }
             if ($field_type=='_audit' && $default_value=='_plan'){
                 // generate the audit-item-ids by iso-category-id & department-id
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
-                update_post_meta($report_id, '_audit_plan', $audit_item_ids);
-                update_post_meta($report_id, '_iso_category', $field_value);
+                update_post_meta($report_id, $field_name.'_audit_plan', $audit_item_ids);
+                update_post_meta($report_id, $field_name.'_iso_category', $field_value);
             }
             if ($field_type=='_audit' && ($default_value=='_content' || $default_value=='_corrective')){
                 $field_name .= $default_value;
@@ -1599,8 +1598,8 @@ if (!class_exists('display_documents')) {
                                 <?php
                             } elseif ($default_value=='_summary'){
                                 // retrieve the audit-items by iso-category and heading
-                                $department_id = get_post_meta($report_id, '_department', true);
-                                $category_id = get_post_meta($report_id, '_iso_category', true);
+                                $department_id = get_post_meta($report_id, $field_name.'_department', true);
+                                $category_id = get_post_meta($report_id, $field_name.'_iso_category', true);
                                 //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>

@@ -249,7 +249,7 @@ if (!class_exists('display_profiles')) {
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
-                                    echo $documents_class->display_doc_report_native_list($doc_id, false, $key_value_pair);
+                                    echo $documents_class->get_doc_report_native_list($doc_id, false, $key_value_pair);
                                     echo '</fieldset>';    
                                 }        
                             }
