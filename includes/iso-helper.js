@@ -96,10 +96,11 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_nda_submit_data',
-                '_site_id': $("#select-nda-sitel").val(),
+                '_site_id': $("#select-nda-site").val(),
                 '_unified_number': $("#unified-number").val(),
                 '_display_name': $("#display-name").val(),
                 '_identity_number': $("#identity-number").val(),
+                '_nda_date': $("#nda-date").val(),
                 '_user_id': $("#user-id").val(),
             },
             success: function (response) {

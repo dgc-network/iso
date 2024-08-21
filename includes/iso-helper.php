@@ -678,6 +678,7 @@ function set_nda_submit_data() {
         update_user_meta( $user_id, 'site_id', $site_id);
         update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
         update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
     }
     wp_send_json($response);
 }
