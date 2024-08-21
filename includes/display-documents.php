@@ -1023,7 +1023,7 @@ if (!class_exists('display_documents')) {
                     'doc_id'    => $doc_id,
                     'report_id' => $report_id,
                 );                
-                $this->display_doc_field_contains($params);
+                $this->get_doc_field_contains($params);
             ?>
             <hr>
             <?php
@@ -1524,7 +1524,7 @@ if (!class_exists('display_documents')) {
             return $default_value;
         }
 
-        function display_doc_field_contains($args) {
+        function get_doc_field_contains($args) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
@@ -1671,7 +1671,7 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
                                 <?php $user=get_userdata(get_current_user_id());?>
-                                <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($user->ID);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo array($user->ID);?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>
                                 <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
@@ -1765,7 +1765,7 @@ if (!class_exists('display_documents')) {
                 $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                 $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                 $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_title.'('.$doc_number.'-'.$doc_revision.')') . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

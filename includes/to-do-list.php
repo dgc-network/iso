@@ -348,14 +348,14 @@ if (!class_exists('to_do_list')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             if ($is_doc_report) {
                 // doc_report_dialog data
-/*                
+
                 $params = array(
                     'doc_id'     => $doc_id,
                     'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
-*/                
+
                 $documents_class = new display_documents();
-                $documents_class->display_doc_field_contains($params);
+                $documents_class->get_doc_field_contains($params);
             } else {
                 // document_dialog data
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
