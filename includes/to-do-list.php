@@ -1023,14 +1023,6 @@ if (!class_exists('to_do_list')) {
 
         // signature_record
         function display_signature_record() {
-/*            
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-*/            
-            //$signature_record_list = $this->get_signature_record_list();
-            //$html_contain = $signature_record_list['html'];
-            //$x_value = $signature_record_list['x'];
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -1050,10 +1042,10 @@ if (!class_exists('to_do_list')) {
         }
         
         function get_signature_record_list($doc=false, $report=false ) {
+            ob_start();
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
-            $x = 0;
-            ob_start();
+            //$x = 0;
             ?>
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
@@ -1078,13 +1070,10 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            //$report_id = get_post_meta(get_the_ID(), 'report_id', true);
-                            //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
                             $site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            //if ($is_doc_report) $doc_title .= '(電子表單)';
                             $doc_title .= '('.$doc_number.')';
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
@@ -1095,7 +1084,7 @@ if (!class_exists('to_do_list')) {
         
                             if ($current_site==$site_id) { // Aditional condition to filter the data
                                 $user_data = get_userdata( $submit_user );
-                                $x += 1;
+                                //$x += 1;
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                     <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
@@ -1126,12 +1115,6 @@ if (!class_exists('to_do_list')) {
             </fieldset>
             <?php
             return ob_get_clean();
-/*            
-            return array(
-                'html' => ob_get_clean(),
-                'x'    => $x
-            );
-*/            
         }
         
         function count_signature_records(){
