@@ -963,7 +963,8 @@ jQuery(document).ready(function($) {
                 }
                 //$("#doc-id").val(response.doc_id);
                 
-                activate_doc_report_dialog_data(response)
+                activate_doc_report_dialog_data(response);
+                activate_document_dialog_data($("#doc-id").val());
             },
             error: function (error) {
                 console.error(error);
