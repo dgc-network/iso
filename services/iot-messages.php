@@ -3,19 +3,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if (!class_exists('http_client')) {
+if (!class_exists('iot_messages')) {
     class iot_messages {
 
         public function __construct() {
-
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
-            //add_action( 'init', array( $this, 'register_http_client_post_type' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
+            //add_action( 'init', array( $this, 'register_http_client_post_type' ) );
             //add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 
-            //add_action( 'wp_ajax_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_http_client_list_data', array( $this, 'get_http_client_list_data' ) );
             add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
@@ -43,7 +40,7 @@ if (!class_exists('http_client')) {
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta'));
             register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
-            
+
         }
 
         function enqueue_http_client_scripts() {
@@ -90,7 +87,7 @@ if (!class_exists('http_client')) {
                 'type' => 'number',
             ));
         }
-        
+
         function update_iot_message_meta() {
             // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
             $args = array(
@@ -110,7 +107,7 @@ if (!class_exists('http_client')) {
                 ),
             );
             $iot_query = new WP_Query($args);
-        
+
             if ($iot_query->have_posts()) {
                 while ($iot_query->have_posts()) {
                     $iot_query->the_post();
@@ -211,75 +208,61 @@ if (!class_exists('http_client')) {
                     }
                     return $query->posts; // Return the array of post IDs
                 }
-
             }
-/*
-            $query = $this->retrieve_notification_data($http_client_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $user_id = get_post_meta(get_the_ID(), 'user_id', true);
-                    $max_temperature = (float) get_post_meta(get_the_ID(), 'max_temperature', true);
-                    $max_humidity = (float) get_post_meta(get_the_ID(), 'max_humidity', true);
-                    if ($key=='temperature' && $value>$max_temperature) $this->prepare_exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_temperature);
-                    if ($key=='humidity' && $value>$max_humidity) $this->prepare_exception_notification_event(get_the_ID(), $user_id, $key, $value, $max_humidity);
-                endwhile;
-                wp_reset_postdata();
-            endif;
-*/            
         }
 
         function prepare_exception_notification_event($http_client_id=false, $user_id=false, $key=false, $value=false, $max_value=false) {
             $content = get_post_field('post_content', $http_client_id);
             $deviceID = get_post_meta($http_client_id, 'deviceID', true);
             $equipment_code = get_post_meta($http_client_id, 'equipment_code', true);
-            
+
             // Prepare the notification message
             $five_minutes_ago = time() - (5 * 60);
             $five_minutes_ago_formatted = wp_date(get_option('date_format'), $five_minutes_ago) . ' ' . wp_date(get_option('time_format'), $five_minutes_ago);
-        
+
             if ($key=='temperature') {
                 $text_message = '#'.$deviceID.' '.$content.'在'.$five_minutes_ago_formatted.'的溫度是'.$value.'°C，已經超過設定的'.$max_value.'°C了。';
             }
             if ($key=='humidity') {
                 $text_message = '#'.$deviceID.' '.$content.'在'.$five_minutes_ago_formatted.'的濕度是'.$value.'%，已經超過設定的'.$max_value.'%了。';
             }
-        
+
             // Check if a notification has been sent today
             $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $deviceID, true);
             $today = wp_date('Y-m-d');
-        
+
             if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
                 // Notification already sent today, do not send again
                 return;
             }
-        
+
             // Parameters to pass to the notification function
             $params = [
                 'user_id' => $user_id,
                 'text_message' => $text_message,
             ];
-        
+
             // Schedule the event to run after 5 minutes (300 seconds)
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
-        
+
             // Update the last notification time
             update_user_meta($user_id, 'last_notification_time_' . $deviceID, time());
         }
-        
+
         function send_delayed_notification_handler($params) {
             $user_id = $params['user_id'];
             $text_message = $params['text_message'];
-            
+
             $user_data = get_userdata($user_id);
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-        
+
             // Prepare the flex message
             $flexMessage = set_flex_message([
                 'display_name' => $user_data->display_name,
                 'link_uri' => home_url() . '/display-profiles/?_id=' . $user_id,
                 'text_message' => $text_message,
             ]);
-        
+
             // Send the message via the LINE API
             $line_bot_api = new line_bot_api();
             $line_bot_api->pushMessage([
@@ -455,6 +438,8 @@ if (!class_exists('http_client')) {
             }
         }
 
+
+        
         // Register http-client post type
         function register_http_client_post_type() {
             $labels = array(
@@ -678,12 +663,7 @@ if (!class_exists('http_client')) {
             <?php
             return ob_get_clean();
         }
-        
-        function backup_data($http_client_id=false) {
-            ?>
-            <?php
-        }
-        
+
         function retrieve_notification_data($http_client_id=false) {
             $args = array(
                 'post_type'      => 'notification',

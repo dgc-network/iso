@@ -48,8 +48,8 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
 
-            add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
-            add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
+            //add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
+            //add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
             add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
@@ -376,6 +376,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
+            $is_site_admin = $profiles_class->is_site_admin();            
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -389,7 +390,7 @@ if (!class_exists('display_documents')) {
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //$parent_report_id = get_post_meta($doc_id, 'parent_report_id', true);
+
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
             ob_start();
@@ -422,6 +423,7 @@ if (!class_exists('display_documents')) {
             <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
 
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+
             <div id="doc-frame-div">
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
@@ -434,10 +436,6 @@ if (!class_exists('display_documents')) {
                 $profiles_class = new display_profiles();
                 $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-
-<?php /*
-                <label id="doc-frame-job-setting" class="button"><?php echo __( '本文件的職務設定', 'your-text-domain' );?></label>
-*/?>                
             </div>
 
             <div id="system-report-div" style="display:none;">
@@ -461,70 +459,64 @@ if (!class_exists('display_documents')) {
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
 
-            <div id="mermaid-div">
-            <pre class="mermaid">
-                graph TD 
-                <?php
-                $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
-                        $current_job_title = get_the_title($current_job);
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $next_job_title = get_the_title($next_job);
-                        $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                        if ($next_job==-1) {
-                            $next_job_title = __( '發行', 'your-text-domain' );
-                            //$next_job_title = __( '文件發行', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
-                        }
-                        if ($next_job==-2) {
-                            $next_job_title = __( '廢止', 'your-text-domain' );
-                            //$next_job_title = __( '文件廢止', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
-                        }
-                        ?>
-                        <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;    
-                ?>
-            </pre>
-            </div>
-
-            <div id="job-setting-div" style="display:none;">
-                <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
-                <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
-                <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
-                <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
-                <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
-                <?php echo $profiles_class->display_doc_action_list($doc_id);?>
-            </div>
-
-            <div id="doc-report-div1" style="display:none;">            
-                <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
-                <div id="frquence-start-time-div" style="display:none;">
-                    <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-                    <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
-                    <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                <div id="mermaid-div">
+                <pre class="mermaid">
+                    graph TD 
+                    <?php
+                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $action_title = get_the_title();
+                            $action_content = get_post_field('post_content', get_the_ID());
+                            $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $current_job_title = get_the_title($current_job);
+                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                            $next_job_title = get_the_title($next_job);
+                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                            if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                            if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                            ?>
+                            <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;    
+                    ?>
+                </pre>
                 </div>
-            </div>
+
+                <div id="job-setting-div" style="display:none;">
+                    <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                    <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
+                    <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
+                    <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
+                    <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                    <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
+                    <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
+                    <?php echo $profiles_class->display_doc_action_list($doc_id);?>
+                </div>
+
+                <div id="doc-report-div1" style="display:none;">            
+                    <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                    <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                    <div id="frquence-start-time-div" style="display:none;">
+                        <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                        <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
+                        <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
+                        <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                    </div>
+                </div>
             </div>
 
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
+                    <?php if ($is_site_admin || current_user_can('administrator')) {?>
                     <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php }?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
@@ -575,7 +567,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
                 update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-                //update_post_meta($doc_id, 'parent_report_id', sanitize_text_field($_POST['_parent_report_id']));
 
                 $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
                 update_post_meta($doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);
@@ -636,7 +627,7 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="signature-record" value="<?php echo __( '文件簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -645,7 +636,7 @@ if (!class_exists('display_documents')) {
         
             <div id="signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php $signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
+                <?php //$signature_record_list = $todo_class->get_signature_record_list($doc_id);?>
                 <?php //echo $signature_record_list['html']?>
                 <?php echo $todo_class->get_signature_record_list($doc_id);?>
             </div>
@@ -673,11 +664,10 @@ if (!class_exists('display_documents')) {
         
         // doc-report
         function display_doc_report_list($doc_id=false, $search_doc_report=false) {
-
+            ob_start();
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -687,7 +677,7 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="signature-record" value="<?php echo __( '文件簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -769,7 +759,7 @@ if (!class_exists('display_documents')) {
                         );                
                         $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                        $total_pages = ceil($total_posts / get_option('operation_row_counts'));
             
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -819,7 +809,6 @@ if (!class_exists('display_documents')) {
                                             $instrument_code = get_post_meta($field_value, 'department_code', true);
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employees') {
-
                                             // Check if $field_value is an array of selected user IDs
                                             if (is_array($field_value)) {
                                                 // Loop through each selected user ID
@@ -840,10 +829,6 @@ if (!class_exists('display_documents')) {
                                                 // Handle the case where $field_value is not an array
                                                 echo 'Selected value is not an array.';
                                             }
-                                            
-                                            //$user = get_userdata($field_value);
-                                            //echo $user->display_name;
-                                            //echo $field_value;
                                         } else {
                                             echo esc_html($field_value);
                                         }
@@ -855,8 +840,6 @@ if (!class_exists('display_documents')) {
                                 $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                                 $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
                                 $todo_status = ($todo_id==-2) ? '作廢' : $todo_status;
-                                //$todo_status = ($todo_id==-1) ? '記錄存檔' : $todo_status;
-                                //$todo_status = ($todo_id==-2) ? '記錄作廢' : $todo_status;
                                 echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                                 echo '</tr>';
                             endwhile;                
@@ -1008,13 +991,13 @@ if (!class_exists('display_documents')) {
                     <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
-        
+
             <div id="report-signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
                 <?php $signature_record_list = $todo_class->get_signature_record_list(false, $report_id);?>
                 <?php echo $todo_class->get_signature_record_list(false, $report_id);?>
             </div>
-        
+
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
@@ -1149,17 +1132,14 @@ if (!class_exists('display_documents')) {
             // additional field-name
             if ($field_type=='_employees'){
                 $employee_ids = get_post_meta($report_id, $field_name . '_employees', true);
-
                 // Ensure $employee_ids is an array, or initialize it as an empty array
                 if (!is_array($employee_ids)) {
                     $employee_ids = array();
                 }
-                
                 // Ensure $field_value is an array, or wrap it in an array
                 if (!is_array($field_value)) {
                     $field_value = array($field_value);
                 }
-                
                 // Loop through each value in $field_value to check and add to $employee_ids
                 foreach ($field_value as $value) {
                     // Check if the value is not already in the $employee_ids array
@@ -1168,7 +1148,6 @@ if (!class_exists('display_documents')) {
                         $employee_ids[] = $value;
                     }
                 }
-                
                 // Update the meta field with the new array of employee IDs
                 update_post_meta($report_id, $field_name, $employee_ids);
                 update_post_meta($report_id, $field_name . '_employees', $employee_ids);
@@ -1179,9 +1158,11 @@ if (!class_exists('display_documents')) {
                     update_post_meta($report_id, $field_name.'_employees', $employee_ids);
                 }
             }
+
             if ($field_type=='_document'){
                 update_post_meta($report_id, $field_name.'_document', $field_value);
             }
+
             if ($field_type=='_max'){
                 update_post_meta($report_id, $field_name.'_max', $field_value);
             }
@@ -1575,54 +1556,6 @@ if (!class_exists('display_documents')) {
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
-/*                                
-                            } elseif ($default_value=='_content'){
-                                if ($todo_id) $field_value = get_post_meta($todo_id, 'audit_item', true);                                    
-                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
-                                <?php
-                                //$field_name .= $default_value;
-                                $field_title = get_the_title($field_value);
-                                $clause_no = get_post_meta($field_value, 'clause_no', true);
-                                $placeholder = get_post_field('post_content', $field_value);
-                                $content_value = get_post_meta($report_id, $field_name.'_content', true);
-                                $non_compliance_value = get_post_meta($report_id, $field_name.'_non_compliance', true);
-                                ?>
-                                <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合事項', 'your-text-domain' );?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
-                                <?php
-                            } elseif ($default_value=='_corrective'){
-                                ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
-                                <?php
-                                //$field_name .= $default_value;
-                                $field_title = get_the_title($field_value);
-                                $clause_no = get_post_meta($field_value, 'clause_no', true);
-                                $placeholder = get_post_field('post_content', $field_value);
-                                $content_value = get_post_meta($report_id, $field_name.'_content', true);
-                                $non_compliance_value = get_post_meta($report_id, $field_name.'_non_compliance', true);
-                                $cause_analysis_value = get_post_meta($report_id, $field_name.'_cause_analysis', true);
-                                $corrective_plan_value = get_post_meta($report_id, $field_name.'_corrective_plan', true);
-                                ?>
-                                <label for="<?php echo esc_attr($field_name.'_content');?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_content');?>" class="text ui-widget-content ui-corner-all" rows="5" placeholder="<?php echo $placeholder;?>"><?php echo esc_html($content_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_non_compliance');?>"><?php echo __( '不符合事項', 'your-text-domain' );?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_non_compliance');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($non_compliance_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_cause_analysis');?>"><?php echo __( '原因分析', 'your-text-domain' );?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_cause_analysis');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($cause_analysis_value);?></textarea>
-                                <label for="<?php echo esc_attr($field_name.'_corrective_plan');?>"><?php echo __( '矯正預防', 'your-text-domain' );?></label>
-                                <textarea id="<?php echo esc_attr($field_name.'_corrective_plan');?>" class="text ui-widget-content ui-corner-all" rows="5"><?php echo esc_html($corrective_plan_value);?></textarea>
-                                <?php
-                            } elseif ($default_value=='_summary'){
-                                // retrieve the audit-items by iso-category and heading
-                                $department_id = get_post_meta($report_id, '_audited_department', true);
-                                $category_id = get_post_meta($report_id, '_iso_category', true);
-                                //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
-                                ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>
-                                <?php    
-*/                                
                             } else {
                                 $category_id = get_post_meta($report_id, '_iso_category', true);
                                 ?>
@@ -1679,7 +1612,6 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
 
-
                         case ($field_type=='_department'):
                             $cards_class = new erp_cards();
                             ?>
@@ -1701,35 +1633,35 @@ if (!class_exists('display_documents')) {
                             <?php }?>
                             <?php
                             break;
-            
+
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
                             echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
                             echo '<textarea class="video-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
-            
+
                         case ($field_type=='image'):
                             echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
                             echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
                             echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
-    
+
                         case ($field_type=='heading'):
                             $default_value = ($default_value) ? $default_value : 'b';
                             ?>
                             <div><<?php echo esc_html($default_value);?>><?php echo esc_html($field_title);?></<?php echo esc_html($default_value);?>></div>
                             <?php
                             break;
-        
+
                         case ($field_type=='textarea'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
                             <?php    
                             break;
-        
+
                         case ($field_type=='checkbox'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
@@ -1737,7 +1669,7 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                             <?php
                             break;
-            
+
                         case ($field_type=='radio'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
@@ -1745,28 +1677,28 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
                             <?php
                             break;
-            
+
                         case ($field_type=='date'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                             <?php
                             break;
-            
+
                         case ($field_type=='time'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                             <?php
                             break;
-                
+
                         case ($field_type=='number'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <input type="number" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                             <?php
                             break;
-            
+
                         default:
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
@@ -1778,7 +1710,7 @@ if (!class_exists('display_documents')) {
                 wp_reset_postdata();
             }
         }
-        
+
         // document misc
         function select_document_list_options($selected_option=0) {
             $query = $this->retrieve_document_list_data(0);
@@ -1793,16 +1725,15 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();
             return $options;
         }
-
+/*
         function set_new_site_by_title() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_new_site_title'])) {
                 // Sanitize input values
                 $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-                
                 // Check if a site with the same title already exists
                 $existing_site = get_page_by_title($new_site_title, OBJECT, 'site-profile');
-                
+
                 if ($existing_site) {
                     // A site with the same title already exists
                     $response['error'] = 'A site with the same title already exists.';
@@ -1829,7 +1760,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+*/        
         function get_doc_count_by_category($iso_category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1857,12 +1788,12 @@ if (!class_exists('display_documents')) {
             );
             $doc_category_query = new WP_Query($doc_category_args);
             $doc_category_ids = $doc_category_query->posts;
-        
+
             // If no "doc-category" posts are found, return 0
             if (empty($doc_category_ids)) {
                 return 0;
             }
-        
+
             // Retrieve the "document" posts that have "doc_category" meta matching the retrieved IDs
             $document_args = array(
                 'post_type'      => 'document',
@@ -1877,7 +1808,7 @@ if (!class_exists('display_documents')) {
             );
             $document_query = new WP_Query($document_args);
             $total_posts = $document_query->found_posts;
-        
+
             return $total_posts;
         }
 
@@ -1923,16 +1854,15 @@ if (!class_exists('display_documents')) {
                 </fieldset>
                 <?php
                 return ob_get_clean();
-    
+
             } else {
                 return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
             }
-
         }
-        
+
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-        
+
             if (isset($_POST['_iso_category_id'])) {
                 $iso_category = sanitize_text_field($_POST['_iso_category_id']);
                 $is_duplicated = sanitize_text_field($_POST['_is_duplicated']);
@@ -1949,7 +1879,7 @@ if (!class_exists('display_documents')) {
                             ),
                         ),
                     );
-                    
+
                     $query = new WP_Query($args);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
@@ -1967,7 +1897,7 @@ if (!class_exists('display_documents')) {
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
                     $keyValuePairs = $_POST['_keyValuePairs'];
                     $processedKeyValuePairs = [];
-                
+
                     foreach ($keyValuePairs as $pair) {
                         foreach ($pair as $field_key => $field_value) {
                             // Sanitize the key and value
@@ -1981,7 +1911,7 @@ if (!class_exists('display_documents')) {
                             $processedKeyValuePairs[$field_key] = $field_value;
                         }
                     }
-                
+
                     // Prepare the response
                     $response = array('success' => true, 'data' => $processedKeyValuePairs);
                 } else {
@@ -2011,7 +1941,7 @@ if (!class_exists('display_documents')) {
                 'post_type'     => 'document',
             );    
             $post_id = wp_insert_post($new_post);
-        
+
             update_post_meta($post_id, 'site_id', $site_id);
             update_post_meta($post_id, 'job_number', $job_number);
             update_post_meta($post_id, 'doc_title', $doc_title);
@@ -2020,7 +1950,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'doc_category', $doc_category);
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
-        
+
             // Create the Action list for $post_id
             $profiles_class = new display_profiles();
             $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
@@ -2076,11 +2006,10 @@ if (!class_exists('display_documents')) {
         }
         
         function set_todo_from_doc_report($action_id=false, $report_id=false) {
-        
             $current_user_id = get_current_user_id();
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $todo_title = get_the_title($doc_id);
-        
+
             // Create the new To-do
             $new_post = array(
                 'post_title'    => $todo_title,
@@ -2089,18 +2018,16 @@ if (!class_exists('display_documents')) {
                 'post_type'     => 'todo',
             );    
             $todo_id = wp_insert_post($new_post);    
-        
-            //update_post_meta($todo_id, 'report_id', $report_id);
+
             update_post_meta($todo_id, 'doc_id', $doc_id);
-            //update_post_meta($todo_id, 'prev_report_id', $report_id);
             update_post_meta($todo_id, 'submit_user', $current_user_id);
             update_post_meta($todo_id, 'submit_action', $action_id);
             update_post_meta($todo_id, 'submit_time', time());
-        
+
             $next_job = get_post_meta($action_id, 'next_job', true);
             update_post_meta($report_id, 'todo_status', $next_job);
             update_post_meta($doc_id, 'todo_status', -1);
-        
+
             // set next todo and actions
             $params = array(
                 'next_job' => $next_job,
@@ -2109,7 +2036,7 @@ if (!class_exists('display_documents')) {
             $todo_class = new to_do_list();
             if ($next_job>0) $todo_class->update_next_todo_and_actions($params);
         }
-        
+
         function reset_document_todo_status() {
             $response = array();
             if( isset($_POST['_report_id']) ) {
@@ -2124,7 +2051,6 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-                
     }
     $documents_class = new display_documents();
 }
