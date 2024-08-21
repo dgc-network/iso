@@ -631,7 +631,7 @@ function display_site_profile_NDA($user_id=false) {
     ?>
     <div class="ui-widget" id="result-container">
         <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-        <div style="display:flex;">
+        <div>
             <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
             <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
@@ -649,7 +649,7 @@ function display_site_profile_NDA($user_id=false) {
             <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
             <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
         </div>
-        <div style="display:flex;">
+        <div>
             <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
             <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
             <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
