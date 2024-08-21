@@ -649,13 +649,13 @@ if (!class_exists('display_profiles')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
-                update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
+                update_post_meta($site_id, 'company_phone', sanitize_text_field($_POST['_company_phone']) );
                 update_post_meta($site_id, 'company_address', sanitize_text_field($_POST['_company_address']) );
+                update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
                 //update_post_meta($site_id, 'site_content', sanitize_text_field($_POST['_site_content']) );
                 update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
                 update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
                 update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
-                update_post_meta($site_id, 'company_phone', sanitize_text_field($_POST['_company_phone']) );
                 $response = array('success' => true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
