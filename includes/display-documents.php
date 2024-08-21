@@ -1191,8 +1191,8 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department' && $default_value=='_notification'){
                 update_post_meta($report_id, $field_name.'_department', $field_value);
             }
-            if ($field_type=='_department' && $default_value=='_auditee'){
-                update_post_meta($report_id, '_auditee_department', $field_value);
+            if ($field_type=='_department' && $default_value=='_audited'){
+                update_post_meta($report_id, '_audited_department', $field_value);
             }
             if ($field_type=='_audit' && $default_value=='_plan'){
                 // generate the audit-item-ids by iso-category-id & department-id
@@ -1615,7 +1615,7 @@ if (!class_exists('display_documents')) {
                                 <?php
                             } elseif ($default_value=='_summary'){
                                 // retrieve the audit-items by iso-category and heading
-                                $department_id = get_post_meta($report_id, '_auditee_department', true);
+                                $department_id = get_post_meta($report_id, '_audited_department', true);
                                 $category_id = get_post_meta($report_id, '_iso_category', true);
                                 //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
                                 ?>
