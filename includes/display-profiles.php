@@ -202,10 +202,6 @@ if (!class_exists('display_profiles')) {
                 );
                 $this->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-<?php /*
-                <label for="my-notification-list"><?php echo __( 'Devices & notifications: ', 'your-text-domain' );?></label>
-                <div id="my-notofication-list"><?php echo $this->display_my_notification_list();?></div>
-*/?>
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -604,8 +600,6 @@ if (!class_exists('display_profiles')) {
                     <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
                     <?php echo $this->display_site_user_list();?>
 
-                    <?php echo $this->display_audit_item_list_in_category();?>
-
                     <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
                     <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
                     <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
@@ -622,6 +616,7 @@ if (!class_exists('display_profiles')) {
                     <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
                     <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
 */?>
+                    <?php echo $this->display_audit_item_list_in_category();?>    
                 </fieldset>
                 <?php
             } else {
@@ -819,7 +814,8 @@ if (!class_exists('display_profiles')) {
                         foreach ($users as $user) {
                             $is_site_admin = $this->is_site_admin($user->ID, $site_id);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
-                            $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                            if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                            else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
                             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
                             ?>
                             <tr id="edit-site-user-<?php echo $user->ID; ?>">
