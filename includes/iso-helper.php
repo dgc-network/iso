@@ -632,7 +632,7 @@ function display_site_profile_NDA($user_id=false) {
     <div class="ui-widget" id="result-container">
         <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
         <div style="display:flex;">
-            <?php echo __( '甲方：', 'your-text-domain' );?>
+            <label for="select-nda-site"><?php echo __( '甲方：', 'your-text-domain' );?></label>
             <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
@@ -646,13 +646,13 @@ function display_site_profile_NDA($user_id=false) {
                     }
                 ?>
             </select>
-            <?php echo __( '統一編號：', 'your-text-domain' );?>
+            <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
             <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
         </div>
         <div style="display:flex;">
-            <?php echo __( '乙方：', 'your-text-domain' );?>
+            <label for="display-name"><?php echo __( '乙方：', 'your-text-domain' );?></label>
             <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-            <?php echo __( '身分證字號：', 'your-text-domain' );?>
+            <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
             <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
             <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
         </div>
