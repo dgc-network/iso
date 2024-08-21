@@ -216,7 +216,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    'post_content' => sanitize_text_field($_POST['_category_content']),
+                    'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_url', $category_url);
@@ -439,7 +439,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $audit_id,
                     'post_title'   => sanitize_text_field($_POST['_audit_title']),
-                    'post_content' => sanitize_textarea_field($_POST['_audit_content']),
+                    'post_content' => $_POST['_audit_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($audit_id, 'category_id', $category_id);
@@ -1335,7 +1335,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $product_id,
                     'post_title'   => sanitize_text_field($_POST['_product_title']),
-                    'post_content' => sanitize_text_field($_POST['_product_content']),
+                    'post_content' => $_POST['_product_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($product_id, 'product_code', $product_code);
@@ -1549,7 +1549,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $equipment_id,
                     'post_title'   => sanitize_text_field($_POST['_equipment_title']),
-                    'post_content' => sanitize_text_field($_POST['_equipment_content']),
+                    'post_content' => $_POST['_equipment_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($equipment_id, 'equipment_code', $equipment_code);
@@ -1763,7 +1763,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $instrument_id,
                     'post_title'   => sanitize_text_field($_POST['_instrument_title']),
-                    'post_content' => sanitize_text_field($_POST['_instrument_content']),
+                    'post_content' => $_POST['_instrument_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($instrument_id, 'instrument_code', $instrument_code);
@@ -1979,7 +1979,7 @@ if (!class_exists('erp_cards')) {
                 $data = array(
                     'ID'           => $department_id,
                     'post_title'   => sanitize_text_field($_POST['_department_title']),
-                    'post_content' => sanitize_text_field($_POST['_department_content']),
+                    'post_content' => $_POST['_department_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($department_id, 'department_code', $department_code);

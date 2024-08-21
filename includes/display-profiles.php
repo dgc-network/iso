@@ -645,7 +645,7 @@ if (!class_exists('display_profiles')) {
                 $post_data = array(
                     'ID'           => $site_id,
                     'post_title'   => sanitize_text_field($_POST['_site_title']),
-                    'post_content' => $_POST['_site_title'],
+                    'post_content' => $_POST['_site_content'],
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
@@ -1265,7 +1265,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'           => $doc_id,
                     'post_title'   => sanitize_text_field($_POST['_job_title']),
-                    'post_content' => sanitize_text_field($_POST['_job_content']),
+                    'post_content' => $_POST['_job_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
@@ -1493,7 +1493,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'         => sanitize_text_field($_POST['_action_id']),
                     'post_title' => sanitize_text_field($_POST['_action_title']),
-                    'post_content' => sanitize_text_field($_POST['_action_content']),
+                    'post_content' => $_POST['_action_content'],
                     'meta_input' => array(
                         'next_job'   => sanitize_text_field($_POST['_next_job']),
                         'next_leadtime' => sanitize_text_field($_POST['_next_leadtime']),
@@ -1884,7 +1884,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    'post_content' => sanitize_text_field($_POST['_category_content']),
+                    'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
                 //update_post_meta($category_id, 'category_url', $category_url);
