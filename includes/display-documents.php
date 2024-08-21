@@ -1172,26 +1172,10 @@ if (!class_exists('display_documents')) {
                 // Update the meta field with the new array of employee IDs
                 update_post_meta($report_id, $field_name, $employee_ids);
                 update_post_meta($report_id, $field_name . '_employees', $employee_ids);
-/*                
-                $employee_ids = get_post_meta($report_id, $field_name.'_employees', true);
-                // Check if $employee_ids is an array, if not, initialize it as an empty array
-                if (!is_array($employee_ids)) {
-                    $employee_ids = array();
-                }                
-                if (!is_array($field_value)) {
-                    $field_value = array();
-                }                
-                // Check if $field_value is not already in the $employee_ids array
-                if (!in_array($field_value, $employee_ids)) {
-                    // Add $field_value to the $employee_ids array
-                    $employee_ids[] = $field_value;
-                    // Update the meta field with the new array of employee IDs
-                    update_post_meta($report_id, $field_name, $employee_ids);
-                    update_post_meta($report_id, $field_name.'_employees', $employee_ids);
-                }
-*/                    
+
                 if ($default_value=='me'){
                     $employee_ids = array(get_current_user_id());
+                    update_post_meta($report_id, $field_name, $employee_ids);
                     update_post_meta($report_id, $field_name.'_employees', $employee_ids);
                 }
             }
