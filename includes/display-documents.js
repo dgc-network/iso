@@ -913,8 +913,6 @@ jQuery(document).ready(function($) {
                     } else {
                         $('#result-container').html(response.html_contain);
                     }
-                    //$("#doc-id").val(response.doc_id);
-                    
                     activate_doc_report_dialog_data(response);
                     activate_published_document_data($("#doc-id").val());
                 },
