@@ -771,7 +771,7 @@ if (!class_exists('to_do_list')) {
             //$filtered_audit_ids = array();
             if ($prev_report_id) {
                 $audit_ids = get_post_meta($prev_report_id, '_audit_plan', true);
-                $department_id = get_post_meta($prev_report_id, '_department', true);
+                $department_id = get_post_meta($prev_report_id, '_auditee_department', true);
                 $category_id = get_post_meta($prev_report_id, '_iso_category', true);
                 $filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
             }

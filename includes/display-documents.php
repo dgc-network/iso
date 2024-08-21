@@ -1191,16 +1191,19 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department' && $default_value=='_notification'){
                 update_post_meta($report_id, $field_name.'_department', $field_value);
             }
+            if ($field_type=='_department' && $default_value=='_auditee'){
+                update_post_meta($report_id, '_auditee_department', $field_value);
+            }
             if ($field_type=='_audit' && $default_value=='_plan'){
                 // generate the audit-item-ids by iso-category-id & department-id
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
-                update_post_meta($report_id, $field_name.'_audit_plan', $audit_item_ids);
-                update_post_meta($report_id, $field_name.'_iso_category', $field_value);
+                update_post_meta($report_id, '_audit_plan', $audit_item_ids);
+                update_post_meta($report_id, '_iso_category', $field_value);
             }
             if ($field_type=='_audit' && ($default_value=='_content' || $default_value=='_corrective')){
-                $field_name .= $default_value;
-                $field_value = $_POST[$field_name];
-                update_post_meta($report_id, $field_name, $field_value);
+                //$field_name .= $default_value;
+                //$field_value = $_POST[$field_name];
+                //update_post_meta($report_id, $field_name, $field_value);
             }
             if ($field_type=='_audit' && $default_value=='_summary'){
                 // summarize the audit-items, make a report
@@ -1572,6 +1575,7 @@ if (!class_exists('display_documents')) {
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
                                 <?php
+/*                                
                             } elseif ($default_value=='_content'){
                                 if ($todo_id) $field_value = get_post_meta($todo_id, 'audit_item', true);                                    
                                 ?><input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_attr($field_value);?>" />
@@ -1611,9 +1615,16 @@ if (!class_exists('display_documents')) {
                                 <?php
                             } elseif ($default_value=='_summary'){
                                 // retrieve the audit-items by iso-category and heading
-                                $department_id = get_post_meta($report_id, $field_name.'_department', true);
-                                $category_id = get_post_meta($report_id, $field_name.'_iso_category', true);
+                                $department_id = get_post_meta($report_id, '_auditee_department', true);
+                                $category_id = get_post_meta($report_id, '_iso_category', true);
                                 //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>
+                                <?php    
+*/                                
+                            } else {
+                                $category_id = get_post_meta($report_id, '_iso_category', true);
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>
