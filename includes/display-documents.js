@@ -198,20 +198,6 @@ jQuery(document).ready(function($) {
                 });
             }
         });            
-                
-/*        
-        if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '' || $('#is-doc-report').val() === null || $('#is-doc-report').val() === undefined) {
-            $("#doc-frame-div").show();
-        }
-/*        
-        if ($('#is-doc-report').val() == 0 || $('#is-doc-report').val() === '') {
-            $("#doc-frame-div").show();
-        }
-/*        
-        if ($('#is-doc-report').val()==0){
-            $("#doc-frame-div").show();
-        }
-*/            
 
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
@@ -914,7 +900,30 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
-            get_doc_report_dialog_data(report_id)
+            $.ajax({
+                url: ajax_object.ajax_url,
+                type: 'post',
+                data: {
+                    action: 'get_doc_report_dialog_data',
+                    _report_id: report_id,
+                },
+                success: function (response) {
+                    if (response.html_contain === undefined || response.html_contain === null) {
+                        alert("The report is in To-do process. Please wait for publishing.");
+                    } else {
+                        $('#result-container').html(response.html_contain);
+                    }
+                    //$("#doc-id").val(response.doc_id);
+                    
+                    activate_doc_report_dialog_data(response);
+                    activate_published_document_data($("#doc-id").val());
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+    
+            //get_doc_report_dialog_data(report_id)
         });            
 
         $("#search-doc-report").on( "change", function() {
@@ -948,28 +957,6 @@ jQuery(document).ready(function($) {
     }
     
     function get_doc_report_dialog_data(report_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_doc_report_dialog_data',
-                _report_id: report_id,
-            },
-            success: function (response) {
-                if (response.html_contain === undefined || response.html_contain === null) {
-                    alert("The report is in To-do process. Please wait for publishing.");
-                } else {
-                    $('#result-container').html(response.html_contain);
-                }
-                //$("#doc-id").val(response.doc_id);
-                
-                activate_doc_report_dialog_data(response);
-                activate_document_dialog_data($("#doc-id").val());
-            },
-            error: function (error) {
-                console.error(error);
-            }
-        });
     }
 
     function activate_doc_report_dialog_data(response){
