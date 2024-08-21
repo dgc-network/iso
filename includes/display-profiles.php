@@ -605,7 +605,7 @@ if (!class_exists('display_profiles')) {
                     <?php echo $this->display_audit_item_list_in_category();?>
 
                     <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
-                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo $site_content; ?></textarea>
+                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content); ?></textarea>
                     <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
                     <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
@@ -639,17 +639,19 @@ if (!class_exists('display_profiles')) {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if( isset($_POST['_site_id']) ) {
                 $site_id = sanitize_text_field($_POST['_site_id']);
-                $site_title = sanitize_text_field($_POST['_site_title']);
+                //$site_title = sanitize_text_field($_POST['_site_title']);
+                //$site_content = sanitize_text_field($_POST['_site_title']);
                 // Update the post
                 $post_data = array(
-                    'ID'         => $site_id,
-                    'post_title' => $site_title,
+                    'ID'           => $site_id,
+                    'post_title'   => sanitize_text_field($_POST['_site_title']),
+                    'post_content' => $_POST['_site_title'],
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
                 update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
                 update_post_meta($site_id, 'company_address', sanitize_text_field($_POST['_company_address']) );
-                update_post_meta($site_id, 'site_content', sanitize_text_field($_POST['_site_content']) );
+                //update_post_meta($site_id, 'site_content', sanitize_text_field($_POST['_site_content']) );
                 update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
                 update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
                 update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
