@@ -633,7 +633,7 @@ function display_site_profile_NDA($user_id=false) {
         <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
         <div style="display:flex;">
             <?php echo __( '甲方：', 'your-text-domain' );?>
-            <select id="select-nda-site" style="margin-right:25px;">
+            <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
                     $site_args = array(
@@ -647,13 +647,13 @@ function display_site_profile_NDA($user_id=false) {
                 ?>
             </select>
             <?php echo __( '統一編號：', 'your-text-domain' );?>
-            <input type="text" id="unified-number" />
+            <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
         </div>
         <div style="display:flex;">
             <?php echo __( '乙方：', 'your-text-domain' );?>
-            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" style="margin-right:25px;" />
+            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
             <?php echo __( '身分證字號：', 'your-text-domain' );?>
-            <input type="text" id="identify-number" />
+            <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
             <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
         </div>
         <div id="site-content">
