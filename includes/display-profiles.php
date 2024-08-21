@@ -605,11 +605,11 @@ if (!class_exists('display_profiles')) {
                     <?php echo $this->display_audit_item_list_in_category();?>
 
                     <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
-                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content); ?></textarea>
+                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
                     <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
                     <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
                     <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
-                    <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                    <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
                     <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
                     <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 <?php /*
