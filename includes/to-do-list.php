@@ -903,7 +903,7 @@ if (!class_exists('to_do_list')) {
                 $doc_number = get_post_meta($next_job, 'doc_number', true);
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     update_post_meta($new_todo_id, 'doc_id', $doc_id );
                 }
             }
