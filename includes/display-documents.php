@@ -653,9 +653,8 @@ if (!class_exists('display_documents')) {
                 <div>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
         
@@ -741,8 +740,8 @@ if (!class_exists('display_documents')) {
                 <div>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
         
