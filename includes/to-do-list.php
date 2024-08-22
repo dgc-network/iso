@@ -199,7 +199,7 @@ if (!class_exists('to_do_list')) {
                             $doc_title .= '('.$doc_number.')';
 */
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $doc_title .= '('.$report_id.')';
+                            $doc_title .= '(#'.$report_id.')';
 
                             $is_checked = $this->is_todo_authorized($todo_id) ? 'checked' : '';
 
@@ -272,7 +272,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-            
+/*            
                 // Check if $document_ids is not an empty array and add it to the meta_query
                 if (!empty($document_ids)) {
                     $meta_query[] = array(
@@ -281,7 +281,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-            
+*/            
                 // If $meta_query has more than just the relation, add it to $args
                 if (count($meta_query) > 1) {
                     $args['meta_query'][] = $meta_query;
