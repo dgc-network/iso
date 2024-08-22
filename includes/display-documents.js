@@ -920,8 +920,6 @@ jQuery(document).ready(function($) {
                     console.error(error);
                 }
             });
-    
-            //get_doc_report_dialog_data(report_id)
         });            
 
         $("#search-doc-report").on( "change", function() {
@@ -954,9 +952,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function get_doc_report_dialog_data(report_id){
-    }
-
     function activate_doc_report_dialog_data(response){
 
         $('[id^="doc-report-dialog-button-"]').on("click", function () {

@@ -326,19 +326,14 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
-                    'relation' => 'OR',
+                    'relation' => 'AND',
+                    ($site_id) ? $site_filter : '',
+                    ($select_category) ? $category_filter : '',
                     array(
-                        'relation' => 'AND',
-                        ($site_id) ? $site_filter : '',
-                        ($select_category) ? $category_filter : '',
+                        'relation' => 'OR',
                         ($search_query) ? $number_filter : '',
-                    ),
-                    array(
-                        'relation' => 'AND',
-                        ($site_id) ? $site_filter : '',
-                        ($select_category) ? $category_filter : '',
                         ($search_query) ? $title_filter : '',
-                    )
+                    ),
                 ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'doc_number',
@@ -347,6 +342,15 @@ if (!class_exists('display_documents')) {
 
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
+            if ($paged == 'not_doc_report') {
+                $args['posts_per_page'] = -1;
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 0,
+                    'compare' => '=',    
+                );
             }
 
             $query = new WP_Query($args);
@@ -1017,12 +1021,6 @@ if (!class_exists('display_documents')) {
                 </div>
             </div>
 
-            <div id="report-signature-record-div" style="display:none;">
-                <?php $todo_class = new to_do_list();?>
-                <?php $signature_record_list = $todo_class->get_signature_record_list(false, $report_id);?>
-                <?php echo $todo_class->get_signature_record_list(false, $report_id);?>
-            </div>
-
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
@@ -1054,7 +1052,6 @@ if (!class_exists('display_documents')) {
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
@@ -1067,12 +1064,20 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right;">
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
+                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
                 </div>
                 </div>
                 <?php
             }
             ?>
             </fieldset>
+
+            <div id="report-signature-record-div" style="display:none;">
+                <?php $todo_class = new to_do_list();?>
+                <?php $signature_record_list = $todo_class->get_signature_record_list(false, $report_id);?>
+                <?php echo $todo_class->get_signature_record_list(false, $report_id);?>
+            </div>
+
             <?php
             return ob_get_clean();
         }
@@ -1185,8 +1190,8 @@ if (!class_exists('display_documents')) {
                 }
             }
 
-            if ($field_type=='_document'){
-                update_post_meta($report_id, $field_name.'_document', $field_value);
+            if ($field_type=='_document'){ // $field_name is not required
+                update_post_meta($report_id, '_document', $field_value);
             }
 
             if ($field_type=='_max'){
@@ -1739,7 +1744,7 @@ if (!class_exists('display_documents')) {
 
         // document misc
         function select_document_list_options($selected_option=0) {
-            $query = $this->retrieve_document_list_data(0);
+            $query = $this->retrieve_document_list_data('not_doc_report');
             $options = '<option value="">Select document</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -2076,6 +2081,29 @@ if (!class_exists('display_documents')) {
                 delete_post_meta($doc_id, 'start_job');
             }
             wp_send_json($response);
+        }
+
+        function get_doc_field_ids($field_type=false, $field_value=false) {
+            $args = array(
+                'post_type'  => 'doc-field',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query' => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'   => 'field_type',
+                        'value' => $field_type,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'   => 'field_value',
+                        'value' => $field_value,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only return post IDs
+            );
+            $query = new WP_Query($args);
+            return $query; 
         }
     }
     $documents_class = new display_documents();

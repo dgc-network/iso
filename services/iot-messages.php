@@ -154,6 +154,9 @@ if (!class_exists('iot_messages')) {
 
         function create_exception_notification_events($equipment_id=false, $iot_sensor=false, $sensor_value=false) {
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
+            $documents_class = new display_documents();
+            $query = $documents_class->get_doc_field_ids('_equipment', $equipment_id);
+/*
             $args = array(
                 'post_type'  => 'doc-field',
                 'posts_per_page' => -1, // Retrieve all posts
@@ -172,11 +175,11 @@ if (!class_exists('iot_messages')) {
                 ),
                 'fields' => 'ids' // Only return post IDs
             );
-        
+
             // Execute the query
             $query = new WP_Query($args);
-
-            $doc_ids = array();
+*/
+            //$doc_ids = array();
             if ($query->have_posts()) {
                 foreach ($query->posts as $field_id) {
                     $field_name = get_post_meta($field_id, 'field_name', true);
