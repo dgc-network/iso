@@ -1075,6 +1075,8 @@ if (!class_exists('to_do_list')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             $doc_title .= '('.$doc_number.')';
+                            $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
+                            if ($report_id) $doc_title .= '('.$report_id.')';
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
