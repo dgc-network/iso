@@ -765,19 +765,8 @@ if (!class_exists('to_do_list')) {
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            $todo_title = get_the_title($doc_id);
-            $new_post = array(
-                'post_title'    => $todo_title,
-                'post_status'   => 'publish',
-                'post_author'   => $user_id,
-                'post_type'     => 'todo',
-            );    
-            $todo_id = wp_insert_post($new_post);
-            update_post_meta($todo_id, 'doc_id', $doc_id);
-            update_post_meta($todo_id, 'submit_user', $user_id );
-            update_post_meta($todo_id, 'submit_action', $action_id );
-            update_post_meta($todo_id, 'submit_time', time() );
 
+            // set current doc-report
             $new_post = array(
                 'post_title'    => 'New doc-report',
                 'post_status'   => 'publish',
@@ -799,6 +788,21 @@ if (!class_exists('to_do_list')) {
                 endwhile;
                 wp_reset_postdata();
             }            
+
+            // set current todo
+            $todo_title = get_the_title($doc_id);
+            $new_post = array(
+                'post_title'    => $todo_title,
+                'post_status'   => 'publish',
+                'post_author'   => $user_id,
+                'post_type'     => 'todo',
+            );    
+            $new_todo_id = wp_insert_post($new_post);
+            update_post_meta($new_todo_id, 'doc_id', $doc_id);
+            update_post_meta($new_todo_id, 'prev_report_id', $new_report_id);
+            update_post_meta($new_todo_id, 'submit_user', $user_id );
+            update_post_meta($new_todo_id, 'submit_action', $action_id );
+            update_post_meta($new_todo_id, 'submit_time', time() );
 
             // set next todo and actions
             $params = array(
