@@ -80,7 +80,7 @@ if (!class_exists('to_do_list')) {
 
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = '0';
                 if ($_GET['_select_todo']=='0') echo $this->display_todo_list();
-                if ($_GET['_select_todo']=='1') echo $this->display_job_authorization();
+                if ($_GET['_select_todo']=='1') echo $this->display_job_authorization_list();
                 if ($_GET['_select_todo']=='2') $this->display_signature_record();
                 if ($_GET['_select_todo']=='3') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
@@ -428,7 +428,7 @@ if (!class_exists('to_do_list')) {
         }
         
         // job-authorization
-        function display_job_authorization() {
+        function display_job_authorization_list() {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -471,12 +471,12 @@ if (!class_exists('to_do_list')) {
                             $profiles_class = new display_profiles();
                             $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
 
-                            $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-                            $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-                            if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
+                            //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+                            //$doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
+                            //if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
-                            <tr id="edit-job-<?php echo $doc_id; ?>">
-                                <td style="text-align:center;"><?php echo esc_html($job_title); ?></td>
+                            <tr id="edit-job-<?php echo $doc_id;?>">
+                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
@@ -578,7 +578,8 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
         
-        function display_job_dialog($todo_id) {
+        function display_job_dialog($doc_id) {
+/*            
             $params = array();
             if ( $post_type === 'todo' ) {
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -604,11 +605,11 @@ if (!class_exists('to_do_list')) {
                 
             //$profiles_class = new display_profiles();
             //$is_site_admin = $profiles_class->is_site_admin();
-    
+*/    
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($doc_id));?></h2>
             <?php /*
             <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -616,17 +617,18 @@ if (!class_exists('to_do_list')) {
             */?>
             <fieldset>
             <?php
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report) {
+            //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            //if ($is_doc_report) {
                 // doc_report_dialog data
 
                 $params = array(
                     'doc_id'     => $doc_id,
-                    'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
+                    //'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
                 );                
 
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains($params);
+/*                
             } else {
                 // document_dialog data
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -649,11 +651,13 @@ if (!class_exists('to_do_list')) {
                 <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
                 <?php
             }
+*/                
             ?>
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                 <?php
+/*                
                     if ( $post_type === 'todo' ) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                     }
@@ -661,6 +665,10 @@ if (!class_exists('to_do_list')) {
                         $profiles_class = new display_profiles();
                         $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
                     }                    
+*/                        
+                    $profiles_class = new display_profiles();
+                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             echo '<input type="button" id="job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
