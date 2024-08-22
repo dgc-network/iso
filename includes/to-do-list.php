@@ -177,23 +177,23 @@ if (!class_exists('to_do_list')) {
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            //$todo_id = get_the_ID();
+                            $todo_id = get_the_ID();
                             $todo_title = get_the_title();
-                            $todo_due = get_post_meta(get_the_ID(), 'todo_due', true);
+                            $todo_due = get_post_meta($todo_id, 'todo_due', true);
                             if ($todo_due < time()) $todo_due_color='color:red;';
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
 
-                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
+                            $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             $doc_title .= '(#'.$report_id.')';
 
-                            $is_checked = $this->is_todo_authorized(get_the_ID()) ? 'checked' : '';
+                            $is_checked = $this->is_todo_authorized($todo_id) ? 'checked' : '';
 
                             ?>
-                            <tr id="edit-todo-<?php the_ID(); ?>">
-                                <td style="text-align:center;"><?php echo esc_html($todo_title); ?></td>
-                                <td><?php echo esc_html($doc_title); ?></td>
+                            <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
+                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
+                                <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
@@ -461,7 +461,7 @@ if (!class_exists('to_do_list')) {
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_the_ID();
                             $job_title = get_the_title();
-                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                            $job_number = get_post_meta($doc_id, 'job_number', true);
                             if ($job_number) $job_title .= '('.$job_number.')';
 
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
