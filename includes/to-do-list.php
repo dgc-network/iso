@@ -1076,7 +1076,7 @@ if (!class_exists('to_do_list')) {
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             $doc_title .= '('.$doc_number.')';
                             $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
-                            if ($report_id) $doc_title .= '('.$report_id.')';
+                            if ($report_id) $doc_title .= '(#'.$report_id.')';
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
@@ -1152,6 +1152,10 @@ if (!class_exists('to_do_list')) {
                         'key'     => 'submit_user',
                         'compare' => 'EXISTS',
                     ),
+                    array(
+                        'key'     => 'prev_report_id',
+                        'compare' => 'EXISTS',
+                    ),
                 ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'submit_time',
@@ -1169,7 +1173,6 @@ if (!class_exists('to_do_list')) {
         
             if ($report_id) {
                 $args['meta_query'][] = array(
-                    //'key'   => 'report_id',
                     'key'   => 'prev_report_id',
                     'value' => $report_id,
                 );

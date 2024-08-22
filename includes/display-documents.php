@@ -627,9 +627,11 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
+<?php /*                    
                     <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+*/?>                    
                     <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -647,6 +649,16 @@ if (!class_exists('display_documents')) {
                 <?php echo $doc_frame; ?>
             </fieldset>
 
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                </div>
+                <div style="text-align:right; display:flex;">
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                </div>
+            </div>
+        
             <?php
             return ob_get_clean();
         }
@@ -677,9 +689,11 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
+<?php /*                    
                     <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
                     <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+*/?>                    
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -722,6 +736,16 @@ if (!class_exists('display_documents')) {
                     ?>
                 </div>
             </fieldset>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                </div>
+                <div style="text-align:right; display:flex;">
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
+                </div>
+            </div>
+        
             <?php
             return ob_get_clean();
         }
@@ -986,8 +1010,10 @@ if (!class_exists('display_documents')) {
                     <?php echo display_iso_helper_logo();?>
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
-                <div style="text-align:right; display:flex;">        
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('表單簽核記錄', 'your-text-domain')?></button>
+                <div style="text-align:right; display:flex;">
+<?php /*                    
+                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
+*/?>                    
                     <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -1029,7 +1055,8 @@ if (!class_exists('display_documents')) {
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
+                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
                 <?php
