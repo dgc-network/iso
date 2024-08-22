@@ -2038,8 +2038,6 @@ if (!class_exists('display_documents')) {
             $current_user_id = get_current_user_id();
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $todo_title = get_the_title($doc_id);
-            //$todo_title = get_post_meta($doc_id, 'todo_title', true);
-            //$todo_title .= '(#'.$report_id.')';
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
@@ -2049,7 +2047,7 @@ if (!class_exists('display_documents')) {
             $todo_id = wp_insert_post($new_post);    
 
             update_post_meta($todo_id, 'doc_id', $doc_id);
-            update_post_meta($todo_id, 'prev_report_id', $dreport_id);
+            update_post_meta($todo_id, 'prev_report_id', $report_id);
             update_post_meta($todo_id, 'submit_user', $current_user_id);
             update_post_meta($todo_id, 'submit_action', $action_id);
             update_post_meta($todo_id, 'submit_time', time());
