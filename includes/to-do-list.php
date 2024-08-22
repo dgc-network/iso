@@ -263,7 +263,7 @@ if (!class_exists('to_do_list')) {
             if (!$is_site_admin) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
-/*            
+
                 // Check if $user_doc_ids is not an empty array and add it to the meta_query
                 if (!empty($user_doc_ids)) {
                     $meta_query[] = array(
@@ -272,7 +272,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-/*            
+
                 // Check if $document_ids is not an empty array and add it to the meta_query
                 if (!empty($document_ids)) {
                     $meta_query[] = array(
@@ -281,7 +281,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-*/            
+
                 // If $meta_query has more than just the relation, add it to $args
                 if (count($meta_query) > 1) {
                     $args['meta_query'][] = $meta_query;
@@ -804,6 +804,7 @@ if (!class_exists('to_do_list')) {
             $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
             $audit_id = isset($args['audit_id']) ? $args['audit_id'] : 0;
+            if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
 
             // Create a new To-do for next_job
             $new_post = array(
@@ -837,7 +838,6 @@ if (!class_exists('to_do_list')) {
                 update_post_meta($new_todo_id, 'submit_action', $action_id);
                 update_post_meta($new_todo_id, 'submit_time', time());
                 if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
-                //if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
                 //if ($doc_id) update_post_meta($doc_id, 'todo_status', $next_job );
                 // Notice the persons in site
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
