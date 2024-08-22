@@ -825,22 +825,21 @@ if (!class_exists('to_do_list')) {
 
             // Find the next_job, next_leadtime, and 
             if ($action_id > 0) {
+                $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
-            }
-        
-            // set_todo_from_doc_report() and frquence doc_report
-            if ($action_id==0) {  
+            } else {
+                // set_todo_from_doc_report() and frquence doc_report
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
-                // frquence doc_report
                 if ($next_job==0) {
+                    // frquence doc_report
                     $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                     $next_job = $doc_id;
                 }
                 $next_leadtime = 86400;
             }
-            
+        
             if ($next_job>0) $todo_title = get_the_title($next_job);
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
@@ -849,6 +848,7 @@ if (!class_exists('to_do_list')) {
                 'todo_title' => $todo_title,
                 'user_id' => $user_id,
                 'action_id' => $action_id,
+                'doc_id' => $doc_id,
                 'prev_report_id' => $prev_report_id,
                 'next_job' => $next_job,
                 'next_leadtime' => $next_leadtime,
@@ -879,11 +879,11 @@ if (!class_exists('to_do_list')) {
             $todo_title = isset($args['todo_title']) ? $args['todo_title'] : 0;
             $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
+            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
             $audit_id = isset($args['audit_id']) ? $args['audit_id'] : 0;
-            if ($prev_report_id) $doc_id = get_post_meta( $prev_report_id, 'doc_id', true );
 
             // Create a new To-do for next_job
             $new_post = array(
@@ -895,21 +895,17 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-            //if ($next_job>0) update_post_meta($new_todo_id, 'doc_id', $next_job );
 
             if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
-                //$todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-                //if ($todo_id) {
-                    $doc_number = get_post_meta($next_job, 'doc_number', true);
-                    // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
-                    if (empty($doc_number)) {
-                        $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                        update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                    }
-                //}
+                $doc_number = get_post_meta($next_job, 'doc_number', true);
+                // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
+                if (empty($doc_number)) {
+                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    update_post_meta($new_todo_id, 'doc_id', $doc_id );
+                }
             }
 
             if ($next_job==-1 || $next_job==-2) {
@@ -917,7 +913,6 @@ if (!class_exists('to_do_list')) {
                 update_post_meta($new_todo_id, 'submit_action', $action_id);
                 update_post_meta($new_todo_id, 'submit_time', time());
                 if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
-                //if ($doc_id) update_post_meta($doc_id, 'todo_status', $next_job );
                 // Notice the persons in site
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
             }
@@ -942,7 +937,6 @@ if (!class_exists('to_do_list')) {
                         update_post_meta($new_action_id, 'todo_id', $new_todo_id);
                         update_post_meta($new_action_id, 'next_job', $new_next_job);
                         update_post_meta($new_action_id, 'next_leadtime', $new_next_leadtime);
-                        //update_post_meta($new_action_id, 'doc_action_id', get_the_ID());
                         
                         //Update the action_authorized_ids
                         $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
