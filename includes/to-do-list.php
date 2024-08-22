@@ -263,7 +263,7 @@ if (!class_exists('to_do_list')) {
             if (!$is_site_admin) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
-            
+/*            
                 // Check if $user_doc_ids is not an empty array and add it to the meta_query
                 if (!empty($user_doc_ids)) {
                     $meta_query[] = array(
