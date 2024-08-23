@@ -721,16 +721,9 @@ if (!class_exists('to_do_list')) {
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
 
-            // Update current todo
-            update_post_meta($todo_id, 'submit_user', $user_id );
-            update_post_meta($todo_id, 'submit_action', $action_id );
-            update_post_meta($todo_id, 'submit_time', time() );
-
-            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
-
+            // set current doc-report
             $new_post = array(
-                'post_title'    => 'New doc-report',
+                //'post_title'    => 'New doc-report',
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'doc-report',
@@ -751,6 +744,12 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             }            
 
+            // Update current todo
+            update_post_meta($todo_id, 'prev_report_id', $new_report_id);
+            update_post_meta($todo_id, 'submit_user', $user_id );
+            update_post_meta($todo_id, 'submit_action', $action_id );
+            update_post_meta($todo_id, 'submit_time', time() );
+
             // set next todo and actions
             $params = array(
                 'user_id' => $user_id,
@@ -768,7 +767,7 @@ if (!class_exists('to_do_list')) {
 
             // set current doc-report
             $new_post = array(
-                'post_title'    => 'New doc-report',
+                //'post_title'    => 'New doc-report',
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'doc-report',
@@ -815,25 +814,24 @@ if (!class_exists('to_do_list')) {
         
         function update_next_todo_and_actions($args = array()) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 2. From set_todo_from_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
+            // 2. From update_todo_by_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From schedule_event_callback($params), create a next_todo based on the $args['doc_id']
 
             $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
 
             // Find the next_job, next_leadtime, and 
             if ($action_id > 0) {
-                $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                 if (empty($next_leadtime)) $next_leadtime=86400;
             } else {
-                // set_todo_from_doc_report() and frquence doc_report
+                // update_todo_by_doc_report() and frquence doc_report
                 $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
-                if ($next_job==0) {
-                    // frquence doc_report
+                if ($next_job==0) { // frquence doc_report                    
                     $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
                     $next_job = $doc_id;
                 }

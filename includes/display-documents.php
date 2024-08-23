@@ -1115,7 +1115,7 @@ if (!class_exists('display_documents')) {
                 }
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
-                if ($proceed_to_todo==1) $this->set_todo_from_doc_report($action_id, $report_id);
+                if ($proceed_to_todo==1) $this->update_todo_by_doc_report($action_id, $report_id);
             } else {
                 // Create the post
                 $current_user_id = get_current_user_id();
@@ -1127,6 +1127,7 @@ if (!class_exists('display_documents')) {
                 $post_id = wp_insert_post($new_post);
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 update_post_meta($post_id, 'doc_id', $doc_id);
+
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
@@ -2033,7 +2034,7 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        function set_todo_from_doc_report($action_id=false, $report_id=false) {
+        function update_todo_by_doc_report($action_id=false, $report_id=false) {
             // Create the new To-do
             $current_user_id = get_current_user_id();
             $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -2054,7 +2055,6 @@ if (!class_exists('display_documents')) {
 
             $next_job = get_post_meta($action_id, 'next_job', true);
             update_post_meta($report_id, 'todo_status', $next_job);
-            //update_post_meta($doc_id, 'todo_status', -1);
 
             // set next todo and actions
             $params = array(
