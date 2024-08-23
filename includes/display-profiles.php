@@ -122,9 +122,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
 
-                //$http_client = new iot_messages();
-                //if ($_GET['_select_profile']=='http-client') echo $http_client->display_http_client_list();
-
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
                     $current_user_id = get_current_user_id();
@@ -178,10 +175,10 @@ if (!class_exists('display_profiles')) {
 
         // my-profile scripts
         function display_my_profile() {
+            ob_start();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
-            ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
@@ -196,7 +193,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                
+
                 <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 
@@ -215,6 +212,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function get_transactions_by_key_value_pair($key_value_pair = array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             if (!empty($key_value_pair)) {
                 foreach ($key_value_pair as $key => $value) {
                     $args = array(
@@ -237,9 +236,10 @@ if (!class_exists('display_profiles')) {
                     if ($query->have_posts()) {
                         foreach ($query->posts as $field_id) {
                             $doc_id = get_post_meta($field_id, 'doc_id', true);
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             // Ensure the doc ID is unique
-                            if (!isset($doc_ids[$doc_id])) {                                
+                            if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
                                 $documents_class = new display_documents();
                                 $params = array(

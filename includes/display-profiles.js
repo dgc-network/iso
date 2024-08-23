@@ -17,16 +17,13 @@ jQuery(document).ready(function($) {
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
-        
             // Check the selected value for each select element and add it to the queryParams array
             var profileValue = $("#select-profile").val();
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
-        
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
@@ -59,8 +56,6 @@ jQuery(document).ready(function($) {
                     alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
                         $(this).remove();
                     });
-                    
-                    //alert("Data update success!");
                 },
                 error: function (error) {
                     console.error(error);
@@ -68,7 +63,7 @@ jQuery(document).ready(function($) {
                 }
             });            
         });
-    
+
         $("#my-job-action-list").dialog({
             width: 390,
             modal: true,
@@ -110,12 +105,12 @@ jQuery(document).ready(function($) {
                     $('[id^="check-action-authorize-"]').on("click", function () {
                         const action_id = this.id.substring(23);
                         const radioButton = $("#is-action-authorized-" + action_id);
-                    
+
                         if (window.confirm("Are you sure you want to change this setting?")) {
                             // Toggle the radio button state
                             const isChecked = radioButton.is(":checked");
                             radioButton.prop("checked", !isChecked);
-                    
+
                             $.ajax({
                                 type: 'POST',
                                 url: ajax_object.ajax_url,
@@ -221,16 +216,13 @@ jQuery(document).ready(function($) {
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
-        
             // Check the selected value for each select element and add it to the queryParams array
             var profileValue = $("#select-profile").val();
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
-        
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
@@ -239,7 +231,7 @@ jQuery(document).ready(function($) {
             $("#site-image-container").hide();
             $("#site-image-url").show();
         });
-    
+
         $("#set-image-url").on("click", function() {
             $("#site-image-container").show();
             $("#site-image-url").hide();
@@ -249,7 +241,7 @@ jQuery(document).ready(function($) {
                 $("#site-image-container").html('<a href="#" id="custom-image-href">Set image URL</a>');
             }
         });
-    
+
         // Show the site-hint when the user starts typing
         $('#site-title').on('input', function() {
             $.ajax({
@@ -270,7 +262,7 @@ jQuery(document).ready(function($) {
                     });
                     output += '</table>'
                     $('#site-hint').append(output).show();
-    
+
                     $('[id^="select-site-id-"]').on("click", function () {
                         const id = this.id.substring(15);
                         $('#site-id').val(id);
@@ -299,30 +291,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    
-        $("#site-title").on("change", function () {
-            new_site_title = $(this).val();
-/*            
-            if (window.confirm("Are you sure you want to use "+new_site_title+" as your new site title?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'set_new_site_by_title',
-                        '_new_site_title': new_site_title,
-                    },
-                    success: function (response) {
-                        $("#site-id").val(response.new_site_id);
-                    },
-                    error: function(error){
-                        console.error(error);                    
-                    }
-                });        
-            }
-*/                
-        });
-        
+
         $("#site-profile-submit").on("click", function () {
             // Initialize an empty array to store the key-value pairs
             const keyValuePairs = [];
@@ -331,9 +300,7 @@ jQuery(document).ready(function($) {
             $('.your-class-name').each(function() {
                 // Get the key from the data attribute
                 const key = $(this).data('key');
-                
                 let value;
-                
                 // Check if the element is a checkbox or radio button
                 if ($(this).is(':checkbox') || $(this).is(':radio')) {
                     // Set the value to 1 if checked, otherwise set it to 0
@@ -342,11 +309,9 @@ jQuery(document).ready(function($) {
                     // Get the value (for input elements) or text content (for others)
                     value = $(this).val() || $(this).text();
                 }
-            
                 // Add the key-value pair to the array
                 keyValuePairs.push({ [key]: value });
             });
-            
             // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
             console.log(keyValuePairs);
     
@@ -366,23 +331,21 @@ jQuery(document).ready(function($) {
                     '_unified_number': $("#unified-number").val(),
                 },
                 success: function (response) {
-                    if (response.success) {
-                        // Show the custom alert message
-                        var alertBox = $("<div class='custom-alert'>Data update success!</div>");
-                        $("body").append(alertBox);
+                    // Show the custom alert message
+                    var alertBox = $("<div class='custom-alert'>Data update success!</div>");
+                    $("body").append(alertBox);
 
-                        // Center the alert box
-                        alertBox.css({
-                            position: "fixed",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                        });
+                    // Center the alert box
+                    alertBox.css({
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                    });
 
-                        alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
-                            $(this).remove();
-                        });
-                    }
+                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                        $(this).remove();
+                    });
                 },
                 error: function (error) {
                     console.error(error);
@@ -390,11 +353,11 @@ jQuery(document).ready(function($) {
                 }
             });            
         });            
-    
+
         $("#new-site-user").on("click", function() {
             $("#new-user-dialog").dialog('open');
         });
-    
+
         $('[id^="edit-site-user-"]').on("click", function () {
             const user_id = this.id.substring(15);
             $.ajax({
@@ -530,16 +493,13 @@ jQuery(document).ready(function($) {
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
-        
             // Check the selected value for each select element and add it to the queryParams array
             var profileValue = $("#select-profile").val();
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
-        
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
@@ -547,27 +507,21 @@ jQuery(document).ready(function($) {
         $("#search-site-job").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
-        
             // Check the selected value for each select element and add it to the queryParams array
             var profileValue = $("#select-profile").val();
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-        
             var siteJobValue = $("#search-site-job").val();
             if (siteJobValue) {
                 queryParams.push("_search=" + siteJobValue);
             }
-        
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
-        
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
-        
             // Clear the values of all select elements after redirection
             $("#select-profile, #search-site-job").val('');
-        
         });
 
         $("#new-site-job").on("click", function() {
@@ -851,20 +805,16 @@ jQuery(document).ready(function($) {
 
     // doc-category scripts
     function activate_doc_category_list_data(){
-
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
-        
             // Check the selected value for each select element and add it to the queryParams array
             var profileValue = $("#select-profile").val();
             if (profileValue) {
                 queryParams.push("_select_profile=" + profileValue);
             }
-
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
-        
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
@@ -925,7 +875,6 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_category_title': $("#category-title").val(),
                             '_category_content': $("#category-content").val(),
-                            //'_category_url': $("#category-url").val(),
                             '_iso_category': $("#iso-category").val(),
                         },
                         success: function (response) {
