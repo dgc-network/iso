@@ -63,6 +63,11 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_site_list_data', array( $this, 'get_site_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
+            add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
+    
         }
 
         function enqueue_display_profile_scripts() {
@@ -1920,6 +1925,38 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
+        function get_site_list_data() {
+            $search_query = sanitize_text_field($_POST['_site_title']);
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => -1,
+                's'              => $search_query,
+            );
+            $query = new WP_Query($args);
+        
+            $_array = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $_list = array();
+                    $_list["site_id"] = get_the_ID();
+                    $_list["site_title"] = get_the_title();
+                    array_push($_array, $_list);
+                endwhile;
+                wp_reset_postdata();
+            }
+            wp_send_json($_array);
+        }
+        
+        function get_site_dialog_data() {
+            $response = array();
+            if( isset($_POST['_site_id']) ) {
+                $site_id = sanitize_text_field($_POST['_site_id']);
+                $response["site_title"] = get_the_title($site_id);
+            }
+            wp_send_json($response);
+        }
+        
+        // data-migration
         function rename_site_to_site_profile() {
             // Remove all posts of the post type 'site-profile' first
             $args = array(

@@ -321,38 +321,3 @@ function import_sites_from_csv() {
     }
 }
 
-function get_site_list_data() {
-    $search_query = sanitize_text_field($_POST['_site_title']);
-    $args = array(
-        'post_type'      => 'site-profile',
-        'posts_per_page' => -1,
-        's'              => $search_query,
-    );
-    $query = new WP_Query($args);
-
-    $_array = array();
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            $_list = array();
-            $_list["site_id"] = get_the_ID();
-            $_list["site_title"] = get_the_title();
-            array_push($_array, $_list);
-        endwhile;
-        wp_reset_postdata();
-    }
-    wp_send_json($_array);
-}
-add_action( 'wp_ajax_get_site_list_data', 'get_site_list_data' );
-add_action( 'wp_ajax_nopriv_get_site_list_data', 'get_site_list_data' );
-
-function get_site_dialog_data() {
-    $response = array();
-    if( isset($_POST['_site_id']) ) {
-        $site_id = sanitize_text_field($_POST['_site_id']);
-        $response["site_title"] = get_the_title($site_id);
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_get_site_dialog_data', 'get_site_dialog_data' );
-add_action( 'wp_ajax_nopriv_get_site_dialog_data', 'get_site_dialog_data' );
-
