@@ -755,7 +755,7 @@ if (!class_exists('erp_cards')) {
                 
                 // Update or add the site_id key with the customer_code value
                 $site_customer_data[$site_id] = $customer_code;
-        
+
                 // Update the meta field with the modified array
                 update_post_meta($customer_id, 'site_customer_data', $site_customer_data);
                 update_post_meta($customer_id, 'company_phone', $company_phone);
@@ -775,24 +775,38 @@ if (!class_exists('erp_cards')) {
                     'post_author'   => $current_user_id,
                     'post_type'     => 'site-profile',
                 );    
-                
                 $post_id = wp_insert_post($new_post);
                 
                 // Initialize the site_customer_data array with the site_id and customer_code
                 $site_customer_data = array(
                     $site_id => $customer_code,
+                    //$post_id => $customer_code,
                 );
                 
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_customer_data', $site_customer_data);
+                //update_post_meta($site_id, 'site_customer_data', $site_customer_data);
 
                 // Initialize the site_vendor_data array with the post_id and customer_code
-                $site_vendor_data = array(
-                    $post_id => $customer_code,
-                );
+                //$site_vendor_data = array(
+                    //$post_id => $customer_code,
+                    //$site_id => $customer_code,
+                //);
+
+                // Retrieve the existing site_customer_data
+                $site_vendor_data = get_post_meta($post_id, 'site_vendor_data', true);
                 
+                // Check if site_customer_data is an array and the site_id key exists
+                if (!is_array($site_vendor_data)) {
+                    $site_vendor_data = array();
+                }
+                
+                // Update or add the site_id key with the customer_code value
+                $site_vendor_data[$post_id] = $customer_code;
+
                 // Store the array as a serialized meta value
                 update_post_meta($site_id, 'site_vendor_data', $site_vendor_data);
+                //update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
 
             }
         
@@ -1083,7 +1097,7 @@ if (!class_exists('erp_cards')) {
                 
                 // Update or add the site_id key with the vendor_code value
                 $site_vendor_data[$site_id] = $vendor_code;
-        
+
                 // Update the meta field with the modified array
                 update_post_meta($vendor_id, 'site_vendor_data', $site_vendor_data);
                 update_post_meta($vendor_id, 'company_phone', $company_phone);
@@ -1102,25 +1116,39 @@ if (!class_exists('erp_cards')) {
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'site-profile',
-                );    
-                
+                );                    
                 $post_id = wp_insert_post($new_post);
                 
                 // Initialize the site_vendor_data array with the site_id and vendor_code
                 $site_vendor_data = array(
                     $site_id => $vendor_code,
+                    //$post_id => $vendor_code,
                 );
                 
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
+                //update_post_meta($site_id, 'site_vendor_data', $site_vendor_data);
 
                 // Initialize the site_customer_data array with the post_id and vendor_code
-                $site_customer_data = array(
-                    $post_id => $vendor_code,
-                );
+                //$site_customer_data = array(
+                    //$post_id => $vendor_code,
+                    //$site_id => $vendor_code,
+                //);
+                
+                // Retrieve the existing site_vendor_data
+                $site_customer_data = get_post_meta($site_id, 'site_vendor_data', true);
+                
+                // Check if site_vendor_data is an array and the site_id key exists
+                if (!is_array($site_customer_data)) {
+                    $site_customer_data = array();
+                }
+                
+                // Update or add the site_id key with the vendor_code value
+                $site_customer_data[$post_id] = $vendor_code;
                 
                 // Store the array as a serialized meta value
                 update_post_meta($site_id, 'site_customer_data', $site_customer_data);
+                //update_post_meta($post_id, 'site_customer_data', $site_customer_data);
 
             }
         
