@@ -636,8 +636,6 @@ if (!class_exists('display_profiles')) {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if( isset($_POST['_site_id']) ) {
                 $site_id = sanitize_text_field($_POST['_site_id']);
-                //$site_title = sanitize_text_field($_POST['_site_title']);
-                //$site_content = sanitize_text_field($_POST['_site_title']);
                 // Update the post
                 $post_data = array(
                     'ID'           => $site_id,
@@ -649,7 +647,6 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($site_id, 'company_phone', sanitize_text_field($_POST['_company_phone']) );
                 update_post_meta($site_id, 'company_address', sanitize_text_field($_POST['_company_address']) );
                 update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
-                //update_post_meta($site_id, 'site_content', sanitize_text_field($_POST['_site_content']) );
                 update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
                 update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
                 update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );

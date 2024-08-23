@@ -360,13 +360,10 @@ jQuery(document).ready(function($) {
                     '_site_title': $("#site-title").val(),
                     '_image_url': $("#image-url").val(),
                     _keyValuePairs : keyValuePairs,
-                    '_unified_number': $("#unified-number").val(),
-                    '_company_address': $("#company-address").val(),
                     '_site_content': $("#site-content").val(),
-                    //'_validation_scope': $("#validation-scope").val(),
-                    //'_verification_standards': $("#verification-standards").val(),
-                    //'_contact_person': $("#contact-person").val(),
                     '_company_phone': $("#company-phone").val(),
+                    '_company_address': $("#company-address").val(),
+                    '_unified_number': $("#unified-number").val(),
                 },
                 success: function (response) {
                     if (response.success) {
@@ -385,10 +382,6 @@ jQuery(document).ready(function($) {
                         alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
                             $(this).remove();
                         });
-
-                        //alert("Data update success!");
-                    } else {
-                        //alert("Error: " + response.error);
                     }
                 },
                 error: function (error) {
