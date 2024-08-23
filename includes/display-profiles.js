@@ -44,7 +44,23 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response);
-                    alert("Data update success!");
+                    // Show the custom alert message
+                    var alertBox = $("<div class='custom-alert'>Data update success!</div>");
+                    $("body").append(alertBox);
+
+                    // Center the alert box
+                    alertBox.css({
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                    });
+
+                    alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                        $(this).remove();
+                    });
+                    
+                    //alert("Data update success!");
                 },
                 error: function (error) {
                     console.error(error);
@@ -347,14 +363,30 @@ jQuery(document).ready(function($) {
                     '_unified_number': $("#unified-number").val(),
                     '_company_address': $("#company-address").val(),
                     '_site_content': $("#site-content").val(),
-                    '_validation_scope': $("#validation-scope").val(),
-                    '_verification_standards': $("#verification-standards").val(),
-                    '_contact_person': $("#contact-person").val(),
+                    //'_validation_scope': $("#validation-scope").val(),
+                    //'_verification_standards': $("#verification-standards").val(),
+                    //'_contact_person': $("#contact-person").val(),
                     '_company_phone': $("#company-phone").val(),
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert("Data update success!");
+                        // Show the custom alert message
+                        var alertBox = $("<div class='custom-alert'>Data update success!</div>");
+                        $("body").append(alertBox);
+
+                        // Center the alert box
+                        alertBox.css({
+                            position: "fixed",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                        });
+
+                        alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                            $(this).remove();
+                        });
+
+                        //alert("Data update success!");
                     } else {
                         alert("Error: " + response.error);
                     }
