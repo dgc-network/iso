@@ -675,11 +675,10 @@ if (!class_exists('erp_cards')) {
 
         function display_customer_card_dialog($customer_id = false) {
             ob_start();
-            
             // Get the current user's site ID
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
+
             // Retrieve the site_customer_data meta field
             $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
 
@@ -690,7 +689,7 @@ if (!class_exists('erp_cards')) {
                 // Handle the case where customer_code doesn't exist or site_customer_data is not an array
                 $customer_code = ''; // Default value if the customer code is not found
             }
-        
+
             // Retrieve other post data and meta fields
             $customer_title = get_the_title($customer_id);
             $customer_content = get_post_field('post_content', $customer_id);
@@ -780,34 +779,20 @@ if (!class_exists('erp_cards')) {
                 // Initialize the site_customer_data array with the site_id and customer_code
                 $site_customer_data = array(
                     $site_id => $customer_code,
-                    //$post_id => $customer_code,
                 );
-                
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_customer_data', $site_customer_data);
-                //update_post_meta($site_id, 'site_customer_data', $site_customer_data);
-
-                // Initialize the site_vendor_data array with the post_id and customer_code
-                //$site_vendor_data = array(
-                    //$post_id => $customer_code,
-                    //$site_id => $customer_code,
-                //);
 
                 // Retrieve the existing site_customer_data
                 $site_vendor_data = get_post_meta($post_id, 'site_vendor_data', true);
-                
                 // Check if site_customer_data is an array and the site_id key exists
                 if (!is_array($site_vendor_data)) {
                     $site_vendor_data = array();
                 }
-                
                 // Update or add the site_id key with the customer_code value
                 $site_vendor_data[$post_id] = $customer_code;
-
                 // Store the array as a serialized meta value
                 update_post_meta($site_id, 'site_vendor_data', $site_vendor_data);
-                //update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
-
             }
         
             $response = array('html_contain' => $this->display_customer_card_list());
@@ -1017,7 +1002,6 @@ if (!class_exists('erp_cards')) {
 
         function display_vendor_card_dialog($vendor_id = false) {
             ob_start();
-            
             // Get the current user's site ID
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1089,12 +1073,10 @@ if (!class_exists('erp_cards')) {
         
                 // Retrieve the existing site_vendor_data
                 $site_vendor_data = get_post_meta($vendor_id, 'site_vendor_data', true);
-                
                 // Check if site_vendor_data is an array and the site_id key exists
                 if (!is_array($site_vendor_data)) {
                     $site_vendor_data = array();
                 }
-                
                 // Update or add the site_id key with the vendor_code value
                 $site_vendor_data[$site_id] = $vendor_code;
 
@@ -1118,38 +1100,24 @@ if (!class_exists('erp_cards')) {
                     'post_type'     => 'site-profile',
                 );                    
                 $post_id = wp_insert_post($new_post);
-                
+
                 // Initialize the site_vendor_data array with the site_id and vendor_code
                 $site_vendor_data = array(
                     $site_id => $vendor_code,
-                    //$post_id => $vendor_code,
                 );
-                
                 // Store the array as a serialized meta value
                 update_post_meta($post_id, 'site_vendor_data', $site_vendor_data);
-                //update_post_meta($site_id, 'site_vendor_data', $site_vendor_data);
 
-                // Initialize the site_customer_data array with the post_id and vendor_code
-                //$site_customer_data = array(
-                    //$post_id => $vendor_code,
-                    //$site_id => $vendor_code,
-                //);
-                
                 // Retrieve the existing site_vendor_data
                 $site_customer_data = get_post_meta($site_id, 'site_vendor_data', true);
-                
                 // Check if site_vendor_data is an array and the site_id key exists
                 if (!is_array($site_customer_data)) {
                     $site_customer_data = array();
                 }
-                
                 // Update or add the site_id key with the vendor_code value
                 $site_customer_data[$post_id] = $vendor_code;
-                
                 // Store the array as a serialized meta value
                 update_post_meta($site_id, 'site_customer_data', $site_customer_data);
-                //update_post_meta($post_id, 'site_customer_data', $site_customer_data);
-
             }
         
             $response = array('html_contain' => $this->display_vendor_card_list());
@@ -1324,10 +1292,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_product_card_dialog($product_id=false) {
+            ob_start();
             $product_code = get_post_meta($product_id, 'product_code', true);
             $product_title = get_the_title($product_id);
             $product_content = get_post_field('post_content', $product_id);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="product-id" value="<?php echo esc_attr($product_id);?>" />
@@ -1538,10 +1506,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_equipment_card_dialog($equipment_id=false) {
+            ob_start();
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
             $equipment_title = get_the_title($equipment_id);
             $equipment_content = get_post_field('post_content', $equipment_id);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="equipment-id" value="<?php echo esc_attr($equipment_id);?>" />
@@ -1752,10 +1720,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_instrument_card_dialog($instrument_id=false) {
+            ob_start();
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $instrument_title = get_the_title($instrument_id);
             $instrument_content = get_post_field('post_content', $instrument_id);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="instrument-id" value="<?php echo esc_attr($instrument_id);?>" />
@@ -1966,10 +1934,10 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_department_card_dialog($department_id=false) {
+            ob_start();
             $department_code = get_post_meta($department_id, 'department_code', true);
             $department_title = get_the_title($department_id);
             $department_content = get_post_field('post_content', $department_id);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
@@ -2047,6 +2015,7 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_department_user_list($department_id=false) {
+            ob_start();
             $user_ids = array();            
             if ($department_id==false) {
                 $current_user_id = get_current_user_id();
@@ -2065,7 +2034,6 @@ if (!class_exists('erp_cards')) {
             } else {
                 $user_ids = get_post_meta($department_id, 'user_ids', true);
             }
-            ob_start();
             ?>
             <div id="department-user-list">
                 <fieldset style="margin-top:5px;">
