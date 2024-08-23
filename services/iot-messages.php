@@ -7,12 +7,12 @@ if (!class_exists('iot_messages')) {
     class iot_messages {
 
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_http_client_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
             //add_action( 'init', array( $this, 'register_http_client_post_type' ) );
             //add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
-
+/*
             add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
             add_action( 'wp_ajax_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
@@ -28,7 +28,7 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_ajax_nopriv_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
             add_action( 'wp_ajax_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
-
+*/
             //add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             //add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
             //add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
@@ -38,12 +38,12 @@ if (!class_exists('iot_messages')) {
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
-            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta'));
+            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
             register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
 
         }
 
-        function enqueue_http_client_scripts() {
+        function enqueue_iot_message_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
             wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
@@ -88,7 +88,7 @@ if (!class_exists('iot_messages')) {
             ));
         }
 
-        function update_iot_message_meta() {
+        function update_iot_message_meta_data() {
             // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
             $args = array(
                 'post_type' => 'iot-message',
@@ -156,30 +156,6 @@ if (!class_exists('iot_messages')) {
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
             $documents_class = new display_documents();
             $query = $documents_class->get_doc_field_ids('_equipment', $equipment_id);
-/*
-            $args = array(
-                'post_type'  => 'doc-field',
-                'posts_per_page' => -1, // Retrieve all posts
-                'meta_query' => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'   => 'field_type',
-                        'value' => '_equipment',
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'   => 'field_value',
-                        'value' => $equipment_id,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' // Only return post IDs
-            );
-
-            // Execute the query
-            $query = new WP_Query($args);
-*/
-            //$doc_ids = array();
             if ($query->have_posts()) {
                 foreach ($query->posts as $field_id) {
                     $field_name = get_post_meta($field_id, 'field_name', true);
@@ -444,7 +420,7 @@ if (!class_exists('iot_messages')) {
         }
 
 
-
+/*
         // Register http-client post type
         function register_http_client_post_type() {
             $labels = array(
@@ -762,7 +738,7 @@ if (!class_exists('iot_messages')) {
             }            
             return $options;
         }
-
+*/
     }
     $iot_messages = new iot_messages();
 }
