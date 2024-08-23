@@ -388,7 +388,7 @@ jQuery(document).ready(function($) {
 
                         //alert("Data update success!");
                     } else {
-                        alert("Error: " + response.error);
+                        //alert("Error: " + response.error);
                     }
                 },
                 error: function (error) {
