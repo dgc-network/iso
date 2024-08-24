@@ -154,23 +154,10 @@ jQuery(document).ready(function($) {
                 console.error(error);
             }
         });
-/*
-        // Get the current URL
-        var currentUrl = window.location.href;
-        // Create a URL object
-        var url = new URL(currentUrl);
-        // Add the new parameter
-        url.searchParams.set('_doc_id', doc_id);                            
-        // Get the modified URL
-        var modifiedUrl = url.toString();                            
-        // Reload the page with the modified URL
-        window.location.replace(modifiedUrl);
-        //get_document_dialog_data(doc_id)
-*/
     });            
 
     //activate_document_dialog_data($("#doc-id").val())
-    activate_doc_report_list_data($("#doc-id").val());
+    //activate_doc_report_list_data($("#doc-id").val());
 
     function activate_document_dialog_data(doc_id){
 
@@ -409,138 +396,6 @@ jQuery(document).ready(function($) {
             window.location.replace(modifiedUrl);
         });
 
-    }
-
-    function get_document_dialog_data(doc_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_document_dialog_data',
-                _doc_id: doc_id,
-                _is_admin: $("#is-admin").val()
-            },
-            success: function (response) {
-                // Get the current URL
-                var currentUrl = window.location.href;
-                // Create a URL object
-                var url = new URL(currentUrl);
-                // Add the new parameter
-                url.searchParams.set('_doc_id', doc_id);                            
-                // Get the modified URL
-                var modifiedUrl = url.toString();                            
-                // Reload the page with the modified URL
-                window.location.replace(modifiedUrl);
-
-
-/*
-                if (response.todo_status>0 && $("#is-admin").val()!=1) {
-                    alert("The document is in To-do process. Please wait for publishing.");
-                } else {
-                    if (response.todo_status==-1) {
-                        if (response.is_doc_report==-1) {
-                            window.location.replace('/display-document/');
-                        } else if (response.is_doc_report==-2) {
-                            window.location.replace('/display-profiles/?_select_profile=4');
-                        } else if (response.is_doc_report==-3) {
-                            window.location.replace('/display-profiles/?_select_profile=5');
-                        } else if (response.is_doc_report==-4) {
-                            window.location.replace('/display-profiles/?_select_profile=6');
-                        } else if (response.is_doc_report==-5) {
-                            window.location.replace('/display-profiles/?_select_profile=7');
-                        } else if (response.is_doc_report==-6) {
-                            window.location.replace('/display-profiles/?_select_profile=8');
-                        } else if (response.is_doc_report==-7) {
-                            window.location.replace('/display-profiles/?_select_profile=1');
-                        } else if (response.is_doc_report==1) {
-                            // Get the current URL
-                            var currentUrl = window.location.href;
-                            // Create a URL object
-                            var url = new URL(currentUrl);
-                            // Add the new parameter
-                            url.searchParams.set('_doc_report', doc_id);                            
-                            // Get the modified URL
-                            var modifiedUrl = url.toString();                            
-                            // Reload the page with the modified URL
-                            window.location.replace(modifiedUrl);
-                            
-                        } else {
-                            // Get the current URL
-                            var currentUrl = window.location.href;
-                            // Create a URL object
-                            var url = new URL(currentUrl);
-                            // Add the new parameter
-                            url.searchParams.set('_doc_frame', doc_id);                            
-                            // Get the modified URL
-                            var modifiedUrl = url.toString();                            
-                            // Reload the page with the modified URL
-                            window.location.replace(modifiedUrl);
-
-                        }
-                    } else {
-                        if (response.is_site_admin || response.is_user_doc) {
-                            // Get the current URL
-                            var currentUrl = window.location.href;
-                            // Create a URL object
-                            var url = new URL(currentUrl);
-                            // Add the new parameter
-                            url.searchParams.set('_doc_id', doc_id);                            
-                            // Get the modified URL
-                            var modifiedUrl = url.toString();                            
-                            // Reload the page with the modified URL
-                            window.location.replace(modifiedUrl);
-
-                        } else {
-                            if (response.is_doc_report==-1) {
-                                window.location.replace('/display-document/');
-                            } else if (response.is_doc_report==-2) {
-                                window.location.replace('/display-profiles/?_select_profile=4');
-                            } else if (response.is_doc_report==-3) {
-                                window.location.replace('/display-profiles/?_select_profile=5');
-                            } else if (response.is_doc_report==-4) {
-                                window.location.replace('/display-profiles/?_select_profile=6');
-                            } else if (response.is_doc_report==-5) {
-                                window.location.replace('/display-profiles/?_select_profile=7');
-                            } else if (response.is_doc_report==-6) {
-                                window.location.replace('/display-profiles/?_select_profile=8');
-                            } else if (response.is_doc_report==-7) {
-                                window.location.replace('/display-profiles/?_select_profile=1');
-                            } else if (response.is_doc_report==1) {
-                                // Get the current URL
-                                var currentUrl = window.location.href;
-                                // Create a URL object
-                                var url = new URL(currentUrl);
-                                // Add the new parameter
-                                url.searchParams.set('_doc_report', doc_id);                            
-                                // Get the modified URL
-                                var modifiedUrl = url.toString();
-
-                                // Reload the page with the modified URL
-                                window.location.replace(modifiedUrl);
-
-                            } else {
-                                // Get the current URL
-                                var currentUrl = window.location.href;
-                                // Create a URL object
-                                var url = new URL(currentUrl);
-                                // Add the new parameter
-                                url.searchParams.set('_doc_frame', doc_id);                            
-                                // Get the modified URL
-                                var modifiedUrl = url.toString();                            
-                                // Reload the page with the modified URL
-                                window.location.replace(modifiedUrl);
-
-                            }    
-                        }
-                    }
-                }
-*/                    
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
     }
 
     function activate_published_document_data(doc_id){
