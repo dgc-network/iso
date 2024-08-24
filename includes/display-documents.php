@@ -7,7 +7,6 @@ if (!class_exists('display_documents')) {
     class display_documents {
         // Class constructor
         public function __construct() {
-            //add_action('wp_head', array( $this, 'add_mermaid_script_to_head'));
             add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
@@ -222,9 +221,6 @@ if (!class_exists('display_documents')) {
                             <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
                             <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
                             <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
-<?php /*                            
-                            <th><?php echo __( '待辦狀態', 'your-text-domain' );?></th>
-*/?>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -247,25 +243,12 @@ if (!class_exists('display_documents')) {
                             } elseif ($is_doc_report < 0) {
                                 $doc_title = '**' . $doc_title;
                             }
-/*                            
-                            // display the warning if the document without assigned actions
-                            $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                            $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
-                            $doc_title .= $unassigned;
 
-                            $todo_id = get_post_meta($doc_id, 'todo_status', true);
-                            $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                            $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
-                            $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
-*/
                             ?>
                             <tr id="edit-document-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
                                 <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
-<?php /*                                
-                                <td style="text-align:center;"><?php echo esc_html($todo_status);?></td>
-*/?>                                
                             </tr>
                             <?php
                         endwhile;
@@ -284,16 +267,16 @@ if (!class_exists('display_documents')) {
                     ?>
                 </div>
             </fieldset>
-            <pre class="mermaid">
-        graph TD
-        A[Client] --> B[Load Balancer]
-        B --> C[Server01]
-        B --> D[Server02]
+<pre class="mermaid">
+    graph TD
+    A[Client] --> B[Load Balancer]
+    B --> C[Server01]
+    B --> D[Server02]
 </pre>
-  <script type="module">
+<script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-  </script>
+</script>
 
             </div>
             <?php
@@ -364,25 +347,6 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function add_mermaid_script_to_head() {
-            ?>
-            <!-- Define the import map first -->
-            <script type="importmap">
-            {
-                "imports": {
-                    "@wordpress/interactivity": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"
-                }
-            }
-            </script>
-        
-            <!-- Module script must come after import map -->
-            <script type="module">
-                import mermaid from '@wordpress/interactivity';
-                mermaid.initialize({ startOnLoad: true });
-            </script>
-            <?php
-        }
-
         function display_document_dialog($doc_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
@@ -471,9 +435,10 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
 
                 <div id="mermaid-div">
+<?php /*                    
                     <pre class="mermaid">
                         graph TD 
-                        <?php
+                        <?php                        
                         $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -494,6 +459,7 @@ if (!class_exists('display_documents')) {
                         endif;    
                         ?>
                     </pre>
+*/?>                    
 <pre class="mermaid">
         graph TD
         A[Client] --> B[Load Balancer]
