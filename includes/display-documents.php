@@ -350,7 +350,7 @@ if (!class_exists('display_documents')) {
         
         function display_document_dialog($doc_id=false) {
             ob_start();
-            header('Content-Type: text/html; charset=utf-8');
+            //header('Content-Type: text/html; charset=utf-8');
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
@@ -435,7 +435,7 @@ if (!class_exists('display_documents')) {
                 <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <?php echo $this->display_doc_field_list($doc_id);?>
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
-
+                
                 <div id="mermaid-div">
 <?php /*                    
                     <pre class="mermaid">
@@ -461,7 +461,10 @@ if (!class_exists('display_documents')) {
                         endif;    
                         ?>
                     </pre>
-*/?>                    
+*/?>
+<head>
+    <meta charset="utf-8" />
+</head>
 <pre class="mermaid">
         graph TD
         A[Client] --> B[Load Balancer]
@@ -513,7 +516,9 @@ if (!class_exists('display_documents')) {
             </div>
             </fieldset>
             <?php
-            return ob_get_clean();
+            //return ob_get_clean();
+            // Ensure the content is treated as UTF-8
+            return mb_convert_encoding(ob_get_clean(), 'UTF-8', 'UTF-8');
         }
         
         function get_document_dialog_data() {
