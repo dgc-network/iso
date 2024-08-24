@@ -1891,7 +1891,7 @@ if (!class_exists('display_documents')) {
                                 //echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
                             }
                             if ($field_type=='radio') {
-                                $checked = ($field_value==1) ? 'checked' : '';                                
+                                $checked = ($field_value==1) ? 'checked' : '';
                                 echo '<br><input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.get_the_title();
                             }
                         endwhile;                
