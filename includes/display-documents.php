@@ -545,6 +545,8 @@ if (!class_exists('display_documents')) {
                 } else {
                     if ($is_doc_report==1) {
                         $response['html_contain'] = $this->display_doc_report_list($doc_id);
+                    } elseif ($is_doc_report==-1){
+                        $response['html_contain'] = $this->display_document_list();
                     } elseif ($is_doc_report==-2){
                         $response['html_contain'] = $cards_class->display_customer_card_list();
                     } elseif ($is_doc_report==-3){
@@ -555,6 +557,8 @@ if (!class_exists('display_documents')) {
                         $response['html_contain'] = $cards_class->display_equipment_card_list();
                     } elseif ($is_doc_report==-6){
                         $response['html_contain'] = $cards_class->display_instrument_card_list();
+                    } elseif ($is_doc_report==-7){
+                        $response['html_contain'] = $profiles_class->display_site_user_list();
                     } else {
                         $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     }
