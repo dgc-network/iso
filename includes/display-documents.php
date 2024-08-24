@@ -380,7 +380,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            $is_site_admin = $profiles_class->is_site_admin();            
+            //$is_site_admin = $profiles_class->is_site_admin();            
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -536,6 +536,7 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                $cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
                 //if (current_user_can('administrator')) $is_site_admin = true;
@@ -544,6 +545,16 @@ if (!class_exists('display_documents')) {
                 } else {
                     if ($is_doc_report==1) {
                         $response['html_contain'] = $this->display_doc_report_list($doc_id);
+                    } elseif ($is_doc_report==-2){
+                        $response['html_contain'] = $cards_class->display_customer_card_list();
+                    } elseif ($is_doc_report==-3){
+                        $response['html_contain'] = $cards_class->display_vendor_card_list();
+                    } elseif ($is_doc_report==-4){
+                        $response['html_contain'] = $cards_class->display_product_card_list();
+                    } elseif ($is_doc_report==-5){
+                        $response['html_contain'] = $cards_class->display_equipment_card_list();
+                    } elseif ($is_doc_report==-6){
+                        $response['html_contain'] = $cards_class->display_instrument_card_list();
                     } else {
                         $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     }
