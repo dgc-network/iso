@@ -487,6 +487,13 @@ if (!class_exists('display_documents')) {
                         endif;    
                         ?>
                     </pre>
+<pre class="mermaid">
+        graph TD
+        A[Client] --> B[Load Balancer]
+        B --> C[Server01]
+        B --> D[Server02]
+  </pre>
+</body>
                     <script type="module">
                         import mermaid from 'The/Path/In/Your/Package/mermaid.esm.mjs';
                         mermaid.initialize({ startOnLoad: true });
