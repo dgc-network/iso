@@ -146,7 +146,9 @@ jQuery(document).ready(function($) {
                 _doc_id: doc_id,
             },
             success: function (response) {
-                $('#result-container').html(response.html_contain);
+                //$('#result-container').html(response.html_contain);
+                $('#result-container').text(response.html_contain);
+
                 activate_document_dialog_data(doc_id);
                 activate_published_document_data(doc_id);
                 activate_doc_report_list_data(doc_id);
