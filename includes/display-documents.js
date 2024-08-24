@@ -147,7 +147,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 //$('#result-container').html(response.html_contain);
-                $('#result-container').text(response.html_contain);
+                //$('#result-container').text(response.html_contain);
+                document.getElementById('result-container').innerHTML = response.html_contain;
 
                 activate_document_dialog_data(doc_id);
                 activate_published_document_data(doc_id);
