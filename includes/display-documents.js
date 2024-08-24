@@ -147,7 +147,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                activate_document_dialog_data(doc_id)
+                activate_document_dialog_data(doc_id);
+                activate_published_document_data(doc_id);
             },
             error: function (error) {
                 console.error(error);
@@ -168,7 +169,7 @@ jQuery(document).ready(function($) {
 */
     });            
 
-    activate_document_dialog_data($("#doc-id").val())
+    //activate_document_dialog_data($("#doc-id").val())
     activate_doc_report_list_data($("#doc-id").val());
 
     function activate_document_dialog_data(doc_id){
