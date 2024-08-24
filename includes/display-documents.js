@@ -147,9 +147,13 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-// Reinitialize Mermaid after content injection
-mermaid.init(undefined, $('#result-container .mermaid'));
 
+                // Load and initialize Mermaid using jQuery
+$.getScript('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs', function() {
+    mermaid.initialize({ startOnLoad: true });
+    mermaid.init(undefined, $('#result-container .mermaid'));
+});
+                
                 activate_document_dialog_data(doc_id);
                 activate_published_document_data(doc_id);
                 activate_doc_report_list_data(doc_id);
