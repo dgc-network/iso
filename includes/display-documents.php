@@ -380,7 +380,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            //$is_site_admin = $profiles_class->is_site_admin();            
+            $is_site_admin = $profiles_class->is_site_admin();            
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
