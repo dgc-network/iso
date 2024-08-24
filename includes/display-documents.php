@@ -539,7 +539,7 @@ if (!class_exists('display_documents')) {
                 $cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
-                //if (current_user_can('administrator')) $is_site_admin = true;
+                if (current_user_can('administrator')) $is_site_admin = true;
                 if ($is_site_admin) {
                     $response['html_contain'] = $this->display_document_dialog($doc_id);
                 } else {
@@ -559,15 +559,6 @@ if (!class_exists('display_documents')) {
                         $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     }
                 }
-
-/*
-                $todo_status = get_post_meta($doc_id, 'todo_status', true);
-                $is_user_doc = $profiles_class->is_user_doc($doc_id);
-                $response['is_doc_report'] = $is_doc_report;
-                $response['todo_status'] = $todo_status;
-                $response['is_site_admin'] = $is_site_admin;
-                $response['is_user_doc'] = $is_user_doc;
-*/                
             }
             wp_send_json($response);
         }
