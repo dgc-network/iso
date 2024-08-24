@@ -138,6 +138,22 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_document_dialog_data',
+                _doc_id: doc_id,
+            },
+            success: function (response) {
+                $('#result-container').html(response.html_contain);
+                activate_document_dialog_data(doc_id)
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+/*
         // Get the current URL
         var currentUrl = window.location.href;
         // Create a URL object
@@ -149,7 +165,7 @@ jQuery(document).ready(function($) {
         // Reload the page with the modified URL
         window.location.replace(modifiedUrl);
         //get_document_dialog_data(doc_id)
-
+*/
     });            
 
     activate_document_dialog_data($("#doc-id").val())
@@ -390,7 +406,6 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-
         });
 
     }
