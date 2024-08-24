@@ -59,8 +59,8 @@ if (!class_exists('display_documents')) {
         function enqueue_display_document_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
-            $version = time(); // Update this version number when you make changes
-            wp_enqueue_script('display-documents', plugins_url('display-documents.js', __FILE__), array('jquery'), $version);
+
+            wp_enqueue_script('display-documents', plugins_url('display-documents.js', __FILE__), array('jquery'), time());
             wp_localize_script('display-documents', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('display-documents-nonce'), // Generate nonce
@@ -76,7 +76,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
             );
             register_post_type( 'document', $args );
         }
@@ -108,7 +107,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
             );
             register_post_type( 'doc-report', $args );
         }
@@ -121,7 +119,6 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
             );
             register_post_type( 'doc-field', $args );
         }
@@ -242,8 +239,7 @@ if (!class_exists('display_documents')) {
                             $doc_id = (int) get_the_ID();
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
 
                             if ($is_doc_report > 0) {
@@ -256,12 +252,12 @@ if (!class_exists('display_documents')) {
                             $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                             $unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             $doc_title .= $unassigned;
-*/
-                            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+
                             $todo_id = get_post_meta($doc_id, 'todo_status', true);
                             $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
                             $todo_status = ($todo_id==-1) ? '文件發行' : $todo_status;
                             $todo_status = ($todo_id==-2) ? '文件廢止' : $todo_status;
+*/
                             ?>
                             <tr id="edit-document-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
@@ -377,6 +373,7 @@ if (!class_exists('display_documents')) {
         }
 
         function display_document_dialog($doc_id=false) {
+            ob_start();
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
@@ -397,7 +394,6 @@ if (!class_exists('display_documents')) {
 
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-            ob_start();
             ?>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -493,12 +489,10 @@ if (!class_exists('display_documents')) {
         B --> C[Server01]
         B --> D[Server02]
 </pre>
-<body>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
   </script>
-</body>
                 </div>
 
                 <div id="job-setting-div" style="display:none;">
