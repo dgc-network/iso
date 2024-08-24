@@ -267,6 +267,7 @@ if (!class_exists('display_documents')) {
                     ?>
                 </div>
             </fieldset>
+
 <pre class="mermaid">
     graph TD
     A[Client] --> B[Load Balancer]
@@ -349,6 +350,7 @@ if (!class_exists('display_documents')) {
         
         function display_document_dialog($doc_id=false) {
             ob_start();
+            header('Content-Type: text/html; charset=utf-8');
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
