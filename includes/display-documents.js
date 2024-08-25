@@ -148,12 +148,25 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $('#result-container').html(response.html_contain);
 
+                // Assuming the content is loaded into #result-container
+//$('#result-container').html(response.html_contain);
+
+// Use dynamic import to load Mermaid as an ES module
+import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+    .then((mermaid) => {
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.init(undefined, $('#result-container .mermaid'));
+    })
+    .catch((error) => {
+        console.error('Error loading Mermaid:', error);
+    });
+/*
                 // Load and initialize Mermaid using jQuery
 $.getScript('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs', function() {
     mermaid.initialize({ startOnLoad: true });
     mermaid.init(undefined, $('#result-container .mermaid'));
 });
-                
+*/                
                 activate_document_dialog_data(doc_id);
                 activate_published_document_data(doc_id);
                 activate_doc_report_list_data(doc_id);
