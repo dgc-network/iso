@@ -8,7 +8,6 @@ if (!class_exists('display_documents')) {
         // Class constructor
         public function __construct() {
             add_action('wp_enqueue_scripts', array( $this,'add_mermaid_script'));
-            //add_action('wp_head', array( $this,'add_mermaid_script'));
             add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
@@ -269,18 +268,6 @@ if (!class_exists('display_documents')) {
                     ?>
                 </div>
             </fieldset>
-
-<pre class="mermaid">
-    graph TD
-    A[Client] --> B[Load Balancer]
-    B --> C[Server01]
-    B --> D[Server02]
-</pre>
-<script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
-</script>
-
             </div>
             <?php
         }
@@ -354,11 +341,7 @@ if (!class_exists('display_documents')) {
             // Add Mermaid script
             wp_enqueue_script('mermaid', 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js', array(), null, true);
         }
-/*        
-        function add_mermaid_script() {
-            echo '<script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs"></script>';
-        }
-*/        
+
         function display_document_dialog($doc_id=false) {
             ob_start();
             header('Content-Type: text/html; charset=utf-8');
@@ -448,7 +431,6 @@ if (!class_exists('display_documents')) {
                 <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
                 
                 <div id="mermaid-div">
-<?php /*                    
                     <pre class="mermaid">
                         graph TD 
                         <?php                        
@@ -472,17 +454,19 @@ if (!class_exists('display_documents')) {
                         endif;    
                         ?>
                     </pre>
-*/?>
-<pre class="mermaid">
+
+                    <pre class="mermaid">
         graph TD
         A[Client] --> B[Load Balancer]
         B --> C[Server01]
         B --> D[Server02]
-</pre>
-<script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
-</script>
+                    </pre>
+<?php /*                    
+                    <script type="module">
+                        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+                        mermaid.initialize({ startOnLoad: true });
+                    </script>
+*/?>
                 </div>
 
                 <div id="job-setting-div" style="display:none;">
