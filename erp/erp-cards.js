@@ -594,7 +594,6 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#vendor-card-dialog").dialog('open');
-                    //alert($("#is-site-admin").val())
                 },
                 error: function (error) {
                     console.error(error);
@@ -609,73 +608,6 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {}
         });
-/*        
-        if ($("#is-site-admin").val() == 1) {
-            $("#vendor-card-dialog").dialog({
-                width: 390,
-                modal: true,
-                autoOpen: false,
-                buttons: {
-                    "Save": function () {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'set_vendor_card_dialog_data',
-                                '_vendor_id': $("#vendor-id").val(),
-                                '_vendor_code': $("#vendor-code").val(),
-                                '_vendor_title': $("#vendor-title").val(),
-                                '_company_phone': $("#company-phone").val(),
-                                '_company_address': $("#company-address").val(),
-                                '_unified_number': $("#unified-number").val(),
-                            },
-                            success: function (response) {
-                                $("#vendor-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_vendor_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    },
-                    "Delete": function () {
-                        if (window.confirm("Are you sure you want to delete this vendor?")) {
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'del_vendor_card_dialog_data',
-                                    '_vendor_id': $("#vendor-id").val(),
-                                },
-                                success: function (response) {
-                                    $("#vendor-card-dialog").dialog('close');
-                                    $("#result-container").html(response.html_contain);
-                                    activate_vendor_card_list_data();
-                                },
-                                error: function (error) {
-                                    console.error(error);
-                                    alert(error);
-                                }
-                            });
-                        }
-                    },
-                }
-            });
-
-        } else {
-            $("#vendor-card-dialog").dialog({
-                width: 390,
-                modal: true,
-                autoOpen: false,
-            });
-
-        }
-*/
-
     }
 
     // product-card scripts

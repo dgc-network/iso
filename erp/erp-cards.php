@@ -1014,7 +1014,7 @@ if (!class_exists('erp_cards')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+            //$disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             // Retrieve the site_vendor_data meta field
             $site_vendor_data = get_post_meta($vendor_id, 'site_vendor_data', true);
@@ -1037,10 +1037,10 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
-                <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
+                <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title);?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -1049,12 +1049,12 @@ if (!class_exists('erp_cards')) {
                 $profiles_class = new display_profiles();
                 $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
-                <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
-                <textarea id="company-address" rows="2" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
-                <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
+                <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' );?></label>
+                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' );?></label>
+                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
