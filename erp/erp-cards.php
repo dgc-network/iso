@@ -510,7 +510,8 @@ if (!class_exists('erp_cards')) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
-        
+            if (current_user_can('administrator')) $is_site_admin = true;
+
             //if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo(); ?>
@@ -838,13 +839,13 @@ if (!class_exists('erp_cards')) {
             return $options;
         }
 
-        // Register vendor-card post type        
+        // vendor-card post
         function display_vendor_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
         
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo(); ?>
                 <h2 style="display:inline;"><?php echo __( '廠商列表', 'your-text-domain' ); ?></h2>
@@ -918,11 +919,13 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="vendor-card-dialog" title="Vendor dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' ); ?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1011,7 +1014,11 @@ if (!class_exists('erp_cards')) {
             // Get the current user's site ID
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+
             // Retrieve the site_vendor_data meta field
             $site_vendor_data = get_post_meta($vendor_id, 'site_vendor_data', true);
         
@@ -1033,9 +1040,9 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id); ?>" />
                 <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -1045,11 +1052,11 @@ if (!class_exists('erp_cards')) {
                 $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
-                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <textarea id="company-address" rows="2" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
                 <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1179,8 +1186,9 @@ if (!class_exists('erp_cards')) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
 
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -1235,11 +1243,13 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="product-card-dialog" title="Product dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1299,6 +1309,11 @@ if (!class_exists('erp_cards')) {
 
         function display_product_card_dialog($product_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+
             $product_code = get_post_meta($product_id, 'product_code', true);
             $product_title = get_the_title($product_id);
             $product_content = get_post_field('post_content', $product_id);
@@ -1306,11 +1321,11 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="product-id" value="<?php echo esc_attr($product_id);?>" />
                 <label for="product-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="product-code" value="<?php echo esc_attr($product_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="product-code" value="<?php echo esc_attr($product_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="product-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="product-title" value="<?php echo esc_attr($product_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="product-title" value="<?php echo esc_attr($product_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="product-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="product-content" rows="3" style="width:100%;"><?php echo esc_html($product_content);?></textarea>
+                <textarea id="product-content" rows="3" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($product_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -1393,8 +1408,9 @@ if (!class_exists('erp_cards')) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
 
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -1449,11 +1465,13 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="equipment-card-dialog" title="Equipment dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1513,6 +1531,11 @@ if (!class_exists('erp_cards')) {
 
         function display_equipment_card_dialog($equipment_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
             $equipment_title = get_the_title($equipment_id);
             $equipment_content = get_post_field('post_content', $equipment_id);
@@ -1520,11 +1543,11 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="equipment-id" value="<?php echo esc_attr($equipment_id);?>" />
                 <label for="equipment-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="equipment-code" value="<?php echo esc_attr($equipment_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="equipment-code" value="<?php echo esc_attr($equipment_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="equipment-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="equipment-title" value="<?php echo esc_attr($equipment_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="equipment-title" value="<?php echo esc_attr($equipment_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="equipment-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="equipment-content" rows="3" style="width:100%;"><?php echo esc_html($equipment_content);?></textarea>
+                <textarea id="equipment-content" rows="3" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($equipment_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -1607,8 +1630,9 @@ if (!class_exists('erp_cards')) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
 
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -1663,11 +1687,13 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="instrument-card-dialog" title="Instrument dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1727,6 +1753,11 @@ if (!class_exists('erp_cards')) {
 
         function display_instrument_card_dialog($instrument_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $instrument_title = get_the_title($instrument_id);
             $instrument_content = get_post_field('post_content', $instrument_id);
@@ -1734,11 +1765,11 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="instrument-id" value="<?php echo esc_attr($instrument_id);?>" />
                 <label for="instrument-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="instrument-code" value="<?php echo esc_attr($instrument_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="instrument-code" value="<?php echo esc_attr($instrument_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="instrument-title" value="<?php echo esc_attr($instrument_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="instrument-title" value="<?php echo esc_attr($instrument_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="instrument-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($instrument_content);?></textarea>
+                <textarea id="instrument-content" rows="3" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($instrument_content);?></textarea>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -1821,8 +1852,9 @@ if (!class_exists('erp_cards')) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
 
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -1877,11 +1909,13 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="department-card-dialog" title="Department dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1941,6 +1975,11 @@ if (!class_exists('erp_cards')) {
 
         function display_department_card_dialog($department_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+
             $department_code = get_post_meta($department_id, 'department_code', true);
             $department_title = get_the_title($department_id);
             $department_content = get_post_field('post_content', $department_id);
@@ -1948,11 +1987,11 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
                 <label for="department-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="department-code" value="<?php echo esc_attr($department_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="department-code" value="<?php echo esc_attr($department_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="department-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="department-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="department-content" rows="3" style="width:100%;"><?php echo esc_html($department_content);?></textarea>
+                <textarea id="department-content" rows="3" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($department_content);?></textarea>
                 <label for="department-members"><?php echo __( '部門成員：', 'your-text-domain' );?></label>
                 <?php echo $this->display_department_user_list($department_id);?>
                 <?php

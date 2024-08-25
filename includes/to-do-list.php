@@ -323,23 +323,15 @@ if (!class_exists('to_do_list')) {
             }
 
             if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
-                
-            //$profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-    
+
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
-            <?php /*
-            <input type="hidden" id="report-id-backup" value="<?php echo $report_id;?>" />
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-            */?>
             <fieldset>
             <?php
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            if ($is_doc_report) {
+            //if ($is_doc_report) {
                 // doc_report_dialog data
 
                 $params = array(
@@ -349,6 +341,7 @@ if (!class_exists('to_do_list')) {
 
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains($params);
+/*                
             } else {
                 // document_dialog data
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -371,6 +364,7 @@ if (!class_exists('to_do_list')) {
                 <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
                 <?php
             }
+*/                
             ?>
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">

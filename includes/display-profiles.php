@@ -563,6 +563,7 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $site_content = get_post_field('post_content', $site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
             $company_phone = get_post_meta($site_id, 'company_phone', true);
@@ -738,9 +739,10 @@ if (!class_exists('display_profiles')) {
 
         function display_audit_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
-            $profiles_class = new display_profiles();
+            //$profiles_class = new display_profiles();
             //$is_site_admin = $profiles_class->is_site_admin();
             $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             if ($is_site_admin || current_user_can('administrator')) {
                 ob_start();
                 ?>
@@ -839,10 +841,10 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_user_dialog($user_id=false) {
+            ob_start();
             $user_data = get_userdata($user_id);
             $is_site_admin = $this->is_site_admin($user_id);
             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
@@ -1781,6 +1783,7 @@ if (!class_exists('display_profiles')) {
         
         function display_doc_category_list() {
             $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             if ($is_site_admin || current_user_can('administrator')) {
                 ob_start();
                 // Check if the user is administrator

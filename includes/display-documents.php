@@ -349,6 +349,7 @@ if (!class_exists('display_documents')) {
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
             $is_site_admin = $profiles_class->is_site_admin();            
+            if (current_user_can('administrator')) $is_site_admin = true;
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -484,10 +485,8 @@ if (!class_exists('display_documents')) {
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <?php if ($is_site_admin || current_user_can('administrator')) {?>
                     <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                    <?php }?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
@@ -1832,6 +1831,7 @@ if (!class_exists('display_documents')) {
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             if ($is_site_admin || current_user_can('administrator')) {
                 ob_start();
                 ?>
