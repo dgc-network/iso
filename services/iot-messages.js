@@ -1,89 +1,9 @@
 jQuery(document).ready(function($) {
-/*    
-    // geolocation-message scripts
-    var map, marker;
-    //activate_geolocation_message_list_data();
-
-    function set_geolocation_message_data(data) {
-        // Use AJAX to call a WordPress function to create a new post
-        $.ajax({
-            //url: ajaxurl, // WordPress AJAX URL
-            url: ajax_object.ajax_url,
-            method: 'POST',
-            data: {
-                action: 'set_geolocation_message_data', // Custom action name
-                receiver: data.receiver,
-                message: data.message,
-                latitude: data.latitude,
-                longitude: data.longitude,
-            },
-            success: function (response) {
-                console.log('Post created successfully:', response);
-            },
-            error: function (error) {
-                console.error('Failed to create post:', error);
-            }
-        });
-    }
-
-    function activate_geolocation_message_list_data(){
-
-        $('[id^="edit-iot-message-"]').on("click", function () {
-            const geolocation_message_id = this.id.substring(25);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_geolocation_message_data',
-                    '_geolocation_message_id': geolocation_message_id,
-                },
-                success: function (response) {
-                    $("#latitude").val(response.latitude);
-                    $("#longitude").val(response.longitude);
-                    $("#message").text(response.message);
-                    $("#geolocation-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-
-        });
-
-        $("#geolocation-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            open: function(event, ui) {
-                // Initialize the map
-                map = L.map('map').setView([0, 0], 2); // Initial view, will be updated
-
-                // Add a tile layer to the map (OpenStreetMap tiles)
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-        
-                // Update the map view to the new geolocation data
-                latitude = $("#latitude").val();
-                longitude = $("#longitude").val();
-                map.setView([latitude, longitude], 18);
-            },
-            close: function(event, ui) {
-                if (map) {
-                    map.remove(); // Properly remove the map instance
-                    map = null; // Clear the map variable
-                }
-            }
-        });
-    }
-*/
     // http-client scripts
-    activate_http_client_list_data();
+    activate_iot_message_list_data();
 
-    function activate_http_client_list_data(){
-
+    function activate_iot_message_list_data(){
+/*
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -100,7 +20,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#select-todo").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -117,7 +37,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+/*
         $("#search-http-client").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -155,7 +75,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     //get_http_client_list_data();
                     $("#result-container").html(response.html_contain);
-                    activate_http_client_list_data();
+                    activate_iot_message_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -209,7 +129,7 @@ jQuery(document).ready(function($) {
                             $("#http-client-dialog").dialog('close');
                             //get_http_client_list_data();
                             $("#result-container").html(response.html_contain);
-                            activate_http_client_list_data();
+                            activate_iot_message_list_data();
                         },
                         error: function (error) {
                             console.error(error);
@@ -231,7 +151,7 @@ jQuery(document).ready(function($) {
                                 $("#http-client-dialog").dialog('close');
                                 //get_http_client_list_data();
                                 $("#result-container").html(response.html_contain);
-                                activate_http_client_list_data();
+                                activate_iot_message_list_data();
                             },
                             error: function (error) {
                                 console.error(error);
@@ -242,6 +162,7 @@ jQuery(document).ready(function($) {
                 },
             }
         });    
+*/        
     }
 
     function get_http_client_list_data(){
@@ -254,7 +175,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $("#result-container").html(response.html_contain);
-                activate_http_client_list_data();
+                activate_iot_message_list_data();
             },
             error: function (error) {
                 console.error(error);
@@ -262,6 +183,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
+    
     // Exception notification scripts
     function activate_notification_list_data(http_client_id=false){
         $("#new-notification").on("click", function() {

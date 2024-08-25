@@ -331,7 +331,7 @@ if (!class_exists('display_profiles')) {
             $response = array('html_contain' => $this->display_my_job_list());
             wp_send_json($response);
         }
-
+/*
         function display_my_notification_list() {
             ob_start();
             ?>
@@ -367,7 +367,7 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-
+*/
         function display_my_job_action_dialog($doc_id=false) {
             ob_start();
             ?>
