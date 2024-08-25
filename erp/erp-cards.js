@@ -543,7 +543,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#vendor-card-dialog").html(response.html_contain);
                     $("#vendor-card-dialog").dialog('open');
-                    alert($("#is-site-admin").val())
+                    //alert($("#is-site-admin").val())
                 },
                 error: function (error) {
                     console.error(error);
@@ -552,7 +552,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        if ($("#is-site-admin").val() == "1") {
+        if ($("#is-site-admin").val() == 1) {
             $("#vendor-card-dialog").dialog({
                 width: 390,
                 modal: true,
