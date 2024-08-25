@@ -284,16 +284,16 @@ if (!class_exists('iot_messages')) {
         function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $todo_class = new to_do_list();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
 
             // Check if the user is administrator
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -365,11 +365,13 @@ if (!class_exists('iot_messages')) {
                     <div id="message" style="margin-top: 20px;"></div>
                 </div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
         

@@ -574,14 +574,16 @@ if (!class_exists('display_profiles')) {
             $contact_person = get_post_meta($site_id, 'contact_person', true);
                         
             // Check if the user is administrator or initial...
-            if ($is_site_admin || current_user_can('administrator') || $initial) {
+            //if ($is_site_admin || current_user_can('administrator') || $initial) {
                 ?>
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_profile(1);?></div>
                     <div style="text-align: right">
+                        <?php if ($is_site_admin) {?>
                         <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+                        <?php }?>
                     </div>
                 </div>        
 
@@ -625,11 +627,13 @@ if (!class_exists('display_profiles')) {
                     <?php echo $this->display_audit_item_list_in_category();?>    
                 </fieldset>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1068,8 +1072,9 @@ if (!class_exists('display_profiles')) {
         function display_site_job_list() {
             ob_start();
             $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
 
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 // Check if the user is administrator
                 ?>
                 <?php echo display_iso_helper_logo();?>
@@ -1142,11 +1147,13 @@ if (!class_exists('display_profiles')) {
                 </fieldset>
                 <div id="site-job-dialog" title="Job dialog"></div>
                 <?php
+/*                
             } else {
                 ?>
                 <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
                 <?php
             }
+*/                
             return ob_get_clean();
         }
 
@@ -1226,6 +1233,9 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_job_dialog($doc_id=false) {
+            ob_start();
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $documents_class = new display_documents();
             $cards_class = new erp_cards();
             $job_number = get_post_meta($doc_id, 'job_number', true);
@@ -1233,9 +1243,9 @@ if (!class_exists('display_profiles')) {
             $job_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
-            ob_start();
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
                 <label for="job-number"><?php echo __( 'Number:', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
@@ -1784,7 +1794,7 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_list() {
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            if ($is_site_admin || current_user_can('administrator')) {
+            //if ($is_site_admin || current_user_can('administrator')) {
                 ob_start();
                 // Check if the user is administrator
                 ?>
@@ -1826,10 +1836,12 @@ if (!class_exists('display_profiles')) {
                 </fieldset>
                 <div id="doc-category-dialog" title="Category dialog"></div>
                 <?php
-                return ob_get_clean();        
+                return ob_get_clean();
+/*                        
             } else {
                 display_no_permission_page();
             }
+*/                
         }
 
         function retrieve_doc_category_data() {
@@ -1853,14 +1865,17 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_doc_category_dialog($paged=1, $category_id=false) {
+            ob_start();
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $cards_class = new erp_cards();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>

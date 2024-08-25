@@ -399,6 +399,57 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#customer-card-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#customer-card-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_customer_card_dialog_data',
+                                        '_customer_id': $("#customer-id").val(),
+                                        '_customer_code': $("#customer-code").val(),
+                                        '_customer_title': $("#customer-title").val(),
+                                        '_company_phone': $("#company-phone").val(),
+                                        '_company_address': $("#company-address").val(),
+                                        '_unified_number': $("#unified-number").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#customer-card-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_customer_card_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this customer?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_customer_card_dialog_data',
+                                            '_customer_id': $("#customer-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#customer-card-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_customer_card_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#customer-card-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -412,55 +463,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_customer_card_dialog_data',
-                            '_customer_id': $("#customer-id").val(),
-                            '_customer_code': $("#customer-code").val(),
-                            '_customer_title': $("#customer-title").val(),
-                            '_company_phone': $("#company-phone").val(),
-                            '_company_address': $("#company-address").val(),
-                            '_unified_number': $("#unified-number").val(),
-                        },
-                        success: function (response) {
-                            $("#customer-card-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_customer_card_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this customer?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_customer_card_dialog_data',
-                                '_customer_id': $("#customer-id").val(),
-                            },
-                            success: function (response) {
-                                $("#customer-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_customer_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 
@@ -688,6 +691,55 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#product-card-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#product-card-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_product_card_dialog_data',
+                                        '_product_id': $("#product-id").val(),
+                                        '_product_code': $("#product-code").val(),
+                                        '_product_title': $("#product-title").val(),
+                                        '_product_content': $("#product-content").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#product-card-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_product_card_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this product?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_product_card_dialog_data',
+                                            '_product_id': $("#product-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#product-card-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_product_card_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#product-card-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -701,53 +753,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_product_card_dialog_data',
-                            '_product_id': $("#product-id").val(),
-                            '_product_code': $("#product-code").val(),
-                            '_product_title': $("#product-title").val(),
-                            '_product_content': $("#product-content").val(),
-                        },
-                        success: function (response) {
-                            $("#product-card-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_product_card_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this product?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_product_card_dialog_data',
-                                '_product_id': $("#product-id").val(),
-                            },
-                            success: function (response) {
-                                $("#product-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_product_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 
@@ -829,6 +835,55 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#equipment-card-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#equipment-card-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_equipment_card_dialog_data',
+                                        '_equipment_id': $("#equipment-id").val(),
+                                        '_equipment_code': $("#equipment-code").val(),
+                                        '_equipment_title': $("#equipment-title").val(),
+                                        '_equipment_content': $("#equipment-content").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#equipment-card-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_equipment_card_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this equipment?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_equipment_card_dialog_data',
+                                            '_equipment_id': $("#equipment-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#equipment-card-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_equipment_card_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#equipment-card-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -842,53 +897,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_equipment_card_dialog_data',
-                            '_equipment_id': $("#equipment-id").val(),
-                            '_equipment_code': $("#equipment-code").val(),
-                            '_equipment_title': $("#equipment-title").val(),
-                            '_equipment_content': $("#equipment-content").val(),
-                        },
-                        success: function (response) {
-                            $("#equipment-card-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_equipment_card_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this equipment?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_equipment_card_dialog_data',
-                                '_equipment_id': $("#equipment-id").val(),
-                            },
-                            success: function (response) {
-                                $("#equipment-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_equipment_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 
@@ -970,6 +979,55 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#instrument-card-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#instrument-card-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_instrument_card_dialog_data',
+                                        '_instrument_id': $("#instrument-id").val(),
+                                        '_instrument_code': $("#instrument-code").val(),
+                                        '_instrument_title': $("#instrument-title").val(),
+                                        '_instrument_content': $("#instrument-content").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#instrument-card-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_instrument_card_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this instrument?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_instrument_card_dialog_data',
+                                            '_instrument_id': $("#instrument-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#instrument-card-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_instrument_card_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#instrument-card-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -983,53 +1041,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_instrument_card_dialog_data',
-                            '_instrument_id': $("#instrument-id").val(),
-                            '_instrument_code': $("#instrument-code").val(),
-                            '_instrument_title': $("#instrument-title").val(),
-                            '_instrument_content': $("#instrument-content").val(),
-                        },
-                        success: function (response) {
-                            $("#instrument-card-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_instrument_card_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this instrument?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_instrument_card_dialog_data',
-                                '_instrument_id': $("#instrument-id").val(),
-                            },
-                            success: function (response) {
-                                $("#instrument-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_instrument_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 
@@ -1111,6 +1123,55 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#department-card-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#department-card-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_department_card_dialog_data',
+                                        '_department_id': $("#department-id").val(),
+                                        '_department_code': $("#department-code").val(),
+                                        '_department_title': $("#department-title").val(),
+                                        '_department_content': $("#department-content").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#department-card-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_department_card_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this department?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_department_card_dialog_data',
+                                            '_department_id': $("#department-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#department-card-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_department_card_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#department-card-dialog").dialog('open');
                     activate_department_user_list_data();
                 },
@@ -1125,53 +1186,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_department_card_dialog_data',
-                            '_department_id': $("#department-id").val(),
-                            '_department_code': $("#department-code").val(),
-                            '_department_title': $("#department-title").val(),
-                            '_department_content': $("#department-content").val(),
-                        },
-                        success: function (response) {
-                            $("#department-card-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_department_card_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this department?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_department_card_dialog_data',
-                                '_department_id': $("#department-id").val(),
-                            },
-                            success: function (response) {
-                                $("#department-card-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_department_card_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 

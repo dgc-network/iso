@@ -556,6 +556,58 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#site-job-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#site-job-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_site_job_dialog_data',
+                                        '_doc_id': $("#doc-id").val(),
+                                        '_job_number': $("#job-number").val(),
+                                        '_job_title': $("#job-title").val(),
+                                        '_job_content': $("#job-content").val(),
+                                        '_department_id': $("#department-id").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#site-job-dialog").dialog('close');
+                                        //$("#result-container").html(response.html_contain);
+                                        window.location.replace(window.location.href);
+                                        activate_site_job_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this site job?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_site_job_dialog_data',
+                                            '_doc_id': $("#doc-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#site-job-dialog").dialog('close');
+                                            //$("#result-container").html(response.html_contain);
+                                            window.location.replace(window.location.href);
+                                            activate_site_job_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#site-job-dialog").dialog('open');
                     activate_job_action_list_data(doc_id);
                     activate_doc_user_list_data(doc_id);
@@ -571,56 +623,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_site_job_dialog_data',
-                            '_doc_id': $("#doc-id").val(),
-                            '_job_number': $("#job-number").val(),
-                            '_job_title': $("#job-title").val(),
-                            '_job_content': $("#job-content").val(),
-                            '_department_id': $("#department-id").val(),
-                        },
-                        success: function (response) {
-                            $("#site-job-dialog").dialog('close');
-                            //$("#result-container").html(response.html_contain);
-                            window.location.replace(window.location.href);
-                            activate_site_job_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this site job?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_site_job_dialog_data',
-                                '_doc_id': $("#doc-id").val(),
-                            },
-                            success: function (response) {
-                                $("#site-job-dialog").dialog('close');
-                                //$("#result-container").html(response.html_contain);
-                                window.location.replace(window.location.href);
-                                activate_site_job_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });    
     }
 
@@ -851,6 +854,55 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#doc-category-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#doc-category-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_doc_category_dialog_data',
+                                        '_category_id': $("#category-id").val(),
+                                        '_category_title': $("#category-title").val(),
+                                        '_category_content': $("#category-content").val(),
+                                        '_iso_category': $("#iso-category").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#doc-category-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_doc_category_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this doc category?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_doc_category_dialog_data',
+                                            '_category_id': $("#category-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#doc-category-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_doc_category_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#doc-category-dialog").dialog('open');
                     activate_audit_item_list_data(category_id)                },
                 error: function (error) {
@@ -864,53 +916,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_category_dialog_data',
-                            '_category_id': $("#category-id").val(),
-                            '_category_title': $("#category-title").val(),
-                            '_category_content': $("#category-content").val(),
-                            '_iso_category': $("#iso-category").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-category-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_doc_category_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this doc category?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_doc_category_dialog_data',
-                                '_category_id': $("#category-id").val(),
-                            },
-                            success: function (response) {
-                                $("#doc-category-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_doc_category_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });
     }
 
