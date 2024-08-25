@@ -147,6 +147,14 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
+                 // Initialize Mermaid when the document is ready
+    if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.init(undefined, $('#result-container .mermaid'));
+    } else {
+        console.error('Mermaid is not loaded');
+    }
+/*    
                 $(document).ready(function() {
                     mermaid.initialize({ startOnLoad: true });
                     mermaid.init(undefined, $('#result-container .mermaid'));
