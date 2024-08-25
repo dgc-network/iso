@@ -1035,12 +1035,12 @@ if (!class_exists('erp_cards')) {
             $unified_number = get_post_meta($vendor_id, 'unified_number', true);
             ?>
             <fieldset>
-                <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id); ?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin); ?>" />
+                <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
                 <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(

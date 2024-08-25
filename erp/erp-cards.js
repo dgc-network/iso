@@ -543,6 +543,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#vendor-card-dialog").html(response.html_contain);
                     $("#vendor-card-dialog").dialog('open');
+                    alert($("#is-site-admin").val())
                 },
                 error: function (error) {
                     console.error(error);
