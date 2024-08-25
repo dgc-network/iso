@@ -682,7 +682,7 @@ if (!class_exists('erp_cards')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
+            if (current_user_can('administrator')) $is_site_admin = true;
             $disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             // Retrieve the site_customer_data meta field
@@ -706,9 +706,9 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="customer-id" value="<?php echo esc_attr($customer_id); ?>" />
                 <label for="customer-code"><?php echo __( 'Code: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code); ?>" $disabled class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title); ?>" $disabled class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -718,11 +718,11 @@ if (!class_exists('erp_cards')) {
                 $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" $disabled class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Address: ', 'your-text-domain' ); ?></label>
-                <textarea id="company-address" rows="2" $disabled style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
+                <textarea id="company-address" rows="2" <?php echo $disabled;?> style="width:100%;"><?php echo esc_html($company_address); ?></textarea>
                 <label for="unified-number"><?php echo __( '統一編號: ', 'your-text-domain' ); ?></label>
-                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" $disabled class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="unified-number" value="<?php echo esc_attr($unified_number); ?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
