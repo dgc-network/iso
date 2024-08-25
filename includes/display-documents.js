@@ -166,12 +166,12 @@ jQuery(document).ready(function($) {
 
     function activate_document_dialog_data(doc_id){
 
-        if ($('#is-doc-report').val()>0) {
+        if ($('#is-doc-report').val()==1) {
             $("#doc-report-div").show();
             $("#doc-report-div1").show();
             $("#doc-frame-div").hide();
         }
-        if ($('#is-doc-report').val()<0) {
+        if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
             $("#system-report-div").show();
             $("#mermaid-div").hide();
             $("#doc-frame-div").hide();
