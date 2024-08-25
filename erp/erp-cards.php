@@ -512,7 +512,6 @@ if (!class_exists('erp_cards')) {
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
 
-            //if ($is_site_admin || current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo(); ?>
                 <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' ); ?></h2>
@@ -573,7 +572,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
+                    <?php if ($is_site_admin) {?>
                     <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>
                     <div class="pagination">
                         <?php
                         // Display pagination links
@@ -586,13 +587,7 @@ if (!class_exists('erp_cards')) {
                 </fieldset>
                 <div id="customer-card-dialog" title="Customer dialog"></div>
                 <?php
-/*                
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' ); ?></p>
-                <?php
-            }
-*/            
+
             return ob_get_clean();
         }
 
@@ -906,7 +901,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-vendor-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php if ($is_site_admin) {?>
+                        <div id="new-vendor-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>    
                     <div class="pagination">
                         <?php
                         // Display pagination links
@@ -1230,7 +1227,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-product-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php if ($is_site_admin) {?>
+                        <div id="new-product-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>
                     <div class="pagination">
                         <?php
                         // Display pagination links
@@ -1452,7 +1451,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-equipment-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php if ($is_site_admin) {?>
+                        <div id="new-equipment-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>
                     <div class="pagination">
                         <?php
                         // Display pagination links
@@ -1674,7 +1675,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-instrument-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php if ($is_site_admin) {?>
+                        <div id="new-instrument-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>
                     <div class="pagination">
                         <?php
                         // Display pagination links
@@ -1896,7 +1899,9 @@ if (!class_exists('erp_cards')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-department-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php if ($is_site_admin) {?>
+                        <div id="new-department-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <?php }?>
                     <div class="pagination">
                         <?php
                         // Display pagination links
