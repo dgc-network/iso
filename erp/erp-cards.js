@@ -551,7 +551,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        if ($("#is-site-admin").val() === 1) {
+        if ($("#is-site-admin").val() == "1") {
             $("#vendor-card-dialog").dialog({
                 width: 390,
                 modal: true,
