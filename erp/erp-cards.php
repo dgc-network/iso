@@ -682,7 +682,7 @@ if (!class_exists('erp_cards')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             // Retrieve the site_customer_data meta field

@@ -454,19 +454,6 @@ if (!class_exists('display_documents')) {
                         endif;    
                         ?>
                     </pre>
-
-                    <pre class="mermaid">
-        graph TD
-        A[Client] --> B[Load Balancer]
-        B --> C[Server01]
-        B --> D[Server02]
-                    </pre>
-<?php /*                    
-                    <script type="module">
-                        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-                        mermaid.initialize({ startOnLoad: true });
-                    </script>
-*/?>
                 </div>
 
                 <div id="job-setting-div" style="display:none;">
