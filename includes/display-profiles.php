@@ -107,7 +107,7 @@ if (!class_exists('display_profiles')) {
             else {
                 echo '<div class="ui-widget" id="result-container">';
 
-                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
+                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
