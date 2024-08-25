@@ -708,6 +708,8 @@ if (!class_exists('display_profiles')) {
         }
         
         function display_site_user_list() {
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             ob_start();
@@ -761,6 +763,8 @@ if (!class_exists('display_profiles')) {
 
         function display_site_user_dialog($user_id=false) {
             ob_start();
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $user_data = get_userdata($user_id);
             $is_site_admin = $this->is_site_admin($user_id);
             $is_admin_checked = ($is_site_admin) ? 'checked' : '';
@@ -1009,8 +1013,6 @@ if (!class_exists('display_profiles')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    //global $wp_query;
-                    //$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
                     $query = $this->retrieve_site_job_list_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
@@ -1235,6 +1237,8 @@ if (!class_exists('display_profiles')) {
 
         // doc-action
         function display_doc_action_list($doc_id=false) {
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-action-list">
@@ -1279,7 +1283,9 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php if ($is_site_admin) {?>
+                <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
             </fieldset>
             </div>
             <div id="doc-action-dialog" title="Action dialog"></div>
@@ -1479,6 +1485,8 @@ if (!class_exists('display_profiles')) {
 
         // doc-user
         function display_doc_user_list($doc_id=false) {
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-user-list">
@@ -1504,10 +1512,12 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php if ($is_site_admin) {?>
+                <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
             </fieldset>
-            <div id="new-user-list-dialog" title="Add doc user"></div>
             </div>
+            <div id="new-user-list-dialog" title="Add doc user"></div>
             <?php
             return ob_get_clean();
         }

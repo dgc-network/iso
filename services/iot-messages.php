@@ -300,7 +300,7 @@ if (!class_exists('iot_messages')) {
                 <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $todo_class->display_select_todo(5);?></div>
+                    <div><?php $todo_class->display_select_todo('iot-message');?></div>
                     <div style="text-align: right"></div>                        
                 </div>
         

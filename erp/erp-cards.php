@@ -164,7 +164,7 @@ if (!class_exists('erp_cards')) {
                     </tbody>
                 </table>
                 <?php if ($is_site_admin) {?>
-                <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
                     <?php
@@ -1795,7 +1795,7 @@ if (!class_exists('erp_cards')) {
         
         function display_iso_category_list() {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
+            //$is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) {
                 // Check if the user is administrator
                 ob_start();
@@ -1963,6 +1963,9 @@ if (!class_exists('erp_cards')) {
         }
 
         function display_audit_item_list($paged=1, $category_id=false) {
+            $profiles_class = new display_profiles();
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="audit-item-list">
@@ -2012,7 +2015,9 @@ if (!class_exists('erp_cards')) {
                 ?>
                 </tbody>
             </table>
-            <div id="new-audit-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php if (current_user_can('administrator')) {?>
+                <div id="new-audit-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
             <div class="pagination">
                 <?php
                 // Display pagination links

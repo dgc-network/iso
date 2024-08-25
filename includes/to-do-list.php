@@ -36,8 +36,8 @@ if (!class_exists('to_do_list')) {
         function enqueue_to_do_list_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
-            $version = time(); // Update this version number when you make changes
-            wp_enqueue_script('to-do-list', plugins_url('to-do-list.js', __FILE__), array('jquery'), $version);
+
+            wp_enqueue_script('to-do-list', plugins_url('to-do-list.js', __FILE__), array('jquery'), time());
             wp_localize_script('to-do-list', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('to-do-list-nonce'), // Generate nonce
@@ -48,11 +48,11 @@ if (!class_exists('to_do_list')) {
         function display_select_todo($select_option=false) {
             ?>
             <select id="select-todo">
-                <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
-                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '啟動&授權', 'your-text-domain' );?></option>
-                <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
-                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
-                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
+                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
+                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動工作', 'your-text-domain' );?></option>
+                <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
+                <option value="iot-message" <?php echo ($select_option=="iot-message") ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
+                <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 </select>
             <?php
         }
@@ -78,23 +78,23 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = '0';
-                if ($_GET['_select_todo']=='0') echo $this->display_todo_list();
-                if ($_GET['_select_todo']=='1') echo $this->display_job_authorization_list();
-                if ($_GET['_select_todo']=='2') $this->display_signature_record();
-                if ($_GET['_select_todo']=='3') {
+                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
+                if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
+                if ($_GET['_select_todo']=='start-job') echo $this->display_job_authorization_list();
+                if ($_GET['_select_todo']=='signature') $this->display_signature_record();
+                if ($_GET['_select_todo']=='cron-events') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
                 }
 
                 $iot_messages = new iot_messages();
-                if ($_GET['_select_todo']=='5') echo $iot_messages->display_iot_message_list();
-
+                if ($_GET['_select_todo']=='iot-message') echo $iot_messages->display_iot_message_list();
+/*
                 if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
                     $this->remove_iso_helper_scheduled_events($_GET['_remove_iso_helper_scheduled_events']);
                     $this->list_all_scheduled_events();
                     exit;
                 }
-
+*/
             }
         }
 
@@ -106,7 +106,6 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'labels'             => $labels,
                 'public'             => true,
-                'show_in_menu'       => false, // Set this to false to hide from the admin menu
             );
             register_post_type('todo', $args);
         }
@@ -152,7 +151,7 @@ if (!class_exists('to_do_list')) {
                 <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo(0);?></div>
+                    <div><?php $this->display_select_todo('todo-list');?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>
@@ -426,10 +425,10 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '啟動&授權', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '啟動工作', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo(1);?></div>
+                    <div><?php $this->display_select_todo('start-job');?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
                     </div>
@@ -1169,7 +1168,7 @@ if (!class_exists('to_do_list')) {
                 <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
             
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo(2);?></div>
+                    <div><?php $this->display_select_todo('signature');?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>

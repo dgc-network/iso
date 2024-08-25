@@ -198,6 +198,7 @@ if (!class_exists('display_documents')) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
             $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -256,7 +257,9 @@ if (!class_exists('display_documents')) {
                     ?>
                     </tbody>
                 </table>
-                <div id="new-document" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php if ($is_site_admin) {?>
+                    <div id="new-document" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
                 <div class="pagination">
                     <?php
                     // Display pagination links
@@ -1269,7 +1272,9 @@ if (!class_exists('display_documents')) {
                         ?>
                     </tbody>
                 </table>
-                <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php if ($is_site_admin) {?>
+                    <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
             </fieldset>
             </div>
             <div id="doc-field-dialog" title="Field dialog"></div>
