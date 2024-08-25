@@ -48,8 +48,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
 
-            //add_action( 'wp_ajax_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
-            //add_action( 'wp_ajax_nopriv_set_new_site_by_title', array( $this, 'set_new_site_by_title' ) );
             add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
@@ -344,7 +342,7 @@ if (!class_exists('display_documents')) {
 
         function display_document_dialog($doc_id=false) {
             ob_start();
-            header('Content-Type: text/html; charset=utf-8');
+            //header('Content-Type: text/html; charset=utf-8');
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
@@ -415,13 +413,13 @@ if (!class_exists('display_documents')) {
                 <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
                     <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
-                    <option value="-1" <?php echo ($is_doc_report==-1) ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
-                    <option value="-2" <?php echo ($is_doc_report==-2) ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
-                    <option value="-3" <?php echo ($is_doc_report==-3) ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
-                    <option value="-4" <?php echo ($is_doc_report==-4) ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
-                    <option value="-5" <?php echo ($is_doc_report==-5) ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
-                    <option value="-6" <?php echo ($is_doc_report==-6) ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
-                    <option value="-7" <?php echo ($is_doc_report==-7) ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
+                    <option value="document-card" <?php echo ($is_doc_report=="document-card") ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
+                    <option value="customer-card" <?php echo ($is_doc_report=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
+                    <option value="vendor-card" <?php echo ($is_doc_report=="vendor-card") ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
+                    <option value="product-card" <?php echo ($is_doc_report=="product-card") ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
+                    <option value="equipment-card" <?php echo ($is_doc_report=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
+                    <option value="instrument-card" <?php echo ($is_doc_report=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
+                    <option value="employee-card" <?php echo ($is_doc_report=="employee-card") ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
                 </select>
             </div>
 
@@ -494,9 +492,9 @@ if (!class_exists('display_documents')) {
             </div>
             </fieldset>
             <?php
-            //return ob_get_clean();
+            return ob_get_clean();
             // Ensure the content is treated as UTF-8
-            return mb_convert_encoding(ob_get_clean(), 'UTF-8', 'UTF-8');
+            //return mb_convert_encoding(ob_get_clean(), 'UTF-8', 'UTF-8');
         }
         
         function get_document_dialog_data() {
@@ -508,28 +506,17 @@ if (!class_exists('display_documents')) {
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
                 if (current_user_can('administrator')) $is_site_admin = true;
-                if ($is_site_admin) {
-                    $response['html_contain'] = $this->display_document_dialog($doc_id);
-                } else {
-                    if ($is_doc_report==1) {
-                        $response['html_contain'] = $this->display_doc_report_list($doc_id);
-                    } elseif ($is_doc_report==-1){
-                        $response['html_contain'] = $this->display_document_list();
-                    } elseif ($is_doc_report==-2){
-                        $response['html_contain'] = $cards_class->display_customer_card_list();
-                    } elseif ($is_doc_report==-3){
-                        $response['html_contain'] = $cards_class->display_vendor_card_list();
-                    } elseif ($is_doc_report==-4){
-                        $response['html_contain'] = $cards_class->display_product_card_list();
-                    } elseif ($is_doc_report==-5){
-                        $response['html_contain'] = $cards_class->display_equipment_card_list();
-                    } elseif ($is_doc_report==-6){
-                        $response['html_contain'] = $cards_class->display_instrument_card_list();
-                    } elseif ($is_doc_report==-7){
-                        $response['html_contain'] = $profiles_class->display_site_user_list();
-                    } else {
-                        $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
-                    }
+                if ($is_site_admin) $response['html_contain'] = $this->display_document_dialog($doc_id);
+                else {
+                    if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
+                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                    elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
+                    elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
+                    elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
+                    elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
+                    elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
+                    elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
+                    else $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                 }
             }
             wp_send_json($response);
@@ -617,11 +604,6 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
-<?php /*                    
-                    <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-*/?>                    
                     <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -676,11 +658,6 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
-<?php /*                    
-                    <input type="button" id="signature-record" value="<?php echo __( '簽核記錄', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px; font-size:small;" />
-*/?>                    
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -998,9 +975,6 @@ if (!class_exists('display_documents')) {
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">
-<?php /*                    
-                    <button id="signature-record" style="margin-right:5px; font-size:small;" class="button"><?php echo __('簽核記錄', 'your-text-domain')?></button>
-*/?>                    
                     <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
@@ -1066,22 +1040,30 @@ if (!class_exists('display_documents')) {
         }
         
         function get_doc_report_dialog_data() {
-            $result = array();
+            $response = array();
             if (isset($_POST['_report_id'])) {
+                $cards_class = new erp_cards();
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $_document = get_post_meta($report_id, '_document', true);
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 if ($_document && $todo_status==-1) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
-                    if ($is_doc_report==1) $result['html_contain'] = $this->display_doc_report_list($_document);
-                    else $result['html_contain'] = $this->display_doc_frame_contain($_document);
+                    if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($_document);
+                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                    elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
+                    elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
+                    elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
+                    elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
+                    elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
+                    elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
+                    else $response['html_contain'] = $this->display_doc_frame_contain($_document);
                 } else {
-                    $result['html_contain'] = $this->display_doc_report_dialog($report_id);
+                    $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $result['doc_fields'] = $this->get_doc_field_keys($doc_id);    
+                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);    
                 }
             }
-            wp_send_json($result);
+            wp_send_json($response);
         }
         
         function set_doc_report_dialog_data() {
@@ -1195,14 +1177,6 @@ if (!class_exists('display_documents')) {
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
                 update_post_meta($report_id, '_iso_category', $field_value);
-            }
-            if ($field_type=='_audit' && ($default_value=='_content' || $default_value=='_corrective')){
-                //$field_name .= $default_value;
-                //$field_value = $_POST[$field_name];
-                //update_post_meta($report_id, $field_name, $field_value);
-            }
-            if ($field_type=='_audit' && $default_value=='_summary'){
-                // summarize the audit-items, make a report
             }
         }
         
@@ -1472,66 +1446,6 @@ if (!class_exists('display_documents')) {
 
             if ($default_value=='today') $default_value=wp_date('Y-m-d', time());
             if ($default_value=='me') $default_value=array($current_user_id);
-/*
-            if (strpos($default_value, 'thermometer') === 0) {
-            //if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
-
-            // Use a regular expression to match the number inside the parentheses
-                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-
-                    $device_id = $matches[1]; // Extract the number from the first capturing group
-            
-                    // Retrieve the option value using the device_id
-                    //$default_value = get_option($device_id);
-            
-                    // Find the post by title
-                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
-                    if ($post) {
-                        // Retrieve the post meta value
-                        $temperature = get_post_meta($post->ID, 'temperature', true);
-            
-                        // Check if the temperature meta value exists
-                        if (!empty($temperature)) {
-                            $default_value = $temperature;
-                        } else {
-                            // Handle the case where the temperature meta value is not found
-                            $default_value = 'Temperature meta not found';
-                        }
-                    } else {
-                        // Handle the case where the post is not found
-                        $default_value = 'Post not found';
-                    }
-
-                } else {
-                    // Handle the case where the regular expression does not match
-                    $default_value = 'Invalid device ID format';
-                }
-
-            }
-            
-/*
-            if (substr($default_value, 0, strlen('thermometer')) == 'thermometer') {
-                // Use a regular expression to match the number inside the parentheses
-                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                    $device_id = $matches[1]; // Extract the number from the first capturing group
-                    $default_value = get_option($device_id);
-                    // Find the post by title
-                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
-                    $default_value = get_post_meta($post->ID, 'temperature', true);
-                }
-            }
-
-            if (substr($default_value, 0, strlen('hygrometer')) == 'hygrometer') {
-                // Use a regular expression to match the number inside the parentheses
-                if (preg_match('/-(\d+)$/', $default_value, $matches)) {
-                    $device_id = $matches[1]; // Extract the number from the first capturing group
-                    $default_value = get_option($device_id);
-                    // Find the post by title
-                    $post = get_page_by_title($device_id, OBJECT, 'http-client');
-                    $default_value = get_post_meta($post->ID, 'humidity', true);
-                }
-            }
-*/
             return $default_value;
         }
 
@@ -1740,42 +1654,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();
             return $options;
         }
-/*
-        function set_new_site_by_title() {
-            $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_new_site_title'])) {
-                // Sanitize input values
-                $new_site_title = sanitize_text_field($_POST['_new_site_title']);
-                // Check if a site with the same title already exists
-                $existing_site = get_page_by_title($new_site_title, OBJECT, 'site-profile');
 
-                if ($existing_site) {
-                    // A site with the same title already exists
-                    $response['error'] = 'A site with the same title already exists.';
-                } else {
-                    // Insert the new site
-                    $current_user_id = get_current_user_id();
-                    $new_site_args = array(
-                        'post_title'    => $new_site_title,
-                        'post_status'   => 'publish',
-                        'post_author'   => $current_user_id,
-                        'post_type'     => 'site-profile',
-                    );
-                    $new_site_id = wp_insert_post($new_site_args);
-                    
-                    if (is_wp_error($new_site_id)) {
-                        // Error occurred while inserting the site
-                        $response['error'] = $new_site_id->get_error_message();
-                    } else {
-                        // Successfully created a new site
-                        $response['new_site_id'] = $new_site_id;
-                        $response['success'] = 'Completed to create a new site';
-                    }
-                }
-            }
-            wp_send_json($response);
-        }
-*/        
         function get_doc_count_by_category($iso_category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);

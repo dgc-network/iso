@@ -85,16 +85,16 @@ if (!class_exists('display_profiles')) {
         function display_select_profile($select_option=false) {
             ?>
             <select id="select-profile">
-                <option value="0" <?php echo ($select_option==0) ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                <option value="1" <?php echo ($select_option==1) ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                <option value="2" <?php echo ($select_option==2) ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                <option value="4" <?php echo ($select_option==4) ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
-                <option value="5" <?php echo ($select_option==5) ? 'selected' : ''?>><?php echo __( '廠商資料', 'your-text-domain' );?></option>
-                <option value="6" <?php echo ($select_option==6) ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
-                <option value="7" <?php echo ($select_option==7) ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
-                <option value="8" <?php echo ($select_option==8) ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
-                <option value="9" <?php echo ($select_option==9) ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
-                <option value="3" <?php echo ($select_option==3) ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
+                <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+                <option value="site-job" <?php echo ($select_option=="site-job") ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
+                <option value="customer-card" <?php echo ($select_option=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
+                <option value="vendor-card" <?php echo ($select_option=="vendor-card") ? 'selected' : ''?>><?php echo __( '廠商資料', 'your-text-domain' );?></option>
+                <option value="product-card" <?php echo ($select_option=="product-card") ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
+                <option value="equipment-card" <?php echo ($select_option=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
+                <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
+                <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
+                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -108,18 +108,18 @@ if (!class_exists('display_profiles')) {
                 echo '<div class="ui-widget" id="result-container">';
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = '0';
-                if ($_GET['_select_profile']=='0') echo $this->display_my_profile();
-                if ($_GET['_select_profile']=='1') echo $this->display_site_profile();
-                if ($_GET['_select_profile']=='2') echo $this->display_site_job_list();
-                if ($_GET['_select_profile']=='3') echo $this->display_doc_category_list();
+                if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
+                if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
+                if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
+                if ($_GET['_select_profile']=='doc-category') echo $this->display_doc_category_list();
 
                 $cards_class = new erp_cards();
-                if ($_GET['_select_profile']=='4') echo $cards_class->display_customer_card_list();
-                if ($_GET['_select_profile']=='5') echo $cards_class->display_vendor_card_list();
-                if ($_GET['_select_profile']=='6') echo $cards_class->display_product_card_list();
-                if ($_GET['_select_profile']=='7') echo $cards_class->display_equipment_card_list();
-                if ($_GET['_select_profile']=='8') echo $cards_class->display_instrument_card_list();
-                if ($_GET['_select_profile']=='9') echo $cards_class->display_department_card_list();
+                if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
+                if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
+                if ($_GET['_select_profile']=='product-card') echo $cards_class->display_product_card_list();
+                if ($_GET['_select_profile']=='equipment-card') echo $cards_class->display_equipment_card_list();
+                if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
+                if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
 
                 if ($_GET['_select_profile']=='business-central') {
@@ -183,7 +183,7 @@ if (!class_exists('display_profiles')) {
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $this->display_select_profile(0);?></div>
+                <div><?php $this->display_select_profile('my-profile');?></div>
                 <div style="text-align: right">
                     <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                 </div>
@@ -300,12 +300,12 @@ if (!class_exists('display_profiles')) {
                                 );
                             }
                         }
-                    
+
                         // Sort documents by job_number
                         usort($documents, function($a, $b) {
                             return strcmp($a['job_number'], $b['job_number']);
                         });
-                    
+
                         // Display sorted documents
                         foreach ($documents as $doc) {
                             ?>
@@ -331,43 +331,7 @@ if (!class_exists('display_profiles')) {
             $response = array('html_contain' => $this->display_my_job_list());
             wp_send_json($response);
         }
-/*
-        function display_my_notification_list() {
-            ob_start();
-            ?>
-            <fieldset style="margin-top:5px;">
-            <table class="ui-widget" style="width:100%;">
-                <thead>
-                    <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Max. Tc', 'your-text-domain' );?></th>
-                    <th><?php echo __( 'Max. H', 'your-text-domain' );?></th>
-                </thead>
-                <tbody>
-                <?php
-                $query = $this->retrieve_my_exception_notifications();
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $max_temperature = get_post_meta(get_the_ID(), 'max_temperature', true).'°C';
-                        $max_humidity = get_post_meta(get_the_ID(), 'max_humidity', true).'%';
-                        ?>
-                        <tr id="edit-my-notification-<?php the_ID();?>">
-                            <td style="text-align:center;"><?php the_title();?></td>
-                            <td style="text-align:center;"><?php echo esc_html($max_temperature);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($max_humidity);?></td>
-                        </tr>
-                        <?php 
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-            <div id="my-notification-dialog" title="Notification"></div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-*/
+
         function display_my_job_action_dialog($doc_id=false) {
             ob_start();
             ?>
@@ -395,13 +359,9 @@ if (!class_exists('display_profiles')) {
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
                             $next_job_title = __( '發行', 'your-text-domain' );
-                            //$next_job_title = __( '文件發行', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
                         }
                         if ($next_job==-2) {
                             $next_job_title = __( '廢止', 'your-text-domain' );
-                            //$next_job_title = __( '文件廢止', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
@@ -457,7 +417,7 @@ if (!class_exists('display_profiles')) {
 
         function set_action_authorized_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-            
+
             if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {
                 $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
@@ -474,7 +434,7 @@ if (!class_exists('display_profiles')) {
                     // Remove $user_id from 'action_authorized_ids'
                     $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                 }
-                
+
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
 
@@ -492,7 +452,7 @@ if (!class_exists('display_profiles')) {
                                 // Remove $user_id from 'action_authorized_ids'
                                 $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                             }
-                            
+
                             // Update 'action_authorized_ids' meta value
                             update_post_meta(get_the_ID(), 'action_authorized_ids', $action_authorized_ids);            
                         }
@@ -502,37 +462,7 @@ if (!class_exists('display_profiles')) {
 
                 $response = array('success' => true);
             }
-            
             wp_send_json($response);
-        }
-
-        function retrieve_my_exception_notifications() {
-            $current_user_id = get_current_user_id();
-            $args = array(
-                'post_type'      => 'notification',
-                'posts_per_page' => -1,        
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'user_id',
-                        'value'   => $current_user_id,
-                        'compare' => '=',
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-
-        function retrieve_my_geolocation_messages() {
-            $current_user_id = get_current_user_id();
-            $receiver = get_user_meta($current_user_id, 'phone_number', true);
-            $args = array(
-                'post_type'      => 'geolocation-message',
-                'posts_per_page' => -1,
-                's' => $receiver
-            );
-            $query = new WP_Query($args);
-            return $query;
         }
 
         function set_my_profile_data() {
@@ -573,67 +503,58 @@ if (!class_exists('display_profiles')) {
             $verification_standards = get_post_meta($site_id, 'verification_standards', true);
             $contact_person = get_post_meta($site_id, 'contact_person', true);
                         
-            // Check if the user is administrator or initial...
-            //if ($is_site_admin || current_user_can('administrator') || $initial) {
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(1);?></div>
-                    <div style="text-align: right">
-                        <?php if ($is_site_admin) {?>
-                        <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-                        <?php }?>
-                    </div>
-                </div>        
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile('site-profile');?></div>
+                <div style="text-align: right">
+                    <?php if ($is_site_admin) {?>
+                    <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+                    <?php }?>
+                </div>
+            </div>        
 
+            <fieldset>
+                <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
+                <label for="site-title"><?php echo __( '組織名稱：', 'your-text-domain' );?></label>
+                <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
+                <div id="site-hint" style="display:none; color:#999;"></div>
+
+                <label for="site-logo"><?php echo __( 'LOGO:', 'your-text-domain' );?></label>
+                <div id="site-image-container">
+                    <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
+                </div>
+                <div id="site-image-url" style="display:none;">
                 <fieldset>
-                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                    <label for="site-title"><?php echo __( '組織名稱：', 'your-text-domain' );?></label>
-                    <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
-                    <div id="site-hint" style="display:none; color:#999;"></div>
-
-                    <label for="site-logo"><?php echo __( 'LOGO:', 'your-text-domain' );?></label>
-                    <div id="site-image-container">
-                        <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
-                    </div>
-                    <div id="site-image-url" style="display:none;">
-                    <fieldset>
-                        <label for="image-url"><?php echo __( 'Image URL:', 'your-text-domain' );?></label>
-                        <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
-                        <button id="set-image-url" class="button">Set</button>
-                    </fieldset>
-                    </div>
-
-                    <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
-                    <?php echo $this->display_site_user_list();?>
-
-                    <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
-                    <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
-                    <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
-                    <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
-                    <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
-                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
-                    <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
-<?php /*
-                    <label for="validation-scope"><?php echo __( '驗證範圍：', 'your-text-domain' );?></label>
-                    <input type="text" id="validation-scope" value="<?php echo $validation_scope;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="verification-standards"><?php echo __( '驗證標準：', 'your-text-domain' );?></label>
-                    <input type="text" id="verification-standards" value="<?php echo $verification_standards;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
-                    <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
-*/?>
-                    <?php echo $this->display_audit_item_list_in_category();?>    
+                    <label for="image-url"><?php echo __( 'Image URL:', 'your-text-domain' );?></label>
+                    <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
+                    <button id="set-image-url" class="button">Set</button>
                 </fieldset>
-                <?php
-/*                
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
-*/                
+                </div>
+
+                <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
+                <?php echo $this->display_site_user_list();?>
+
+                <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
+                <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
+                <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
+                <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
+                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
+                <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
+<?php /*
+                <label for="validation-scope"><?php echo __( '驗證範圍：', 'your-text-domain' );?></label>
+                <input type="text" id="validation-scope" value="<?php echo $validation_scope;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="verification-standards"><?php echo __( '驗證標準：', 'your-text-domain' );?></label>
+                <input type="text" id="verification-standards" value="<?php echo $verification_standards;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
+                <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
+*/?>
+                <?php echo $this->display_audit_item_list_in_category();?>    
+            </fieldset>
+            <?php
             return ob_get_clean();
         }
 
@@ -665,21 +586,17 @@ if (!class_exists('display_profiles')) {
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
                     $keyValuePairs = $_POST['_keyValuePairs'];
                     $processedKeyValuePairs = [];
-                
                     foreach ($keyValuePairs as $pair) {
                         foreach ($pair as $field_key => $field_value) {
                             // Sanitize the key and value
                             $field_key = sanitize_text_field($field_key);
                             $field_value = sanitize_text_field($field_value);
-                
                             // Update post meta
                             update_post_meta($site_id, $field_key, $field_value);
-                
                             // Add the sanitized pair to the processed array
                             $processedKeyValuePairs[$field_key] = $field_value;
                         }
                     }
-                
                     // Prepare the response
                     $response = array('success' => true, 'data' => $processedKeyValuePairs);
                 } else {
@@ -743,8 +660,6 @@ if (!class_exists('display_profiles')) {
 
         function display_audit_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
-            //$profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             if ($is_site_admin || current_user_can('administrator')) {
@@ -922,7 +837,6 @@ if (!class_exists('display_profiles')) {
                     <?php
                 }
                 ?>
-
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1070,90 +984,79 @@ if (!class_exists('display_profiles')) {
 
         // Site job
         function display_site_job_list() {
-            ob_start();
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
 
-            //if ($is_site_admin || current_user_can('administrator')) {
-                // Check if the user is administrator
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
-
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(2);?></div>
-                    <div style="text-align: right">
-                        <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
-                    </div>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile('site-job');?></div>
+                <div style="text-align: right">
+                    <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                 </div>
-        
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th>#</th>
-                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Department', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        //$paged = max(1, get_query_var('paged')); // Get the current page number
-                        global $wp_query;
-                        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-                        //echo 'Paged: ' . $paged; // Output: Paged: 5
+            </div>
+    
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th>#</th>
+                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Department', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    //global $wp_query;
+                    //$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                    $query = $this->retrieve_site_job_list_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
-                        $query = $this->retrieve_site_job_list_data($paged);
-                        $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                                //$department = get_post_meta(get_the_ID(), 'department', true);
-                                $department_id = get_post_meta(get_the_ID(), 'department_id', true);
-                                $department = get_the_title($department_id);
-                                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                $content = get_the_content();
-                                if ($doc_number) $content .= '('.$doc_number.')';
-                                // display the warning if the job without assigned actions
-                                $action_query = $this->retrieve_doc_action_list_data(get_the_ID());
-                                $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
-                                // display the warning if the job without assigned users
-                                $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
-                                $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
-                                ?>
-                                <tr id="edit-site-job-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
-                                    <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
-                                    <td width="70%"><?php echo esc_html($content);?></td>
-                                    <td style="text-align:center;"><?php echo $department.$users_unassigned;?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                            $department_id = get_post_meta(get_the_ID(), 'department_id', true);
+                            //$department = get_the_title($department_id);
+                            $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                            $content = get_the_content();
+                            if ($doc_number) $content .= '('.$doc_number.')';
+                            // display the warning if the job without assigned actions
+                            $action_query = $this->retrieve_doc_action_list_data(get_the_ID());
+                            $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
+                            // display the warning if the job without assigned users
+                            $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
+                            $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
+                            ?>
+                            <tr id="edit-site-job-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
+                                <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
+                                <td width="70%"><?php echo esc_html($content);?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($department_id).$users_unassigned;?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if ($is_site_admin) {?>
                     <div id="new-site-job" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                    <div class="pagination">
-                        <?php
-                        // Display pagination links
-                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                        ?>
-                    </div>
-                </fieldset>
-                <div id="site-job-dialog" title="Job dialog"></div>
-                <?php
-/*                
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
-*/                
+                <?php }?>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+            </fieldset>
+            <div id="site-job-dialog" title="Job dialog"></div>
+            <?php
             return ob_get_clean();
         }
 
@@ -1201,7 +1104,6 @@ if (!class_exists('display_profiles')) {
             if ($paged==0) $args['posts_per_page'] = -1;
 
             $search_query = sanitize_text_field($_GET['_search']);
-            //if ($search_query) $args['paged'] = 1;
 
             if ($search_query) {
                 $args['meta_query'][] = array(
@@ -1358,13 +1260,9 @@ if (!class_exists('display_profiles')) {
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
                             $next_job_title = __( '發行', 'your-text-domain' );
-                            //$next_job_title = __( '文件發行', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄存檔', 'your-text-domain' );
                         }
                         if ($next_job==-2) {
                             $next_job_title = __( '廢止', 'your-text-domain' );
-                            //$next_job_title = __( '文件廢止', 'your-text-domain' );
-                            //if ($is_doc_report==1) $next_job_title = __( '記錄作廢', 'your-text-domain' );
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
@@ -1794,54 +1692,49 @@ if (!class_exists('display_profiles')) {
         function display_doc_category_list() {
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            //if ($is_site_admin || current_user_can('administrator')) {
-                ob_start();
-                // Check if the user is administrator
-                ?>
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+            ob_start();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
 
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_profile(3);?></div>
-                    <div style="text-align: right"></div>                        
-                </div>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile('doc-category');?></div>
+                <div style="text-align: right"></div>                        
+            </div>
 
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Category', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $query = $this->retrieve_doc_category_data();
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
-                                ?>
-                                <tr id="edit-doc-category-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
-                                    <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_doc_category_data();
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
+                            ?>
+                            <tr id="edit-doc-category-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td><?php the_content();?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if ($is_site_admin) {?>
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                </fieldset>
-                <div id="doc-category-dialog" title="Category dialog"></div>
-                <?php
-                return ob_get_clean();
-/*                        
-            } else {
-                display_no_permission_page();
-            }
-*/                
+                <?php }?>
+            </fieldset>
+            <div id="doc-category-dialog" title="Category dialog"></div>
+            <?php
+            return ob_get_clean();
         }
 
         function retrieve_doc_category_data() {
@@ -1906,7 +1799,6 @@ if (!class_exists('display_profiles')) {
                     'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
-                //update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'iso_category', $iso_category);
             } else {
                 $current_user_id = get_current_user_id();
@@ -1972,101 +1864,6 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
-        // data-migration
-        function rename_site_to_site_profile() {
-            // Remove all posts of the post type 'site-profile' first
-            $args = array(
-                'post_type'      => 'site-profile',
-                'posts_per_page' => -1,
-                'fields'         => 'ids', // Retrieve only the IDs of the posts
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                foreach ($query->posts as $post_id) {
-                    wp_delete_post($post_id, true); // Force delete the post
-                }
-            }
-        
-            // Now rename the 'site' post type to 'site-profile'
-            $args = array(
-                'post_type'      => 'site',
-                'posts_per_page' => -1,
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the current post ID
-                    $current_post_id = get_the_ID();
-        
-                    // Update the post type to 'site-profile'
-                    wp_update_post(array(
-                        'ID'        => $current_post_id,
-                        'post_type' => 'site-profile',
-                    ));
-                }
-        
-                // Reset post data
-                wp_reset_postdata();
-            }
-        }
-        
-        function copy_site_to_site_profile() {
-            $args = array(
-                'post_type'      => 'site',
-                'posts_per_page' => -1,
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the current post ID and data
-                    $current_post_id = get_the_ID();
-                    $current_post    = get_post($current_post_id);
-        
-                    // Prepare the new post data
-                    $new_post = array(
-                        'post_title'    => $current_post->post_title,
-                        'post_content'  => $current_post->post_content,
-                        'post_status'   => 'publish', // or $current_post->post_status if you want to keep the same status
-                        'post_author'   => $current_post->post_author,
-                        'post_type'     => 'site-profile',
-                        'post_date'     => $current_post->post_date,
-                        'post_date_gmt' => $current_post->post_date_gmt,
-                    );
-        
-                    // Insert the new post and get the new post ID
-                    $new_post_id = wp_insert_post($new_post);
-        
-                    if ($new_post_id) {
-                        // Get all meta data for the current post
-                        $post_meta = get_post_meta($current_post_id);
-        
-                        // Copy each meta field to the new post
-                        foreach ($post_meta as $meta_key => $meta_values) {
-                            foreach ($meta_values as $meta_value) {
-                                add_post_meta($new_post_id, $meta_key, $meta_value);
-                            }
-                        }
-        
-                    }
-                }
-        
-                // Reset post data
-                wp_reset_postdata();
-            }
-        }
-
-
     }
     $profiles_class = new display_profiles();
 }

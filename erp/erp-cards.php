@@ -108,7 +108,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' ); ?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(4); ?></div>
+                <div><?php $profiles_class->display_select_profile('customer-card'); ?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-customer" style="display:inline" placeholder="Search..." />
                 </div>
@@ -435,7 +435,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '廠商列表', 'your-text-domain' ); ?></h2>
     
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(5); ?></div>
+                <div><?php $profiles_class->display_select_profile('vendor-card'); ?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-vendor" style="display:inline" placeholder="Search..." />
                 </div>
@@ -772,7 +772,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '產品列表', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(6);?></div>
+                <div><?php $profiles_class->display_select_profile('product-card');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-product" style="display:inline" placeholder="Search..." />
                 </div>
@@ -988,7 +988,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '設備列表', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(7);?></div>
+                <div><?php $profiles_class->display_select_profile('equipment-card');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-equipment" style="display:inline" placeholder="Search..." />
                 </div>
@@ -1203,7 +1203,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '儀器列表', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(8);?></div>
+                <div><?php $profiles_class->display_select_profile('instrument-card');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-instrument" style="display:inline" placeholder="Search..." />
                 </div>
@@ -1418,7 +1418,7 @@ if (!class_exists('erp_cards')) {
             <h2 style="display:inline;"><?php echo __( '部門列表', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile(9);?></div>
+                <div><?php $profiles_class->display_select_profile('department-card');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-department" style="display:inline" placeholder="Search..." />
                 </div>
@@ -1804,7 +1804,7 @@ if (!class_exists('erp_cards')) {
                 <h2 style="display:inline;"><?php echo __( 'ISO類別', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile();?></div>
+                    <div><?php $profiles_class->display_select_profile('iso-category');?></div>
                     <div style="text-align:right"></div>                        
                 </div>
 
