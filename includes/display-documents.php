@@ -237,9 +237,9 @@ if (!class_exists('display_documents')) {
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
 
-                            if ($is_doc_report > 0) {
+                            if ($is_doc_report == 1) {
                                 $doc_title = '*' . $doc_title;
-                            } elseif ($is_doc_report < 0) {
+                            } elseif ($is_doc_report != 0 && $is_doc_report != 1) {
                                 $doc_title = '**' . $doc_title;
                             }
 
