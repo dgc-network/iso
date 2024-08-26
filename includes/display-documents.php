@@ -816,7 +816,7 @@ if (!class_exists('display_documents')) {
                                                 }
                                             } else {
                                                 // Handle the case where $field_value is not an array
-                                                echo 'Selected value is not an array.';
+                                                echo 'Selected value is not an array.'.$field_value;
                                             }
                                         } else {
                                             echo esc_html($field_value);
@@ -1479,8 +1479,8 @@ if (!class_exists('display_documents')) {
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $category_id = get_post_meta($doc_category, 'parent_category', true);
+            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+            //$category_id = get_post_meta($doc_category, 'iso_category', true);
 
             $params = array(
                 'doc_id'     => $doc_id,
