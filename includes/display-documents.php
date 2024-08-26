@@ -1580,7 +1580,7 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
                                 <?php $user=get_userdata(get_current_user_id());?>
-                                <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo array($user->ID);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo array(get_current_user_id());?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>
                                 <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
