@@ -200,7 +200,7 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
-                    '_employees'   => $current_user_id,
+                    '_employees'   => array($current_user_id),
                 );
                 $this->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
