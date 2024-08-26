@@ -1493,6 +1493,32 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
+        function get_field_default_value($field_id = false) {
+            // Ensure $field_id is provided
+            if (!$field_id) {
+                return false; // Return false or handle the error as needed
+            }
+        
+            // Get the current user ID
+            $current_user_id = get_current_user_id();
+        
+            // Get and sanitize the field name and default value
+            $field_name = sanitize_text_field(get_post_meta($field_id, 'field_name', true));
+            $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
+        
+            // Check if the default value should be 'today'
+            if ($default_value === 'today') {
+                $default_value = wp_date('Y-m-d', time()); // Set default value to today's date
+            }
+            
+            // Check if the default value should be the current user ID
+            if ($default_value === 'me') {
+                $default_value = array($current_user_id); // Set default value to an array with the current user ID
+            }
+        
+            return $default_value;
+        }
+/*        
         function get_field_default_value($field_id=false) {
             $current_user_id = get_current_user_id();
             $field_name = get_post_meta($field_id, 'field_name', true);
@@ -1502,7 +1528,7 @@ if (!class_exists('display_documents')) {
             if ($default_value=='me') $default_value=array($current_user_id);
             return $default_value;
         }
-
+*/
         function get_doc_field_contains($args) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
