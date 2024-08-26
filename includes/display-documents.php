@@ -798,6 +798,32 @@ if (!class_exists('display_documents')) {
                                             $instrument_code = get_post_meta($field_value, 'department_code', true);
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_employees') {
+                                            if (is_array($field_value)) {
+                                                $user_names = array(); // Array to hold user display names
+                                            
+                                                // Loop through each selected user ID
+                                                foreach ($field_value as $user_id) {
+                                                    // Get user data
+                                                    $user = get_userdata($user_id);
+                                            
+                                                    // Check if the user data is retrieved successfully
+                                                    if ($user) {
+                                                        // Add the user's display name to the array
+                                                        $user_names[] = esc_html($user->display_name);
+                                                    } else {
+                                                        // Optionally handle the case where user data is not found
+                                                        $user_names[] = 'User not found for ID: ' . esc_html($user_id);
+                                                    }
+                                                }
+                                            
+                                                // Display the user names as a comma-separated list
+                                                echo implode(', ', $user_names);
+                                            } else {
+                                                // Handle the case where $field_value is not an array
+                                                echo 'Selected value is not an array: ';
+                                                echo esc_html(print_r($field_value, true));
+                                            }
+/*                                            
                                             // Check if $field_value is an array of selected user IDs
                                             if (is_array($field_value)) {
                                                 // Loop through each selected user ID
@@ -819,6 +845,7 @@ if (!class_exists('display_documents')) {
                                                 echo 'Selected value is not an array.';
                                                 print_r($field_value);
                                             }
+*/                                                
                                         } else {
                                             echo esc_html($field_value);
                                         }
