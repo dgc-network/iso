@@ -1185,6 +1185,7 @@ if (!class_exists('display_documents')) {
                     $field_value = array($field_value);
                 }
                 if ($default_value=='me'){
+                    $field_value = json_decode($_POST[$field_name], true);
                     $current_user_id = get_current_user_id();
                     // Check if the $current_user_id is not already in the $employee_ids array
                     if (!in_array($current_user_id, $employee_ids)) {
@@ -1202,7 +1203,6 @@ if (!class_exists('display_documents')) {
                     }    
                 }
                 update_post_meta($report_id, '_employees', $employee_ids);
-                $field_value = json_decode($_POST[$field_name], true);
                 //update_post_meta($report_id, $field_name, json_decode($field_value, true));
             }
 
@@ -1229,7 +1229,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
                 update_post_meta($report_id, '_iso_category', $field_value);
             }
-            
+
             update_post_meta($report_id, $field_name, $field_value);
 
         }
