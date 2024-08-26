@@ -111,17 +111,17 @@ if (!class_exists('iot_messages')) {
             if ($iot_query->have_posts()) {
                 while ($iot_query->have_posts()) {
                     $iot_query->the_post();
-                    $equipment_code = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $instrument_code = get_post_meta(get_the_ID(), 'deviceID', true);
                     $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                     $humidity = get_post_meta(get_the_ID(), 'humidity', true);
         
-                    // Find 'equipment-card' post with the same deviceID
+                    // Find 'instrument-card' post with the same deviceID
                     $http_args = array(
-                        'post_type' => 'equipment-card',
+                        'post_type' => 'instrument-card',
                         'meta_query' => array(
                             array(
-                                'key'     => 'equipment_code',
-                                'value'   => $equipment_code,
+                                'key'     => 'instrument_code',
+                                'value'   => $instrument_code,
                                 'compare' => '='
                             )
                         )
@@ -152,43 +152,16 @@ if (!class_exists('iot_messages')) {
             }
         }
 
-        function create_exception_notification_events($equipment_id=false, $iot_sensor=false, $sensor_value=false) {
-            $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
+        function create_exception_notification_events($instrument_id=false, $iot_sensor=false, $sensor_value=false) {
+            $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $documents_class = new display_documents();
-            $query = $documents_class->get_doc_field_ids('_equipment', $equipment_id);
+            $query = $documents_class->get_doc_reports_by_doc_field('_instrument', $instrument_id);
+
             if ($query->have_posts()) {
-                foreach ($query->posts as $field_id) {
-                    $field_name = get_post_meta($field_id, 'field_name', true);
-                    $meta_key = $field_name . '_equipment';
-                    // Prepare the arguments for get_posts
-                    $args = array(
-                        'post_type'  => 'doc-report',  // Specify the post type
-                        'meta_query' => array(
-                            array(
-                                'key'   => $meta_key,       // The meta key you want to search by
-                                'value' => $equipment_id,   // The value of the meta key you are looking for
-                                'compare' => '=',           // Optional, default is '=', can be omitted
-                            ),
-                        ),
-                        'fields' => 'ids', // Retrieve only the IDs of the posts
-                        'posts_per_page' => 1, // Limit to one post to get a single ID
-                    );
-                    
-                    // Retrieve the post ID
-                    $post_ids = get_posts($args);
-                    
-                    // Get the first post ID from the array (if any)
-                    if (!empty($post_ids)) {
-                        $post_id = $post_ids[0];
-                    } else {
-                        $post_id = null; // No post found
-                    }
-                    
-                    // Now you can use $post_id as needed
-                    
-                    $max_value = get_post_meta($post_id, $field_name.'_max', true);
-                    $min_value = get_post_meta($post_id, $field_name.'_min', true);
-                    $employee_ids = get_post_meta($post_id, $field_name.'_employees', true);
+                foreach ($query->posts as $report_id) {
+                    $max_value = get_post_meta($report_id, '_max', true);
+                    $min_value = get_post_meta($report_id, '_min', true);
+                    $employee_ids = get_post_meta($report_id, '_employees', true);
 
                     // Prepare the notification message
                     $five_minutes_ago = time() - (5 * 60);
@@ -197,30 +170,30 @@ if (!class_exists('iot_messages')) {
                     foreach ($employee_ids as $employee_id) {
                         if ($max_value && $sensor_value>$max_value) {
                             if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$equipment_code.' '.get_the_title($equipment_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
+                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
                             }
                             if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$equipment_code.' '.get_the_title($equipment_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
+                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
                             }
                         }
                         if ($min_value && $sensor_value<$min_value) {
                             if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$equipment_code.' '.get_the_title($equipment_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
+                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
                             }
                             if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$equipment_code.' '.get_the_title($equipment_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
+                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
                             }
                         }
-                        $this->prepare_exception_notification_event($equipment_id, $employee_id, $text_message);
+                        $this->prepare_exception_notification_event($instrument_id, $employee_id, $text_message);
                     }
                 }
                 return $query->posts; // Return the array of post IDs
             }
         }
 
-        function prepare_exception_notification_event($equipment_id=false, $user_id=false, $text_message=false) {
+        function prepare_exception_notification_event($instrument_id=false, $user_id=false, $text_message=false) {
             // Check if a notification has been sent today
-            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $equipment_id, true);
+            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $instrument_id, true);
             $today = wp_date('Y-m-d');
 
             if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
@@ -238,7 +211,7 @@ if (!class_exists('iot_messages')) {
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
 
             // Update the last notification time
-            update_user_meta($user_id, 'last_notification_time_' . $equipment_id, time());
+            update_user_meta($user_id, 'last_notification_time_' . $instrument_id, time());
         }
 
         function send_delayed_notification_handler($params) {

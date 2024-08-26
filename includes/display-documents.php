@@ -199,6 +199,7 @@ if (!class_exists('display_documents')) {
             }
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -345,7 +346,6 @@ if (!class_exists('display_documents')) {
 
         function display_document_dialog($doc_id=false) {
             ob_start();
-            //header('Content-Type: text/html; charset=utf-8');
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
@@ -496,8 +496,6 @@ if (!class_exists('display_documents')) {
             </fieldset>
             <?php
             return ob_get_clean();
-            // Ensure the content is treated as UTF-8
-            //return mb_convert_encoding(ob_get_clean(), 'UTF-8', 'UTF-8');
         }
         
         function get_document_dialog_data() {
@@ -1235,6 +1233,9 @@ if (!class_exists('display_documents')) {
         
         // doc-field
         function display_doc_field_list($doc_id=false) {
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="fields-container">
@@ -1461,11 +1462,11 @@ if (!class_exists('display_documents')) {
             $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $category_id = get_post_meta($doc_category, 'parent_category', true);
+
             $params = array(
                 'doc_id'     => $doc_id,
             );                
             $query = $this->retrieve_doc_field_data($params);
-
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
@@ -1951,7 +1952,58 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-        function get_doc_field_ids($field_type=false, $field_value=false) {
+        function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
+            $args = array(
+                'post_type'      => 'doc-field',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'field_type',
+                        'value'   => $field_type,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'field_value',
+                        'value'   => $field_value,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only return post IDs
+            );
+            $query = new WP_Query($args);
+        
+            // Initialize an array to accumulate post IDs
+            $accumulated_post_ids = array();
+        
+            if ($query->have_posts()) {
+                foreach ($query->posts as $field_id) {
+                    $field_name = get_post_meta($field_id, 'field_name', true);
+                    $args = array(
+                        'post_type'  => 'doc-report',  // Specify the post type
+                        'meta_query' => array(
+                            array(
+                                'key'     => $field_name,     // The meta key you want to search by
+                                'value'   => $field_value,    // The value of the meta key you are looking for
+                                'compare' => '=',             // Optional, default is '=', can be omitted
+                            ),
+                        ),
+                        'fields' => 'ids', // Retrieve only the IDs of the posts
+                    );
+                    
+                    // Retrieve the post IDs
+                    $post_ids = get_posts($args);
+        
+                    // Merge the retrieved post IDs with the accumulated array
+                    $accumulated_post_ids = array_merge($accumulated_post_ids, $post_ids);
+                }
+            }
+        
+            // Return the accumulated post IDs
+            return $accumulated_post_ids;
+        }
+        
+        function get_doc_field_ids_by_type_and_value($field_type=false, $field_value=false) {
             $args = array(
                 'post_type'  => 'doc-field',
                 'posts_per_page' => -1, // Retrieve all posts
@@ -1971,6 +2023,7 @@ if (!class_exists('display_documents')) {
                 'fields' => 'ids' // Only return post IDs
             );
             $query = new WP_Query($args);
+
             return $query; 
         }
     }
