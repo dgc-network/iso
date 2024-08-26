@@ -1507,7 +1507,7 @@ if (!class_exists('display_documents')) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-            $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
+            //$todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
             //$doc_category = get_post_meta($doc_id, 'doc_category', true);
             //$category_id = get_post_meta($doc_category, 'iso_category', true);
 
@@ -1609,7 +1609,10 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
                                 <?php $user=get_userdata(get_current_user_id());?>
+                                <?php /*
                                 <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo array(get_current_user_id());?>" />
+                                */?>
+                                <input type="hidden" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>
                                 <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
