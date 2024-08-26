@@ -1202,7 +1202,7 @@ if (!class_exists('display_documents')) {
                     }    
                 }
                 update_post_meta($report_id, '_employees', $employee_ids);
-                update_post_meta($report_id, $field_name, json_decode($field_value, true));
+                //update_post_meta($report_id, $field_name, json_decode($field_value, true));
             }
 
             if ($field_type=='_document'){
