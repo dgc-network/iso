@@ -1155,21 +1155,24 @@ if (!class_exists('display_documents')) {
                 if (!is_array($field_value)) {
                     $field_value = array($field_value);
                 }
-                // Loop through each value in $field_value to check and add to $employee_ids
-                foreach ($field_value as $value) {
-                    // Check if the value is not already in the $employee_ids array
-                    if (!in_array($value, $employee_ids)) {
-                        // Add the value to the $employee_ids array
-                        $employee_ids[] = $value;
-                    }
-                }    
-                update_post_meta($report_id, '_employees', $employee_ids);
-/*
                 if ($default_value=='me'){
-                    $employee_ids[] = get_current_user_id();
+                    $current_user_id = get_current_user_id();
+                    // Check if the $current_user_id is not already in the $employee_ids array
+                    if (!in_array($current_user_id, $employee_ids)) {
+                        // Add the value to the $employee_ids array
+                        $employee_ids[] = $current_user_id;
+                    }
                 } else {
+                    // Loop through each value in $field_value to check and add to $employee_ids
+                    foreach ($field_value as $value) {
+                        // Check if the value is not already in the $employee_ids array
+                        if (!in_array($value, $employee_ids)) {
+                            // Add the value to the $employee_ids array
+                            $employee_ids[] = $value;
+                        }
+                    }    
                 }
-*/                
+                update_post_meta($report_id, '_employees', $employee_ids);
             }
 
             if ($field_type=='_document'){
