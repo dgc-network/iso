@@ -816,7 +816,7 @@ if (!class_exists('display_documents')) {
                                                 }
                                             } else {
                                                 // Handle the case where $field_value is not an array
-                                                echo 'Selected value is not an array.'.print_r($field_value);
+                                                echo 'Selected value is not an array. '.json_encode($field_value);
                                             }
                                         } else {
                                             echo esc_html($field_value);
