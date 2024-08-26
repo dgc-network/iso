@@ -821,7 +821,8 @@ if (!class_exists('display_documents')) {
                                             } else {
                                                 // Handle the case where $field_value is not an array
                                                 echo 'Selected value is not an array: ';
-                                                echo esc_html(print_r($field_value, true));
+                                                //echo esc_html(print_r($field_value, true));
+                                                echo '<pre>' . esc_html(print_r($field_value, true)) . '</pre>';
                                             }
 /*                                            
                                             // Check if $field_value is an array of selected user IDs
