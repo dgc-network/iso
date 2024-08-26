@@ -816,7 +816,7 @@ if (!class_exists('display_documents')) {
                                                 }
                                             } else {
                                                 // Handle the case where $field_value is not an array
-                                                echo 'Selected value is not an array.'.$field_value;
+                                                echo 'Selected value is not an array.'.var_dump($field_value);
                                             }
                                         } else {
                                             echo esc_html($field_value);
