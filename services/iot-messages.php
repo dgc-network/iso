@@ -282,10 +282,8 @@ if (!class_exists('iot_messages')) {
                         <thead>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Tc', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'H', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Latitude', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Longitude', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Vlue', 'your-text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -309,10 +307,22 @@ if (!class_exists('iot_messages')) {
                                 <tr id="edit-iot-message-<?php the_ID();?>">
                                     <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                     <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
-                                    <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
+                                    <?php if ($temperature) {?>
+                                        <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
+                                        <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
+                                    <?php }?>
+                                    <?php if ($humidity) {?>
+                                        <td style="text-align:center;"><?php echo __( 'Humidity(%)', 'your-text-domain' );?></td>
+                                        <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
+                                    <?php }?>
+                                    <?php if ($latitude) {?>
+                                        <td style="text-align:center;"><?php echo __( 'Latitude', 'your-text-domain' );?></td>
+                                        <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
+                                    <?php }?>
+                                    <?php if ($longitude) {?>
+                                        <td style="text-align:center;"><?php echo __( 'Longitude', 'your-text-domain' );?></td>
+                                        <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
+                                    <?php }?>
                                 </tr>
                                 <?php 
                             endwhile;
@@ -359,7 +369,7 @@ if (!class_exists('iot_messages')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+/*
         function get_iot_message_data() {
             $response = array();
             $iot_message_id = sanitize_text_field($_POST['_iot_message_id']);
@@ -394,6 +404,7 @@ if (!class_exists('iot_messages')) {
                 wp_send_json_error('Failed to create post.');
             }
         }
+*/            
     }
     $iot_messages = new iot_messages();
 }

@@ -898,11 +898,28 @@ if (!class_exists('display_documents')) {
                             if ($key==$field_type) {
                                 //if (is_array($value)) {
                                 if ($field_type=='_employees') {
+                                    if (is_array($value)) {
+                                        foreach ($value as $val) {
+                                            $args['meta_query'][0][] = array(
+                                                'key'     => $field_name,
+                                                'value'   => sprintf(':"%s";', $val),
+                                                'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                            );
+                                        }
+                                    } else {
+                                        $args['meta_query'][0][] = array(
+                                            'key'     => $field_name,
+                                            'value'   => sprintf(':"%s";', $value),
+                                            'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                        );
+                                    }
+/*                                    
                                     $args['meta_query'][0][] = array(
                                         'key'     => $field_name,
                                         'value'   => sprintf(':"%s";', $value),
                                         'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                     );
+*/                                    
                                 } else {
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
@@ -1129,7 +1146,7 @@ if (!class_exists('display_documents')) {
 
             // additional field-name
             if ($field_type=='_employees'){
-                $employee_ids = get_post_meta($report_id, $field_name . '_employees', true);
+                $employee_ids = get_post_meta($report_id, '_employees', true);
                 // Ensure $employee_ids is an array, or initialize it as an empty array
                 if (!is_array($employee_ids)) {
                     $employee_ids = array();
@@ -1138,38 +1155,36 @@ if (!class_exists('display_documents')) {
                 if (!is_array($field_value)) {
                     $field_value = array($field_value);
                 }
-                // Loop through each value in $field_value to check and add to $employee_ids
-                foreach ($field_value as $value) {
-                    // Check if the value is not already in the $employee_ids array
-                    if (!in_array($value, $employee_ids)) {
-                        // Add the value to the $employee_ids array
-                        $employee_ids[] = $value;
-                    }
-                }
-                // Update the meta field with the new array of employee IDs
-                update_post_meta($report_id, $field_name, $employee_ids);
-                update_post_meta($report_id, $field_name . '_employees', $employee_ids);
 
                 if ($default_value=='me'){
-                    $employee_ids = array(get_current_user_id());
-                    update_post_meta($report_id, $field_name, $employee_ids);
-                    update_post_meta($report_id, $field_name.'_employees', $employee_ids);
+                    $employee_ids[] = get_current_user_id();
+                } else {
+                    // Loop through each value in $field_value to check and add to $employee_ids
+                    foreach ($field_value as $value) {
+                        // Check if the value is not already in the $employee_ids array
+                        if (!in_array($value, $employee_ids)) {
+                            // Add the value to the $employee_ids array
+                            $employee_ids[] = $value;
+                        }
+                    }    
                 }
+                update_post_meta($report_id, '_employees', $employee_ids);
             }
 
-            if ($field_type=='_document'){ // $field_name is not required
+            if ($field_type=='_document'){
                 update_post_meta($report_id, '_document', $field_value);
             }
 
             if ($field_type=='_max'){
-                update_post_meta($report_id, $field_name.'_max', $field_value);
+                update_post_meta($report_id, '_max', $field_value);
             }
             if ($field_type=='_min'){
-                update_post_meta($report_id, $field_name.'_min', $field_value);
+                update_post_meta($report_id, '_min', $field_value);
             }
-            if ($field_type=='_department' && $default_value=='_notification'){
-                update_post_meta($report_id, $field_name.'_department', $field_value);
+            if ($field_type=='_department'){
+                update_post_meta($report_id, '_department', $field_value);
             }
+
             if ($field_type=='_department' && $default_value=='_audited'){
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
