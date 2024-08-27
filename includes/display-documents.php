@@ -819,11 +819,11 @@ if (!class_exists('display_documents')) {
                                                 }
                                                 // Display the user names as a comma-separated list
                                                 echo implode(', ', $user_names);
-                                                echo var_dump($field_value);
                                             } else {
                                                 // Handle the case where $field_value is not an array
-                                                echo 'Selected value is not an array';
+                                                echo 'Selected value is not an array: ';
                                             }
+                                            echo var_dump($field_value);
                                         } else {
                                             echo esc_html($field_value);
                                         }
