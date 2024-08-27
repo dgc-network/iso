@@ -1153,7 +1153,7 @@ if (!class_exists('display_documents')) {
                     $field_value = json_decode($_POST[$field_name], true);
                     $current_user_id = get_current_user_id();
                     // Check if the $current_user_id is not already in the $employee_ids array
-                    if (!in_array($current_user_id, $employee_ids)) {
+                    if (!in_array((string)$current_user_id, $employee_ids)) {
                         // Add the value to the $employee_ids array
                         $employee_ids[] = $current_user_id;
                     }
@@ -1478,7 +1478,7 @@ if (!class_exists('display_documents')) {
             }
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
-                $default_value = array($current_user_id); // Set default value to an array with the current user ID
+                $default_value = array((string)$current_user_id); // Set default value to an array with the current user ID
             }
             return $default_value;
         }
