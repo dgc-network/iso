@@ -903,7 +903,7 @@ if (!class_exists('display_documents')) {
                                         foreach ($value as $val) {
                                             $args['meta_query'][0][] = array(
                                                 'key'     => $field_name,
-                                                'value'   => sprintf(':"%s";', (string) $val),
+                                                'value'   => sprintf(':"%s";', (string)$val),
                                                 'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                             );
                                         }
@@ -911,14 +911,14 @@ if (!class_exists('display_documents')) {
                                         // If $value is not an array, treat it as a single value
                                         $args['meta_query'][0][] = array(
                                             'key'     => $field_name,
-                                            'value'   => sprintf(':"%s";', $value),
+                                            'value'   => sprintf(':"%s";', (string)$value),
                                             'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                         );
                                     }
                                 } else {
                                     $args['meta_query'][0][] = array(
                                         'key'   => $field_name,
-                                        'value' => $value,
+                                        'value' => (string)$value,
                                     );
                                 }
                             }
