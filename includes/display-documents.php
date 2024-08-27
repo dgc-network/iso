@@ -815,6 +815,7 @@ if (!class_exists('display_documents')) {
                                                 }
                                                 // Display the user names as a comma-separated list
                                                 echo implode(', ', $user_names);
+                                                echo var_dump($field_value);
                                             } else {
                                                 // Handle the case where $field_value is not an array
                                                 echo 'Selected value is not an array';
@@ -906,6 +907,13 @@ if (!class_exists('display_documents')) {
                                                 'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                             );
                                         }
+                                    } else {
+                                        // If $value is not an array, treat it as a single value
+                                        $args['meta_query'][0][] = array(
+                                            'key'     => $field_name,
+                                            'value'   => sprintf(':"%s";', $value),
+                                            'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                        );
                                     }
                                 } else {
                                     $args['meta_query'][0][] = array(
