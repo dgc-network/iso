@@ -605,7 +605,9 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
+<?php /*                    
                     <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+*/?>                    
                 </div>
             </div>
         
@@ -659,7 +661,9 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
+<?php /*                    
                     <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+*/?>                    
                 </div>
             </div>
         
@@ -1059,7 +1063,8 @@ if (!class_exists('display_documents')) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $_document = get_post_meta($report_id, '_document', true);
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
-                if ($_document && $todo_status==-1) {
+                $is_admin = sanitize_text_field($_POST['_is_admin']);
+                if ($_document && $todo_status==-1 && !$is_admin) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
                     if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($_document);
                     elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();

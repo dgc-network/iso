@@ -442,7 +442,8 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'reset_document_todo_status',
-                        '_doc_id': doc_id,
+                        //'_doc_id': doc_id,
+                        '_report_id': report_id,
                     },
                     success: function (response) {
                         // Get the current URL
@@ -472,7 +473,8 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: {
                         'action': 'reset_document_todo_status',
-                        '_doc_id': doc_id,
+                        //'_doc_id': doc_id,
+                        '_report_id': report_id,
                     },
                     success: function (response) {
                         // Get the current URL
@@ -784,6 +786,7 @@ jQuery(document).ready(function($) {
                 data: {
                     action: 'get_doc_report_dialog_data',
                     _report_id: report_id,
+                    _is_admin: $("#is-admin").val()
                 },
                 success: function (response) {
                     if (response.html_contain === undefined || response.html_contain === null) {
