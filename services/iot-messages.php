@@ -107,6 +107,80 @@ if (!class_exists('iot_messages')) {
                 ),
             );
             $iot_query = new WP_Query($args);
+        
+            if ($iot_query->have_posts()) {
+                // Collect all instrument codes to minimize database queries
+                $instrument_codes = array();
+                while ($iot_query->have_posts()) {
+                    $iot_query->the_post();
+                    $instrument_codes[get_the_ID()] = get_post_meta(get_the_ID(), 'deviceID', true);
+                }
+        
+                // Query 'instrument-card' posts that match any of the collected instrument codes
+                $inner_args = array(
+                    'post_type' => 'instrument-card',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'instrument_code',
+                            'value'   => array_values($instrument_codes),
+                            'compare' => 'IN',
+                        )
+                    ),
+                    'posts_per_page' => -1,
+                );
+                $inner_query = new WP_Query($inner_args);
+        
+                if ($inner_query->have_posts()) {
+                    while ($inner_query->have_posts()) {
+                        $inner_query->the_post();
+                        $instrument_code = get_post_meta(get_the_ID(), 'instrument_code', true);
+        
+                        // Find the corresponding iot-message post
+                        $iot_post_id = array_search($instrument_code, $instrument_codes);
+                        if ($iot_post_id !== false) {
+                            $temperature = get_post_meta($iot_post_id, 'temperature', true);
+                            $humidity = get_post_meta($iot_post_id, 'humidity', true);
+        
+                            // Update 'temperature' and 'humidity' metadata
+                            if ($temperature !== '') {
+                                update_post_meta(get_the_ID(), 'temperature', $temperature);
+                                $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
+                            }
+                            if ($humidity !== '') {
+                                update_post_meta(get_the_ID(), 'humidity', $humidity);
+                                $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
+                            }
+        
+                            // Mark the 'iot-message' post as processed
+                            update_post_meta($iot_post_id, 'processed', 1);
+                        }
+                    }
+                    wp_reset_postdata();
+                }
+        
+                wp_reset_postdata();
+            }
+        }
+/*        
+        function update_iot_message_meta_data() {
+            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
+            $args = array(
+                'post_type' => 'iot-message',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key' => 'processed',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+                'date_query' => array(
+                    array(
+                        'after' => '5 minutes ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+            $iot_query = new WP_Query($args);
 
             if ($iot_query->have_posts()) {
                 while ($iot_query->have_posts()) {
@@ -151,7 +225,7 @@ if (!class_exists('iot_messages')) {
                 wp_reset_postdata();
             }
         }
-
+*/
         function create_exception_notification_events($instrument_id=false, $iot_sensor=false, $sensor_value=false) {
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $documents_class = new display_documents();
