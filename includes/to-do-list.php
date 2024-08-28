@@ -609,9 +609,9 @@ if (!class_exists('to_do_list')) {
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            $without_doc = get_post_meta($todo_id, 'without_doc', true);
+            $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
 
-            if (!$without_doc) {
+            if (empty($without_doc_number)) {
                 // Add a new doc-report
                 $new_post = array(
                     //'post_title'    => 'New doc-report',
@@ -795,7 +795,7 @@ if (!class_exists('to_do_list')) {
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
                     update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                    update_post_meta($new_todo_id, 'without_doc', true );
+                    update_post_meta($new_todo_id, 'without_doc_number', true );
                 }
             }
 
