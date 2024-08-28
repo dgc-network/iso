@@ -348,8 +348,8 @@ if (!class_exists('display_documents')) {
             ob_start();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            $is_site_admin = $profiles_class->is_site_admin();            
             $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();            
             if (current_user_can('administrator')) $is_site_admin = true;
 
             $job_title = get_the_title($doc_id);
@@ -523,17 +523,7 @@ if (!class_exists('display_documents')) {
                     elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
                     //elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
                     //else $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
-                    else {
-                        $response['html_contain'] = $this->display_document_dialog($doc_id);
-/*
-                        // transaction data vs card key/value
-                        $key_value_pair = array(
-                            '_document'   => $doc_id,
-                        );
-                        $profiles_class = new display_profiles();
-                        $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
-*/
-                    }
+                    else $response['html_contain'] = $this->display_document_dialog($doc_id);
                 }
             }
             wp_send_json($response);
