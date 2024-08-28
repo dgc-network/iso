@@ -608,17 +608,21 @@ if (!class_exists('to_do_list')) {
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+            $without_doc = get_post_meta($todo_id, 'without_doc', true);
 
-            // set current doc-report
-            $new_post = array(
-                //'post_title'    => 'New doc-report',
-                'post_status'   => 'publish',
-                'post_author'   => $user_id,
-                'post_type'     => 'doc-report',
-            );    
-            $new_report_id = wp_insert_post($new_post);
-            update_post_meta($new_report_id, 'doc_id', $doc_id);
-            update_post_meta($new_report_id, 'todo_status', $next_job);
+            if (!$without_doc) {
+                // Add a new doc-report
+                $new_post = array(
+                    //'post_title'    => 'New doc-report',
+                    'post_status'   => 'publish',
+                    'post_author'   => $user_id,
+                    'post_type'     => 'doc-report',
+                );    
+                $prev_report_id = wp_insert_post($new_post);    
+            }
+            update_post_meta($prev_report_id, 'doc_id', $doc_id);
+            update_post_meta($prev_report_id, 'todo_status', $next_job);
             // Update the post meta
             $params = array(
                 'doc_id'     => $doc_id,
@@ -627,13 +631,13 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($new_report_id, get_the_ID());
+                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID());
                 endwhile;
                 wp_reset_postdata();
             }            
 
             // Update current todo
-            update_post_meta($todo_id, 'prev_report_id', $new_report_id);
+            update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
             update_post_meta($todo_id, 'submit_user', $user_id );
             update_post_meta($todo_id, 'submit_action', $action_id );
             update_post_meta($todo_id, 'submit_time', time() );
@@ -642,7 +646,7 @@ if (!class_exists('to_do_list')) {
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
-                'prev_report_id' => $new_report_id,
+                'prev_report_id' => $prev_report_id,
             );        
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
@@ -676,7 +680,7 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             }            
 
-            // set current todo
+            // Add a new todo
             $todo_title = get_the_title($doc_id);
             $new_post = array(
                 'post_title'    => $todo_title,
@@ -790,8 +794,8 @@ if (!class_exists('to_do_list')) {
                 $doc_number = get_post_meta($next_job, 'doc_number', true);
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
-                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     update_post_meta($new_todo_id, 'doc_id', $doc_id );
+                    update_post_meta($new_todo_id, 'without_doc', true );
                 }
             }
 
@@ -1237,7 +1241,7 @@ if (!class_exists('to_do_list')) {
             // Clear the previous scheduled event if it exists
             if ($prev_start_time) {
                 $prev_hook_name = 'iso_helper_post_event_' . $prev_start_time;
-                //$this->remove_iso_helper_scheduled_events($prev_hook_name);
+                $this->remove_iso_helper_scheduled_events($prev_hook_name);
             }
         
             $hook_name = 'iso_helper_post_event_' . $start_time;
