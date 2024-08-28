@@ -346,10 +346,10 @@ if (!class_exists('display_documents')) {
 
         function display_document_dialog($doc_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
             $is_site_admin = $profiles_class->is_site_admin();            
+            $profiles_class = new display_profiles();
             if (current_user_can('administrator')) $is_site_admin = true;
 
             $job_title = get_the_title($doc_id);
@@ -401,14 +401,6 @@ if (!class_exists('display_documents')) {
                 <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                 <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
                 <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                <?php
-                // transaction data vs card key/value
-                $key_value_pair = array(
-                    '_document'   => $doc_id,
-                );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
-                ?>
             </div>
 
             <div id="system-report-div" style="display:none;">
@@ -481,13 +473,25 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                     </div>
                 </div>
+
+                <?php
+                // transaction data vs card key/value
+                $key_value_pair = array(
+                    '_document'   => $doc_id,
+                );
+                $profiles_class = new display_profiles();
+                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                ?>
+
             </div>
 
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php if ($is_site_admin) {?>
+                        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php }?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
@@ -507,17 +511,29 @@ if (!class_exists('display_documents')) {
                 $profiles_class = new display_profiles();
                 $is_site_admin = $profiles_class->is_site_admin();
                 if (current_user_can('administrator')) $is_site_admin = true;
+
                 if ($is_site_admin) $response['html_contain'] = $this->display_document_dialog($doc_id);
-                else {
-                    if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
-                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                else { // General Users in site
+                    if ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
                     elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
                     elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
                     elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
                     elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
                     elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
                     elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
-                    else $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                    //elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
+                    //else $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                    else {
+                        $response['html_contain'] = $this->display_document_dialog($doc_id);
+/*
+                        // transaction data vs card key/value
+                        $key_value_pair = array(
+                            '_document'   => $doc_id,
+                        );
+                        $profiles_class = new display_profiles();
+                        $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+*/
+                    }
                 }
             }
             wp_send_json($response);
@@ -830,10 +846,10 @@ if (!class_exists('display_documents')) {
                                                     echo esc_html($user->display_name);
                                                 } else {
                                                     // Optionally handle the case where user data is not found
-                                                    echo 'User not found for ID: ' . esc_html($user_id);
+                                                    echo 'User not found for ID: ' . esc_html($field_value);
                                                 }
                                             }
-                                            echo var_dump($field_value);
+                                            //echo var_dump($field_value);
                                         } else {
                                             echo esc_html($field_value);
                                         }
