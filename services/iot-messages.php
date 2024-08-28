@@ -10,15 +10,15 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
-            //add_action( 'init', array( $this, 'register_http_client_post_type' ) );
+            //add_action( 'init', array( $this, 'register_inner_client_post_type' ) );
             //add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
 /*
-            add_action( 'wp_ajax_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_http_client_dialog_data', array( $this, 'get_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_http_client_dialog_data', array( $this, 'set_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_http_client_dialog_data', array( $this, 'del_http_client_dialog_data' ) );
+            add_action( 'wp_ajax_get_inner_client_dialog_data', array( $this, 'get_inner_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_inner_client_dialog_data', array( $this, 'get_inner_client_dialog_data' ) );
+            add_action( 'wp_ajax_set_inner_client_dialog_data', array( $this, 'set_inner_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_inner_client_dialog_data', array( $this, 'set_inner_client_dialog_data' ) );
+            add_action( 'wp_ajax_del_inner_client_dialog_data', array( $this, 'del_inner_client_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_inner_client_dialog_data', array( $this, 'del_inner_client_dialog_data' ) );
 
             add_action( 'wp_ajax_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
@@ -116,7 +116,7 @@ if (!class_exists('iot_messages')) {
                     $humidity = get_post_meta(get_the_ID(), 'humidity', true);
         
                     // Find 'instrument-card' post with the same deviceID
-                    $http_args = array(
+                    $inner_args = array(
                         'post_type' => 'instrument-card',
                         'meta_query' => array(
                             array(
@@ -126,11 +126,11 @@ if (!class_exists('iot_messages')) {
                             )
                         )
                     );
-                    $http_query = new WP_Query($http_args);
+                    $inner_query = new WP_Query($inner_args);
         
-                    if ($http_query->have_posts()) {
-                        while ($http_query->have_posts()) {
-                            $http_query->the_post();
+                    if ($inner_query->have_posts()) {
+                        while ($inner_query->have_posts()) {
+                            $inner_query->the_post();
         
                             // Update 'temperature' and 'humidity' metadata
                             if ($temperature) {

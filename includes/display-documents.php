@@ -1511,6 +1511,7 @@ if (!class_exists('display_documents')) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $is_todo = isset($args['is_todo']) ? $args['is_todo'] : 0;
 
             $params = array(
                 'doc_id'     => $doc_id,
@@ -1609,7 +1610,11 @@ if (!class_exists('display_documents')) {
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
-                                <?php $user=get_userdata(get_current_user_id());?>
+                                <?php if ($is_todo) {?>
+                                    <?php $user=get_userdata($field_value);?>
+                                <?php } else {?>
+                                    <?php $user=get_userdata(get_current_user_id());?>
+                                <?php }?>
                                 <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($user->ID);?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>

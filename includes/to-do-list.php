@@ -329,46 +329,21 @@ if (!class_exists('to_do_list')) {
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <fieldset>
             <?php
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) {
-                // doc_report_dialog data
+            //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $params = array(
+                'is_todo'         => true,
+                'doc_id'          => $doc_id,
+                'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
+            );                
 
-                $params = array(
-                    'doc_id'     => $doc_id,
-                    'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
-                );                
-
-                $documents_class = new display_documents();
-                $documents_class->get_doc_field_contains($params);
-/*                
-            } else {
-                // document_dialog data
-                $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-                $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-                $profiles_class = new display_profiles();
-                ?>
-                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-                <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-                <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-                <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" disabled />
-                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all" disabled><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
-                <label for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <textarea id="doc-frame" rows="3" style="width:100%;" disabled><?php echo $doc_frame;?></textarea>
-                <?php
-            }
-*/                
+            $documents_class = new display_documents();
+            $documents_class->get_doc_field_contains($params);
             ?>
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                <?php
+                    <?php
+/*                
                     if ( $post_type === 'todo' ) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                     }
@@ -376,13 +351,15 @@ if (!class_exists('to_do_list')) {
                         $profiles_class = new display_profiles();
                         $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
                     }                    
+*/                        
+                    $query = $this->retrieve_todo_action_list_data($todo_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
                         endwhile;
                         wp_reset_postdata();
                     }
-                ?>
+                    ?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />
@@ -1449,7 +1426,7 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             }
 /*
-            // process the doc-job-list after
+            // process the start-job after
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
