@@ -1139,10 +1139,10 @@ if (!class_exists('display_profiles')) {
 
         function display_site_job_dialog($doc_id=false) {
             ob_start();
+            $cards_class = new erp_cards();
+            $documents_class = new display_documents();
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $documents_class = new display_documents();
-            $cards_class = new erp_cards();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);

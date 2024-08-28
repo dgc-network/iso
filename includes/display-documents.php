@@ -1350,6 +1350,9 @@ if (!class_exists('display_documents')) {
         }
 
         function display_doc_field_dialog($field_id=false) {
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $field_name = get_post_meta($field_id, 'field_name', true);
             $field_title = get_post_meta($field_id, 'field_title', true);
             $field_type = get_post_meta($field_id, 'field_type', true);
@@ -1358,9 +1361,9 @@ if (!class_exists('display_documents')) {
             $order_field = get_post_meta($field_id, 'order_field', true);
             ob_start();
             ?>
-            <div id="doc-field-dialog-backup">
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
                 <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
@@ -1401,7 +1404,6 @@ if (!class_exists('display_documents')) {
                 <input type="checkbox" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : '';?> />
                 <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
             </fieldset>
-            </div>
             <?php
             return ob_get_clean();
         }
