@@ -1611,7 +1611,7 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
                                 <?php if ($is_todo) {?>
-                                    <?php $user=get_userdata($field_value);?>
+                                    <?php $user=get_userdata((int)$field_value);?>
                                 <?php } else {?>
                                     <?php $user=get_userdata(get_current_user_id());?>
                                 <?php }?>
