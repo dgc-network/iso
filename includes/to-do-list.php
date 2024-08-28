@@ -1416,7 +1416,8 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->update_start_job_dialog_data($action_id, $user_id);
+                                    //$this->update_start_job_dialog_data($action_id, $user_id);
+                                    $this->update_todo_dialog_data($action_id, $user_id);
                                 }
                             }
                         endwhile;
