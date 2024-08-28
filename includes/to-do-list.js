@@ -107,7 +107,7 @@ jQuery(document).ready(function($) {
         $('[id^="job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(18);
             const ajaxData = {
-                'action': 'set_job_dialog_data',
+                'action': 'set_start_job_dialog_data',
             };
             ajaxData['_action_id'] = action_id;
 

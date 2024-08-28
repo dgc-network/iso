@@ -20,8 +20,8 @@ if (!class_exists('to_do_list')) {
 
             add_action( 'wp_ajax_get_job_dialog_data', array( $this, 'get_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_job_dialog_data', array( $this, 'get_job_dialog_data' ) );
-            add_action( 'wp_ajax_set_job_dialog_data', array( $this, 'set_job_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_job_dialog_data', array( $this, 'set_job_dialog_data' ) );
+            add_action( 'wp_ajax_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
             // Schedule the cron job if it's not already scheduled
             if (!wp_next_scheduled('daily_action_process_event')) {
@@ -49,7 +49,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <select id="select-todo">
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
-                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動工作', 'your-text-domain' );?></option>
+                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '人工啟動', 'your-text-domain' );?></option>
                 <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
                 <option value="iot-message" <?php echo ($select_option=="iot-message") ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
@@ -80,7 +80,7 @@ if (!class_exists('to_do_list')) {
 
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
                 if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
-                if ($_GET['_select_todo']=='start-job') echo $this->display_job_authorization_list();
+                if ($_GET['_select_todo']=='start-job') echo $this->display_start_job_list();
                 if ($_GET['_select_todo']=='signature') $this->display_signature_record();
                 if ($_GET['_select_todo']=='cron-events') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
@@ -420,12 +420,12 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
         
-        // job-authorization
-        function display_job_authorization_list() {
+        // start-job
+        function display_start_job_list() {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '啟動工作', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '人工啟動', 'your-text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('start-job');?></div>
@@ -438,7 +438,7 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Document', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
                         </tr>
@@ -446,7 +446,7 @@ if (!class_exists('to_do_list')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_job_authorization_data($paged);
+                    $query = $this->retrieve_start_job_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -463,10 +463,6 @@ if (!class_exists('to_do_list')) {
 
                             $profiles_class = new display_profiles();
                             $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
-
-                            //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-                            //$doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
-                            //if ($doc_report_frequence_setting) $doc_report_frequence_setting .= '('.wp_date(get_option('date_format'), $doc_report_frequence_start_time).' '.wp_date(get_option('time_format'), $doc_report_frequence_start_time).')';
                             ?>
                             <tr id="edit-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
@@ -493,7 +489,7 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_job_authorization_data($paged = 1){
+        function retrieve_start_job_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -571,7 +567,7 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
         
-        function display_job_dialog($doc_id) {
+        function display_start_job_dialog($doc_id) {
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -612,18 +608,18 @@ if (!class_exists('to_do_list')) {
             $result = array();
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
-                $result['html_contain'] = $this->display_job_dialog($job_id);
+                $result['html_contain'] = $this->display_start_job_dialog($job_id);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
             }
             wp_send_json($result);
         }
         
-        function set_job_dialog_data() {
+        function set_start_job_dialog_data() {
             if( isset($_POST['_action_id']) ) {
                 // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->update_job_dialog_data($action_id);
+                $this->update_start_job_dialog_data($action_id);
             }
             wp_send_json($response);
         }
@@ -674,7 +670,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
-        function update_job_dialog_data($action_id=false, $user_id=false) {
+        function update_start_job_dialog_data($action_id=false, $user_id=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -729,6 +725,7 @@ if (!class_exists('to_do_list')) {
         
         function update_next_todo_and_actions($args = array()) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 1. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From update_todo_by_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From schedule_event_callback($params), create a next_todo based on the $args['doc_id']
 
@@ -1442,7 +1439,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->update_job_dialog_data($action_id, $user_id);
+                                    $this->update_start_job_dialog_data($action_id, $user_id);
                                 }
                             }
                         endwhile;

@@ -124,7 +124,7 @@ if (!class_exists('display_documents')) {
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
-            if (!is_user_logged_in()) user_did_not_login_yet();                
+            if (!is_user_logged_in()) user_did_not_login_yet();
             elseif (is_user_not_in_site()) display_site_profile_NDA();
             else {
 
