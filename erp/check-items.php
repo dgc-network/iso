@@ -323,7 +323,7 @@ if (!class_exists('check_items')) {
             $args = array(
                 'post_type'      => 'check-item',
                 'posts_per_page' => -1,
-                'meta_query'     => array(),
+                //'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -427,7 +427,7 @@ if (!class_exists('check_items')) {
             wp_send_json($response);
         }
 
-        function select_check_item_options($selected_option=0, $category_id=false) {
+        function select_check_item_options($selected_option=false, $category_id=false) {
             $query = $this->retrieve_check_item_list_data($category_id);
             $options = '<option value="">Select '.get_the_title($category_id).' check item</option>';
             while ($query->have_posts()) : $query->the_post();
