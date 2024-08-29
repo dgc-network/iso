@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
                                         'action': 'set_check_category_dialog_data',
                                         '_category_id': $("#category-id").val(),
                                         '_category_title': $("#category-title").val(),
-                                        '_category_content': $("#category-content").val(),
+                                        '_category_code': $("#category-code").val(),
                                         '_iso_category': $("#iso-category").val(),
                                     },
                                     success: function (response) {
