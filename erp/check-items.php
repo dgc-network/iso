@@ -109,6 +109,60 @@ if (!class_exists('check_items')) {
             return ob_get_clean();
         }
 
+        function retrieve_check_category_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            $args = array(
+                'post_type'      => 'check-category',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'meta_key'       => 'category_code', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('check-category');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+        
+            return $query;
+        }
+/*
         function retrieve_check_category_data() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -128,7 +182,7 @@ if (!class_exists('check_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function display_check_category_dialog($paged=1, $category_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
