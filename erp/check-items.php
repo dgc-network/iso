@@ -300,7 +300,7 @@ if (!class_exists('check_items')) {
                             $check_item_type='';
                         }
                         ?>
-                        <tr id="edit-check-item-<?php the_ID();?>" data-check-id="<?php echo esc_attr(get_the_ID());?>">
+                        <tr id="edit-check-item-<?php the_ID();?>" data-check-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo $check_item_code;?></td>
                             <td><?php echo $check_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($check_item_type);?></td>
