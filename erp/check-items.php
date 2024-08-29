@@ -169,36 +169,13 @@ if (!class_exists('check_items')) {
         
             return $query;
         }
-/*
-        function retrieve_check_category_data() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'check-category',
-                'posts_per_page' => -1,        
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-                'orderby'        => 'title',  // Order by post title
-                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
 
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-*/
         function display_check_category_dialog($paged=1, $category_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            //$cards_class = new erp_cards();
-            //$items_class = new check_items();
             $category_title = get_the_title($category_id);
-            //$category_content = get_post_field('post_content', $category_id);
             $category_code = get_post_meta($category_id, 'category_code', true);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             ?>
@@ -209,10 +186,10 @@ if (!class_exists('check_items')) {
                 <input type="text" id="category-code" value="<?php echo esc_attr($category_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="check-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
+                <?php echo $this->display_check_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
-                <label for="check-item-list"><?php echo __( 'Check items: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_check_item_list($paged, $category_id);?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -234,7 +211,6 @@ if (!class_exists('check_items')) {
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    //'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_code', $category_code);
@@ -306,24 +282,16 @@ if (!class_exists('check_items')) {
                 <tbody id="sortable-check-item-list">
                 <?php
                 
-                //$paged = max(1, get_query_var('paged')); // Get the current page number
-                $query = $this->retrieve_audit_item_list_data($category_id);
-                //$total_posts = $query->found_posts;
-                //$total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-
+                $query = $this->retrieve_check_item_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $check_item_title = get_the_title();
-                        //$check_content = get_post_field('post_content', get_the_ID());
-                        $check_item_code = get_post_meta(get_the_ID(), 'item_code', true);
-                        //$display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
-                        //$is_checked = ($display_on_report_only) ? 'checked' : '';
-                        //$is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
-                        $check_item_type = get_post_meta(get_the_ID(), 'item_type', true);
-                        if ($field_type=='heading') {
-                            $audit_item_title = '<b>'.$audit_item_title.'</b>';
-                            $clause_no = '<b>'.$clause_no.'</b>';
-                            $field_type='';
+                        $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
+                        $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                        if ($check_item_type=='heading') {
+                            $check_item_title = '<b>'.$check_item_title.'</b>';
+                            $check_item_code = '';
+                            $check_item_type='';
                         }
                         ?>
                         <tr id="edit-check-item-<?php the_ID();?>" data-check-id="<?php echo esc_attr(get_the_ID());?>">
@@ -378,9 +346,6 @@ if (!class_exists('check_items')) {
             $check_item_code = get_post_meta($check_item_id, 'check_item_code', true);
             $check_item_title = get_the_title($check_item_id);
             $check_item_type = get_post_meta($check_item_id, 'check_item_type', true);
-            //$audit_content = get_post_field('post_content', $audit_id);
-            //$display_on_report_only = get_post_meta($audit_id, 'display_on_report_only', true);
-            //$is_radio_option = get_post_meta($audit_id, 'is_radio_option', true);
             ?>
             <fieldset>
                 <input type="hidden" id="check-item-id" value="<?php echo esc_attr($check_item_id);?>" />
@@ -414,19 +379,13 @@ if (!class_exists('check_items')) {
                 $check_item_id = sanitize_text_field($_POST['_check_item_id']);
                 $check_item_code = sanitize_text_field($_POST['_check_item_code']);
                 $check_item_type = sanitize_text_field($_POST['_check_item_type']);
-                //$display_on_report_only = sanitize_text_field($_POST['_display_on_report_only']);
-                //$is_radio_option = sanitize_text_field($_POST['_is_radio_option']);
                 $data = array(
                     'ID'           => $check_item_id,
                     'post_title'   => sanitize_text_field($_POST['_check_item_title']),
-                    //'post_content' => $_POST['_audit_content'],
                 );
                 wp_update_post( $data );
-                //update_post_meta($check_item_id, 'category_id', $category_id);
                 update_post_meta($check_item_id, 'check_item_code', $check_item_code);
                 update_post_meta($check_item_id, 'check_item_type', $check_item_type);
-                //update_post_meta($audit_id, 'display_on_report_only', $display_on_report_only);
-                //update_post_meta($audit_id, 'is_radio_option', $is_radio_option);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -441,14 +400,12 @@ if (!class_exists('check_items')) {
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta($post_id, 'sorting_key', -1);
             }
-            //$paged = sanitize_text_field($_POST['paged']);
             $response = array('html_contain' => $this->display_check_item_list($category_id));
             wp_send_json($response);
         }
 
         function del_check_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
-            //$paged = sanitize_text_field($_POST['paged']);
             wp_delete_post($_POST['_check_item_id'], true);
             $response = array('html_contain' => $this->display_audit_item_list($category_id));
             wp_send_json($response);
@@ -467,7 +424,6 @@ if (!class_exists('check_items')) {
         }
 
         function select_check_item_options($selected_option=0, $category_id=false) {
-            //$paged = 0;
             $query = $this->retrieve_check_item_list_data($category_id);
             $options = '<option value="">Select '.get_the_title($category_id).' check item</option>';
             while ($query->have_posts()) : $query->the_post();
