@@ -98,6 +98,11 @@ jQuery(document).ready(function($) {
         }
     });
     
+    $(".check-category").on( "change", function() {
+        window.location.replace("?_category="+$(this).val()+"&paged=1");
+        $(this).val('');
+    });
+
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');

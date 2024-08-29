@@ -1208,8 +1208,16 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department' && $default_value=='_audited'){
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
+/*
+            if ($field_type=='_check' && $default_value=='_plan'){
+                // generate the check-item-ids
+                $check_item_ids = $this->get_check_item_id_by_category($field_value);
+                update_post_meta($report_id, '_check_plan', $check_item_ids);
+                update_post_meta($report_id, '_check_category', $field_value);
+            }
+*/
             if ($field_type=='_audit' && $default_value=='_plan'){
-                // generate the audit-item-ids by iso-category-id & department-id
+                // generate the audit-item-ids
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
                 update_post_meta($report_id, '_iso_category', $field_value);
@@ -1219,7 +1227,27 @@ if (!class_exists('display_documents')) {
 
         }
         
-        function get_audit_item_id_by_category($category_id=false, $document_id=false) {
+        function get_check_item_id_by_category($category_id=false) {
+            $args = array(
+                'post_type'  => 'check-item',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only retrieve the post IDs
+            );        
+            $query = new WP_Query($args);        
+            // Retrieve the post IDs
+            $post_ids = $query->posts;        
+            wp_reset_postdata();        
+            return $post_ids;
+        }
+
+        function get_audit_item_id_by_category($category_id=false) {
             $args = array(
                 'post_type'  => 'audit-item',
                 'posts_per_page' => -1,
@@ -1380,6 +1408,7 @@ if (!class_exists('display_documents')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
                     <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
+                    <option value="_check" <?php echo ($field_type=='_check') ? 'selected' : ''?>><?php echo __( '_check', 'your-text-domain' );?></option>
                     <option value="_audit" <?php echo ($field_type=='_audit') ? 'selected' : ''?>><?php echo __( '_audit', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
@@ -1501,7 +1530,6 @@ if (!class_exists('display_documents')) {
             }
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
-                //$default_value = array((string) $current_user_id); // Set default value to an array with the current user ID
                 $default_value = get_current_user_id(); // Set default value to an array with the current user ID
             }
             return $default_value;
@@ -1534,12 +1562,12 @@ if (!class_exists('display_documents')) {
 
                     switch (true) {
                         case ($field_type=='_audit'):
-                            $profiles_class = new display_profiles();
-                            $cards_class = new erp_cards();
+                            //$profiles_class = new display_profiles();
+                            //$cards_class = new erp_cards();
                             $items_class = new check_items();
                             if ($default_value=='_plan') {
                                 ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } else {
@@ -1547,6 +1575,23 @@ if (!class_exists('display_documents')) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_audit_item_options($field_value, $category_id);?></select>
+                                <?php    
+                            }
+                            break;
+
+                        case ($field_type=='_check'):
+                            $items_class = new check_items();
+                            if ($default_value=='_plan') {
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
+                                <div id="check-item-list"></div>
+                                <?php
+                            } else {
+                                $category_id = get_post_meta($report_id, '_check_category', true);
+                                ?>
+                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_check_item_options($field_value, $category_id);?></select>
                                 <?php    
                             }
                             break;

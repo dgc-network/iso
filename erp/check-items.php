@@ -289,8 +289,8 @@ if (!class_exists('check_items')) {
                         $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                         $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
                         if ($check_item_type=='heading') {
+                            $check_item_code = '<b>'.$check_item_code.'</b>';
                             $check_item_title = '<b>'.$check_item_title.'</b>';
-                            $check_item_code = '';
                             $check_item_type='';
                         }
                         ?>
@@ -356,10 +356,11 @@ if (!class_exists('check_items')) {
                 <input type="text" id="check-item-title" value="<?php echo esc_attr($check_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="check-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="check-item-type" class="text ui-widget-content ui-corner-all">
-                    <option value="text" <?php echo ($check_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($check_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($check_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($check_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($check_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                 </select>
             </fieldset>
             <?php
