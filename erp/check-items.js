@@ -1,4 +1,120 @@
 jQuery(document).ready(function($) {
+    // check-category scripts
+    activate_check_category_list_data()
+    function activate_check_category_list_data(){
+        $("#select-profile").on("change", function() {
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+            // Check the selected value for each select element and add it to the queryParams array
+            var profileValue = $("#select-profile").val();
+            if (profileValue) {
+                queryParams.push("_select_profile=" + profileValue);
+            }
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        });
+
+        $("#new-check-category").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_check_category_dialog_data',
+                },
+                success: function (response) {
+                    $("#result-container").html(response.html_contain);
+                    activate_check_category_list_data();
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-check-category-"]').on("click", function () {
+            const category_id = this.id.substring(18);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_check_category_dialog_data',
+                    '_category_id': category_id,
+                    'paged': 1
+                },
+                success: function (response) {
+                    $("#check-category-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#check-category-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_check_category_dialog_data',
+                                        '_category_id': $("#category-id").val(),
+                                        '_category_title': $("#category-title").val(),
+                                        '_category_content': $("#category-content").val(),
+                                        '_iso_category': $("#iso-category").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#check-category-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_check_category_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this doc category?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_check_category_dialog_data',
+                                            '_category_id': $("#category-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#check-category-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_check_category_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
+                    $("#check-category-dialog").dialog('open');
+                    activate_audit_item_list_data(category_id)                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#check-category-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });
+    }
+
+
     // iso-category scripts
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
