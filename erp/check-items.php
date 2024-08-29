@@ -27,6 +27,9 @@ if (!class_exists('check_items')) {
             add_action( 'wp_ajax_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
             add_action( 'wp_ajax_nopriv_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
             
+            add_action( 'wp_ajax_sort_check_item_list_data', array( $this, 'sort_check_item_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_check_item_list_data', array( $this, 'sort_check_item_list_data' ) );
+
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
@@ -298,7 +301,7 @@ if (!class_exists('check_items')) {
                         }
                         ?>
                         <tr id="edit-check-item-<?php the_ID();?>" data-check-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"><?php echo esc_html($check_item_code);?></td>
+                            <td style="text-align:center;"><?php echo $check_item_code;?></td>
                             <td><?php echo $check_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($check_item_type);?></td>
                         </tr>
