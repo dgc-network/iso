@@ -1562,8 +1562,6 @@ if (!class_exists('display_documents')) {
 
                     switch (true) {
                         case ($field_type=='_audit'):
-                            //$profiles_class = new display_profiles();
-                            //$cards_class = new erp_cards();
                             $items_class = new check_items();
                             if ($default_value=='_plan') {
                                 ?>
@@ -1581,9 +1579,8 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_check'):
                             $items_class = new check_items();
-                            if ($default_value=='_plan') {
+                            if ($default_value=='_category') {
                                 ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
                                 <div id="check-item-list-from-category"></div>
                                 <?php

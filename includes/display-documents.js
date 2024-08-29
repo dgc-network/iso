@@ -840,7 +840,7 @@ jQuery(document).ready(function($) {
 
         $(".check-category").on( "change", function() {
             const ajaxData = {
-                'action': 'get_check_item_list_from_category',
+                'action': 'get_check_items_from_category',
             };
         
             ajaxData['_category_id'] = $(this).val();

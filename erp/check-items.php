@@ -24,8 +24,8 @@ if (!class_exists('check_items')) {
             add_action( 'wp_ajax_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_check_item_list_from_category', array( $this, 'get_check_item_list_from_category' ) );
-            add_action( 'wp_ajax_nopriv_get_check_item_list_from_category', array( $this, 'get_check_item_list_from_category' ) );
+            add_action( 'wp_ajax_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
+            add_action( 'wp_ajax_nopriv_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
             
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
@@ -445,7 +445,7 @@ if (!class_exists('check_items')) {
             return $options;
         }
 
-        function get_check_item_list_from_category() {
+        function get_check_items_from_category() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
             $query = $this->retrieve_check_item_list_data($category_id);
@@ -461,7 +461,7 @@ if (!class_exists('check_items')) {
                         <?php
                     } else {
                         ?>
-                        <input type="checkbox" id="" value="" /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <input type="checkbox" id="" value="1" /> <?php echo $check_item_code.' '.$check_item_title?><br>
                         <?php
                     }
                 endwhile;
