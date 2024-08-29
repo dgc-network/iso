@@ -76,8 +76,8 @@ if (!class_exists('check_items')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Category', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
@@ -85,11 +85,12 @@ if (!class_exists('check_items')) {
                     $query = $this->retrieve_check_category_data();
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
+                            $category_code = get_post_meta(get_the_ID(), 'category_code', true);
                             $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
                             <tr id="edit-check-category-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php the_content();?></td>
+                                <td style="text-align:center;"><?php echo esc_html($category_code);?></td>
+                                <td><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
                             </tr>
                             <?php 
@@ -136,16 +137,17 @@ if (!class_exists('check_items')) {
             //$cards_class = new erp_cards();
             //$items_class = new check_items();
             $category_title = get_the_title($category_id);
-            $category_content = get_post_field('post_content', $category_id);
+            //$category_content = get_post_field('post_content', $category_id);
+            $category_code = get_post_meta($category_id, 'category_code', true);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <label for="category-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="category-code" value="<?php echo esc_attr($category_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
             </fieldset>
@@ -164,14 +166,15 @@ if (!class_exists('check_items')) {
         function set_check_category_dialog_data() {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
-                $category_url = sanitize_text_field($_POST['_category_url']);
+                $category_code = sanitize_text_field($_POST['_category_code']);
                 $iso_category = sanitize_text_field($_POST['_iso_category']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    'post_content' => $_POST['_category_content'],
+                    //'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
+                update_post_meta($category_id, 'category_code', $category_code);
                 update_post_meta($category_id, 'iso_category', $iso_category);
             } else {
                 $current_user_id = get_current_user_id();
@@ -185,6 +188,7 @@ if (!class_exists('check_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'category_code', time());
             }
             $response = array('html_contain' => $this->display_check_category_list());
             wp_send_json($response);
@@ -200,8 +204,9 @@ if (!class_exists('check_items')) {
             $query = $this->retrieve_check_category_data();
             $options = '<option value="">Select category</option>';
             while ($query->have_posts()) : $query->the_post();
+                $category_code = get_post_meta(get_the_ID(), 'category_code', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.$category_code.')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
