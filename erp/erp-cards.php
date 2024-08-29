@@ -65,7 +65,7 @@ if (!class_exists('erp_cards')) {
             add_action( 'wp_ajax_nopriv_add_department_user_dialog_data', array( $this, 'add_department_user_dialog_data' ) );
             add_action( 'wp_ajax_del_department_user_dialog_data', array( $this, 'del_department_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_department_user_dialog_data', array( $this, 'del_department_user_dialog_data' ) );
-
+/*
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
@@ -82,7 +82,7 @@ if (!class_exists('erp_cards')) {
 
             add_action( 'wp_ajax_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
-
+*/
         }
 
         function enqueue_erp_cards_scripts() {
@@ -1780,7 +1780,7 @@ if (!class_exists('erp_cards')) {
             // Return the options HTML
             return $options;
         }
-
+/*
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
@@ -1953,7 +1953,7 @@ if (!class_exists('erp_cards')) {
         // audit-item
         function register_audit_item_post_type() {
             $labels = array(
-                'menu_name'     => _x('Clause', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('Audit', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
@@ -2194,7 +2194,7 @@ if (!class_exists('erp_cards')) {
             wp_reset_postdata();
             return $options;
         }
-
+*/
     }
     $cards_class = new erp_cards();
 }

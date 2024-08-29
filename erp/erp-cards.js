@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+/*    
     // iso-category scripts
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
@@ -319,7 +320,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     // customer-card scripts
     activate_customer_card_list_data();
 

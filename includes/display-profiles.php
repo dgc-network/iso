@@ -95,6 +95,7 @@ if (!class_exists('display_profiles')) {
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="check-category" <?php echo ($select_option=="check-category") ? 'selected' : ''?>><?php echo __( '查檢分類', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -121,6 +122,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
                 if ($_GET['_select_profile']=='iso-category') echo $cards_class->display_iso_category_list();
+                if ($_GET['_select_profile']=='check-category') echo $cards_class->display_check_category_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
@@ -1695,7 +1697,6 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
-                'show_in_menu'  => false,
             );
             register_post_type( 'doc-category', $args );
         }
@@ -1845,6 +1846,7 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
+        // site-profile list
         function get_site_list_data() {
             $search_query = sanitize_text_field($_POST['_site_title']);
             $args = array(

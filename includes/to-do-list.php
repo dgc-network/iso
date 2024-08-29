@@ -784,6 +784,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
+            
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
