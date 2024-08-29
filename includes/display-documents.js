@@ -98,11 +98,6 @@ jQuery(document).ready(function($) {
         }
     });
     
-    $(".check-category").on( "change", function() {
-        window.location.replace("?_category="+$(this).val()+"&paged=1");
-        $(this).val('');
-    });
-
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');
@@ -843,6 +838,11 @@ jQuery(document).ready(function($) {
     
     function activate_doc_report_dialog_data(response){
 
+        $(".check-category").on( "change", function() {
+            window.location.replace("?_category="+$(this).val()+"&paged=1");
+            $(this).val('');
+        });
+        
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
