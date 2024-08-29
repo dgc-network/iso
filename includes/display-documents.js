@@ -839,8 +839,29 @@ jQuery(document).ready(function($) {
     function activate_doc_report_dialog_data(response){
 
         $(".check-category").on( "change", function() {
-            window.location.replace("?_category="+$(this).val()+"&paged=1");
-            $(this).val('');
+            const ajaxData = {
+                'action': 'get_check_item_list_from_category',
+            };
+        
+            ajaxData['_category_id'] = $(this).val();
+        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: ajaxData,
+                success: function (response) {
+                    $('#check-item-list-from-category').html(response.html_contain);
+                    activate_doc_report_dialog_data(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+    
+            //window.location.replace("?_category="+$(this).val()+"&paged=1");
+            //$(this).val('');
         });
         
         $('[id^="doc-report-dialog-button-"]').on("click", function () {

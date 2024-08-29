@@ -442,6 +442,33 @@ if (!class_exists('check_items')) {
             return $options;
         }
 
+        function get_check_item_list_from_category() {
+            $response = array();
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $query = $this->retrieve_check_item_list_data($category_id);
+            ob_start();
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $check_item_title = get_the_title();
+                    $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
+                    $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                    if ($check_item_type=='heading') {
+                        ?>
+                        <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
+                        <?php
+                    } else {
+                        ?>
+                        <input type="checkbox" id="" value="" /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <?php
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            $check_item_list = ob_get_clean();
+
+            $response['html_contain'] = $check_item_list;
+            wp_send_json($response);
+        }
 
         // iso-category
         function register_iso_category_post_type() {
@@ -501,7 +528,7 @@ if (!class_exists('check_items')) {
                 </fieldset>
                 <div id="iso-category-dialog" title="Category dialog"></div>
                 <?php
-                return ob_get_clean();        
+                return ob_get_clean();
             } else {
                 display_no_permission_page();
             }
