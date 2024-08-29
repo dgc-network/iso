@@ -1536,16 +1536,17 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_audit'):
                             $profiles_class = new display_profiles();
                             $cards_class = new erp_cards();
+                            $items_class = new check_items();
                             if ($default_value=='_plan') {
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title.' '.$clause_no);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_iso_category_options($field_value);?></select>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($field_value);?></select>
                                 <?php
                             } else {
                                 $category_id = get_post_meta($report_id, '_iso_category', true);
                                 ?>
                                 <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_audit_item_options($field_value, $category_id);?></select>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_audit_item_options($field_value, $category_id);?></select>
                                 <?php    
                             }
                             break;

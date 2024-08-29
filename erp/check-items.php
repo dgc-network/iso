@@ -40,6 +40,165 @@ if (!class_exists('check_items')) {
             ));                
         }
 
+        // check-category
+        function register_check_category_post_type() {
+            $labels = array(
+                'menu_name'     => _x('check-category', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'check-category', $args );
+        }
+        
+        function display_check_category_list() {
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile('check-category');?></div>
+                <div style="text-align: right"></div>                        
+            </div>
+
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_check_category_data();
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
+                            ?>
+                            <tr id="edit-check-category-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td><?php the_content();?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if ($is_site_admin) {?>
+                    <div id="new-check-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
+            </fieldset>
+            <div id="check-category-dialog" title="Category dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_check_category_data() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'check-category',
+                'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'orderby'        => 'title',  // Order by post title
+                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
+
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_check_category_dialog($paged=1, $category_id=false) {
+            ob_start();
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $cards_class = new erp_cards();
+            $items_class = new check_items();
+            $category_title = get_the_title($category_id);
+            $category_content = get_post_field('post_content', $category_id);
+            $iso_category = get_post_meta($category_id, 'iso_category', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
+                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($iso_category);?></select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_check_category_dialog_data() {
+            $response = array();
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $paged = sanitize_text_field($_POST['paged']);
+            $response['html_contain'] = $this->display_check_category_dialog($paged, $category_id);
+            wp_send_json($response);
+        }
+
+        function set_check_category_dialog_data() {
+            if( isset($_POST['_category_id']) ) {
+                $category_id = sanitize_text_field($_POST['_category_id']);
+                $category_url = sanitize_text_field($_POST['_category_url']);
+                $iso_category = sanitize_text_field($_POST['_iso_category']);
+                $data = array(
+                    'ID'           => $category_id,
+                    'post_title'   => sanitize_text_field($_POST['_category_title']),
+                    'post_content' => $_POST['_category_content'],
+                );
+                wp_update_post( $data );
+                update_post_meta($category_id, 'iso_category', $iso_category);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New category',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'check-category',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'site_id', $site_id);
+            }
+            $response = array('html_contain' => $this->display_check_category_list());
+            wp_send_json($response);
+        }
+
+        function del_check_category_dialog_data() {
+            wp_delete_post($_POST['_category_id'], true);
+            $response = array('html_contain' => $this->display_check_category_list());
+            wp_send_json($response);
+        }
+
+        function select_check_category_options($selected_option=0) {
+            $query = $this->retrieve_check_category_data();
+            $options = '<option value="">Select category</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+        
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
@@ -455,7 +614,7 @@ if (!class_exists('check_items')) {
         }
 
     }
-    $cards_class = new check_items();
+    $items_class = new check_items();
 }
 
 
