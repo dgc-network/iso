@@ -1579,11 +1579,12 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_check'):
                             $items_class = new check_items();
-                            if ($default_value=='_category') {
+                            //if ($default_value=='_category') {
                                 ?>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
                                 <div id="check-item-list-from-category"></div>
                                 <?php
+/*                                
                             } else {
                                 $category_id = get_post_meta($report_id, '_check_category', true);
                                 ?>
@@ -1591,6 +1592,7 @@ if (!class_exists('display_documents')) {
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_check_item_options($field_value, $category_id);?></select>
                                 <?php    
                             }
+*/                                
                             break;
 
                         case ($field_type=='_document'):
