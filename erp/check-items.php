@@ -17,6 +17,13 @@ if (!class_exists('check_items')) {
             add_action( 'wp_ajax_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_check_item_dialog_data', array( $this, 'get_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_check_item_dialog_data', array( $this, 'get_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_set_check_item_dialog_data', array( $this, 'set_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_check_item_dialog_data', array( $this, 'set_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
+
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
@@ -204,6 +211,8 @@ if (!class_exists('check_items')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+                <label for="check-item-list"><?php echo __( 'Check items: ', 'your-text-domain' );?></label>
+                <?php echo $this->display_check_item_list($paged, $category_id);?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -266,6 +275,217 @@ if (!class_exists('check_items')) {
             return $options;
         }
         
+        // check-item
+        function register_check_item_post_type() {
+            $labels = array(
+                'menu_name'     => _x('Check', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'check-item', $args );
+        }
+
+        function display_check_item_list($category_id=false) {
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <div id="check-item-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Items', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody id="sortable-check-item-list">
+                <?php
+                
+                //$paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_audit_item_list_data($category_id);
+                //$total_posts = $query->found_posts;
+                //$total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $check_item_title = get_the_title();
+                        //$check_content = get_post_field('post_content', get_the_ID());
+                        $check_item_code = get_post_meta(get_the_ID(), 'item_code', true);
+                        //$display_on_report_only = get_post_meta(get_the_ID(), 'display_on_report_only', true);
+                        //$is_checked = ($display_on_report_only) ? 'checked' : '';
+                        //$is_radio_option = get_post_meta(get_the_ID(), 'is_radio_option', true);
+                        $check_item_type = get_post_meta(get_the_ID(), 'item_type', true);
+                        if ($field_type=='heading') {
+                            $audit_item_title = '<b>'.$audit_item_title.'</b>';
+                            $clause_no = '<b>'.$clause_no.'</b>';
+                            $field_type='';
+                        }
+                        ?>
+                        <tr id="edit-check-item-<?php the_ID();?>" data-check-id="<?php echo esc_attr(get_the_ID());?>">
+                            <td style="text-align:center;"><?php echo esc_html($check_item_code);?></td>
+                            <td><?php echo $check_item_title;?></td>
+                            <td style="text-align:center;"><?php echo esc_html($check_item_type);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <?php if ($is_site_admin) {?>
+                <div id="new-check-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
+            </fieldset>
+            </div>
+            <div id="check-item-dialog" title="Check item dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_check_item_list_data($category_id=false) {
+            $args = array(
+                'post_type'      => 'check-item',
+                'posts_per_page' => -1,
+                'meta_query'     => array(),
+                'meta_key'       => 'sorting_key',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            // Add category_id to meta_query if it is not false
+            if ($category_id !== false) {
+                $args['meta_query'][] = array(
+                    array(
+                        'key'   => 'category_id',
+                        'value' => $category_id,
+                    ),
+                );
+            }
+
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_check_item_dialog($check_item_id=false) {
+            ob_start();
+            $category_id = get_post_meta($check_item_id, 'category_id', true);
+            $check_item_code = get_post_meta($check_item_id, 'check_item_code', true);
+            $check_item_title = get_the_title($check_item_id);
+            $check_item_type = get_post_meta($check_item_id, 'check_item_type', true);
+            //$audit_content = get_post_field('post_content', $audit_id);
+            //$display_on_report_only = get_post_meta($audit_id, 'display_on_report_only', true);
+            //$is_radio_option = get_post_meta($audit_id, 'is_radio_option', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="check-item-id" value="<?php echo esc_attr($check_item_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <label for="check-item-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="check-item-code" value="<?php echo esc_attr($check_item_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="check-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <input type="text" id="check-item-title" value="<?php echo esc_attr($check_item_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="check-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
+                <select id="check-item-type" class="text ui-widget-content ui-corner-all">
+                    <option value="text" <?php echo ($check_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($check_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($check_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                </select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_check_item_dialog_data() {
+            $response = array();
+            $check_item_id = sanitize_text_field($_POST['_check_item_id']);
+            $response['html_contain'] = $this->display_check_item_dialog($check_item_id);
+            wp_send_json($response);
+        }
+
+        function set_check_item_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            if( isset($_POST['_check_item_id']) ) {
+                $check_item_id = sanitize_text_field($_POST['_check_item_id']);
+                $check_item_code = sanitize_text_field($_POST['_check_item_code']);
+                $check_item_type = sanitize_text_field($_POST['_check_item_type']);
+                //$display_on_report_only = sanitize_text_field($_POST['_display_on_report_only']);
+                //$is_radio_option = sanitize_text_field($_POST['_is_radio_option']);
+                $data = array(
+                    'ID'           => $check_item_id,
+                    'post_title'   => sanitize_text_field($_POST['_check_item_title']),
+                    //'post_content' => $_POST['_audit_content'],
+                );
+                wp_update_post( $data );
+                //update_post_meta($check_item_id, 'category_id', $category_id);
+                update_post_meta($check_item_id, 'check_item_code', $check_item_code);
+                update_post_meta($check_item_id, 'check_item_type', $check_item_type);
+                //update_post_meta($audit_id, 'display_on_report_only', $display_on_report_only);
+                //update_post_meta($audit_id, 'is_radio_option', $is_radio_option);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New item',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'check-item',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'category_id', $category_id);
+                update_post_meta($post_id, 'sorting_key', -1);
+            }
+            //$paged = sanitize_text_field($_POST['paged']);
+            $response = array('html_contain' => $this->display_check_item_list($category_id));
+            wp_send_json($response);
+        }
+
+        function del_check_item_dialog_data() {
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            //$paged = sanitize_text_field($_POST['paged']);
+            wp_delete_post($_POST['_check_item_id'], true);
+            $response = array('html_contain' => $this->display_audit_item_list($category_id));
+            wp_send_json($response);
+        }
+
+        function sort_check_item_list_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_check_item_id_array']) && is_array($_POST['_check_item_id_array'])) {
+                $check_item_id_array = array_map('absint', $_POST['_check_item_id_array']);        
+                foreach ($check_item_id_array as $index => $check_item_id) {
+                    update_post_meta($check_item_id, 'sorting_key', $index);
+                }
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+
+        function select_check_item_options($selected_option=0, $category_id=false) {
+            //$paged = 0;
+            $query = $this->retrieve_check_item_list_data($category_id);
+            $options = '<option value="">Select '.get_the_title($category_id).' check item</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
+                $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                if ($check_item_type=='heading'){
+                    $check_item_title = '<b>'.get_the_title().'</b>';
+                } else {
+                    $check_item_title = $check_item_code.' '.get_the_title();
+                }
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $check_item_title . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(

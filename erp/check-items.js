@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_check_category_dialog_data',
                     '_category_id': category_id,
-                    'paged': 1
+                    //'paged': 1
                 },
                 success: function (response) {
                     $("#check-category-dialog").html(response.html_contain);
@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#check-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id)                },
+                    activate_check_item_list_data(category_id)                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
@@ -111,6 +111,159 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             buttons: {}
+        });
+    }
+
+    // check-item scripts
+    function activate_check_item_list_data(category_id){
+        $("#new-check-item").on("click", function() {
+            // Extract page number from URL path
+            const currentUrl = new URL(window.location.href);
+            const pathSegments = currentUrl.pathname.split('/');
+            let paged = 1;
+            const pageIndex = pathSegments.indexOf('page');
+            if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                paged = parseInt(pathSegments[pageIndex + 1], 10);
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_check_item_dialog_data',
+                    '_category_id': $("#category-id").val(),
+                    //'paged': paged
+                },
+                success: function (response) {
+                    $("#check-item-list").html(response.html_contain);
+                    activate_check_item_list_data(category_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('#sortable-check-item-list').sortable({
+            update: function(event, ui) {
+                const check_item_id_array = $(this).sortable('toArray', { attribute: 'data-check-item-id' });                
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: 'json',
+                    data: {
+                        action: 'sort_check_item_list_data',
+                        _check_item_id_array: check_item_id_array,
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
+        $('[id^="edit-check-item-"]').on("click", function () {
+            const check_item_id = this.id.substring(16);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_check_item_dialog_data',
+                    '_check_item_id': check_item_id,
+                },
+                success: function (response) {
+                    $("#check-item-dialog").html(response.html_contain);
+                    $("#check-item-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#check-item-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Save": function () {
+                    // Extract page number from URL path
+                    const currentUrl = new URL(window.location.href);
+                    const pathSegments = currentUrl.pathname.split('/');
+                    let paged = 1;
+                    const pageIndex = pathSegments.indexOf('page');
+                    if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                        paged = parseInt(pathSegments[pageIndex + 1], 10);
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_check_item_dialog_data',
+                            '_category_id': $("#category-id").val(),
+                            '_check_item_id': $("#check-item-id").val(),
+                            '_check_item_title': $("#check-item-title").val(),
+                            //'_audit_content': $("#audit-content").val(),
+                            '_check_item_code': $("#check-item-code").val(),
+                            '_check_item_type': $("#check-item-type").val(),
+                            //'_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
+                            //'_is_radio_option': $("#is-checkbox").is(":checked") ? 1 : 0,
+                            //'paged': paged
+                        },
+                        success: function (response) {
+                            $("#check-item-dialog").dialog('close');
+                            $("#check-item-list").html(response.html_contain);
+                            activate_check_item_list_data(category_id)
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Delete": function () {
+                    if (window.confirm("Are you sure you want to delete this item?")) {
+                        // Extract page number from URL path
+                        const currentUrl = new URL(window.location.href);
+                        const pathSegments = currentUrl.pathname.split('/');
+                        let paged = 1;
+                        const pageIndex = pathSegments.indexOf('page');
+                        if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                            paged = parseInt(pathSegments[pageIndex + 1], 10);
+                        }
+
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'del_check_item_dialog_data',
+                                '_category_id': $("#category-id").val(),
+                                '_check_item_id': $("#check-item-id").val(),
+                                //'paged': paged
+                            },
+                            success: function (response) {
+                                $("#check-item-dialog").dialog('close');
+                                $("#check-item-list").html(response.html_contain);
+                                activate_check_item_list_data(category_id)
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                    }
+                },
+            }
         });
     }
 
@@ -181,7 +334,8 @@ jQuery(document).ready(function($) {
 
                     $("#iso-category-dialog").html(response.html_contain);
                     $("#iso-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id)                },
+                    activate_audit_item_list_data(category_id)
+                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
