@@ -8,7 +8,14 @@ if (!class_exists('check_items')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_check_items_scripts' ) );
-            //add_action( 'init', array( $this, 'register_check_item_post_type' ) );
+            //add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
+
+            add_action( 'wp_ajax_get_check_category_dialog_data', array( $this, 'get_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_check_category_dialog_data', array( $this, 'get_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_set_check_category_dialog_data', array( $this, 'set_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_check_category_dialog_data', array( $this, 'set_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
 
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
@@ -53,12 +60,13 @@ if (!class_exists('check_items')) {
         }
         
         function display_check_category_list() {
-            $is_site_admin = $this->is_site_admin();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '查檢項目類別', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('check-category');?></div>
@@ -122,10 +130,11 @@ if (!class_exists('check_items')) {
 
         function display_check_category_dialog($paged=1, $category_id=false) {
             ob_start();
-            $is_site_admin = $this->is_site_admin();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $cards_class = new erp_cards();
-            $items_class = new check_items();
+            //$cards_class = new erp_cards();
+            //$items_class = new check_items();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
@@ -138,7 +147,7 @@ if (!class_exists('check_items')) {
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
-                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($iso_category);?></select>
+                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -197,7 +206,6 @@ if (!class_exists('check_items')) {
             wp_reset_postdata();
             return $options;
         }
-
         
         // iso-category
         function register_iso_category_post_type() {
