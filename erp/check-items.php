@@ -461,7 +461,7 @@ if (!class_exists('check_items')) {
                         <?php
                     } else {
                         ?>
-                        <input type="checkbox" id="" value="1" /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <input type="checkbox" id="" value="" checked /> <?php echo $check_item_code.' '.$check_item_title?><br>
                         <?php
                     }
                 endwhile;
