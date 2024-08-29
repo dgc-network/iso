@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-check-category-"]').on("click", function () {
-            const category_id = this.id.substring(18);
+            const category_id = this.id.substring(20);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
