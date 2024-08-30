@@ -844,6 +844,7 @@ jQuery(document).ready(function($) {
             };
         
             ajaxData['_category_id'] = $(this).val();
+            ajaxData['_report_id'] = $("#report-id").val();
         
             $.ajax({
                 type: 'POST',
@@ -859,9 +860,6 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-    
-            //window.location.replace("?_category="+$(this).val()+"&paged=1");
-            //$(this).val('');
         });
         
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
