@@ -1583,7 +1583,19 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_check'):
                             $items_class = new check_items();
-                            if ($default_value=='_category') {
+                            //$string = '_category=1724993477';
+
+                            // Split the string by the '=' sign
+                            $parts = explode('=', $default_value);
+
+                            $category = $parts[0]; // _category
+                            $id = $parts[1]; // 1724993477
+                            
+                            //echo "Category: " . $category . "\n";
+                            //echo "ID: " . $id . "\n";
+                            
+                            //if ($default_value=='_category') {
+                            if ($category=='_category') {
                                 ?>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
                                 <div id="check-item-list-from-category"></div>
