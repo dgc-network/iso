@@ -1595,6 +1595,7 @@ if (!class_exists('display_documents')) {
                                     $category_id = $items_class->get_check_category_post_id_by_code($code);
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
+                                    <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($category_id);?>" />
                                     <div id="check-item-list-from-category">
                                         <?php
                                         $inner_query = $items_class->retrieve_check_item_list_data($category_id);
