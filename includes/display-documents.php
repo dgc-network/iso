@@ -1583,23 +1583,48 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_check'):
                             $items_class = new check_items();
-                            //$string = '_category=1724993477';
 
-                            // Split the string by the '=' sign
                             $parts = explode('=', $default_value);
-
                             $category = $parts[0]; // _category
-                            $id = $parts[1]; // 1724993477
-                            
-                            //echo "Category: " . $category . "\n";
-                            //echo "ID: " . $id . "\n";
-                            
+                            $code = $parts[1]; // 1724993477
+
                             //if ($default_value=='_category') {
                             if ($category=='_category') {
-                                ?>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
-                                <div id="check-item-list-from-category"></div>
-                                <?php
+                                if ($code) {
+                                    $items_class = new check_items();
+                                    $category_id = $items_class->get_check_category_post_id_by_code($code);
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
+                                    <div id="check-item-list-from-category">
+                                        <?php
+                                        $query = $items_class->retrieve_check_item_list_data($category_id);
+                                        if ($query->have_posts()) :
+                                            while ($query->have_posts()) : $query->the_post();
+                                                $check_item_title = get_the_title();
+                                                $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
+                                                $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                                                if ($check_item_type=='heading') {
+                                                    ?>
+                                                    <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <input type="checkbox" id="" value="" checked /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                                                    <?php
+                                                }
+                                            endwhile;
+                                            wp_reset_postdata();
+                                        endif;
+                                        ?>
+                                    </div>
+                                    <?php
+
+                                } else {
+                                    ?>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
+                                    <div id="check-item-list-from-category"></div>
+                                    <?php
+                                }
                             } else {
                                 $category_id = get_post_meta($report_id, '_check_category', true);
                                 ?>
