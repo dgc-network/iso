@@ -1597,9 +1597,9 @@ if (!class_exists('display_documents')) {
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
                                     <div id="check-item-list-from-category">
                                         <?php
-                                        $query = $items_class->retrieve_check_item_list_data($category_id);
-                                        if ($query->have_posts()) :
-                                            while ($query->have_posts()) : $query->the_post();
+                                        $inner_query = $items_class->retrieve_check_item_list_data($category_id);
+                                        if ($inner_query->have_posts()) :
+                                            while ($inner_query->have_posts()) : $inner_query->the_post();
                                                 $check_item_title = get_the_title();
                                                 $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                                                 $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
