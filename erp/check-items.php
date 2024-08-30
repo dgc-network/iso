@@ -405,7 +405,7 @@ if (!class_exists('check_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
-                update_post_meta($post_id, 'sorting_key', -1);
+                update_post_meta($post_id, 'sorting_key', 999);
             }
             $response = array('html_contain' => $this->display_check_item_list($category_id));
             wp_send_json($response);
@@ -414,7 +414,7 @@ if (!class_exists('check_items')) {
         function del_check_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
             wp_delete_post($_POST['_check_item_id'], true);
-            $response = array('html_contain' => $this->display_audit_item_list($category_id));
+            $response = array('html_contain' => $this->display_check_item_list($category_id));
             wp_send_json($response);
         }
 
