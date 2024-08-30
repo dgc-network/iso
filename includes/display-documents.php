@@ -780,6 +780,10 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
+                                        } elseif ($field_type=='_check') {
+                                            //$category_code = get_post_meta($field_value, 'category_code', true);
+                                            //echo esc_html(get_the_title($field_value).'('.$customer_code.')');
+                                            echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_audit') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
                                             echo esc_html(get_the_title($field_value).' '.$clause_no);
