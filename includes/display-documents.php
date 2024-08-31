@@ -1547,6 +1547,8 @@ if (!class_exists('display_documents')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
+                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     if ($field_type=='_check') {
                         $items_class = new check_items();
@@ -1566,7 +1568,7 @@ if (!class_exists('display_documents')) {
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $_list = array();
-                                    $_list["check_item_id"] = get_the_ID();
+                                    $_list["check_item_id"] = $field_name.get_the_ID();
                                     $_list["check_item_type"] = get_post_meta(get_the_ID(), 'check_item_type', true);
                                     array_push($_array, $_list);
                 
