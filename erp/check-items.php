@@ -402,6 +402,7 @@ if (!class_exists('check_items')) {
                     <option value="text" <?php echo ($check_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($check_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="label" <?php echo ($check_item_type=='label') ? 'selected' : ''?>><?php echo __( 'Label', 'your-text-domain' );?></option>
                 </select>
             </fieldset>
             <?php
