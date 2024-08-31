@@ -1224,6 +1224,14 @@ if (!class_exists('display_documents')) {
                     if ($code) {
                         $items_class = new check_items();
                         $category_id = $items_class->get_check_category_post_id_by_code($code);
+                        $inner_query = $items_class->retrieve_check_item_list_data($category_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                update_post_meta($report_id, $field_name.get_the_ID(), $field_value);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+
 /*                        
                         ?>
                         <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
