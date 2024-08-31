@@ -506,13 +506,18 @@ if (!class_exists('check_items')) {
                 endwhile;
                 wp_reset_postdata();
             endif;
+            $response['html_contain'] = ob_get_clean();
+/*            
             $check_item_list = ob_get_clean();
 
             $response['html_contain'] = $check_item_list;
+
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $documents_class = new display_documents();
-            $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);    
+            $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
+            $response['check_fields'] = $documents_class->get_check_field_keys($doc_id);
+*/            
             wp_send_json($response);
         }
 

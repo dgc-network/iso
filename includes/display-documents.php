@@ -1097,7 +1097,8 @@ if (!class_exists('display_documents')) {
                 } else {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);    
+                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
+                    $response['check_fields'] = $this->get_check_field_keys($doc_id);
                 }
             }
             wp_send_json($response);
@@ -1233,78 +1234,11 @@ if (!class_exists('display_documents')) {
                             wp_reset_postdata();
                         endif;
 
-/*                        
-                        ?>
-                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
-                        <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($category_id);?>" />
-                        <div id="check-item-list-from-category">
-                            <?php
-                            $inner_query = $items_class->retrieve_check_item_list_data($category_id);
-                            if ($inner_query->have_posts()) :
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $check_item_title = get_the_title();
-                                    $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
-                                    $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
-                                    if ($report_id) {
-                                        $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                                    } elseif ($prev_report_id) {
-                                        $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                                    } else {
-                                        //$field_value = $this->get_field_default_value(get_the_ID());
-                                    }
-
-                                    if ($check_item_type=='heading') {
-                                        ?>
-                                        <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
-                                        <?php
-                                    } elseif ($check_item_type=='checkbox') {
-                                        $is_checked = ($field_value==1) ? 'checked' : '';
-                                        ?>
-                                        <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
-                                        <?php
-                                    } elseif ($check_item_type=='textarea') {
-                                        ?>
-                                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
-                                        <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                                        <?php
-                                    } elseif ($check_item_type=='text') {
-                                        ?>
-                                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
-                                        <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                                        <?php
-                                    } elseif ($check_item_type=='radio') {
-                                        $is_checked = ($field_value==1) ? 'checked' : '';
-                                        ?>
-                                        <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <?php echo $check_item_code.' '.$check_item_title?><br>
-                                        <?php
-                                    }
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-                            ?>
-                        </div>
-                        <?php
-*/
                     } else {
-/*                        
-                        ?>
-                        <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
-                        <div id="check-item-list-from-category"></div>
-                        <?php
-*/                        
+
                     }
                 } else {
-/*                    
-                    $category_id = get_post_meta($report_id, '_check_category', true);
-                    ?>
-                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_check_item_options($field_value, $category_id);?></select>
-                    <?php    
-*/                    
+
                 }
 
             }
@@ -1601,6 +1535,50 @@ if (!class_exists('display_documents')) {
                     $_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
                     $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                     array_push($_array, $_list);
+                endwhile;
+                wp_reset_postdata();
+            }    
+            return $_array;
+        }
+
+        function get_check_field_keys($doc_id=false) {
+            if ($doc_id) $params = array('doc_id' => $doc_id);
+            $query = $this->retrieve_doc_field_data($params);
+            $_array = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    if ($field_type=='_check') {
+                        $items_class = new check_items();
+
+                        $parts = explode('=', $default_value);
+                        $category = $parts[0]; // _category
+                        $code = $parts[1]; // 1724993477
+        
+                        if ($category=='_category') {
+                            if ($code) {
+                                $items_class = new check_items();
+                                $category_id = $items_class->get_check_category_post_id_by_code($code);
+                            } else {
+        
+                            }
+                            $inner_query = $items_class->retrieve_check_item_list_data($category_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $_list = array();
+                                    $_list["check_item_id"] = get_the_ID();
+                                    $_list["check_item_type"] = get_post_meta(get_the_ID(), 'check_item_type', true);
+                                    array_push($_array, $_list);
+                
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+    
+
+                        }        
+                    }
+
+
                 endwhile;
                 wp_reset_postdata();
             }    
