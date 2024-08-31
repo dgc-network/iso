@@ -315,7 +315,7 @@ if (!class_exists('check_items')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( '#', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Items', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                     </tr>
@@ -391,7 +391,7 @@ if (!class_exists('check_items')) {
             <fieldset>
                 <input type="hidden" id="check-item-id" value="<?php echo esc_attr($check_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="check-item-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="check-item-code"><?php echo __( '#: ', 'your-text-domain' );?></label>
                 <input type="text" id="check-item-code" value="<?php echo esc_attr($check_item_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="check-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <input type="text" id="check-item-title" value="<?php echo esc_attr($check_item_title);?>" class="text ui-widget-content ui-corner-all" />
