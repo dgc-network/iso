@@ -1141,8 +1141,33 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = $this->get_field_default_value(get_the_ID());
                         update_post_meta($post_id, $field_name, $default_value);
+
+                        if ($field_type=='_check') {
+                            $items_class = new check_items();
+
+                            $parts = explode('=', $default_value);
+                            $category = $parts[0]; // _category
+                            $code = $parts[1]; // 1724993477
+            
+                            if ($category=='_category') {
+                                if ($code) {
+                                    $items_class = new check_items();
+                                    $category_id = $items_class->get_check_category_post_id_by_code($code);
+                                    $inner_query = $items_class->retrieve_check_item_list_data($category_id);
+                                    if ($inner_query->have_posts()) :
+                                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                                            $default_value = get_post_meta(get_the_ID(), 'field_type', true);
+                                            update_post_meta($post_id, $field_name.get_the_ID(), $default_value);
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
+                                    update_post_meta($post_id, $field_name, $category_id);
+                                }
+                            }            
+                        }
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1670,16 +1695,13 @@ if (!class_exists('display_documents')) {
                                                 $check_item_title = get_the_title();
                                                 $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                                                 $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
-                                                $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
+                                                //$check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
                                                 if ($report_id) {
                                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                                                    $field_value = 1;
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                                                    $field_value = 2;
                                                 } else {
-                                                    $field_value = $check_item_default;
-                                                    $field_value = 3;
+                                                    //$field_value = $check_item_default;
                                                 }
 
                                                 if ($check_item_type=='heading') {
