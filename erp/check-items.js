@@ -118,6 +118,7 @@ jQuery(document).ready(function($) {
     function activate_check_item_list_data(category_id){
         $("#new-check-item").on("click", function() {
             // Extract page number from URL path
+/*            
             const currentUrl = new URL(window.location.href);
             const pathSegments = currentUrl.pathname.split('/');
             let paged = 1;
@@ -125,7 +126,7 @@ jQuery(document).ready(function($) {
             if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
                 paged = parseInt(pathSegments[pageIndex + 1], 10);
             }
-
+*/
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -194,6 +195,7 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {
                 "Save": function () {
+/*                    
                     // Extract page number from URL path
                     const currentUrl = new URL(window.location.href);
                     const pathSegments = currentUrl.pathname.split('/');
@@ -202,7 +204,7 @@ jQuery(document).ready(function($) {
                     if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
                         paged = parseInt(pathSegments[pageIndex + 1], 10);
                     }
-
+*/
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -212,12 +214,9 @@ jQuery(document).ready(function($) {
                             '_category_id': $("#category-id").val(),
                             '_check_item_id': $("#check-item-id").val(),
                             '_check_item_title': $("#check-item-title").val(),
-                            //'_audit_content': $("#audit-content").val(),
                             '_check_item_code': $("#check-item-code").val(),
                             '_check_item_type': $("#check-item-type").val(),
-                            //'_display_on_report_only': $("#is-report-only").is(":checked") ? 1 : 0,
-                            //'_is_radio_option': $("#is-checkbox").is(":checked") ? 1 : 0,
-                            //'paged': paged
+                            '_check_item_default': $("#check-item-default").val(),
                         },
                         success: function (response) {
                             $("#check-item-dialog").dialog('close');
@@ -233,6 +232,7 @@ jQuery(document).ready(function($) {
                 "Delete": function () {
                     if (window.confirm("Are you sure you want to delete this item?")) {
                         // Extract page number from URL path
+/*                        
                         const currentUrl = new URL(window.location.href);
                         const pathSegments = currentUrl.pathname.split('/');
                         let paged = 1;
@@ -240,7 +240,7 @@ jQuery(document).ready(function($) {
                         if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
                             paged = parseInt(pathSegments[pageIndex + 1], 10);
                         }
-
+*/
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
