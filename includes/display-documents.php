@@ -1673,11 +1673,13 @@ if (!class_exists('display_documents')) {
                                                 $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
                                                 if ($report_id) {
                                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                                                    $field_value = 1;
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                                                    $field_value = 2;
                                                 } else {
-                                                    //$field_value = $check_item_default;
-                                                    $field_value = 1;
+                                                    $field_value = $check_item_default;
+                                                    $field_value = 3;
                                                 }
 
                                                 if ($check_item_type=='heading') {
