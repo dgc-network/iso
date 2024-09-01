@@ -1159,7 +1159,7 @@ if (!class_exists('display_documents')) {
                                     $inner_query = $items_class->retrieve_check_item_list_data($category_id);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
-                                            $default_value = get_post_meta(get_the_ID(), 'field_type', true);
+                                            $default_value = get_post_meta(get_the_ID(), 'check_item_default', true);
                                             update_post_meta($post_id, $field_name.get_the_ID(), $default_value);
                                         endwhile;
                                         wp_reset_postdata();
