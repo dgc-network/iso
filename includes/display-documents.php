@@ -1242,7 +1242,7 @@ if (!class_exists('display_documents')) {
                             endwhile;
                             wp_reset_postdata();
                         endif;
-                        update_post_meta($report_id, $field_name, $code);
+                        update_post_meta($report_id, $field_name, $category_id);
                     }
                 } else {
 
