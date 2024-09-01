@@ -1676,7 +1676,8 @@ if (!class_exists('display_documents')) {
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 } else {
-                                                    $field_value = $check_item_default;
+                                                    //$field_value = $check_item_default;
+                                                    $field_value = 1;
                                                 }
 
                                                 if ($check_item_type=='heading') {
