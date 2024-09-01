@@ -1700,7 +1700,7 @@ if (!class_exists('display_documents')) {
                                                 } elseif ($check_item_type=='radio') {
                                                     $is_checked = ($field_value==1) ? 'checked' : '';
                                                     ?>
-                                                    <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                                                    <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
                                                     <?php
                                                 } else {
                                                     ?>
