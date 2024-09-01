@@ -920,11 +920,11 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_check') {
                         $.each(response.check_fields, function(index, inner_value) {
-                            field_name_tag = '#' + inner_value.check_item_id;
+                            const check_name_tag = '#' + inner_value.check_item_id;
                             if (inner_value.check_item_type === 'checkbox' || inner_value.check_item_type === 'radio') {
-                                ajaxData[inner_value.check_item_id] = $(field_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[inner_value.check_item_id] = $(field_name_tag).val();
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).val();
                             }
                         });
                     }
