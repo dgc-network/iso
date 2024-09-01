@@ -837,7 +837,7 @@ jQuery(document).ready(function($) {
     }
     
     function activate_doc_report_dialog_data(response){
-
+/*
         $(".check-category").on( "change", function() {
             const ajaxData = {
                 'action': 'get_check_items_from_category',
@@ -861,7 +861,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-        
+*/        
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
@@ -879,11 +879,11 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_check') {
                         $.each(response.check_fields, function(index, inner_value) {
-                            const field_name_tag = '#' + value.field_name + inner_value.check_item_id;
+                            const check_name_tag = '#' + inner_value.check_item_id;
                             if (inner_value.check_item_type === 'checkbox' || inner_value.check_item_type === 'radio') {
-                                ajaxData[value.field_name + inner_value.check_item_id] = $(field_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[value.field_name + inner_value.check_item_id] = $(field_name_tag).val();
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).val();
                             }
                         });
                     }
@@ -984,11 +984,11 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_check') {
                         $.each(response.check_fields, function(index, inner_value) {
-                            const field_name_tag = '#' + value.field_name + inner_value.check_item_id;
+                            const check_name_tag = '#' + inner_value.check_item_id;
                             if (inner_value.check_item_type === 'checkbox' || inner_value.check_item_type === 'radio') {
-                                ajaxData[value.field_name + inner_value.check_item_id] = $(field_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[value.field_name + inner_value.check_item_id] = $(field_name_tag).val();
+                                ajaxData[inner_value.check_item_id] = $(check_name_tag).val();
                             }
                         });
                     }

@@ -335,6 +335,11 @@ if (!class_exists('check_items')) {
                             $check_item_code = '<b>'.$check_item_code.'</b>';
                             $check_item_title = '<b>'.$check_item_title.'</b>';
                             $check_item_type='';
+                            $check_item_default='';
+                        }
+                        if ($check_item_type=='label') {
+                            $check_item_type='';
+                            $check_item_default='';
                         }
                         ?>
                         <tr id="edit-check-item-<?php the_ID();?>" data-check-item-id="<?php echo esc_attr(get_the_ID());?>">
