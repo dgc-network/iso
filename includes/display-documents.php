@@ -1670,12 +1670,13 @@ if (!class_exists('display_documents')) {
                                                 $check_item_title = get_the_title();
                                                 $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                                                 $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                                                $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
                                                 if ($report_id) {
                                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 } else {
-                                                    //$field_value = $this->get_field_default_value(get_the_ID());
+                                                    $field_value = $check_item_default;
                                                 }
 
                                                 if ($check_item_type=='heading') {
@@ -1713,13 +1714,6 @@ if (!class_exists('display_documents')) {
                                         ?>
                                     </div>
                                     <?php
-/*
-                                } else {
-                                    ?>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
-                                    <div id="check-item-list-from-category"></div>
-                                    <?php
-*/                                    
                                 }
                             } else {
                                 $category_id = get_post_meta($report_id, '_check_category', true);

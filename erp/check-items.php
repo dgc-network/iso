@@ -318,6 +318,7 @@ if (!class_exists('check_items')) {
                         <th><?php echo __( '#', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Items', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Default', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-check-item-list">
@@ -329,6 +330,7 @@ if (!class_exists('check_items')) {
                         $check_item_title = get_the_title();
                         $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                         $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                        $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
                         if ($check_item_type=='heading') {
                             $check_item_code = '<b>'.$check_item_code.'</b>';
                             $check_item_title = '<b>'.$check_item_title.'</b>';
@@ -339,6 +341,7 @@ if (!class_exists('check_items')) {
                             <td style="text-align:center;"><?php echo $check_item_code;?></td>
                             <td><?php echo $check_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($check_item_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($check_item_default);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -404,6 +407,8 @@ if (!class_exists('check_items')) {
                     <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="label" <?php echo ($check_item_type=='label') ? 'selected' : ''?>><?php echo __( 'Label', 'your-text-domain' );?></option>
                 </select>
+                <label for="check-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
+                <input type="text" id="check-item-default" value="<?php echo esc_attr($check_item_default);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -422,6 +427,7 @@ if (!class_exists('check_items')) {
                 $check_item_id = sanitize_text_field($_POST['_check_item_id']);
                 $check_item_code = sanitize_text_field($_POST['_check_item_code']);
                 $check_item_type = sanitize_text_field($_POST['_check_item_type']);
+                $check_item_default = sanitize_text_field($_POST['_check_item_default']);
                 $data = array(
                     'ID'           => $check_item_id,
                     'post_title'   => sanitize_text_field($_POST['_check_item_title']),
@@ -429,6 +435,7 @@ if (!class_exists('check_items')) {
                 wp_update_post( $data );
                 update_post_meta($check_item_id, 'check_item_code', $check_item_code);
                 update_post_meta($check_item_id, 'check_item_type', $check_item_type);
+                update_post_meta($check_item_id, 'check_item_default', $check_item_default);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -494,6 +501,7 @@ if (!class_exists('check_items')) {
                     $check_item_title = get_the_title();
                     $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
                     $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
+                    $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
                     if ($check_item_type=='heading') {
                         ?>
                         <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
@@ -538,17 +546,6 @@ if (!class_exists('check_items')) {
                 wp_reset_postdata();
             endif;
             $response['html_contain'] = ob_get_clean();
-/*            
-            $check_item_list = ob_get_clean();
-
-            $response['html_contain'] = $check_item_list;
-
-            $report_id = sanitize_text_field($_POST['_report_id']);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $documents_class = new display_documents();
-            $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
-            $response['check_fields'] = $documents_class->get_check_field_keys($doc_id);
-*/            
             wp_send_json($response);
         }
 
