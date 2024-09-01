@@ -1233,9 +1233,7 @@ if (!class_exists('display_documents')) {
                             endwhile;
                             wp_reset_postdata();
                         endif;
-
-                    } else {
-
+                        update_post_meta($report_id, $field_name, $code);
                     }
                 } else {
 
@@ -1715,12 +1713,13 @@ if (!class_exists('display_documents')) {
                                         ?>
                                     </div>
                                     <?php
-
+/*
                                 } else {
                                     ?>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all check-category"><?php echo $items_class->select_check_category_options($field_value);?></select>
                                     <div id="check-item-list-from-category"></div>
                                     <?php
+*/                                    
                                 }
                             } else {
                                 $category_id = get_post_meta($report_id, '_check_category', true);

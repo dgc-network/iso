@@ -498,11 +498,42 @@ if (!class_exists('check_items')) {
                         ?>
                         <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
                         <?php
+                    } elseif ($check_item_type=='checkbox') {
+                        $is_checked = ($field_value==1) ? 'checked' : '';
+                        ?>
+                        <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <?php
+                    } elseif ($check_item_type=='textarea') {
+                        ?>
+                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
+                        <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                        <?php
+                    } elseif ($check_item_type=='text') {
+                        ?>
+                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
+                        <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                        <?php
+                    } elseif ($check_item_type=='radio') {
+                        $is_checked = ($field_value==1) ? 'checked' : '';
+                        ?>
+                        <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <?php
+                    } else {
+                        ?>
+                        <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <?php
+                    }
+/*
+                    if ($check_item_type=='heading') {
+                        ?>
+                        <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
+                        <?php
                     } else {
                         ?>
                         <input type="checkbox" id="" value="" checked /> <?php echo $check_item_code.' '.$check_item_title?><br>
                         <?php
                     }
+*/                        
                 endwhile;
                 wp_reset_postdata();
             endif;
