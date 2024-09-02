@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-sub-category-"]').on("click", function () {
-            const category_id = this.id.substring(20);
+            const category_id = this.id.substring(18);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -169,7 +169,7 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-sub-item-"]').on("click", function () {
-            const sub_item_id = this.id.substring(16);
+            const sub_item_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
