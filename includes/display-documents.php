@@ -780,9 +780,7 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
-                                        } elseif ($field_type=='_check') {
-                                            //$category_code = get_post_meta($field_value, 'category_code', true);
-                                            //echo esc_html(get_the_title($field_value).'('.$customer_code.')');
+                                        } elseif ($field_type=='_sub') {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_audit') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
@@ -1145,17 +1143,15 @@ if (!class_exists('display_documents')) {
                         $default_value = $this->get_field_default_value(get_the_ID());
                         update_post_meta($post_id, $field_name, $default_value);
 
-                        if ($field_type=='_check') {
-                            $items_class = new sub_items();
-
+                        if ($field_type=='_sub') {
                             $parts = explode('=', $default_value);
-                            $category = $parts[0]; // _category
-                            $code = $parts[1]; // 1724993477
+                            $sub_key = $parts[0]; // _category
+                            $sub_value = $parts[1]; // 1724993477
             
-                            if ($category=='_category') {
-                                if ($code) {
+                            if ($sub_key=='_category') {
+                                if ($sub_value) {
                                     $items_class = new sub_items();
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($code);
+                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1248,17 +1244,15 @@ if (!class_exists('display_documents')) {
 
             update_post_meta($report_id, $field_name, $field_value);
 
-            if ($field_type=='_check'){
-                $items_class = new sub_items();
-
+            if ($field_type=='_sub') {
                 $parts = explode('=', $default_value);
-                $category = $parts[0]; // _category
-                $code = $parts[1]; // 1724993477
+                $sub_key = $parts[0]; // _category
+                $sub_value = $parts[1]; // 1724993477
 
-                if ($category=='_category') {
-                    if ($code) {
+                if ($sub_key=='_category') {
+                    if ($sub_value) {
                         $items_class = new sub_items();
-                        $category_id = $items_class->get_sub_category_post_id_by_code($code);
+                        $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1269,8 +1263,6 @@ if (!class_exists('display_documents')) {
                         endif;
                         update_post_meta($report_id, $field_name, $category_id);
                     }
-                } else {
-
                 }
 
             }
@@ -1458,7 +1450,7 @@ if (!class_exists('display_documents')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
                     <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
-                    <option value="_check" <?php echo ($field_type=='_check') ? 'selected' : ''?>><?php echo __( '_check', 'your-text-domain' );?></option>
+                    <option value="_sub" <?php echo ($field_type=='_sub') ? 'selected' : ''?>><?php echo __( '_sub', 'your-text-domain' );?></option>
                     <option value="_audit" <?php echo ($field_type=='_audit') ? 'selected' : ''?>><?php echo __( '_audit', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
@@ -1573,37 +1565,30 @@ if (!class_exists('display_documents')) {
                     $field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    if ($field_type=='_check') {
-                        $items_class = new sub_items();
-
-                        $parts = explode('=', $default_value);
-                        $category = $parts[0]; // _category
-                        $code = $parts[1]; // 1724993477
-        
-                        if ($category=='_category') {
-                            if ($code) {
-                                $items_class = new sub_items();
-                                $category_id = $items_class->get_sub_category_post_id_by_code($code);
-                            } else {
-        
-                            }
-                            $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
-                            if ($inner_query->have_posts()) :
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $_list = array();
-                                    $_list["sub_item_id"] = $field_name.get_the_ID();
-                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                    array_push($_array, $_list);
                 
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-    
-
+                    if ($field_type=='_sub') {
+                        $parts = explode('=', $default_value);
+                        $sub_key = $parts[0]; // _category
+                        $sub_value = $parts[1]; // 1724993477
+        
+                        if ($sub_key=='_category') {
+                            if ($sub_value) {
+                                $items_class = new sub_items();
+                                $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        $_list = array();
+                                        $_list["sub_item_id"] = $field_name.get_the_ID();
+                                        $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                        array_push($_array, $_list);
+                    
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                            }
                         }        
                     }
-
-
                 endwhile;
                 wp_reset_postdata();
             }    
@@ -1673,7 +1658,7 @@ if (!class_exists('display_documents')) {
                             }
                             break;
 
-                        case ($field_type=='_check'):
+                        case ($field_type=='_sub'):
                             $items_class = new sub_items();
 
                             $parts = explode('=', $default_value);
