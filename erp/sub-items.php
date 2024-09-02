@@ -295,7 +295,7 @@ if (!class_exists('sub_items')) {
         // sub-item
         function register_sub_item_post_type() {
             $labels = array(
-                'menu_name'     => _x('Check', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('Sub-item', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,

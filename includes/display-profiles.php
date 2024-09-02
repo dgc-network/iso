@@ -200,6 +200,79 @@ if (!class_exists('display_profiles')) {
             $wpdb->query($sql);
         }
         
+        function rename_meta_key_for_sub_items() {
+            global $wpdb;
+        
+            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
+            $posts = $wpdb->get_results("
+                SELECT post_id 
+                FROM $wpdb->postmeta 
+                WHERE meta_key = 'check_item_name'
+            ");
+        
+            // Loop through the posts and update the meta key
+            foreach ( $posts as $post ) {
+                $post_id = $post->post_id;
+        
+                // Get the old meta value
+                $meta_value = get_post_meta( $post_id, 'check_item_name', true );
+        
+                // Update the meta key to 'sub_item_name'
+                update_post_meta( $post_id, 'sub_item_name', $meta_value );
+        
+                // Optionally, delete the old meta key
+                delete_post_meta( $post_id, 'check_item_name' );
+            }
+
+            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
+            $posts = $wpdb->get_results("
+                SELECT post_id 
+                FROM $wpdb->postmeta 
+                WHERE meta_key = 'check_item_type'
+            ");
+        
+            // Loop through the posts and update the meta key
+            foreach ( $posts as $post ) {
+                $post_id = $post->post_id;
+        
+                // Get the old meta value
+                $meta_value = get_post_meta( $post_id, 'check_item_type', true );
+        
+                // Update the meta key to 'sub_item_name'
+                update_post_meta( $post_id, 'sub_item_type', $meta_value );
+        
+                // Optionally, delete the old meta key
+                delete_post_meta( $post_id, 'check_item_type' );
+            }
+
+            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
+            $posts = $wpdb->get_results("
+                SELECT post_id 
+                FROM $wpdb->postmeta 
+                WHERE meta_key = 'check_item_default'
+            ");
+        
+            // Loop through the posts and update the meta key
+            foreach ( $posts as $post ) {
+                $post_id = $post->post_id;
+        
+                // Get the old meta value
+                $meta_value = get_post_meta( $post_id, 'check_item_default', true );
+        
+                // Update the meta key to 'sub_item_name'
+                update_post_meta( $post_id, 'sub_item_default', $meta_value );
+        
+                // Optionally, delete the old meta key
+                delete_post_meta( $post_id, 'check_item_default' );
+            }
+        }
+        
+        // Run the function
+        //rename_meta_key_for_sub_items();
+        
+        // Optionally, you can hook this function to 'init' or 'admin_init' so it runs automatically
+        // add_action('init', 'rename_meta_key_for_sub_items');
+        
         // Hook to run the function during the 'init' action
         //add_action('init', 'update_post_type_check_category_to_sub_category');
         
