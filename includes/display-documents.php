@@ -1096,7 +1096,7 @@ if (!class_exists('display_documents')) {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['check_fields'] = $this->get_check_field_keys($doc_id);
+                    $response['check_fields'] = $this->get_sub_item_keys($doc_id);
                 }
             }
             wp_send_json($response);
@@ -1148,7 +1148,7 @@ if (!class_exists('display_documents')) {
                             $sub_key = $parts[0]; // _category
                             $sub_value = $parts[1]; // 1724993477
             
-                            if ($sub_key=='_category') {
+                            if ($sub_key=='_embedded'||$sub_key=='_category') {
                                 if ($sub_value) {
                                     $items_class = new sub_items();
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1249,7 +1249,7 @@ if (!class_exists('display_documents')) {
                 $sub_key = $parts[0]; // _category
                 $sub_value = $parts[1]; // 1724993477
 
-                if ($sub_key=='_category') {
+                if ($sub_key=='_embedded'||$sub_key=='_category') {
                     if ($sub_value) {
                         $items_class = new sub_items();
                         $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1556,7 +1556,7 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function get_check_field_keys($doc_id=false) {
+        function get_sub_item_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();
@@ -1568,10 +1568,10 @@ if (!class_exists('display_documents')) {
                 
                     if ($field_type=='_sub') {
                         $parts = explode('=', $default_value);
-                        $sub_key = $parts[0]; // _category
+                        $sub_key = $parts[0]; // _embedded, _order_item, _select
                         $sub_value = $parts[1]; // 1724993477
         
-                        if ($sub_key=='_category') {
+                        if ($sub_key=='_embedded'||$sub_key=='_category') {
                             if ($sub_value) {
                                 $items_class = new sub_items();
                                 $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1659,16 +1659,14 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_sub'):
-                            $items_class = new sub_items();
-
                             $parts = explode('=', $default_value);
-                            $category = $parts[0]; // _category
-                            $code = $parts[1]; // 1724993477
-
-                            if ($category=='_category') {
-                                if ($code) {
+                            $sub_key = $parts[0]; // _embedded, _order_item, _select
+                            $sub_value = $parts[1]; // 1724993477
+            
+                            if ($sub_key=='_embedded'||$sub_key=='_category') {
+                                if ($sub_value) {
                                     $items_class = new sub_items();
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($code);
+                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
                                     <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($category_id);?>" />
@@ -1680,13 +1678,10 @@ if (!class_exists('display_documents')) {
                                                 $sub_item_title = get_the_title();
                                                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
                                                 $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                                //$sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
                                                 if ($report_id) {
                                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                                                } else {
-                                                    //$field_value = $sub_item_default;
                                                 }
 
                                                 if ($sub_item_type=='heading') {
