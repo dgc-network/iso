@@ -95,7 +95,7 @@ if (!class_exists('display_profiles')) {
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="check-category" <?php echo ($select_option=="check-category") ? 'selected' : ''?>><?php echo __( '查檢項目', 'your-text-domain' );?></option>
+                <option value="sub-category" <?php echo ($select_option=="sub-category") ? 'selected' : ''?>><?php echo __( '子項目', 'your-text-domain' );?></option>
             </select>
             <?php
         }
@@ -114,6 +114,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='doc-category') echo $this->display_doc_category_list();
 
+                if ($_GET['_select_profile']=='update_post_type_check_category_to_sub_category') echo $this->update_post_type_check_category_to_sub_category();
+                if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
+
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -122,9 +125,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
 
-                $items_class = new check_items();
+                $items_class = new sub_items();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
-                if ($_GET['_select_profile']=='check-category') echo $items_class->display_check_category_list();
+                if ($_GET['_select_profile']=='sub-category') echo $items_class->display_sub_category_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
@@ -177,6 +180,29 @@ if (!class_exists('display_profiles')) {
             }
         }
 
+        function update_post_type_check_category_to_sub_category() {
+            global $wpdb;
+        
+            // The SQL query to update the post type
+            $sql = "UPDATE {$wpdb->prefix}posts SET post_type = 'sub-category' WHERE post_type = 'check-category'";
+        
+            // Execute the query
+            $wpdb->query($sql);
+        }
+        
+        function update_post_type_check_item_to_sub_item() {
+            global $wpdb;
+        
+            // The SQL query to update the post type
+            $sql = "UPDATE {$wpdb->prefix}posts SET post_type = 'sub-item' WHERE post_type = 'check-item'";
+        
+            // Execute the query
+            $wpdb->query($sql);
+        }
+        
+        // Hook to run the function during the 'init' action
+        //add_action('init', 'update_post_type_check_category_to_sub_category');
+        
         // my-profile scripts
         function display_my_profile() {
             ob_start();
@@ -1776,7 +1802,7 @@ if (!class_exists('display_profiles')) {
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             $cards_class = new erp_cards();
-            $items_class = new check_items();
+            $items_class = new sub_items();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);

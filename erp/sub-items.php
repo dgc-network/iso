@@ -3,32 +3,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if (!class_exists('check_items')) {
-    class check_items {
+if (!class_exists('sub_items')) {
+    class sub_items {
         // Class constructor
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_check_items_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
             //add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
 
-            add_action( 'wp_ajax_get_check_category_dialog_data', array( $this, 'get_check_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_check_category_dialog_data', array( $this, 'get_check_category_dialog_data' ) );
-            add_action( 'wp_ajax_set_check_category_dialog_data', array( $this, 'set_check_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_check_category_dialog_data', array( $this, 'set_check_category_dialog_data' ) );
-            add_action( 'wp_ajax_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_check_category_dialog_data', array( $this, 'del_check_category_dialog_data' ) );
+            add_action( 'wp_ajax_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
+            add_action( 'wp_ajax_set_sub_category_dialog_data', array( $this, 'set_sub_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_sub_category_dialog_data', array( $this, 'set_sub_category_dialog_data' ) );
+            add_action( 'wp_ajax_del_sub_category_dialog_data', array( $this, 'del_sub_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_sub_category_dialog_data', array( $this, 'del_sub_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_check_item_dialog_data', array( $this, 'get_check_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_check_item_dialog_data', array( $this, 'get_check_item_dialog_data' ) );
-            add_action( 'wp_ajax_set_check_item_dialog_data', array( $this, 'set_check_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_check_item_dialog_data', array( $this, 'set_check_item_dialog_data' ) );
-            add_action( 'wp_ajax_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_check_item_dialog_data', array( $this, 'del_check_item_dialog_data' ) );
+            add_action( 'wp_ajax_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_set_sub_item_dialog_data', array( $this, 'set_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_sub_item_dialog_data', array( $this, 'set_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
-            add_action( 'wp_ajax_nopriv_get_check_items_from_category', array( $this, 'get_check_items_from_category' ) );
+            add_action( 'wp_ajax_get_sub_items_from_category', array( $this, 'get_sub_items_from_category' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_items_from_category', array( $this, 'get_sub_items_from_category' ) );
             
-            add_action( 'wp_ajax_sort_check_item_list_data', array( $this, 'sort_check_item_list_data' ) );
-            add_action( 'wp_ajax_nopriv_sort_check_item_list_data', array( $this, 'sort_check_item_list_data' ) );
+            add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
 
             add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
@@ -49,40 +49,40 @@ if (!class_exists('check_items')) {
 
         }
 
-        function enqueue_check_items_scripts() {
+        function enqueue_sub_items_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-            wp_enqueue_script('check-items', plugins_url('check-items.js', __FILE__), array('jquery'), time());
-            wp_localize_script('check-items', 'ajax_object', array(
+            wp_enqueue_script('sub-items', plugins_url('sub-items.js', __FILE__), array('jquery'), time());
+            wp_localize_script('sub-items', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('check-items-nonce'), // Generate nonce
+                'nonce'    => wp_create_nonce('sub-items-nonce'), // Generate nonce
             ));                
         }
 
-        // check-category
-        function register_check_category_post_type() {
+        // sub-category
+        function register_sub_category_post_type() {
             $labels = array(
-                'menu_name'     => _x('check-category', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('sub-category', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
             );
-            register_post_type( 'check-category', $args );
+            register_post_type( 'sub-category', $args );
         }
         
-        function display_check_category_list() {
+        function display_sub_category_list() {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '查檢項目類別', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '子項目類別', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile('check-category');?></div>
+                <div><?php $profiles_class->display_select_profile('sub-category');?></div>
                 <div style="text-align: right"></div>                        
             </div>
 
@@ -95,13 +95,13 @@ if (!class_exists('check_items')) {
                     </thead>
                     <tbody>
                     <?php
-                    $query = $this->retrieve_check_category_data();
+                    $query = $this->retrieve_sub_category_data();
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_code = get_post_meta(get_the_ID(), 'category_code', true);
                             $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
-                            <tr id="edit-check-category-<?php the_ID();?>">
+                            <tr id="edit-sub-category-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($category_code);?></td>
                                 <td><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
@@ -114,20 +114,20 @@ if (!class_exists('check_items')) {
                     </tbody>
                 </table>
                 <?php if ($is_site_admin) {?>
-                    <div id="new-check-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="new-sub-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
             </fieldset>
-            <div id="check-category-dialog" title="Category dialog"></div>
+            <div id="sub-category-dialog" title="Category dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_check_category_data($paged = 1) {
+        function retrieve_sub_category_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
             $args = array(
-                'post_type'      => 'check-category',
+                'post_type'      => 'sub-category',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
@@ -160,7 +160,7 @@ if (!class_exists('check_items')) {
                 unset($args['s']);
 
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('check-category');
+                $meta_keys = get_post_type_meta_keys('sub-category');
                 $meta_query_all_keys = array('relation' => 'OR');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
@@ -176,7 +176,7 @@ if (!class_exists('check_items')) {
             return $query;
         }
 
-        function display_check_category_dialog($paged=1, $category_id=false) {
+        function display_sub_category_dialog($paged=1, $category_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
@@ -192,8 +192,8 @@ if (!class_exists('check_items')) {
                 <input type="text" id="category-code" value="<?php echo esc_attr($category_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="check-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_check_item_list($category_id);?>
+                <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
+                <?php echo $this->display_sub_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
             </fieldset>
@@ -201,15 +201,15 @@ if (!class_exists('check_items')) {
             return ob_get_clean();
         }
 
-        function get_check_category_dialog_data() {
+        function get_sub_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
             $paged = sanitize_text_field($_POST['paged']);
-            $response['html_contain'] = $this->display_check_category_dialog($paged, $category_id);
+            $response['html_contain'] = $this->display_sub_category_dialog($paged, $category_id);
             wp_send_json($response);
         }
 
-        function set_check_category_dialog_data() {
+        function set_sub_category_dialog_data() {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_code = sanitize_text_field($_POST['_category_code']);
@@ -229,24 +229,24 @@ if (!class_exists('check_items')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'check-category',
+                    'post_type'     => 'sub-category',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'category_code', time());
             }
-            $response = array('html_contain' => $this->display_check_category_list());
+            $response = array('html_contain' => $this->display_sub_category_list());
             wp_send_json($response);
         }
 
-        function del_check_category_dialog_data() {
+        function del_sub_category_dialog_data() {
             wp_delete_post($_POST['_category_id'], true);
-            $response = array('html_contain' => $this->display_check_category_list());
+            $response = array('html_contain' => $this->display_sub_category_list());
             wp_send_json($response);
         }
 
-        function select_check_category_options($selected_option=0) {
-            $query = $this->retrieve_check_category_data();
+        function select_sub_category_options($selected_option=0) {
+            $query = $this->retrieve_sub_category_data();
             $options = '<option value="">Select category</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_code = get_post_meta(get_the_ID(), 'category_code', true);
@@ -257,12 +257,12 @@ if (!class_exists('check_items')) {
             return $options;
         }
         
-        function get_check_category_post_id_by_code($code) {
+        function get_sub_category_post_id_by_code($code) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
             $args = array(
-                'post_type'  => 'check-category',
+                'post_type'  => 'sub-category',
                 'meta_query' => array(
                     array(
                         'key'   => 'site_id',
@@ -292,8 +292,8 @@ if (!class_exists('check_items')) {
             return null;
         }
 
-        // check-item
-        function register_check_item_post_type() {
+        // sub-item
+        function register_sub_item_post_type() {
             $labels = array(
                 'menu_name'     => _x('Check', 'admin menu', 'textdomain'),
             );
@@ -301,16 +301,16 @@ if (!class_exists('check_items')) {
                 'labels'        => $labels,
                 'public'        => true,
             );
-            register_post_type( 'check-item', $args );
+            register_post_type( 'sub-item', $args );
         }
 
-        function display_check_item_list($category_id=false) {
+        function display_sub_item_list($category_id=false) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
-            <div id="check-item-list">
+            <div id="sub-item-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -321,32 +321,32 @@ if (!class_exists('check_items')) {
                         <th><?php echo __( 'Default', 'your-text-domain' );?></th>
                     </tr>
                 </thead>
-                <tbody id="sortable-check-item-list">
+                <tbody id="sortable-sub-item-list">
                 <?php
                 
-                $query = $this->retrieve_check_item_list_data($category_id);
+                $query = $this->retrieve_sub_item_list_data($category_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $check_item_title = get_the_title();
-                        $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
-                        $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
-                        $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
-                        if ($check_item_type=='heading') {
-                            $check_item_code = '<b>'.$check_item_code.'</b>';
-                            $check_item_title = '<b>'.$check_item_title.'</b>';
-                            $check_item_type='';
-                            $check_item_default='';
+                        $sub_item_title = get_the_title();
+                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        if ($sub_item_type=='heading') {
+                            $sub_item_code = '<b>'.$sub_item_code.'</b>';
+                            $sub_item_title = '<b>'.$sub_item_title.'</b>';
+                            $sub_item_type='';
+                            $sub_item_default='';
                         }
-                        if ($check_item_type=='label') {
-                            $check_item_type='';
-                            $check_item_default='';
+                        if ($sub_item_type=='label') {
+                            $sub_item_type='';
+                            $sub_item_default='';
                         }
                         ?>
-                        <tr id="edit-check-item-<?php the_ID();?>" data-check-item-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"><?php echo $check_item_code;?></td>
-                            <td><?php echo $check_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($check_item_type);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($check_item_default);?></td>
+                        <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
+                            <td style="text-align:center;"><?php echo $sub_item_code;?></td>
+                            <td><?php echo $sub_item_title;?></td>
+                            <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -356,18 +356,18 @@ if (!class_exists('check_items')) {
                 </tbody>
             </table>
             <?php if ($is_site_admin) {?>
-                <div id="new-check-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
             </div>
-            <div id="check-item-dialog" title="Check item dialog"></div>
+            <div id="sub-item-dialog" title="Check item dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_check_item_list_data($category_id=false) {
+        function retrieve_sub_item_list_data($category_id=false) {
             $args = array(
-                'post_type'      => 'check-item',
+                'post_type'      => 'sub-item',
                 'posts_per_page' => -1,
                 //'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
@@ -389,58 +389,58 @@ if (!class_exists('check_items')) {
             return $query;
         }
 
-        function display_check_item_dialog($check_item_id=false) {
+        function display_sub_item_dialog($sub_item_id=false) {
             ob_start();
-            $category_id = get_post_meta($check_item_id, 'category_id', true);
-            $check_item_code = get_post_meta($check_item_id, 'check_item_code', true);
-            $check_item_title = get_the_title($check_item_id);
-            $check_item_type = get_post_meta($check_item_id, 'check_item_type', true);
+            $category_id = get_post_meta($sub_item_id, 'category_id', true);
+            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
+            $sub_item_title = get_the_title($sub_item_id);
+            $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             ?>
             <fieldset>
-                <input type="hidden" id="check-item-id" value="<?php echo esc_attr($check_item_id);?>" />
+                <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="check-item-code"><?php echo __( '#: ', 'your-text-domain' );?></label>
-                <input type="text" id="check-item-code" value="<?php echo esc_attr($check_item_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="check-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <input type="text" id="check-item-title" value="<?php echo esc_attr($check_item_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="check-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
-                <select id="check-item-type" class="text ui-widget-content ui-corner-all">
-                    <option value="heading" <?php echo ($check_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="checkbox" <?php echo ($check_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
-                    <option value="text" <?php echo ($check_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="textarea" <?php echo ($check_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($check_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
-                    <option value="label" <?php echo ($check_item_type=='label') ? 'selected' : ''?>><?php echo __( 'Label', 'your-text-domain' );?></option>
+                <label for="sub-item-code"><?php echo __( '#: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-item-code" value="<?php echo esc_attr($sub_item_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-item-title" value="<?php echo esc_attr($sub_item_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
+                <select id="sub-item-type" class="text ui-widget-content ui-corner-all">
+                    <option value="heading" <?php echo ($sub_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($sub_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($sub_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($sub_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($sub_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="label" <?php echo ($sub_item_type=='label') ? 'selected' : ''?>><?php echo __( 'Label', 'your-text-domain' );?></option>
                 </select>
-                <label for="check-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
-                <input type="text" id="check-item-default" value="<?php echo esc_attr($check_item_default);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-item-default" value="<?php echo esc_attr($sub_item_default);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
         }
 
-        function get_check_item_dialog_data() {
+        function get_sub_item_dialog_data() {
             $response = array();
-            $check_item_id = sanitize_text_field($_POST['_check_item_id']);
-            $response['html_contain'] = $this->display_check_item_dialog($check_item_id);
+            $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
+            $response['html_contain'] = $this->display_sub_item_dialog($sub_item_id);
             wp_send_json($response);
         }
 
-        function set_check_item_dialog_data() {
+        function set_sub_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
-            if( isset($_POST['_check_item_id']) ) {
-                $check_item_id = sanitize_text_field($_POST['_check_item_id']);
-                $check_item_code = sanitize_text_field($_POST['_check_item_code']);
-                $check_item_type = sanitize_text_field($_POST['_check_item_type']);
-                $check_item_default = sanitize_text_field($_POST['_check_item_default']);
+            if( isset($_POST['_sub_item_id']) ) {
+                $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
+                $sub_item_code = sanitize_text_field($_POST['_sub_item_code']);
+                $sub_item_type = sanitize_text_field($_POST['_sub_item_type']);
+                $sub_item_default = sanitize_text_field($_POST['_sub_item_default']);
                 $data = array(
-                    'ID'           => $check_item_id,
-                    'post_title'   => sanitize_text_field($_POST['_check_item_title']),
+                    'ID'           => $sub_item_id,
+                    'post_title'   => sanitize_text_field($_POST['_sub_item_title']),
                 );
                 wp_update_post( $data );
-                update_post_meta($check_item_id, 'check_item_code', $check_item_code);
-                update_post_meta($check_item_id, 'check_item_type', $check_item_type);
-                update_post_meta($check_item_id, 'check_item_default', $check_item_default);
+                update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
+                update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
+                update_post_meta($sub_item_id, 'sub_item_default', $sub_item_default);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -449,101 +449,101 @@ if (!class_exists('check_items')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'check-item',
+                    'post_type'     => 'sub-item',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'category_id', $category_id);
                 update_post_meta($post_id, 'sorting_key', 999);
             }
-            $response = array('html_contain' => $this->display_check_item_list($category_id));
+            $response = array('html_contain' => $this->display_sub_item_list($category_id));
             wp_send_json($response);
         }
 
-        function del_check_item_dialog_data() {
+        function del_sub_item_dialog_data() {
             $category_id = sanitize_text_field($_POST['_category_id']);
-            wp_delete_post($_POST['_check_item_id'], true);
-            $response = array('html_contain' => $this->display_check_item_list($category_id));
+            wp_delete_post($_POST['_sub_item_id'], true);
+            $response = array('html_contain' => $this->display_sub_item_list($category_id));
             wp_send_json($response);
         }
 
-        function sort_check_item_list_data() {
+        function sort_sub_item_list_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_check_item_id_array']) && is_array($_POST['_check_item_id_array'])) {
-                $check_item_id_array = array_map('absint', $_POST['_check_item_id_array']);        
-                foreach ($check_item_id_array as $index => $check_item_id) {
-                    update_post_meta($check_item_id, 'sorting_key', $index);
+            if (isset($_POST['_sub_item_id_array']) && is_array($_POST['_sub_item_id_array'])) {
+                $sub_item_id_array = array_map('absint', $_POST['_sub_item_id_array']);        
+                foreach ($sub_item_id_array as $index => $sub_item_id) {
+                    update_post_meta($sub_item_id, 'sorting_key', $index);
                 }
                 $response = array('success' => true);
             }
             wp_send_json($response);
         }
 
-        function select_check_item_options($selected_option=false, $category_id=false) {
-            $query = $this->retrieve_check_item_list_data($category_id);
+        function select_sub_item_options($selected_option=false, $category_id=false) {
+            $query = $this->retrieve_sub_item_list_data($category_id);
             $options = '<option value="">Select '.get_the_title($category_id).' check item</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
-                $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
-                if ($check_item_type=='heading'){
-                    $check_item_title = '<b>'.get_the_title().'</b>';
+                $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                if ($sub_item_type=='heading'){
+                    $sub_item_title = '<b>'.get_the_title().'</b>';
                 } else {
-                    $check_item_title = $check_item_code.' '.get_the_title();
+                    $sub_item_title = $sub_item_code.' '.get_the_title();
                 }
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $check_item_title . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $sub_item_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
         }
 
-        function get_check_items_from_category() {
+        function get_sub_items_from_category() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $query = $this->retrieve_check_item_list_data($category_id);
+            $query = $this->retrieve_sub_item_list_data($category_id);
             ob_start();
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $check_item_title = get_the_title();
-                    $check_item_code = get_post_meta(get_the_ID(), 'check_item_code', true);
-                    $check_item_type = get_post_meta(get_the_ID(), 'check_item_type', true);
-                    $check_item_default = get_post_meta(get_the_ID(), 'check_item_default', true);
-                    if ($check_item_type=='heading') {
+                    $sub_item_title = get_the_title();
+                    $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                    $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                    $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                    if ($sub_item_type=='heading') {
                         ?>
-                        <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
+                        <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
                         <?php
-                    } elseif ($check_item_type=='checkbox') {
+                    } elseif ($sub_item_type=='checkbox') {
                         $is_checked = ($field_value==1) ? 'checked' : '';
                         ?>
-                        <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
                         <?php
-                    } elseif ($check_item_type=='textarea') {
+                    } elseif ($sub_item_type=='textarea') {
                         ?>
-                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
+                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
                         <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
                         <?php
-                    } elseif ($check_item_type=='text') {
+                    } elseif ($sub_item_type=='text') {
                         ?>
-                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($check_item_code.' '.$check_item_title);?></label>
+                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
                         <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                         <?php
-                    } elseif ($check_item_type=='radio') {
+                    } elseif ($sub_item_type=='radio') {
                         $is_checked = ($field_value==1) ? 'checked' : '';
                         ?>
-                        <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
                         <?php
                     } else {
                         ?>
-                        <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <?php echo $sub_item_code.' '.$sub_item_title?><br>
                         <?php
                     }
 /*
-                    if ($check_item_type=='heading') {
+                    if ($sub_item_type=='heading') {
                         ?>
-                        <b><?php echo $check_item_code.' '.$check_item_title?></b><br>
+                        <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
                         <?php
                     } else {
                         ?>
-                        <input type="checkbox" id="" value="" checked /> <?php echo $check_item_code.' '.$check_item_title?><br>
+                        <input type="checkbox" id="" value="" checked /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
                         <?php
                     }
 */                        
@@ -969,7 +969,7 @@ if (!class_exists('check_items')) {
         }
 
     }
-    $items_class = new check_items();
+    $items_class = new sub_items();
 }
 
 

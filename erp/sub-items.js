@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-    // check-category scripts
-    activate_check_category_list_data()
-    function activate_check_category_list_data(){
+    // sub-category scripts
+    activate_sub_category_list_data()
+    function activate_sub_category_list_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -16,17 +16,17 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
         });
 
-        $("#new-check-category").on("click", function() {
+        $("#new-sub-category").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_check_category_dialog_data',
+                    'action': 'set_sub_category_dialog_data',
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
-                    activate_check_category_list_data();
+                    activate_sub_category_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -35,37 +35,37 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('[id^="edit-check-category-"]').on("click", function () {
+        $('[id^="edit-sub-category-"]').on("click", function () {
             const category_id = this.id.substring(20);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_check_category_dialog_data',
+                    'action': 'get_sub_category_dialog_data',
                     '_category_id': category_id,
                     //'paged': 1
                 },
                 success: function (response) {
-                    $("#check-category-dialog").html(response.html_contain);
+                    $("#sub-category-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#check-category-dialog").dialog("option", "buttons", {
+                        $("#sub-category-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'set_check_category_dialog_data',
+                                        'action': 'set_sub_category_dialog_data',
                                         '_category_id': $("#category-id").val(),
                                         '_category_title': $("#category-title").val(),
                                         '_category_code': $("#category-code").val(),
                                         '_iso_category': $("#iso-category").val(),
                                     },
                                     success: function (response) {
-                                        $("#check-category-dialog").dialog('close');
+                                        $("#sub-category-dialog").dialog('close');
                                         $("#result-container").html(response.html_contain);
-                                        activate_check_category_list_data();
+                                        activate_sub_category_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -80,13 +80,13 @@ jQuery(document).ready(function($) {
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_check_category_dialog_data',
+                                            'action': 'del_sub_category_dialog_data',
                                             '_category_id': $("#category-id").val(),
                                         },
                                         success: function (response) {
-                                            $("#check-category-dialog").dialog('close');
+                                            $("#sub-category-dialog").dialog('close');
                                             $("#result-container").html(response.html_contain);
-                                            activate_check_category_list_data();
+                                            activate_sub_category_list_data();
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -97,8 +97,8 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    $("#check-category-dialog").dialog('open');
-                    activate_check_item_list_data(category_id)                },
+                    $("#sub-category-dialog").dialog('open');
+                    activate_sub_item_list_data(category_id)                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#check-category-dialog").dialog({
+        $("#sub-category-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -114,9 +114,9 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // check-item scripts
-    function activate_check_item_list_data(category_id){
-        $("#new-check-item").on("click", function() {
+    // sub-item scripts
+    function activate_sub_item_list_data(category_id){
+        $("#new-sub-item").on("click", function() {
             // Extract page number from URL path
 /*            
             const currentUrl = new URL(window.location.href);
@@ -132,13 +132,13 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_check_item_dialog_data',
+                    'action': 'set_sub_item_dialog_data',
                     '_category_id': $("#category-id").val(),
                     //'paged': paged
                 },
                 success: function (response) {
-                    $("#check-item-list").html(response.html_contain);
-                    activate_check_item_list_data(category_id);
+                    $("#sub-item-list").html(response.html_contain);
+                    activate_sub_item_list_data(category_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -147,16 +147,16 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('#sortable-check-item-list').sortable({
+        $('#sortable-sub-item-list').sortable({
             update: function(event, ui) {
-                const check_item_id_array = $(this).sortable('toArray', { attribute: 'data-check-item-id' });                
+                const sub_item_id_array = $(this).sortable('toArray', { attribute: 'data-sub-item-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
-                        action: 'sort_check_item_list_data',
-                        _check_item_id_array: check_item_id_array,
+                        action: 'sort_sub_item_list_data',
+                        _sub_item_id_array: sub_item_id_array,
                     },
                     success: function(response) {
                         console.log(response);
@@ -168,19 +168,19 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $('[id^="edit-check-item-"]').on("click", function () {
-            const check_item_id = this.id.substring(16);
+        $('[id^="edit-sub-item-"]').on("click", function () {
+            const sub_item_id = this.id.substring(16);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_check_item_dialog_data',
-                    '_check_item_id': check_item_id,
+                    'action': 'get_sub_item_dialog_data',
+                    '_sub_item_id': sub_item_id,
                 },
                 success: function (response) {
-                    $("#check-item-dialog").html(response.html_contain);
-                    $("#check-item-dialog").dialog('open');
+                    $("#sub-item-dialog").html(response.html_contain);
+                    $("#sub-item-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);
@@ -189,7 +189,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#check-item-dialog").dialog({
+        $("#sub-item-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -210,18 +210,18 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_check_item_dialog_data',
+                            'action': 'set_sub_item_dialog_data',
                             '_category_id': $("#category-id").val(),
-                            '_check_item_id': $("#check-item-id").val(),
-                            '_check_item_title': $("#check-item-title").val(),
-                            '_check_item_code': $("#check-item-code").val(),
-                            '_check_item_type': $("#check-item-type").val(),
-                            '_check_item_default': $("#check-item-default").val(),
+                            '_sub_item_id': $("#sub-item-id").val(),
+                            '_sub_item_title': $("#sub-item-title").val(),
+                            '_sub_item_code': $("#sub-item-code").val(),
+                            '_sub_item_type': $("#sub-item-type").val(),
+                            '_sub_item_default': $("#sub-item-default").val(),
                         },
                         success: function (response) {
-                            $("#check-item-dialog").dialog('close');
-                            $("#check-item-list").html(response.html_contain);
-                            activate_check_item_list_data(category_id)
+                            $("#sub-item-dialog").dialog('close');
+                            $("#sub-item-list").html(response.html_contain);
+                            activate_sub_item_list_data(category_id)
                         },
                         error: function (error) {
                             console.error(error);
@@ -246,15 +246,15 @@ jQuery(document).ready(function($) {
                             url: ajax_object.ajax_url,
                             dataType: "json",
                             data: {
-                                'action': 'del_check_item_dialog_data',
+                                'action': 'del_sub_item_dialog_data',
                                 '_category_id': $("#category-id").val(),
-                                '_check_item_id': $("#check-item-id").val(),
+                                '_sub_item_id': $("#sub-item-id").val(),
                                 //'paged': paged
                             },
                             success: function (response) {
-                                $("#check-item-dialog").dialog('close');
-                                $("#check-item-list").html(response.html_contain);
-                                activate_check_item_list_data(category_id)
+                                $("#sub-item-dialog").dialog('close');
+                                $("#sub-item-list").html(response.html_contain);
+                                activate_sub_item_list_data(category_id)
                             },
                             error: function (error) {
                                 console.error(error);
