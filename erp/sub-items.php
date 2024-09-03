@@ -8,7 +8,7 @@ if (!class_exists('sub_items')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
-            //add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
+            add_action( 'init', array( $this, 'register_sub_category_post_type' ) );
 
             add_action( 'wp_ajax_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
@@ -480,7 +480,7 @@ if (!class_exists('sub_items')) {
 
         function select_sub_item_options($selected_option=false, $category_id=false) {
             $query = $this->retrieve_sub_item_list_data($category_id);
-            $options = '<option value="">Select '.get_the_title($category_id).' check item</option>';
+            $options = '<option value="">Select '.get_the_title($category_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
