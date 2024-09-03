@@ -1754,7 +1754,7 @@ if (!class_exists('display_documents')) {
                                 if ($sub_value) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_category_options($field_value);?></select>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
                                     <?php
                                 }
                             }    
