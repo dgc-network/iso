@@ -113,7 +113,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='doc-category') echo $this->display_doc_category_list();
-
+/*
                 if ($_GET['_select_profile']=='update_post_type_check_category_to_sub_category') echo $this->update_post_type_check_category_to_sub_category();
                 if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
                 if ($_GET['_select_profile']=='rename_meta_key_for_sub_items') echo $this->rename_meta_key_for_sub_items();
@@ -125,7 +125,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='update_category_meta_by_iso_22000') echo $this->update_category_meta_by_iso('1725346626','ISO22000');
                 if ($_GET['_select_profile']=='update_category_meta_by_iso_14001') echo $this->update_category_meta_by_iso('1725346624','ISO14001');
                 if ($_GET['_select_profile']=='update_category_meta_by_iso_9001') echo $this->update_category_meta_by_iso('1725346619','ISO9001');
-
+*/
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -188,7 +188,7 @@ if (!class_exists('display_profiles')) {
                 echo '</div>';
             }
         }
-
+/*
         function update_category_meta_by_iso($code, $iso) {
             $items_class = new sub_items();
             // Step 1: Retrieve the $category_id by the given code
@@ -387,7 +387,7 @@ if (!class_exists('display_profiles')) {
         
         // Hook to run the function during the 'init' action
         //add_action('init', 'update_post_type_check_category_to_sub_category');
-        
+*/        
         // my-profile scripts
         function display_my_profile() {
             ob_start();
@@ -768,7 +768,7 @@ if (!class_exists('display_profiles')) {
                 <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
                 <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
 */?>
-                <?php echo $this->display_audit_item_list_in_category();?>    
+                <?php //echo $this->display_audit_item_list_in_category();?>    
             </fieldset>
             <?php
             return ob_get_clean();
