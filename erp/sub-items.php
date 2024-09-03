@@ -150,7 +150,7 @@ if (!class_exists('sub_items')) {
                 ),
                 'meta_key'       => 'category_code', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
+                'order'          => 'DESC', // Sorting order (ascending)
             );
         
             if ($paged == 0) {

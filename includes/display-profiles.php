@@ -268,6 +268,64 @@ if (!class_exists('display_profiles')) {
             }
         }
         
+        function copy_audit_items_to_sub_items() {
+            global $wpdb;
+        
+            // Get all posts of the 'audit-item' post type
+            $audit_items = $wpdb->get_results("
+                SELECT * 
+                FROM $wpdb->posts 
+                WHERE post_type = 'audit-item' 
+                AND post_status = 'publish'
+            ");
+        
+            foreach ( $audit_items as $audit_item ) {
+                // Create a new post in 'sub-item' post type with the same data
+                $new_post_id = wp_insert_post(array(
+                    'post_title'    => $audit_item->post_title,
+                    'post_content'  => $audit_item->post_content,
+                    'post_status'   => $audit_item->post_status,
+                    'post_type'     => 'sub-item',
+                    'post_author'   => $audit_item->post_author,
+                    'post_date'     => $audit_item->post_date,
+                    'post_date_gmt' => $audit_item->post_date_gmt,
+                    'post_excerpt'  => $audit_item->post_excerpt,
+                    'post_parent'   => $audit_item->post_parent,
+                    'menu_order'    => $audit_item->menu_order,
+                    'post_password' => $audit_item->post_password,
+                ));
+        
+                // Copy post meta from 'audit-item' to 'sub-item'
+                $meta_keys = $wpdb->get_results("
+                    SELECT meta_key, meta_value 
+                    FROM $wpdb->postmeta 
+                    WHERE post_id = $audit_item->ID
+                ");
+        
+                foreach ( $meta_keys as $meta_key ) {
+                    // Check if meta key is 'field_type' and rename it to 'sub_item_type'
+                    if ( $meta_key->meta_key == 'field_type' ) {
+                        update_post_meta( $new_post_id, 'sub_item_type', $meta_key->meta_value );
+                    } elseif ( $meta_key->meta_key == 'clause_no' ) {
+                        update_post_meta( $new_post_id, 'sub_item_code', $meta_key->meta_value );
+                    } elseif ( $meta_key->meta_key == 'category_id' ) {
+                        update_post_meta( $new_post_id, 'iso_category', $meta_key->meta_value );
+                    } else {
+                        // Copy other meta keys as they are
+                        update_post_meta( $new_post_id, $meta_key->meta_key, $meta_key->meta_value );
+                    }
+                }
+            }
+        
+            echo "Data copied successfully from 'audit-item' to 'sub-item'.";
+        }
+        
+        // Execute the function
+        //copy_audit_items_to_sub_items();
+        
+        // Optionally, you can hook this function to 'init' or 'admin_init' to run it automatically
+        // add_action('init', 'copy_audit_items_to_sub_items');
+        
         // Run the function
         //rename_meta_key_for_sub_items();
         
