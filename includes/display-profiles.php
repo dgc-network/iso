@@ -117,6 +117,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='update_post_type_check_category_to_sub_category') echo $this->update_post_type_check_category_to_sub_category();
                 if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
                 if ($_GET['_select_profile']=='rename_meta_key_for_sub_items') echo $this->rename_meta_key_for_sub_items();
+
                 if ($_GET['_select_profile']=='copy_audit_items_to_sub_items') echo $this->copy_audit_items_to_sub_items();
                 if ($_GET['_select_profile']=='update_category_meta_by_iso_27001') echo $this->update_category_meta_by_iso('1725328013','ISO27001');
                 if ($_GET['_select_profile']=='update_category_meta_by_iso_45001') echo $this->update_category_meta_by_iso('1725328007','ISO45001');
@@ -194,7 +195,7 @@ if (!class_exists('display_profiles')) {
             $category_id = $items_class->get_sub_category_post_id_by_code($code);
             
             // Step 2: Retrieve the $iso_category by the given ISO title
-            $iso_category = get_page_by_title($iso, OBJECT, 'page'); // Assuming 'page' post type
+            $iso_category = get_page_by_title($iso, OBJECT, 'iso-category'); // Assuming 'page' post type
             
             if (!$category_id || !$iso_category) {
                 // Return or handle error if category or ISO category is not found
