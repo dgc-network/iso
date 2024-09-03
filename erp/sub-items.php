@@ -594,7 +594,7 @@ if (!class_exists('sub_items')) {
             $response = array();
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $field_id = get_doc_field_id_by_meta($doc_id, '_sub');
+            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub');
 
             $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
             if ($sub_item_id) {
