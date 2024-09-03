@@ -1672,7 +1672,7 @@ if (!class_exists('display_documents')) {
                             $sub_key = $parts[0]; // _embedded, _order_item, _select
                             $sub_value = $parts[1]; // 1724993477
             
-                            if ($sub_key=='_embedded'||$sub_key=='_category') {
+                            if ($sub_key=='_embedded'||$sub_key=='_audit_plan'||$sub_key=='_select_one') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     ?>
@@ -1729,7 +1729,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }
-
+/*
                             if ($sub_key=='_select_one') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1739,7 +1739,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }    
-
+*/
                             if ($sub_key=='_select') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1751,11 +1751,12 @@ if (!class_exists('display_documents')) {
                             }    
 
                             if ($sub_key=='_audit_plan') {
-                                if ($sub_value) {
+                                if (!$sub_value) {
                                     ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
+                                    <div id="sub-item-list-from-category"></div>
                                     <?php
+
                                 }
                             }    
 
