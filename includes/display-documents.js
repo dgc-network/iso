@@ -837,7 +837,7 @@ jQuery(document).ready(function($) {
     }
     
     function activate_doc_report_dialog_data(response){
-/*
+
         $(".sub-category").on( "change", function() {
             const ajaxData = {
                 'action': 'get_sub_items_from_category',
@@ -861,7 +861,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-*/        
+
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {

@@ -1234,24 +1234,24 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department' && $default_value=='_audited'){
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
-
+/*
             if ($field_type=='_audit' && $default_value=='_plan'){
                 // generate the audit-item-ids
                 $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
                 update_post_meta($report_id, '_audit_plan', $audit_item_ids);
                 update_post_meta($report_id, '_iso_category', $field_value);
             }
-
+*/
             update_post_meta($report_id, $field_name, $field_value);
 
             if ($field_type=='_sub') {
+                $items_class = new sub_items();
                 $parts = explode('=', $default_value);
                 $sub_key = $parts[0]; // _embedded, _order_item, _select
                 $sub_value = $parts[1]; // 1724993477
 
                 if ($sub_key=='_embedded'||$sub_key=='_category') {
                     if ($sub_value) {
-                        $items_class = new sub_items();
                         $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                         if ($inner_query->have_posts()) :
@@ -1262,6 +1262,14 @@ if (!class_exists('display_documents')) {
                             wp_reset_postdata();
                         endif;
                         update_post_meta($report_id, $field_name, $category_id);
+                    }
+                }
+
+                if ($sub_key=='_audit_plan') {
+                    if ($sub_value) {
+                        $audit_item_ids = $this->get_sub_item_id_by_category($field_value);
+                        update_post_meta($report_id, '_audit_plan', $audit_item_ids);
+                        //update_post_meta($report_id, '_iso_category', $field_value);
                     }
                 }
 
@@ -1448,10 +1456,6 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
-                    <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
-                    <option value="_sub" <?php echo ($field_type=='_sub') ? 'selected' : ''?>><?php echo __( '_sub', 'your-text-domain' );?></option>
-                    <option value="_audit" <?php echo ($field_type=='_audit') ? 'selected' : ''?>><?php echo __( '_audit', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
@@ -1460,6 +1464,9 @@ if (!class_exists('display_documents')) {
                     <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
+                    <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
+                    <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
+                    <option value="_sub" <?php echo ($field_type=='_sub') ? 'selected' : ''?>><?php echo __( '_sub', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1642,6 +1649,7 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
+/*                        
                         case ($field_type=='_audit'):
                             $items_class = new sub_items();
                             if ($default_value=='_plan') {
@@ -1657,7 +1665,7 @@ if (!class_exists('display_documents')) {
                                 <?php    
                             }
                             break;
-
+*/
                         case ($field_type=='_sub'):
                             $items_class = new sub_items();
                             $parts = explode('=', $default_value);
@@ -1721,12 +1729,32 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }
+
+                            if ($sub_key=='_select_one') {
+                                if ($sub_value) {
+                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                    ?>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
+                                    <div id="sub-item-list-from-category"></div>
+                                    <?php
+                                }
+                            }    
+
                             if ($sub_key=='_select') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
+                                    <?php
+                                }
+                            }    
+
+                            if ($sub_key=='_audit_plan') {
+                                if ($sub_value) {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_category_options($field_value);?></select>
                                     <?php
                                 }
                             }    
