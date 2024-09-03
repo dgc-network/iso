@@ -390,8 +390,7 @@ if (!class_exists('sub_items')) {
             if ($iso_category !== false) {
                 $args['meta_query'][] = array(
                     array(
-                        //'key'   => 'iso_category',
-                        'key'   => 'category_id',
+                        'key'   => 'iso_category',
                         'value' => $iso_category,
                     ),
                 );
