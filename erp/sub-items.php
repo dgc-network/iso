@@ -381,17 +381,17 @@ if (!class_exists('sub_items')) {
             $args = array(
                 'post_type'      => 'sub-item',
                 'posts_per_page' => -1,
-                //'meta_query'     => array(),
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-        
+
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             if ($iso_category !== false) {
                 $args['meta_query'][] = array(
                     array(
-                        'key'   => 'iso_category',
+                        //'key'   => 'iso_category',
+                        'key'   => 'category_id',
                         'value' => $iso_category,
                     ),
                 );
