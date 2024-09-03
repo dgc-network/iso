@@ -44,7 +44,6 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_sub_category_dialog_data',
                     '_category_id': category_id,
-                    //'paged': 1
                 },
                 success: function (response) {
                     $("#sub-category-dialog").html(response.html_contain);
@@ -117,16 +116,6 @@ jQuery(document).ready(function($) {
     // sub-item scripts
     function activate_sub_item_list_data(category_id){
         $("#new-sub-item").on("click", function() {
-            // Extract page number from URL path
-/*            
-            const currentUrl = new URL(window.location.href);
-            const pathSegments = currentUrl.pathname.split('/');
-            let paged = 1;
-            const pageIndex = pathSegments.indexOf('page');
-            if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
-                paged = parseInt(pathSegments[pageIndex + 1], 10);
-            }
-*/
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -134,7 +123,6 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_sub_item_dialog_data',
                     '_category_id': $("#category-id").val(),
-                    //'paged': paged
                 },
                 success: function (response) {
                     $("#sub-item-list").html(response.html_contain);
@@ -195,16 +183,6 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {
                 "Save": function () {
-/*                    
-                    // Extract page number from URL path
-                    const currentUrl = new URL(window.location.href);
-                    const pathSegments = currentUrl.pathname.split('/');
-                    let paged = 1;
-                    const pageIndex = pathSegments.indexOf('page');
-                    if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
-                        paged = parseInt(pathSegments[pageIndex + 1], 10);
-                    }
-*/
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -231,16 +209,6 @@ jQuery(document).ready(function($) {
                 },
                 "Delete": function () {
                     if (window.confirm("Are you sure you want to delete this item?")) {
-                        // Extract page number from URL path
-/*                        
-                        const currentUrl = new URL(window.location.href);
-                        const pathSegments = currentUrl.pathname.split('/');
-                        let paged = 1;
-                        const pageIndex = pathSegments.indexOf('page');
-                        if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
-                            paged = parseInt(pathSegments[pageIndex + 1], 10);
-                        }
-*/
                         $.ajax({
                             type: 'POST',
                             url: ajax_object.ajax_url,
@@ -249,7 +217,6 @@ jQuery(document).ready(function($) {
                                 'action': 'del_sub_item_dialog_data',
                                 '_category_id': $("#category-id").val(),
                                 '_sub_item_id': $("#sub-item-id").val(),
-                                //'paged': paged
                             },
                             success: function (response) {
                                 $("#sub-item-dialog").dialog('close');

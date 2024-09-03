@@ -188,7 +188,7 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
-        function display_sub_category_dialog($paged=1, $category_id=false) {
+        function display_sub_category_dialog($category_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
@@ -216,8 +216,8 @@ if (!class_exists('sub_items')) {
         function get_sub_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $paged = sanitize_text_field($_POST['paged']);
-            $response['html_contain'] = $this->display_sub_category_dialog($paged, $category_id);
+            //$paged = sanitize_text_field($_POST['paged']);
+            $response['html_contain'] = $this->display_sub_category_dialog($category_id);
             wp_send_json($response);
         }
 
@@ -307,7 +307,7 @@ if (!class_exists('sub_items')) {
         // sub-item
         function register_sub_item_post_type() {
             $labels = array(
-                'menu_name'     => _x('Sub-item', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('sub-item', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
@@ -387,6 +387,18 @@ if (!class_exists('sub_items')) {
                 'order'          => 'ASC', // Sorting order (ascending)
             );
         
+            $iso_category = get_post_meta($category_id, 'iso_category', true);
+            if ($iso_category !== false) {
+                $args['meta_query'][] = array(
+                    array(
+                        'key'   => 'iso_category',
+                        'value' => $iso_category,
+                    ),
+                );
+            }
+
+
+/*
             // Add category_id to meta_query if it is not false
             if ($category_id !== false) {
                 $args['meta_query'][] = array(
@@ -396,7 +408,7 @@ if (!class_exists('sub_items')) {
                     ),
                 );
             }
-
+*/
             $query = new WP_Query($args);
             return $query;
         }
@@ -548,17 +560,6 @@ if (!class_exists('sub_items')) {
                         <?php echo $sub_item_code.' '.$sub_item_title?><br>
                         <?php
                     }
-/*
-                    if ($sub_item_type=='heading') {
-                        ?>
-                        <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
-                        <?php
-                    } else {
-                        ?>
-                        <input type="checkbox" id="" value="" checked /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                        <?php
-                    }
-*/                        
                 endwhile;
                 wp_reset_postdata();
             endif;
