@@ -95,7 +95,10 @@ if (!class_exists('sub_items')) {
                     </thead>
                     <tbody>
                     <?php
-                    $query = $this->retrieve_sub_category_data();
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_sub_category_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_code = get_post_meta(get_the_ID(), 'category_code', true);
@@ -116,6 +119,15 @@ if (!class_exists('sub_items')) {
                 <?php if ($is_site_admin) {?>
                     <div id="new-sub-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+
             </fieldset>
             <div id="sub-category-dialog" title="Category dialog"></div>
             <?php
