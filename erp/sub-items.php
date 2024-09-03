@@ -385,7 +385,7 @@ if (!class_exists('sub_items')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-
+/*
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             if ($iso_category !== false) {
                 $args['meta_query'][] = array(
@@ -395,9 +395,8 @@ if (!class_exists('sub_items')) {
                     ),
                 );
             }
+*/
 
-
-/*
             // Add category_id to meta_query if it is not false
             if ($category_id !== false) {
                 $args['meta_query'][] = array(
@@ -407,7 +406,7 @@ if (!class_exists('sub_items')) {
                     ),
                 );
             }
-*/
+
             $query = new WP_Query($args);
             return $query;
         }
