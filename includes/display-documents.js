@@ -862,6 +862,31 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $(".sub-item").on( "change", function() {
+            const ajaxData = {
+                'action': 'get_sub_items_from_category',
+            };
+        
+            //ajaxData['_category_id'] = $(this).val();
+            ajaxData['_sub_item_id'] = $(this).val();
+            ajaxData['_report_id'] = $("#report-id").val();
+        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: ajaxData,
+                success: function (response) {
+                    $('#sub-item-list-from-category').html(response.html_contain);
+                    activate_doc_report_dialog_data(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {

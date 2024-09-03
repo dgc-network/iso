@@ -385,17 +385,6 @@ if (!class_exists('sub_items')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-/*
-            $iso_category = get_post_meta($category_id, 'iso_category', true);
-            if ($iso_category !== false) {
-                $args['meta_query'][] = array(
-                    array(
-                        'key'   => 'iso_category',
-                        'value' => $iso_category,
-                    ),
-                );
-            }
-*/
 
             // Add category_id to meta_query if it is not false
             if ($category_id !== false) {
@@ -518,49 +507,146 @@ if (!class_exists('sub_items')) {
             return $options;
         }
 
+        function get_sub_item_contains($sub_item_id=false, $field_id=false) {
+            $field_name = get_post_meta($field_id, 'field_name', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $sub_item_title = get_the_title($sub_item_id);
+            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
+            $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
+            $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
+            if ($sub_item_type=='heading') {
+                ?>
+                <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
+                <?php
+            } elseif ($sub_item_type=='checkbox') {
+                $is_checked = ($default_value==1) ? 'checked' : '';
+                ?>
+                <input type="checkbox" id="<?php echo esc_attr($field_name.$sub_item_id);?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <?php
+            } elseif ($sub_item_type=='textarea') {
+                ?>
+                <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <textarea id="<?php echo esc_attr($field_name.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($default_value);?></textarea>
+                <?php
+            } elseif ($sub_item_type=='text') {
+                ?>
+                <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <input type="text" id="<?php echo esc_attr($field_name.$sub_item_id);?>" value="<?php echo esc_html($default_value);?>"  class="text ui-widget-content ui-corner-all" />
+                <?php
+            } elseif ($sub_item_type=='radio') {
+                $is_checked = ($default_value==1) ? 'checked' : '';
+                ?>
+                <input type="radio" id="<?php echo esc_attr($field_name.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <?php
+            } else {
+                ?>
+                <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <?php
+            }
+
+        }
+
+        function get_doc_field_id_by_meta($doc_id, $field_type) {
+            // Set up the query arguments
+            $args = array(
+                'post_type'  => 'doc-field',
+                'meta_query' => array(
+                    'relation' => 'AND', // Both conditions must be true
+                    array(
+                        'key'     => 'doc_id',
+                        'value'   => $doc_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'field_type',
+                        'value'   => $field_type,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids', // Only return the post ID
+                'posts_per_page' => 1 // Limit to one result
+            );
+        
+            // Perform the query
+            $query = new WP_Query($args);
+        
+            // Check if a post was found and return the ID
+            if ($query->have_posts()) {
+                return $query->posts[0]; // Return the first (and only) result
+            } else {
+                return false; // No post found
+            }
+        }
+/*        
+        // Usage
+        $doc_id = 'your_doc_id_value';
+        $field_type = '_sub';
+        $doc_field_id = get_doc_field_id_by_meta($doc_id, $field_type);
+        
+        if ($doc_field_id) {
+            echo 'Doc Field ID: ' . $doc_field_id;
+        } else {
+            echo 'No matching Doc Field found.';
+        }
+*/        
         function get_sub_items_from_category() {
-            $response = array();
-            $category_id = sanitize_text_field($_POST['_category_id']);
-            $query = $this->retrieve_sub_item_list_data($category_id);
             ob_start();
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $sub_item_title = get_the_title();
-                    $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                    $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                    $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                    if ($sub_item_type=='heading') {
-                        ?>
-                        <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
-                        <?php
-                    } elseif ($sub_item_type=='checkbox') {
-                        $is_checked = ($field_value==1) ? 'checked' : '';
-                        ?>
-                        <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                        <?php
-                    } elseif ($sub_item_type=='textarea') {
-                        ?>
-                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                        <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                        <?php
-                    } elseif ($sub_item_type=='text') {
-                        ?>
-                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                        <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                        <?php
-                    } elseif ($sub_item_type=='radio') {
-                        $is_checked = ($field_value==1) ? 'checked' : '';
-                        ?>
-                        <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                        <?php
-                    } else {
-                        ?>
-                        <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                        <?php
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
+            $response = array();
+            $report_id = sanitize_text_field($_POST['_report_id']);
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $field_id = get_doc_field_id_by_meta($doc_id, '_sub');
+
+            $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
+            if ($sub_item_id) {
+                $this->get_sub_item_contains($sub_item_id, $field_id);
+            }
+
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            if ($category_id) {
+                $query = $this->retrieve_sub_item_list_data($category_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $this->get_sub_item_contains(get_the_ID(), $field_id);
+    /*                    
+                        $sub_item_title = get_the_title();
+                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        if ($sub_item_type=='heading') {
+                            ?>
+                            <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
+                            <?php
+                        } elseif ($sub_item_type=='checkbox') {
+                            $is_checked = ($field_value==1) ? 'checked' : '';
+                            ?>
+                            <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                            <?php
+                        } elseif ($sub_item_type=='textarea') {
+                            ?>
+                            <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                            <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                            <?php
+                        } elseif ($sub_item_type=='text') {
+                            ?>
+                            <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                            <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                            <?php
+                        } elseif ($sub_item_type=='radio') {
+                            $is_checked = ($field_value==1) ? 'checked' : '';
+                            ?>
+                            <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                            <?php
+                        } else {
+                            ?>
+                            <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                            <?php
+                        }
+    */                        
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+    
+            }
             $response['html_contain'] = ob_get_clean();
             wp_send_json($response);
         }
