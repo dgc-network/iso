@@ -205,6 +205,7 @@ if (!class_exists('display_profiles')) {
             // Step 3: Query posts where meta key 'iso_category' equals $iso_category->ID
             $args = array(
                 'post_type'  => 'sub-item', // Replace with your specific post type if needed
+                'posts_per_page' => -1,
                 'meta_query' => array(
                     array(
                         'key'     => 'iso_category',
