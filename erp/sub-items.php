@@ -735,6 +735,41 @@ if (!class_exists('sub_items')) {
             return $options;
         }
 
+        function get_iso_category_post_id_by_code($code) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            // Define the query arguments
+            $args = array(
+                'post_type'  => 'iso-category',
+                'meta_query' => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                    array(
+                        'key'   => 'category_code',  // Meta key
+                        'value' => $code,            // Meta value to match
+                        'compare' => '=',            // Comparison operator
+                    ),
+                ),
+                'fields' => 'ids', // Return only post IDs
+                'posts_per_page' => 1, // Limit to one post
+            );
+        
+            // Run the query
+            $query = new WP_Query($args);
+        
+            // Check if any posts are found
+            if ($query->have_posts()) {
+                // Get the first post ID
+                $post_id = $query->posts[0];
+                return $post_id;
+            }
+        
+            // Return null if no matching post is found
+            return null;
+        }
+
         // audit-item
         function register_audit_item_post_type() {
             $labels = array(

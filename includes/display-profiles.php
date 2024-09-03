@@ -118,6 +118,12 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
                 if ($_GET['_select_profile']=='rename_meta_key_for_sub_items') echo $this->rename_meta_key_for_sub_items();
                 if ($_GET['_select_profile']=='copy_audit_items_to_sub_items') echo $this->copy_audit_items_to_sub_items();
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_27001') echo $this->update_category_meta_by_iso('1725328013','ISO27001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_45001') echo $this->update_category_meta_by_iso('1725328007','ISO45001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_haccp') echo $this->update_category_meta_by_iso('1725328003','HACCP');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_22000') echo $this->update_category_meta_by_iso('1725324315','ISO22000');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_14001') echo $this->update_category_meta_by_iso('1725324127','ISO14001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_9001') echo $this->update_category_meta_by_iso('1725324101','ISO9001');
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
@@ -182,6 +188,50 @@ if (!class_exists('display_profiles')) {
             }
         }
 
+        function update_category_meta_by_iso($code, $iso) {
+            $items_class = new sub_items();
+            // Step 1: Retrieve the $category_id by the given code
+            $category_id = $items_class->get_sub_category_post_id_by_code($code);
+            
+            // Step 2: Retrieve the $iso_category by the given ISO title
+            $iso_category = get_page_by_title($iso, OBJECT, 'page'); // Assuming 'page' post type
+            
+            if (!$category_id || !$iso_category) {
+                // Return or handle error if category or ISO category is not found
+                return;
+            }
+        
+            // Step 3: Query posts where meta key 'iso_category' equals $iso_category->ID
+            $args = array(
+                'post_type'  => 'any', // Replace with your specific post type if needed
+                'meta_query' => array(
+                    array(
+                        'key'     => 'iso_category',
+                        'value'   => $iso_category->ID,
+                        'compare' => '='
+                    )
+                )
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Step 4: Update the 'category_id' meta key for each post found
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Update the 'category_id' meta with the new $category_id value
+                    update_post_meta(get_the_ID(), 'category_id', $category_id);
+                }
+                wp_reset_postdata();
+            }
+        }
+        
+        // Usage
+        //$code = "1725328013";
+        //$iso = "ISO27001";
+        //update_category_meta_by_iso($code, $iso);
+        
         function update_post_type_check_category_to_sub_category() {
             global $wpdb;
         
