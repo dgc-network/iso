@@ -119,12 +119,12 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='rename_meta_key_for_sub_items') echo $this->rename_meta_key_for_sub_items();
 
                 if ($_GET['_select_profile']=='copy_audit_items_to_sub_items') echo $this->copy_audit_items_to_sub_items();
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_27001') echo $this->update_category_meta_by_iso('1725328013','ISO27001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_45001') echo $this->update_category_meta_by_iso('1725328007','ISO45001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_haccp') echo $this->update_category_meta_by_iso('1725328003','HACCP');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_22000') echo $this->update_category_meta_by_iso('1725324315','ISO22000');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_14001') echo $this->update_category_meta_by_iso('1725324127','ISO14001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_9001') echo $this->update_category_meta_by_iso('1725324101','ISO9001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_27001') echo $this->update_category_meta_by_iso('1725346630','ISO27001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_45001') echo $this->update_category_meta_by_iso('1725346628','ISO45001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_haccp') echo $this->update_category_meta_by_iso('1725346627','HACCP');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_22000') echo $this->update_category_meta_by_iso('1725346626','ISO22000');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_14001') echo $this->update_category_meta_by_iso('1725346624','ISO14001');
+                if ($_GET['_select_profile']=='update_category_meta_by_iso_9001') echo $this->update_category_meta_by_iso('1725346619','ISO9001');
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
