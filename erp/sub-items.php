@@ -246,7 +246,7 @@ if (!class_exists('sub_items')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th><?php echo __( 'Code', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
@@ -299,9 +299,28 @@ if (!class_exists('sub_items')) {
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
+                    'relation' => 'OR',
                     array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
+                        'key'     => 'is_privated',
+                        'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                    ),
+                    array(
+                        'key'     => 'is_privated',
+                        'value'   => '0',
+                        'compare' => '=' // Condition to check if the meta value is 0
+                    ),
+                    array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'is_privated',
+                            'value'   => '1',
+                            'compare' => '='
+                        ),
+                        array(
+                            'key'   => 'site_id',
+                            'value' => $site_id,
+                            'compare' => '='
+                        )                        
                     ),
                 ),
                 'meta_key'       => 'category_code', // Meta key for sorting
@@ -352,18 +371,21 @@ if (!class_exists('sub_items')) {
             $category_title = get_the_title($category_id);
             $category_code = get_post_meta($category_id, 'category_code', true);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
+            $is_provated = get_post_meta($category_id, 'is_provated', true);
+            $is_checked = ($is_provated==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
                 <label for="category-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-code" value="<?php echo esc_attr($category_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <label for="category-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_sub_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+                <input type="checkbox" id="is_privated" <?php echo $is_checked;?> /> <?php echo __( 'Is provated', 'your-text-domain' );?><br>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -372,7 +394,6 @@ if (!class_exists('sub_items')) {
         function get_sub_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            //$paged = sanitize_text_field($_POST['paged']);
             $response['html_contain'] = $this->display_sub_category_dialog($category_id);
             wp_send_json($response);
         }
@@ -382,6 +403,7 @@ if (!class_exists('sub_items')) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_code = sanitize_text_field($_POST['_category_code']);
                 $iso_category = sanitize_text_field($_POST['_iso_category']);
+                $is_privated = sanitize_text_field($_POST['_is_privated']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
@@ -389,6 +411,7 @@ if (!class_exists('sub_items')) {
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_code', $category_code);
                 update_post_meta($category_id, 'iso_category', $iso_category);
+                update_post_meta($category_id, 'is_privated', $is_privated);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

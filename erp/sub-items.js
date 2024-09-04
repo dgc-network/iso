@@ -60,6 +60,7 @@ jQuery(document).ready(function($) {
                                         '_category_title': $("#category-title").val(),
                                         '_category_code': $("#category-code").val(),
                                         '_iso_category': $("#iso-category").val(),
+                                        '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#sub-category-dialog").dialog('close');
@@ -97,7 +98,8 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#sub-category-dialog").dialog('open');
-                    activate_sub_item_list_data(category_id)                },
+                    activate_sub_item_list_data(category_id);
+                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
