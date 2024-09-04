@@ -371,8 +371,8 @@ if (!class_exists('sub_items')) {
             $category_title = get_the_title($category_id);
             $category_code = get_post_meta($category_id, 'category_code', true);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
-            $is_provated = get_post_meta($category_id, 'is_provated', true);
-            $is_checked = ($is_provated==1) ? 'checked' : '';
+            $is_privated = get_post_meta($category_id, 'is_privated', true);
+            $is_checked = ($is_privated==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
@@ -385,7 +385,7 @@ if (!class_exists('sub_items')) {
                 <?php echo $this->display_sub_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
-                <input type="checkbox" id="is_privated" <?php echo $is_checked;?> /> <?php echo __( 'Is provated', 'your-text-domain' );?><br>
+                <input type="checkbox" id="is_privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
             </fieldset>
             <?php
             return ob_get_clean();
