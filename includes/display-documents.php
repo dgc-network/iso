@@ -1686,6 +1686,11 @@ if (!class_exists('display_documents')) {
                                         ?>
                                     </div>
                                     <?php
+                                } else {
+                                    ?>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
+                                    <div id="sub-item-list-from-category"></div>
+                                    <?php
                                 }
                             } elseif ($sub_key=='_select_one') {
                                 if ($sub_value) {
@@ -1717,7 +1722,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }    
-*/
+
                             if ($sub_key=='_planning') {
                                 if (!$sub_value) {
                                     ?>
@@ -1727,7 +1732,7 @@ if (!class_exists('display_documents')) {
 
                                 }
                             }    
-
+*/
                             break;
 
                         case ($field_type=='_document'):
