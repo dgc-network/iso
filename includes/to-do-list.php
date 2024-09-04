@@ -292,6 +292,7 @@ if (!class_exists('to_do_list')) {
         }
 
         function display_todo_dialog($todo_id) {
+/*            
             // Get the post type of the post with the given ID
             $post_type = get_post_type( $todo_id );
         
@@ -313,7 +314,7 @@ if (!class_exists('to_do_list')) {
                 );                
 
             }
-            
+
             if ( $post_type === 'document' ) {
                 $doc_id = $todo_id;
                 $params = array(
@@ -322,18 +323,19 @@ if (!class_exists('to_do_list')) {
             }
 
             if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
-
+*/
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <fieldset>
             <?php
-            //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $params = array(
                 'is_todo'         => true,
                 'doc_id'          => $doc_id,
-                'prev_report_id'  => get_post_meta($todo_id, 'prev_report_id', true),
+                'prev_report_id'  => $prev_report_id,
             );                
 
             $documents_class = new display_documents();
@@ -343,15 +345,6 @@ if (!class_exists('to_do_list')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php
-/*                
-                    if ( $post_type === 'todo' ) {
-                        $query = $this->retrieve_todo_action_list_data($todo_id);
-                    }
-                    if ( $post_type === 'document' ) {
-                        $profiles_class = new display_profiles();
-                        $query = $profiles_class->retrieve_doc_action_list_data($todo_id);
-                    }                    
-*/                        
                     $query = $this->retrieve_todo_action_list_data($todo_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
@@ -745,7 +738,7 @@ if (!class_exists('to_do_list')) {
                 'next_leadtime' => $next_leadtime,
             );
 
-            // Try to!! Create the new To-do with audit-items If meta "_planning" of $prev_report_id is present
+            // Try to!! Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) {
                 $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
     
@@ -802,6 +795,7 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
+
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
             if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
