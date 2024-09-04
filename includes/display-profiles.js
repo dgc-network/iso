@@ -7,12 +7,10 @@ jQuery(document).ready(function($) {
         return pattern.test(str);
     }
 
-    activate_my_profile_data();
-    activate_site_profile_data();
-    activate_site_job_list_data();
-    activate_doc_category_list_data();
+    //activate_doc_category_list_data();
 
     // my-profile scripts
+    activate_my_profile_data();
     function activate_my_profile_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
@@ -212,6 +210,7 @@ jQuery(document).ready(function($) {
     }
 
     // site-profile scripts
+    activate_site_profile_data();
     function activate_site_profile_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
@@ -489,6 +488,7 @@ jQuery(document).ready(function($) {
     }
 
     // site-job scripts
+    activate_site_job_list_data();
     function activate_site_job_list_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters

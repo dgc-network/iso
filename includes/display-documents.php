@@ -1640,15 +1640,16 @@ if (!class_exists('display_documents')) {
                                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                         if ($inner_query->have_posts()) :
                                             while ($inner_query->have_posts()) : $inner_query->the_post();
-                                                $sub_item_title = get_the_title();
-                                                $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                                                $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
                                                 if ($report_id) {
                                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 }
-
+                                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+/*
+                                                $sub_item_title = get_the_title();
+                                                $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                                                $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
                                                 if ($sub_item_type=='heading') {
                                                     ?>
                                                     <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
@@ -1678,6 +1679,7 @@ if (!class_exists('display_documents')) {
                                                     <?php echo $sub_item_code.' '.$sub_item_title?><br>
                                                     <?php
                                                 }
+*/                                                
                                             endwhile;
                                             wp_reset_postdata();
                                         endif;
@@ -1685,9 +1687,7 @@ if (!class_exists('display_documents')) {
                                     </div>
                                     <?php
                                 }
-                            }
-
-                            if ($sub_key=='_select_one') {
+                            } elseif ($sub_key=='_select_one') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     ?>
@@ -1700,7 +1700,13 @@ if (!class_exists('display_documents')) {
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
                                 }
-                            }    
+                            } else {
+                                ?>
+                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
+                                <div id="sub-item-list-from-category"></div>
+                                <?php
+
+                            }
 /*
                             if ($sub_key=='_select') {
                                 if ($sub_value) {
