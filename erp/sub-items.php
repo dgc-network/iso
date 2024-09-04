@@ -685,8 +685,8 @@ if (!class_exists('sub_items')) {
                     $sub_item_title = '<b>'.get_the_title().'</b>';
                 } else {
                     $sub_item_title = $sub_item_code.' '.get_the_title();
+                    $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $sub_item_title . '</option>';
                 }
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $sub_item_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -698,7 +698,7 @@ if (!class_exists('sub_items')) {
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             //$sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
             if (!$field_value) $field_value = get_post_meta($sub_item_id, 'sub_item_default', true);
-            
+
             if ($sub_item_type=='heading') {
                 ?>
                 <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
