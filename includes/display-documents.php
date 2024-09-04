@@ -1671,12 +1671,17 @@ if (!class_exists('display_documents')) {
 */                                    
                                 }
                             } else {
-/*                                
+                                $sub_item_id = $field_value;
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
+                                }
                                 ?>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
-                                <div id="sub-item-list-from-category"></div>
+                                <div id="sub-item-list-from-category">
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
+                                </div>
                                 <?php
-*/                                
                             }
                             break;
 
