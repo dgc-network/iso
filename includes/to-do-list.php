@@ -739,13 +739,7 @@ if (!class_exists('to_do_list')) {
             );
 
             // Try to!! Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
-            if ($prev_report_id) {
-                $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
-    
-                //$department_id = get_post_meta($prev_report_id, '_audited_department', true);
-                //$category_id = get_post_meta($prev_report_id, '_iso_category', true);
-                //$filtered_sub_item_ids = $this->filtered_sub_item_ids_by_department($sub_item_ids, $department_id, $category_id);                    
-            }
+            if ($prev_report_id) $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
 
             if ($sub_item_ids) {
                 if (is_array($sub_item_ids)) {
@@ -759,20 +753,7 @@ if (!class_exists('to_do_list')) {
                     $this->create_new_todo_for_next_job($params);
                 }
             }
-/*
-            if ($filtered_sub_item_ids) {
-                if (is_array($filtered_sub_item_ids)) {
-                    foreach ($filtered_sub_item_ids as $sub_item_id) {
-                        $params['sub_item_id'] = $sub_item_id;
-                        $this->create_new_todo_for_next_job($params);
-                    }
-                }    
-            } else {
-                if (!is_array($filtered_sub_item_ids)) {
-                    $this->create_new_todo_for_next_job($params);
-                }
-            }
-*/                
+
         }
 
         function create_new_todo_for_next_job($args = array()) {
