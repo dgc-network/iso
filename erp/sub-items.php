@@ -10,6 +10,13 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
             add_action( 'init', array( $this, 'register_sub_category_post_type' ) );
 
+            add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
+
             add_action( 'wp_ajax_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_sub_category_dialog_data', array( $this, 'get_sub_category_dialog_data' ) );
             add_action( 'wp_ajax_set_sub_category_dialog_data', array( $this, 'set_sub_category_dialog_data' ) );
@@ -24,8 +31,8 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_sub_items_from_category', array( $this, 'get_sub_items_from_category' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_items_from_category', array( $this, 'get_sub_items_from_category' ) );
+            add_action( 'wp_ajax_get_sub_items_from_selection', array( $this, 'get_sub_items_from_selection' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_items_from_selection', array( $this, 'get_sub_items_from_selection' ) );
             
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
@@ -36,17 +43,6 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_nopriv_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
-
-            add_action( 'wp_ajax_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_audit_item_dialog_data', array( $this, 'get_audit_item_dialog_data' ) );
-            add_action( 'wp_ajax_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_audit_item_dialog_data', array( $this, 'set_audit_item_dialog_data' ) );
-            add_action( 'wp_ajax_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_audit_item_dialog_data', array( $this, 'del_audit_item_dialog_data' ) );
-
-            add_action( 'wp_ajax_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
-            add_action( 'wp_ajax_nopriv_sort_audit_item_list_data', array( $this, 'sort_audit_item_list_data' ) );
-
         }
 
         function enqueue_sub_items_scripts() {
@@ -58,6 +54,164 @@ if (!class_exists('sub_items')) {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('sub-items-nonce'), // Generate nonce
             ));                
+        }
+
+        // doc-category
+        function register_doc_category_post_type() {
+            $labels = array(
+                'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'doc-category', $args );
+        }
+        
+        function display_doc_category_list() {
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $this->display_select_profile('doc-category');?></div>
+                <div style="text-align: right"></div>                        
+            </div>
+
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $query = $this->retrieve_doc_category_data();
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
+                            ?>
+                            <tr id="edit-doc-category-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php the_title();?></td>
+                                <td><?php the_content();?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if ($is_site_admin) {?>
+                    <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
+            </fieldset>
+            <div id="doc-category-dialog" title="Category dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_doc_category_data() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'doc-category',
+                'posts_per_page' => -1,        
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'orderby'        => 'title',  // Order by post title
+                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
+
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_doc_category_dialog($paged=1, $category_id=false) {
+            ob_start();
+            $is_site_admin = $this->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $cards_class = new erp_cards();
+            $items_class = new sub_items();
+            $category_title = get_the_title($category_id);
+            $category_content = get_post_field('post_content', $category_id);
+            $iso_category = get_post_meta($category_id, 'iso_category', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
+                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($iso_category);?></select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_doc_category_dialog_data() {
+            $response = array();
+            $category_id = sanitize_text_field($_POST['_category_id']);
+            $paged = sanitize_text_field($_POST['paged']);
+            $response['html_contain'] = $this->display_doc_category_dialog($paged, $category_id);
+            wp_send_json($response);
+        }
+
+        function set_doc_category_dialog_data() {
+            if( isset($_POST['_category_id']) ) {
+                $category_id = sanitize_text_field($_POST['_category_id']);
+                $category_url = sanitize_text_field($_POST['_category_url']);
+                $iso_category = sanitize_text_field($_POST['_iso_category']);
+                $data = array(
+                    'ID'           => $category_id,
+                    'post_title'   => sanitize_text_field($_POST['_category_title']),
+                    'post_content' => $_POST['_category_content'],
+                );
+                wp_update_post( $data );
+                update_post_meta($category_id, 'iso_category', $iso_category);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_title'    => 'New category',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'doc-category',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'site_id', $site_id);
+            }
+            $response = array('html_contain' => $this->display_doc_category_list());
+            wp_send_json($response);
+        }
+
+        function del_doc_category_dialog_data() {
+            wp_delete_post($_POST['_category_id'], true);
+            $response = array('html_contain' => $this->display_doc_category_list());
+            wp_send_json($response);
+        }
+
+        function select_doc_category_options($selected_option=0) {
+            $query = $this->retrieve_doc_category_data();
+            $options = '<option value="">Select category</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
         }
 
         // sub-category
@@ -491,7 +645,7 @@ if (!class_exists('sub_items')) {
 
         function select_sub_item_options($selected_option=false, $category_id=false) {
             $query = $this->retrieve_sub_item_list_data($category_id);
-            $options = '<option value="">Select '.get_the_title($category_id).'</option>';
+            $options = '<option value="">'.get_the_title($category_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
@@ -509,7 +663,6 @@ if (!class_exists('sub_items')) {
 
         function get_sub_item_contains($sub_item_id=false, $field_id=false) {
             $field_name = get_post_meta($field_id, 'field_name', true);
-            //$default_value = get_post_meta($field_id, 'default_value', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
@@ -578,24 +731,13 @@ if (!class_exists('sub_items')) {
                 return false; // No post found
             }
         }
-/*        
-        // Usage
-        $doc_id = 'your_doc_id_value';
-        $field_type = '_sub';
-        $doc_field_id = get_doc_field_id_by_meta($doc_id, $field_type);
-        
-        if ($doc_field_id) {
-            echo 'Doc Field ID: ' . $doc_field_id;
-        } else {
-            echo 'No matching Doc Field found.';
-        }
-*/        
-        function get_sub_items_from_category() {
+
+        function get_sub_items_from_selection() {
             ob_start();
             $response = array();
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub');
+            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub_item');
 
             $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
             if ($sub_item_id) {
@@ -608,41 +750,6 @@ if (!class_exists('sub_items')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $this->get_sub_item_contains(get_the_ID(), $field_id);
-    /*                    
-                        $sub_item_title = get_the_title();
-                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                        if ($sub_item_type=='heading') {
-                            ?>
-                            <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
-                            <?php
-                        } elseif ($sub_item_type=='checkbox') {
-                            $is_checked = ($field_value==1) ? 'checked' : '';
-                            ?>
-                            <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                            <?php
-                        } elseif ($sub_item_type=='textarea') {
-                            ?>
-                            <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                            <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                            <?php
-                        } elseif ($sub_item_type=='text') {
-                            ?>
-                            <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                            <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                            <?php
-                        } elseif ($sub_item_type=='radio') {
-                            $is_checked = ($field_value==1) ? 'checked' : '';
-                            ?>
-                            <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                            <?php
-                        } else {
-                            ?>
-                            <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                            <?php
-                        }
-    */                        
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -855,7 +962,7 @@ if (!class_exists('sub_items')) {
             // Return null if no matching post is found
             return null;
         }
-
+/*
         // audit-item
         function register_audit_item_post_type() {
             $labels = array(
@@ -1100,7 +1207,7 @@ if (!class_exists('sub_items')) {
             wp_reset_postdata();
             return $options;
         }
-
+*/
     }
     $items_class = new sub_items();
 }

@@ -56,13 +56,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_doc_user_data', array( $this, 'del_doc_user_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_user_data', array( $this, 'del_doc_user_data' ) );                                                                    
 
-            add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_doc_category_dialog_data', array( $this, 'set_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
-
             add_action( 'wp_ajax_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
@@ -112,7 +105,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-                if ($_GET['_select_profile']=='doc-category') echo $this->display_doc_category_list();
 /*
                 if ($_GET['_select_profile']=='update_post_type_check_category_to_sub_category') echo $this->update_post_type_check_category_to_sub_category();
                 if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
@@ -135,6 +127,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
 
                 $items_class = new sub_items();
+                if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='sub-category') echo $items_class->display_sub_category_list();
 
@@ -388,6 +381,57 @@ if (!class_exists('display_profiles')) {
         // Hook to run the function during the 'init' action
         //add_action('init', 'update_post_type_check_category_to_sub_category');
 */        
+        function get_transactions_by_key_value_pair($key_value_pair = array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            if (!empty($key_value_pair)) {
+                foreach ($key_value_pair as $key => $value) {
+                    $args = array(
+                        'post_type'  => 'doc-field',
+                        'posts_per_page' => -1, // Retrieve all posts
+                        'meta_query' => array(
+                            array(
+                                'key'   => 'field_type',
+                                'value' => $key,
+                                'compare' => '='
+                            )
+                        ),
+                        'fields' => 'ids' // Only return post IDs
+                    );
+
+                    // Execute the query
+                    $query = new WP_Query($args);
+
+                    $doc_ids = array();
+                    if ($query->have_posts()) {
+                        foreach ($query->posts as $field_id) {
+                            $doc_id = get_post_meta($field_id, 'doc_id', true);
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            // Ensure the doc ID is unique
+                            if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
+                                $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
+                                $documents_class = new display_documents();
+                                $params = array(
+                                    'doc_id'         => $doc_id,
+                                    'key_value_pair' => $key_value_pair,
+                                );
+                                $doc_report = $documents_class->retrieve_doc_report_list_data($params);
+                                if ($doc_report->have_posts()) {
+                                    echo $doc_title. ':';
+                                    echo '<fieldset>';
+                                    echo $documents_class->get_doc_report_native_list($doc_id, false, $key_value_pair);
+                                    echo '</fieldset>';    
+                                }        
+                            }
+                        }
+                        return $query->posts; // Return the array of post IDs
+                    }
+                }    
+            }
+            return array(); // Return an empty array if no posts are found
+        }
+
         // my-profile scripts
         function display_my_profile() {
             ob_start();
@@ -427,57 +471,6 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_transactions_by_key_value_pair($key_value_pair = array()) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            if (!empty($key_value_pair)) {
-                foreach ($key_value_pair as $key => $value) {
-                    $args = array(
-                        'post_type'  => 'doc-field',
-                        'posts_per_page' => -1, // Retrieve all posts
-                        'meta_query' => array(
-                            array(
-                                'key'   => 'field_type',
-                                'value' => $key,
-                                'compare' => '='
-                            )
-                        ),
-                        'fields' => 'ids' // Only return post IDs
-                    );
-                
-                    // Execute the query
-                    $query = new WP_Query($args);
-
-                    $doc_ids = array();
-                    if ($query->have_posts()) {
-                        foreach ($query->posts as $field_id) {
-                            $doc_id = get_post_meta($field_id, 'doc_id', true);
-                            $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            // Ensure the doc ID is unique
-                            if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
-                                $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
-                                $documents_class = new display_documents();
-                                $params = array(
-                                    'doc_id'         => $doc_id,
-                                    'key_value_pair' => $key_value_pair,
-                                );
-                                $doc_report = $documents_class->retrieve_doc_report_list_data($params);
-                                if ($doc_report->have_posts()) {
-                                    echo $doc_title. ':';
-                                    echo '<fieldset>';
-                                    echo $documents_class->get_doc_report_native_list($doc_id, false, $key_value_pair);
-                                    echo '</fieldset>';    
-                                }        
-                            }
-                        }
-                        return $query->posts; // Return the array of post IDs
-                    }
-                }    
-            }
-            return array(); // Return an empty array if no posts are found
-        }
-        
         function display_my_job_list() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -1900,164 +1893,6 @@ if (!class_exists('display_profiles')) {
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
-        }
-
-        // doc-category
-        function register_doc_category_post_type() {
-            $labels = array(
-                'menu_name'     => _x('doc-category', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-            );
-            register_post_type( 'doc-category', $args );
-        }
-        
-        function display_doc_category_list() {
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-            ob_start();
-            ?>
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $this->display_select_profile('doc-category');?></div>
-                <div style="text-align: right"></div>                        
-            </div>
-
-            <fieldset>
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $query = $this->retrieve_doc_category_data();
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
-                            ?>
-                            <tr id="edit-doc-category-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php the_content();?></td>
-                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
-                            </tr>
-                            <?php 
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                <?php if ($is_site_admin) {?>
-                    <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php }?>
-            </fieldset>
-            <div id="doc-category-dialog" title="Category dialog"></div>
-            <?php
-            return ob_get_clean();
-        }
-
-        function retrieve_doc_category_data() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'doc-category',
-                'posts_per_page' => -1,        
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-                'orderby'        => 'title',  // Order by post title
-                'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
-
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-
-        function display_doc_category_dialog($paged=1, $category_id=false) {
-            ob_start();
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-            $cards_class = new erp_cards();
-            $items_class = new sub_items();
-            $category_title = get_the_title($category_id);
-            $category_content = get_post_field('post_content', $category_id);
-            $iso_category = get_post_meta($category_id, 'iso_category', true);
-            ?>
-            <fieldset>
-                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
-                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
-                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($iso_category);?></select>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
-        function get_doc_category_dialog_data() {
-            $response = array();
-            $category_id = sanitize_text_field($_POST['_category_id']);
-            $paged = sanitize_text_field($_POST['paged']);
-            $response['html_contain'] = $this->display_doc_category_dialog($paged, $category_id);
-            wp_send_json($response);
-        }
-
-        function set_doc_category_dialog_data() {
-            if( isset($_POST['_category_id']) ) {
-                $category_id = sanitize_text_field($_POST['_category_id']);
-                $category_url = sanitize_text_field($_POST['_category_url']);
-                $iso_category = sanitize_text_field($_POST['_iso_category']);
-                $data = array(
-                    'ID'           => $category_id,
-                    'post_title'   => sanitize_text_field($_POST['_category_title']),
-                    'post_content' => $_POST['_category_content'],
-                );
-                wp_update_post( $data );
-                update_post_meta($category_id, 'iso_category', $iso_category);
-            } else {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $new_post = array(
-                    'post_title'    => 'New category',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'doc-category',
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'site_id', $site_id);
-            }
-            $response = array('html_contain' => $this->display_doc_category_list());
-            wp_send_json($response);
-        }
-
-        function del_doc_category_dialog_data() {
-            wp_delete_post($_POST['_category_id'], true);
-            $response = array('html_contain' => $this->display_doc_category_list());
-            wp_send_json($response);
-        }
-
-        function select_doc_category_options($selected_option=0) {
-            $query = $this->retrieve_doc_category_data();
-            $options = '<option value="">Select category</option>';
-            while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            return $options;
         }
 
         // site-profile list

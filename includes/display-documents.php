@@ -780,7 +780,7 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
-                                        } elseif ($field_type=='_sub') {
+                                        } elseif ($field_type=='_sub_item') {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_audit') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
@@ -1143,7 +1143,7 @@ if (!class_exists('display_documents')) {
                         $default_value = $this->get_field_default_value(get_the_ID());
                         update_post_meta($post_id, $field_name, $default_value);
 
-                        if ($field_type=='_sub') {
+                        if ($field_type=='_sub_item') {
                             $parts = explode('=', $default_value);
                             $sub_key = $parts[0]; // _embedded, _order_item, _select
                             $sub_value = $parts[1]; // 1724993477
@@ -1244,7 +1244,7 @@ if (!class_exists('display_documents')) {
 */
             update_post_meta($report_id, $field_name, $field_value);
 
-            if ($field_type=='_sub') {
+            if ($field_type=='_sub_item') {
                 $items_class = new sub_items();
                 $parts = explode('=', $default_value);
                 $sub_key = $parts[0]; // _embedded, _order_item, _select
@@ -1466,7 +1466,7 @@ if (!class_exists('display_documents')) {
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
                     <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
-                    <option value="_sub" <?php echo ($field_type=='_sub') ? 'selected' : ''?>><?php echo __( '_sub', 'your-text-domain' );?></option>
+                    <option value="_sub_item" <?php echo ($field_type=='_sub_item') ? 'selected' : ''?>><?php echo __( '_sub_item', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1573,7 +1573,7 @@ if (!class_exists('display_documents')) {
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                 
-                    if ($field_type=='_sub') {
+                    if ($field_type=='_sub_item') {
                         $parts = explode('=', $default_value);
                         $sub_key = $parts[0]; // _embedded, _order_item, _select
                         $sub_value = $parts[1]; // 1724993477
@@ -1666,7 +1666,7 @@ if (!class_exists('display_documents')) {
                             }
                             break;
 */
-                        case ($field_type=='_sub'):
+                        case ($field_type=='_sub_item'):
                             $items_class = new sub_items();
                             $parts = explode('=', $default_value);
                             $sub_key = $parts[0]; // _embedded, _order_item, _select
@@ -1737,9 +1737,14 @@ if (!class_exists('display_documents')) {
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
+                                } else {
+                                    ?>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
+                                    <div id="sub-item-list-from-category"></div>
+                                    <?php
                                 }
                             }    
-
+/*
                             if ($sub_key=='_select') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1749,7 +1754,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }    
-
+*/
                             if ($sub_key=='_audit_plan') {
                                 if (!$sub_value) {
                                     ?>

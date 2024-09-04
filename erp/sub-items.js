@@ -403,7 +403,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
+/*    
     // audit-item scripts
     function activate_audit_item_list_data(category_id){
         $("#new-audit-item").on("click", function() {
@@ -556,5 +556,5 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
 });

@@ -840,7 +840,7 @@ jQuery(document).ready(function($) {
 
         $(".sub-category").on( "change", function() {
             const ajaxData = {
-                'action': 'get_sub_items_from_category',
+                'action': 'get_sub_items_from_selection',
             };
         
             ajaxData['_category_id'] = $(this).val();
@@ -864,7 +864,7 @@ jQuery(document).ready(function($) {
 
         $(".sub-item").on( "change", function() {
             const ajaxData = {
-                'action': 'get_sub_items_from_category',
+                'action': 'get_sub_items_from_selection',
             };
         
             //ajaxData['_category_id'] = $(this).val();
@@ -902,7 +902,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
-                    if (value.field_type === '_sub') {
+                    if (value.field_type === '_sub_item') {
                         $.each(response.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
@@ -943,7 +943,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
-                    if (value.field_type === '_sub') {
+                    if (value.field_type === '_sub_item') {
                         $.each(response.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
@@ -1007,7 +1007,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
-                    if (value.field_type === '_sub') {
+                    if (value.field_type === '_sub_item') {
                         $.each(response.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
