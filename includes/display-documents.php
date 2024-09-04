@@ -1242,7 +1242,7 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_sub_item') {
                 $items_class = new sub_items();
                 $parts = explode('=', $default_value);
-                $sub_key = $parts[0]; // _embedded, _order_item, _select
+                $sub_key = $parts[0]; // _embedded, _planning, _select_one
                 $sub_value = $parts[1]; // 1724993477
 
                 if ($sub_key=='_embedded'||$sub_key=='_planning') {
@@ -1256,19 +1256,16 @@ if (!class_exists('display_documents')) {
                             endwhile;
                             wp_reset_postdata();
                         endif;
+
                         update_post_meta($report_id, $field_name, $category_id);
+
+                        if ($sub_key=='_planning') {
+                            $sub_item_ids = $this->get_sub_item_id_by_category($category_id);
+                            update_post_meta($report_id, '_planning', $sub_item_ids);
+                        }    
                     }
                 }
-
-                if ($sub_key=='_planning') {
-                    if ($sub_value) {
-                        $sub_item_ids = $this->get_sub_item_id_by_category($field_value);
-                        update_post_meta($report_id, '_planning', $sub_item_ids);
-                    }
-                }
-
             }
-
         }
         
         function get_sub_item_id_by_category($category_id=false) {
@@ -1626,7 +1623,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_sub_item'):
                             $items_class = new sub_items();
                             $parts = explode('=', $default_value);
-                            $sub_key = $parts[0]; // _embedded, _order_item, _select
+                            $sub_key = $parts[0]; // _embedded, _planning, _select_one
                             $sub_value = $parts[1]; // 1724993477
             
                             if ($sub_key=='_embedded'||$sub_key=='_planning') {
@@ -1646,40 +1643,6 @@ if (!class_exists('display_documents')) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 }
                                                 $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
-/*
-                                                $sub_item_title = get_the_title();
-                                                $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                                                $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                                if ($sub_item_type=='heading') {
-                                                    ?>
-                                                    <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
-                                                    <?php
-                                                } elseif ($sub_item_type=='checkbox') {
-                                                    $is_checked = ($field_value==1) ? 'checked' : '';
-                                                    ?>
-                                                    <input type="checkbox" id="<?php echo esc_attr($field_name.get_the_ID());?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                                                    <?php
-                                                } elseif ($sub_item_type=='textarea') {
-                                                    ?>
-                                                    <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                                                    <textarea id="<?php echo esc_attr($field_name.get_the_ID());?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
-                                                    <?php
-                                                } elseif ($sub_item_type=='text') {
-                                                    ?>
-                                                    <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                                                    <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                                                    <?php
-                                                } elseif ($sub_item_type=='radio') {
-                                                    $is_checked = ($field_value==1) ? 'checked' : '';
-                                                    ?>
-                                                    <input type="radio" id="<?php echo esc_attr($field_name.get_the_ID());?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <?php echo $sub_item_code.' '.$sub_item_title?><br>
-                                                    <?php
-                                                }
-*/                                                
                                             endwhile;
                                             wp_reset_postdata();
                                         endif;
@@ -1699,40 +1662,22 @@ if (!class_exists('display_documents')) {
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
+/*                                    
                                 } else {
                                     ?>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
+*/                                    
                                 }
                             } else {
+/*                                
                                 ?>
                                 <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
                                 <div id="sub-item-list-from-category"></div>
                                 <?php
-
+*/                                
                             }
-/*
-                            if ($sub_key=='_select') {
-                                if ($sub_value) {
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
-                                    <?php
-                                }
-                            }    
-
-                            if ($sub_key=='_planning') {
-                                if (!$sub_value) {
-                                    ?>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
-                                    <div id="sub-item-list-from-category"></div>
-                                    <?php
-
-                                }
-                            }    
-*/
                             break;
 
                         case ($field_type=='_document'):
