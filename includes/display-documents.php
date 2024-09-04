@@ -197,6 +197,7 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
+            $items_class = new sub_items();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -207,7 +208,7 @@ if (!class_exists('display_documents')) {
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <select id="select-category"><?php echo $profiles_class->select_doc_category_options($_GET['_category']);?></select>
+                        <select id="select-category"><?php echo $items_class->select_doc_category_options($_GET['_category']);?></select>
                     </div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
@@ -348,6 +349,7 @@ if (!class_exists('display_documents')) {
             ob_start();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
+            $items_class = new sub_items();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();            
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -393,7 +395,7 @@ if (!class_exists('display_documents')) {
             <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
             <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
             <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_doc_category_options($doc_category);?></select>
+            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
 
             <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 

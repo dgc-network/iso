@@ -69,7 +69,8 @@ if (!class_exists('sub_items')) {
         }
         
         function display_doc_category_list() {
-            $is_site_admin = $this->is_site_admin();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
@@ -138,10 +139,11 @@ if (!class_exists('sub_items')) {
 
         function display_doc_category_dialog($paged=1, $category_id=false) {
             ob_start();
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
             $cards_class = new erp_cards();
-            $items_class = new sub_items();
+            //$items_class = new sub_items();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
@@ -154,7 +156,7 @@ if (!class_exists('sub_items')) {
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
-                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($iso_category);?></select>
+                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
