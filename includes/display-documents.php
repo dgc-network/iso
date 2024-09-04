@@ -1680,7 +1680,7 @@ if (!class_exists('display_documents')) {
                                 }
                                 ?>
                                 <div id="sub-item-list-from-category">
-                                    <?php echo 'sub_item_id:'.$sub_item_id;?>
+                                    <?php echo 'sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.' field_name:'.$field_name;?>
                                     <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
                                 </div>
                                 <?php
