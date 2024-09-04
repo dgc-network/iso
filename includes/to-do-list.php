@@ -744,8 +744,8 @@ if (!class_exists('to_do_list')) {
             if ($sub_item_ids) {
                 if (is_array($sub_item_ids)) {
                     foreach ($sub_item_ids as $sub_item_id) {
-                        //$params['sub_item_id'] = $sub_item_id;
-                        $params['sub_item_id'] = 10000;
+                        $params['sub_item_id'] = $sub_item_id;
+                        //$params['sub_item_id'] = 10000;
                         $this->create_new_todo_for_next_job($params);
                     }
                 }    
@@ -781,7 +781,8 @@ if (!class_exists('to_do_list')) {
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
             //if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
-            update_post_meta($new_todo_id, 'sub_item_id', 20000 );
+            if ($sub_item_id) update_post_meta($prev_report_id, 'sub_item_id', $sub_item_id );
+            //update_post_meta($new_todo_id, 'sub_item_id', 20000 );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
