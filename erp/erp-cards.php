@@ -14,8 +14,6 @@ if (!class_exists('erp_cards')) {
             //add_action( 'init', array( $this, 'register_equipment_card_post_type' ) );
             //add_action( 'init', array( $this, 'register_instrument_card_post_type' ) );
             //add_action( 'init', array( $this, 'register_department_card_post_type' ) );
-            //add_action( 'init', array( $this, 'register_iso_category_post_type' ) );
-            //add_action( 'init', array( $this, 'register_audit_item_post_type' ) );
 
             add_action( 'wp_ajax_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_customer_card_dialog_data', array( $this, 'get_customer_card_dialog_data' ) );

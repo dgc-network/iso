@@ -105,19 +105,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-/*
-                if ($_GET['_select_profile']=='update_post_type_check_category_to_sub_category') echo $this->update_post_type_check_category_to_sub_category();
-                if ($_GET['_select_profile']=='update_post_type_check_item_to_sub_item') echo $this->update_post_type_check_item_to_sub_item();
-                if ($_GET['_select_profile']=='rename_meta_key_for_sub_items') echo $this->rename_meta_key_for_sub_items();
 
-                if ($_GET['_select_profile']=='copy_audit_items_to_sub_items') echo $this->copy_audit_items_to_sub_items();
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_27001') echo $this->update_category_meta_by_iso('1725346630','ISO27001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_45001') echo $this->update_category_meta_by_iso('1725346628','ISO45001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_haccp') echo $this->update_category_meta_by_iso('1725346627','HACCP');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_22000') echo $this->update_category_meta_by_iso('1725346626','ISO22000');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_14001') echo $this->update_category_meta_by_iso('1725346624','ISO14001');
-                if ($_GET['_select_profile']=='update_category_meta_by_iso_9001') echo $this->update_category_meta_by_iso('1725346619','ISO9001');
-*/
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -181,206 +169,7 @@ if (!class_exists('display_profiles')) {
                 echo '</div>';
             }
         }
-/*
-        function update_category_meta_by_iso($code, $iso) {
-            $items_class = new sub_items();
-            // Step 1: Retrieve the $category_id by the given code
-            $category_id = $items_class->get_sub_category_post_id_by_code($code);
-            
-            // Step 2: Retrieve the $iso_category by the given ISO title
-            $iso_category = get_page_by_title($iso, OBJECT, 'iso-category'); // Assuming 'page' post type
-            
-            if (!$category_id || !$iso_category) {
-                // Return or handle error if category or ISO category is not found
-                return;
-            }
-        
-            // Step 3: Query posts where meta key 'iso_category' equals $iso_category->ID
-            $args = array(
-                'post_type'  => 'sub-item', // Replace with your specific post type if needed
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category->ID,
-                        'compare' => '='
-                    )
-                )
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Step 4: Update the 'category_id' meta key for each post found
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Update the 'category_id' meta with the new $category_id value
-                    update_post_meta(get_the_ID(), 'category_id', $category_id);
-                }
-                wp_reset_postdata();
-            }
-        }
-        
-        // Usage
-        //$code = "1725328013";
-        //$iso = "ISO27001";
-        //update_category_meta_by_iso($code, $iso);
-        
-        function update_post_type_check_category_to_sub_category() {
-            global $wpdb;
-        
-            // The SQL query to update the post type
-            $sql = "UPDATE {$wpdb->prefix}posts SET post_type = 'sub-category' WHERE post_type = 'check-category'";
-        
-            // Execute the query
-            $wpdb->query($sql);
-        }
-        
-        function update_post_type_check_item_to_sub_item() {
-            global $wpdb;
-        
-            // The SQL query to update the post type
-            $sql = "UPDATE {$wpdb->prefix}posts SET post_type = 'sub-item' WHERE post_type = 'check-item'";
-        
-            // Execute the query
-            $wpdb->query($sql);
-        }
-        
-        function rename_meta_key_for_sub_items() {
-            global $wpdb;
-        
-            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
-            $posts = $wpdb->get_results("
-                SELECT post_id 
-                FROM $wpdb->postmeta 
-                WHERE meta_key = 'check_item_code'
-            ");
-        
-            // Loop through the posts and update the meta key
-            foreach ( $posts as $post ) {
-                $post_id = $post->post_id;
-        
-                // Get the old meta value
-                $meta_value = get_post_meta( $post_id, 'check_item_code', true );
-        
-                // Update the meta key to 'sub_item_name'
-                update_post_meta( $post_id, 'sub_item_code', $meta_value );
-        
-                // Optionally, delete the old meta key
-                delete_post_meta( $post_id, 'check_item_code' );
-            }
 
-            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
-            $posts = $wpdb->get_results("
-                SELECT post_id 
-                FROM $wpdb->postmeta 
-                WHERE meta_key = 'check_item_type'
-            ");
-        
-            // Loop through the posts and update the meta key
-            foreach ( $posts as $post ) {
-                $post_id = $post->post_id;
-        
-                // Get the old meta value
-                $meta_value = get_post_meta( $post_id, 'check_item_type', true );
-        
-                // Update the meta key to 'sub_item_name'
-                update_post_meta( $post_id, 'sub_item_type', $meta_value );
-        
-                // Optionally, delete the old meta key
-                delete_post_meta( $post_id, 'check_item_type' );
-            }
-
-            // Get all posts of the post type 'sub-item' that have the meta key 'check_item_name'
-            $posts = $wpdb->get_results("
-                SELECT post_id 
-                FROM $wpdb->postmeta 
-                WHERE meta_key = 'check_item_default'
-            ");
-        
-            // Loop through the posts and update the meta key
-            foreach ( $posts as $post ) {
-                $post_id = $post->post_id;
-        
-                // Get the old meta value
-                $meta_value = get_post_meta( $post_id, 'check_item_default', true );
-        
-                // Update the meta key to 'sub_item_name'
-                update_post_meta( $post_id, 'sub_item_default', $meta_value );
-        
-                // Optionally, delete the old meta key
-                delete_post_meta( $post_id, 'check_item_default' );
-            }
-        }
-        
-        function copy_audit_items_to_sub_items() {
-            global $wpdb;
-        
-            // Get all posts of the 'audit-item' post type
-            $audit_items = $wpdb->get_results("
-                SELECT * 
-                FROM $wpdb->posts 
-                WHERE post_type = 'audit-item' 
-                AND post_status = 'publish'
-            ");
-        
-            foreach ( $audit_items as $audit_item ) {
-                // Create a new post in 'sub-item' post type with the same data
-                $new_post_id = wp_insert_post(array(
-                    'post_title'    => $audit_item->post_title,
-                    'post_content'  => $audit_item->post_content,
-                    'post_status'   => $audit_item->post_status,
-                    'post_type'     => 'sub-item',
-                    'post_author'   => $audit_item->post_author,
-                    'post_date'     => $audit_item->post_date,
-                    'post_date_gmt' => $audit_item->post_date_gmt,
-                    'post_excerpt'  => $audit_item->post_excerpt,
-                    'post_parent'   => $audit_item->post_parent,
-                    'menu_order'    => $audit_item->menu_order,
-                    'post_password' => $audit_item->post_password,
-                ));
-        
-                // Copy post meta from 'audit-item' to 'sub-item'
-                $meta_keys = $wpdb->get_results("
-                    SELECT meta_key, meta_value 
-                    FROM $wpdb->postmeta 
-                    WHERE post_id = $audit_item->ID
-                ");
-        
-                foreach ( $meta_keys as $meta_key ) {
-                    // Check if meta key is 'field_type' and rename it to 'sub_item_type'
-                    if ( $meta_key->meta_key == 'field_type' ) {
-                        update_post_meta( $new_post_id, 'sub_item_type', $meta_key->meta_value );
-                    } elseif ( $meta_key->meta_key == 'clause_no' ) {
-                        update_post_meta( $new_post_id, 'sub_item_code', $meta_key->meta_value );
-                    } elseif ( $meta_key->meta_key == 'category_id' ) {
-                        update_post_meta( $new_post_id, 'iso_category', $meta_key->meta_value );
-                    } else {
-                        // Copy other meta keys as they are
-                        update_post_meta( $new_post_id, $meta_key->meta_key, $meta_key->meta_value );
-                    }
-                }
-            }
-        
-            echo "Data copied successfully from 'audit-item' to 'sub-item'.";
-        }
-        
-        // Execute the function
-        //copy_audit_items_to_sub_items();
-        
-        // Optionally, you can hook this function to 'init' or 'admin_init' to run it automatically
-        // add_action('init', 'copy_audit_items_to_sub_items');
-        
-        // Run the function
-        //rename_meta_key_for_sub_items();
-        
-        // Optionally, you can hook this function to 'init' or 'admin_init' so it runs automatically
-        // add_action('init', 'rename_meta_key_for_sub_items');
-        
-        // Hook to run the function during the 'init' action
-        //add_action('init', 'update_post_type_check_category_to_sub_category');
-*/        
         function get_transactions_by_key_value_pair($key_value_pair = array()) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -761,7 +550,6 @@ if (!class_exists('display_profiles')) {
                 <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
                 <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
 */?>
-                <?php //echo $this->display_audit_item_list_in_category();?>    
             </fieldset>
             <?php
             return ob_get_clean();
@@ -829,7 +617,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
+/*        
         function display_audit_item_list_in_category() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -915,7 +703,7 @@ if (!class_exists('display_profiles')) {
                 return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
             }
         }
-        
+*/        
         function display_site_user_list() {
             $is_site_admin = $this->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;

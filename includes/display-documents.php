@@ -1236,14 +1236,7 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department' && $default_value=='_audited'){
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
-/*
-            if ($field_type=='_audit' && $default_value=='_plan'){
-                // generate the audit-item-ids
-                $audit_item_ids = $this->get_audit_item_id_by_category($field_value);
-                update_post_meta($report_id, '_audit_plan', $audit_item_ids);
-                update_post_meta($report_id, '_iso_category', $field_value);
-            }
-*/
+
             update_post_meta($report_id, $field_name, $field_value);
 
             if ($field_type=='_sub_item') {
@@ -1267,10 +1260,10 @@ if (!class_exists('display_documents')) {
                     }
                 }
 
-                if ($sub_key=='_audit_plan') {
+                if ($sub_key=='_planning') {
                     if ($sub_value) {
-                        $audit_item_ids = $this->get_sub_item_id_by_category($field_value);
-                        update_post_meta($report_id, '_audit_plan', $audit_item_ids);
+                        $sub_item_ids = $this->get_sub_item_id_by_category($field_value);
+                        update_post_meta($report_id, '_planning', $sub_item_ids);
                         //update_post_meta($report_id, '_iso_category', $field_value);
                     }
                 }
@@ -1298,7 +1291,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();        
             return $post_ids;
         }
-
+/*
         function get_audit_item_id_by_category($category_id=false) {
             $args = array(
                 'post_type'  => 'audit-item',
@@ -1318,7 +1311,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();        
             return $post_ids;
         }
-
+*/
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
@@ -1651,30 +1644,13 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
-/*                        
-                        case ($field_type=='_audit'):
-                            $items_class = new sub_items();
-                            if ($default_value=='_plan') {
-                                ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_iso_category_options($field_value);?></select>
-                                <?php
-                            } else {
-                                $category_id = get_post_meta($report_id, '_iso_category', true);
-                                ?>
-                                <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_audit_item_options($field_value, $category_id);?></select>
-                                <?php    
-                            }
-                            break;
-*/
                         case ($field_type=='_sub_item'):
                             $items_class = new sub_items();
                             $parts = explode('=', $default_value);
                             $sub_key = $parts[0]; // _embedded, _order_item, _select
                             $sub_value = $parts[1]; // 1724993477
             
-                            if ($sub_key=='_embedded'||$sub_key=='_audit_plan') {
+                            if ($sub_key=='_embedded'||$sub_key=='_planning') {
                                 if ($sub_value) {
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                                     ?>
@@ -1757,7 +1733,7 @@ if (!class_exists('display_documents')) {
                                 }
                             }    
 */
-                            if ($sub_key=='_audit_plan') {
+                            if ($sub_key=='_planning') {
                                 if (!$sub_value) {
                                     ?>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
@@ -1990,7 +1966,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            if ($is_site_admin || current_user_can('administrator')) {
+            if ($is_site_admin) {
                 ob_start();
                 ?>
                 <fieldset>

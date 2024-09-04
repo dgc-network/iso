@@ -745,37 +745,37 @@ if (!class_exists('to_do_list')) {
                 'next_leadtime' => $next_leadtime,
             );
 
-            // Try to!! Create the new To-do with audit-items If meta "_audit_plan" of $prev_report_id is present
+            // Try to!! Create the new To-do with audit-items If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) {
-                $audit_ids = get_post_meta($prev_report_id, '_audit_plan', true);
+                $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
     
                 //$department_id = get_post_meta($prev_report_id, '_audited_department', true);
                 //$category_id = get_post_meta($prev_report_id, '_iso_category', true);
-                //$filtered_audit_ids = $this->filtered_audit_ids_by_department($audit_ids, $department_id, $category_id);                    
+                //$filtered_sub_item_ids = $this->filtered_sub_item_ids_by_department($sub_item_ids, $department_id, $category_id);                    
             }
 
-            if ($audit_ids) {
-                if (is_array($audit_ids)) {
-                    foreach ($audit_ids as $audit_id) {
-                        $params['audit_id'] = $audit_id;
+            if ($sub_item_ids) {
+                if (is_array($sub_item_ids)) {
+                    foreach ($sub_item_ids as $sub_item_id) {
+                        $params['sub_item_id'] = $sub_item_id;
                         $this->create_new_todo_for_next_job($params);
                     }
                 }    
             } else {
-                if (!is_array($audit_ids)) {
+                if (!is_array($sub_item_ids)) {
                     $this->create_new_todo_for_next_job($params);
                 }
             }
 /*
-            if ($filtered_audit_ids) {
-                if (is_array($filtered_audit_ids)) {
-                    foreach ($filtered_audit_ids as $audit_id) {
-                        $params['audit_id'] = $audit_id;
+            if ($filtered_sub_item_ids) {
+                if (is_array($filtered_sub_item_ids)) {
+                    foreach ($filtered_sub_item_ids as $sub_item_id) {
+                        $params['sub_item_id'] = $sub_item_id;
                         $this->create_new_todo_for_next_job($params);
                     }
                 }    
             } else {
-                if (!is_array($filtered_audit_ids)) {
+                if (!is_array($filtered_sub_item_ids)) {
                     $this->create_new_todo_for_next_job($params);
                 }
             }
@@ -790,7 +790,7 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
             $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
-            $audit_id = isset($args['audit_id']) ? $args['audit_id'] : 0;
+            $sub_item_id = isset($args['sub_item_id']) ? $args['sub_item_id'] : 0;
 
             // Create a new To-do for next_job
             $new_post = array(
@@ -804,7 +804,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
-            if ($audit_id) update_post_meta($new_todo_id, 'audit_item', $audit_id );
+            if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
@@ -983,30 +983,30 @@ if (!class_exists('to_do_list')) {
                 ]);            
             }    
         }
-
-        function filtered_audit_ids_by_department($audit_ids=array(), $department_id=false, $category_id=false) {
+/*
+        function filtered_sub_item_ids_by_department($sub_item_ids=array(), $department_id=false, $category_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $filtered_audit_ids = array();
-            if (is_array($audit_ids)) {
-                $filtered_audit_ids = array();
-                foreach ($audit_ids as $audit_id) {
-                    $clause_no = get_post_meta($audit_id, 'clause_no', true);
-                    $sorting_key = get_post_meta($audit_id, 'sorting_key', true);
-                    $field_type = get_post_meta($audit_id, 'field_type', true);
+            $filtered_sub_item_ids = array();
+            if (is_array($sub_item_ids)) {
+                $filtered_sub_item_ids = array();
+                foreach ($sub_item_ids as $sub_item_id) {
+                    $clause_no = get_post_meta($sub_item_id, 'clause_no', true);
+                    $sorting_key = get_post_meta($sub_item_id, 'sorting_key', true);
+                    $field_type = get_post_meta($sub_item_id, 'field_type', true);
                     $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
                     $field_value = get_post_meta($site_id, $field_key, true);
                 
                     if ($department_id == $field_value) {
-                        $filtered_audit_ids[] = $audit_id;
+                        $filtered_sub_item_ids[] = $sub_item_id;
                     }
                 }
-                return $filtered_audit_ids;
+                return $filtered_sub_item_ids;
             }
-            // Now $filtered_audit_ids contains the filtered audit IDs
+            // Now $filtered_sub_item_ids contains the filtered audit IDs
             return false;
         }
-
+*/
         function is_todo_authorized($todo_id=false) {
             $query = $this->retrieve_todo_action_list_data($todo_id);
             if ($query->have_posts()) :
