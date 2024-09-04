@@ -445,7 +445,7 @@ if (!class_exists('sub_items')) {
             while ($query->have_posts()) : $query->the_post();
                 $category_code = get_post_meta(get_the_ID(), 'category_code', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.$category_code.')') . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

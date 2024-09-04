@@ -1668,13 +1668,11 @@ if (!class_exists('display_documents')) {
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
-/*                                    
                                 } else {
                                     ?>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
-*/                                    
                                 }
                             } else {
                                 if ($todo_id) {
