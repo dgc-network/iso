@@ -1245,7 +1245,7 @@ if (!class_exists('display_documents')) {
                 $sub_key = $parts[0]; // _embedded, _order_item, _select
                 $sub_value = $parts[1]; // 1724993477
 
-                if ($sub_key=='_embedded'||$sub_key=='_category') {
+                if ($sub_key=='_embedded'||$sub_key=='_planning') {
                     if ($sub_value) {
                         $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
@@ -1264,7 +1264,6 @@ if (!class_exists('display_documents')) {
                     if ($sub_value) {
                         $sub_item_ids = $this->get_sub_item_id_by_category($field_value);
                         update_post_meta($report_id, '_planning', $sub_item_ids);
-                        //update_post_meta($report_id, '_iso_category', $field_value);
                     }
                 }
 
