@@ -385,7 +385,7 @@ if (!class_exists('sub_items')) {
                 <?php echo $this->display_sub_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
-                <input type="checkbox" id="is_privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
+                <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
             </fieldset>
             <?php
             return ob_get_clean();
