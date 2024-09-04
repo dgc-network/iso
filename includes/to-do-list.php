@@ -334,6 +334,7 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $params = array(
                 'is_todo'         => true,
+                'todo_id'         => $todo_id,
                 'doc_id'          => $doc_id,
                 'prev_report_id'  => $prev_report_id,
             );                
@@ -780,8 +781,8 @@ if (!class_exists('to_do_list')) {
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
-            //if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
-            if ($sub_item_id) update_post_meta($prev_report_id, 'sub_item_id', $sub_item_id );
+            if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
+            //if ($sub_item_id) update_post_meta($prev_report_id, 'sub_item_id', $sub_item_id );
             //update_post_meta($new_todo_id, 'sub_item_id', 20000 );
 
             if ($next_job>0) {

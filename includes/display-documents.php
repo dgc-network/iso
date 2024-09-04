@@ -1598,6 +1598,7 @@ if (!class_exists('display_documents')) {
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
             $is_todo = isset($args['is_todo']) ? $args['is_todo'] : 0;
 
             $params = array(
@@ -1671,11 +1672,12 @@ if (!class_exists('display_documents')) {
 */                                    
                                 }
                             } else {
+                                if ($todo_id) {
+                                    $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
+                                }
                                 if ($report_id) {
-                                    $sub_item_id = get_post_meta($report_id, 'sub_item_id', true);
                                     $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $sub_item_id = get_post_meta($prev_report_id, 'sub_item_id', true);
                                     $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
                                 }
                                 ?>
