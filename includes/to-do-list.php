@@ -745,7 +745,7 @@ if (!class_exists('to_do_list')) {
                 if (is_array($sub_item_ids)) {
                     foreach ($sub_item_ids as $sub_item_id) {
                         //$params['sub_item_id'] = $sub_item_id;
-                        $params['sub_item_id'] = var_dump($sub_item_ids);
+                        $params['sub_item_id'] = 10000;
                         $this->create_new_todo_for_next_job($params);
                     }
                 }    
