@@ -78,7 +78,7 @@ if (!class_exists('sub_items')) {
             <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $this->display_select_profile('doc-category');?></div>
+                <div><?php $profiles_class->display_select_profile('doc-category');?></div>
                 <div style="text-align: right"></div>                        
             </div>
 
