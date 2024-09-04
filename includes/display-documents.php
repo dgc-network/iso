@@ -144,7 +144,7 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                         <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                        <?php echo $this->display_audit_item_list_with_inputs($iso_category_id);?>
+                        <?php echo $this->display_sub_item_list_with_inputs($iso_category_id);?>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Save', 'your-text-domain' );?></button>
@@ -1291,27 +1291,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();        
             return $post_ids;
         }
-/*
-        function get_audit_item_id_by_category($category_id=false) {
-            $args = array(
-                'post_type'  => 'audit-item',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key'   => 'category_id',
-                        'value' => $category_id,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' // Only retrieve the post IDs
-            );        
-            $query = new WP_Query($args);        
-            // Retrieve the post IDs
-            $post_ids = $query->posts;        
-            wp_reset_postdata();        
-            return $post_ids;
-        }
-*/
+
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
@@ -1961,7 +1941,7 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
 
-        function display_audit_item_list_with_inputs($category_id){
+        function display_sub_item_list_with_inputs($category_id){
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
@@ -1975,7 +1955,7 @@ if (!class_exists('display_documents')) {
                     $site_id = get_user_meta($current_user_id, 'site_id', true);
                     $display_on_report_only = false;
                     $paged = 0;
-                    $query = $cards_class->retrieve_audit_item_list_data($paged, $category_id, $display_on_report_only);
+                    $query = $cards_class->retrieve_sub_item_list_data($paged, $category_id, $display_on_report_only);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);

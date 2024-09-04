@@ -137,10 +137,9 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
-        function display_doc_category_dialog($paged=1, $category_id=false) {
+        function display_doc_category_dialog($category_id=false) {
             ob_start();
             $cards_class = new erp_cards();
-            //$items_class = new sub_items();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -165,8 +164,7 @@ if (!class_exists('sub_items')) {
         function get_doc_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $paged = sanitize_text_field($_POST['paged']);
-            $response['html_contain'] = $this->display_doc_category_dialog($paged, $category_id);
+            $response['html_contain'] = $this->display_doc_category_dialog($category_id);
             wp_send_json($response);
         }
 
@@ -867,7 +865,7 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
-        function display_iso_category_dialog($paged=1, $category_id=false) {
+        function display_iso_category_dialog($category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
@@ -892,8 +890,7 @@ if (!class_exists('sub_items')) {
         function get_iso_category_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $paged = sanitize_text_field($_POST['paged']);
-            $response['html_contain'] = $this->display_iso_category_dialog($paged, $category_id);
+            $response['html_contain'] = $this->display_iso_category_dialog($category_id);
             wp_send_json($response);
         }
 

@@ -43,7 +43,6 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_doc_category_dialog_data',
                     '_category_id': category_id,
-                    //'paged': 1
                 },
                 success: function (response) {
                     $("#doc-category-dialog").html(response.html_contain);
@@ -96,8 +95,9 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    $("#doc-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id)                },
+                    //$("#doc-category-dialog").dialog('open');
+                    //activate_audit_item_list_data(category_id)                
+                },
                 error: function (error) {
                     console.error(error);
                     alert(error);
@@ -396,25 +396,11 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_iso_category_dialog_data',
                     '_category_id': category_id,
-                    //'paged': 1
                 },
                 success: function (response) {
-/*                    
-                    // Get the current URL
-                    const currentUrl = new URL(window.location.href);
-                    // Get the current search parameters
-                    const params = new URLSearchParams(currentUrl.search);                
-                    // Add or update the _category_id parameter
-                    params.set("_category_id", category_id);
-                    // Construct the new URL with the updated parameters
-                    // Construct the new URL with the updated parameters
-                    const newUrl = `${currentUrl.pathname}?${params.toString()}`;                
-                    // Update the URL in the browser without reloading the page
-                    window.history.pushState({ path: newUrl }, '', newUrl);                
-*/
                     $("#iso-category-dialog").html(response.html_contain);
                     $("#iso-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id)
+                    //activate_audit_item_list_data(category_id)
                 },
                 error: function (error) {
                     console.error(error);
@@ -422,7 +408,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         // Extract category_id from URL
         const currentUrl = new URL(window.location.href);
         const params = new URLSearchParams(currentUrl.search);
@@ -443,7 +429,6 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_iso_category_dialog_data',
                     '_category_id': category_id,
-                    'paged': paged
                 },
                 success: function(response) {
                     // Update the URL in the browser without reloading the page
@@ -453,7 +438,7 @@ jQuery(document).ready(function($) {
                     // Update the dialog with the received content
                     $("#iso-category-dialog").html(response.html_contain);
                     $("#iso-category-dialog").dialog('open');
-                    activate_audit_item_list_data(category_id);
+                    //activate_audit_item_list_data(category_id);
                 },
                 error: function(error) {
                     console.error(error);
@@ -461,7 +446,7 @@ jQuery(document).ready(function($) {
                 }
             });
         }
-        
+*/        
         $("#iso-category-dialog").dialog({
             width: 390,
             modal: true,
