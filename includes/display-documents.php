@@ -1675,7 +1675,7 @@ if (!class_exists('display_documents')) {
                                     $sub_item_id = get_post_meta($report_id, 'sub_item_id', true);
                                     $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $sub_item_id = get_post_meta($report_id, 'sub_item_id', true);
+                                    $sub_item_id = get_post_meta($prev_report_id, 'sub_item_id', true);
                                     $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
                                 }
                                 ?>
