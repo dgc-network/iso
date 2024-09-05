@@ -836,7 +836,7 @@ jQuery(document).ready(function($) {
     
     function activate_doc_report_dialog_data(doc_fields){
 
-        $(".sub-category").on( "change", function() {
+        $(".sub-form").on( "change", function() {
             const ajaxData = {
                 'action': 'get_sub_items_from_selection',
             };

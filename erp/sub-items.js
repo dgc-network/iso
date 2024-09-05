@@ -113,9 +113,9 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // sub-category scripts
-    activate_sub_category_list_data()
-    function activate_sub_category_list_data(){
+    // sub-form scripts
+    activate_sub_form_list_data()
+    function activate_sub_form_list_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -130,17 +130,17 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
         });
 
-        $("#new-sub-category").on("click", function() {
+        $("#new-sub-form").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_sub_category_dialog_data',
+                    'action': 'set_sub_form_dialog_data',
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
-                    activate_sub_category_list_data();
+                    activate_sub_form_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -149,27 +149,27 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('[id^="edit-sub-category-"]').on("click", function () {
+        $('[id^="edit-sub-form-"]').on("click", function () {
             const category_id = this.id.substring(18);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_sub_category_dialog_data',
+                    'action': 'get_sub_form_dialog_data',
                     '_category_id': category_id,
                 },
                 success: function (response) {
-                    $("#sub-category-dialog").html(response.html_contain);
+                    $("#sub-form-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#sub-category-dialog").dialog("option", "buttons", {
+                        $("#sub-form-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'set_sub_category_dialog_data',
+                                        'action': 'set_sub_form_dialog_data',
                                         '_category_id': $("#category-id").val(),
                                         '_category_title': $("#category-title").val(),
                                         '_category_code': $("#category-code").val(),
@@ -177,9 +177,9 @@ jQuery(document).ready(function($) {
                                         '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
-                                        $("#sub-category-dialog").dialog('close');
+                                        $("#sub-form-dialog").dialog('close');
                                         $("#result-container").html(response.html_contain);
-                                        activate_sub_category_list_data();
+                                        activate_sub_form_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -194,13 +194,13 @@ jQuery(document).ready(function($) {
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_sub_category_dialog_data',
+                                            'action': 'del_sub_form_dialog_data',
                                             '_category_id': $("#category-id").val(),
                                         },
                                         success: function (response) {
-                                            $("#sub-category-dialog").dialog('close');
+                                            $("#sub-form-dialog").dialog('close');
                                             $("#result-container").html(response.html_contain);
-                                            activate_sub_category_list_data();
+                                            activate_sub_form_list_data();
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    $("#sub-category-dialog").dialog('open');
+                    $("#sub-form-dialog").dialog('open');
                     activate_sub_item_list_data(category_id);
                 },
                 error: function (error) {
@@ -221,7 +221,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#sub-category-dialog").dialog({
+        $("#sub-form-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -425,7 +425,7 @@ jQuery(document).ready(function($) {
                             '_category_content': $("#category-content").val(),
                             '_category_url': $("#category-url").val(),
                             '_parent_category': $("#parent-category").val(),
-                            '_sub_category': $("#sub-category").val(),
+                            '_sub_form': $("#sub-form").val(),
                         },
                         success: function (response) {
                             $("#iso-category-dialog").dialog('close');

@@ -75,8 +75,8 @@ if (!class_exists('display_documents')) {
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
                     //$iso_category_id = sanitize_text_field($_GET['_statement']);
-                    $sub_category = sanitize_text_field($_GET['_statement']);
-                    $iso_category_id = get_post_meta($sub_category, 'iso_category', true);
+                    $sub_form = sanitize_text_field($_GET['_statement']);
+                    $iso_category_id = get_post_meta($sub_form, 'iso_category', true);
                     $iso_category_title = get_the_title($iso_category_id);
                     $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
                     ?>
@@ -92,7 +92,7 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
                         <?php //echo $this->display_sub_item_list_with_inputs($iso_category_id);?>
                         <fieldset>
-                            <?php echo $this->display_sub_item_contains($sub_category);?>
+                            <?php echo $this->display_sub_item_contains($sub_form);?>
                         </fieldset>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
@@ -1129,7 +1129,7 @@ if (!class_exists('display_documents')) {
                             if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                                 if ($sub_value) {
                                     $items_class = new sub_items();
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                    $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                     $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1470,7 +1470,7 @@ if (!class_exists('display_documents')) {
             
                             if ($sub_key=='_embedded'||$sub_key=='_planning') {
                                 if ($sub_value) {
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                    $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($category_id));?></label>
                                     <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($category_id);?>" />
@@ -1493,13 +1493,13 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 } else {
                                     ?>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-category"><?php echo $items_class->select_sub_category_options($field_value);?></select>
+                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-form"><?php echo $items_class->select_sub_form_options($field_value);?></select>
                                     <div id="sub-item-list-from-category"></div>
                                     <?php
                                 }
                             } elseif ($sub_key=='_select_one') {
                                 if ($sub_value) {
-                                    $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                    $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                     ?>
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all sub-item"><?php echo $items_class->select_sub_item_options($field_value, $category_id);?></select>
                                     <div id="sub-item-list-from-category"></div>
@@ -1746,7 +1746,7 @@ if (!class_exists('display_documents')) {
 
                 if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                     if ($sub_value) {
-                        $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                        $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
 
                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                         if ($inner_query->have_posts()) :
@@ -1813,7 +1813,7 @@ if (!class_exists('display_documents')) {
                         if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                             if ($sub_value) {
                                 $items_class = new sub_items();
-                                $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+                                $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                 $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();

@@ -87,9 +87,14 @@ if (!class_exists('display_profiles')) {
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="sub-category" <?php echo ($select_option=="sub-category") ? 'selected' : ''?>><?php echo __( '子項目', 'your-text-domain' );?></option>
+                <option value="sub-form" <?php echo ($select_option=="sub-form") ? 'selected' : ''?>><?php echo __( '子項目', 'your-text-domain' );?></option>
             </select>
             <?php
+        }
+
+        function update_post_type_sub_category_to_sub_form() {
+            global $wpdb;
+            $wpdb->query("UPDATE wp_posts SET post_type = 'sub-form' WHERE post_type = 'sub-category'");
         }
 
         // Shortcode to display
@@ -105,6 +110,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
 
+                if ($_GET['_select_profile']=='update_post_type_sub_category_to_sub_form') echo $this->update_post_type_sub_category_to_sub_form();
+
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -116,7 +123,7 @@ if (!class_exists('display_profiles')) {
                 $items_class = new sub_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
-                if ($_GET['_select_profile']=='sub-category') echo $items_class->display_sub_category_list();
+                if ($_GET['_select_profile']=='sub-form') echo $items_class->display_sub_form_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
