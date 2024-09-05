@@ -620,7 +620,7 @@ if (!class_exists('display_documents')) {
         
             <div id="signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_signature_record_list($doc_id);?>
+                <?php //echo $todo_class->get_signature_record_list($doc_id);?>
             </div>
             
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
@@ -686,7 +686,7 @@ if (!class_exists('display_documents')) {
 
             <div id="signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_signature_record_list($doc_id);?>
+                <?php //echo $todo_class->get_signature_record_list($doc_id);?>
             </div>
         
             <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
@@ -1068,7 +1068,7 @@ if (!class_exists('display_documents')) {
 
             <div id="report-signature-record-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_signature_record_list(false, $report_id);?>
+                <?php echo $todo_class->get_signature_record_list($report_id);?>
             </div>
 
             <?php

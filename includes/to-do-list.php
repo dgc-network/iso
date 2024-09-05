@@ -1074,7 +1074,7 @@ if (!class_exists('to_do_list')) {
             <?php
         }
         
-        function get_signature_record_list($doc=false, $report=false ) {
+        function get_signature_record_list($report_id=false) {
             ob_start();
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
@@ -1094,7 +1094,7 @@ if (!class_exists('to_do_list')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_signature_record_data($paged, $report, $doc);
+                    $query = $this->retrieve_signature_record_data($paged, $report_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
