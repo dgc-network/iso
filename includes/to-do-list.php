@@ -1163,6 +1163,187 @@ if (!class_exists('to_do_list')) {
             return $x;
         }
         
+        function retrieve_signature_record_data($paged = 1, $report_id = false) {
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
+        
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_action',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'prev_report_id',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
+            );
+        
+            // If paged is 0, retrieve all matching posts
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
+            }
+        
+            // If $report_id is provided, filter by prev_report_id
+            if ($report_id) {
+                $args['meta_query'][] = array(
+                    'key'   => 'prev_report_id',
+                    'value' => $report_id,
+                    'compare' => '='
+                );
+            }
+        
+            // Query to get matching posts
+            $query = new WP_Query($args);
+        
+            // Array to store the filtered results
+            $filtered_posts = array();
+        
+            // Loop through the posts and filter by doc_id and site_id
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Retrieve the doc_id from the meta field
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+        
+                    // Check if doc_id exists
+                    if ($doc_id) {
+                        // Now get the site_id associated with this doc_id
+                        $site_id = get_post_meta($doc_id, 'site_id', true);
+        
+                        // If the doc's site_id matches the current user's site_id, add it to filtered_posts
+                        if ($site_id == $current_site) {
+                            $filtered_posts[] = get_post(); // Store the post object in the array
+                        }
+                    }
+                }
+                wp_reset_postdata(); // Reset after looping through posts
+            }
+        
+            return $filtered_posts; // Return the filtered post objects
+        }
+/*        
+        function retrieve_signature_record_data($paged = 1, $report_id = false) {
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
+        
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_action',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'prev_report_id',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
+            );
+        
+            // If paged is 0, retrieve all matching posts
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
+            }
+        
+            // If $report_id is provided, filter by prev_report_id
+            if ($report_id) {
+                $args['meta_query'][] = array(
+                    'key'   => 'prev_report_id',
+                    'value' => $report_id,
+                    'compare' => '='
+                );
+            }
+        
+            $filtered_query = array();
+            $query = new WP_Query($args);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $site_id = get_post_meta($doc_id, 'site_id', true);
+        
+                    // If the doc_site_id matches the current user's site_id, filter by it
+                    if ($site_id == $current_site) {
+                        $filtered_query[] = $query->the_post();
+                    }
+                }
+                wp_reset_postdata(); // Reset after the secondary query
+            }
+
+            return $filtered_query;
+        }
+/*        
+        function retrieve_signature_record_data($paged = 1, $report_id = false) {
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_action',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'prev_report_id',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
+            );
+        
+            // If paged is 0, retrieve all matching posts
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
+            }
+        
+            // If $report_id is provided, filter by prev_report_id
+            if ($report_id) {
+                $args['meta_query'][] = array(
+                    'key'   => 'prev_report_id',
+                    'value' => $report_id,
+                    'compare' => '='
+                );
+            }
+        
+            // Execute the main query
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*        
         function retrieve_signature_record_data($paged=1, $report_id=false, $doc_id=false){
             $args = array(
                 'post_type'      => 'todo',
@@ -1196,7 +1377,7 @@ if (!class_exists('to_do_list')) {
                     'value' => $doc_id,
                 );
             }
-        
+
             if ($report_id) {
                 $args['meta_query'][] = array(
                     'key'   => 'prev_report_id',
@@ -1207,7 +1388,7 @@ if (!class_exists('to_do_list')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         // doc-report frequence setting
         function select_doc_report_frequence_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
