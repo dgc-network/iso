@@ -521,7 +521,7 @@ if (!class_exists('to_do_list')) {
 
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
-                            echo '<input type="button" id="job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                            echo '<input type="button" id="start-job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
                         endwhile;
                         wp_reset_postdata();
                     }

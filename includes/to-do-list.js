@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
     });            
 
     function activate_start_job_dialog_data(doc_fields){
-        $('[id^="job-dialog-button-"]').on("click", function () {
+        $('[id^="start-job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(18);
             const ajaxData = {
                 'action': 'set_start_job_dialog_data',
