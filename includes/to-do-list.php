@@ -1100,6 +1100,20 @@ if (!class_exists('to_do_list')) {
                     $query = $this->retrieve_signature_record_data($paged, $report_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                    foreach ($query as $post_id) {
+                        ?>
+                        <tr id="view-todo-<?php echo esc_attr($post_id); ?>">
+                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                            <td><?php echo esc_html($doc_title);?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_the_title($post_id));?></td>
+                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                        </tr>
+                        <?php
+
+                    }
+/*    
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1132,6 +1146,7 @@ if (!class_exists('to_do_list')) {
                         endwhile;
                         wp_reset_postdata();
                     endif;
+*/                    
                     ?>
                     </tbody>
                 </table>
