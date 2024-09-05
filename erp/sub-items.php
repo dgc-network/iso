@@ -234,7 +234,7 @@ if (!class_exists('sub_items')) {
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '子項目類別', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('sub-form');?></div>

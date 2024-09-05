@@ -87,7 +87,7 @@ if (!class_exists('display_profiles')) {
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="sub-form" <?php echo ($select_option=="sub-form") ? 'selected' : ''?>><?php echo __( '子項目', 'your-text-domain' );?></option>
+                <option value="sub-form" <?php echo ($select_option=="sub-form") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
             </select>
             <?php
         }
