@@ -1098,22 +1098,8 @@ if (!class_exists('to_do_list')) {
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
                     $query = $this->retrieve_signature_record_data($paged, $report_id);
-                    //$total_posts = $query->found_posts;
-                    //$total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-                    foreach ($query as $post_id) {
-                        ?>
-                        <tr id="view-todo-<?php echo esc_attr($post_id); ?>">
-                            <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                            <td><?php echo esc_html($doc_title);?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_the_title($post_id));?></td>
-                            <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                            <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
-                            <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                        </tr>
-                        <?php
-
-                    }
-/*    
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1133,9 +1119,9 @@ if (!class_exists('to_do_list')) {
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                     <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                    <?php if(!$doc) {;?>
+                                    <?php //if(!$doc) {;?>
                                     <td><?php echo esc_html($doc_title);?></td>
-                                    <?php };?>
+                                    <?php //};?>
                                     <td style="text-align:center;"><?php esc_html(the_title());?></td>
                                     <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                                     <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
@@ -1146,7 +1132,6 @@ if (!class_exists('to_do_list')) {
                         endwhile;
                         wp_reset_postdata();
                     endif;
-*/                    
                     ?>
                     </tbody>
                 </table>
@@ -1183,7 +1168,7 @@ if (!class_exists('to_do_list')) {
         
         function retrieve_signature_record_data($paged = 1, $report_id = false) {
             $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
+            $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
         
             $args = array(
                 'post_type'      => 'todo',
@@ -1202,6 +1187,11 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'prev_report_id',
                         'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
                     ),
                 ),
                 'orderby'        => 'meta_value',
@@ -1225,7 +1215,8 @@ if (!class_exists('to_do_list')) {
         
             // Query to get matching posts
             $query = new WP_Query($args);
-        
+            return $query;
+/*        
             // Array to store the filtered results
             $filtered_posts = array();
         
@@ -1252,6 +1243,7 @@ if (!class_exists('to_do_list')) {
             }
         
             return $filtered_posts; // Return the filtered post objects
+*/            
         }
 /*        
         function retrieve_signature_record_data($paged = 1, $report_id = false) {
