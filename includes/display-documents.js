@@ -875,6 +875,7 @@ jQuery(document).ready(function($) {
                 data: ajaxData,
                 success: function (response) {
                     $('#sub-item-list-from-category').html(response.html_contain);
+                    $(".sub-item").hide();
                     activate_doc_report_dialog_data(response);
                 },
                 error: function (error) {
