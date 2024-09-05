@@ -1123,10 +1123,10 @@ if (!class_exists('display_documents')) {
 
                         if ($field_type=='_sub_item') {
                             $parts = explode('=', $default_value);
-                            $sub_key = $parts[0]; // _embedded, _order_item, _select
+                            $sub_key = $parts[0]; // _embedded, _planning, _select_one
                             $sub_value = $parts[1]; // 1724993477
             
-                            if ($sub_key=='_embedded'||$sub_key=='_category') {
+                            if ($sub_key=='_embedded'||$sub_key=='_planning') {
                                 if ($sub_value) {
                                     $items_class = new sub_items();
                                     $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
@@ -1745,6 +1745,7 @@ if (!class_exists('display_documents')) {
                 if ($sub_key=='_embedded'||$sub_key=='_planning') {
                     if ($sub_value) {
                         $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
+
                         $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1802,10 +1803,10 @@ if (!class_exists('display_documents')) {
                 
                     if ($field_type=='_sub_item') {
                         $parts = explode('=', $default_value);
-                        $sub_key = $parts[0]; // _embedded, _order_item, _select
+                        $sub_key = $parts[0]; // _embedded, _planning, _select_one
                         $sub_value = $parts[1]; // 1724993477
         
-                        if ($sub_key=='_embedded'||$sub_key=='_category') {
+                        if ($sub_key=='_embedded'||$sub_key=='_planning') {
                             if ($sub_value) {
                                 $items_class = new sub_items();
                                 $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
