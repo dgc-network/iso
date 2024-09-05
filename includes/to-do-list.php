@@ -1057,6 +1057,9 @@ if (!class_exists('to_do_list')) {
         
         // signature_record
         function display_signature_record() {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
