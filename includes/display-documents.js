@@ -794,7 +794,7 @@ jQuery(document).ready(function($) {
                     } else {
                         $('#result-container').html(response.html_contain);
                     }
-                    activate_doc_report_dialog_data(response);
+                    activate_doc_report_dialog_data(response.doc_fields);
                     activate_published_document_data($("#doc-id").val());
                 },
                 error: function (error) {
@@ -833,7 +833,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function activate_doc_report_dialog_data(response){
+    function activate_doc_report_dialog_data(doc_fields){
 
         $(".sub-category").on( "change", function() {
             const ajaxData = {
@@ -850,7 +850,7 @@ jQuery(document).ready(function($) {
                 data: ajaxData,
                 success: function (response) {
                     $('#sub-item-list-from-category').html(response.html_contain);
-                    activate_doc_report_dialog_data(response);
+                    activate_doc_report_dialog_data(doc_fields);
                 },
                 error: function (error) {
                     console.error(error);
@@ -876,7 +876,7 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $('#sub-item-list-from-category').html(response.html_contain);
                     $(".sub-item").hide();
-                    activate_doc_report_dialog_data(response);
+                    activate_doc_report_dialog_data(doc_fields);
                 },
                 error: function (error) {
                     console.error(error);
@@ -894,7 +894,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
         
-            $.each(response.doc_fields, function(index, value) {
+            $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
@@ -935,7 +935,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
         
-            $.each(response.doc_fields, function(index, value) {
+            $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
@@ -999,7 +999,7 @@ jQuery(document).ready(function($) {
                 'action': 'duplicate_doc_report_data',
             };
             ajaxData['_report_id'] = report_id;
-            $.each(response.doc_fields, function (index, value) {
+            $.each(doc_fields, function (index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;

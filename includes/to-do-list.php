@@ -18,8 +18,8 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_set_todo_dialog_data', array( $this, 'set_todo_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_todo_dialog_data', array( $this, 'set_todo_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_job_dialog_data', array( $this, 'get_job_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_job_dialog_data', array( $this, 'get_job_dialog_data' ) );
+            add_action( 'wp_ajax_get_start_job_dialog_data', array( $this, 'get_start_job_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_start_job_dialog_data', array( $this, 'get_start_job_dialog_data' ) );
             add_action( 'wp_ajax_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
@@ -362,7 +362,7 @@ if (!class_exists('to_do_list')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('start-job');?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-job" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-start-job" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
 
@@ -396,7 +396,7 @@ if (!class_exists('to_do_list')) {
                             $profiles_class = new display_profiles();
                             $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
                             ?>
-                            <tr id="edit-job-<?php echo $doc_id;?>">
+                            <tr id="edit-start-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
@@ -536,7 +536,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_job_dialog_data() {
+        function get_start_job_dialog_data() {
             $result = array();
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);

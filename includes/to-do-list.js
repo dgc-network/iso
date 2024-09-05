@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response);
+                activate_todo_dialog_data(response.doc_fields);
             },
             error: function (error) {
                 console.error(error);
@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
         });
     });            
 
-    function activate_todo_dialog_data(response){
+    function activate_todo_dialog_data(doc_fields){
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
             const ajaxData = {
@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            $.each(response.doc_fields, function(index, value) {
+            $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
@@ -77,23 +77,23 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $("#search-job").on( "change", function() {
+    $("#search-start-job").on( "change", function() {
         window.location.replace("?_search="+$(this).val());
         $(this).val('');
     });
 
-    $('[id^="edit-job-"]').on("click", function () {
-        const job_id = this.id.substring(9);
+    $('[id^="edit-start-job-"]').on("click", function () {
+        const job_id = this.id.substring(15);
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
-                action: 'get_job_dialog_data',
+                action: 'get_start_job_dialog_data',
                 _job_id: job_id,
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
-                activate_job_dialog_data(response);
+                activate_start_job_dialog_data(response.doc_fields);
             },
             error: function (error) {
                 console.error(error);
@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 
     });            
 
-    function activate_job_dialog_data(response){
+    function activate_start_job_dialog_data(doc_fields){
         $('[id^="job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(18);
             const ajaxData = {
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            $.each(response.doc_fields, function(index, value) {
+            $.each(doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
