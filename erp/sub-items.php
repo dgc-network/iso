@@ -871,11 +871,12 @@ if (!class_exists('sub_items')) {
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
             $parent_category = get_post_meta($category_id, 'parent_category', true);
+            $sub_category = get_post_meta($category_id, 'sub_category', true);
             ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
-                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <label for="category-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
@@ -883,6 +884,8 @@ if (!class_exists('sub_items')) {
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
+                <label for="sub-category"><?php echo __( 'Statement: ', 'your-text-domain' );?></label>
+                <select id="sub-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_sub_category_options($sub_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -900,6 +903,7 @@ if (!class_exists('sub_items')) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_url = sanitize_text_field($_POST['_category_url']);
                 $parent_category = sanitize_text_field($_POST['_parent_category']);
+                $sub_category = sanitize_text_field($_POST['_sub_category']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
