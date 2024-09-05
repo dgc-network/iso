@@ -9,8 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
-            //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
+            //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );

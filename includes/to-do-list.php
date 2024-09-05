@@ -10,7 +10,7 @@ if (!class_exists('to_do_list')) {
             add_shortcode( 'to-do-list', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_to_do_list_scripts' ) );
             //add_action( 'init', array( $this, 'register_todo_post_type' ) );
-            //add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
+            add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             //add_action( 'init', array( $this, 'register_action_post_type' ) );
 
             add_action( 'wp_ajax_get_todo_dialog_data', array( $this, 'get_todo_dialog_data' ) );
@@ -88,13 +88,6 @@ if (!class_exists('to_do_list')) {
 
                 $iot_messages = new iot_messages();
                 if ($_GET['_select_todo']=='iot-message') echo $iot_messages->display_iot_message_list();
-/*
-                if (isset($_GET['_remove_iso_helper_scheduled_events'])) {
-                    $this->remove_iso_helper_scheduled_events($_GET['_remove_iso_helper_scheduled_events']);
-                    $this->list_all_scheduled_events();
-                    exit;
-                }
-*/
             }
         }
 
@@ -292,38 +285,6 @@ if (!class_exists('to_do_list')) {
         }
 
         function display_todo_dialog($todo_id) {
-/*            
-            // Get the post type of the post with the given ID
-            $post_type = get_post_type( $todo_id );
-        
-            // Check if the post type is 'todo'
-            if ( ($post_type != 'todo') && ($post_type != 'document') ) {
-                return 'post type is '.$post_type.'. Wrong type!';
-            }
-            
-            $params = array();
-            if ( $post_type === 'todo' ) {
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                //$report_id = get_post_meta($todo_id, 'report_id', true);
-                //if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $params = array(
-                    'doc_id'          => $doc_id,
-                    'prev_report_id'  => $prev_report_id,
-                    'todo_id'  => $todo_id,
-                );                
-
-            }
-
-            if ( $post_type === 'document' ) {
-                $doc_id = $todo_id;
-                $params = array(
-                    'doc_id'          => $doc_id,
-                );                
-            }
-
-            if (empty($doc_id)) return 'post type is '.$post_type.'. doc_id is empty!';
-*/
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -688,7 +649,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'submit_user', $user_id );
             update_post_meta($new_todo_id, 'submit_action', $action_id );
             update_post_meta($new_todo_id, 'submit_time', time() );
-            
+
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             update_post_meta($new_todo_id, 'site_id', $site_id );
@@ -967,30 +928,7 @@ if (!class_exists('to_do_list')) {
                 ]);            
             }    
         }
-/*
-        function filtered_sub_item_ids_by_department($sub_item_ids=array(), $department_id=false, $category_id=false) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $filtered_sub_item_ids = array();
-            if (is_array($sub_item_ids)) {
-                $filtered_sub_item_ids = array();
-                foreach ($sub_item_ids as $sub_item_id) {
-                    $clause_no = get_post_meta($sub_item_id, 'clause_no', true);
-                    $sorting_key = get_post_meta($sub_item_id, 'sorting_key', true);
-                    $field_type = get_post_meta($sub_item_id, 'field_type', true);
-                    $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'department'.$site_id.$category_id.$clause_no.$sorting_key);
-                    $field_value = get_post_meta($site_id, $field_key, true);
-                
-                    if ($department_id == $field_value) {
-                        $filtered_sub_item_ids[] = $sub_item_id;
-                    }
-                }
-                return $filtered_sub_item_ids;
-            }
-            // Now $filtered_sub_item_ids contains the filtered audit IDs
-            return false;
-        }
-*/
+
         function is_todo_authorized($todo_id=false) {
             $query = $this->retrieve_todo_action_list_data($todo_id);
             if ($query->have_posts()) :
@@ -1222,189 +1160,8 @@ if (!class_exists('to_do_list')) {
             // Query to get matching posts
             $query = new WP_Query($args);
             return $query;
-/*        
-            // Array to store the filtered results
-            $filtered_posts = array();
-        
-            // Loop through the posts and filter by doc_id and site_id
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Retrieve the doc_id from the meta field
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-        
-                    // Check if doc_id exists
-                    if ($doc_id) {
-                        // Now get the site_id associated with this doc_id
-                        $site_id = get_post_meta($doc_id, 'site_id', true);
-        
-                        // If the doc's site_id matches the current user's site_id, add it to filtered_posts
-                        if ($site_id == $current_site) {
-                            $filtered_posts[] = get_post(); // Store the post object in the array
-                        }
-                    }
-                }
-                wp_reset_postdata(); // Reset after looping through posts
-            }
-        
-            return $filtered_posts; // Return the filtered post objects
-*/            
         }
-/*        
-        function retrieve_signature_record_data($paged = 1, $report_id = false) {
-            $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
-        
-            $args = array(
-                'post_type'      => 'todo',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'submit_action',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'submit_user',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'prev_report_id',
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'submit_time',
-                'order'          => 'DESC',
-            );
-        
-            // If paged is 0, retrieve all matching posts
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1;
-            }
-        
-            // If $report_id is provided, filter by prev_report_id
-            if ($report_id) {
-                $args['meta_query'][] = array(
-                    'key'   => 'prev_report_id',
-                    'value' => $report_id,
-                    'compare' => '='
-                );
-            }
-        
-            $filtered_query = array();
-            $query = new WP_Query($args);
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $site_id = get_post_meta($doc_id, 'site_id', true);
-        
-                    // If the doc_site_id matches the current user's site_id, filter by it
-                    if ($site_id == $current_site) {
-                        $filtered_query[] = $query->the_post();
-                    }
-                }
-                wp_reset_postdata(); // Reset after the secondary query
-            }
 
-            return $filtered_query;
-        }
-/*        
-        function retrieve_signature_record_data($paged = 1, $report_id = false) {
-            $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'todo',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'submit_action',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'submit_user',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'prev_report_id',
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'submit_time',
-                'order'          => 'DESC',
-            );
-        
-            // If paged is 0, retrieve all matching posts
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1;
-            }
-        
-            // If $report_id is provided, filter by prev_report_id
-            if ($report_id) {
-                $args['meta_query'][] = array(
-                    'key'   => 'prev_report_id',
-                    'value' => $report_id,
-                    'compare' => '='
-                );
-            }
-        
-            // Execute the main query
-            $query = new WP_Query($args);
-            return $query;
-        }
-/*        
-        function retrieve_signature_record_data($paged=1, $report_id=false, $doc_id=false){
-            $args = array(
-                'post_type'      => 'todo',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'submit_action',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'submit_user',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'prev_report_id',
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'submit_time',
-                'order'          => 'DESC',
-            );
-
-            if ($paged==0) $args['posts_per_page'] = -1;
-
-            if ($doc_id) {
-                $args['meta_query'][] = array(
-                    'key'   => 'doc_id',
-                    'value' => $doc_id,
-                );
-            }
-
-            if ($report_id) {
-                $args['meta_query'][] = array(
-                    'key'   => 'prev_report_id',
-                    'value' => $report_id,
-                );
-            }
-        
-            $query = new WP_Query($args);
-            return $query;
-        }
-*/
         // doc-report frequence setting
         function select_doc_report_frequence_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
@@ -1622,56 +1379,6 @@ if (!class_exists('to_do_list')) {
               }    
                 wp_reset_postdata();
             }
-/*
-            // process the start-job after
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'doc_number',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'relation' => 'OR',
-                        array(
-                            'key'     => 'todo_status',
-                            'compare' => 'NOT EXISTS',
-                        ),
-                        array(
-                            'key'     => 'todo_status',
-                            'value'   => -2,
-                            'compare' => '=',
-                        ),
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $doc_id = get_the_ID();
-
-                    $profiles_class = new display_profiles();
-                    $action_query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                    if ($action_query->have_posts()) :
-                        while ($action_query->have_posts()) : $action_query->the_post();
-                            $action_id = get_the_ID();
-                            $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
-                            if ($action_authorized_ids) {
-                                foreach ($action_authorized_ids as $user_id) {
-                                    $this->update_todo_dialog_data($action_id, $user_id);
-                                }    
-                            }
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                }    
-                wp_reset_postdata();
-            }
-*/                
         }
     }
     $todo_class = new to_do_list();

@@ -50,8 +50,8 @@ if (!class_exists('display_documents')) {
 
             add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
-            add_action( 'wp_ajax_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );
-            add_action( 'wp_ajax_nopriv_reset_document_todo_status', array( $this, 'reset_document_todo_status' ) );                                                                    
+            add_action( 'wp_ajax_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );
+            add_action( 'wp_ajax_nopriv_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );                                                                    
         }
 
         function enqueue_display_document_scripts() {
@@ -361,6 +361,7 @@ if (!class_exists('display_documents')) {
 
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
+<?php /*                
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
@@ -369,6 +370,8 @@ if (!class_exists('display_documents')) {
                     <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash button"></span>
                 </div>
             </div>
+*/?>            
+            <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
             <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
             <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
             <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -502,8 +505,6 @@ if (!class_exists('display_documents')) {
                     elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
                     elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
                     elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
-                    //elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
-                    //else $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     else $response['html_contain'] = $this->display_document_dialog($doc_id);
                 }
             }
@@ -592,17 +593,9 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>
                 </div>
                 <div style="text-align:right; display:flex;">
-<?php /*                    
-                    <span id='doc-frame-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-*/?>                    
                 </div>
             </div>
-        
-            <div id="signature-record-div" style="display:none;">
-                <?php $todo_class = new to_do_list();?>
-                <?php //echo $todo_class->get_signature_record_list($doc_id);?>
-            </div>
-            
+
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
             <fieldset style="overflow-x:auto; white-space:nowrap;">
@@ -659,9 +652,6 @@ if (!class_exists('display_documents')) {
                     <span><?php echo esc_html($doc_revision);?></span>            
                 </div>
                 <div style="text-align:right; display:flex;">
-<?php /*                    
-                    <span id='doc-report-unpublished' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
-*/?>                    
                 </div>
             </div>
         
@@ -671,16 +661,11 @@ if (!class_exists('display_documents')) {
                 <div></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
-                    <span id="doc-report-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                    <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                 </div>
             </div>
 
-            <div id="signature-record-div" style="display:none;">
-                <?php $todo_class = new to_do_list();?>
-                <?php //echo $todo_class->get_signature_record_list($doc_id);?>
-            </div>
-        
-            <div id="doc-report-setting-dialog" title="Doc-report setting" style="display:none">
+            <div id="doc-field-setting-dialog" title="Field setting" style="display:none">
                 <fieldset>
                     <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
                     <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -1927,56 +1912,7 @@ if (!class_exists('display_documents')) {
                 return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
             }
         }
-/*
-        function display_sub_item_list_with_inputs($category_id){
-            $cards_class = new erp_cards();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-            if ($is_site_admin) {
-                ob_start();
-                ?>
-                <fieldset>
-                    <?php
-                    $current_user_id = get_current_user_id();
-                    $site_id = get_user_meta($current_user_id, 'site_id', true);
-                    $display_on_report_only = false;
-                    $paged = 0;
-                    $query = $cards_class->retrieve_sub_item_list_data($paged, $category_id, $display_on_report_only);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) : $query->the_post();
-                            $clause_no = get_post_meta(get_the_ID(), 'clause_no', true);
-                            $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
-                            $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                            $field_key = preg_replace('/[^a-zA-Z0-9_]/', '', 'clause'.$site_id.$category_id.$clause_no.$sorting_key);
-                            $field_value = get_post_meta($site_id, $field_key, true);
-                            if ($field_type=='heading') echo '<div><b>'.get_the_title().'</b></div>';
-                            if ($field_type=='text') {
-                                echo '<li>'.get_the_title().' '.$clause_no.'</li>';
-                                echo '<input type="text" data-key="'.$field_key.'" value="'.$field_value.'" class="your-class-name text ui-widget-content ui-corner-all" />';
-                            }
-                            if ($field_type=='textarea') {
-                                echo '<li>'.get_the_title().' '.$clause_no.'</li>';
-                                echo '<textarea data-key="'.$field_key.'" class="your-class-name text ui-widget-content ui-corner-all" rows="3" placeholder="'.get_the_content().'">'.$field_value.'</textarea>';
-                                //echo '<div>受稽單位：<select>'.$cards_class->select_department_card_options().'</select></div>';
-                            }
-                            if ($field_type=='radio') {
-                                $checked = ($field_value==1) ? 'checked' : '';
-                                echo '<br><input type="radio" class="your-class-name" data-key="'.$field_key.'" name="'.substr($field_key, 0, 5).'" '.$checked. '/>'.' '.get_the_title();
-                            }
-                        endwhile;                
-                        wp_reset_postdata();
-                    }
-                    ?>
-                </fieldset>
-                <?php
-                return ob_get_clean();
 
-            } else {
-                return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
-            }
-        }
-*/
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
@@ -2157,18 +2093,20 @@ if (!class_exists('display_documents')) {
             if ($next_job>0) $todo_class->update_next_todo_and_actions($params);
         }
 
-        function reset_document_todo_status() {
+        function reset_doc_report_todo_status() {
             $response = array();
             if( isset($_POST['_report_id']) ) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 delete_post_meta($report_id, 'todo_status');
             }
+/*            
             if( isset($_POST['_doc_id']) ) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 delete_post_meta($doc_id, 'todo_status');
                 delete_post_meta($doc_id, 'due_date');
                 delete_post_meta($doc_id, 'start_job');
             }
+*/                
             wp_send_json($response);
         }
 

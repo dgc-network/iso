@@ -83,7 +83,6 @@ function display_iso_statement($atts) {
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
         $sub_category = get_post_meta(get_the_ID(), 'sub_category', true);
-        //$start_ai_url = '/display-documents/?_statement=' . get_the_ID();
         $start_ai_url = '/display-documents/?_statement=' . $sub_category;
         ?>
         <div class="iso-category-content">
@@ -99,19 +98,10 @@ function display_iso_statement($atts) {
         </div>
         <?php
     endwhile;
-    
     wp_reset_postdata();
     return ob_get_clean();
 }
 add_shortcode('display-iso-statement', 'display_iso_statement');
-
-function display_no_permission_page() {
-    //ob_start();
-    ?>
-    <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-    <?php
-    //return ob_get_clean();    
-}
 
 function set_flex_message($params) {
     $display_name = $params['display_name'];
@@ -350,12 +340,6 @@ function proceed_to_registration_login($line_user_id, $display_name) {
             <input type="text" id="display-name" value="<?php echo esc_attr($display_name);?>" class="text ui-widget-content ui-corner-all" />
             <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
             <input type="text" id="user-email" value="<?php echo esc_attr($current_user->user_email);?>" class="text ui-widget-content ui-corner-all" />
-<?php /*            
-            <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-            <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
-            <div id="site-hint" style="display:none; color:#999;"></div>
-            <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-*/?>            
             <input type="hidden" id="log" value="<?php echo esc_attr($line_user_id);?>" />
             <input type="hidden" id="pwd" value="<?php echo esc_attr($line_user_id);?>" />
             <hr>
@@ -399,12 +383,6 @@ function user_did_not_login_yet() {
                 <input type="text" id="display-name" value="<?php echo esc_attr($_GET['_name']);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo esc_attr($user->user_email);?>" class="text ui-widget-content ui-corner-all" />
-<?php /*                
-                <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                <input type="text" id="site-title" value="<?php echo esc_attr($site_title);?>" class="text ui-widget-content ui-corner-all" />
-                <div id="site-hint" style="display:none; color:#999;"></div>
-                <input type="hidden" id="site-id" value="<?php echo esc_attr($site_id);?>" />
-*/?>                
                 <input type="hidden" id="log" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <input type="hidden" id="pwd" value="<?php echo esc_attr($_GET['_id']);?>" />
                 <hr>

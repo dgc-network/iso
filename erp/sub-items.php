@@ -8,7 +8,8 @@ if (!class_exists('sub_items')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
-            add_action( 'init', array( $this, 'register_sub_category_post_type' ) );
+            //add_action( 'init', array( $this, 'register_sub_category_post_type' ) );
+            //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -804,11 +805,9 @@ if (!class_exists('sub_items')) {
         }
         
         function display_iso_category_list() {
+            ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) {
-                // Check if the user is administrator
-                ob_start();
                 ?>
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( 'ISO類別', 'your-text-domain' );?></h2>
@@ -849,10 +848,12 @@ if (!class_exists('sub_items')) {
                 </fieldset>
                 <div id="iso-category-dialog" title="Category dialog"></div>
                 <?php
-                return ob_get_clean();
             } else {
-                display_no_permission_page();
+                ?>
+                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <?php
             }
+            return ob_get_clean();
         }
 
         function retrieve_iso_category_data() {

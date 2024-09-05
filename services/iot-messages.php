@@ -10,29 +10,6 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
-            //add_action( 'init', array( $this, 'register_inner_client_post_type' ) );
-            //add_action( 'init', array( $this, 'register_exception_notification_post_type' ) );
-/*
-            add_action( 'wp_ajax_get_inner_client_dialog_data', array( $this, 'get_inner_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_inner_client_dialog_data', array( $this, 'get_inner_client_dialog_data' ) );
-            add_action( 'wp_ajax_set_inner_client_dialog_data', array( $this, 'set_inner_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_inner_client_dialog_data', array( $this, 'set_inner_client_dialog_data' ) );
-            add_action( 'wp_ajax_del_inner_client_dialog_data', array( $this, 'del_inner_client_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_inner_client_dialog_data', array( $this, 'del_inner_client_dialog_data' ) );
-
-            add_action( 'wp_ajax_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_notification_list_data', array( $this, 'get_notification_list_data' ) );
-            add_action( 'wp_ajax_get_notification_dialog_data', array( $this, 'get_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_notification_dialog_data', array( $this, 'get_notification_dialog_data' ) );
-            add_action( 'wp_ajax_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_notification_dialog_data', array( $this, 'set_notification_dialog_data' ) );
-            add_action( 'wp_ajax_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_notification_dialog_data', array( $this, 'del_notification_dialog_data' ) );
-*/
-            //add_action( 'wp_ajax_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
-            //add_action( 'wp_ajax_nopriv_set_geolocation_message_data', array( $this, 'set_geolocation_message_data' ) );
-            //add_action( 'wp_ajax_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_geolocation_message_data', array( $this, 'get_geolocation_message_data' ) );
 
             add_filter('cron_schedules', array( $this, 'custom_cron_schedules'));
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
@@ -40,7 +17,6 @@ if (!class_exists('iot_messages')) {
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
             register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
-
         }
 
         function enqueue_iot_message_scripts() {
@@ -107,7 +83,7 @@ if (!class_exists('iot_messages')) {
                 ),
             );
             $iot_query = new WP_Query($args);
-        
+
             if ($iot_query->have_posts()) {
                 // Collect all instrument codes to minimize database queries
                 $instrument_codes = array();
@@ -115,7 +91,7 @@ if (!class_exists('iot_messages')) {
                     $iot_query->the_post();
                     $instrument_codes[get_the_ID()] = get_post_meta(get_the_ID(), 'deviceID', true);
                 }
-        
+
                 // Query 'instrument-card' posts that match any of the collected instrument codes
                 $inner_args = array(
                     'post_type' => 'instrument-card',
@@ -129,18 +105,16 @@ if (!class_exists('iot_messages')) {
                     'posts_per_page' => -1,
                 );
                 $inner_query = new WP_Query($inner_args);
-        
+
                 if ($inner_query->have_posts()) {
                     while ($inner_query->have_posts()) {
                         $inner_query->the_post();
                         $instrument_code = get_post_meta(get_the_ID(), 'instrument_code', true);
-        
                         // Find the corresponding iot-message post
                         $iot_post_id = array_search($instrument_code, $instrument_codes);
                         if ($iot_post_id !== false) {
                             $temperature = get_post_meta($iot_post_id, 'temperature', true);
                             $humidity = get_post_meta($iot_post_id, 'humidity', true);
-        
                             // Update 'temperature' and 'humidity' metadata
                             if ($temperature !== '') {
                                 update_post_meta(get_the_ID(), 'temperature', $temperature);
@@ -150,82 +124,16 @@ if (!class_exists('iot_messages')) {
                                 update_post_meta(get_the_ID(), 'humidity', $humidity);
                                 $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
                             }
-        
                             // Mark the 'iot-message' post as processed
                             update_post_meta($iot_post_id, 'processed', 1);
                         }
                     }
                     wp_reset_postdata();
                 }
-        
                 wp_reset_postdata();
             }
         }
-/*        
-        function update_iot_message_meta_data() {
-            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
-            $args = array(
-                'post_type' => 'iot-message',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key' => 'processed',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                ),
-                'date_query' => array(
-                    array(
-                        'after' => '5 minutes ago',
-                        'inclusive' => true,
-                    ),
-                ),
-            );
-            $iot_query = new WP_Query($args);
 
-            if ($iot_query->have_posts()) {
-                while ($iot_query->have_posts()) {
-                    $iot_query->the_post();
-                    $instrument_code = get_post_meta(get_the_ID(), 'deviceID', true);
-                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-        
-                    // Find 'instrument-card' post with the same deviceID
-                    $inner_args = array(
-                        'post_type' => 'instrument-card',
-                        'meta_query' => array(
-                            array(
-                                'key'     => 'instrument_code',
-                                'value'   => $instrument_code,
-                                'compare' => '='
-                            )
-                        )
-                    );
-                    $inner_query = new WP_Query($inner_args);
-        
-                    if ($inner_query->have_posts()) {
-                        while ($inner_query->have_posts()) {
-                            $inner_query->the_post();
-        
-                            // Update 'temperature' and 'humidity' metadata
-                            if ($temperature) {
-                                update_post_meta(get_the_ID(), 'temperature', $temperature);
-                                $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
-                            }
-                            if ($humidity) {
-                                update_post_meta(get_the_ID(), 'humidity', $humidity);
-                                $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
-                            }
-                        }
-                        wp_reset_postdata();
-                    }
-
-                    // Mark the 'iot-message' post as processed
-                    update_post_meta(get_the_ID(), 'processed', 1);
-                }
-                wp_reset_postdata();
-            }
-        }
-*/
         function create_exception_notification_events($instrument_id=false, $iot_sensor=false, $sensor_value=false) {
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $documents_class = new display_documents();
@@ -338,99 +246,83 @@ if (!class_exists('iot_messages')) {
             $current_user = get_userdata($current_user_id);
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
+            ?>
+            <div class="ui-widget" id="result-container">
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
 
-            // Check if the user is administrator
-            //if ($is_site_admin || current_user_can('administrator')) {
-                ?>
-                <div class="ui-widget" id="result-container">
-                <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $todo_class->display_select_todo('iot-message');?></div>
+                <div style="text-align: right"></div>                        
+            </div>
 
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $todo_class->display_select_todo('iot-message');?></div>
-                    <div style="text-align: right"></div>                        
-                </div>
-        
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Vlue', 'your-text-domain' );?></th>
-                            <th></th>
-                            <th></th>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $paged = max(1, get_query_var('paged')); // Get the current page number
-                        $query = $this->retrieve_iot_message_data($paged);
-                        $total_posts = $query->found_posts;
-                        $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Vlue', 'your-text-domain' );?></th>
+                        <th></th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_iot_message_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                // Get post creation time
-                                $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
-                                $topic = get_the_title();
-                                $message = get_the_content();
-                                $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
-                                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                                $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-                                $latitude = get_post_meta(get_the_ID(), 'latitude', true);
-                                $longitude = get_post_meta(get_the_ID(), 'longitude', true);
-                                ?>
-                                <tr id="edit-iot-message-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
-                                    <?php if ($temperature) {?>
-                                        <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
-                                        <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
-                                    <?php }?>
-                                    <?php if ($humidity) {?>
-                                        <td style="text-align:center;"><?php echo __( 'Humidity(%)', 'your-text-domain' );?></td>
-                                        <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
-                                    <?php }?>
-                                    <?php if ($latitude) {?>
-                                        <td style="text-align:center;"><?php echo __( 'Latitude', 'your-text-domain' );?></td>
-                                        <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
-                                    <?php }?>
-                                    <?php if ($longitude) {?>
-                                        <td style="text-align:center;"><?php echo __( 'Longitude', 'your-text-domain' );?></td>
-                                        <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
-                                    <?php }?>
-                                </tr>
-                                <?php 
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                        </tbody>
-                    </table>
-                    <div class="pagination">
-                        <?php
-                        // Display pagination links
-                        if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                        echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                        if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                        ?>
-                    </div>
-                </fieldset>
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            // Get post creation time
+                            $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
+                            $topic = get_the_title();
+                            $message = get_the_content();
+                            $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
+                            $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                            $humidity = get_post_meta(get_the_ID(), 'humidity', true);
+                            $latitude = get_post_meta(get_the_ID(), 'latitude', true);
+                            $longitude = get_post_meta(get_the_ID(), 'longitude', true);
+                            ?>
+                            <tr id="edit-iot-message-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
+                                <?php if ($temperature) {?>
+                                    <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
+                                <?php }?>
+                                <?php if ($humidity) {?>
+                                    <td style="text-align:center;"><?php echo __( 'Humidity(%)', 'your-text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
+                                <?php }?>
+                                <?php if ($latitude) {?>
+                                    <td style="text-align:center;"><?php echo __( 'Latitude', 'your-text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
+                                <?php }?>
+                                <?php if ($longitude) {?>
+                                    <td style="text-align:center;"><?php echo __( 'Longitude', 'your-text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
+                                <?php }?>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
                 </div>
-                <div id="geolocation-dialog" title="Geolocation map">
-                    <input type="hidden" id="latitude" />
-                    <input type="hidden" id="longitude" />
-                    <div id="map" style="height:400px;"></div>
-                    <div id="message" style="margin-top: 20px;"></div>
-                </div>
-                <?php
-/*                
-            } else {
-                ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
-                <?php
-            }
-*/                
+            </fieldset>
+            </div>
+            <?php
             return ob_get_clean();
         }
         
@@ -445,42 +337,6 @@ if (!class_exists('iot_messages')) {
             $query = new WP_Query($args);
             return $query;
         }
-/*
-        function get_iot_message_data() {
-            $response = array();
-            $iot_message_id = sanitize_text_field($_POST['_iot_message_id']);
-            $response['latitude'] = get_post_meta($geolocation_message_id, 'latitude', true);
-            $response['longitude'] = get_post_meta($geolocation_message_id, 'longitude', true);
-            $response['message'] = get_post_field('post_content', $geolocation_message_id);
-            wp_send_json($response);
-        }
-
-        function set_iot_message_data() {
-            $receiver = sanitize_text_field($_POST['receiver']);
-            $message = sanitize_text_field($_POST['message']);
-            $latitude = sanitize_text_field($_POST['latitude']);
-            $longitude = sanitize_text_field($_POST['longitude']);
-        
-            // Create a new post
-            $post_data = array(
-                'post_title'    => $receiver, // Using receiver as the title
-                'post_content'  => $message,
-                'post_status'   => 'publish',
-                'post_type'     => 'iot-message',
-            );
-        
-            $new_post_id = wp_insert_post($post_data);
-        
-            if (!is_wp_error($new_post_id)) {
-                // Add custom meta data
-                update_post_meta($new_post_id, 'latitude', $latitude);
-                update_post_meta($new_post_id, 'longitude', $longitude);
-                wp_send_json_success('Post created successfully.');
-            } else {
-                wp_send_json_error('Failed to create post.');
-            }
-        }
-*/            
     }
     $iot_messages = new iot_messages();
 }

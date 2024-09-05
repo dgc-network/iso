@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
             $("#mermaid-div").hide();
             $("#doc-frame-div").hide();
         }    
-
+/*
         $('[id^="reset-document-"]').on("click", function () {
             const doc_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to reset this document status?")) {
@@ -207,12 +207,11 @@ jQuery(document).ready(function($) {
                 });
             }
         });            
-
+*/
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
-            //const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
             const is_doc_report = 1;
             $("#is-doc-report").val(is_doc_report)
         });
@@ -222,8 +221,6 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").toggle();
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
-            //const is_doc_report = $("#is-doc-report").val() != 0 ? 0 : 1;
-            //const is_doc_report = 1;
             $("#is-doc-report").val(is_doc_report)
         });
 
@@ -342,26 +339,26 @@ jQuery(document).ready(function($) {
         });
 
         $("#system-report-preview").on("click", function () {
-            if ($("#is-doc-report").val()==-1) {
+            if ($("#is-doc-report").val()=='document-card') {
                 window.location.replace('/display-document/');
             }
-            if ($("#is-doc-report").val()==-2) {
-                window.location.replace('/display-profiles/?_select_profile=4');
+            if ($("#is-doc-report").val()=='customer-card') {
+                window.location.replace('/display-profiles/?_select_profile=customer-card');
             }
-            if ($("#is-doc-report").val()==-3) {
-                window.location.replace('/display-profiles/?_select_profile=5');
+            if ($("#is-doc-report").val()=='vendor-card') {
+                window.location.replace('/display-profiles/?_select_profile=vendor-card');
             }
-            if ($("#is-doc-report").val()==-4) {
-                window.location.replace('/display-profiles/?_select_profile=6');
+            if ($("#is-doc-report").val()=='product-card') {
+                window.location.replace('/display-profiles/?_select_profile=product-card');
             }
-            if ($("#is-doc-report").val()==-5) {
-                window.location.replace('/display-profiles/?_select_profile=7');
+            if ($("#is-doc-report").val()=='equipment-card') {
+                window.location.replace('/display-profiles/?_select_profile=equipment-card');
             }
-            if ($("#is-doc-report").val()==-6) {
-                window.location.replace('/display-profiles/?_select_profile=8');
+            if ($("#is-doc-report").val()=='instrument-card') {
+                window.location.replace('/display-profiles/?_select_profile=instrument-card');
             }
-            if ($("#is-doc-report").val()==-7) {
-                window.location.replace('/display-profiles/?_select_profile=1');
+            if ($("#is-doc-report").val()=='employee-card') {
+                window.location.replace('/display-profiles/?_select_profile=employee-card');
             }
         });
     
@@ -751,11 +748,11 @@ jQuery(document).ready(function($) {
 
     // doc-report scripts
     function activate_doc_report_list_data(doc_id){
-        $("#doc-report-setting").on("click", function () {
-            $("#doc-report-setting-dialog").dialog('open');
+        $("#doc-field-setting").on("click", function () {
+            $("#doc-field-setting-dialog").dialog('open');
         });
     
-        $("#doc-report-setting-dialog").dialog({
+        $("#doc-field-setting-dialog").dialog({
             width: 600,
             modal: true,
             autoOpen: false,
@@ -1044,7 +1041,7 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: "json",
                     data: {
-                        'action': 'reset_document_todo_status',
+                        'action': 'reset_doc_report_todo_status',
                         '_report_id': report_id,
                     },
                     success: function (response) {
