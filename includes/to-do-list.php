@@ -1057,9 +1057,6 @@ if (!class_exists('to_do_list')) {
         
         // signature_record
         function display_signature_record() {
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -1078,6 +1075,9 @@ if (!class_exists('to_do_list')) {
         }
         
         function get_signature_record_list($report_id=false) {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
             ob_start();
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
