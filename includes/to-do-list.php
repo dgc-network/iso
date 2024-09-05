@@ -1111,7 +1111,7 @@ if (!class_exists('to_do_list')) {
                             $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
         
-                            if ($current_site==$site_id) { // Aditional condition to filter the data
+                            //if ($current_site==$site_id) { // Aditional condition to filter the data
                                 $user_data = get_userdata( $submit_user );
                                 ?>
                                 <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
@@ -1125,7 +1125,7 @@ if (!class_exists('to_do_list')) {
                                     <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 </tr>
                                 <?php
-                            }
+                            //}
                         endwhile;
                         wp_reset_postdata();
                     endif;
