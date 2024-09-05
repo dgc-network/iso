@@ -795,7 +795,8 @@ jQuery(document).ready(function($) {
                         $('#result-container').html(response.html_contain);
                     }
                     activate_doc_report_dialog_data(response.doc_fields);
-                    activate_published_document_data($("#doc-id").val());
+                    //activate_published_document_data($("#doc-id").val());
+                    activate_published_document_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -901,7 +902,7 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_item') {
-                        $.each(response.check_fields, function(index, inner_value) {
+                        $.each(value.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
@@ -942,7 +943,7 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_item') {
-                        $.each(response.check_fields, function(index, inner_value) {
+                        $.each(value.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
@@ -1006,7 +1007,7 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_item') {
-                        $.each(response.check_fields, function(index, inner_value) {
+                        $.each(value.check_fields, function(index, inner_value) {
                             const check_name_tag = '#' + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
