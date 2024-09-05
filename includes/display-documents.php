@@ -130,7 +130,9 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
-                    $iso_category_id = sanitize_text_field($_GET['_statement']);
+                    //$iso_category_id = sanitize_text_field($_GET['_statement']);
+                    $sub_category = sanitize_text_field($_GET['_statement']);
+                    $iso_category_id = get_post_meta($sub_category, 'iso_category', true);
                     $iso_category_title = get_the_title($iso_category_id);
                     $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
                     ?>
@@ -144,7 +146,8 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                         <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                        <?php echo $this->display_sub_item_list_with_inputs($iso_category_id);?>
+                        <?php //echo $this->display_sub_item_list_with_inputs($iso_category_id);?>
+                        <?php echo $this->display_sub_item_contains($sub_category);?>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Save', 'your-text-domain' );?></button>
@@ -1906,6 +1909,18 @@ if (!class_exists('display_documents')) {
             $total_posts = $document_query->found_posts;
 
             return $total_posts;
+        }
+
+        function display_sub_item_contains($category_id){
+            $items_class = new sub_items();
+            $query = $items_class->retrieve_sub_item_list_data($category_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $items_class->get_sub_item_contains(get_the_ID(), $field_name);
+                endwhile;
+                wp_reset_postdata();
+            endif;
+
         }
 
         function display_sub_item_list_with_inputs($category_id){
