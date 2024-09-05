@@ -2141,6 +2141,10 @@ if (!class_exists('display_documents')) {
             update_post_meta($todo_id, 'submit_action', $action_id);
             update_post_meta($todo_id, 'submit_time', time());
 
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            update_post_meta($todo_id, 'site_id', $site_id );
+
             $next_job = get_post_meta($action_id, 'next_job', true);
             update_post_meta($report_id, 'todo_status', $next_job);
 

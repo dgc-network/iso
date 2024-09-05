@@ -688,6 +688,10 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'submit_user', $user_id );
             update_post_meta($new_todo_id, 'submit_action', $action_id );
             update_post_meta($new_todo_id, 'submit_time', time() );
+            
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            update_post_meta($new_todo_id, 'site_id', $site_id );
 
             // set next todo and actions
             $params = array(
@@ -779,11 +783,13 @@ if (!class_exists('to_do_list')) {
             
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
 
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            update_post_meta($new_todo_id, 'site_id', $site_id );
+
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
             if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
-            //if ($sub_item_id) update_post_meta($prev_report_id, 'sub_item_id', $sub_item_id );
-            //update_post_meta($new_todo_id, 'sub_item_id', 20000 );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
