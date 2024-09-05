@@ -1806,7 +1806,7 @@ if (!class_exists('display_documents')) {
                         $sub_key = $parts[0]; // _embedded, _planning, _select_one
                         $sub_value = $parts[1]; // 1724993477
         
-                        if ($sub_key=='_embedded'||$sub_key=='_planning') {
+                        if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                             if ($sub_value) {
                                 $items_class = new sub_items();
                                 $category_id = $items_class->get_sub_category_post_id_by_code($sub_value);
