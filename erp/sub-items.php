@@ -912,6 +912,7 @@ if (!class_exists('sub_items')) {
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'parent_category', $parent_category);
+                update_post_meta($category_id, 'sub_category', $sub_category);
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
