@@ -1125,9 +1125,10 @@ if (!class_exists('display_documents')) {
                             $parts = explode('=', $default_value);
                             $sub_form_key = $parts[0]; // _embedded, _planning, _select_one
                             $sub_form_value = $parts[1]; // 1724993477
-/*
+
                             if ($sub_form_value) {
                                 $sub_form_id = $items_class->get_sub_form_post_id_by_code($sub_form_value);
+/*                                
                                 if ($sub_form_key=='_embedded'||$sub_form_key=='_planning'||$sub_form_key=='_select_one') {
                                     $items_class = new sub_forms();
                                     $inner_query = $items_class->retrieve_sub_item_list_data($sub_form_id);
@@ -1138,12 +1139,13 @@ if (!class_exists('display_documents')) {
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;
-                                }            
+                                }
+*/
                                 if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
                                     update_post_meta($post_id, $field_name, $sub_form_id);
                                 }
                             }
-*/                            
+
                         }
                     endwhile;
                     wp_reset_postdata();
