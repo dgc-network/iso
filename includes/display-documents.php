@@ -1488,7 +1488,7 @@ if (!class_exists('display_documents')) {
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 }
-                                                echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                                                 $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
                                             endwhile;
                                             wp_reset_postdata();
