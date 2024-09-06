@@ -702,13 +702,19 @@ if (!class_exists('sub_forms')) {
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
-            //$sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
-            if (!$field_value) $field_value = get_post_meta($sub_item_id, 'sub_item_default', true);
+            $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
+            //if (!$field_value) $field_value = get_post_meta($sub_item_id, 'sub_item_default', true);
 
             if ($sub_item_type=='heading') {
-                ?>
-                <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
-                <?php
+                if ($sub_item_default) {
+                    ?>
+                    <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                    <?php    
+                } else {
+                    ?>
+                    <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
+                    <?php    
+                }
             } elseif ($sub_item_type=='checkbox') {
                 $is_checked = ($field_value==1) ? 'checked' : '';
                 ?>
@@ -723,6 +729,11 @@ if (!class_exists('sub_forms')) {
                 ?>
                 <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
                 <input type="text" id="<?php echo esc_attr($field_name.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                <?php
+            } elseif ($sub_item_type=='number') {
+                ?>
+                <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <input type="number" id="<?php echo esc_attr($field_name.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="number ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='radio') {
                 $is_checked = ($field_value==1) ? 'checked' : '';
