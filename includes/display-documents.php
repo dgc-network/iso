@@ -1127,7 +1127,7 @@ if (!class_exists('display_documents')) {
                             $sub_form_value = $parts[1]; // 1724993477
 
                             if ($sub_form_value) {
-                                $sub_form_id = $items_class->get_sub_form_post_id_by_code($sub_form_value);
+                                //$sub_form_id = $items_class->get_sub_form_post_id_by_code($sub_form_value);
 /*                                
                                 if ($sub_form_key=='_embedded'||$sub_form_key=='_planning'||$sub_form_key=='_select_one') {
                                     $items_class = new sub_forms();
@@ -1144,6 +1144,7 @@ if (!class_exists('display_documents')) {
                                 if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
                                     //update_post_meta($post_id, $field_name, $sub_form_id);
                                 }
+
                             }
 
                         }
