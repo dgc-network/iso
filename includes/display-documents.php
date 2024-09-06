@@ -1074,7 +1074,7 @@ if (!class_exists('display_documents')) {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['doc_fields']['check_fields'] = $this->get_sub_item_keys($doc_id);
+                    $response['sub_item_fields'] = $this->get_sub_item_keys($doc_id);
                 }
             }
             wp_send_json($response);
