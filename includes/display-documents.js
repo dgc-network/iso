@@ -902,12 +902,12 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_form') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const check_name_tag = '#' + inner_value.sub_item_id;
+                        $.each(response.sub_form_fields, function(index, inner_value) {
+                            const check_name_tag = '#' + value.field_name + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).val();
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).val();
                             }
                         });
                     }
@@ -943,12 +943,12 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_form') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const check_name_tag = '#' + inner_value.sub_item_id;
+                        $.each(response.sub_form_fields, function(index, inner_value) {
+                            const check_name_tag = '#' + value.field_name + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).val();
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).val();
                             }
                         });
                     }
@@ -1007,12 +1007,12 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_name] = $(field_name_tag).val();
                     if (value.field_type === '_sub_form') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const check_name_tag = '#' + inner_value.sub_item_id;
+                        $.each(response.sub_form_fields, function(index, inner_value) {
+                            const check_name_tag = '#' + value.field_name + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[inner_value.sub_item_id] = $(check_name_tag).val();
+                                ajaxData[value.field_name + inner_value.sub_item_id] = $(check_name_tag).val();
                             }
                         });
                     }
