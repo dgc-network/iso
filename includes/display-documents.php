@@ -1484,7 +1484,7 @@ if (!class_exists('display_documents')) {
                                                 } elseif ($prev_report_id) {
                                                     $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
                                                 }
-                                                echo 'sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.' field_name:'.$field_name.'<br>';
+                                                echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                                                 $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
                                             endwhile;
                                             wp_reset_postdata();
@@ -1509,7 +1509,7 @@ if (!class_exists('display_documents')) {
                                     }
                                     ?>
                                     <div id="sub-item-list-from-sub-form">
-                                        <?php echo 'sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.' field_name:'.$field_name.'<br>';?>
+                                        <?php echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
                                         <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
                                     </div>
                                     <?php    
@@ -1689,7 +1689,6 @@ if (!class_exists('display_documents')) {
                     //$field_value = json_decode($_POST[$field_name], true);
                     $current_user_id = get_current_user_id();
                     // Check if the $current_user_id is not already in the $employee_ids array
-                    //if (!in_array((string) $current_user_id, $employee_ids)) {
                     if (!in_array($current_user_id, $employee_ids)) {
                         // Add the value to the $employee_ids array
                         $employee_ids[] = $current_user_id;
@@ -1711,11 +1710,11 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_document', $field_value);
             }
 
-            if ($field_type=='_max'){
-                update_post_meta($report_id, '_max', $field_value);
+            if ($field_type=='_max_value'){
+                update_post_meta($report_id, '_max_value', $field_value);
             }
-            if ($field_type=='_min'){
-                update_post_meta($report_id, '_min', $field_value);
+            if ($field_type=='_min_value'){
+                update_post_meta($report_id, '_min_value', $field_value);
             }
             if ($field_type=='_department'){
                 update_post_meta($report_id, '_department', $field_value);
@@ -1746,7 +1745,7 @@ if (!class_exists('display_documents')) {
                         endif;
 
                         if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
-                            update_post_meta($post_id, $field_name, $sub_form_id);
+                            update_post_meta($report_id, $field_name, $sub_form_id);
                         }
 
                         if ($sub_form_key=='_planning') {

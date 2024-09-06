@@ -141,8 +141,8 @@ if (!class_exists('iot_messages')) {
 
             if ($query->have_posts()) {
                 foreach ($query->posts as $report_id) {
-                    $max_value = get_post_meta($report_id, '_max', true);
-                    $min_value = get_post_meta($report_id, '_min', true);
+                    $max_value = get_post_meta($report_id, '_max_value', true);
+                    $min_value = get_post_meta($report_id, '_min_value', true);
                     $employee_ids = get_post_meta($report_id, '_employees', true);
 
                     // Prepare the notification message
