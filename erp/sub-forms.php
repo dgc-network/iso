@@ -452,7 +452,7 @@ if (!class_exists('sub_forms')) {
             return $options;
         }
         
-        function get_sub_form_post_id_by_code($sub_form_code) {
+        function get_sub_form_post_id_by_code($sub_form_code=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
@@ -462,6 +462,7 @@ if (!class_exists('sub_forms')) {
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
+                        'compare' => '=',            // Comparison operator
                     ),
                     array(
                         'key'   => 'sub_form_code',  // Meta key

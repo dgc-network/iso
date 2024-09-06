@@ -1142,7 +1142,7 @@ if (!class_exists('display_documents')) {
                                 }
 */
                                 if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
-                                    update_post_meta($post_id, $field_name, $sub_form_id);
+                                    //update_post_meta($post_id, $field_name, $sub_form_id);
                                 }
                             }
 
