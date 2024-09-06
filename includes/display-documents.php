@@ -1315,9 +1315,9 @@ if (!class_exists('display_documents')) {
                     <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
-                    <option value="_max" <?php echo ($field_type=='_max') ? 'selected' : ''?>><?php echo __( '_max', 'your-text-domain' );?></option>
-                    <option value="_min" <?php echo ($field_type=='_min') ? 'selected' : ''?>><?php echo __( '_min', 'your-text-domain' );?></option>
-                    <option value="_sub_item" <?php echo ($field_type=='_sub_form') ? 'selected' : ''?>><?php echo __( '_sub_form', 'your-text-domain' );?></option>
+                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
+                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
+                    <option value="_sub_form" <?php echo ($field_type=='_sub_form') ? 'selected' : ''?>><?php echo __( '_sub_form', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
