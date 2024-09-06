@@ -238,6 +238,33 @@ if (!class_exists('to_do_list')) {
             );
 
             if (!$is_site_admin) {
+                // Initialize the meta_query array
+                $meta_query = array('relation' => 'OR');
+
+                // Check if $user_doc_ids is not an empty array and add it to the meta_query
+                if (!empty($user_doc_ids)) {
+                    $meta_query[] = array(
+                        'key'     => 'doc_id',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    );
+                }
+
+                if (!empty($user_doc_ids)) {
+                    $meta_query[] = array(
+                        'key'     => 'without_doc_number',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    );
+                }
+
+                // If $meta_query has more than just the relation, add it to $args
+                if (count($meta_query) > 1) {
+                    $args['meta_query'][] = $meta_query;
+                }
+            }
+/*
+            if (!$is_site_admin) {
                 if (!empty($user_doc_ids)) {
                     $args['meta_query'][] = array(
                         'key'     => 'doc_id',
@@ -721,7 +748,6 @@ if (!class_exists('to_do_list')) {
                 if (is_array($sub_item_ids)) {
                     foreach ($sub_item_ids as $sub_item_id) {
                         $params['sub_item_id'] = $sub_item_id;
-                        //$params['sub_item_id'] = 10000;
                         $this->create_new_todo_for_next_job($params);
                     }
                 }    
@@ -768,7 +794,7 @@ if (!class_exists('to_do_list')) {
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
                     update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                    update_post_meta($new_todo_id, 'without_doc_number', true );
+                    update_post_meta($new_todo_id, 'without_doc_number', $next_job );
                 }
             }
 
@@ -950,7 +976,7 @@ if (!class_exists('to_do_list')) {
             endif;
             return false;
         }
-
+/*
         function get_document_ids() {
             $current_user_id = get_current_user_id();
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -980,7 +1006,7 @@ if (!class_exists('to_do_list')) {
             // Return the array of filtered document IDs
             return $document_ids;
         }
-
+*/
         // Register action post type
         function register_action_post_type() {
             $labels = array(
