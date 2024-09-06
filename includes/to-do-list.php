@@ -263,47 +263,7 @@ if (!class_exists('to_do_list')) {
                     $args['meta_query'][] = $meta_query;
                 }
             }
-/*
-            if (!$is_site_admin) {
-                if (!empty($user_doc_ids)) {
-                    $args['meta_query'][] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids,
-                        'compare' => 'IN',
-                    );
-                }
-            }
-/*
-            $document_ids = $this->get_document_ids();
 
-            if (!$is_site_admin) {
-                // Initialize the meta_query array
-                $meta_query = array('relation' => 'OR');
-
-                // Check if $user_doc_ids is not an empty array and add it to the meta_query
-                if (!empty($user_doc_ids)) {
-                    $meta_query[] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids,
-                        'compare' => 'IN',
-                    );
-                }
-
-                // Check if $document_ids is not an empty array and add it to the meta_query
-                if (!empty($document_ids)) {
-                    $meta_query[] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $document_ids,
-                        'compare' => 'IN',
-                    );
-                }
-
-                // If $meta_query has more than just the relation, add it to $args
-                if (count($meta_query) > 1) {
-                    $args['meta_query'][] = $meta_query;
-                }
-            }
-*/
             // Add meta query for searching across all meta keys
             $meta_keys = get_post_type_meta_keys('todo');
             $meta_query_all_keys = array('relation' => 'OR');

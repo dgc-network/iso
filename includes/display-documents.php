@@ -1468,57 +1468,62 @@ if (!class_exists('display_documents')) {
                     switch (true) {
                         case ($field_type=='_sub_form'):
                             $items_class = new sub_forms();
-                            $parts = explode('=', $default_value);
-                            $sub_form_key = $parts[0]; // _embedded, _planning, _select_one
-                            $sub_form_value = $parts[1]; // 1724993477
-
-                            if ($sub_form_value) {
-                                $sub_form_id = $items_class->get_sub_form_post_id_by_code($sub_form_value);
-                                if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($sub_form_id));?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($sub_form_id);?>" />
-                                    <div id="sub-item-list-from">
-                                        <?php
-                                        $inner_query = $items_class->retrieve_sub_item_list_data($sub_form_id);
-                                        if ($inner_query->have_posts()) :
-                                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                                if ($report_id) {
-                                                    $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                                                } elseif ($prev_report_id) {
-                                                    $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                                                }
-                                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
-                                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
-                                            endwhile;
-                                            wp_reset_postdata();
-                                        endif;
-                                        ?>
-                                    </div>
-                                    <?php
+                            if ($todo_id) {
+                                $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
                                 }
-                                if ($sub_form_key=='_select_one') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $sub_form_id);?></select>
-                                    <?php
-                                }
+                                ?>
+                                <div id="sub-item-list-from">
+                                    <?php echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
+                                </div>
+                                <?php    
                             } else {
-                                if ($todo_id) {
-                                    $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-                                    if ($report_id) {
-                                        $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
-                                    } elseif ($prev_report_id) {
-                                        $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
+
+                                $parts = explode('=', $default_value);
+                                $sub_form_key = $parts[0]; // _embedded, _planning, _select_one
+                                $sub_form_value = $parts[1]; // 1724993477
+    
+                                if ($sub_form_value) {
+                                    $sub_form_id = $items_class->get_sub_form_post_id_by_code($sub_form_value);
+                                    if ($sub_form_key=='_embedded'||$sub_form_key=='_planning') {
+                                        ?>
+                                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($sub_form_id));?></label>
+                                        <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($sub_form_id);?>" />
+                                        <div id="sub-item-list-from">
+                                            <?php
+                                            $inner_query = $items_class->retrieve_sub_item_list_data($sub_form_id);
+                                            if ($inner_query->have_posts()) :
+                                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                                    if ($report_id) {
+                                                        $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                                                    } elseif ($prev_report_id) {
+                                                        $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                                                    }
+                                                    //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                                                    $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                                                endwhile;
+                                                wp_reset_postdata();
+                                            endif;
+                                            ?>
+                                        </div>
+                                        <?php
                                     }
-                                    ?>
-                                    <div id="sub-item-list-from">
-                                        <?php echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
-                                        <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
-                                    </div>
-                                    <?php    
+                                    if ($sub_form_key=='_select_one') {
+                                        ?>
+                                        <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                        <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $sub_form_id);?></select>
+                                        <?php
+                                    }
+                                } else {
                                 }
+    
                             }
+
+
                             break;
 
                         case ($field_type=='_document'):
