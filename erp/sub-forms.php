@@ -384,7 +384,7 @@ if (!class_exists('sub_forms')) {
                 <label for="sub-form-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-form-title" value="<?php echo esc_attr($sub_form_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_sub_item_list($category_id);?>
+                <?php echo $this->display_sub_item_list($sub_form_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if ($sub_form_site==$site_id || current_user_can('administrator')) {?>
