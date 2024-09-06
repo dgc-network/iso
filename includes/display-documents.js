@@ -925,7 +925,7 @@ jQuery(document).ready(function($) {
                 },
                 error: function(xhr, textStatus, errorThrown) {
                     console.error('AJAX request failed:', errorThrown);
-                    alert('AJAX request failed. Please try again.');
+                    //alert('AJAX request failed. Please try again.');
                 }
             });
         });

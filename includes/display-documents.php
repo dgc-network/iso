@@ -1747,6 +1747,9 @@ if (!class_exists('display_documents')) {
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_value = $_POST[$field_name.get_the_ID()];
                                 update_post_meta($report_id, $field_name.get_the_ID(), $field_value);
+                                if ($sub_form_key=='_select_one') {
+                                    update_post_meta($report_id, '_select_one', get_the_ID());
+                                }            
                             endwhile;
                             wp_reset_postdata();
                         endif;
@@ -1759,6 +1762,7 @@ if (!class_exists('display_documents')) {
                             $sub_item_ids = $this->get_sub_item_ids($sub_form_id);
                             update_post_meta($report_id, '_planning', $sub_item_ids);
                         }    
+
                     }
                 }
             }
