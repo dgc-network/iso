@@ -1478,7 +1478,7 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($sub_form_id));?></label>
                                     <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($sub_form_id);?>" />
-                                    <div id="sub-item-list-from-category">
+                                    <div id="sub-item-list-from">
                                         <?php
                                         $inner_query = $items_class->retrieve_sub_item_list_data($sub_form_id);
                                         if ($inner_query->have_posts()) :
@@ -1512,7 +1512,7 @@ if (!class_exists('display_documents')) {
                                         $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
                                     }
                                     ?>
-                                    <div id="sub-item-list-from-sub-form">
+                                    <div id="sub-item-list-from">
                                         <?php echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
                                         <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
                                     </div>
@@ -1809,7 +1809,8 @@ if (!class_exists('display_documents')) {
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $_list = array();
-                                        $_list["sub_item_id"] = $field_name.get_the_ID();
+                                        //$_list["sub_item_id"] = $field_name.get_the_ID();
+                                        $_list["sub_item_id"] = get_the_ID();
                                         $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
                                         array_push($_array, $_list);
                     
