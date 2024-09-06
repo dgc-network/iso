@@ -1477,7 +1477,7 @@ if (!class_exists('display_documents')) {
                                 }
                                 ?>
                                 <div id="sub-item-list-from">
-                                    <?php echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
+                                    <?php //echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
                                     <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
                                 </div>
                                 <?php    
@@ -1518,9 +1518,7 @@ if (!class_exists('display_documents')) {
                                         <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $sub_form_id);?></select>
                                         <?php
                                     }
-                                } else {
-                                }
-    
+                                }    
                             }
 
 
