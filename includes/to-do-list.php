@@ -237,6 +237,16 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
+            if (!$is_site_admin) {
+                if (!empty($user_doc_ids)) {
+                    $args['meta_query'][] = array(
+                        'key'     => 'doc_id',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    );
+                }
+            }
+/*
             $document_ids = $this->get_document_ids();
 
             if (!$is_site_admin) {
@@ -266,11 +276,11 @@ if (!class_exists('to_do_list')) {
                     $args['meta_query'][] = $meta_query;
                 }
             }
-
+*/
             // Add meta query for searching across all meta keys
-            $document_meta_keys = get_post_type_meta_keys('todo');
+            $meta_keys = get_post_type_meta_keys('todo');
             $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($document_meta_keys as $meta_key) {
+            foreach ($meta_keys as $meta_key) {
                 $meta_query_all_keys[] = array(
                     'key'     => $meta_key,
                     'value'   => $search_query,
