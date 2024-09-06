@@ -773,7 +773,7 @@ jQuery(document).ready(function($) {
                     get_doc_report_list_data(doc_id)
                 },
                 error: function(error){
-                    console.error(error);                    
+                    console.error(error);
                 }
             });
         });
