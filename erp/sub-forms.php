@@ -560,7 +560,7 @@ if (!class_exists('sub_forms')) {
             <?php }?>
             </fieldset>
             </div>
-            <div id="sub-item-dialog" title="Check item dialog"></div>
+            <div id="sub-item-dialog" title="Sub item dialog"></div>
             <?php
             return ob_get_clean();
         }

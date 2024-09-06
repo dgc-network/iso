@@ -91,7 +91,7 @@ if (!class_exists('display_profiles')) {
             </select>
             <?php
         }
-
+/*
         function update_post_type_sub_category_to_sub_form() {
             global $wpdb;
             $wpdb->query("UPDATE wp_posts SET post_type = 'sub-form' WHERE post_type = 'sub-category'");
@@ -179,7 +179,7 @@ if (!class_exists('display_profiles')) {
         
         // Hook the function to run, or manually call it in an admin action or setup script
         //add_action('init', 'rename_category_code_to_form_code_in_sub_form');
-        
+*/        
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
@@ -192,11 +192,11 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-
+/*
                 if ($_GET['_select_profile']=='update_post_type_sub_category_to_sub_form') echo $this->update_post_type_sub_category_to_sub_form();
                 if ($_GET['_select_profile']=='rename_category_code_to_sub_form_code_in_sub_form') echo $this->rename_category_code_to_sub_form_code_in_sub_form();
                 if ($_GET['_select_profile']=='rename_category_id_to_sub_form_id_in_sub_item') echo $this->rename_category_id_to_sub_form_id_in_sub_item();
-
+*/
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
