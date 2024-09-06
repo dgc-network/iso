@@ -32,8 +32,8 @@ if (!class_exists('sub_forms')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_sub_forms_from_selection', array( $this, 'get_sub_forms_from_selection' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_forms_from_selection', array( $this, 'get_sub_forms_from_selection' ) );
+            add_action( 'wp_ajax_select_sub_items_from_sub_form', array( $this, 'select_sub_items_from_sub_form' ) );
+            add_action( 'wp_ajax_nopriv_select_sub_items_from_sub_form', array( $this, 'select_sub_items_from_sub_form' ) );
             
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
@@ -681,7 +681,7 @@ if (!class_exists('sub_forms')) {
 
         function select_sub_item_options($selected_option=false, $sub_form_id=false) {
             $query = $this->retrieve_sub_item_list_data($sub_form_id);
-            $options = '<option value="">'.get_the_title($sub_form_id).'</option>';
+            $options = '<option value="">Select '.get_the_title($sub_form_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
@@ -768,19 +768,19 @@ if (!class_exists('sub_forms')) {
             }
         }
 
-        function get_sub_forms_from_selection() {
+        function select_sub_items_from_sub_form() {
             ob_start();
             $response = array();
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub_item');
+            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub_form');
             $field_name = get_post_meta($field_id, 'field_name', true);
-
+/*
             $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
             if ($sub_item_id) {
                 $this->get_sub_item_contains($sub_item_id, $field_name);
             }
-
+*/
             $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
             if ($sub_form_id) {
                 $query = $this->retrieve_sub_item_list_data($sub_form_id);
