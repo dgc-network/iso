@@ -177,7 +177,7 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            $items_class = new sub_items();
+            $items_class = new sub_forms();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -329,7 +329,7 @@ if (!class_exists('display_documents')) {
             ob_start();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            $items_class = new sub_items();
+            $items_class = new sub_forms();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();            
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -1128,7 +1128,7 @@ if (!class_exists('display_documents')) {
             
                             if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                                 if ($sub_value) {
-                                    $items_class = new sub_items();
+                                    $items_class = new sub_forms();
                                     $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                     $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                     if ($inner_query->have_posts()) :
@@ -1463,7 +1463,7 @@ if (!class_exists('display_documents')) {
 
                     switch (true) {
                         case ($field_type=='_sub_item'):
-                            $items_class = new sub_items();
+                            $items_class = new sub_forms();
                             $parts = explode('=', $default_value);
                             $sub_key = $parts[0]; // _embedded, _planning, _select_one
                             $sub_value = $parts[1]; // 1724993477
@@ -1739,7 +1739,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($report_id, $field_name, $field_value);
 
             if ($field_type=='_sub_item') {
-                $items_class = new sub_items();
+                $items_class = new sub_forms();
                 $parts = explode('=', $default_value);
                 $sub_key = $parts[0]; // _embedded, _planning, _select_one
                 $sub_value = $parts[1]; // 1724993477
@@ -1812,7 +1812,7 @@ if (!class_exists('display_documents')) {
         
                         if ($sub_key=='_embedded'||$sub_key=='_planning'||$sub_key=='_select_one') {
                             if ($sub_value) {
-                                $items_class = new sub_items();
+                                $items_class = new sub_forms();
                                 $category_id = $items_class->get_sub_form_post_id_by_code($sub_value);
                                 $inner_query = $items_class->retrieve_sub_item_list_data($category_id);
                                 if ($inner_query->have_posts()) :
@@ -1901,7 +1901,7 @@ if (!class_exists('display_documents')) {
         }
 
         function display_sub_item_contains($category_id){
-            $items_class = new sub_items();
+            $items_class = new sub_forms();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;

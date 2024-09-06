@@ -3,11 +3,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if (!class_exists('sub_items')) {
-    class sub_items {
+if (!class_exists('sub_forms')) {
+    class sub_forms {
         // Class constructor
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_forms_scripts' ) );
             //add_action( 'init', array( $this, 'register_sub_form_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
@@ -32,8 +32,8 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_sub_items_from_selection', array( $this, 'get_sub_items_from_selection' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_items_from_selection', array( $this, 'get_sub_items_from_selection' ) );
+            add_action( 'wp_ajax_get_sub_forms_from_selection', array( $this, 'get_sub_forms_from_selection' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_forms_from_selection', array( $this, 'get_sub_forms_from_selection' ) );
             
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
@@ -46,14 +46,14 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
         }
 
-        function enqueue_sub_items_scripts() {
+        function enqueue_sub_forms_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-            wp_enqueue_script('sub-items', plugins_url('sub-items.js', __FILE__), array('jquery'), time());
-            wp_localize_script('sub-items', 'ajax_object', array(
+            wp_enqueue_script('sub-forms', plugins_url('sub-forms.js', __FILE__), array('jquery'), time());
+            wp_localize_script('sub-forms', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('sub-items-nonce'), // Generate nonce
+                'nonce'    => wp_create_nonce('sub-forms-nonce'), // Generate nonce
             ));                
         }
 
@@ -256,11 +256,11 @@ if (!class_exists('sub_items')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $category_code = get_post_meta(get_the_ID(), 'category_code', true);
+                            $sub_form_code = get_post_meta(get_the_ID(), 'sub_form_code', true);
                             $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
                             <tr id="edit-sub-form-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($category_code);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($sub_form_code);?></td>
                                 <td><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
                             </tr>
@@ -284,7 +284,7 @@ if (!class_exists('sub_items')) {
                 </div>
 
             </fieldset>
-            <div id="sub-form-dialog" title="Category dialog"></div>
+            <div id="sub-form-dialog" title="Sub form dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -322,7 +322,7 @@ if (!class_exists('sub_items')) {
                         )                        
                     ),
                 ),
-                'meta_key'       => 'category_code', // Meta key for sorting
+                'meta_key'       => 'sub_form_code', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
             );
@@ -362,32 +362,32 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
-        function display_sub_form_dialog($category_id=false) {
+        function display_sub_form_dialog($sub_form_id=false) {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $category_title = get_the_title($category_id);
-            $category_code = get_post_meta($category_id, 'category_code', true);
-            $iso_category = get_post_meta($category_id, 'iso_category', true);
-            $category_site = get_post_meta($category_id, 'site_id', true);
-            $is_privated = get_post_meta($category_id, 'is_privated', true);
+            $sub_form_title = get_the_title($sub_form_id);
+            $sub_form_code = get_post_meta($sub_form_id, 'sub_form_code', true);
+            $iso_category = get_post_meta($sub_form_id, 'iso_category', true);
+            $sub_form_site = get_post_meta($sub_form_id, 'site_id', true);
+            $is_privated = get_post_meta($sub_form_id, 'is_privated', true);
             $is_checked = ($is_privated==1) ? 'checked' : '';
             ?>
             <fieldset>
-                <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
+                <input type="hidden" id="sub-form-id" value="<?php echo esc_attr($sub_form_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="category-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="category-code" value="<?php echo esc_attr($category_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-form-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-form-code" value="<?php echo esc_attr($sub_form_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-form-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-form-title" value="<?php echo esc_attr($sub_form_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_sub_item_list($category_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
-                <?php if ($category_site==$site_id || current_user_can('administrator')) {?>
+                <?php if ($sub_form_site==$site_id || current_user_can('administrator')) {?>
                     <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
                 <?php }?>
             </fieldset>
@@ -397,30 +397,30 @@ if (!class_exists('sub_items')) {
 
         function get_sub_form_dialog_data() {
             $response = array();
-            $category_id = sanitize_text_field($_POST['_category_id']);
-            $response['html_contain'] = $this->display_sub_form_dialog($category_id);
+            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
+            $response['html_contain'] = $this->display_sub_form_dialog($sub_form_id);
             wp_send_json($response);
         }
 
         function set_sub_form_dialog_data() {
-            if( isset($_POST['_category_id']) ) {
-                $category_id = sanitize_text_field($_POST['_category_id']);
-                $category_code = sanitize_text_field($_POST['_category_code']);
+            if( isset($_POST['_sub_form_id']) ) {
+                $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
+                $sub_form_code = sanitize_text_field($_POST['_sub_form_code']);
                 $iso_category = sanitize_text_field($_POST['_iso_category']);
                 $is_privated = sanitize_text_field($_POST['_is_privated']);
                 $data = array(
-                    'ID'           => $category_id,
-                    'post_title'   => sanitize_text_field($_POST['_category_title']),
+                    'ID'           => $sub_form_id,
+                    'post_title'   => sanitize_text_field($_POST['_sub_form_title']),
                 );
                 wp_update_post( $data );
-                update_post_meta($category_id, 'category_code', $category_code);
-                update_post_meta($category_id, 'iso_category', $iso_category);
-                update_post_meta($category_id, 'is_privated', $is_privated);
+                update_post_meta($sub_form_id, 'sub_form_code', $sub_form_code);
+                update_post_meta($sub_form_id, 'iso_category', $iso_category);
+                update_post_meta($sub_form_id, 'is_privated', $is_privated);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => 'New category',
+                    'post_title'    => 'New sub form',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -428,23 +428,23 @@ if (!class_exists('sub_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'category_code', time());
+                update_post_meta($post_id, 'sub_form_code', time());
             }
             $response = array('html_contain' => $this->display_sub_form_list());
             wp_send_json($response);
         }
 
         function del_sub_form_dialog_data() {
-            wp_delete_post($_POST['_category_id'], true);
+            wp_delete_post($_POST['_sub_form_id'], true);
             $response = array('html_contain' => $this->display_sub_form_list());
             wp_send_json($response);
         }
 
         function select_sub_form_options($selected_option=0) {
             $query = $this->retrieve_sub_form_data();
-            $options = '<option value="">Select category</option>';
+            $options = '<option value="">Select sub form</option>';
             while ($query->have_posts()) : $query->the_post();
-                $category_code = get_post_meta(get_the_ID(), 'category_code', true);
+                $sub_form_code = get_post_meta(get_the_ID(), 'sub_form_code', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
@@ -452,7 +452,7 @@ if (!class_exists('sub_items')) {
             return $options;
         }
         
-        function get_sub_form_post_id_by_code($code) {
+        function get_sub_form_post_id_by_code($sub_form_code) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
@@ -464,8 +464,8 @@ if (!class_exists('sub_items')) {
                         'value' => $site_id,
                     ),
                     array(
-                        'key'   => 'category_code',  // Meta key
-                        'value' => $code,            // Meta value to match
+                        'key'   => 'sub_form_code',  // Meta key
+                        'value' => $sub_form_code,   // Meta value to match
                         'compare' => '=',            // Comparison operator
                     ),
                 ),
@@ -499,7 +499,7 @@ if (!class_exists('sub_items')) {
             register_post_type( 'sub-item', $args );
         }
 
-        function display_sub_item_list($category_id=false) {
+        function display_sub_item_list($sub_form_id=false) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -519,7 +519,7 @@ if (!class_exists('sub_items')) {
                 <tbody id="sortable-sub-item-list">
                 <?php
                 
-                $query = $this->retrieve_sub_item_list_data($category_id);
+                $query = $this->retrieve_sub_item_list_data($sub_form_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_title = get_the_title();
@@ -527,15 +527,19 @@ if (!class_exists('sub_items')) {
                         $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
                         $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         if ($sub_item_type=='heading') {
-                            $sub_item_code = '<b>'.$sub_item_code.'</b>';
-                            $sub_item_title = '<b>'.$sub_item_title.'</b>';
+                            if (!$sub_item_default) {
+                                $sub_item_code = '<b>'.$sub_item_code.'</b>';
+                                $sub_item_title = '<b>'.$sub_item_title.'</b>';    
+                            }
                             $sub_item_type='';
                             $sub_item_default='';
                         }
+/*
                         if ($sub_item_type=='label') {
                             $sub_item_type='';
                             $sub_item_default='';
                         }
+*/
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo $sub_item_code;?></td>
@@ -560,7 +564,7 @@ if (!class_exists('sub_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_sub_item_list_data($category_id=false) {
+        function retrieve_sub_item_list_data($sub_form_id=false) {
             $args = array(
                 'post_type'      => 'sub-item',
                 'posts_per_page' => -1,
@@ -570,11 +574,11 @@ if (!class_exists('sub_items')) {
             );
 
             // Add category_id to meta_query if it is not false
-            if ($category_id !== false) {
+            if ($sub_form_id !== false) {
                 $args['meta_query'][] = array(
                     array(
-                        'key'   => 'category_id',
-                        'value' => $category_id,
+                        'key'   => 'sub_form_id',
+                        'value' => $sub_form_id,
                     ),
                 );
             }
@@ -588,7 +592,7 @@ if (!class_exists('sub_items')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $category_id = get_post_meta($sub_item_id, 'category_id', true);
+            $sub_form_id = get_post_meta($sub_item_id, 'sub_form_id', true);
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
@@ -605,9 +609,9 @@ if (!class_exists('sub_items')) {
                     <option value="heading" <?php echo ($sub_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="checkbox" <?php echo ($sub_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
                     <option value="text" <?php echo ($sub_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($sub_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($sub_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($sub_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
-                    <option value="label" <?php echo ($sub_item_type=='label') ? 'selected' : ''?>><?php echo __( 'Label', 'your-text-domain' );?></option>
                 </select>
                 <label for="sub-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-item-default" value="<?php echo esc_attr($sub_item_default);?>" class="text ui-widget-content ui-corner-all" />
@@ -624,7 +628,7 @@ if (!class_exists('sub_items')) {
         }
 
         function set_sub_item_dialog_data() {
-            $category_id = sanitize_text_field($_POST['_category_id']);
+            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
             if( isset($_POST['_sub_item_id']) ) {
                 $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
                 $sub_item_code = sanitize_text_field($_POST['_sub_item_code']);
@@ -649,17 +653,17 @@ if (!class_exists('sub_items')) {
                     'post_type'     => 'sub-item',
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'category_id', $category_id);
+                update_post_meta($post_id, 'sub_form_id', $sub_form_id);
                 update_post_meta($post_id, 'sorting_key', 999);
             }
-            $response = array('html_contain' => $this->display_sub_item_list($category_id));
+            $response = array('html_contain' => $this->display_sub_item_list($sub_form_id));
             wp_send_json($response);
         }
 
         function del_sub_item_dialog_data() {
-            $category_id = sanitize_text_field($_POST['_category_id']);
+            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
             wp_delete_post($_POST['_sub_item_id'], true);
-            $response = array('html_contain' => $this->display_sub_item_list($category_id));
+            $response = array('html_contain' => $this->display_sub_item_list($sub_form_id));
             wp_send_json($response);
         }
 
@@ -675,9 +679,9 @@ if (!class_exists('sub_items')) {
             wp_send_json($response);
         }
 
-        function select_sub_item_options($selected_option=false, $category_id=false) {
-            $query = $this->retrieve_sub_item_list_data($category_id);
-            $options = '<option value="">'.get_the_title($category_id).'</option>';
+        function select_sub_item_options($selected_option=false, $sub_form_id=false) {
+            $query = $this->retrieve_sub_item_list_data($sub_form_id);
+            $options = '<option value="">'.get_the_title($sub_form_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
@@ -764,7 +768,7 @@ if (!class_exists('sub_items')) {
             }
         }
 
-        function get_sub_items_from_selection() {
+        function get_sub_forms_from_selection() {
             ob_start();
             $response = array();
             $report_id = sanitize_text_field($_POST['_report_id']);
@@ -777,9 +781,9 @@ if (!class_exists('sub_items')) {
                 $this->get_sub_item_contains($sub_item_id, $field_name);
             }
 
-            $category_id = sanitize_text_field($_POST['_category_id']);
-            if ($category_id) {
-                $query = $this->retrieve_sub_item_list_data($category_id);
+            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
+            if ($sub_form_id) {
+                $query = $this->retrieve_sub_item_list_data($sub_form_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $this->get_sub_item_contains(get_the_ID(), $field_name);
@@ -992,7 +996,7 @@ if (!class_exists('sub_items')) {
             return null;
         }
     }
-    $items_class = new sub_items();
+    $items_class = new sub_forms();
 }
 
 

@@ -838,7 +838,7 @@ jQuery(document).ready(function($) {
 
         $(".sub-form").on( "change", function() {
             const ajaxData = {
-                'action': 'get_sub_items_from_selection',
+                'action': 'get_sub_forms_from_selection',
             };
         
             ajaxData['_category_id'] = $(this).val();
@@ -862,7 +862,7 @@ jQuery(document).ready(function($) {
 
         $(".sub-item").on( "change", function() {
             const ajaxData = {
-                'action': 'get_sub_items_from_selection',
+                'action': 'get_sub_forms_from_selection',
             };
         
             //ajaxData['_category_id'] = $(this).val();

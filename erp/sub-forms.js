@@ -150,14 +150,14 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-sub-form-"]').on("click", function () {
-            const category_id = this.id.substring(14);
+            const sub_form_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_sub_form_dialog_data',
-                    '_category_id': category_id,
+                    '_sub_form_id': sub_form_id,
                 },
                 success: function (response) {
                     $("#sub-form-dialog").html(response.html_contain);
@@ -170,9 +170,10 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: {
                                         'action': 'set_sub_form_dialog_data',
-                                        '_category_id': $("#category-id").val(),
-                                        '_category_title': $("#category-title").val(),
-                                        '_category_code': $("#category-code").val(),
+                                        //'_sub_form_id': $("#sub-form-id").val(),
+                                        '_sub_form_id': sub_form_id,
+                                        '_sub_form_title': $("#sub-form-title").val(),
+                                        '_sub_form_code': $("#sub-form-code").val(),
                                         '_iso_category': $("#iso-category").val(),
                                         '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
@@ -188,14 +189,15 @@ jQuery(document).ready(function($) {
                                 });
                             },
                             "Delete": function () {
-                                if (window.confirm("Are you sure you want to delete this doc category?")) {
+                                if (window.confirm("Are you sure you want to delete this sub form?")) {
                                     $.ajax({
                                         type: 'POST',
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
                                             'action': 'del_sub_form_dialog_data',
-                                            '_category_id': $("#category-id").val(),
+                                            //'_sub_form_id': $("#sub-form-id").val(),
+                                            '_sub_form_id': sub_form_id,
                                         },
                                         success: function (response) {
                                             $("#sub-form-dialog").dialog('close');
@@ -212,7 +214,7 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#sub-form-dialog").dialog('open');
-                    activate_sub_item_list_data(category_id);
+                    activate_sub_item_list_data(sub_form_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -230,7 +232,7 @@ jQuery(document).ready(function($) {
     }
 
     // sub-item scripts
-    function activate_sub_item_list_data(category_id){
+    function activate_sub_item_list_data(sub_form_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -238,11 +240,12 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_sub_item_dialog_data',
-                    '_category_id': $("#category-id").val(),
+                    //'_category_id': $("#category-id").val(),
+                    '_sub_form_id': sub_form_id,
                 },
                 success: function (response) {
                     $("#sub-item-list").html(response.html_contain);
-                    activate_sub_item_list_data(category_id);
+                    activate_sub_item_list_data(sub_form_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -305,7 +308,8 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_sub_item_dialog_data',
-                            '_category_id': $("#category-id").val(),
+                            //'_sub_form_id': $("#category-id").val(),
+                            '_sub_form_id': sub_form_id,
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
                             '_sub_item_code': $("#sub-item-code").val(),
@@ -315,7 +319,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#sub-item-dialog").dialog('close');
                             $("#sub-item-list").html(response.html_contain);
-                            activate_sub_item_list_data(category_id)
+                            activate_sub_item_list_data(sub_form_id)
                         },
                         error: function (error) {
                             console.error(error);
@@ -331,13 +335,14 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_sub_item_dialog_data',
-                                '_category_id': $("#category-id").val(),
+                                //'_category_id': $("#category-id").val(),
+                                '_sub_form_id': sub_form_id,
                                 '_sub_item_id': $("#sub-item-id").val(),
                             },
                             success: function (response) {
                                 $("#sub-item-dialog").dialog('close');
                                 $("#sub-item-list").html(response.html_contain);
-                                activate_sub_item_list_data(category_id)
+                                activate_sub_item_list_data(sub_form_id)
                             },
                             error: function (error) {
                                 console.error(error);
