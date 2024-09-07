@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
         });
     
         $('[id^="edit-subform-"]').on("click", function () {
-            const subform_id = this.id.substring(14);
+            const subform_id = this.id.substring(13);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
