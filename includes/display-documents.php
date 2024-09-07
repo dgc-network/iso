@@ -1649,14 +1649,14 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='date'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                            <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
                             <?php
                             break;
 
                         case ($field_type=='time'):
                             ?>
                             <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                            <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
                             <?php
                             break;
 
