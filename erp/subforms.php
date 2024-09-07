@@ -3,12 +3,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if (!class_exists('sub_forms')) {
-    class sub_forms {
+if (!class_exists('subforms')) {
+    class subforms {
         // Class constructor
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_forms_scripts' ) );
-            //add_action( 'init', array( $this, 'register_sub_form_post_type' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_subforms_scripts' ) );
+            //add_action( 'init', array( $this, 'register_subform_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -18,12 +18,12 @@ if (!class_exists('sub_forms')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_sub_form_dialog_data', array( $this, 'get_sub_form_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_form_dialog_data', array( $this, 'get_sub_form_dialog_data' ) );
-            add_action( 'wp_ajax_set_sub_form_dialog_data', array( $this, 'set_sub_form_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_sub_form_dialog_data', array( $this, 'set_sub_form_dialog_data' ) );
-            add_action( 'wp_ajax_del_sub_form_dialog_data', array( $this, 'del_sub_form_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_sub_form_dialog_data', array( $this, 'del_sub_form_dialog_data' ) );
+            add_action( 'wp_ajax_get_subform_dialog_data', array( $this, 'get_subform_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_subform_dialog_data', array( $this, 'get_subform_dialog_data' ) );
+            add_action( 'wp_ajax_set_subform_dialog_data', array( $this, 'set_subform_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_subform_dialog_data', array( $this, 'set_subform_dialog_data' ) );
+            add_action( 'wp_ajax_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
 
             add_action( 'wp_ajax_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
@@ -32,8 +32,8 @@ if (!class_exists('sub_forms')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_select_sub_items_from_sub_form', array( $this, 'select_sub_items_from_sub_form' ) );
-            add_action( 'wp_ajax_nopriv_select_sub_items_from_sub_form', array( $this, 'select_sub_items_from_sub_form' ) );
+            add_action( 'wp_ajax_select_sub_items_from_subform', array( $this, 'select_sub_items_from_subform' ) );
+            add_action( 'wp_ajax_nopriv_select_sub_items_from_subform', array( $this, 'select_sub_items_from_subform' ) );
             
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
@@ -46,14 +46,14 @@ if (!class_exists('sub_forms')) {
             add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
         }
 
-        function enqueue_sub_forms_scripts() {
+        function enqueue_subforms_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-            wp_enqueue_script('sub-forms', plugins_url('sub-forms.js', __FILE__), array('jquery'), time());
-            wp_localize_script('sub-forms', 'ajax_object', array(
+            wp_enqueue_script('subforms', plugins_url('subforms.js', __FILE__), array('jquery'), time());
+            wp_localize_script('subforms', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('sub-forms-nonce'), // Generate nonce
+                'nonce'    => wp_create_nonce('subforms-nonce'), // Generate nonce
             ));                
         }
 
@@ -215,19 +215,19 @@ if (!class_exists('sub_forms')) {
             return $options;
         }
 
-        // sub-form
-        function register_sub_form_post_type() {
+        // subform
+        function register_subform_post_type() {
             $labels = array(
-                'menu_name'     => _x('sub-form', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('subform', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
             );
-            register_post_type( 'sub-form', $args );
+            register_post_type( 'subform', $args );
         }
         
-        function display_sub_form_list() {
+        function display_subform_list() {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -237,7 +237,7 @@ if (!class_exists('sub_forms')) {
             <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile('sub-form');?></div>
+                <div><?php $profiles_class->display_select_profile('subform');?></div>
                 <div style="text-align: right"></div>                        
             </div>
 
@@ -251,16 +251,16 @@ if (!class_exists('sub_forms')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_sub_form_data($paged);
+                    $query = $this->retrieve_subform_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $sub_form_code = get_post_meta(get_the_ID(), 'sub_form_code', true);
+                            $subform_code = get_post_meta(get_the_ID(), 'subform_code', true);
                             $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
-                            <tr id="edit-sub-form-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($sub_form_code);?></td>
+                            <tr id="edit-subform-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php echo esc_html($subform_code);?></td>
                                 <td><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
                             </tr>
@@ -272,7 +272,7 @@ if (!class_exists('sub_forms')) {
                     </tbody>
                 </table>
                 <?php if ($is_site_admin) {?>
-                    <div id="new-sub-form" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="new-subform" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
                     <?php
@@ -284,17 +284,17 @@ if (!class_exists('sub_forms')) {
                 </div>
 
             </fieldset>
-            <div id="sub-form-dialog" title="Sub form dialog"></div>
+            <div id="subform-dialog" title="Sub form dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_sub_form_data($paged = 1) {
+        function retrieve_subform_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
             $args = array(
-                'post_type'      => 'sub-form',
+                'post_type'      => 'subform',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
@@ -322,7 +322,7 @@ if (!class_exists('sub_forms')) {
                         )                        
                     ),
                 ),
-                'meta_key'       => 'sub_form_code', // Meta key for sorting
+                'meta_key'       => 'subform_code', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
             );
@@ -346,7 +346,7 @@ if (!class_exists('sub_forms')) {
                 unset($args['s']);
 
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('sub-form');
+                $meta_keys = get_post_type_meta_keys('subform');
                 $meta_query_all_keys = array('relation' => 'OR');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
@@ -362,32 +362,32 @@ if (!class_exists('sub_forms')) {
             return $query;
         }
 
-        function display_sub_form_dialog($sub_form_id=false) {
+        function display_subform_dialog($subform_id=false) {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $sub_form_title = get_the_title($sub_form_id);
-            $sub_form_code = get_post_meta($sub_form_id, 'sub_form_code', true);
-            $iso_category = get_post_meta($sub_form_id, 'iso_category', true);
-            $sub_form_site = get_post_meta($sub_form_id, 'site_id', true);
-            $is_privated = get_post_meta($sub_form_id, 'is_privated', true);
+            $subform_title = get_the_title($subform_id);
+            $subform_code = get_post_meta($subform_id, 'subform_code', true);
+            $iso_category = get_post_meta($subform_id, 'iso_category', true);
+            $subform_site = get_post_meta($subform_id, 'site_id', true);
+            $is_privated = get_post_meta($subform_id, 'is_privated', true);
             $is_checked = ($is_privated==1) ? 'checked' : '';
             ?>
             <fieldset>
-                <input type="hidden" id="sub-form-id" value="<?php echo esc_attr($sub_form_id);?>" />
+                <input type="hidden" id="subform-id" value="<?php echo esc_attr($subform_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="sub-form-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-form-code" value="<?php echo esc_attr($sub_form_code);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="sub-form-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-form-title" value="<?php echo esc_attr($sub_form_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="subform-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <input type="text" id="subform-code" value="<?php echo esc_attr($subform_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="subform-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="subform-title" value="<?php echo esc_attr($subform_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_sub_item_list($sub_form_id);?>
+                <?php echo $this->display_sub_item_list($subform_id);?>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
-                <?php if ($sub_form_site==$site_id || current_user_can('administrator')) {?>
+                <?php if ($subform_site==$site_id || current_user_can('administrator')) {?>
                     <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
                 <?php }?>
             </fieldset>
@@ -395,27 +395,27 @@ if (!class_exists('sub_forms')) {
             return ob_get_clean();
         }
 
-        function get_sub_form_dialog_data() {
+        function get_subform_dialog_data() {
             $response = array();
-            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
-            $response['html_contain'] = $this->display_sub_form_dialog($sub_form_id);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
+            $response['html_contain'] = $this->display_subform_dialog($subform_id);
             wp_send_json($response);
         }
 
-        function set_sub_form_dialog_data() {
-            if( isset($_POST['_sub_form_id']) ) {
-                $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
-                $sub_form_code = sanitize_text_field($_POST['_sub_form_code']);
+        function set_subform_dialog_data() {
+            if( isset($_POST['_subform_id']) ) {
+                $subform_id = sanitize_text_field($_POST['_subform_id']);
+                $subform_code = sanitize_text_field($_POST['_subform_code']);
                 $iso_category = sanitize_text_field($_POST['_iso_category']);
                 $is_privated = sanitize_text_field($_POST['_is_privated']);
                 $data = array(
-                    'ID'           => $sub_form_id,
-                    'post_title'   => sanitize_text_field($_POST['_sub_form_title']),
+                    'ID'           => $subform_id,
+                    'post_title'   => sanitize_text_field($_POST['_subform_title']),
                 );
                 wp_update_post( $data );
-                update_post_meta($sub_form_id, 'sub_form_code', $sub_form_code);
-                update_post_meta($sub_form_id, 'iso_category', $iso_category);
-                update_post_meta($sub_form_id, 'is_privated', $is_privated);
+                update_post_meta($subform_id, 'subform_code', $subform_code);
+                update_post_meta($subform_id, 'iso_category', $iso_category);
+                update_post_meta($subform_id, 'is_privated', $is_privated);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -424,27 +424,27 @@ if (!class_exists('sub_forms')) {
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'sub-form',
+                    'post_type'     => 'subform',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'sub_form_code', time());
+                update_post_meta($post_id, 'subform_code', time());
             }
-            $response = array('html_contain' => $this->display_sub_form_list());
+            $response = array('html_contain' => $this->display_subform_list());
             wp_send_json($response);
         }
 
-        function del_sub_form_dialog_data() {
-            wp_delete_post($_POST['_sub_form_id'], true);
-            $response = array('html_contain' => $this->display_sub_form_list());
+        function del_subform_dialog_data() {
+            wp_delete_post($_POST['_subform_id'], true);
+            $response = array('html_contain' => $this->display_subform_list());
             wp_send_json($response);
         }
 
-        function select_sub_form_options($selected_option=0) {
-            $query = $this->retrieve_sub_form_data();
+        function select_subform_options($selected_option=0) {
+            $query = $this->retrieve_subform_data();
             $options = '<option value="">Select sub form</option>';
             while ($query->have_posts()) : $query->the_post();
-                $sub_form_code = get_post_meta(get_the_ID(), 'sub_form_code', true);
+                $subform_code = get_post_meta(get_the_ID(), 'subform_code', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
@@ -452,12 +452,12 @@ if (!class_exists('sub_forms')) {
             return $options;
         }
         
-        function get_sub_form_post_id_by_code($sub_form_code=false) {
+        function get_subform_post_id_by_code($subform_code=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
             $args = array(
-                'post_type'  => 'sub-form',
+                'post_type'  => 'subform',
                 'meta_query' => array(
                     array(
                         'key'   => 'site_id',
@@ -465,8 +465,8 @@ if (!class_exists('sub_forms')) {
                         'compare' => '=',            // Comparison operator
                     ),
                     array(
-                        'key'   => 'sub_form_code',  // Meta key
-                        'value' => $sub_form_code,   // Meta value to match
+                        'key'   => 'subform_code',  // Meta key
+                        'value' => $subform_code,   // Meta value to match
                         'compare' => '=',            // Comparison operator
                     ),
                 ),
@@ -500,7 +500,7 @@ if (!class_exists('sub_forms')) {
             register_post_type( 'sub-item', $args );
         }
 
-        function display_sub_item_list($sub_form_id=false) {
+        function display_sub_item_list($subform_id=false) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
@@ -520,7 +520,7 @@ if (!class_exists('sub_forms')) {
                 <tbody id="sortable-sub-item-list">
                 <?php
                 
-                $query = $this->retrieve_sub_item_list_data($sub_form_id);
+                $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_title = get_the_title();
@@ -565,7 +565,7 @@ if (!class_exists('sub_forms')) {
             return ob_get_clean();
         }
 
-        function retrieve_sub_item_list_data($sub_form_id=false) {
+        function retrieve_sub_item_list_data($subform_id=false) {
             $args = array(
                 'post_type'      => 'sub-item',
                 'posts_per_page' => -1,
@@ -575,11 +575,11 @@ if (!class_exists('sub_forms')) {
             );
 
             // Add category_id to meta_query if it is not false
-            if ($sub_form_id !== false) {
+            if ($subform_id !== false) {
                 $args['meta_query'][] = array(
                     array(
-                        'key'   => 'sub_form_id',
-                        'value' => $sub_form_id,
+                        'key'   => 'subform_id',
+                        'value' => $subform_id,
                     ),
                 );
             }
@@ -593,7 +593,7 @@ if (!class_exists('sub_forms')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $sub_form_id = get_post_meta($sub_item_id, 'sub_form_id', true);
+            $subform_id = get_post_meta($sub_item_id, 'subform_id', true);
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
@@ -629,7 +629,7 @@ if (!class_exists('sub_forms')) {
         }
 
         function set_sub_item_dialog_data() {
-            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
             if( isset($_POST['_sub_item_id']) ) {
                 $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
                 $sub_item_code = sanitize_text_field($_POST['_sub_item_code']);
@@ -654,17 +654,17 @@ if (!class_exists('sub_forms')) {
                     'post_type'     => 'sub-item',
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'sub_form_id', $sub_form_id);
+                update_post_meta($post_id, 'subform_id', $subform_id);
                 update_post_meta($post_id, 'sorting_key', 999);
             }
-            $response = array('html_contain' => $this->display_sub_item_list($sub_form_id));
+            $response = array('html_contain' => $this->display_sub_item_list($subform_id));
             wp_send_json($response);
         }
 
         function del_sub_item_dialog_data() {
-            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
             wp_delete_post($_POST['_sub_item_id'], true);
-            $response = array('html_contain' => $this->display_sub_item_list($sub_form_id));
+            $response = array('html_contain' => $this->display_sub_item_list($subform_id));
             wp_send_json($response);
         }
 
@@ -680,9 +680,9 @@ if (!class_exists('sub_forms')) {
             wp_send_json($response);
         }
 
-        function select_sub_item_options($selected_option=false, $sub_form_id=false) {
-            $query = $this->retrieve_sub_item_list_data($sub_form_id);
-            $options = '<option value="">Select '.get_the_title($sub_form_id).'</option>';
+        function select_sub_item_options($selected_option=false, $subform_id=false) {
+            $query = $this->retrieve_sub_item_list_data($subform_id);
+            $options = '<option value="">Select '.get_the_title($subform_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
@@ -780,12 +780,12 @@ if (!class_exists('sub_forms')) {
             }
         }
 
-        function select_sub_items_from_sub_form() {
+        function select_sub_items_from_subform() {
             ob_start();
             $response = array();
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_sub_form');
+            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_subform');
             $field_name = get_post_meta($field_id, 'field_name', true);
 /*
             $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
@@ -793,9 +793,9 @@ if (!class_exists('sub_forms')) {
                 $this->get_sub_item_contains($sub_item_id, $field_name);
             }
 */
-            $sub_form_id = sanitize_text_field($_POST['_sub_form_id']);
-            if ($sub_form_id) {
-                $query = $this->retrieve_sub_item_list_data($sub_form_id);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
+            if ($subform_id) {
+                $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $this->get_sub_item_contains(get_the_ID(), $field_name);
@@ -888,7 +888,7 @@ if (!class_exists('sub_forms')) {
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
             $parent_category = get_post_meta($category_id, 'parent_category', true);
-            $sub_form = get_post_meta($category_id, 'sub_form', true);
+            $subform = get_post_meta($category_id, 'subform', true);
             ob_start();
             ?>
             <fieldset>
@@ -901,8 +901,8 @@ if (!class_exists('sub_forms')) {
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
-                <label for="sub-form"><?php echo __( 'Statement: ', 'your-text-domain' );?></label>
-                <select id="sub-form" class="text ui-widget-content ui-corner-all"><?php echo $this->select_sub_form_options($sub_form);?></select>
+                <label for="subform"><?php echo __( 'Statement: ', 'your-text-domain' );?></label>
+                <select id="subform" class="text ui-widget-content ui-corner-all"><?php echo $this->select_subform_options($subform);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -920,7 +920,7 @@ if (!class_exists('sub_forms')) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_url = sanitize_text_field($_POST['_category_url']);
                 $parent_category = sanitize_text_field($_POST['_parent_category']);
-                $sub_form = sanitize_text_field($_POST['_sub_form']);
+                $subform = sanitize_text_field($_POST['_subform']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
@@ -929,7 +929,7 @@ if (!class_exists('sub_forms')) {
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'parent_category', $parent_category);
-                update_post_meta($category_id, 'sub_form', $sub_form);
+                update_post_meta($category_id, 'subform', $subform);
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
@@ -1008,7 +1008,7 @@ if (!class_exists('sub_forms')) {
             return null;
         }
     }
-    $items_class = new sub_forms();
+    $items_class = new subforms();
 }
 
 

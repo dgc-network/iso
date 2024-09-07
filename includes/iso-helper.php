@@ -82,8 +82,8 @@ function display_iso_statement($atts) {
 
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        $sub_form = get_post_meta(get_the_ID(), 'sub_form', true);
-        $start_ai_url = '/display-documents/?_statement=' . $sub_form;
+        $subform = get_post_meta(get_the_ID(), 'subform', true);
+        $start_ai_url = '/display-documents/?_statement=' . $subform;
         ?>
         <div class="iso-category-content">
             <?php the_content(); ?>

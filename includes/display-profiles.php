@@ -87,24 +87,24 @@ if (!class_exists('display_profiles')) {
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-                <option value="sub-form" <?php echo ($select_option=="sub-form") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
+                <option value="subform" <?php echo ($select_option=="subform") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
             </select>
             <?php
         }
-/*
-        function update_post_type_sub_category_to_sub_form() {
+
+        function update_post_type_sub_form_to_subform() {
             global $wpdb;
-            $wpdb->query("UPDATE wp_posts SET post_type = 'sub-form' WHERE post_type = 'sub-category'");
+            $wpdb->query("UPDATE wp_posts SET post_type = 'subform' WHERE post_type = 'sub-form'");
         }
 
-        function rename_category_code_to_sub_form_code_in_sub_form() {
-            // Set up a query to get all 'sub-form' posts
+        function rename_sub_form_code_to_subform_code_in_subform() {
+            // Set up a query to get all 'subform' posts
             $args = array(
-                'post_type'      => 'sub-form',
+                'post_type'      => 'subform',
                 'posts_per_page' => -1, // Get all posts
                 'meta_query'     => array(
                     array(
-                        'key'     => 'category_code', // Only get posts that have 'category_code' meta key
+                        'key'     => 'sub_form_code', // Only get posts that have 'category_code' meta key
                         'compare' => 'EXISTS',
                     ),
                 ),
@@ -120,15 +120,15 @@ if (!class_exists('display_profiles')) {
                     $post_id = get_the_ID();
         
                     // Retrieve the 'category_code' meta value
-                    $update_value = get_post_meta($post_id, 'category_code', true);
+                    $update_value = get_post_meta($post_id, 'sub_form_code', true);
         
                     // If 'category_code' exists, update it to 'form_code'
                     if (!empty($update_value)) {
                         // Update the post meta with the new key 'form_code'
-                        update_post_meta($post_id, 'sub_form_code', $update_value);
+                        update_post_meta($post_id, 'subform_code', $update_value);
         
                         // Optionally, delete the old 'category_code' meta key
-                        delete_post_meta($post_id, 'category_code');
+                        delete_post_meta($post_id, 'sub_form_code');
                     }
                 }
                 
@@ -137,14 +137,14 @@ if (!class_exists('display_profiles')) {
             }
         }
 
-        function rename_category_id_to_sub_form_id_in_sub_item() {
+        function rename_sub_form_id_to_subform_id_in_sub_item() {
             // Set up a query to get all 'sub-item' posts
             $args = array(
                 'post_type'      => 'sub-item',
                 'posts_per_page' => -1, // Get all posts
                 'meta_query'     => array(
                     array(
-                        'key'     => 'category_id', // Only get posts that have 'category_id' meta key
+                        'key'     => 'sub_form_id', // Only get posts that have 'category_id' meta key
                         'compare' => 'EXISTS',
                     ),
                 ),
@@ -160,15 +160,15 @@ if (!class_exists('display_profiles')) {
                     $post_id = get_the_ID();
         
                     // Retrieve the 'category_code' meta value
-                    $update_value = get_post_meta($post_id, 'category_id', true);
+                    $update_value = get_post_meta($post_id, 'sub_form_id', true);
         
                     // If 'category_code' exists, update it to 'form_code'
                     if (!empty($update_value)) {
                         // Update the post meta with the new key 'form_code'
-                        update_post_meta($post_id, 'sub_form_id', $update_value);
+                        update_post_meta($post_id, 'subform_id', $update_value);
         
                         // Optionally, delete the old 'category_code' meta key
-                        delete_post_meta($post_id, 'category_id');
+                        delete_post_meta($post_id, 'sub_form_id');
                     }
                 }
                 
@@ -178,8 +178,8 @@ if (!class_exists('display_profiles')) {
         }
         
         // Hook the function to run, or manually call it in an admin action or setup script
-        //add_action('init', 'rename_category_code_to_form_code_in_sub_form');
-*/        
+        //add_action('init', 'rename_category_code_to_form_code_in_subform');
+
         // Shortcode to display
         function display_shortcode() {
             // Check if the user is logged in
@@ -192,11 +192,11 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-/*
-                if ($_GET['_select_profile']=='update_post_type_sub_category_to_sub_form') echo $this->update_post_type_sub_category_to_sub_form();
-                if ($_GET['_select_profile']=='rename_category_code_to_sub_form_code_in_sub_form') echo $this->rename_category_code_to_sub_form_code_in_sub_form();
-                if ($_GET['_select_profile']=='rename_category_id_to_sub_form_id_in_sub_item') echo $this->rename_category_id_to_sub_form_id_in_sub_item();
-*/
+
+                if ($_GET['_select_profile']=='update_post_type_sub_form_to_subform') echo $this->update_post_type_sub_form_to_subform();
+                if ($_GET['_select_profile']=='rename_sub_form_code_to_subform_code_in_subform') echo $this->rename_sub_form_code_to_subform_code_in_subform();
+                if ($_GET['_select_profile']=='rename_sub_form_id_to_subform_id_in_sub_item') echo $this->rename_sub_form_id_to_subform_id_in_sub_item();
+
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -205,10 +205,10 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
 
-                $items_class = new sub_forms();
+                $items_class = new subforms();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
-                if ($_GET['_select_profile']=='sub-form') echo $items_class->display_sub_form_list();
+                if ($_GET['_select_profile']=='subform') echo $items_class->display_subform_list();
 
                 if ($_GET['_select_profile']=='business-central') {
                     // Example usage
