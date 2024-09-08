@@ -476,7 +476,7 @@ if (!class_exists('subforms')) {
                             'post_content'  => get_the_content(),
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
-                            'post_type'     => 'subform',
+                            'post_type'     => 'sub-item',
                         );    
                         $sub_item_id = wp_insert_post($new_sub_item);
                         update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
