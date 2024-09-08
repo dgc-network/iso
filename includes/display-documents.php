@@ -1160,7 +1160,7 @@ if (!class_exists('display_documents')) {
             wp_delete_post($_POST['_report_id'], true);
             wp_send_json($response);
         }
-        
+
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
@@ -1174,7 +1174,7 @@ if (!class_exists('display_documents')) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 update_post_meta($post_id, 'doc_id', $doc_id);
-        
+
                 $params = array(
                     'doc_id'     => $doc_id,
                 );                
@@ -1190,7 +1190,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+
         // doc-field
         function register_doc_field_post_type() {
             $labels = array(

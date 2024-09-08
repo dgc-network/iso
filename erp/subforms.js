@@ -170,7 +170,6 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: {
                                         'action': 'set_subform_dialog_data',
-                                        //'_subform_id': $("#subform-id").val(),
                                         '_subform_id': subform_id,
                                         '_subform_title': $("#subform-title").val(),
                                         '_subform_code': $("#subform-code").val(),
@@ -196,7 +195,6 @@ jQuery(document).ready(function($) {
                                         dataType: "json",
                                         data: {
                                             'action': 'del_subform_dialog_data',
-                                            //'_subform_id': $("#subform-id").val(),
                                             '_subform_id': subform_id,
                                         },
                                         success: function (response) {
@@ -210,6 +208,30 @@ jQuery(document).ready(function($) {
                                         }
                                     });
                                 }
+                            },
+                            "Duplicate": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'duplicate_subform_dialog_data',
+                                        '_subform_id': subform_id,
+                                        '_subform_title': $("#subform-title").val(),
+                                        '_subform_code': $("#subform-code").val(),
+                                        '_iso_category': $("#iso-category").val(),
+                                        '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
+                                    },
+                                    success: function (response) {
+                                        $("#subform-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_subform_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
                             },
                         });
                     }

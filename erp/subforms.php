@@ -24,6 +24,8 @@ if (!class_exists('subforms')) {
             add_action( 'wp_ajax_nopriv_set_subform_dialog_data', array( $this, 'set_subform_dialog_data' ) );
             add_action( 'wp_ajax_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
+            add_action( 'wp_ajax_duplicate_subform_dialog_data', array( $this, 'duplicate_subform_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_duplicate_subform_dialog_data', array( $this, 'duplicate_subform_dialog_data' ) );
 
             add_action( 'wp_ajax_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
@@ -420,7 +422,7 @@ if (!class_exists('subforms')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => 'New sub form',
+                    'post_title'    => 'New subform',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -437,6 +439,55 @@ if (!class_exists('subforms')) {
         function del_subform_dialog_data() {
             wp_delete_post($_POST['_subform_id'], true);
             $response = array('html_contain' => $this->display_subform_list());
+            wp_send_json($response);
+        }
+
+        function duplicate_subform_dialog_data() {
+            if( isset($_POST['_subform_id']) ) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $subform_id = sanitize_text_field($_POST['_subform_id']);
+                $subform_title = sanitize_text_field($_POST['_subform_title']);
+                $subform_code = sanitize_text_field($_POST['_subform_code']);
+                $iso_category = sanitize_text_field($_POST['_iso_category']);
+                // Create the post
+                $new_post = array(
+                    'post_title'    => $subform_title.'(Duplicated)',
+                    //'post_content'  => $subform_content,
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'subform',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'subform_code', time());
+                update_post_meta($post_id, 'iso_category', $iso_category);
+                update_post_meta($post_id, 'is_privated', 1);
+                update_post_meta($post_id, 'site_id', $site_id);
+
+                $query = $this->retrieve_sub_item_list_data($subform_id);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        $new_sub_item = array(
+                            'post_title'    => get_the_title(),
+                            'post_content'  => get_the_content(),
+                            'post_status'   => 'publish',
+                            'post_author'   => $current_user_id,
+                            'post_type'     => 'subform',
+                        );    
+                        $sub_item_id = wp_insert_post($new_sub_item);
+                        update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
+                        update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
+                        update_post_meta($sub_item_id, 'sub_item_default', $sub_item_default);
+                        update_post_meta($sub_item_id, 'sorting_key', $sorting_key);
+                        update_post_meta($sub_item_id, 'subform_id', $post_id);
+                    endwhile;
+                    wp_reset_postdata();
+                }
+            }
             wp_send_json($response);
         }
 
@@ -535,12 +586,6 @@ if (!class_exists('subforms')) {
                             $sub_item_type='';
                             $sub_item_default='';
                         }
-/*
-                        if ($sub_item_type=='label') {
-                            $sub_item_type='';
-                            $sub_item_default='';
-                        }
-*/
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td style="text-align:center;"><?php echo $sub_item_code;?></td>
