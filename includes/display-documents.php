@@ -1375,7 +1375,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'field_title', 'Field title');
                 update_post_meta($post_id, 'field_type', 'text');
                 update_post_meta($post_id, 'listing_style', 'center');
-                update_post_meta($post_id, 'sorting_key', -1);
+                update_post_meta($post_id, 'sorting_key', 999);
             }
             $doc_id = sanitize_text_field($_POST['_doc_id']);
             $response['html_contain'] = $this->display_doc_field_list($doc_id);
