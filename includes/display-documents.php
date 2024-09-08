@@ -350,137 +350,122 @@ if (!class_exists('display_documents')) {
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
             ?>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php echo display_iso_helper_logo();?>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                </div>
-                <div style="text-align:right; display:flex;">    
-                </div>
+            <div>
+                <?php echo display_iso_helper_logo();?>
+                <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             </div>
 
-            <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
-<?php /*                
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+                <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+                <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+                <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
+
+                <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
+
+                <div id="doc-frame-div">
+                    <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
+                    <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                 </div>
-                <div style="text-align:right; display:flex;">
-                    <span id="reset-document-<?php echo esc_attr($doc_id);?>" class="dashicons dashicons-trash button"></span>
+
+                <div id="system-report-div" style="display:none;">
+                    <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
+                    <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
+                        <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
+                        <option value="document-card" <?php echo ($is_doc_report=="document-card") ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
+                        <option value="customer-card" <?php echo ($is_doc_report=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
+                        <option value="vendor-card" <?php echo ($is_doc_report=="vendor-card") ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
+                        <option value="product-card" <?php echo ($is_doc_report=="product-card") ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
+                        <option value="equipment-card" <?php echo ($is_doc_report=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
+                        <option value="instrument-card" <?php echo ($is_doc_report=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
+                        <option value="employee-card" <?php echo ($is_doc_report=="employee-card") ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
+                    </select>
                 </div>
-            </div>
-*/?>            
-            <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
-            <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
-            <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
-            <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
-            <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
-            <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
-            <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-            <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
 
-            <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
-
-            <div id="doc-frame-div">
-                <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-            </div>
-
-            <div id="system-report-div" style="display:none;">
-                <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
-                <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
-                    <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
-                    <option value="document-card" <?php echo ($is_doc_report=="document-card") ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
-                    <option value="customer-card" <?php echo ($is_doc_report=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
-                    <option value="vendor-card" <?php echo ($is_doc_report=="vendor-card") ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
-                    <option value="product-card" <?php echo ($is_doc_report=="product-card") ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
-                    <option value="equipment-card" <?php echo ($is_doc_report=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
-                    <option value="instrument-card" <?php echo ($is_doc_report=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
-                    <option value="employee-card" <?php echo ($is_doc_report=="employee-card") ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
-                </select>
-            </div>
-
-            <div id="doc-report-div" style="display:none;">
-                <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-                <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                <?php echo $this->display_doc_field_list($doc_id);?>
-                <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
+                <div id="doc-report-div" style="display:none;">
+                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+                    <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <?php echo $this->display_doc_field_list($doc_id);?>
+                    <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
                 
-                <div id="mermaid-div">
-                    <pre class="mermaid">
-                        graph TD 
-                        <?php                        
-                        $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $action_title = get_the_title();
-                                $action_content = get_post_field('post_content', get_the_ID());
-                                $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
-                                $current_job_title = get_the_title($current_job);
-                                $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                                $next_job_title = get_the_title($next_job);
-                                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                                if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
-                                ?>
-                                <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
-                                <?php
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;    
-                        ?>
-                    </pre>
-                </div>
+                    <div id="mermaid-div">
+                        <pre class="mermaid">
+                            graph TD 
+                            <?php                        
+                            $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
+                            if ($query->have_posts()) :
+                                while ($query->have_posts()) : $query->the_post();
+                                    $action_title = get_the_title();
+                                    $action_content = get_post_field('post_content', get_the_ID());
+                                    $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                                    $current_job_title = get_the_title($current_job);
+                                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                                    $next_job_title = get_the_title($next_job);
+                                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                                    ?>
+                                    <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
+                                    <?php
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;    
+                            ?>
+                        </pre>
+                    </div>
 
-                <div id="job-setting-div" style="display:none;">
-                    <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                    <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
-                    <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
-                    <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
-                    <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                    <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
-                    <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
-                    <?php echo $profiles_class->display_doc_action_list($doc_id);?>
-                </div>
+                    <div id="job-setting-div" style="display:none;">
+                        <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
+                        <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
+                        <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
+                        <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
+                        <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
+                        <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                        <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
+                        <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
+                        <?php echo $profiles_class->display_doc_action_list($doc_id);?>
+                    </div>
 
-                <div id="doc-report-div1" style="display:none;">            
-                    <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                    <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
-                    <div id="frquence-start-time-div" style="display:none;">
-                        <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                        <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-                        <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
-                        <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                    <div id="doc-report-div1" style="display:none;">            
+                        <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                        <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                        <div id="frquence-start-time-div" style="display:none;">
+                            <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                            <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
+                            <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
+                            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                        </div>
                     </div>
                 </div>
-            </div>
+                <?php
+                    // transaction data vs card key/value
+                    $key_value_pair = array(
+                        '_document'   => $doc_id,
+                    );
+                    $profiles_class = new display_profiles();
+                    $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                ?>
 
-            <?php
-                // transaction data vs card key/value
-                $key_value_pair = array(
-                    '_document'   => $doc_id,
-                );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
-            ?>
-
-            <hr>
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php if ($is_site_admin) {?>
-                        <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                        <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                    <?php }?>
+                <hr>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php if ($is_site_admin) {?>
+                            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                        <?php }?>
+                    </div>
+                    <div style="text-align: right">
+                        <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
+                    </div>
                 </div>
-                <div style="text-align: right">
-                    <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
-                </div>
-            </div>
             </fieldset>
             <?php
             return ob_get_clean();
