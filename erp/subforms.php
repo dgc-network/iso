@@ -488,6 +488,7 @@ if (!class_exists('subforms')) {
                     wp_reset_postdata();
                 }
             }
+            $response = array('html_contain' => $this->display_subform_list());
             wp_send_json($response);
         }
 
@@ -639,9 +640,10 @@ if (!class_exists('subforms')) {
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             $subform_id = get_post_meta($sub_item_id, 'subform_id', true);
-            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_title = get_the_title($sub_item_id);
+            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
+            $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
             ?>
             <fieldset>
                 <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />

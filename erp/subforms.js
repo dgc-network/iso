@@ -220,7 +220,7 @@ jQuery(document).ready(function($) {
                                         '_subform_title': $("#subform-title").val(),
                                         '_subform_code': $("#subform-code").val(),
                                         '_iso_category': $("#iso-category").val(),
-                                        '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
+                                        //'_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#subform-dialog").dialog('close');
@@ -330,7 +330,6 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_sub_item_dialog_data',
-                            //'_subform_id': $("#category-id").val(),
                             '_subform_id': subform_id,
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
@@ -357,7 +356,6 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_sub_item_dialog_data',
-                                //'_category_id': $("#category-id").val(),
                                 '_subform_id': subform_id,
                                 '_sub_item_id': $("#sub-item-id").val(),
                             },
