@@ -96,7 +96,7 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    //$("#doc-category-dialog").dialog('open');
+                    $("#doc-category-dialog").dialog('open');
                     //activate_audit_item_list_data(category_id)                
                 },
                 error: function (error) {
@@ -221,7 +221,6 @@ jQuery(document).ready(function($) {
                                         '_subform_title': $("#subform-title").val(),
                                         '_subform_code': $("#subform-code").val(),
                                         '_iso_category': $("#iso-category").val(),
-                                        //'_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#subform-dialog").dialog('close');

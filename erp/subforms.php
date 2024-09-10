@@ -24,6 +24,7 @@ if (!class_exists('subforms')) {
             add_action( 'wp_ajax_nopriv_set_subform_dialog_data', array( $this, 'set_subform_dialog_data' ) );
             add_action( 'wp_ajax_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_subform_dialog_data', array( $this, 'del_subform_dialog_data' ) );
+            
             add_action( 'wp_ajax_duplicate_subform_dialog_data', array( $this, 'duplicate_subform_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_subform_dialog_data', array( $this, 'duplicate_subform_dialog_data' ) );
 
