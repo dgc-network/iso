@@ -7,8 +7,6 @@ jQuery(document).ready(function($) {
         return pattern.test(str);
     }
 
-    //activate_doc_category_list_data();
-
     // my-profile scripts
     activate_my_profile_data();
     function activate_my_profile_data(){
