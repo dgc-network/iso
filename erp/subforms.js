@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
     // doc-category scripts
+    activate_doc_category_list_data();
     function activate_doc_category_list_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
