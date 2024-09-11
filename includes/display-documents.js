@@ -178,38 +178,7 @@ jQuery(document).ready(function($) {
             $("#mermaid-div").hide();
             $("#doc-frame-div").hide();
         }    
-/*
-        $('[id^="reset-document-"]').on("click", function () {
-            const doc_id = this.id.substring(15);
-            if (window.confirm("Are you sure you want to reset this document status?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'reset_document_todo_status',
-                        '_doc_id': doc_id,
-                    },
-                    success: function (response) {
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_doc_id');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });            
-*/
+
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-report-div1").toggle();

@@ -551,6 +551,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'doc_number', '-');
                 update_post_meta($post_id, 'doc_revision', 'A');
+                update_post_meta($post_id, 'is_doc_report', 0);
                 update_post_meta($post_id, 'doc_report_frequence_start_time', time());
                 $response['html_contain'] = $this->display_document_dialog($post_id);
             }

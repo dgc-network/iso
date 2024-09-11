@@ -454,7 +454,6 @@ if (!class_exists('subforms')) {
                 // Create the post
                 $new_post = array(
                     'post_title'    => $subform_title.'(Duplicated)',
-                    //'post_content'  => $subform_content,
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                     'post_type'     => 'subform',
