@@ -401,7 +401,7 @@ jQuery(document).ready(function($) {
         $("#signature-record").on("click", function () {
             $("#signature-record-div").toggle()
         });
-
+/*
         $("#doc-frame-unpublished").on("click", function () {
             if (window.confirm("Are you sure you want to unpublish this document?")) {
                 $.ajax({
@@ -463,7 +463,7 @@ jQuery(document).ready(function($) {
                 });
             }    
         });
-
+*/
         $("#doc-frame-exit").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
@@ -766,7 +766,6 @@ jQuery(document).ready(function($) {
                         $('#result-container').html(response.html_contain);
                     }
                     activate_doc_report_dialog_data(response);
-                    //activate_published_document_data($("#doc-id").val());
                     activate_published_document_data(doc_id);
                 },
                 error: function (error) {
@@ -806,57 +805,6 @@ jQuery(document).ready(function($) {
     }
     
     function activate_doc_report_dialog_data(response){
-/*
-        $(".subform").on( "change", function() {
-            const ajaxData = {
-                'action': 'select_sub_items_from_subform',
-            };
-        
-            ajaxData['_category_id'] = $(this).val();
-            ajaxData['_report_id'] = $("#report-id").val();
-        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: 'json',
-                data: ajaxData,
-                success: function (response) {
-                    $('#sub-item-list-from-category').html(response.html_contain);
-                    activate_doc_report_dialog_data(doc_fields);
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-/*
-        $(".sub-item").on( "change", function() {
-            const ajaxData = {
-                'action': 'select_sub_items_from_subform',
-            };
-        
-            //ajaxData['_category_id'] = $(this).val();
-            ajaxData['_sub_item_id'] = $(this).val();
-            ajaxData['_report_id'] = $("#report-id").val();
-        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: 'json',
-                data: ajaxData,
-                success: function (response) {
-                    $('#sub-item-list-from-category').html(response.html_contain);
-                    $(".sub-item").hide();
-                    activate_doc_report_dialog_data(doc_fields);
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-*/
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
@@ -966,6 +914,103 @@ jQuery(document).ready(function($) {
                 });
             }
         });
+
+        $("#new-sub-report").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_sub_report_dialog_data',
+                    '_report_id': $("#report-id").val(),
+                },
+                success: function (inner_response) {
+                    //get_sub_report_list_data($("#report-id").val())
+                    $("#sub-report-list").html(inner_response.html_contain);
+                    activate_doc_report_list_data(response);
+
+                },
+                error: function(error){
+                    console.error(error);
+                }
+            });
+        });
+
+        $('[id^="edit-sub-report-"]').on( "click", function() {
+            const sub_report_id = this.id.substring(16);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_sub_report_dialog_data',
+                    '_sub_report_id': sub_report_id,
+                },
+                success: function (response) {
+                    $("#sub-report-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#sub-report-dialog").dialog("option", "buttons", {
+                            "Save": function() {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_sub_report_dialog_data',
+                                        '_sub_report_id': sub_report_id,
+                                        '_field_id': $("#field-id").val(),
+                                    },
+                                    success: function (inner_response) {
+                                        $("#sub-report-dialog").dialog('close');
+                                        $('#sub-report-list').html(inner_response.html_contain);
+                                        activate_doc_report_dialog_data(response);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);                    
+                                        alert(error);
+                                    }
+                                });            
+                            },
+                            "Delete": function() {
+                                if (window.confirm("Are you sure you want to delete this sub-report?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_sub_report_dialog_data',
+                                            '_sub_report_id': sub_report_id,
+                                            '_field_id': $("#field-id").val(),
+                                        },
+                                        success: function (inner_response) {
+                                            $("#sub-report-dialog").dialog('close');
+                                            $('#sub-report-list').html(inner_response.html_contain);
+                                            activate_doc_report_dialog_data(response);
+                                        },
+                                        error: function(error){
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    $("#sub-report-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+    
+        $("#sub-report-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });    
 
         $('[id^="duplicate-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(21);

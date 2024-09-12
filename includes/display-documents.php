@@ -38,6 +38,13 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
 
+            add_action( 'wp_ajax_get_sub_report_dialog_data', array( $this, 'get_sub_report_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_sub_report_dialog_data', array( $this, 'get_sub_report_dialog_data' ) );
+            add_action( 'wp_ajax_set_sub_report_dialog_data', array( $this, 'set_sub_report_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_sub_report_dialog_data', array( $this, 'set_sub_report_dialog_data' ) );
+            add_action( 'wp_ajax_del_sub_report_dialog_data', array( $this, 'del_sub_report_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_sub_report_dialog_data', array( $this, 'del_sub_report_dialog_data' ) );
+
             add_action( 'wp_ajax_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_field_dialog_data', array( $this, 'get_doc_field_dialog_data' ) );
             add_action( 'wp_ajax_set_doc_field_dialog_data', array( $this, 'set_doc_field_dialog_data' ) );
@@ -946,21 +953,6 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function retrieve_sub_report_list_data($report_id=false) {
-            $args = array(
-                'post_type'      => 'sub-report',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'report_id',
-                        'value' => $report_id,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-        
         function get_doc_report_list_data() {
             $result = array();
             if (isset($_POST['_doc_id'])) {
@@ -1190,6 +1182,180 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }
             }
+            wp_send_json($response);
+        }
+
+        // sub-report
+        function display_sub_report_list($subform_id=false, $report_id=false) {
+            $items_class = new subforms();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <div id="sub-report-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                <?php                
+                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $sub_item_title = get_the_title();
+                        ?>
+                        <th><?php the_title();?></th>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
+                if ($sub_report_query->have_posts()) :
+                    while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
+                        ?><tr id="edit-sub-report-<?php the_ID();?>"><?php
+                        $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                ?><td><?php
+
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                                } else {
+                                    $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                }
+                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                                ?></td><?php
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?></tr><?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <?php if ($is_site_admin) {?>
+                <div id="new-sub-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
+            </fieldset>
+            </div>
+            <div id="sub-report-dialog" title="Sub report dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_sub_report_list_data($report_id=false) {
+            $args = array(
+                'post_type'      => 'sub-report',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'report_id',
+                        'value' => $report_id,
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_sub_report_dialog($sub_report_id=false) {
+            ob_start();
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            $report_id = get_post_meta($sub_report_id, 'report_id', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <?php
+                $items_class = new subforms();
+                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        if ($report_id) {
+                            $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                        } elseif ($prev_report_id) {
+                            $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                        } else {
+                            $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        }
+                        //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                        //$items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                        ?>
+                        <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                        <input type="text" id="<?php echo esc_attr($field_name.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                        <?php
+        
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_sub_report_dialog_data() {
+            $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
+            $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id));
+            wp_send_json($response);
+        }
+
+        function set_sub_report_dialog_data() {
+            $report_id = sanitize_text_field($_POST['_report_id']);
+            if( isset($_POST['_sub_report_id']) ) {
+                // Update the post
+                $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
+/*
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $params = array(
+                    'doc_id'     => $doc_id,
+                );                
+                $query = $this->retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) : $query->the_post();
+                        $this->update_doc_field_contains($report_id, get_the_ID());
+                    endwhile;
+                    wp_reset_postdata();
+                }
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
+                if ($proceed_to_todo==1) $this->update_todo_by_doc_report($action_id, $report_id);
+*/                
+            } else {
+                // Create the post
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                    'post_type'     => 'sub-report',
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'report_id', $report_id);
+
+            }
+            //$response['html_contain'] = $this->display_sub_report_list($report_id);
+            $response = array('html_contain' => $this->display_sub_report_list($report_id));
+            wp_send_json($response);
+        }
+
+        function del_sub_report_dialog_data() {
+            //$response = array();
+            wp_delete_post($_POST['_sub_report_id'], true);
+            $report_id = sanitize_text_field($_POST['_report_id']);
+            //$response['html_contain'] = $this->display_sub_report_list($report_id);
+            $response = array('html_contain' => $this->display_sub_report_list($report_id));
             wp_send_json($response);
         }
 
@@ -1515,7 +1681,7 @@ if (!class_exists('display_documents')) {
                                 if ($subform_key=='_item_list') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <?php echo $this->get_sub_report_list($subform_id, $report_id);?>
+                                    <?php echo $this->display_sub_report_list($subform_id, $report_id);?>
                                     <?php
                                 }
                             } else {
@@ -1685,75 +1851,6 @@ if (!class_exists('display_documents')) {
                 endwhile;
                 wp_reset_postdata();
             }
-        }
-
-        function get_sub_report_list($subform_id=false, $report_id=false) {
-            $items_class = new subforms();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-
-
-            ob_start();
-            ?>
-            <div id="sub-item-list">
-            <fieldset>
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                <?php                
-                $query = $items_class->retrieve_sub_item_list_data($subform_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $sub_item_title = get_the_title();
-                        ?>
-                        <th><?php the_title();?></th>
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
-                if ($sub_report_query->have_posts()) :
-                    while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
-                        ?><tr><?php
-                        $query = $items_class->retrieve_sub_item_list_data($subform_id);
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                ?><td><?php
-
-                                if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                                } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                                } else {
-                                    $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                }
-                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
-                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
-                                ?></td><?php
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?></tr><?php
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-                ?>
-                </tbody>
-            </table>
-            <?php if ($is_site_admin) {?>
-                <div id="new-sub-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-            <?php }?>
-            </fieldset>
-            </div>
-            <div id="sub-report-dialog" title="Sub report dialog"></div>
-            <?php
-            return ob_get_clean();
         }
 
         function update_doc_field_contains($report_id=false, $field_id=false) {

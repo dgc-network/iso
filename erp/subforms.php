@@ -750,8 +750,6 @@ if (!class_exists('subforms')) {
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
-            //if (!$field_value) $field_value = get_post_meta($sub_item_id, 'sub_item_default', true);
-
             if ($sub_item_type=='heading') {
                 if ($sub_item_default) {
                     ?>
