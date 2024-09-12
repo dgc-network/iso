@@ -1497,6 +1497,12 @@ if (!class_exists('display_documents')) {
                                     <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $subform_id);?></select>
                                     <?php
                                 }
+                                if ($subform_key=='_item_list') {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                    <?php echo $this->get_sub_item_list($subform_id, $field_value);?>
+                                    <?php
+                                }
                             } else {
 
                                 if ($report_id) {
@@ -1664,6 +1670,66 @@ if (!class_exists('display_documents')) {
                 endwhile;
                 wp_reset_postdata();
             }
+        }
+
+        function get_sub_item_list($subform_id=false) {
+            $profiles_class = new display_profiles();
+            $is_site_admin = $profiles_class->is_site_admin();
+            if (current_user_can('administrator')) $is_site_admin = true;
+            ob_start();
+            ?>
+            <div id="sub-item-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( '#', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Items', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Default', 'your-text-domain' );?></th>
+                    </tr>
+                </thead>
+                <tbody id="sortable-sub-item-list">
+                <?php
+                
+                $items_class = new subforms();
+                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $sub_item_title = get_the_title();
+                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        if ($sub_item_type=='heading') {
+                            if (!$sub_item_default) {
+                                $sub_item_code = '<b>'.$sub_item_code.'</b>';
+                                $sub_item_title = '<b>'.$sub_item_title.'</b>';    
+                            }
+                            $sub_item_type='';
+                            $sub_item_default='';
+                        }
+                        ?>
+                        <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
+                            <td style="text-align:center;"><?php echo $sub_item_code;?></td>
+                            <td><?php echo $sub_item_title;?></td>
+                            <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
+                        </tr>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                ?>
+                </tbody>
+            </table>
+            <?php if ($is_site_admin) {?>
+                <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
+            </fieldset>
+            </div>
+            <div id="sub-item-dialog" title="Sub item dialog"></div>
+            <?php
+            return ob_get_clean();
         }
 
         function update_doc_field_contains($report_id=false, $field_id=false) {
