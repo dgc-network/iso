@@ -946,6 +946,124 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
+        function retrieve_sub_report_list_data($params) {
+            // Construct the meta query array
+            $meta_query = array(
+                'relation' => 'AND',
+                array(
+                    'relation' => 'OR',
+                ),
+                array(
+                    'relation' => 'OR',
+                ),
+            );
+    
+            if (!empty($params['doc_id'])) {
+                $doc_id = $params['doc_id'];
+                $meta_query[] = array(
+                    'key'   => 'doc_id',
+                    'value' => $doc_id,
+                );
+            }
+
+            if (!empty($params['paged'])) {
+                $paged = $params['paged'];
+            } else {
+                $paged = 1;
+            }
+
+            if (!empty($params['key_value_pair'])) {
+                $meta_query[] = array(
+                    'key'   => 'todo_status',
+                    'value' => -1,
+                );
+            }
+
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => -1,
+                //'posts_per_page' => get_option('operation_row_counts'),
+                //'paged'          => $paged,
+                'meta_query'     => $meta_query,
+                'orderby'        => array(), // Initialize orderby parameter as an array
+            );
+                    
+            $order_field_name = ''; // Initialize variable to store the meta key for ordering
+            $order_field_value = ''; // Initialize variable to store the order direction
+        
+            $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+        
+            if ($inner_query->have_posts()) {
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+
+                    if (!empty($params['key_value_pair'])) {
+                        $key_value_pair = $params['key_value_pair'];
+                        foreach ($key_value_pair as $key => $value) {
+                            if ($key==$field_type) {
+                                if ($field_type=='_employees') {
+                                    if (is_array($value)) {
+                                        foreach ($value as $val) {
+                                            $args['meta_query'][0][] = array(
+                                                'key'     => $field_name,
+                                                'value'   => sprintf(':"%s";', (string)$val),
+                                                'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                            );
+                                        }
+                                    } else {
+                                        // If $value is not an array, treat it as a single value
+                                        $args['meta_query'][0][] = array(
+                                            'key'     => $field_name,
+                                            'value'   => sprintf(':"%s";', (string)$value),
+                                            'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
+                                        );
+                                    }
+                                } else {
+                                    $args['meta_query'][0][] = array(
+                                        'key'   => $field_name,
+                                        'value' => (string)$value,
+                                    );
+                                }
+                            }
+                        }    
+                    }
+
+                    // Check if the order_field_value is valid
+                    $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
+                    if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
+                        // Add the field_name and order_field_value to orderby array
+                        $args['orderby'][$field_name] = $order_field_value;
+                        
+                        $order_field_name = $field_name; // Assign the field_name if order_field_value is valid
+                    }
+        
+                    if (!empty($params['search_doc_report'])) {
+                        $search_doc_report = $params['search_doc_report'];
+                        $args['meta_query'][1][] = array( // Append to the OR relation
+                            'key'     => $field_name,
+                            'value'   => $search_doc_report,
+                            'compare' => 'LIKE',
+                        );
+                    }
+                endwhile;
+        
+                // Reset only the inner loop's data
+                wp_reset_postdata();
+            }
+        
+            $args['orderby'] = array(
+                'index' => 'ASC',
+            );
+        
+            $args['orderby']  = 'meta_value';
+            $args['order']    = 'ASC';    
+            $args['meta_key'] = $order_field_name;
+        
+            $query = new WP_Query($args);
+            return $query;
+        }
+        
         function get_doc_report_list_data() {
             $result = array();
             if (isset($_POST['_doc_id'])) {
