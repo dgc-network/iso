@@ -1218,10 +1218,12 @@ if (!class_exists('display_documents')) {
                 $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
+                        $sub_report_id = get_the_id();
                         ?><tr id="edit-sub-report-<?php the_ID();?>"><td>.</td><?php
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
+/*                            
                                 if ($report_id) {
                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
                                 } elseif ($prev_report_id) {
@@ -1231,7 +1233,8 @@ if (!class_exists('display_documents')) {
                                 }
                                 //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                                 //$items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
-
+*/
+                                $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
                                 ?><td><?php echo esc_html($field_value);?></td><?php
                             endwhile;
                             wp_reset_postdata();
