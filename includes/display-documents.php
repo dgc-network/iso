@@ -2013,6 +2013,7 @@ if (!class_exists('display_documents')) {
 
         function get_sub_report_keys($subform_id=false) {
             $_array = array();
+            $items_class = new subforms();
             $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
