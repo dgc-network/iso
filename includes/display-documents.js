@@ -967,29 +967,21 @@ jQuery(document).ready(function($) {
                                         ajaxData[sub_report_field] = $(sub_report_field_tag).val();
                                     }
                                 });
-                            
-/*                    
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
-                                    data: {
-                                        'action': 'set_sub_report_dialog_data',
-                                        '_sub_report_id': sub_report_id,
-                                        '_report_id': $("#report-id").val(),
-                                        '_subform_id': $("#subform-id").val(),
-                                    },
-                                    success: function (set_response) {
+                                    data: ajaxData,
+                                    success: function(set_response) {
                                         $("#sub-report-dialog").dialog('close');
                                         $('#sub-report-list').html(set_response.html_contain);
                                         activate_doc_report_dialog_data(response);
                                     },
-                                    error: function (error) {
-                                        console.error(error);                    
+                                    error: function(error) {
+                                        console.error(error);
                                         alert(error);
                                     }
-                                });
-*/                                
+                                });                    
                             },
                             "Delete": function() {
                                 if (window.confirm("Are you sure you want to delete this sub-report?")) {
