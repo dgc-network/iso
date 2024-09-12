@@ -855,7 +855,7 @@ jQuery(document).ready(function($) {
                 'action': 'set_doc_report_dialog_data',
             };
             ajaxData['_report_id'] = report_id;
-        
+
             $.each(response.doc_fields, function(index, value) {
                 const field_name_tag = '#' + value.field_name;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
@@ -951,6 +951,24 @@ jQuery(document).ready(function($) {
                     if ($("#is-site-admin").val() === "1") {
                         $("#sub-report-dialog").dialog("option", "buttons", {
                             "Save": function() {
+                                const ajaxData = {
+                                    'action': 'set_sub_report_dialog_data',
+                                };
+                                ajaxData['_sub_report_id'] = sub_report_id;
+                                ajaxData['_report_id'] = $("#report-id").val();
+                                ajaxData['_subform_id'] = $("#subform-id").val();
+                                field_name = $("#subform-id").val();
+                                $.each(get_response.sub_report_fields, function(index, inner_value) {
+                                    const sub_report_field = field_name + inner_value.sub_item_id;
+                                    const sub_report_field_tag = '#' + field_name + inner_value.sub_item_id;
+                                    if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                        ajaxData[sub_report_field] = $(sub_report_field_tag).is(":checked") ? 1 : 0;
+                                    } else {
+                                        ajaxData[sub_report_field] = $(sub_report_field_tag).val();
+                                    }
+                                });
+                            
+/*                    
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
@@ -970,7 +988,8 @@ jQuery(document).ready(function($) {
                                         console.error(error);                    
                                         alert(error);
                                     }
-                                });            
+                                });
+*/                                
                             },
                             "Delete": function() {
                                 if (window.confirm("Are you sure you want to delete this sub-report?")) {

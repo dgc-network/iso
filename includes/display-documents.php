@@ -1198,6 +1198,7 @@ if (!class_exists('display_documents')) {
             <table style="width:100%;">
                 <thead>
                 <tr>
+                <th>#</th>
                 <?php                
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
@@ -1217,7 +1218,7 @@ if (!class_exists('display_documents')) {
                 $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
-                        ?><tr id="edit-sub-report-<?php the_ID();?>"><?php
+                        ?><tr id="edit-sub-report-<?php the_ID();?>"><td>.</td><?php
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -1272,6 +1273,7 @@ if (!class_exists('display_documents')) {
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             $report_id = get_post_meta($sub_report_id, 'report_id', true);
+            $field_name = $subform_id;
             ?>
             <fieldset>
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
@@ -1281,18 +1283,16 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        if ($report_id) {
-                            $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                        } elseif ($prev_report_id) {
-                            $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                        if ($sub_report_id) {
+                            $field_value = get_post_meta($sub_report_id, $field_name.get_the_ID(), true);
                         } else {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
                         //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                         //$items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
                         ?>
-                        <label for="<?php echo esc_attr($field_name.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
-                        <input type="text" id="<?php echo esc_attr($field_name.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
+                        <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                         <?php
         
                     endwhile;
@@ -1308,6 +1308,7 @@ if (!class_exists('display_documents')) {
             $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
             $subform_id = sanitize_text_field($_POST['_subform_id']);
             $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id, $subform_id));
+            $response['sub_report_fields'] = $this->get_sub_report_keys($subform_id);
             wp_send_json($response);
         }
 
@@ -1317,22 +1318,16 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_sub_report_id']) ) {
                 // Update the post
                 $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
-/*
-                $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = $this->retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
+                $items_class = new subforms();
+                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $this->update_doc_field_contains($report_id, get_the_ID());
+                        $field_name = $subform_id.get_the_id();
+                        $field_value = $_POST[$field_name];
+                        update_post_meta($sub_report_id, $field_name, $field_value);
                     endwhile;
                     wp_reset_postdata();
-                }
-                $action_id = sanitize_text_field($_POST['_action_id']);
-                $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
-                if ($proceed_to_todo==1) $this->update_todo_by_doc_report($action_id, $report_id);
-*/                
+                endif;
             } else {
                 // Create the post
                 $current_user_id = get_current_user_id();
@@ -2013,6 +2008,22 @@ if (!class_exists('display_documents')) {
                 endwhile;
                 wp_reset_postdata();
             }    
+            return $_array;
+        }
+
+        function get_sub_report_keys($subform_id=false) {
+            $_array = array();
+            $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+            if ($inner_query->have_posts()) :
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $_list = array();
+                    $_list["sub_item_id"] = get_the_ID();
+                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                    array_push($_array, $_list);
+
+                endwhile;
+                wp_reset_postdata();
+            endif;
             return $_array;
         }
 
