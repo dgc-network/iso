@@ -924,11 +924,9 @@ jQuery(document).ready(function($) {
                     'action': 'set_sub_report_dialog_data',
                     '_report_id': $("#report-id").val(),
                 },
-                success: function (inner_response) {
-                    //get_sub_report_list_data($("#report-id").val())
-                    $("#sub-report-list").html(inner_response.html_contain);
-                    activate_doc_report_list_data(response);
-
+                success: function (set_response) {
+                    $("#sub-report-list").html(set_response.html_contain);
+                    activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
                     console.error(error);
@@ -945,9 +943,10 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_sub_report_dialog_data',
                     '_sub_report_id': sub_report_id,
+                    '_subform_id': $("#subform-id").val(),
                 },
-                success: function (response) {
-                    $("#sub-report-dialog").html(response.html_contain);
+                success: function (get_response) {
+                    $("#sub-report-dialog").html(get_response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
                         $("#sub-report-dialog").dialog("option", "buttons", {
                             "Save": function() {
@@ -958,11 +957,11 @@ jQuery(document).ready(function($) {
                                     data: {
                                         'action': 'set_sub_report_dialog_data',
                                         '_sub_report_id': sub_report_id,
-                                        '_field_id': $("#field-id").val(),
+                                        '_report_id': $("#report-id").val(),
                                     },
-                                    success: function (inner_response) {
+                                    success: function (set_response) {
                                         $("#sub-report-dialog").dialog('close');
-                                        $('#sub-report-list').html(inner_response.html_contain);
+                                        $('#sub-report-list').html(set_response.html_contain);
                                         activate_doc_report_dialog_data(response);
                                     },
                                     error: function (error) {
@@ -980,11 +979,11 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_sub_report_dialog_data',
                                             '_sub_report_id': sub_report_id,
-                                            '_field_id': $("#field-id").val(),
+                                            '_report_id': $("#report-id").val(),
                                         },
-                                        success: function (inner_response) {
+                                        success: function (del_response) {
                                             $("#sub-report-dialog").dialog('close');
-                                            $('#sub-report-list').html(inner_response.html_contain);
+                                            $('#sub-report-list').html(del_response.html_contain);
                                             activate_doc_report_dialog_data(response);
                                         },
                                         error: function(error){
