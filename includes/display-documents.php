@@ -1223,7 +1223,7 @@ if (!class_exists('display_documents')) {
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $field_type = get_post_meta(get_the_id(), 'subform_type', true);
+                                $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
                                 ?><td <?php echo $text_align;?>><?php echo esc_html($field_value);?></td><?php
