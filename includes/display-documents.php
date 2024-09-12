@@ -1219,7 +1219,7 @@ if (!class_exists('display_documents')) {
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
                         $sub_report_id = get_the_id();
-                        ?><tr id="edit-sub-report-<?php the_ID();?>"><td>.</td><?php
+                        ?><tr id="edit-sub-report-<?php the_ID();?>"><td style="text-align:center;">.</td><?php
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
