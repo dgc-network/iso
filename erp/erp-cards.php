@@ -1252,7 +1252,7 @@ if (!class_exists('erp_cards')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-        
+
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
