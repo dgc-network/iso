@@ -1677,7 +1677,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $query = $items_class->retrieve_sub_item_list_data($subform_id);
+
 
             ob_start();
             ?>
@@ -1687,12 +1687,12 @@ if (!class_exists('display_documents')) {
                 <thead>
                 <tr>
                 <?php                
+                $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_title = get_the_title();
                         ?>
                         <th><?php the_title();?></th>
-                        </tr>
                         <?php
                     endwhile;
                     wp_reset_postdata();
@@ -1701,45 +1701,37 @@ if (!class_exists('display_documents')) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php                
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-
-                        if ($report_id) {
-                            $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
-                        } elseif ($prev_report_id) {
-                            $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
-                        } else {
-                            $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                        }
-                        //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
-                        $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
-/*
-                        $sub_item_title = get_the_title();
-                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                        if ($sub_item_type=='heading') {
-                            if (!$sub_item_default) {
-                                $sub_item_code = '<b>'.$sub_item_code.'</b>';
-                                $sub_item_title = '<b>'.$sub_item_title.'</b>';    
-                            }
-                            $sub_item_type='';
-                            $sub_item_default='';
-                        }
-                        ?>
-                        <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"><?php echo $sub_item_code;?></td>
-                            <td><?php echo $sub_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
-                        </tr>
-                        <?php
-*/                        
+                    <tr>
+                <?php
+                $sub_report_query = $this->retrieve_sub_report_list_data($field_value);
+                if ($sub_report_query->have_posts()) :
+                    while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
+                        ?><td><?php
+                        $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+        
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                                } else {
+                                    $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                }
+                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                                
+                        ?></td><?php
                     endwhile;
                     wp_reset_postdata();
                 endif;
+                
+
                 ?>
+                </tr>
                 </tbody>
             </table>
             <?php if ($is_site_admin) {?>
