@@ -946,14 +946,14 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function retrieve_sub_report_list_data($item_list_id) {
+        function retrieve_sub_report_list_data($report_id=false) {
             $args = array(
                 'post_type'      => 'sub-report',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     array(
-                        'key'   => 'item_list_id',
-                        'value' => $item_list_id,
+                        'key'   => 'report_id',
+                        'value' => $report_id,
                     ),
                 ),
             );
@@ -1515,7 +1515,7 @@ if (!class_exists('display_documents')) {
                                 if ($subform_key=='_item_list') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <?php echo $this->get_sub_item_list_contains($subform_id, $field_value);?>
+                                    <?php echo $this->get_sub_report_list($subform_id, $report_id);?>
                                     <?php
                                 }
                             } else {
@@ -1687,7 +1687,7 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function get_sub_item_list_contains($subform_id=false, $field_value=false) {
+        function get_sub_report_list($subform_id=false, $report_id=false) {
             $items_class = new subforms();
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
@@ -1716,16 +1716,16 @@ if (!class_exists('display_documents')) {
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
                 <?php
-                $sub_report_query = $this->retrieve_sub_report_list_data($field_value);
+                $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
-                        ?><td><?php
+                        ?><tr><?php
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-        
+                                ?><td><?php
+
                                 if ($report_id) {
                                     $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
                                 } elseif ($prev_report_id) {
@@ -1735,26 +1735,23 @@ if (!class_exists('display_documents')) {
                                 }
                                 //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                                 $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                                ?></td><?php
                             endwhile;
                             wp_reset_postdata();
                         endif;
-                                
-                        ?></td><?php
+                        ?></tr><?php
                     endwhile;
                     wp_reset_postdata();
                 endif;
-                
-
                 ?>
-                </tr>
                 </tbody>
             </table>
             <?php if ($is_site_admin) {?>
-                <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="new-sub-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
             </div>
-            <div id="sub-item-dialog" title="Sub item dialog"></div>
+            <div id="sub-report-dialog" title="Sub report dialog"></div>
             <?php
             return ob_get_clean();
         }
