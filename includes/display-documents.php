@@ -1313,6 +1313,7 @@ if (!class_exists('display_documents')) {
 
         function set_sub_report_dialog_data() {
             $report_id = sanitize_text_field($_POST['_report_id']);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
             if( isset($_POST['_sub_report_id']) ) {
                 // Update the post
                 $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
@@ -1344,17 +1345,15 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'report_id', $report_id);
 
             }
-            //$response['html_contain'] = $this->display_sub_report_list($report_id);
-            $response = array('html_contain' => $this->display_sub_report_list($report_id));
+            $response = array('html_contain' => $this->display_sub_report_list($subform_id, $report_id));
             wp_send_json($response);
         }
 
         function del_sub_report_dialog_data() {
-            //$response = array();
             wp_delete_post($_POST['_sub_report_id'], true);
+            $subform_id = sanitize_text_field($_POST['_subform_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
-            //$response['html_contain'] = $this->display_sub_report_list($report_id);
-            $response = array('html_contain' => $this->display_sub_report_list($report_id));
+            $response = array('html_contain' => $this->display_sub_report_list($subform_id, $report_id));
             wp_send_json($response);
         }
 

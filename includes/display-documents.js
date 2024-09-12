@@ -923,6 +923,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_sub_report_dialog_data',
                     '_report_id': $("#report-id").val(),
+                    '_subform_id': $("#subform-id").val(),
                 },
                 success: function (set_response) {
                     $("#sub-report-list").html(set_response.html_contain);
@@ -958,6 +959,7 @@ jQuery(document).ready(function($) {
                                         'action': 'set_sub_report_dialog_data',
                                         '_sub_report_id': sub_report_id,
                                         '_report_id': $("#report-id").val(),
+                                        '_subform_id': $("#subform-id").val(),
                                     },
                                     success: function (set_response) {
                                         $("#sub-report-dialog").dialog('close');
@@ -980,6 +982,7 @@ jQuery(document).ready(function($) {
                                             'action': 'del_sub_report_dialog_data',
                                             '_sub_report_id': sub_report_id,
                                             '_report_id': $("#report-id").val(),
+                                            '_subform_id': $("#subform-id").val(),
                                         },
                                         success: function (del_response) {
                                             $("#sub-report-dialog").dialog('close');
