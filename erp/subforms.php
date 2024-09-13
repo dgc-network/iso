@@ -247,7 +247,7 @@ if (!class_exists('subforms')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
                     </thead>
@@ -382,7 +382,7 @@ if (!class_exists('subforms')) {
             <fieldset>
                 <input type="hidden" id="subform-id" value="<?php echo esc_attr($subform_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="subform-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="subform-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="subform-code" value="<?php echo esc_attr($subform_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="subform-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="subform-title" value="<?php echo esc_attr($subform_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -831,13 +831,11 @@ if (!class_exists('subforms')) {
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $field_id = $this->get_doc_field_id_by_meta($doc_id, '_subform');
-            //$field_id = get_post_meta($field_id, 'field_id', true);
             $subform_id = sanitize_text_field($_POST['_subform_id']);
             if ($subform_id) {
                 $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$this->get_sub_item_contains(get_the_ID(), $field_id);
                         $this->get_sub_item_contains(get_the_ID(), $field_id);
                     endwhile;
                     wp_reset_postdata();

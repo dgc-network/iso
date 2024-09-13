@@ -557,7 +557,6 @@ jQuery(document).ready(function($) {
                                         'action': 'set_doc_field_dialog_data',
                                         '_doc_id': doc_id,
                                         '_field_id': $("#field-id").val(),
-                                        //'_field_id': $("#field-name").val(),
                                         '_field_title': $("#field-title").val(),
                                         '_field_type': $("#field-type").val(),
                                         '_default_value': $("#default-value").val(),

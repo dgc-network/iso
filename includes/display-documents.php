@@ -742,10 +742,8 @@ if (!class_exists('display_documents')) {
                                 $inner_query = $this->retrieve_doc_field_data($params);
                                 if ($inner_query->have_posts()) {
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                        //$field_value = get_post_meta($report_id, $field_id, true);
                                         $field_value = get_post_meta($report_id, get_the_ID(), true);
                                         $is_checked = ($field_value==1) ? 'checked' : '';
                                         echo '<td style="text-align:'.$listing_style.';">';
@@ -885,7 +883,6 @@ if (!class_exists('display_documents')) {
         
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
-                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
                     if (!empty($params['key_value_pair'])) {
@@ -896,7 +893,6 @@ if (!class_exists('display_documents')) {
                                     if (is_array($value)) {
                                         foreach ($value as $val) {
                                             $args['meta_query'][0][] = array(
-                                                //'key'     => $field_id,
                                                 'key'     => get_the_ID(),
                                                 'value'   => sprintf(':"%s";', (string)$val),
                                                 'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
@@ -905,7 +901,6 @@ if (!class_exists('display_documents')) {
                                     } else {
                                         // If $value is not an array, treat it as a single value
                                         $args['meta_query'][0][] = array(
-                                            //'key'     => $field_id,
                                             'key'     => get_the_ID(),
                                             'value'   => sprintf(':"%s";', (string)$value),
                                             'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
@@ -913,7 +908,6 @@ if (!class_exists('display_documents')) {
                                     }
                                 } else {
                                     $args['meta_query'][0][] = array(
-                                        //'key'   => $field_id,
                                         'key'     => get_the_ID(),
                                         'value' => (string)$value,
                                     );
@@ -926,17 +920,13 @@ if (!class_exists('display_documents')) {
                     $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
                     if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
                         // Add the field_id and order_field_value to orderby array
-                        //$args['orderby'][$field_id] = $order_field_value;
                         $args['orderby'][get_the_id()] = $order_field_value;
-                        
-                        //$order_field = $field_id; // Assign the field_id if order_field_value is valid
                         $order_field = get_the_ID(); // Assign the field_id if order_field_value is valid
                     }
         
                     if (!empty($params['search_doc_report'])) {
                         $search_doc_report = $params['search_doc_report'];
                         $args['meta_query'][1][] = array( // Append to the OR relation
-                            //'key'     => $field_id,
                             'key'     => get_the_ID(),
                             'value'   => $search_doc_report,
                             'compare' => 'LIKE',
@@ -1117,10 +1107,8 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = $this->get_field_default_value(get_the_ID());
-                        //update_post_meta($post_id, $field_id, $default_value);
                         update_post_meta($post_id, get_the_ID(), $default_value);
                         $field_id = get_the_ID();
 
@@ -1184,9 +1172,7 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                         $field_value = sanitize_text_field($_POST[$field_id]);
-                        //update_post_meta($post_id, $field_id, $field_value);
                         update_post_meta($post_id, get_the_ID(), $field_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1277,7 +1263,7 @@ if (!class_exists('display_documents')) {
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             $report_id = get_post_meta($sub_report_id, 'report_id', true);
-            $field_id = $subform_id;
+            //$field_id = $subform_id;
             ?>
             <fieldset>
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
@@ -1288,13 +1274,13 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         if ($sub_report_id) {
-                            $field_value = get_post_meta($sub_report_id, $field_id.get_the_ID(), true);
+                            $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
                         } else {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
                         ?>
-                        <label for="<?php echo esc_attr($field_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
-                        <input type="text" id="<?php echo esc_attr($field_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                        <label for="<?php echo esc_attr($subform_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
+                        <input type="text" id="<?php echo esc_attr($subform_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                         <?php
         
                     endwhile;
@@ -1324,9 +1310,9 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $field_id = $subform_id.get_the_id();
-                        $field_value = $_POST[$field_id];
-                        update_post_meta($sub_report_id, $field_id, $field_value);
+                        //$field_id = $subform_id.get_the_id();
+                        $field_value = $_POST[$subform_id.get_the_id()];
+                        update_post_meta($sub_report_id, $subform_id.get_the_id(), $field_value);
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1396,7 +1382,6 @@ if (!class_exists('display_documents')) {
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' name="order_field"></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
-                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_id', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
@@ -1450,7 +1435,6 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            //$field_id = get_post_meta($field_id, 'field_id', true);
             $field_title = get_post_meta($field_id, 'field_title', true);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
@@ -1461,12 +1445,6 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-<?php /*                
-                <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
-                <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
-                <input type="text" id="field-name" value="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all" />
-*/?>                
                 <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
@@ -1523,7 +1501,6 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_field_id']) ) {
                 // Update the post
                 $field_id = sanitize_text_field($_POST['_field_id']);
-                //update_post_meta($field_id, 'field_id', sanitize_text_field($_POST['_field_id']));
                 update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
                 update_post_meta($field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
                 update_post_meta($field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
@@ -1539,7 +1516,6 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-                //update_post_meta($post_id, 'field_id', 'new_field');
                 update_post_meta($post_id, 'field_title', 'Field title');
                 update_post_meta($post_id, 'field_type', 'text');
                 update_post_meta($post_id, 'listing_style', 'center');
@@ -1577,7 +1553,6 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $_list = array();
-                    //$_list["field_id"] = get_post_meta(get_the_ID(), 'field_id', true);
                     $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                     array_push($_array, $_list);
@@ -1595,7 +1570,6 @@ if (!class_exists('display_documents')) {
             // Get the current user ID
             $current_user_id = get_current_user_id();
             // Get and sanitize the field name and default value
-            //$field_id = sanitize_text_field(get_post_meta($field_id, 'field_id', true));
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
             // Check if the default value should be 'today'
             if ($default_value === 'today') {
@@ -1621,7 +1595,6 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
@@ -1667,7 +1640,6 @@ if (!class_exists('display_documents')) {
                                                 } else {
                                                     $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                                                 }
-                                                //echo 'field_id:'.$field_id.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
                                                 $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
                                             endwhile;
                                             wp_reset_postdata();
@@ -1700,7 +1672,6 @@ if (!class_exists('display_documents')) {
                                 }
                                 ?>
                                 <div id="sub-item-list-from">
-                                    <?php //echo 'field_id:'.$field_id.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
                                     <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
                                 </div>
                                 <?php    
@@ -1862,8 +1833,6 @@ if (!class_exists('display_documents')) {
             // standard field-name
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
-            //$field_id = get_post_meta($field_id, 'field_id', true);
-            $field_id = $field_id;
             $field_value = $_POST[$field_id];
 
             // additional field-name
@@ -1987,7 +1956,6 @@ if (!class_exists('display_documents')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                 
@@ -2112,7 +2080,6 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$items_class->get_sub_item_contains(get_the_ID(), $field_id);
                         $items_class->get_sub_item_contains(get_the_ID(), $subform_id);
                     endwhile;
                     wp_reset_postdata();
@@ -2165,15 +2132,12 @@ if (!class_exists('display_documents')) {
                             // Sanitize the key and value
                             $field_key = sanitize_text_field($field_key);
                             $field_value = sanitize_text_field($field_value);
-                
                             // Update post meta
                             update_post_meta($site_id, $field_key, $field_value);
-                
                             // Add the sanitized pair to the processed array
                             $processedKeyValuePairs[$field_key] = $field_value;
                         }
                     }
-
                     // Prepare the response
                     $response = array('success' => true, 'data' => $processedKeyValuePairs);
                 } else {
@@ -2242,7 +2206,6 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
@@ -2255,7 +2218,6 @@ if (!class_exists('display_documents')) {
                         );    
                         $field_id = wp_insert_post($new_post);
                         update_post_meta($field_id, 'doc_id', $post_id);
-                        //update_post_meta($field_id, 'field_id', $field_id);
                         update_post_meta($field_id, 'field_title', $field_title);
                         update_post_meta($field_id, 'field_type', $field_type);
                         update_post_meta($field_id, 'default_value', $default_value);
@@ -2337,12 +2299,10 @@ if (!class_exists('display_documents')) {
         
             if ($query->have_posts()) {
                 foreach ($query->posts as $field_id) {
-                    //$field_id = get_post_meta($field_id, 'field_id', true);
                     $args = array(
                         'post_type'  => 'doc-report',  // Specify the post type
                         'meta_query' => array(
                             array(
-                                //'key'     => $field_id,     // The meta key you want to search by
                                 'key'     => $field_id,     // The meta key you want to search by
                                 'value'   => $field_value,    // The value of the meta key you are looking for
                                 'compare' => '=',             // Optional, default is '=', can be omitted

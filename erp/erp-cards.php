@@ -98,7 +98,7 @@ if (!class_exists('erp_cards')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Code', 'your-text-domain' ); ?></th>
+                            <th><?php echo __( 'Number', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Title', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Phone', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Address', 'your-text-domain' ); ?></th>
@@ -270,7 +270,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="customer-id" value="<?php echo esc_attr($customer_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="customer-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="customer-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="customer-title" value="<?php echo esc_attr($customer_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -425,7 +425,7 @@ if (!class_exists('erp_cards')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Code', 'your-text-domain' ); ?></th>
+                            <th><?php echo __( 'Number', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Title', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Phone', 'your-text-domain' ); ?></th>
                             <th><?php echo __( 'Address', 'your-text-domain' ); ?></th>
@@ -599,7 +599,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="vendor-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="vendor-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="vendor-title" value="<?php echo esc_attr($vendor_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -761,7 +761,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     </thead>
@@ -873,7 +873,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="product-id" value="<?php echo esc_attr($product_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="product-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="product-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="product-code" value="<?php echo esc_attr($product_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="product-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="product-title" value="<?php echo esc_attr($product_title);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
@@ -977,7 +977,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     </thead>
@@ -1087,7 +1087,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="equipment-id" value="<?php echo esc_attr($equipment_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="equipment-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="equipment-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="equipment-code" value="<?php echo esc_attr($equipment_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="equipment-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="equipment-title" value="<?php echo esc_attr($equipment_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -1190,7 +1190,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     </thead>
@@ -1300,7 +1300,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="instrument-id" value="<?php echo esc_attr($instrument_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="instrument-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="instrument-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="instrument-code" value="<?php echo esc_attr($instrument_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="instrument-title" value="<?php echo esc_attr($instrument_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -1403,7 +1403,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Code', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                     </thead>
@@ -1513,7 +1513,7 @@ if (!class_exists('erp_cards')) {
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="department-code"><?php echo __( 'Code: ', 'your-text-domain' );?></label>
+                <label for="department-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="department-code" value="<?php echo esc_attr($department_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
