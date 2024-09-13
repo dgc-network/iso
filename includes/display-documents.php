@@ -742,7 +742,7 @@ if (!class_exists('display_documents')) {
                                 $inner_query = $this->retrieve_doc_field_data($params);
                                 if ($inner_query->have_posts()) {
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                        //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
                                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                         //$field_value = get_post_meta($report_id, $field_name, true);
@@ -878,14 +878,14 @@ if (!class_exists('display_documents')) {
                 'orderby'        => array(), // Initialize orderby parameter as an array
             );
                     
-            $order_field_name = ''; // Initialize variable to store the meta key for ordering
+            $order_field = ''; // Initialize variable to store the meta key for ordering
             $order_field_value = ''; // Initialize variable to store the order direction
         
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
         
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
-                    $field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
                     if (!empty($params['key_value_pair'])) {
@@ -929,8 +929,8 @@ if (!class_exists('display_documents')) {
                         //$args['orderby'][$field_name] = $order_field_value;
                         $args['orderby'][get_the_id()] = $order_field_value;
                         
-                        //$order_field_name = $field_name; // Assign the field_name if order_field_value is valid
-                        $order_field_name = get_the_ID(); // Assign the field_name if order_field_value is valid
+                        //$order_field = $field_name; // Assign the field_name if order_field_value is valid
+                        $order_field = get_the_ID(); // Assign the field_name if order_field_value is valid
                     }
         
                     if (!empty($params['search_doc_report'])) {
@@ -954,7 +954,7 @@ if (!class_exists('display_documents')) {
         
             $args['orderby']  = 'meta_value';
             $args['order']    = 'ASC';    
-            $args['meta_key'] = $order_field_name;
+            $args['meta_key'] = $order_field;
         
             $query = new WP_Query($args);
             return $query;
@@ -1379,9 +1379,9 @@ if (!class_exists('display_documents')) {
                         <tr>
                             <th>#</th>
                             <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Field', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Default', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Align', 'your-text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody id="sortable-doc-field-list">
@@ -1396,9 +1396,10 @@ if (!class_exists('display_documents')) {
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' name="order_field"></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
+                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
                                 echo '</tr>';
                                 $x += 1;
                             endwhile;
@@ -1460,7 +1461,7 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-<? /*                
+<?php /*                
                 <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
