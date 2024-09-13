@@ -831,19 +831,14 @@ if (!class_exists('subforms')) {
             $report_id = sanitize_text_field($_POST['_report_id']);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $field_id = $this->get_doc_field_id_by_meta($doc_id, '_subform');
-            $field_name = get_post_meta($field_id, 'field_name', true);
-/*
-            $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
-            if ($sub_item_id) {
-                $this->get_sub_item_contains($sub_item_id, $field_name);
-            }
-*/
+            //$field_name = get_post_meta($field_id, 'field_name', true);
             $subform_id = sanitize_text_field($_POST['_subform_id']);
             if ($subform_id) {
                 $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $this->get_sub_item_contains(get_the_ID(), $field_name);
+                        //$this->get_sub_item_contains(get_the_ID(), $field_name);
+                        $this->get_sub_item_contains(get_the_ID(), $field_id);
                     endwhile;
                     wp_reset_postdata();
                 endif;
