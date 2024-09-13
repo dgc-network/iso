@@ -49,11 +49,11 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
 
             $.each(doc_fields, function(index, value) {
-                const field_name_tag = '#' + value.field_name;
+                const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    ajaxData[value.field_id] = $(field_id_tag).val();
                 }
             });
 
@@ -112,11 +112,11 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
 
             $.each(doc_fields, function(index, value) {
-                const field_name_tag = '#' + value.field_name;
+                const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    ajaxData[value.field_id] = $(field_id_tag).val();
                 }
             });
 

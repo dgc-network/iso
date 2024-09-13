@@ -742,10 +742,10 @@ if (!class_exists('display_documents')) {
                                 $inner_query = $this->retrieve_doc_field_data($params);
                                 if ($inner_query->have_posts()) {
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                        //$field_value = get_post_meta($report_id, $field_name, true);
+                                        //$field_value = get_post_meta($report_id, $field_id, true);
                                         $field_value = get_post_meta($report_id, get_the_ID(), true);
                                         $is_checked = ($field_value==1) ? 'checked' : '';
                                         echo '<td style="text-align:'.$listing_style.';">';
@@ -885,7 +885,7 @@ if (!class_exists('display_documents')) {
         
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
-                    //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
 
                     if (!empty($params['key_value_pair'])) {
@@ -896,7 +896,7 @@ if (!class_exists('display_documents')) {
                                     if (is_array($value)) {
                                         foreach ($value as $val) {
                                             $args['meta_query'][0][] = array(
-                                                //'key'     => $field_name,
+                                                //'key'     => $field_id,
                                                 'key'     => get_the_ID(),
                                                 'value'   => sprintf(':"%s";', (string)$val),
                                                 'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
@@ -905,7 +905,7 @@ if (!class_exists('display_documents')) {
                                     } else {
                                         // If $value is not an array, treat it as a single value
                                         $args['meta_query'][0][] = array(
-                                            //'key'     => $field_name,
+                                            //'key'     => $field_id,
                                             'key'     => get_the_ID(),
                                             'value'   => sprintf(':"%s";', (string)$value),
                                             'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
@@ -913,7 +913,7 @@ if (!class_exists('display_documents')) {
                                     }
                                 } else {
                                     $args['meta_query'][0][] = array(
-                                        //'key'   => $field_name,
+                                        //'key'   => $field_id,
                                         'key'     => get_the_ID(),
                                         'value' => (string)$value,
                                     );
@@ -925,18 +925,18 @@ if (!class_exists('display_documents')) {
                     // Check if the order_field_value is valid
                     $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
                     if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                        // Add the field_name and order_field_value to orderby array
-                        //$args['orderby'][$field_name] = $order_field_value;
+                        // Add the field_id and order_field_value to orderby array
+                        //$args['orderby'][$field_id] = $order_field_value;
                         $args['orderby'][get_the_id()] = $order_field_value;
                         
-                        //$order_field = $field_name; // Assign the field_name if order_field_value is valid
-                        $order_field = get_the_ID(); // Assign the field_name if order_field_value is valid
+                        //$order_field = $field_id; // Assign the field_id if order_field_value is valid
+                        $order_field = get_the_ID(); // Assign the field_id if order_field_value is valid
                     }
         
                     if (!empty($params['search_doc_report'])) {
                         $search_doc_report = $params['search_doc_report'];
                         $args['meta_query'][1][] = array( // Append to the OR relation
-                            //'key'     => $field_name,
+                            //'key'     => $field_id,
                             'key'     => get_the_ID(),
                             'value'   => $search_doc_report,
                             'compare' => 'LIKE',
@@ -1117,12 +1117,12 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = $this->get_field_default_value(get_the_ID());
-                        //update_post_meta($post_id, $field_name, $default_value);
+                        //update_post_meta($post_id, $field_id, $default_value);
                         update_post_meta($post_id, get_the_ID(), $default_value);
-                        $field_name = get_the_ID();
+                        $field_id = get_the_ID();
 
                         if ($field_type=='_subform') {
                             $items_class = new subforms();
@@ -1138,14 +1138,14 @@ if (!class_exists('display_documents')) {
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
                                             $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                            update_post_meta($post_id, $field_name.get_the_ID(), $default_value);
+                                            update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;
                                 }
 
                                 if ($subform_key=='_embedded'||$subform_key=='_planning') {
-                                    update_post_meta($post_id, $field_name, $subform_id);
+                                    update_post_meta($post_id, $field_id, $subform_id);
                                 }
 
                             }
@@ -1184,9 +1184,9 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
-                        $field_value = sanitize_text_field($_POST[$field_name]);
-                        //update_post_meta($post_id, $field_name, $field_value);
+                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
+                        $field_value = sanitize_text_field($_POST[$field_id]);
+                        //update_post_meta($post_id, $field_id, $field_value);
                         update_post_meta($post_id, get_the_ID(), $field_value);
                     endwhile;
                     wp_reset_postdata();
@@ -1277,7 +1277,7 @@ if (!class_exists('display_documents')) {
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
             $report_id = get_post_meta($sub_report_id, 'report_id', true);
-            $field_name = $subform_id;
+            $field_id = $subform_id;
             ?>
             <fieldset>
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
@@ -1288,13 +1288,13 @@ if (!class_exists('display_documents')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         if ($sub_report_id) {
-                            $field_value = get_post_meta($sub_report_id, $field_name.get_the_ID(), true);
+                            $field_value = get_post_meta($sub_report_id, $field_id.get_the_ID(), true);
                         } else {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
                         ?>
-                        <label for="<?php echo esc_attr($field_name.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
-                        <input type="text" id="<?php echo esc_attr($field_name.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                        <label for="<?php echo esc_attr($field_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
+                        <input type="text" id="<?php echo esc_attr($field_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                         <?php
         
                     endwhile;
@@ -1324,9 +1324,9 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $field_name = $subform_id.get_the_id();
-                        $field_value = $_POST[$field_name];
-                        update_post_meta($sub_report_id, $field_name, $field_value);
+                        $field_id = $subform_id.get_the_id();
+                        $field_value = $_POST[$field_id];
+                        update_post_meta($sub_report_id, $field_id, $field_value);
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1396,7 +1396,7 @@ if (!class_exists('display_documents')) {
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 echo '<td style="text-align:center;"><input type="radio" '.$order_field.' name="order_field"></td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
-                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_name', true)).'</td>';
+                                //echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_id', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
@@ -1450,7 +1450,7 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            //$field_name = get_post_meta($field_id, 'field_name', true);
+            //$field_id = get_post_meta($field_id, 'field_id', true);
             $field_title = get_post_meta($field_id, 'field_title', true);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
@@ -1465,7 +1465,7 @@ if (!class_exists('display_documents')) {
                 <label for="field-title"><?php echo __( '欄位顯示：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-name"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
-                <input type="text" id="field-name" value="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="field-name" value="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all" />
 */?>                
                 <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -1523,7 +1523,7 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_field_id']) ) {
                 // Update the post
                 $field_id = sanitize_text_field($_POST['_field_id']);
-                //update_post_meta($field_id, 'field_name', sanitize_text_field($_POST['_field_name']));
+                //update_post_meta($field_id, 'field_id', sanitize_text_field($_POST['_field_id']));
                 update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
                 update_post_meta($field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
                 update_post_meta($field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
@@ -1539,7 +1539,7 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-                //update_post_meta($post_id, 'field_name', 'new_field');
+                //update_post_meta($post_id, 'field_id', 'new_field');
                 update_post_meta($post_id, 'field_title', 'Field title');
                 update_post_meta($post_id, 'field_type', 'text');
                 update_post_meta($post_id, 'listing_style', 'center');
@@ -1577,8 +1577,8 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $_list = array();
-                    //$_list["field_name"] = get_post_meta(get_the_ID(), 'field_name', true);
-                    $_list["field_name"] = get_the_ID();
+                    //$_list["field_id"] = get_post_meta(get_the_ID(), 'field_id', true);
+                    $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                     array_push($_array, $_list);
                 endwhile;
@@ -1595,7 +1595,7 @@ if (!class_exists('display_documents')) {
             // Get the current user ID
             $current_user_id = get_current_user_id();
             // Get and sanitize the field name and default value
-            //$field_name = sanitize_text_field(get_post_meta($field_id, 'field_name', true));
+            //$field_id = sanitize_text_field(get_post_meta($field_id, 'field_id', true));
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
             // Check if the default value should be 'today'
             if ($default_value === 'today') {
@@ -1621,16 +1621,16 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                    $field_name = get_the_ID();
+                    $field_id = get_the_ID();
 
                     if ($report_id) {
-                        $field_value = get_post_meta($report_id, $field_name, true);
+                        $field_value = get_post_meta($report_id, $field_id, true);
                     } elseif ($prev_report_id) {
-                        $field_value = get_post_meta($prev_report_id, $field_name, true);
+                        $field_value = get_post_meta($prev_report_id, $field_id, true);
                     } else {
                         $field_value = $this->get_field_default_value(get_the_ID());
                     }
@@ -1653,22 +1653,22 @@ if (!class_exists('display_documents')) {
                                 $subform_id = $items_class->get_subform_post_id_by_code($subform_value);
                                 if ($subform_key=='_embedded'||$subform_key=='_planning') {
                                     ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html(get_the_title($subform_id));?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($subform_id);?>" />
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($subform_id));?></label>
+                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($subform_id);?>" />
                                     <div id="sub-item-list-from">
                                         <?php
                                         $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
                                         if ($inner_query->have_posts()) :
                                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                                 if ($report_id) {
-                                                    $field_value = get_post_meta($report_id, $field_name.get_the_ID(), true);
+                                                    $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
                                                 } elseif ($prev_report_id) {
-                                                    $field_value = get_post_meta($prev_report_id, $field_name.get_the_ID(), true);
+                                                    $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
                                                 } else {
                                                     $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                                                 }
-                                                //echo 'field_name:'.$field_name.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
-                                                $items_class->get_sub_item_contains(get_the_ID(), $field_name, $field_value);
+                                                //echo 'field_id:'.$field_id.' sub_item_id:'.get_the_ID().' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';
+                                                $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
                                             endwhile;
                                             wp_reset_postdata();
                                         endif;
@@ -1678,13 +1678,13 @@ if (!class_exists('display_documents')) {
                                 }
                                 if ($subform_key=='_select_one') {
                                     ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $subform_id);?></select>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $subform_id);?></select>
                                     <?php
                                 }
                                 if ($subform_key=='_item_list') {
                                     ?>
-                                    <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <div id="sub-report-list">
                                         <?php if ($report_id) echo $this->display_sub_report_list($subform_id, $report_id);?>
                                         <?php if ($prev_report_id) echo $this->display_sub_report_list($subform_id, $prev_report_id);?>
@@ -1694,14 +1694,14 @@ if (!class_exists('display_documents')) {
                             } else {
 
                                 if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_name.$sub_item_id, true);
+                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_name.$sub_item_id, true);
+                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
                                 }
                                 ?>
                                 <div id="sub-item-list-from">
-                                    <?php //echo 'field_name:'.$field_name.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
-                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_name, $field_value);?>
+                                    <?php //echo 'field_id:'.$field_id.' sub_item_id:'.$sub_item_id.' report_id:'.$report_id.' prev_report_id:'.$prev_report_id.' field_value:'.$field_value.'<br>';?>
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
                                 </div>
                                 <?php    
 
@@ -1710,89 +1710,89 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_document'):
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_customer'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_vendor'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_product'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_equipment'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_instrument'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_department'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_employees'):
                             $cards_class = new erp_cards();
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
                                 <?php if ($is_todo) {?>
                                     <?php $user=get_userdata((int)$field_value);?>
                                 <?php } else {?>
                                     <?php $user=get_userdata(get_current_user_id());?>
                                 <?php }?>
-                                <input type="hidden" id="<?php echo esc_attr($field_name); ?>" value="<?php echo esc_attr($user->ID);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($user->ID);?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>
-                                <select multiple id="<?php echo esc_attr($field_name);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
                             <?php }?>
                             <?php
                             break;
 
                         case ($field_type=='video'):
-                            echo '<label class="video-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                            echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
-                            echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_name.'_video').'">'.$field_value.'</div>';
-                            echo '<textarea class="video-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            echo '<div style="display:flex;" class="video-display" id="'.esc_attr($field_id.'_video').'">'.$field_value.'</div>';
+                            echo '<textarea class="video-url" id="'.esc_attr($field_id).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
 
                         case ($field_type=='image'):
-                            echo '<label class="image-button button" for="'.esc_attr($field_name).'">'.esc_html($field_title).'</label>';
+                            echo '<label class="image-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
                             echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
-                            echo '<textarea class="image-url" id="'.esc_attr($field_name).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            echo '<textarea class="image-url" id="'.esc_attr($field_id).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
                             break;
 
                         case ($field_type=='heading'):
@@ -1804,52 +1804,52 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='textarea'):
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <textarea id="<?php echo esc_attr($field_name);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <textarea id="<?php echo esc_attr($field_id);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
                             <?php    
                             break;
 
                         case ($field_type=='checkbox'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
-                            <input type="checkbox" id="<?php echo esc_attr($field_name);?>" <?php echo $is_checked;?> />
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                            <input type="checkbox" id="<?php echo esc_attr($field_id);?>" <?php echo $is_checked;?> />
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label><br>
                             <?php
                             break;
 
                         case ($field_type=='radio'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
-                            <input type="radio" id="<?php echo esc_attr($field_name);?>" name="<?php echo esc_attr(substr($field_name, 0, 5));?>" <?php echo $is_checked;?> />
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label><br>
+                            <input type="radio" id="<?php echo esc_attr($field_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> />
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label><br>
                             <?php
                             break;
 
                         case ($field_type=='date'):
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="date" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <input type="date" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
                             <?php
                             break;
 
                         case ($field_type=='time'):
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="time" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <input type="time" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
                             <?php
                             break;
 
                         case ($field_type=='number'):
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="number" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <input type="number" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                             <?php
                             break;
 
                         default:
                             ?>
-                            <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="text" id="<?php echo esc_attr($field_name);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                             <?php
                             break;
                     }
@@ -1862,9 +1862,9 @@ if (!class_exists('display_documents')) {
             // standard field-name
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
-            //$field_name = get_post_meta($field_id, 'field_name', true);
-            $field_name = $field_id;
-            $field_value = $_POST[$field_name];
+            //$field_id = get_post_meta($field_id, 'field_id', true);
+            $field_id = $field_id;
+            $field_value = $_POST[$field_id];
 
             // additional field-name
             if ($field_type=='_employees'){
@@ -1915,7 +1915,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
 
-            update_post_meta($report_id, $field_name, $field_value);
+            update_post_meta($report_id, $field_id, $field_value);
 
             if ($field_type=='_subform') {
                 $items_class = new subforms();
@@ -1929,14 +1929,14 @@ if (!class_exists('display_documents')) {
                         $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $field_value = $_POST[$field_name.get_the_ID()];
-                                update_post_meta($report_id, $field_name.get_the_ID(), $field_value);
+                                $field_value = $_POST[$field_id.get_the_ID()];
+                                update_post_meta($report_id, $field_id.get_the_ID(), $field_value);
                             endwhile;
                             wp_reset_postdata();
                         endif;
 
                         if ($subform_key=='_embedded'||$subform_key=='_planning') {
-                            update_post_meta($report_id, $field_name, $subform_id);
+                            update_post_meta($report_id, $field_id, $subform_id);
                         }
 
                         if ($subform_key=='_planning') {
@@ -1987,7 +1987,7 @@ if (!class_exists('display_documents')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                    //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                 
@@ -2112,7 +2112,7 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$items_class->get_sub_item_contains(get_the_ID(), $field_name);
+                        //$items_class->get_sub_item_contains(get_the_ID(), $field_id);
                         $items_class->get_sub_item_contains(get_the_ID(), $subform_id);
                     endwhile;
                     wp_reset_postdata();
@@ -2242,7 +2242,7 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data($params);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_name = get_post_meta(get_the_ID(), 'field_name', true);
+                        //$field_id = get_post_meta(get_the_ID(), 'field_id', true);
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
@@ -2255,7 +2255,7 @@ if (!class_exists('display_documents')) {
                         );    
                         $field_id = wp_insert_post($new_post);
                         update_post_meta($field_id, 'doc_id', $post_id);
-                        //update_post_meta($field_id, 'field_name', $field_name);
+                        //update_post_meta($field_id, 'field_id', $field_id);
                         update_post_meta($field_id, 'field_title', $field_title);
                         update_post_meta($field_id, 'field_type', $field_type);
                         update_post_meta($field_id, 'default_value', $default_value);
@@ -2337,12 +2337,12 @@ if (!class_exists('display_documents')) {
         
             if ($query->have_posts()) {
                 foreach ($query->posts as $field_id) {
-                    //$field_name = get_post_meta($field_id, 'field_name', true);
+                    //$field_id = get_post_meta($field_id, 'field_id', true);
                     $args = array(
                         'post_type'  => 'doc-report',  // Specify the post type
                         'meta_query' => array(
                             array(
-                                //'key'     => $field_name,     // The meta key you want to search by
+                                //'key'     => $field_id,     // The meta key you want to search by
                                 'key'     => $field_id,     // The meta key you want to search by
                                 'value'   => $field_value,    // The value of the meta key you are looking for
                                 'compare' => '=',             // Optional, default is '=', can be omitted

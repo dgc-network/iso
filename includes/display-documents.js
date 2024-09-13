@@ -557,7 +557,7 @@ jQuery(document).ready(function($) {
                                         'action': 'set_doc_field_dialog_data',
                                         '_doc_id': doc_id,
                                         '_field_id': $("#field-id").val(),
-                                        //'_field_name': $("#field-name").val(),
+                                        //'_field_id': $("#field-name").val(),
                                         '_field_title': $("#field-title").val(),
                                         '_field_type': $("#field-type").val(),
                                         '_default_value': $("#default-value").val(),
@@ -815,15 +815,15 @@ jQuery(document).ready(function($) {
             ajaxData['_proceed_to_todo'] = 1;
         
             $.each(response.doc_fields, function(index, value) {
-                const field_name_tag = '#' + value.field_name;
+                const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    ajaxData[value.field_id] = $(field_id_tag).val();
                     if (value.field_type === '_subform') {
                         $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_name + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_name + inner_value.sub_item_id;
+                            const subform_field = value.field_id + inner_value.sub_item_id;
+                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
                             } else {
@@ -857,15 +857,15 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
 
             $.each(response.doc_fields, function(index, value) {
-                const field_name_tag = '#' + value.field_name;
+                const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    ajaxData[value.field_id] = $(field_id_tag).val();
                     if (value.field_type === '_subform') {
                         $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_name + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_name + inner_value.sub_item_id;
+                            const subform_field = value.field_id + inner_value.sub_item_id;
+                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
                             } else {
@@ -957,10 +957,10 @@ jQuery(document).ready(function($) {
                                 ajaxData['_sub_report_id'] = sub_report_id;
                                 ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_subform_id'] = $("#subform-id").val();
-                                field_name = $("#subform-id").val();
+                                field_id = $("#subform-id").val();
                                 $.each(get_response.sub_report_fields, function(index, inner_value) {
-                                    const sub_report_field = field_name + inner_value.sub_item_id;
-                                    const sub_report_field_tag = '#' + field_name + inner_value.sub_item_id;
+                                    const sub_report_field = field_id + inner_value.sub_item_id;
+                                    const sub_report_field_tag = '#' + field_id + inner_value.sub_item_id;
                                     if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                         ajaxData[sub_report_field] = $(sub_report_field_tag).is(":checked") ? 1 : 0;
                                     } else {
@@ -1032,15 +1032,15 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
             $.each(response.doc_fields, function (index, value) {
-                const field_name_tag = '#' + value.field_name;
+                const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_name] = $(field_name_tag).is(":checked") ? 1 : 0;
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
-                    ajaxData[value.field_name] = $(field_name_tag).val();
+                    ajaxData[value.field_id] = $(field_id_tag).val();
                     if (value.field_type === '_subform') {
                         $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_name + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_name + inner_value.sub_item_id;
+                            const subform_field = value.field_id + inner_value.sub_item_id;
+                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
                             } else {
