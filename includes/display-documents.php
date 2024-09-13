@@ -1640,10 +1640,12 @@ if (!class_exists('display_documents')) {
                             $items_class = new subforms();
                             if ($todo_id) {
                                 $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-                                $default_value = get_post_meta($todo_id, '_embedded', true);
-                                $default_value = get_post_meta($todo_id, '_select_one', true);
+                                $embedded_default_value = get_post_meta($todo_id, '_embedded', true);
+                                $select_default_value = get_post_meta($todo_id, '_select_one', true);
                             }
-                            $parts = explode('=', $default_value);
+                            if ($embedded_default_value) $parts = explode('=', $embedded_default_value);
+                            elseif ($select_default_value) $parts = explode('=', $select_default_value);
+                            else $parts = explode('=', $default_value);
                             $subform_key = $parts[0]; // _embedded, _planning, _select_one
                             $subform_value = $parts[1]; // 1724993477
 
@@ -1684,7 +1686,8 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_name);?>"><?php echo esc_html($field_title);?></label>
                                     <div id="sub-report-list">
-                                        <?php echo $this->display_sub_report_list($subform_id, $report_id);?>
+                                        <?php if ($report_id) echo $this->display_sub_report_list($subform_id, $report_id);?>
+                                        <?php if ($prev_report_id) echo $this->display_sub_report_list($subform_id, $prev_report_id);?>
                                     </div>
                                     <?php
                                 }
