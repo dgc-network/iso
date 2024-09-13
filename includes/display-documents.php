@@ -1209,6 +1209,7 @@ if (!class_exists('display_documents')) {
                 ?>
                 </tr>
                 </thead>
+
                 <tbody>
                 <?php
                 $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
