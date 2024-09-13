@@ -387,7 +387,9 @@ if (!class_exists('subforms')) {
                 <label for="subform-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="subform-title" value="<?php echo esc_attr($subform_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_sub_item_list($subform_id);?>
+                <div id="sub-item-list">
+                    <?php echo $this->display_sub_item_list($subform_id);?>
+                </div>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if ($subform_site==$site_id || current_user_can('administrator')) {?>
@@ -558,7 +560,6 @@ if (!class_exists('subforms')) {
             if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
-            <div id="sub-item-list">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -589,9 +590,6 @@ if (!class_exists('subforms')) {
                         }
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
-<?php /*                            
-                            <td style="text-align:center;"><?php echo $sub_item_code;?></td>
-*/?>                            
                             <td style="text-align:center;"></td>
                             <td><?php echo $sub_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
@@ -608,7 +606,6 @@ if (!class_exists('subforms')) {
                 <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
-            </div>
             <div id="sub-item-dialog" title="Sub item dialog"></div>
             <?php
             return ob_get_clean();
