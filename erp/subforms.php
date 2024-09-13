@@ -637,7 +637,7 @@ if (!class_exists('subforms')) {
             $profiles_class = new display_profiles();
             $is_site_admin = $profiles_class->is_site_admin();
             if (current_user_can('administrator')) $is_site_admin = true;
-            $subform_id = get_post_meta($sub_item_id, 'subform_id', true);
+            //$subform_id = get_post_meta($sub_item_id, 'subform_id', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);

@@ -262,7 +262,6 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_sub_item_dialog_data',
-                    //'_category_id': $("#category-id").val(),
                     '_subform_id': subform_id,
                 },
                 success: function (response) {
@@ -330,7 +329,8 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_sub_item_dialog_data',
-                            '_subform_id': subform_id,
+                            //'_subform_id': subform_id,
+                            '_subform_id': $("#subform-id").val(),
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
                             '_sub_item_type': $("#sub-item-type").val(),
@@ -356,7 +356,8 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_sub_item_dialog_data',
-                                '_subform_id': subform_id,
+                                //'_subform_id': subform_id,
+                                '_subform_id': $("#subform-id").val(),
                                 '_sub_item_id': $("#sub-item-id").val(),
                             },
                             success: function (response) {
