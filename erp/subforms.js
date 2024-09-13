@@ -333,9 +333,9 @@ jQuery(document).ready(function($) {
                             '_subform_id': subform_id,
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
-                            '_sub_item_code': $("#sub-item-code").val(),
                             '_sub_item_type': $("#sub-item-type").val(),
                             '_sub_item_default': $("#sub-item-default").val(),
+                            '_sub_item_code': $("#sub-item-code").val(),
                         },
                         success: function (response) {
                             $("#sub-item-dialog").dialog('close');

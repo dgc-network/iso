@@ -2293,10 +2293,9 @@ if (!class_exists('display_documents')) {
                 'fields' => 'ids' // Only return post IDs
             );
             $query = new WP_Query($args);
-        
+
             // Initialize an array to accumulate post IDs
             $accumulated_post_ids = array();
-        
             if ($query->have_posts()) {
                 foreach ($query->posts as $field_id) {
                     $args = array(
@@ -2310,15 +2309,12 @@ if (!class_exists('display_documents')) {
                         ),
                         'fields' => 'ids', // Retrieve only the IDs of the posts
                     );
-                    
                     // Retrieve the post IDs
                     $post_ids = get_posts($args);
-        
                     // Merge the retrieved post IDs with the accumulated array
                     $accumulated_post_ids = array_merge($accumulated_post_ids, $post_ids);
                 }
             }
-        
             // Return the accumulated post IDs
             return $accumulated_post_ids;
         }
@@ -2343,7 +2339,6 @@ if (!class_exists('display_documents')) {
                 'fields' => 'ids' // Only return post IDs
             );
             $query = new WP_Query($args);
-
             return $query; 
         }
     }

@@ -467,9 +467,9 @@ if (!class_exists('subforms')) {
                 $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
                         $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
                         $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         $new_sub_item = array(
                             'post_title'    => get_the_title(),
@@ -479,9 +479,9 @@ if (!class_exists('subforms')) {
                             'post_type'     => 'sub-item',
                         );    
                         $sub_item_id = wp_insert_post($new_sub_item);
-                        update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
                         update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
                         update_post_meta($sub_item_id, 'sub_item_default', $sub_item_default);
+                        update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
                         update_post_meta($sub_item_id, 'sorting_key', $sorting_key);
                         update_post_meta($sub_item_id, 'subform_id', $post_id);
                     endwhile;
@@ -589,7 +589,10 @@ if (!class_exists('subforms')) {
                         }
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
+<?php /*                            
                             <td style="text-align:center;"><?php echo $sub_item_code;?></td>
+*/?>                            
+                            <td style="text-align:center;">.</td>
                             <td><?php echo $sub_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
@@ -619,8 +622,7 @@ if (!class_exists('subforms')) {
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
-
-            // Add category_id to meta_query if it is not false
+            // Add sunform_id to meta_query if it is not false
             if ($subform_id !== false) {
                 $args['meta_query'][] = array(
                     array(
@@ -629,7 +631,6 @@ if (!class_exists('subforms')) {
                     ),
                 );
             }
-
             $query = new WP_Query($args);
             return $query;
         }
@@ -641,15 +642,13 @@ if (!class_exists('subforms')) {
             if (current_user_can('administrator')) $is_site_admin = true;
             $subform_id = get_post_meta($sub_item_id, 'subform_id', true);
             $sub_item_title = get_the_title($sub_item_id);
-            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
+            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             ?>
             <fieldset>
                 <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
-                <label for="sub-item-code"><?php echo __( '#: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-item-code" value="<?php echo esc_attr($sub_item_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-item-title" value="<?php echo esc_attr($sub_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
@@ -663,6 +662,8 @@ if (!class_exists('subforms')) {
                 </select>
                 <label for="sub-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-item-default" value="<?php echo esc_attr($sub_item_default);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="sub-item-code"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
+                <input type="text" id="sub-item-code" value="<?php echo esc_attr($sub_item_code);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -753,11 +754,11 @@ if (!class_exists('subforms')) {
             if ($sub_item_type=='heading') {
                 if ($sub_item_default) {
                     ?>
-                    <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                    <?php echo $sub_item_title.' '.$sub_item_code?><br>
                     <?php    
                 } else {
                     ?>
-                    <b><?php echo $sub_item_code.' '.$sub_item_title?></b><br>
+                    <b><?php echo $sub_item_title.' '.$sub_item_code?></b><br>
                     <?php    
                 }
             } elseif ($sub_item_type=='checkbox') {
@@ -767,27 +768,27 @@ if (!class_exists('subforms')) {
                 <?php
             } elseif ($sub_item_type=='textarea') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
                 <textarea id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
                 <?php
             } elseif ($sub_item_type=='text') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
                 <input type="text" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='number') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_code.' '.$sub_item_title);?></label>
+                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
                 <input type="number" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="number ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='radio') {
                 $is_checked = ($field_value==1) ? 'checked' : '';
                 ?>
-                <input type="radio" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <input type="radio" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_title.' '.$sub_item_code?><br>
                 <?php
             } else {
                 ?>
-                <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <?php echo $sub_item_title.' '.$sub_item_code?><br>
                 <?php
             }
 
