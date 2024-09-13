@@ -592,7 +592,7 @@ if (!class_exists('subforms')) {
 <?php /*                            
                             <td style="text-align:center;"><?php echo $sub_item_code;?></td>
 */?>                            
-                            <td style="text-align:center;">.</td>
+                            <td style="text-align:center;"></td>
                             <td><?php echo $sub_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
@@ -656,9 +656,10 @@ if (!class_exists('subforms')) {
                     <option value="heading" <?php echo ($sub_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="checkbox" <?php echo ($sub_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
                     <option value="text" <?php echo ($sub_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="number" <?php echo ($sub_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($sub_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($sub_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($sub_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="_product" <?php echo ($sub_item_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                 </select>
                 <label for="sub-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-item-default" value="<?php echo esc_attr($sub_item_default);?>" class="text ui-widget-content ui-corner-all" />

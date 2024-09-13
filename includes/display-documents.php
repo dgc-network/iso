@@ -1216,13 +1216,17 @@ if (!class_exists('display_documents')) {
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
                         $sub_report_id = get_the_id();
-                        ?><tr id="edit-sub-report-<?php the_ID();?>"><td style="text-align:center;">.</td><?php
+                        ?><tr id="edit-sub-report-<?php the_ID();?>"><td style="text-align:center;"></td><?php
                         $query = $items_class->retrieve_sub_item_list_data($subform_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
-                                $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
+                                $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
+                                if ($field_type=='_product') {
+                                    $product_code = get_post_meta($field_value, 'product_code', true);
+                                    $field_value = get_the_title($field_value).'('.$product_code.')'; 
+                                }
                                 ?><td <?php echo $text_align;?>><?php echo esc_html($field_value);?></td><?php
                             endwhile;
                             wp_reset_postdata();
@@ -1274,16 +1278,25 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        ?>
+                        <label for="<?php echo esc_attr($subform_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
+                        <?php
                         if ($sub_report_id) {
                             $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
                         } else {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
-                        ?>
-                        <label for="<?php echo esc_attr($subform_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
-                        <input type="text" id="<?php echo esc_attr($subform_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                        <?php
-        
+                        $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
+                        if ($field_type=='_product') {
+                            $cards_class = new erp_cards();
+                            ?>
+                            <select id="<?php echo esc_attr($subform_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
+                            <?php
+                        } else {
+                            ?>
+                            <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($subform_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                            <?php    
+                        }
                     endwhile;
                     wp_reset_postdata();
                 endif;
