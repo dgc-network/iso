@@ -14,8 +14,6 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
-    //$('.multiple-select').select2();
-
     $("#apply-site-admin").on("click", function () {
         window.location.replace('/');
     })
@@ -55,7 +53,7 @@ jQuery(document).ready(function($) {
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
 
-        if (window.confirm("Are you sure you want to add "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
+        if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -104,7 +102,8 @@ jQuery(document).ready(function($) {
     });
 
     $("#search-document").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
+        //window.location.replace("?_search="+$(this).val());
+        window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
     });
 

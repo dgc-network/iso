@@ -279,7 +279,7 @@ if (!class_exists('display_documents')) {
             );
 
             $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $paged = 1;
+            //if ($search_query) $paged = 1;
             $number_filter = array(
                 'key'     => 'doc_number',
                 'value'   => $search_query,
