@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#search-todo").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
+        window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
     });
 
@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#search-start-job").on( "change", function() {
-        window.location.replace("?_search="+$(this).val());
+        window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
     });
 

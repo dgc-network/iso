@@ -6,10 +6,8 @@ jQuery(document).ready(function($) {
             .val(text)
             .appendTo("body")
             .select();
-    
         // Execute the copy command
         document.execCommand("copy");
-    
         // Remove the textarea from the document
         textarea.remove();
     }
@@ -17,26 +15,21 @@ jQuery(document).ready(function($) {
     $("#apply-site-admin").on("click", function () {
         window.location.replace('/');
     })
-    
+
     $("#statement-prev-step").on("click", function () {
         window.location.replace('/');
-        //window.location.replace(window.location.href);
     })
-    
+
     $("#statement-next-step").on("click", function () {
         iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
-
         // Initialize an empty array to store the key-value pairs
         const keyValuePairs = [];
-
         // Select all elements with the specified class and iterate over them
         $('.your-class-name').each(function() {
             // Get the key from the data attribute
             const key = $(this).data('key');
-            
             let value;
-            
             // Check if the element is a checkbox or radio button
             if ($(this).is(':checkbox') || $(this).is(':radio')) {
                 // Set the value to 1 if checked, otherwise set it to 0
@@ -45,14 +38,11 @@ jQuery(document).ready(function($) {
                 // Get the value (for input elements) or text content (for others)
                 value = $(this).val() || $(this).text();
             }
-        
             // Add the key-value pair to the array
             keyValuePairs.push({ [key]: value });
         });
-        
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
-
         if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
@@ -92,7 +82,6 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });        
-
         }
     });
     
@@ -102,7 +91,6 @@ jQuery(document).ready(function($) {
     });
 
     $("#search-document").on( "change", function() {
-        //window.location.replace("?_search="+$(this).val());
         window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
     });
@@ -172,6 +160,7 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").show();
             $("#doc-frame-div").hide();
         }
+
         if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
             $("#system-report-div").show();
             $("#mermaid-div").hide();
@@ -253,7 +242,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
             ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
             ajaxData['_prev_start_time'] = $("#prev-start-time").val();
-                    
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -331,11 +320,11 @@ jQuery(document).ready(function($) {
                 window.location.replace('/display-profiles/?_select_profile=employee-card');
             }
         });
-    
+
         $("#doc-report-preview").on("click", function () {
             get_doc_report_list_data(doc_id);
         });
-    
+
         $("#doc-frame-preview").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -369,21 +358,17 @@ jQuery(document).ready(function($) {
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
         });
-
     }
 
     function activate_published_document_data(doc_id){
         $("#share-document").on("click", function() {
             var homeAddress = window.location.origin;
             var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
-        
             // Copy the text to clipboard
             copyToClipboard(textToCopy);
-        
             // Show the custom alert message
             var alertBox = $("<div class='custom-alert'>Ducument is copied to clipboard</div>");
             $("body").append(alertBox);
-            
             // Center the alert box
             alertBox.css({
                 position: "fixed",
@@ -391,7 +376,6 @@ jQuery(document).ready(function($) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
             });
-        
             alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
                 $(this).remove();
             });
@@ -400,69 +384,7 @@ jQuery(document).ready(function($) {
         $("#signature-record").on("click", function () {
             $("#signature-record-div").toggle()
         });
-/*
-        $("#doc-frame-unpublished").on("click", function () {
-            if (window.confirm("Are you sure you want to unpublish this document?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'reset_document_todo_status',
-                        //'_doc_id': doc_id,
-                        '_report_id': report_id,
-                    },
-                    success: function (response) {
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_doc_frame');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }    
-        });
 
-        $("#doc-report-unpublished").on("click", function () {
-            if (window.confirm("Are you sure you want to unpublish this document?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'reset_document_todo_status',
-                        //'_doc_id': doc_id,
-                        '_report_id': report_id,
-                    },
-                    success: function (response) {
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_doc_report');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }    
-        });
-*/
         $("#doc-frame-exit").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
@@ -782,10 +704,10 @@ jQuery(document).ready(function($) {
         const ajaxData = {
             'action': 'get_doc_report_list_data',
         };
-    
+
         if (doc_id) ajaxData['_doc_id'] = doc_id;
         if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
-    
+
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -801,7 +723,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
+
     function activate_doc_report_dialog_data(response){
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
@@ -811,7 +733,7 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = $("#report-id").val();
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
-        
+
             $.each(response.doc_fields, function(index, value) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
@@ -896,7 +818,6 @@ jQuery(document).ready(function($) {
                     'action': 'del_doc_report_dialog_data',
                 };                        
                 ajaxData['_report_id'] = report_id;
-                    
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
