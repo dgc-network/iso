@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#search-start-job").on( "change", function() {
-        window.location.replace("?_search="+$(this).val()+"&paged=1");
+        window.location.replace("?_select_todo=start-job&_search="+$(this).val()+"&paged=1");
         $(this).val('');
     });
 
