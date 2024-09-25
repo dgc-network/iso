@@ -7,6 +7,7 @@ require_once plugin_dir_path( __FILE__ ) . 'iot-messages.php';
 require_once plugin_dir_path( __FILE__ ) . 'business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'open-ai-api.php';
+require_once plugin_dir_path( __FILE__ ) . 'line-login-api.php';
 
 function web_service_menu() {
     add_options_page(
