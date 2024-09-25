@@ -678,4 +678,3 @@ function get_site_profile_content() {
 add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
 add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
 
-
