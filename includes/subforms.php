@@ -53,7 +53,8 @@ if (!class_exists('subforms')) {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-            wp_enqueue_script('subforms', plugins_url('subforms.js', __FILE__), array('jquery'), time());
+            //wp_enqueue_script('subforms', plugins_url('subforms.js', __FILE__), array('jquery'), time());
+            wp_enqueue_script('subforms', plugins_url('js/subforms.js', __FILE__), array('jquery'), time());
             wp_localize_script('subforms', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('subforms-nonce'), // Generate nonce

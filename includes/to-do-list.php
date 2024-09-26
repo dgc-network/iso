@@ -37,7 +37,8 @@ if (!class_exists('to_do_list')) {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);        
 
-            wp_enqueue_script('to-do-list', plugins_url('to-do-list.js', __FILE__), array('jquery'), time());
+            //wp_enqueue_script('to-do-list', plugins_url('to-do-list.js', __FILE__), array('jquery'), time());
+            wp_enqueue_script('to-do-list', plugins_url('js/to-do-list.js', __FILE__), array('jquery'), time());
             wp_localize_script('to-do-list', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('to-do-list-nonce'), // Generate nonce
