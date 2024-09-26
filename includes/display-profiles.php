@@ -724,33 +724,33 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <?php if ($site_id==$user_site) {?>
                     <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
+                    <fieldset>
+                        <table class="ui-widget" style="width:100%;">
+                            <thead>
+                                <th></th>
+                                <th><?php echo __( 'Job', 'your-text-domain' );?></th>
+                                <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $query = $this->retrieve_site_job_list_data(0);
+                                if ($query->have_posts()) {
+                                    while ($query->have_posts()) : $query->the_post();
+                                        $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
+                                        $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                                        echo '<tr id="check-user-job-' . get_the_ID() . '">';
+                                        echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                        echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
+                                        echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                        echo '</tr>';
+                                    endwhile;
+                                    wp_reset_postdata();
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </fieldset>
                 <?php }?>
-                <fieldset>
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th></th>
-                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $query = $this->retrieve_site_job_list_data(0);
-                            if ($query->have_posts()) {
-                                while ($query->have_posts()) : $query->the_post();
-                                    $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
-                                    $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                                    echo '<tr id="check-user-job-' . get_the_ID() . '">';
-                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
-                                    echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
-                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
-                                    echo '</tr>';
-                                endwhile;
-                                wp_reset_postdata();
-                            }        
-                            ?>
-                        </tbody>
-                    </table>
-                </fieldset>
                 <?php
                 if (current_user_can('administrator')) {
                     $current_user_id = get_current_user_id();
