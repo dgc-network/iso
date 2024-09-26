@@ -7,7 +7,7 @@ if (!class_exists('display_profiles')) {
     class display_profiles {
         // Class constructor
         public function __construct() {
-            add_shortcode( 'display-profiles', array( $this, 'display_shortcode' ) );
+            add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
             //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
 
@@ -92,97 +92,9 @@ if (!class_exists('display_profiles')) {
             </select>
             <?php
         }
-/*
-        function update_post_type_sub_form_to_subform() {
-            global $wpdb;
-            $wpdb->query("UPDATE wp_posts SET post_type = 'subform' WHERE post_type = 'sub-form'");
-        }
-
-        function rename_sub_form_code_to_subform_code_in_subform() {
-            // Set up a query to get all 'subform' posts
-            $args = array(
-                'post_type'      => 'subform',
-                'posts_per_page' => -1, // Get all posts
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'sub_form_code', // Only get posts that have 'category_code' meta key
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-            );
-            
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    
-                    // Get the current post ID
-                    $post_id = get_the_ID();
-        
-                    // Retrieve the 'category_code' meta value
-                    $update_value = get_post_meta($post_id, 'sub_form_code', true);
-        
-                    // If 'category_code' exists, update it to 'form_code'
-                    if (!empty($update_value)) {
-                        // Update the post meta with the new key 'form_code'
-                        update_post_meta($post_id, 'subform_code', $update_value);
-        
-                        // Optionally, delete the old 'category_code' meta key
-                        delete_post_meta($post_id, 'sub_form_code');
-                    }
-                }
-                
-                // Reset post data after custom query
-                wp_reset_postdata();
-            }
-        }
-
-        function rename_sub_form_id_to_subform_id_in_sub_item() {
-            // Set up a query to get all 'sub-item' posts
-            $args = array(
-                'post_type'      => 'sub-item',
-                'posts_per_page' => -1, // Get all posts
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'sub_form_id', // Only get posts that have 'category_id' meta key
-                        'compare' => 'EXISTS',
-                    ),
-                ),
-            );
-            
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    
-                    // Get the current post ID
-                    $post_id = get_the_ID();
-        
-                    // Retrieve the 'category_code' meta value
-                    $update_value = get_post_meta($post_id, 'sub_form_id', true);
-        
-                    // If 'category_code' exists, update it to 'form_code'
-                    if (!empty($update_value)) {
-                        // Update the post meta with the new key 'form_code'
-                        update_post_meta($post_id, 'subform_id', $update_value);
-        
-                        // Optionally, delete the old 'category_code' meta key
-                        delete_post_meta($post_id, 'sub_form_id');
-                    }
-                }
-                
-                // Reset post data after custom query
-                wp_reset_postdata();
-            }
-        }
-*/        
-        // Hook the function to run, or manually call it in an admin action or setup script
-        //add_action('init', 'rename_category_code_to_form_code_in_subform');
 
         // Shortcode to display
-        function display_shortcode() {
+        function display_profiles() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
             elseif (is_user_not_in_site()) display_site_NDA();
@@ -193,11 +105,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-/*
-                if ($_GET['_select_profile']=='update_post_type_sub_form_to_subform') echo $this->update_post_type_sub_form_to_subform();
-                if ($_GET['_select_profile']=='rename_sub_form_code_to_subform_code_in_subform') echo $this->rename_sub_form_code_to_subform_code_in_subform();
-                if ($_GET['_select_profile']=='rename_sub_form_id_to_subform_id_in_sub_item') echo $this->rename_sub_form_id_to_subform_id_in_sub_item();
-*/
+
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -282,10 +190,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-
                 <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
-
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -535,11 +441,6 @@ if (!class_exists('display_profiles')) {
             $unified_number = get_post_meta($site_id, 'unified_number', true);
             $company_phone = get_post_meta($site_id, 'company_phone', true);
             $company_address = get_post_meta($site_id, 'company_address', true);
-            
-            $validation_scope = get_post_meta($site_id, 'validation_scope', true);
-            $verification_standards = get_post_meta($site_id, 'verification_standards', true);
-            $contact_person = get_post_meta($site_id, 'contact_person', true);
-                        
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
@@ -581,14 +482,6 @@ if (!class_exists('display_profiles')) {
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
                 <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
-<?php /*
-                <label for="validation-scope"><?php echo __( '驗證範圍：', 'your-text-domain' );?></label>
-                <input type="text" id="validation-scope" value="<?php echo $validation_scope;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="verification-standards"><?php echo __( '驗證標準：', 'your-text-domain' );?></label>
-                <input type="text" id="verification-standards" value="<?php echo $verification_standards;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="contact-person"><?php echo __( '聯絡人：', 'your-text-domain' );?></label>
-                <input type="text" id="contact-person" value="<?php echo $contact_person;?>" class="text ui-widget-content ui-corner-all" />
-*/?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -925,8 +818,6 @@ if (!class_exists('display_profiles')) {
 
         // Site job
         function display_site_job_list() {
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -958,7 +849,6 @@ if (!class_exists('display_profiles')) {
                         while ($query->have_posts()) : $query->the_post();
                             $job_number = get_post_meta(get_the_ID(), 'job_number', true);
                             $department_id = get_post_meta(get_the_ID(), 'department_id', true);
-                            //$department = get_the_title($department_id);
                             $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                             $content = get_the_content();
                             if ($doc_number) $content .= '('.$doc_number.')';
@@ -1002,7 +892,6 @@ if (!class_exists('display_profiles')) {
         function retrieve_site_job_list_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$is_site_admin = $this->is_site_admin();
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (empty($user_doc_ids)) $user_doc_ids=array();
 
@@ -1077,8 +966,6 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $cards_class = new erp_cards();
             $documents_class = new display_documents();
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -1174,8 +1061,6 @@ if (!class_exists('display_profiles')) {
 
         // doc-action
         function display_doc_action_list($doc_id=false) {
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-action-list">
@@ -1422,8 +1307,6 @@ if (!class_exists('display_profiles')) {
 
         // doc-user
         function display_doc_user_list($doc_id=false) {
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-user-list">
@@ -1469,12 +1352,9 @@ if (!class_exists('display_profiles')) {
                     )
                 )
             );
-        
             $user_query = new WP_User_Query($args);
-        
             // Get the results
             $users = $user_query->get_results();
-        
             return $users;
         }
 
@@ -1520,12 +1400,9 @@ if (!class_exists('display_profiles')) {
                     )
                 )
             );
-        
             $user_query = new WP_User_Query($args);
-        
             // Get the results
             $users = $user_query->get_results();
-        
             return $users;
         }
 

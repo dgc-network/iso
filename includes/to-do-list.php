@@ -215,8 +215,6 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            //$profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
 
@@ -424,8 +422,6 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            //$profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);        
             if ($search_query) $paged = 1;
@@ -945,37 +941,7 @@ if (!class_exists('to_do_list')) {
             endif;
             return false;
         }
-/*
-        function get_document_ids() {
-            $current_user_id = get_current_user_id();
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array(); // Ensure $user_doc_ids is an array                
-            }
-        
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'todo_status',
-                        'value'   => $user_doc_ids,
-                        'compare' => 'IN',
-                    ),
-                ),
-                'fields' => 'ids', // Only get post IDs
-            );
-            // Perform the second query to get documents filtered by todo_status
-            $query = new WP_Query($args);
-        
-            // Fetch the final set of document IDs
-            $document_ids = $query->posts;
-        
-            // Return the array of filtered document IDs
-            return $document_ids;
-        }
-*/
+
         // Register action post type
         function register_action_post_type() {
             $labels = array(

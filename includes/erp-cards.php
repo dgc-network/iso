@@ -79,11 +79,8 @@ if (!class_exists('erp_cards')) {
 
         // customer-card
         function display_customer_card_list() {
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-
             ob_start();
+            $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo(); ?>
             <h2 style="display:inline;"><?php echo __( '客戶列表', 'your-text-domain' ); ?></h2>
@@ -246,13 +243,9 @@ if (!class_exists('erp_cards')) {
             // Get the current user's site ID
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
 
             // Retrieve the site_customer_data meta field
             $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
-
             // Check if site_customer_data is an array and contains the site_id key
             if (is_array($site_customer_data) && isset($site_customer_data[$site_id])) {
                 $customer_code = $site_customer_data[$site_id];
@@ -406,11 +399,8 @@ if (!class_exists('erp_cards')) {
 
         // vendor-card post
         function display_vendor_card_list() {
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-        
             ob_start();
+            $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo(); ?>
             <h2 style="display:inline;"><?php echo __( '廠商列表', 'your-text-domain' ); ?></h2>
@@ -574,10 +564,6 @@ if (!class_exists('erp_cards')) {
             // Get the current user's site ID
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-            //$disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             // Retrieve the site_vendor_data meta field
             $site_vendor_data = get_post_meta($vendor_id, 'site_vendor_data', true);
@@ -745,9 +731,6 @@ if (!class_exists('erp_cards')) {
         function display_product_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '產品列表', 'your-text-domain' );?></h2>
@@ -862,11 +845,6 @@ if (!class_exists('erp_cards')) {
 
         function display_product_card_dialog($product_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-            //$disabled = ($is_site_admin==true) ? '' : 'disabled';
-
             $product_code = get_post_meta($product_id, 'product_code', true);
             $product_title = get_the_title($product_id);
             $product_content = get_post_field('post_content', $product_id);
@@ -961,9 +939,6 @@ if (!class_exists('erp_cards')) {
         function display_equipment_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '設備列表', 'your-text-domain' );?></h2>
@@ -1078,9 +1053,6 @@ if (!class_exists('erp_cards')) {
 
         function display_equipment_card_dialog($equipment_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
             $equipment_title = get_the_title($equipment_id);
             $equipment_content = get_post_field('post_content', $equipment_id);
@@ -1174,9 +1146,6 @@ if (!class_exists('erp_cards')) {
         function display_instrument_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '儀器列表', 'your-text-domain' );?></h2>
@@ -1291,9 +1260,6 @@ if (!class_exists('erp_cards')) {
 
         function display_instrument_card_dialog($instrument_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $instrument_title = get_the_title($instrument_id);
             $instrument_content = get_post_field('post_content', $instrument_id);
@@ -1387,9 +1353,6 @@ if (!class_exists('erp_cards')) {
         function display_department_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '部門列表', 'your-text-domain' );?></h2>
@@ -1504,9 +1467,6 @@ if (!class_exists('erp_cards')) {
 
         function display_department_card_dialog($department_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $department_code = get_post_meta($department_id, 'department_code', true);
             $department_title = get_the_title($department_id);
             $department_content = get_post_field('post_content', $department_id);

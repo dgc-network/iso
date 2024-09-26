@@ -74,10 +74,8 @@ if (!class_exists('subforms')) {
         }
         
         function display_doc_category_list() {
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
+            $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
@@ -145,9 +143,6 @@ if (!class_exists('subforms')) {
         function display_doc_category_dialog($category_id=false) {
             ob_start();
             $cards_class = new erp_cards();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
@@ -232,10 +227,8 @@ if (!class_exists('subforms')) {
         }
         
         function display_subform_list() {
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
+            $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
@@ -370,9 +363,6 @@ if (!class_exists('subforms')) {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $subform_title = get_the_title($subform_id);
             $subform_code = get_post_meta($subform_id, 'subform_code', true);
             $iso_category = get_post_meta($subform_id, 'iso_category', true);
@@ -556,9 +546,6 @@ if (!class_exists('subforms')) {
         }
 
         function display_sub_item_list($subform_id=false) {
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <fieldset>
@@ -573,7 +560,6 @@ if (!class_exists('subforms')) {
                 </thead>
                 <tbody id="sortable-sub-item-list">
                 <?php
-                
                 $query = $this->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -635,10 +621,6 @@ if (!class_exists('subforms')) {
 
         function display_sub_item_dialog($sub_item_id=false) {
             ob_start();
-            $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
-            //$subform_id = get_post_meta($sub_item_id, 'subform_id', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
