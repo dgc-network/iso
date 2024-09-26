@@ -239,8 +239,8 @@ if (!class_exists('iot_messages')) {
         function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $todo_class = new to_do_list();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);

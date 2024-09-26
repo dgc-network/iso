@@ -530,8 +530,8 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $site_content = get_post_field('post_content', $site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
             $company_phone = get_post_meta($site_id, 'company_phone', true);
@@ -547,7 +547,7 @@ if (!class_exists('display_profiles')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('site-profile');?></div>
                 <div style="text-align: right">
-                    <?php if ($is_site_admin) {?>
+                    <?php if (is_site_admin()) {?>
                     <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                     <?php }?>
                 </div>
@@ -659,8 +659,8 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_user_list() {
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             ob_start();
@@ -688,11 +688,11 @@ if (!class_exists('display_profiles')) {
                         }
                         // Loop through the users
                         foreach ($users as $user) {
-                            $is_site_admin = $this->is_site_admin($user->ID, $site_id);
+                            //$is_site_admin = $this->is_site_admin($user->ID, $site_id);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
                             if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
                             else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
-                            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+                            $is_admin_checked = (is_site_admin($user->ID, $site_id)) ? 'checked' : '';
                             ?>
                             <tr id="edit-site-user-<?php echo $user->ID; ?>">
                                 <td style="text-align:center;"><?php echo $display_name; ?></td>
@@ -714,11 +714,11 @@ if (!class_exists('display_profiles')) {
 
         function display_site_user_dialog($user_id=false) {
             ob_start();
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $user_data = get_userdata($user_id);
-            $is_site_admin = $this->is_site_admin($user_id);
-            $is_admin_checked = ($is_site_admin) ? 'checked' : '';
+            //$is_site_admin = $this->is_site_admin($user_id);
+            $is_admin_checked = (is_site_admin($user_id)) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
@@ -927,8 +927,8 @@ if (!class_exists('display_profiles')) {
 
         // Site job
         function display_site_job_list() {
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -984,7 +984,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-site-job" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -1004,7 +1004,7 @@ if (!class_exists('display_profiles')) {
         function retrieve_site_job_list_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $is_site_admin = $this->is_site_admin();
+            //$is_site_admin = $this->is_site_admin();
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (empty($user_doc_ids)) $user_doc_ids=array();
 
@@ -1038,7 +1038,7 @@ if (!class_exists('display_profiles')) {
                 'order'          => 'ASC', // Sorting order (ascending)
             );
 
-            if (!current_user_can('administrator') && !$is_site_admin) {
+            if (!is_site_admin()) {
                 $args['post__in'] = $user_doc_ids; // Value is the array of job post IDs
             }
 
@@ -1079,8 +1079,8 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $cards_class = new erp_cards();
             $documents_class = new display_documents();
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -1088,7 +1088,7 @@ if (!class_exists('display_profiles')) {
             $department_id = get_post_meta($doc_id, 'department_id', true);
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="job-number"><?php echo __( 'Number:', 'your-text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
@@ -1176,8 +1176,8 @@ if (!class_exists('display_profiles')) {
 
         // doc-action
         function display_doc_action_list($doc_id=false) {
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-action-list">
@@ -1222,7 +1222,7 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <?php if ($is_site_admin) {?>
+            <?php if (is_site_admin()) {?>
                 <div id="new-doc-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
@@ -1424,8 +1424,8 @@ if (!class_exists('display_profiles')) {
 
         // doc-user
         function display_doc_user_list($doc_id=false) {
-            $is_site_admin = $this->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $this->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="doc-user-list">
@@ -1451,7 +1451,7 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
-            <?php if ($is_site_admin) {?>
+            <?php if (is_site_admin()) {?>
                 <div id="new-doc-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>

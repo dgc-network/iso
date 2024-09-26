@@ -237,7 +237,7 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
-            if (!is_site_admin('administrator-excluded')) {
+            if (!is_site_admin()||current_user_can('administrator')) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
 
@@ -475,7 +475,7 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
-            if (!is_site_admin('administrator-excluded')) {
+            if (!is_site_admin()||current_user_can('administrator')) {
                 $args['post__in'] = $user_doc_ids; // Array of document post IDs
             }
 

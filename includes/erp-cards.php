@@ -79,8 +79,8 @@ if (!class_exists('erp_cards')) {
         // customer-card
         function display_customer_card_list() {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             ob_start();
             ?>
@@ -143,7 +143,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-customer-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -246,8 +246,8 @@ if (!class_exists('erp_cards')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             // Retrieve the site_customer_data meta field
             $site_customer_data = get_post_meta($customer_id, 'site_customer_data', true);
@@ -269,7 +269,7 @@ if (!class_exists('erp_cards')) {
             ?>
             <fieldset>
                 <input type="hidden" id="customer-id" value="<?php echo esc_attr($customer_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="customer-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="customer-code" value="<?php echo esc_attr($customer_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="customer-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -406,8 +406,8 @@ if (!class_exists('erp_cards')) {
         // vendor-card post
         function display_vendor_card_list() {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
         
             ob_start();
             ?>
@@ -470,7 +470,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-vendor-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>    
                 <div class="pagination">
@@ -574,8 +574,8 @@ if (!class_exists('erp_cards')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             //$disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             // Retrieve the site_vendor_data meta field
@@ -598,7 +598,7 @@ if (!class_exists('erp_cards')) {
             ?>
             <fieldset>
                 <input type="hidden" id="vendor-id" value="<?php echo esc_attr($vendor_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="vendor-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="vendor-code" value="<?php echo esc_attr($vendor_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="vendor-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -744,8 +744,8 @@ if (!class_exists('erp_cards')) {
         function display_product_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -787,7 +787,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-product-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -862,9 +862,9 @@ if (!class_exists('erp_cards')) {
         function display_product_card_dialog($product_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-            $disabled = ($is_site_admin==true) ? '' : 'disabled';
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
+            //$disabled = ($is_site_admin==true) ? '' : 'disabled';
 
             $product_code = get_post_meta($product_id, 'product_code', true);
             $product_title = get_the_title($product_id);
@@ -872,7 +872,7 @@ if (!class_exists('erp_cards')) {
             ?>
             <fieldset>
                 <input type="hidden" id="product-id" value="<?php echo esc_attr($product_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="product-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="product-code" value="<?php echo esc_attr($product_code);?>" <?php echo $disabled;?> class="text ui-widget-content ui-corner-all" />
                 <label for="product-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -960,8 +960,8 @@ if (!class_exists('erp_cards')) {
         function display_equipment_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -1003,7 +1003,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-equipment-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -1078,15 +1078,15 @@ if (!class_exists('erp_cards')) {
         function display_equipment_card_dialog($equipment_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $equipment_code = get_post_meta($equipment_id, 'equipment_code', true);
             $equipment_title = get_the_title($equipment_id);
             $equipment_content = get_post_field('post_content', $equipment_id);
             ?>
             <fieldset>
                 <input type="hidden" id="equipment-id" value="<?php echo esc_attr($equipment_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="equipment-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="equipment-code" value="<?php echo esc_attr($equipment_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="equipment-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -1173,8 +1173,8 @@ if (!class_exists('erp_cards')) {
         function display_instrument_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -1216,7 +1216,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-instrument-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -1291,15 +1291,15 @@ if (!class_exists('erp_cards')) {
         function display_instrument_card_dialog($instrument_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
             $instrument_title = get_the_title($instrument_id);
             $instrument_content = get_post_field('post_content', $instrument_id);
             ?>
             <fieldset>
                 <input type="hidden" id="instrument-id" value="<?php echo esc_attr($instrument_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="instrument-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="instrument-code" value="<?php echo esc_attr($instrument_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -1386,8 +1386,8 @@ if (!class_exists('erp_cards')) {
         function display_department_card_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -1429,7 +1429,7 @@ if (!class_exists('erp_cards')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-department-card" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -1504,15 +1504,15 @@ if (!class_exists('erp_cards')) {
         function display_department_card_dialog($department_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $department_code = get_post_meta($department_id, 'department_code', true);
             $department_title = get_the_title($department_id);
             $department_content = get_post_field('post_content', $department_id);
             ?>
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="department-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="department-code" value="<?php echo esc_attr($department_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>

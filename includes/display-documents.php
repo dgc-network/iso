@@ -338,8 +338,8 @@ if (!class_exists('display_documents')) {
             $cards_class = new erp_cards();
             $items_class = new subforms();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();            
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();            
+            //if (current_user_can('administrator')) $is_site_admin = true;
 
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
@@ -464,7 +464,7 @@ if (!class_exists('display_documents')) {
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <?php if ($is_site_admin) {?>
+                        <?php if (is_site_admin()) {?>
                             <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                             <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
                         <?php }?>
@@ -485,10 +485,10 @@ if (!class_exists('display_documents')) {
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                 $cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
-                $is_site_admin = $profiles_class->is_site_admin();
-                if (current_user_can('administrator')) $is_site_admin = true;
+                //$is_site_admin = $profiles_class->is_site_admin();
+                //if (current_user_can('administrator')) $is_site_admin = true;
 
-                if ($is_site_admin) $response['html_contain'] = $this->display_document_dialog($doc_id);
+                if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
                 else { // General Users in site
                     if ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
                     elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
@@ -1236,8 +1236,8 @@ if (!class_exists('display_documents')) {
         function display_sub_report_list($subform_id=false, $report_id=false) {
             $items_class = new subforms();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <input type="hidden" id="subform-id" value="<?php echo esc_attr($subform_id);?>">
@@ -1289,7 +1289,7 @@ if (!class_exists('display_documents')) {
                 ?>
                 </tbody>
             </table>
-            <?php if ($is_site_admin) {?>
+            <?php if (is_site_admin()) {?>
                 <div id="new-sub-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
@@ -1316,14 +1316,14 @@ if (!class_exists('display_documents')) {
         function display_sub_report_dialog($sub_report_id=false, $subform_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $report_id = get_post_meta($sub_report_id, 'report_id', true);
             //$field_id = $subform_id;
             ?>
             <fieldset>
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
                 $items_class = new subforms();
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
@@ -1419,8 +1419,8 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_list($doc_id=false) {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <div id="fields-container">
@@ -1458,7 +1458,7 @@ if (!class_exists('display_documents')) {
                         ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
             </fieldset>
@@ -1498,8 +1498,8 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_dialog($field_id=false) {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $field_title = get_post_meta($field_id, 'field_title', true);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
@@ -1509,7 +1509,7 @@ if (!class_exists('display_documents')) {
             ?>
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
@@ -2139,9 +2139,9 @@ if (!class_exists('display_documents')) {
         function display_sub_item_contains($subform_id){
             $items_class = new subforms();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
-            if ($is_site_admin) {
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
+            if (is_site_admin()) {
                 $query = $items_class->retrieve_sub_item_list_data($subform_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();

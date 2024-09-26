@@ -74,8 +74,8 @@ if (!class_exists('subforms')) {
         
         function display_doc_category_list() {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -112,7 +112,7 @@ if (!class_exists('subforms')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
             </fieldset>
@@ -145,15 +145,15 @@ if (!class_exists('subforms')) {
             ob_start();
             $cards_class = new erp_cards();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
@@ -232,8 +232,8 @@ if (!class_exists('subforms')) {
         
         function display_subform_list() {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -274,7 +274,7 @@ if (!class_exists('subforms')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-subform" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -370,8 +370,8 @@ if (!class_exists('subforms')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             $subform_title = get_the_title($subform_id);
             $subform_code = get_post_meta($subform_id, 'subform_code', true);
             $iso_category = get_post_meta($subform_id, 'iso_category', true);
@@ -381,7 +381,7 @@ if (!class_exists('subforms')) {
             ?>
             <fieldset>
                 <input type="hidden" id="subform-id" value="<?php echo esc_attr($subform_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="subform-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="subform-code" value="<?php echo esc_attr($subform_code);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="subform-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
@@ -556,8 +556,8 @@ if (!class_exists('subforms')) {
 
         function display_sub_item_list($subform_id=false) {
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ob_start();
             ?>
             <fieldset>
@@ -602,7 +602,7 @@ if (!class_exists('subforms')) {
                 ?>
                 </tbody>
             </table>
-            <?php if ($is_site_admin) {?>
+            <?php if (is_site_admin()) {?>
                 <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
@@ -635,8 +635,8 @@ if (!class_exists('subforms')) {
         function display_sub_item_dialog($sub_item_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             //$subform_id = get_post_meta($sub_item_id, 'subform_id', true);
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
@@ -645,7 +645,7 @@ if (!class_exists('subforms')) {
             ?>
             <fieldset>
                 <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr($is_site_admin);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="sub-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <input type="text" id="sub-item-title" value="<?php echo esc_attr($sub_item_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
