@@ -51,39 +51,39 @@ function wp_enqueue_scripts_and_styles() {
     $version = '1.0.5.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-    wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __DIR__), '', time());
+    wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', time());
 
-    wp_enqueue_script('iso-helper', plugins_url('assets/js/iso-helper.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('iso-helper', plugins_url('/assets/js/iso-helper.js', __DIR__), array('jquery'), time());
     wp_localize_script('iso-helper', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('iso-helper-nonce'), // Generate nonce
     ));
 
-    wp_enqueue_script('display-documents', plugins_url('assets/js/display-documents.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('display-documents', plugins_url('/assets/js/display-documents.js', __DIR__), array('jquery'), time());
     wp_localize_script('display-documents', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('display-documents-nonce'), // Generate nonce
     ));                
 
-    wp_enqueue_script('to-do-list', plugins_url('assets/js/to-do-list.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('to-do-list', plugins_url('/assets/js/to-do-list.js', __DIR__), array('jquery'), time());
     wp_localize_script('to-do-list', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('to-do-list-nonce'), // Generate nonce
     ));                
 
-    wp_enqueue_script('display-profiles', plugins_url('assets/js/display-profiles.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('display-profiles', plugins_url('/assets/js/display-profiles.js', __DIR__), array('jquery'), time());
     wp_localize_script('display-profiles', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('display-profiles-nonce'), // Generate nonce
     ));                
 
-    wp_enqueue_script('erp-cards', plugins_url('assets/js/erp-cards.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('erp-cards', plugins_url('/assets/js/erp-cards.js', __DIR__), array('jquery'), time());
     wp_localize_script('erp-cards', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('erp-cards-nonce'), // Generate nonce
     ));                
 
-    wp_enqueue_script('subforms', plugins_url('assets/js/subforms.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('subforms', plugins_url('/assets/js/subforms.js', __DIR__), array('jquery'), time());
     wp_localize_script('subforms', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('subforms-nonce'), // Generate nonce
