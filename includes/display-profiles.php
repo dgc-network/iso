@@ -261,57 +261,6 @@ if (!class_exists('display_profiles')) {
             }
         }
 
-        function get_transactions_by_key_value_pair($key_value_pair = array()) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            if (!empty($key_value_pair)) {
-                foreach ($key_value_pair as $key => $value) {
-                    $args = array(
-                        'post_type'  => 'doc-field',
-                        'posts_per_page' => -1, // Retrieve all posts
-                        'meta_query' => array(
-                            array(
-                                'key'   => 'field_type',
-                                'value' => $key,
-                                'compare' => '='
-                            )
-                        ),
-                        'fields' => 'ids' // Only return post IDs
-                    );
-
-                    // Execute the query
-                    $query = new WP_Query($args);
-
-                    $doc_ids = array();
-                    if ($query->have_posts()) {
-                        foreach ($query->posts as $field_id) {
-                            $doc_id = get_post_meta($field_id, 'doc_id', true);
-                            $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            // Ensure the doc ID is unique
-                            if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
-                                $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
-                                $documents_class = new display_documents();
-                                $params = array(
-                                    'doc_id'         => $doc_id,
-                                    'key_value_pair' => $key_value_pair,
-                                );
-                                $doc_report = $documents_class->retrieve_doc_report_list_data($params);
-                                if ($doc_report->have_posts()) {
-                                    echo $doc_title. ':';
-                                    echo '<fieldset>';
-                                    echo $documents_class->get_doc_report_native_list($doc_id, false, $key_value_pair);
-                                    echo '</fieldset>';    
-                                }        
-                            }
-                        }
-                        return $query->posts; // Return the array of post IDs
-                    }
-                }    
-            }
-            return array(); // Return an empty array if no posts are found
-        }
-
         // my-profile scripts
         function display_my_profile() {
             ob_start();
@@ -339,10 +288,10 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
-                    //'_employees'   => array((string) $current_user_id),
                     '_employees' => get_current_user_id(),
                 );
-                $this->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -936,18 +885,6 @@ if (!class_exists('display_profiles')) {
             }        
             // Update 'site_admin_ids' meta value
             update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
-        }
-
-        function is_site_admin($user_id=false, $site_id=false) {
-            // Get the current user ID
-            if (!$user_id) $user_id = get_current_user_id();
-            if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
-            // Get the user's site_admin_ids as an array
-            $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
-            // If $site_admin_ids is not an array, convert it to an array
-            if (!is_array($site_admin_ids)) $site_admin_ids = array();
-            // Check if the current user has the specified site_id in their metadata
-            return in_array($site_id, $site_admin_ids);
         }
 
         function is_user_doc($doc_id=false, $user_id=false) {

@@ -279,8 +279,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_customer'   => $customer_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
@@ -608,8 +608,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_vendor'   => $vendor_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="company-phone"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo esc_attr($company_phone);?>" class="text ui-widget-content ui-corner-all" />
@@ -884,8 +884,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_product'   => $product_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -1098,8 +1098,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_equipment'   => $equipment_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -1311,8 +1311,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_instrument'   => $instrument_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php
@@ -1526,8 +1526,8 @@ if (!class_exists('erp_cards')) {
                 $key_value_pair = array(
                     '_department'   => $department_id,
                 );
-                $profiles_class = new display_profiles();
-                $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php

@@ -2,8 +2,8 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-//require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
-//require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
+require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
+require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
 require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
@@ -46,57 +46,20 @@ function display_iso_helper_logo() {
     return ob_get_clean();
 }
 
-function display_iso_statement($atts) {
-    ob_start();
-
-    // Extract and sanitize the shortcode attributes
-    $atts = shortcode_atts(array(
-        'parent_category' => false,
-    ), $atts);
-
-    $parent_category = $atts['parent_category'];
-
-    $meta_query = array(
-        'relation' => 'OR',
-    );
-
-    if ($parent_category) {
-        $meta_query[] = array(
-            'key'   => 'parent_category',
-            'value' => $parent_category,
-        );
+function is_site_admin($user_id=false, $site_id=false) {
+    if ($user_id!='administrator-excluded') {
+        if (current_user_can('administrator')) return true;
     }
-
-    $args = array(
-        'post_type'      => 'iso-category',
-        'posts_per_page' => -1,
-        'meta_query'     => $meta_query,
-    );
-
-    $query = new WP_Query($args);
-
-    while ($query->have_posts()) : $query->the_post();
-        $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        $subform = get_post_meta(get_the_ID(), 'subform', true);
-        $start_ai_url = '/display-documents/?_statement=' . $subform;
-        ?>
-        <div class="iso-category-content">
-            <?php the_content(); ?>
-            <div class="wp-block-buttons">
-                <div class="wp-block-button">
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
-                </div>
-                <div class="wp-block-button">
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>                                            
-                </div>
-            </div>
-        </div>
-        <?php
-    endwhile;
-    wp_reset_postdata();
-    return ob_get_clean();
+    // Get the current user ID
+    if (!$user_id) $user_id = get_current_user_id();
+    if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
+    // Get the user's site_admin_ids as an array
+    $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+    // If $site_admin_ids is not an array, convert it to an array
+    if (!is_array($site_admin_ids)) $site_admin_ids = array();
+    // Check if the current user has the specified site_id in their metadata
+    return in_array($site_id, $site_admin_ids);
 }
-add_shortcode('display-iso-statement', 'display_iso_statement');
 
 function set_flex_message($params) {
     $display_name = $params['display_name'];

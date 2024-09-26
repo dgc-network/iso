@@ -214,8 +214,8 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
+            //$profiles_class = new display_profiles();
+            //$is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);
 
@@ -237,7 +237,7 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
-            if (!$is_site_admin) {
+            if (!is_site_admin('administrator-excluded')) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
 
@@ -423,8 +423,8 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
+            //$profiles_class = new display_profiles();
+            //$is_site_admin = $profiles_class->is_site_admin();
 
             $search_query = sanitize_text_field($_GET['_search']);        
             if ($search_query) $paged = 1;
@@ -475,7 +475,7 @@ if (!class_exists('to_do_list')) {
                 ),
             );
 
-            if (!$is_site_admin) {
+            if (!is_site_admin('administrator-excluded')) {
                 $args['post__in'] = $user_doc_ids; // Array of document post IDs
             }
 

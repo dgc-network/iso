@@ -55,8 +55,10 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
 
+            add_shortcode('display-iso-statement', array( $this, 'display_iso_statement'));
             add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
+
             add_action( 'wp_ajax_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );                                                                    
         }
@@ -81,7 +83,6 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
-                    //$iso_category_id = sanitize_text_field($_GET['_statement']);
                     $subform_id = sanitize_text_field($_GET['_statement']);
                     $iso_category_id = get_post_meta($subform_id, 'iso_category', true);
                     $iso_category_title = get_the_title($iso_category_id);
@@ -97,7 +98,6 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
                         <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                        <?php //echo $this->display_sub_item_list_with_inputs($iso_category_id);?>
                         <fieldset>
                             <?php echo $this->display_sub_item_contains($subform_id);?>
                         </fieldset>
@@ -186,8 +186,8 @@ if (!class_exists('display_documents')) {
             }
             $items_class = new subforms();
             $profiles_class = new display_profiles();
-            $is_site_admin = $profiles_class->is_site_admin();
-            if (current_user_can('administrator')) $is_site_admin = true;
+            //$is_site_admin = $profiles_class->is_site_admin();
+            //if (current_user_can('administrator')) $is_site_admin = true;
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -246,7 +246,7 @@ if (!class_exists('display_documents')) {
                     ?>
                     </tbody>
                 </table>
-                <?php if ($is_site_admin) {?>
+                <?php if (is_site_admin()) {?>
                     <div id="new-document" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
                 <div class="pagination">
@@ -457,8 +457,8 @@ if (!class_exists('display_documents')) {
                     $key_value_pair = array(
                         '_document'   => $doc_id,
                     );
-                    $profiles_class = new display_profiles();
-                    $profiles_class->get_transactions_by_key_value_pair($key_value_pair);
+                    //$profiles_class = new display_profiles();
+                    $this->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
 
                 <hr>
@@ -1179,6 +1179,57 @@ if (!class_exists('display_documents')) {
                 }
             }
             wp_send_json($response);
+        }
+
+        function get_transactions_by_key_value_pair($key_value_pair = array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            if (!empty($key_value_pair)) {
+                foreach ($key_value_pair as $key => $value) {
+                    $args = array(
+                        'post_type'  => 'doc-field',
+                        'posts_per_page' => -1, // Retrieve all posts
+                        'meta_query' => array(
+                            array(
+                                'key'   => 'field_type',
+                                'value' => $key,
+                                'compare' => '='
+                            )
+                        ),
+                        'fields' => 'ids' // Only return post IDs
+                    );
+
+                    // Execute the query
+                    $query = new WP_Query($args);
+
+                    $doc_ids = array();
+                    if ($query->have_posts()) {
+                        foreach ($query->posts as $field_id) {
+                            $doc_id = get_post_meta($field_id, 'doc_id', true);
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            // Ensure the doc ID is unique
+                            if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
+                                $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
+                                $documents_class = new display_documents();
+                                $params = array(
+                                    'doc_id'         => $doc_id,
+                                    'key_value_pair' => $key_value_pair,
+                                );
+                                $doc_report = $documents_class->retrieve_doc_report_list_data($params);
+                                if ($doc_report->have_posts()) {
+                                    echo $doc_title. ':';
+                                    echo '<fieldset>';
+                                    echo $documents_class->get_doc_report_native_list($doc_id, false, $key_value_pair);
+                                    echo '</fieldset>';    
+                                }        
+                            }
+                        }
+                        return $query->posts; // Return the array of post IDs
+                    }
+                }    
+            }
+            return array(); // Return an empty array if no posts are found
         }
 
         // sub-report
@@ -2103,6 +2154,57 @@ if (!class_exists('display_documents')) {
             }
         }
 
+        function display_iso_statement($atts) {
+            ob_start();
+        
+            // Extract and sanitize the shortcode attributes
+            $atts = shortcode_atts(array(
+                'parent_category' => false,
+            ), $atts);
+        
+            $parent_category = $atts['parent_category'];
+        
+            $meta_query = array(
+                'relation' => 'OR',
+            );
+        
+            if ($parent_category) {
+                $meta_query[] = array(
+                    'key'   => 'parent_category',
+                    'value' => $parent_category,
+                );
+            }
+        
+            $args = array(
+                'post_type'      => 'iso-category',
+                'posts_per_page' => -1,
+                'meta_query'     => $meta_query,
+            );
+        
+            $query = new WP_Query($args);
+        
+            while ($query->have_posts()) : $query->the_post();
+                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
+                $subform = get_post_meta(get_the_ID(), 'subform', true);
+                $start_ai_url = '/display-documents/?_statement=' . $subform;
+                ?>
+                <div class="iso-category-content">
+                    <?php the_content(); ?>
+                    <div class="wp-block-buttons">
+                        <div class="wp-block-button">
+                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
+                        </div>
+                        <div class="wp-block-button">
+                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>                                            
+                        </div>
+                    </div>
+                </div>
+                <?php
+            endwhile;
+            wp_reset_postdata();
+            return ob_get_clean();
+        }
+        
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
