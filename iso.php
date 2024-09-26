@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 if ( headers_sent( $file, $line ) ) {
     error_log( "Headers already sent in $file on line $line" );
 }
-
+/*
 function register_session() {
     if ( ! session_id() && ! is_rest_request() ) {
         session_start();
@@ -32,21 +32,21 @@ function is_rest_request() {
 }
 
 add_action( 'init', 'register_session', 1 );
-
+*/
 
 /*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
-/*
+
 function register_session() {
     if ( ! session_id() ) {
         session_start();
     }
 }
 add_action( 'init', 'register_session', 1 );
-*/
+
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
       show_admin_bar(false);
@@ -84,7 +84,7 @@ function isURL($str) {
     return preg_match($pattern, $str) === 1;
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'erp/erp-cards.php';
-require_once plugin_dir_path( __FILE__ ) . 'erp/subforms.php';
+//require_once plugin_dir_path( __FILE__ ) . 'erp/erp-cards.php';
+//require_once plugin_dir_path( __FILE__ ) . 'erp/subforms.php';
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
