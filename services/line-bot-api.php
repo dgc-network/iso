@@ -46,31 +46,31 @@ if (!class_exists('line_bot_api')) {
 
             // Register fields for Line bot section
             add_settings_field(
-                'line-bot-token-option',
+                'line_bot_token_option',
                 'Line bot Token',
                 array( $this, 'line_bot_token_option_callback' ),
                 'web-service-settings',
                 'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line-bot-token-option');
+            register_setting('web-service-settings', 'line_bot_token_option');
 
             add_settings_field(
-                'line-official-account',
+                'line_official_account',
                 'Line official account',
                 array( $this, 'line_official_account_callback' ),
                 'web-service-settings',
                 'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line-official-account');
+            register_setting('web-service-settings', 'line_official_account');
 
             add_settings_field(
-                'line-official-qr-code',
+                'line-official_qr_code',
                 'Line official qr-code',
                 array( $this, 'line_official_qr_code_callback' ),
                 'web-service-settings',
                 'line-bot-section-settings'
             );
-            register_setting('web-service-settings', 'line-official-qr-code');
+            register_setting('web-service-settings', 'line_official_qr_code');
         }
 
         function line_bot_section_settings_callback() {

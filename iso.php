@@ -20,36 +20,22 @@ if (!defined('ABSPATH')) {
 if ( headers_sent( $file, $line ) ) {
     error_log( "Headers already sent in $file on line $line" );
 }
-/*
-function register_session() {
-    if ( ! session_id() && ! is_rest_request() ) {
-        session_start();
-    }
-}
 
 function is_rest_request() {
     return defined( 'REST_REQUEST' ) && REST_REQUEST;
 }
 
+function register_session() {
+    if ( ! session_id() && ! is_rest_request() ) {
+        session_start();
+    }
+}
 add_action( 'init', 'register_session', 1 );
-*/
-
 /*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
-
-function register_session() {
-    if ( ! session_id() ) {
-        //session_start();
-        ob_start();
-        session_start();
-        ob_end_clean();
-    }
-}
-add_action( 'init', 'register_session', 1 );
-/*
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -99,10 +85,10 @@ function isURL($str) {
     $pattern = '/^(http|https):\/\/[^ "]+$/';
     return preg_match($pattern, $str) === 1;
 }
-*/
-require_once plugin_dir_path( __FILE__ ) . 'services/line-login-api.php';
-//require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
-//require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
+
+//require_once plugin_dir_path( __FILE__ ) . 'services/line-login-api.php';
+require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
 
 add_shortcode( 'line-login', 'user_is_not_logged_in' );
 function user_is_not_logged_in() {
