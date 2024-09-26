@@ -345,7 +345,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
     return ob_get_clean();
 }
 
-// User is not logged in system yet
+// User is not logged in yet
 function user_is_not_logged_in() {
     $state = bin2hex(random_bytes(16)); // Generate a random string
     set_transient('line_login_state', $state, 3600); // Save it for 1 hour
@@ -359,7 +359,8 @@ function user_is_not_logged_in() {
             <img src="https://s3.ap-southeast-1.amazonaws.com/app-assets.easystore.co/apps/154/icon.png" alt="LINE Login">
         </a><br>
         <p style="text-align: center;">
-            <?php echo __( 'You are not logged in. Please click the above button to log in.', 'your-text-domain' );?><br>
+            <?php echo __( 'You are not logged in.', 'your-text-domain' );?><br>
+            <?php echo __( 'Please click the above button to log in.', 'your-text-domain' );?><br>
         </p>
     </div>
     <?php            
