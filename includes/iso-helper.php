@@ -33,7 +33,7 @@ function wp_enqueue_scripts_and_styles() {
         'nonce'    => wp_create_nonce('iso-helper-nonce'), // Generate nonce
     ));
 
-    wp_enqueue_script('display-documents', plugins_url('/assets/js/display-documents.js', __DIR__), array('jquery'), time());
+    wp_enqueue_script('display-documents', plugins_url('assets/js/display-documents.js', __DIR__), array('jquery'), time());
     wp_localize_script('display-documents', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('display-documents-nonce'), // Generate nonce
