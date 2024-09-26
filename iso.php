@@ -46,7 +46,7 @@ function register_session() {
     }
 }
 add_action( 'init', 'register_session', 1 );
-
+/*
 function wp_enqueue_scripts_and_styles() {
     $version = '1.0.5.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -91,7 +91,7 @@ function wp_enqueue_scripts_and_styles() {
 
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
-
+*/
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
       show_admin_bar(false);

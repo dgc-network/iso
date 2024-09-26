@@ -20,7 +20,7 @@ function admin_enqueue_scripts_and_styles() {
     ));
 }
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
-/*
+
 function wp_enqueue_scripts_and_styles() {
     $version = '1.0.5.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -65,7 +65,7 @@ function wp_enqueue_scripts_and_styles() {
 
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
-*/
+
 function display_iso_helper_logo() {
     ob_start();
     $current_user_id = get_current_user_id();
