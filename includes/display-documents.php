@@ -8,7 +8,7 @@ if (!class_exists('display_documents')) {
         // Class constructor
         public function __construct() {
             add_action('wp_enqueue_scripts', array( $this,'add_mermaid_script'));
-            add_shortcode( 'display-documents', array( $this, 'display_shortcode'  ) );
+            add_shortcode( 'display-documents', array( $this, 'display_documents'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
@@ -76,7 +76,7 @@ if (!class_exists('display_documents')) {
         }        
 
         // Shortcode to display
-        function display_shortcode() {
+        function display_documents() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();
             elseif (is_user_not_in_site()) display_site_NDA();
