@@ -2,11 +2,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-//require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
-//require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
-//require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
-//require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
-//require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
+require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
+require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
+require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
+require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
+require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
 
 function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
