@@ -2,11 +2,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
-require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
-require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
-require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
-require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
+//require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
+//require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
+//require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
+//require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
+//require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
 
 function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -295,6 +295,7 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 }
 
 // User is not logged in yet
+add_shortcode( 'line-login', 'user_is_not_logged_in' );
 function user_is_not_logged_in() {
     $state = bin2hex(random_bytes(16)); // Generate a random string
     set_transient('line_login_state', $state, 3600); // Save it for 1 hour
