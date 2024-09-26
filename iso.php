@@ -49,7 +49,7 @@ function register_session() {
     }
 }
 add_action( 'init', 'register_session', 1 );
-
+/*
 function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -99,7 +99,7 @@ function isURL($str) {
     $pattern = '/^(http|https):\/\/[^ "]+$/';
     return preg_match($pattern, $str) === 1;
 }
-
+*/
 require_once plugin_dir_path( __FILE__ ) . 'services/line-login-api.php';
 //require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 //require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
