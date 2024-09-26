@@ -62,7 +62,7 @@ if (!class_exists('to_do_list')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
-            elseif (is_user_not_in_site()) display_site_profile_NDA();
+            elseif (is_user_not_in_site()) display_site_NDA();
             else {
 
                 if (isset($_GET['_id'])) {

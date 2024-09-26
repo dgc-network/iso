@@ -79,7 +79,7 @@ function display_iso_helper_logo() {
 }
 
 function is_site_admin($user_id=false, $site_id=false) {
-    if (current_user_can('administrator')) return true;
+    if (!$user_id && current_user_can('administrator')) return true;
     // Get the current user ID
     if (!$user_id) $user_id = get_current_user_id();
     if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
@@ -612,7 +612,7 @@ function is_user_not_in_site($user_id=false) {
     return false;
 }
 
-function display_site_profile_NDA($user_id=false) {
+function display_site_NDA($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $user = get_userdata($user_id);
     $site_id = get_user_meta($user_id, 'site_id', true);            

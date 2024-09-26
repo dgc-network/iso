@@ -185,7 +185,7 @@ if (!class_exists('display_profiles')) {
         function display_shortcode() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
-            elseif (is_user_not_in_site()) display_site_profile_NDA();
+            elseif (is_user_not_in_site()) display_site_NDA();
             else {
                 echo '<div class="ui-widget" id="result-container">';
 
@@ -526,13 +526,11 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site-profile', $args );
         }
 
-        function display_site_profile($initial=false) {
+        function display_site_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $site_content = get_post_field('post_content', $site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
             $company_phone = get_post_meta($site_id, 'company_phone', true);
