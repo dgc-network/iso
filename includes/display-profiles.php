@@ -658,8 +658,6 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_site_user_list() {
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             ob_start();
@@ -687,7 +685,6 @@ if (!class_exists('display_profiles')) {
                         }
                         // Loop through the users
                         foreach ($users as $user) {
-                            //$is_site_admin = $this->is_site_admin($user->ID, $site_id);
                             $user_site = get_user_meta($user->ID, 'site_id', true);
                             if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
                             else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
@@ -713,10 +710,10 @@ if (!class_exists('display_profiles')) {
 
         function display_site_user_dialog($user_id=false) {
             ob_start();
-            //$is_site_admin = $this->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_data = get_userdata($user_id);
-            //$is_site_admin = $this->is_site_admin($user_id);
+            $user_site = get_user_meta($user_id, 'site_id', true);
             $is_admin_checked = (is_site_admin($user_id)) ? 'checked' : '';
             ?>
             <fieldset>
@@ -725,7 +722,9 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
+                <?php if ($site_id==$user_site) {?>
+                    <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
+                <?php }?>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
