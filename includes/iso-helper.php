@@ -295,7 +295,6 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 }
 
 // User is not logged in yet
-add_shortcode( 'line-login', 'user_is_not_logged_in' );
 function user_is_not_logged_in() {
     $state = bin2hex(random_bytes(16)); // Generate a random string
     set_transient('line_login_state', $state, 3600); // Save it for 1 hour
