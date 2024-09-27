@@ -110,15 +110,3 @@ function user_is_not_logged_in() {
     <?php            
 }
 */
-add_shortcode( 'line-login', 'display_message' );
-function display_message() {
-    echo '<pre>';
-    echo 'Auth Cookie: ' . print_r($_COOKIE, true) . "\n\n";
-    $user = wp_get_current_user();
-    echo 'User object: ' . print_r($user, true);
-    echo '</pre>';
-    if (is_user_logged_in()) {
-    } else {
-        user_is_not_logged_in();
-    }
-}
