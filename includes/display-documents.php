@@ -2065,9 +2065,16 @@ if (!class_exists('display_documents')) {
         }
 
         function get_doc_count_by_category($iso_category_id=false) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+            $args = array(
+                'post_type'   => 'site-profile',
+                'post_status' => 'publish', // Only look for published pages
+                'title'       => 'iso-helper.com',
+                'numberposts' => 1,         // Limit the number of results to one
+            );            
+            $post = get_posts($args);
             $site_id = $post->ID;
 
             // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria

@@ -329,7 +329,14 @@ if (!class_exists('erp_cards')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $customer_code = time();
-                $post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+                //$post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+                $args = array(
+                    'post_type'   => 'site-profile',
+                    'post_status' => 'publish', // Only look for published pages
+                    'title'       => 'iso-helper.com',
+                    'numberposts' => 1,         // Limit the number of results to one
+                );            
+                $post = get_posts($args);
                 $post_content = get_post_field('post_content', $post->ID);
     
                 $new_post = array(
@@ -649,7 +656,14 @@ if (!class_exists('erp_cards')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $vendor_code = time();
-                $post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+                //$post = get_page_by_title('iso-helper.com', OBJECT, 'site-profile');
+                $args = array(
+                    'post_type'   => 'site-profile',
+                    'post_status' => 'publish', // Only look for published pages
+                    'title'       => 'iso-helper.com',
+                    'numberposts' => 1,         // Limit the number of results to one
+                );            
+                $post = get_posts($args);
                 $post_content = get_post_field('post_content', $post->ID);
 
                 $new_post = array(
