@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
     // JavaScript to detect mobile browser
-/*    
     if (/Mobi/.test(navigator.userAgent)) {
         // User is on a mobile device
         $('.mobile-content').show();
@@ -8,7 +7,7 @@ jQuery(document).ready(function($) {
         // User is not on a mobile device, send one-time password via Line
         $('.desktop-content').show();
     }
-*/
+
     $("#user-email-input").on( "change", function() {
         $.ajax({
             type: 'POST',
