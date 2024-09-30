@@ -485,7 +485,7 @@ if (!class_exists('subforms')) {
         }
 
         function select_subform_options($selected_option=0) {
-            $query = $this->retrieve_subform_data();
+            $query = $this->retrieve_subform_data(0);
             $options = '<option value="">Select sub form</option>';
             while ($query->have_posts()) : $query->the_post();
                 $subform_code = get_post_meta(get_the_ID(), 'subform_code', true);
