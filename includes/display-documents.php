@@ -55,7 +55,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_doc_field_list_data', array( $this, 'sort_doc_field_list_data' ) );
 
-            add_shortcode('display-iso-statement', array( $this, 'display_iso_statement'));
             add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
             add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
 
@@ -2136,57 +2135,6 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function display_iso_statement($atts) {
-            ob_start();
-        
-            // Extract and sanitize the shortcode attributes
-            $atts = shortcode_atts(array(
-                'parent_category' => false,
-            ), $atts);
-        
-            $parent_category = $atts['parent_category'];
-        
-            $meta_query = array(
-                'relation' => 'OR',
-            );
-        
-            if ($parent_category) {
-                $meta_query[] = array(
-                    'key'   => 'parent_category',
-                    'value' => $parent_category,
-                );
-            }
-        
-            $args = array(
-                'post_type'      => 'iso-category',
-                'posts_per_page' => -1,
-                'meta_query'     => $meta_query,
-            );
-        
-            $query = new WP_Query($args);
-        
-            while ($query->have_posts()) : $query->the_post();
-                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-                $subform = get_post_meta(get_the_ID(), 'subform', true);
-                $start_ai_url = '/display-documents/?_statement=' . $subform;
-                ?>
-                <div class="iso-category-content">
-                    <?php the_content(); ?>
-                    <div class="wp-block-buttons">
-                        <div class="wp-block-button">
-                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
-                        </div>
-                        <div class="wp-block-button">
-                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>                                            
-                        </div>
-                    </div>
-                </div>
-                <?php
-            endwhile;
-            wp_reset_postdata();
-            return ob_get_clean();
-        }
-        
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
