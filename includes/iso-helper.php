@@ -70,9 +70,7 @@ function display_iso_category_contains($atts) {
             <?php the_content(); ?>
             <div class="wp-block-buttons">
                 <div class="wp-block-button">
-                    <?php if ($category_url) {?>
                     <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
-                    <?php }?>
                 </div>
                 <div class="wp-block-button">
                     <?php if ($subform) {?>
