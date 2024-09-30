@@ -78,6 +78,8 @@ function display_iso_category_contains($atts) {
                     <?php }?>
                 </div>
             </div>
+            <!-- Spacer -->
+            <div style="height: 20px;"></div> <!-- Adjust the height as needed -->
         </div>
         <?php
     endwhile;
