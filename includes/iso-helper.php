@@ -223,6 +223,11 @@ function init_webhook_events() {
                                 if ( $query->have_posts() ) {
                                     $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
                                     $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
+                                    wp_redirect($link_uri);
+                                    exit;
+
+                                    ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
+
                                     $params = [
                                         'display_name' => $display_name,
                                         'link_uri' => $link_uri,
