@@ -34,7 +34,6 @@ function display_iso_helper_logo() {
 
 function display_iso_category_contains($atts) {
     ob_start();
-
     // Extract and sanitize the shortcode attributes
     $atts = shortcode_atts(array(
         'parent_category' => false,
@@ -105,7 +104,6 @@ function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
     $text_message = $params['text_message'];
-
     // Flex Message JSON structure with a button
     return [
         'type' => 'flex',
@@ -204,7 +202,7 @@ function init_webhook_events() {
                         $query = get_keyword_matched($message['text']);
                         if ($query) {
                             if ($query==-1) {
-                                $text_message = 'You have not logged in yet. Please click the button below to go to the Login/Registration system.';
+                                $text_message = 'You are not logged in yet. Please click the button below to go to the Login/Registration system.';
                                 $text_message = __( '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。', 'your-text-domain' );
                                 // Encode the Chinese characters for inclusion in the URL
                                 $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
@@ -224,7 +222,7 @@ function init_webhook_events() {
                             } else {
                                 if ( $query->have_posts() ) {
                                     $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
-                                    $link_uri = home_url().'/to-do-list/?_search='.urlencode($message['text']);
+                                    $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
                                     $params = [
                                         'display_name' => $display_name,
                                         'link_uri' => $link_uri,
@@ -267,13 +265,13 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 function get_keyword_matched($search_query) {
-
+/*
     if (strpos($search_query, '註冊') !== false) return -1;
     if (strpos($search_query, '登入') !== false) return -1;
     if (strpos($search_query, '登錄') !== false) return -1;
     if (strpos($search_query, 'login') !== false) return -1;
     if (strpos($search_query, 'Login') !== false) return -1;
-
+*/
     // WP_Query arguments
     $args = array(
         'post_type'      => 'document',
@@ -309,6 +307,12 @@ function get_keyword_matched($search_query) {
     return false;
 }
 
+// User is not logged in yet
+function user_is_not_logged_in() {
+    $line_login_api = new line_login_api();
+    $line_login_api->display_line_login_button();
+}
+/*
 function proceed_to_registration_login($line_user_id, $display_name) {
     // Using Line User ID to register and login into the system
     $users = get_users( array( 'meta_value' => $line_user_id ));
@@ -352,9 +356,6 @@ function proceed_to_registration_login($line_user_id, $display_name) {
 
 // User is not logged in yet
 function user_is_not_logged_in() {
-    $line_login_api = new line_login_api();
-    $line_login_api->display_line_login_button();
-/*
     if( isset($_GET['_id']) && isset($_GET['_name']) ) {
         // Using Line User ID to register and login into the system
         $array = get_users( array( 'meta_value' => $_GET['_id'] ));
@@ -419,7 +420,6 @@ function user_is_not_logged_in() {
         </div>
         <?php
     }
-*/        
 }
 
 function send_one_time_password() {
@@ -574,10 +574,9 @@ function wp_login_submit() {
 }
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
-
+*/
 function get_users_by_site_id($site_id) {
     global $wpdb;
-
     // Query to find user IDs with the matching site_id
     $user_ids = $wpdb->get_col(
         $wpdb->prepare(
@@ -593,7 +592,7 @@ function get_users_by_site_id($site_id) {
     return $user_ids;
 }
 
-function is_user_not_in_site($user_id=false) {
+function is_site_not_found($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $user = get_userdata($user_id);
     // Get the site_id meta for the user
@@ -606,7 +605,7 @@ function is_user_not_in_site($user_id=false) {
     return false;
 }
 
-function display_site_NDA($user_id=false) {
+function get_NDA_assignment($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $user = get_userdata($user_id);
     $site_id = get_user_meta($user_id, 'site_id', true);            
@@ -652,7 +651,7 @@ function display_site_NDA($user_id=false) {
     <?php
 }
 
-function set_nda_submit_data() {
+function set_NDA_assignment() {
     $response = array();
     if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
         $user_id = intval($_POST['_user_id']);        
@@ -664,8 +663,8 @@ function set_nda_submit_data() {
     }
     wp_send_json($response);
 }
-add_action( 'wp_ajax_set_nda_submit_data', 'set_nda_submit_data' );
-add_action( 'wp_ajax_nopriv_set_nda_submit_data', 'set_nda_submit_data' );
+add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
+add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
 
 function get_site_profile_content() {
     // Check if the site_id is passed

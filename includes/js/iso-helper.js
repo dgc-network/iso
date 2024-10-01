@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_nda_submit_data',
+                'action': 'set_NDA_assignment',
                 '_site_id': $("#select-nda-site").val(),
                 '_unified_number': $("#unified-number").val(),
                 '_display_name': $("#display-name").val(),

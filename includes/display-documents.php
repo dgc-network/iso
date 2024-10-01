@@ -77,7 +77,7 @@ if (!class_exists('display_documents')) {
         function display_documents() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();
-            elseif (is_user_not_in_site()) display_site_NDA();
+            elseif (is_site_not_found()) get_NDA_assignment();
             else {
 
                 // Display ISO statement
