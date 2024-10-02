@@ -308,12 +308,22 @@ function init_webhook_events() {
                                 ]);
                             } else {
                                 if ( $query->have_posts() ) {
+                                    $body_contents = array();
+                                    foreach ($query as $post) {
+                                        $body_content = array(
+                                            'type' => 'text',
+                                            'text' => get_the_title($post->ID),
+                                            'wrap' => true,                            
+                                        );
+                                        $body_contents[] = $body_content;
+                                    } 
                                     $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
                                     $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
                                     $params = [
                                         'display_name' => $display_name,
                                         'link_uri' => $link_uri,
                                         'text_message' => $text_message,
+                                        'body_contents' => $body_contents,
                                     ];
                                     //$flexMessage = set_flex_message($params);
                                     $flexMessage = set_bubble_message($params);
