@@ -287,6 +287,49 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         $query = get_keyword_matched($message['text']);
+                        if ( $query->have_posts() ) {
+                            $body_contents = array();
+                            
+                            while ( $query->have_posts() ) {
+                                $query->the_post(); // Setup post data
+                        
+                                // Create a body content array for each post
+                                $body_content = array(
+                                    'type' => 'text',
+                                    'text' => get_the_title(),  // Get the current post's title
+                                    'wrap' => true,
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => 'View Post',
+                                        'uri' => get_permalink(), // Add a link to the post if needed
+                                    ),
+                                );
+                                $body_contents[] = $body_content;
+                            } 
+                        
+                            // Reset post data after custom loop
+                            wp_reset_postdata();
+                        
+                            $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
+                        
+                            $params = array(
+                                'display_name' => $display_name,
+                                'link_uri' => $link_uri,
+                                'text_message' => $text_message,
+                                'body_contents' => $body_contents, // Include body contents in params
+                            );
+                        
+                            // Generate the Flex Message
+                            $flexMessage = set_bubble_message($params);
+                        
+                            // Send the Flex Message via LINE API
+                            $line_bot_api->replyMessage(array(
+                                'replyToken' => $event['replyToken'],
+                                'messages' => array($flexMessage),
+                            ));
+                        //}
+/*                        
                         if ($query) {
                             if ($query==-1) {
                                 $text_message = 'You are not logged in yet. Please click the button below to go to the Login/Registration system.';
@@ -333,6 +376,7 @@ function init_webhook_events() {
                                     ]);
                                 }
                             }
+*/                                
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
