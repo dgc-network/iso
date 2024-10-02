@@ -444,37 +444,6 @@ if (!class_exists('to_do_list')) {
                         'value'   => 1,
                         'compare' => '=',
                     ),
-/*
-                    array(
-                        'key'     => 'doc_number',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'relation' => 'OR',
-                        array(
-                            'key'     => 'todo_status',
-                            'compare' => 'NOT EXISTS',
-                        ),
-                        array(
-                            'key'     => 'todo_status',
-                            'value'   => -2,
-                            'compare' => '=',
-                        ),
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'todo_status',
-                                'value'   => -1,
-                                'compare' => '=',
-                            ),
-                            array(
-                                'key'     => 'is_doc_report',
-                                'value'   => 1,
-                                'compare' => '=',
-                            ),
-                        ),
-                    ),
-*/                    
                 ),
             );
 

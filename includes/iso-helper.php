@@ -153,7 +153,7 @@ function set_bubble_message($params) {
     $header_contents = $params['header_contents'];
     $body_contents = $params['body_contents'];
     $footer_contents = $params['footer_contents'];
-
+/*
     // Header contents can be modified as needed or left empty if not used
     if (empty($header_contents)) {
         $header_contents = array(
@@ -192,7 +192,7 @@ function set_bubble_message($params) {
             ),
         );
     }
-
+*/
     // Initial bubble message structure
     $bubble_message = array(
         'type' => 'flex',
@@ -293,28 +293,36 @@ function init_webhook_events() {
                         ));
                         $todo_class = new to_do_list();
                         $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
-                        //$query = $todo_class->retrieve_start_job_data();
                         //$query = get_keyword_matched($message['text']);
                         if ( $query->have_posts() ) {
                             $body_contents = array();
-                            
+                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $body_content = array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            );
+                            $body_contents[] = $body_content;
+
                             while ( $query->have_posts() ) {
                                 $query->the_post(); // Setup post data
-                        
+                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
                                 // Create a body content array for each post
                                 $body_content = array(
                                     'type' => 'text',
-                                    'text' => get_the_title(),  // Get the current post's title
+                                    //'text' => get_the_title(),  // Get the current post's title
+                                    'text' => '。 '.$doc_title,  // Get the current post's title
                                     'wrap' => true,
                                     'action' => array(
                                         'type' => 'uri',
                                         'label' => 'View Post',
-                                        'uri' => get_permalink(), // Add a link to the post if needed
+                                        //'uri' => get_permalink(), // Add a link to the post if needed
+                                        'uri' => $link_uri, // Add a link to the post if needed
                                     ),
                                 );
                                 $body_contents[] = $body_content;
                             } 
-                        
                             // Reset post data after custom loop
                             wp_reset_postdata();
                         
