@@ -80,7 +80,11 @@ if (!class_exists('to_do_list')) {
 
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
                 if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
-                if ($_GET['_select_todo']=='start-job') echo $this->display_start_job_list();
+                if ($_GET['_select_todo']=='start-job') {
+                    if (isset($_GET['_job_id'])) echo $this->display_start_job_dialog($_GET['_job_id']);
+                    else echo $this->display_start_job_list();
+                }
+                
                 if ($_GET['_select_todo']=='signature') $this->display_signature_record();
                 if ($_GET['_select_todo']=='cron-events') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
