@@ -100,6 +100,251 @@ function is_site_admin($user_id=false, $site_id=false) {
     return in_array($site_id, $site_admin_ids);
 }
 
+// User is not logged in yet
+function user_is_not_logged_in() {
+    $line_login_api = new line_login_api();
+    $line_login_api->display_line_login_button();
+}
+
+function get_users_by_site_id($site_id) {
+    global $wpdb;
+    // Query to find user IDs with the matching site_id
+    $user_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "
+            SELECT user_id 
+            FROM $wpdb->usermeta 
+            WHERE meta_key = 'site_id' 
+            AND meta_value = %s
+            ",
+            $site_id
+        )
+    );
+    return $user_ids;
+}
+
+function is_site_not_found($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    // Get the site_id meta for the user
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    
+    // Check if site_id does not exist or is empty
+    if (empty($site_id)) {
+        return true;
+    }
+    return false;
+}
+
+function get_NDA_assignment($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    $site_id = get_user_meta($user_id, 'site_id', true);            
+    ?>
+    <div class="ui-widget" id="result-container">
+        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+        <div>
+            <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+            <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
+                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site-profile',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
+                    }
+                ?>
+            </select>
+            <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+            <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
+        </div>
+        <div>
+            <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
+            <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
+            <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
+            <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
+        </div>
+        <div id="site-content">
+            <!-- The site content will be displayed here -->
+        </div>
+        <div style="display:flex;">
+            <?php echo __( '日期：', 'your-text-domain' );?>
+            <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
+        </div>
+        <hr>
+        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+    </div>
+    <?php
+}
+
+function set_NDA_assignment() {
+    $response = array();
+    if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
+        $user_id = intval($_POST['_user_id']);        
+        $site_id = intval($_POST['_site_id']);        
+        update_user_meta( $user_id, 'site_id', $site_id);
+        update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
+        update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
+add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
+
+function get_site_profile_content() {
+    // Check if the site_id is passed
+    if(isset($_POST['site_id'])) {
+        $site_id = intval($_POST['site_id']);
+
+        // Retrieve the post content
+        $post = get_post($site_id);
+
+        if($post && $post->post_type == 'site-profile') {
+            wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
+        } else {
+            wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
+        }
+    } else {
+        wp_send_json_error(array('message' => 'No site ID provided.'));
+    }
+}
+add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
+add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
+
+function init_webhook_events() {
+    $line_bot_api = new line_bot_api();
+    $open_ai_api = new open_ai_api();
+
+    $entityBody = file_get_contents('php://input');
+    $data = json_decode($entityBody, true);
+    $events = $data['events'] ?? [];
+
+    foreach ((array)$events as $event) {
+        $line_user_id = $event['source']['userId'];
+        $profile = $line_bot_api->getProfile($line_user_id);
+        $display_name = str_replace(' ', '', $profile['displayName']);
+
+        // Regular expression to detect URLs
+        $urlRegex = '/\bhttps?:\/\/\S+\b/';
+        // Match URLs in the text
+        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
+            // Extract the matched URLs
+            $urls = $matches[0];
+            // Output the detected URLs
+            foreach ($urls as $url) {
+                // Parse the URL
+                $parsed_url = parse_url($url);
+                // Check if the URL contains a query string
+                if (isset($parsed_url['query'])) {
+                    // Parse the query string
+                    parse_str($parsed_url['query'], $query_params);
+                    // Check if the 'doc_id' parameter exists in the query parameters
+                    if (isset($query_params['_get_shared_doc_id'])) {
+                        // Retrieve the value of the 'doc_id' parameter
+                        $doc_id = $query_params['_get_shared_doc_id'];
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
+                    }
+                }
+                $params = [
+                    'display_name' => $display_name,
+                    'link_uri' => $url,
+                    'text_message' => $text_message,
+                ];
+                $flexMessage = set_flex_message($params);
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [$flexMessage],
+                ]);            
+            }
+        }
+        
+        // Regular webhook response
+        switch ($event['type']) {
+            case 'message':
+                $message = $event['message'];
+                switch ($message['type']) {
+                    case 'text':
+                        global $wpdb;
+                        $user_id = $wpdb->get_var($wpdb->prepare(
+                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                            $line_user_id
+                        ));
+                        $todo_class = new to_do_list();
+                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
+                        if ( $query->have_posts() ) {
+                            $body_contents = array();
+                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $body_content = array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            );
+                            $body_contents[] = $body_content;
+
+                            while ( $query->have_posts() ) {
+                                $query->the_post(); // Setup post data
+                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
+                                // Create a body content array for each post
+                                $body_content = array(
+                                    'type' => 'text',
+                                    'text' => '。 '.$doc_title,  // Get the current post's title
+                                    'wrap' => true,
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => 'View Post',
+                                        'uri' => $link_uri, // Add a link to the post if needed
+                                    ),
+                                );
+                                $body_contents[] = $body_content;
+                            } 
+                            // Reset post data after custom loop
+                            wp_reset_postdata();
+
+                            // Generate the Flex Message
+                            $flexMessage = $line_bot_api->set_bubble_message([
+                                'body_contents' => $body_contents,
+                            ]);
+                            // Send the Flex Message via LINE API
+                            $line_bot_api->replyMessage(array(
+                                'replyToken' => $event['replyToken'],
+                                'messages' => array($flexMessage),
+                            ));
+                        } else {
+                            // Open-AI auto reply
+                            $response = $open_ai_api->createChatCompletion($message['text']);
+                            $line_bot_api->replyMessage([
+                                'replyToken' => $event['replyToken'],
+                                'messages' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => $response
+                                    ]                                                                    
+                                ]
+                            ]);
+                        }
+                        break;
+                    default:
+                        error_log('Unsupported message type: ' . $message['type']);
+                        break;
+                }
+                break;
+            default:
+                error_log('Unsupported event type: ' . $event['type']);
+                break;
+        }
+    }
+}
+add_action( 'parse_request', 'init_webhook_events' );
+
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
@@ -232,149 +477,6 @@ function set_bubble_message($params) {
     return $bubble_message;
 }
 
-function init_webhook_events() {
-    $line_bot_api = new line_bot_api();
-    $open_ai_api = new open_ai_api();
-
-    $entityBody = file_get_contents('php://input');
-    $data = json_decode($entityBody, true);
-    $events = $data['events'] ?? [];
-
-    foreach ((array)$events as $event) {
-        $line_user_id = $event['source']['userId'];
-        $profile = $line_bot_api->getProfile($line_user_id);
-        $display_name = str_replace(' ', '', $profile['displayName']);
-
-        // Regular expression to detect URLs
-        $urlRegex = '/\bhttps?:\/\/\S+\b/';
-        // Match URLs in the text
-        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
-            // Extract the matched URLs
-            $urls = $matches[0];
-            // Output the detected URLs
-            foreach ($urls as $url) {
-                // Parse the URL
-                $parsed_url = parse_url($url);
-                // Check if the URL contains a query string
-                if (isset($parsed_url['query'])) {
-                    // Parse the query string
-                    parse_str($parsed_url['query'], $query_params);
-                    // Check if the 'doc_id' parameter exists in the query parameters
-                    if (isset($query_params['_get_shared_doc_id'])) {
-                        // Retrieve the value of the 'doc_id' parameter
-                        $doc_id = $query_params['_get_shared_doc_id'];
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
-                    }
-                }
-                $params = [
-                    'display_name' => $display_name,
-                    'link_uri' => $url,
-                    'text_message' => $text_message,
-                ];
-                $flexMessage = set_flex_message($params);
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [$flexMessage],
-                ]);            
-            }
-        }
-        
-        // Regular webhook response
-        switch ($event['type']) {
-            case 'message':
-                $message = $event['message'];
-                switch ($message['type']) {
-                    case 'text':
-                        global $wpdb;
-                        $user_id = $wpdb->get_var($wpdb->prepare(
-                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
-                            $line_user_id
-                        ));
-                        $todo_class = new to_do_list();
-                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
-                        //$query = get_keyword_matched($message['text']);
-                        if ( $query->have_posts() ) {
-                            $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
-                            $body_content = array(
-                                'type' => 'text',
-                                'text' => $text_message,
-                                'wrap' => true,
-                            );
-                            $body_contents[] = $body_content;
-
-                            while ( $query->have_posts() ) {
-                                $query->the_post(); // Setup post data
-                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
-                                // Create a body content array for each post
-                                $body_content = array(
-                                    'type' => 'text',
-                                    //'text' => get_the_title(),  // Get the current post's title
-                                    'text' => '。 '.$doc_title,  // Get the current post's title
-                                    'wrap' => true,
-                                    'action' => array(
-                                        'type' => 'uri',
-                                        'label' => 'View Post',
-                                        //'uri' => get_permalink(), // Add a link to the post if needed
-                                        'uri' => $link_uri, // Add a link to the post if needed
-                                    ),
-                                );
-                                $body_contents[] = $body_content;
-                            } 
-                            // Reset post data after custom loop
-                            wp_reset_postdata();
-/*                        
-                            $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
-                            $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                        
-                            $params = array(
-                                'display_name' => $display_name,
-                                'link_uri' => $link_uri,
-                                'text_message' => $text_message,
-                                'body_contents' => $body_contents, // Include body contents in params
-                            );
-*/                        
-                            // Generate the Flex Message
-                            $flexMessage = $line_bot_api->set_bubble_message([
-                                //'display_name' => $display_name,
-                                //'link_uri' => $link_uri,
-                                //'text_message' => $text_message,
-                                'body_contents' => $body_contents, // Include body contents in params
-                            ]);
-                            // Send the Flex Message via LINE API
-                            $line_bot_api->replyMessage(array(
-                                'replyToken' => $event['replyToken'],
-                                'messages' => array($flexMessage),
-                            ));
-                        } else {
-                            // Open-AI auto reply
-                            $response = $open_ai_api->createChatCompletion($message['text']);
-                            $line_bot_api->replyMessage([
-                                'replyToken' => $event['replyToken'],
-                                'messages' => [
-                                    [
-                                        'type' => 'text',
-                                        'text' => $response
-                                    ]                                                                    
-                                ]
-                            ]);
-                        }
-                        break;
-                    default:
-                        error_log('Unsupported message type: ' . $message['type']);
-                        break;
-                }
-                break;
-            default:
-                error_log('Unsupported event type: ' . $event['type']);
-                break;
-        }
-    }
-}
-add_action( 'parse_request', 'init_webhook_events' );
-
 function get_keyword_matched($search_query) {
 /*
     if (strpos($search_query, '註冊') !== false) return -1;
@@ -436,123 +538,6 @@ function get_keyword_matched($search_query) {
 
     return false;
 }
-
-// User is not logged in yet
-function user_is_not_logged_in() {
-    $line_login_api = new line_login_api();
-    $line_login_api->display_line_login_button();
-}
-
-function get_users_by_site_id($site_id) {
-    global $wpdb;
-    // Query to find user IDs with the matching site_id
-    $user_ids = $wpdb->get_col(
-        $wpdb->prepare(
-            "
-            SELECT user_id 
-            FROM $wpdb->usermeta 
-            WHERE meta_key = 'site_id' 
-            AND meta_value = %s
-            ",
-            $site_id
-        )
-    );
-    return $user_ids;
-}
-
-function is_site_not_found($user_id=false) {
-    if (empty($user_id)) $user_id=get_current_user_id();
-    $user = get_userdata($user_id);
-    // Get the site_id meta for the user
-    $site_id = get_user_meta($user_id, 'site_id', true);
-    
-    // Check if site_id does not exist or is empty
-    if (empty($site_id)) {
-        return true;
-    }
-    return false;
-}
-
-function get_NDA_assignment($user_id=false) {
-    if (empty($user_id)) $user_id=get_current_user_id();
-    $user = get_userdata($user_id);
-    $site_id = get_user_meta($user_id, 'site_id', true);            
-    ?>
-    <div class="ui-widget" id="result-container">
-        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-        <div>
-            <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
-            <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
-                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                <?php
-                    $site_args = array(
-                        'post_type'      => 'site-profile',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
-                    }
-                ?>
-            </select>
-            <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
-            <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
-        </div>
-        <div>
-            <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
-            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-            <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
-            <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
-            <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
-        </div>
-        <div id="site-content">
-            <!-- The site content will be displayed here -->
-        </div>
-        <div style="display:flex;">
-            <?php echo __( '日期：', 'your-text-domain' );?>
-            <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
-        </div>
-        <hr>
-        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-    </div>
-    <?php
-}
-
-function set_NDA_assignment() {
-    $response = array();
-    if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
-        $user_id = intval($_POST['_user_id']);        
-        $site_id = intval($_POST['_site_id']);        
-        update_user_meta( $user_id, 'site_id', $site_id);
-        update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
-        update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
-        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
-add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
-
-function get_site_profile_content() {
-    // Check if the site_id is passed
-    if(isset($_POST['site_id'])) {
-        $site_id = intval($_POST['site_id']);
-
-        // Retrieve the post content
-        $post = get_post($site_id);
-
-        if($post && $post->post_type == 'site-profile') {
-            wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
-        } else {
-            wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
-        }
-    } else {
-        wp_send_json_error(array('message' => 'No site ID provided.'));
-    }
-}
-add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
-add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
 
 /*
 function proceed_to_registration_login($line_user_id, $display_name) {
