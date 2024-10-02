@@ -347,16 +347,11 @@ function init_webhook_events() {
                             } 
                             // Reset post data after custom loop
                             wp_reset_postdata();
-                        
-                            //$text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
-                            //$link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                        
-                            $params = array(
-                                'body_contents' => $body_contents, // Include body contents in params
-                            );
+
                             // Generate the Flex Message
-                            //$flexMessage = $line_bot_api->set_bubble_message($params);
-                            $flexMessage = set_bubble_message($params);
+                            $flexMessage = $line_bot_api->set_bubble_message(array(
+                                'body_contents' => $body_contents, // Include body contents in params
+                            ));
                             // Send the Flex Message via LINE API
                             $line_bot_api->replyMessage(array(
                                 'replyToken' => $event['replyToken'],
@@ -433,7 +428,7 @@ function set_bubble_message($params) {
 }
 
 
-/*
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
