@@ -290,13 +290,12 @@ function init_webhook_events() {
                     ),
                 );
 
-                $params = array(
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
                     'footer_contents' => $footer_contents,
-                );
-                // Generate the Flex Message
-                $flexMessage = $line_bot_api->set_bubble_message($params);
+                ]);
                 // Send the Flex Message via LINE API
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
@@ -311,6 +310,70 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
+                        global $wpdb;
+                        // Retrieve the user ID based on the 'line_user_id' meta key
+                        $user_id = $wpdb->get_var($wpdb->prepare(
+                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                            $line_user_id
+                        ));
+                        
+                        // Retrieve the data using the custom 'to_do_list' class
+                        $todo_class = new to_do_list();
+                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
+                        
+                        // Check if there are posts to display
+                        if ($query && $query->have_posts()) {
+                            $body_contents = array();
+                            // Text message to be displayed in the Flex Message
+                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                        
+                            // Initial body content for the message
+                            $body_contents[] = array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            );
+                        
+                            // Loop through each post and build the body content for each
+                            while ($query->have_posts()) {
+                                $query->the_post(); // Setup post data for use with template functions
+                        
+                                // Get the document title from post meta
+                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                // Create a link URI for the current post
+                                $link_uri = home_url() . '/to-do-list/?_select_todo=start-job&_job_id=' . get_the_ID();
+                        
+                                // Create a body content array for each post
+                                $body_contents[] = array(
+                                    'type' => 'text',
+                                    'text' => '。 ' . $doc_title,  // Get the current post's title
+                                    'wrap' => true,
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => 'View Post',
+                                        'uri' => $link_uri, // Add a link to the post if needed
+                                    ),
+                                );
+                            }
+                        
+                            // Reset post data after custom loop
+                            wp_reset_postdata();
+                        
+                            // Generate the Flex Message structure
+                            $params = array(
+                                'body_contents' => $body_contents, // Include body contents in params
+                            );
+                            // Assuming set_bubble_message() returns a valid message structure for LINE API
+                            $flexMessage = set_bubble_message($params);
+                        
+                            // Send the Flex Message via LINE API
+                            $line_bot_api->replyMessage(array(
+                                'replyToken' => $event['replyToken'],
+                                'messages' => array($flexMessage),
+                            ));
+/*                            
+                        }
+                        
                         global $wpdb;
                         $user_id = $wpdb->get_var($wpdb->prepare(
                             "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
@@ -357,6 +420,7 @@ function init_webhook_events() {
                                 'replyToken' => $event['replyToken'],
                                 'messages' => array($flexMessage),
                             ));
+*/                            
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
