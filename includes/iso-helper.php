@@ -338,6 +338,9 @@ function init_webhook_events() {
                         
                             // Generate the Flex Message
                             $flexMessage = $line_bot_api->set_bubble_message([
+                                'display_name' => $display_name,
+                                'link_uri' => $link_uri,
+                                'text_message' => $text_message,
                                 'body_contents' => $body_contents, // Include body contents in params
                             ]);
                         
