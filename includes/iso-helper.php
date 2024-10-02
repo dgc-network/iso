@@ -164,7 +164,7 @@ function set_flex_message_enhance($params) {
         ),
     );
 
-    $body_contents = array(
+    $footer_contents = array(
         array(
             'type' => 'button',
             'action' => [
