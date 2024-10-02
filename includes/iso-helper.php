@@ -426,11 +426,13 @@ function get_keyword_matched($search_query) {
         'posts_per_page' => -1,
         'meta_query'     => array(
             'relation' => 'AND',
+/*            
             array(
                 'key'     => 'site_id',
                 'value'   => $site_id,
                 'compare' => '=',
             ),
+*/            
             array(
                 'key'     => 'is_doc_report',
                 'value'   => 1,
