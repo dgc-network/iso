@@ -288,8 +288,8 @@ function init_webhook_events() {
                     case 'text':
                         $todo_class = new to_do_list();
                         //$query = $todo_class->retrieve_start_job_data(0, $message['text']);
-                        $query = $todo_class->retrieve_start_job_data();
-                        //$query = get_keyword_matched($message['text']);
+                        //$query = $todo_class->retrieve_start_job_data();
+                        $query = get_keyword_matched($message['text']);
                         if ( $query->have_posts() ) {
                             $body_contents = array();
                             
@@ -415,16 +415,33 @@ function get_keyword_matched($search_query) {
     if (strpos($search_query, 'login') !== false) return -1;
     if (strpos($search_query, 'Login') !== false) return -1;
 */
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+    if (!is_array($user_doc_ids)) $user_doc_ids = array();
+    
     // WP_Query arguments
-    $args = array(
+        $args = array(
         'post_type'      => 'document',
         'posts_per_page' => -1,
         'meta_query'     => array(
             'relation' => 'AND',
             array(
+                'key'     => 'site_id',
+                'value'   => $site_id,
+                'compare' => '=',
+            ),
+            array(
+                'key'     => 'is_doc_report',
+                'value'   => 1,
+                'compare' => '=',
+            ),
+/*
+            array(
                 'key'     => 'todo_status',
                 'compare' => 'NOT EXISTS',
             ),
+*/            
         ),
     );
 
