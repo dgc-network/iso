@@ -145,7 +145,7 @@ function set_flex_message($params) {
     ];
 }
 
-function set_flex_message_enhance($params) {
+function set_bubble_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
     $text_message = $params['text_message'];
@@ -293,7 +293,7 @@ function init_webhook_events() {
                                         'text_message' => $text_message,
                                     ];
                                     $flexMessage = set_flex_message($params);
-                                    $flexMessage = set_flex_message_enhance($params);
+                                    //$flexMessage = set_bubble_message($params);
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
                                         'messages' => [$flexMessage],
