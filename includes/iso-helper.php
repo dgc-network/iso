@@ -252,12 +252,52 @@ function init_webhook_events() {
                         $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }
                 }
+/*                
                 $params = [
                     'display_name' => $display_name,
                     'link_uri' => $url,
                     'text_message' => $text_message,
                 ];
                 $flexMessage = set_flex_message($params);
+*/
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $url,
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                $params = array(
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                );
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message($params);
+                // Send the Flex Message via LINE API
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
@@ -312,12 +352,8 @@ function init_webhook_events() {
                             //$link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
                         
                             $params = array(
-                                'display_name' => $display_name,
-                                //'link_uri' => $link_uri,
-                                //'text_message' => $text_message,
                                 'body_contents' => $body_contents, // Include body contents in params
                             );
-                        
                             // Generate the Flex Message
                             $flexMessage = $line_bot_api->set_bubble_message($params);
                             // Send the Flex Message via LINE API
@@ -351,7 +387,7 @@ function init_webhook_events() {
     }
 }
 add_action( 'parse_request', 'init_webhook_events' );
-
+/*
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];

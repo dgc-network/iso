@@ -812,12 +812,52 @@ if (!class_exists('to_do_list')) {
             $query = new WP_User_Query($args);
             $users = $query->get_results();
             foreach ($users as $user) {
+/*                
                 $params = [
                     'display_name' => $user->display_name,
                     'link_uri' => $link_uri,
                     'text_message' => $text_message,
                 ];        
                 $flexMessage = set_flex_message($params);
+*/
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $user->display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Use the desired URI
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                $params = array(
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                );
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message($params);
+                // Send the Flex Message via LINE API
                 $line_bot_api->pushMessage([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'messages' => [$flexMessage],
@@ -831,6 +871,7 @@ if (!class_exists('to_do_list')) {
                 $user_ids = get_post_meta($department_id, 'user_ids', true);
                 if (is_array($user_ids)) {
                     foreach ($user_ids as $user_id) {
+/*                        
                         $user = get_userdata($user_id);
                         $params = [
                             'display_name' => $user->display_name,
@@ -838,6 +879,45 @@ if (!class_exists('to_do_list')) {
                             'text_message' => $text_message,
                         ];        
                         $flexMessage = set_flex_message($params);
+*/
+                        $header_contents = array(
+                            array(
+                                'type' => 'text',
+                                'text' => 'Hello, ' . $user->display_name,
+                                'size' => 'lg',
+                                'weight' => 'bold',
+                            ),
+                        );
+        
+                        $body_contents = array(
+                            array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            ),
+                        );
+        
+                        $footer_contents = array(
+                            array(
+                                'type' => 'button',
+                                'action' => array(
+                                    'type' => 'uri',
+                                    'label' => 'Click me!',
+                                    'uri' => $link_uri, // Use the desired URI
+                                ),
+                                'style' => 'primary',
+                                'margin' => 'sm',
+                            ),
+                        );
+        
+                        $params = array(
+                            'header_contents' => $header_contents,
+                            'body_contents' => $body_contents,
+                            'footer_contents' => $footer_contents,
+                        );
+                        // Generate the Flex Message
+                        $flexMessage = $line_bot_api->set_bubble_message($params);
+                        // Send the Flex Message via LINE API        
                         $line_bot_api->pushMessage([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                             'messages' => [$flexMessage],
@@ -849,12 +929,52 @@ if (!class_exists('to_do_list')) {
                 if (is_array($user_ids)) {
                     foreach ($user_ids as $user_id) {
                         $user = get_userdata($user_id);
+/*                        
                         $params = [
                             'display_name' => $user->display_name,
                             'link_uri' => $link_uri,
                             'text_message' => $text_message,
                         ];        
                         $flexMessage = set_flex_message($params);
+*/
+                        $header_contents = array(
+                            array(
+                                'type' => 'text',
+                                'text' => 'Hello, ' . $user->display_name,
+                                'size' => 'lg',
+                                'weight' => 'bold',
+                            ),
+                        );
+        
+                        $body_contents = array(
+                            array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            ),
+                        );
+        
+                        $footer_contents = array(
+                            array(
+                                'type' => 'button',
+                                'action' => array(
+                                    'type' => 'uri',
+                                    'label' => 'Click me!',
+                                    'uri' => $link_uri, // Use the desired URI
+                                ),
+                                'style' => 'primary',
+                                'margin' => 'sm',
+                            ),
+                        );
+        
+                        $params = array(
+                            'header_contents' => $header_contents,
+                            'body_contents' => $body_contents,
+                            'footer_contents' => $footer_contents,
+                        );
+                        // Generate the Flex Message
+                        $flexMessage = $line_bot_api->set_bubble_message($params);
+                        // Send the Flex Message via LINE API        
                         $line_bot_api->pushMessage([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                             'messages' => [$flexMessage],
@@ -898,12 +1018,52 @@ if (!class_exists('to_do_list')) {
             $query = new WP_User_Query($args);
             $users = $query->get_results();
             foreach ($users as $user) {
+/*                
                 $params = [
                     'display_name' => $user->display_name,
                     'link_uri' => $link_uri,
                     'text_message' => $text_message,
                 ];        
                 $flexMessage = set_flex_message($params);
+*/
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $user->display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Use the desired URI
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                $params = array(
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                );
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message($params);
+                // Send the Flex Message via LINE API
                 $line_bot_api->pushMessage([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'messages' => [$flexMessage],

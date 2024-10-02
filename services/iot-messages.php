@@ -202,14 +202,51 @@ if (!class_exists('iot_messages')) {
 
             $user_data = get_userdata($user_id);
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-
+/*
             // Prepare the flex message
             $flexMessage = set_flex_message([
                 'display_name' => $user_data->display_name,
                 'link_uri' => home_url() . '/display-profiles/?_id=' . $user_id,
                 'text_message' => $text_message,
             ]);
+*/
+            $header_contents = array(
+                array(
+                    'type' => 'text',
+                    'text' => 'Hello, ' . $user_data->display_name,
+                    'size' => 'lg',
+                    'weight' => 'bold',
+                ),
+            );
 
+            $body_contents = array(
+                array(
+                    'type' => 'text',
+                    'text' => $text_message,
+                    'wrap' => true,
+                ),
+            );
+
+            $footer_contents = array(
+                array(
+                    'type' => 'button',
+                    'action' => array(
+                        'type' => 'uri',
+                        'label' => 'Click me!',
+                        'uri' => home_url() . '/display-profiles/?_id=' . $user_id,
+                    ),
+                    'style' => 'primary',
+                    'margin' => 'sm',
+                ),
+            );
+
+            $params = array(
+                'header_contents' => $header_contents,
+                'body_contents' => $body_contents,
+                'footer_contents' => $footer_contents,
+            );
+            // Generate the Flex Message
+            $flexMessage = $line_bot_api->set_bubble_message($params);
             // Send the message via the LINE API
             $line_bot_api = new line_bot_api();
             $line_bot_api->pushMessage([
