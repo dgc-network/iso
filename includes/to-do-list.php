@@ -416,13 +416,13 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_start_job_data($paged = 1){
+        function retrieve_start_job_data($paged=1, $search_query=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
-            $search_query = sanitize_text_field($_GET['_search']);        
+            if (!$search_query) $search_query = sanitize_text_field($_GET['_search']);
             if ($search_query) $paged = 1;
 
             $args = array(
@@ -439,6 +439,12 @@ if (!class_exists('to_do_list')) {
                         'value'   => $site_id,
                         'compare' => '=',
                     ),
+                    array(
+                        'key'     => 'is_doc_report',
+                        'value'   => 1,
+                        'compare' => '=',
+                    ),
+/*
                     array(
                         'key'     => 'doc_number',
                         'compare' => 'EXISTS',
@@ -468,8 +474,11 @@ if (!class_exists('to_do_list')) {
                             ),
                         ),
                     ),
+*/                    
                 ),
             );
+
+            if ($paged==0) $args['posts_per_page'] = -1;
 
             if (!is_site_admin()||current_user_can('administrator')) {
                 $args['post__in'] = $user_doc_ids; // Array of document post IDs
