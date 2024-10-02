@@ -416,8 +416,8 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
-        function retrieve_start_job_data($paged=1, $search_query=false){
-            $current_user_id = get_current_user_id();
+        function retrieve_start_job_data($paged=1, $current_user_id=false, $search_query=false){
+            if (!$current_user_id) $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();

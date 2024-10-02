@@ -286,10 +286,15 @@ function init_webhook_events() {
                 $message = $event['message'];
                 switch ($message['type']) {
                     case 'text':
+                        global $wpdb;
+                        $user_id = $wpdb->get_var($wpdb->prepare(
+                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                            $line_user_id
+                        ));
                         $todo_class = new to_do_list();
-                        //$query = $todo_class->retrieve_start_job_data(0, $message['text']);
+                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
                         //$query = $todo_class->retrieve_start_job_data();
-                        $query = get_keyword_matched($message['text']);
+                        //$query = get_keyword_matched($message['text']);
                         if ( $query->have_posts() ) {
                             $body_contents = array();
                             
