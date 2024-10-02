@@ -94,6 +94,94 @@ if (!class_exists('line_bot_api')) {
 
         // Flex message
         function set_bubble_message($params) {
+            $display_name = $params['display_name'];
+            $link_uri = $params['link_uri'];
+            $text_message = $params['text_message'];
+        
+            $header_contents = $params['header_contents'];
+            $body_contents = $params['body_contents'];
+            $footer_contents = $params['footer_contents'];
+        /*
+            // Header contents can be modified as needed or left empty if not used
+            if (empty($header_contents)) {
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+            }
+        
+            // Body contents with text and message details
+            if (empty($body_contents)) {
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+            }
+        
+            // Footer contents with a button
+            if (empty($footer_contents)) {
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Use the desired URI
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+            }
+        */
+            // Initial bubble message structure
+            $bubble_message = array(
+                'type' => 'flex',
+                'altText' => $text_message,
+                'contents' => array(
+                    'type' => 'bubble',
+                ),
+            );
+        
+            // Add header contents if not empty
+            if (is_array($header_contents) && !empty($header_contents)) {
+                $bubble_message['contents']['header'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $header_contents,
+                );
+            }
+        
+            // Add body contents if not empty
+            if (is_array($body_contents) && !empty($body_contents)) {
+                $bubble_message['contents']['body'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $body_contents,
+                );
+            }
+        
+            // Add footer contents if not empty
+            if (is_array($footer_contents) && !empty($footer_contents)) {
+                $bubble_message['contents']['footer'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $footer_contents,
+                );
+            }
+        
+            return $bubble_message;
+        }
+        
+/*        
+        function set_bubble_message($params) {
             // Initial bubble message structure
             $bubble_message = array(
                 'type' => 'flex',
@@ -135,7 +223,7 @@ if (!class_exists('line_bot_api')) {
         
             return $bubble_message;
         }
-
+*/
         // line-bot-api
         public function broadcastMessage($message) {
             $header = array(
