@@ -144,7 +144,7 @@ if (!class_exists('line_bot_api')) {
             // Initial bubble message structure
             $bubble_message = array(
                 'type' => 'flex',
-                'altText' => $text_message,
+                //'altText' => $text_message,
                 'contents' => array(
                     'type' => 'bubble',
                 ),
