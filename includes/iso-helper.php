@@ -150,38 +150,48 @@ function set_bubble_message($params) {
     $link_uri = $params['link_uri'];
     $text_message = $params['text_message'];
 
+    $header_contents = $params['header_contents'];
+    $body_contents = $params['body_contents'];
+    $footer_contents = $params['footer_contents'];
+
     // Header contents can be modified as needed or left empty if not used
-    $header_contents = array(
-        array(
-            'type' => 'text',
-            'text' => 'Hello, ' . $display_name,
-            'size' => 'lg',
-            'weight' => 'bold',
-        ),
-    );
+    if (empty($header_contents)) {
+        $header_contents = array(
+            array(
+                'type' => 'text',
+                'text' => 'Hello, ' . $display_name,
+                'size' => 'lg',
+                'weight' => 'bold',
+            ),
+        );
+    }
 
     // Body contents with text and message details
-    $body_contents = array(
-        array(
-            'type' => 'text',
-            'text' => $text_message,
-            'wrap' => true,
-        ),
-    );
+    if (empty($body_contents)) {
+        $body_contents = array(
+            array(
+                'type' => 'text',
+                'text' => $text_message,
+                'wrap' => true,
+            ),
+        );
+    }
 
     // Footer contents with a button
-    $footer_contents = array(
-        array(
-            'type' => 'button',
-            'action' => array(
-                'type' => 'uri',
-                'label' => 'Click me!',
-                'uri' => $link_uri, // Use the desired URI
+    if (empty($footer_contents)) {
+        $footer_contents = array(
+            array(
+                'type' => 'button',
+                'action' => array(
+                    'type' => 'uri',
+                    'label' => 'Click me!',
+                    'uri' => $link_uri, // Use the desired URI
+                ),
+                'style' => 'primary',
+                'margin' => 'sm',
             ),
-            'style' => 'primary',
-            'margin' => 'sm',
-        ),
-    );
+        );
+    }
 
     // Initial bubble message structure
     $bubble_message = array(
