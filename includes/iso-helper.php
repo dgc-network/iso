@@ -355,7 +355,8 @@ function init_webhook_events() {
                                 'body_contents' => $body_contents, // Include body contents in params
                             );
                             // Generate the Flex Message
-                            $flexMessage = $line_bot_api->set_bubble_message($params);
+                            //$flexMessage = $line_bot_api->set_bubble_message($params);
+                            $flexMessage = set_bubble_message($params);
                             // Send the Flex Message via LINE API
                             $line_bot_api->replyMessage(array(
                                 'replyToken' => $event['replyToken'],
@@ -387,6 +388,51 @@ function init_webhook_events() {
     }
 }
 add_action( 'parse_request', 'init_webhook_events' );
+
+function set_bubble_message($params) {
+    // Initial bubble message structure
+    $bubble_message = array(
+        'type' => 'flex',
+        //'altText' => $text_message,
+        'contents' => array(
+            'type' => 'bubble',
+        ),
+    );
+
+    // Add header contents if not empty
+    $header_contents = $params['header_contents'];
+    if (is_array($header_contents) && !empty($header_contents)) {
+        $bubble_message['contents']['header'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $header_contents,
+        );
+    }
+
+    // Add body contents if not empty
+    $body_contents = $params['body_contents'];
+    if (is_array($body_contents) && !empty($body_contents)) {
+        $bubble_message['contents']['body'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $body_contents,
+        );
+    }
+
+    // Add footer contents if not empty
+    $footer_contents = $params['footer_contents'];
+    if (is_array($footer_contents) && !empty($footer_contents)) {
+        $bubble_message['contents']['footer'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $footer_contents,
+        );
+    }
+
+    return $bubble_message;
+}
+
+
 /*
 function set_flex_message($params) {
     $display_name = $params['display_name'];
