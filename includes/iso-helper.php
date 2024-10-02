@@ -100,388 +100,6 @@ function is_site_admin($user_id=false, $site_id=false) {
     return in_array($site_id, $site_admin_ids);
 }
 
-function set_flex_message($params) {
-    $display_name = $params['display_name'];
-    $link_uri = $params['link_uri'];
-    $text_message = $params['text_message'];
-    // Flex Message JSON structure with a button
-    return [
-        'type' => 'flex',
-        'altText' => $text_message,
-        'contents' => [
-            'type' => 'bubble',
-            'body' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'text',
-                        'text' => 'Hello, '.$display_name,
-                        'size' => 'lg',
-                        'weight' => 'bold',
-                    ],
-                    [
-                        'type' => 'text',
-                        'text' => $text_message,
-                        'wrap' => true,
-                    ],
-                ],
-            ],
-            'footer' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => [
-                    [
-                        'type' => 'button',
-                        'action' => [
-                            'type' => 'uri',
-                            'label' => 'Click me!',
-                            'uri' => $link_uri, // Replace with your desired URI
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ];
-}
-
-function set_bubble_message($params) {
-    $display_name = $params['display_name'];
-    $link_uri = $params['link_uri'];
-    $text_message = $params['text_message'];
-
-    $header_contents = $params['header_contents'];
-    $body_contents = $params['body_contents'];
-    $footer_contents = $params['footer_contents'];
-/*
-    // Header contents can be modified as needed or left empty if not used
-    if (empty($header_contents)) {
-        $header_contents = array(
-            array(
-                'type' => 'text',
-                'text' => 'Hello, ' . $display_name,
-                'size' => 'lg',
-                'weight' => 'bold',
-            ),
-        );
-    }
-
-    // Body contents with text and message details
-    if (empty($body_contents)) {
-        $body_contents = array(
-            array(
-                'type' => 'text',
-                'text' => $text_message,
-                'wrap' => true,
-            ),
-        );
-    }
-
-    // Footer contents with a button
-    if (empty($footer_contents)) {
-        $footer_contents = array(
-            array(
-                'type' => 'button',
-                'action' => array(
-                    'type' => 'uri',
-                    'label' => 'Click me!',
-                    'uri' => $link_uri, // Use the desired URI
-                ),
-                'style' => 'primary',
-                'margin' => 'sm',
-            ),
-        );
-    }
-*/
-    // Initial bubble message structure
-    $bubble_message = array(
-        'type' => 'flex',
-        'altText' => $text_message,
-        'contents' => array(
-            'type' => 'bubble',
-        ),
-    );
-
-    // Add header contents if not empty
-    if (is_array($header_contents) && !empty($header_contents)) {
-        $bubble_message['contents']['header'] = array(
-            'type' => 'box',
-            'layout' => 'vertical',
-            'contents' => $header_contents,
-        );
-    }
-
-    // Add body contents if not empty
-    if (is_array($body_contents) && !empty($body_contents)) {
-        $bubble_message['contents']['body'] = array(
-            'type' => 'box',
-            'layout' => 'vertical',
-            'contents' => $body_contents,
-        );
-    }
-
-    // Add footer contents if not empty
-    if (is_array($footer_contents) && !empty($footer_contents)) {
-        $bubble_message['contents']['footer'] = array(
-            'type' => 'box',
-            'layout' => 'vertical',
-            'contents' => $footer_contents,
-        );
-    }
-
-    return $bubble_message;
-}
-
-function init_webhook_events() {
-    $line_bot_api = new line_bot_api();
-    $open_ai_api = new open_ai_api();
-
-    $entityBody = file_get_contents('php://input');
-    $data = json_decode($entityBody, true);
-    $events = $data['events'] ?? [];
-
-    foreach ((array)$events as $event) {
-        $line_user_id = $event['source']['userId'];
-        $profile = $line_bot_api->getProfile($line_user_id);
-        $display_name = str_replace(' ', '', $profile['displayName']);
-
-        // Regular expression to detect URLs
-        $urlRegex = '/\bhttps?:\/\/\S+\b/';
-        // Match URLs in the text
-        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
-            // Extract the matched URLs
-            $urls = $matches[0];
-            // Output the detected URLs
-            foreach ($urls as $url) {
-                // Parse the URL
-                $parsed_url = parse_url($url);
-                // Check if the URL contains a query string
-                if (isset($parsed_url['query'])) {
-                    // Parse the query string
-                    parse_str($parsed_url['query'], $query_params);
-                    // Check if the 'doc_id' parameter exists in the query parameters
-                    if (isset($query_params['_get_shared_doc_id'])) {
-                        // Retrieve the value of the 'doc_id' parameter
-                        $doc_id = $query_params['_get_shared_doc_id'];
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
-                    }
-                }
-                $params = [
-                    'display_name' => $display_name,
-                    'link_uri' => $url,
-                    'text_message' => $text_message,
-                ];
-                $flexMessage = set_flex_message($params);
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [$flexMessage],
-                ]);            
-            }
-        }
-        
-        // Regular webhook response
-        switch ($event['type']) {
-            case 'message':
-                $message = $event['message'];
-                switch ($message['type']) {
-                    case 'text':
-                        global $wpdb;
-                        $user_id = $wpdb->get_var($wpdb->prepare(
-                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
-                            $line_user_id
-                        ));
-                        $todo_class = new to_do_list();
-                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
-                        //$query = get_keyword_matched($message['text']);
-                        if ( $query->have_posts() ) {
-                            $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
-                            $body_content = array(
-                                'type' => 'text',
-                                'text' => $text_message,
-                                'wrap' => true,
-                            );
-                            $body_contents[] = $body_content;
-
-                            while ( $query->have_posts() ) {
-                                $query->the_post(); // Setup post data
-                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
-                                // Create a body content array for each post
-                                $body_content = array(
-                                    'type' => 'text',
-                                    //'text' => get_the_title(),  // Get the current post's title
-                                    'text' => '。 '.$doc_title,  // Get the current post's title
-                                    'wrap' => true,
-                                    'action' => array(
-                                        'type' => 'uri',
-                                        'label' => 'View Post',
-                                        //'uri' => get_permalink(), // Add a link to the post if needed
-                                        'uri' => $link_uri, // Add a link to the post if needed
-                                    ),
-                                );
-                                $body_contents[] = $body_content;
-                            } 
-                            // Reset post data after custom loop
-                            wp_reset_postdata();
-                        
-                            $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
-                            $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                        
-                            $params = array(
-                                'display_name' => $display_name,
-                                'link_uri' => $link_uri,
-                                'text_message' => $text_message,
-                                'body_contents' => $body_contents, // Include body contents in params
-                            );
-                        
-                            // Generate the Flex Message
-                            $flexMessage = set_bubble_message($params);
-                        
-                            // Send the Flex Message via LINE API
-                            $line_bot_api->replyMessage(array(
-                                'replyToken' => $event['replyToken'],
-                                'messages' => array($flexMessage),
-                            ));
-                        //}
-/*                        
-                        if ($query) {
-                            if ($query==-1) {
-                                $text_message = 'You are not logged in yet. Please click the button below to go to the Login/Registration system.';
-                                $text_message = __( '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。', 'your-text-domain' );
-                                // Encode the Chinese characters for inclusion in the URL
-                                $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-
-                                $params = [
-                                    'display_name' => $display_name,
-                                    'link_uri' => $link_uri,
-                                    'text_message' => $text_message,
-                                ];
-
-                                $flexMessage = set_flex_message($params);
-
-                                $line_bot_api->replyMessage([
-                                    'replyToken' => $event['replyToken'],
-                                    'messages' => [$flexMessage],
-                                ]);
-                            } else {
-                                if ( $query->have_posts() ) {
-                                    $body_contents = array();
-                                    foreach ($query as $post) {
-                                        $body_content = array(
-                                            'type' => 'text',
-                                            'text' => get_the_title($post->ID),
-                                            'wrap' => true,                            
-                                        );
-                                        $body_contents[] = $body_content;
-                                    } 
-                                    $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
-                                    $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                                    $params = [
-                                        'display_name' => $display_name,
-                                        'link_uri' => $link_uri,
-                                        'text_message' => $text_message,
-                                        'body_contents' => $body_contents,
-                                    ];
-                                    //$flexMessage = set_flex_message($params);
-                                    $flexMessage = set_bubble_message($params);
-                                    $line_bot_api->replyMessage([
-                                        'replyToken' => $event['replyToken'],
-                                        'messages' => [$flexMessage],
-                                    ]);
-                                }
-                            }
-*/                                
-                        } else {
-                            // Open-AI auto reply
-                            $response = $open_ai_api->createChatCompletion($message['text']);
-                            $line_bot_api->replyMessage([
-                                'replyToken' => $event['replyToken'],
-                                'messages' => [
-                                    [
-                                        'type' => 'text',
-                                        'text' => $response
-                                    ]                                                                    
-                                ]
-                            ]);
-                        }
-                        break;
-                    default:
-                        error_log('Unsupported message type: ' . $message['type']);
-                        break;
-                }
-                break;
-            default:
-                error_log('Unsupported event type: ' . $event['type']);
-                break;
-        }
-    }
-}
-add_action( 'parse_request', 'init_webhook_events' );
-
-function get_keyword_matched($search_query) {
-/*
-    if (strpos($search_query, '註冊') !== false) return -1;
-    if (strpos($search_query, '登入') !== false) return -1;
-    if (strpos($search_query, '登錄') !== false) return -1;
-    if (strpos($search_query, 'login') !== false) return -1;
-    if (strpos($search_query, 'Login') !== false) return -1;
-*/
-    $current_user_id = get_current_user_id();
-    $site_id = get_user_meta($current_user_id, 'site_id', true);
-    $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-    if (!is_array($user_doc_ids)) $user_doc_ids = array();
-    
-    // WP_Query arguments
-        $args = array(
-        'post_type'      => 'document',
-        'posts_per_page' => -1,
-        'meta_query'     => array(
-            'relation' => 'AND',
-/*            
-            array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            ),
-*/            
-            array(
-                'key'     => 'is_doc_report',
-                'value'   => 1,
-                'compare' => '=',
-            ),
-/*
-            array(
-                'key'     => 'todo_status',
-                'compare' => 'NOT EXISTS',
-            ),
-*/            
-        ),
-    );
-
-    // Add meta query for searching across all meta keys
-    $document_meta_keys = get_post_type_meta_keys('document');
-    $meta_query_all_keys = array('relation' => 'OR');
-    foreach ($document_meta_keys as $meta_key) {
-        $meta_query_all_keys[] = array(
-            'key'     => $meta_key,
-            'value'   => $search_query,
-            'compare' => 'LIKE',
-        );
-    }
-    
-    $args['meta_query'][] = $meta_query_all_keys;
-
-    // Instantiate new WP_Query
-    $query = new WP_Query( $args );
-    
-    // Check if there are any posts that match the query
-    if ( $query->have_posts() ) return $query;
-
-    return false;
-}
-
 // User is not logged in yet
 function user_is_not_logged_in() {
     $line_login_api = new line_login_api();
@@ -598,6 +216,235 @@ function get_site_profile_content() {
 }
 add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
 add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
+
+function init_webhook_events() {
+    $line_bot_api = new line_bot_api();
+    $open_ai_api = new open_ai_api();
+
+    $entityBody = file_get_contents('php://input');
+    $data = json_decode($entityBody, true);
+    $events = $data['events'] ?? [];
+
+    foreach ((array)$events as $event) {
+        $line_user_id = $event['source']['userId'];
+        $profile = $line_bot_api->getProfile($line_user_id);
+        $display_name = str_replace(' ', '', $profile['displayName']);
+
+        // Regular expression to detect URLs
+        $urlRegex = '/\bhttps?:\/\/\S+\b/';
+        // Match URLs in the text
+        if (preg_match_all($urlRegex, $event['message']['text'], $matches)) {
+            // Extract the matched URLs
+            $urls = $matches[0];
+            // Output the detected URLs
+            foreach ($urls as $url) {
+                // Parse the URL
+                $parsed_url = parse_url($url);
+                // Check if the URL contains a query string
+                if (isset($parsed_url['query'])) {
+                    // Parse the query string
+                    parse_str($parsed_url['query'], $query_params);
+                    // Check if the 'doc_id' parameter exists in the query parameters
+                    if (isset($query_params['_get_shared_doc_id'])) {
+                        // Retrieve the value of the 'doc_id' parameter
+                        $doc_id = $query_params['_get_shared_doc_id'];
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
+                    }
+                }
+                $params = [
+                    'display_name' => $display_name,
+                    'link_uri' => $url,
+                    'text_message' => $text_message,
+                ];
+                $flexMessage = set_flex_message($params);
+                $line_bot_api->replyMessage([
+                    'replyToken' => $event['replyToken'],
+                    'messages' => [$flexMessage],
+                ]);            
+            }
+        }
+        
+        // Regular webhook response
+        switch ($event['type']) {
+            case 'message':
+                $message = $event['message'];
+                switch ($message['type']) {
+                    case 'text':
+                        global $wpdb;
+                        $user_id = $wpdb->get_var($wpdb->prepare(
+                            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'line_user_id' AND meta_value = %s",
+                            $line_user_id
+                        ));
+                        $todo_class = new to_do_list();
+                        $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
+                        if ( $query->have_posts() ) {
+                            $body_contents = array();
+                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $body_content = array(
+                                'type' => 'text',
+                                'text' => $text_message,
+                                'wrap' => true,
+                            );
+                            $body_contents[] = $body_content;
+
+                            while ( $query->have_posts() ) {
+                                $query->the_post(); // Setup post data
+                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
+                                // Create a body content array for each post
+                                $body_content = array(
+                                    'type' => 'text',
+                                    'text' => '。 '.$doc_title,  // Get the current post's title
+                                    'wrap' => true,
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => 'View Post',
+                                        'uri' => $link_uri, // Add a link to the post if needed
+                                    ),
+                                );
+                                $body_contents[] = $body_content;
+                            } 
+                            // Reset post data after custom loop
+                            wp_reset_postdata();
+                        
+                            //$text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            //$link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
+                        
+                            $params = array(
+                                'display_name' => $display_name,
+                                //'link_uri' => $link_uri,
+                                //'text_message' => $text_message,
+                                'body_contents' => $body_contents, // Include body contents in params
+                            );
+                        
+                            // Generate the Flex Message
+                            $flexMessage = $line_bot_api->set_bubble_message($params);
+                            // Send the Flex Message via LINE API
+                            $line_bot_api->replyMessage(array(
+                                'replyToken' => $event['replyToken'],
+                                'messages' => array($flexMessage),
+                            ));
+                        } else {
+                            // Open-AI auto reply
+                            $response = $open_ai_api->createChatCompletion($message['text']);
+                            $line_bot_api->replyMessage([
+                                'replyToken' => $event['replyToken'],
+                                'messages' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => $response
+                                    ]                                                                    
+                                ]
+                            ]);
+                        }
+                        break;
+                    default:
+                        error_log('Unsupported message type: ' . $message['type']);
+                        break;
+                }
+                break;
+            default:
+                error_log('Unsupported event type: ' . $event['type']);
+                break;
+        }
+    }
+}
+add_action( 'parse_request', 'init_webhook_events' );
+
+function set_flex_message($params) {
+    $display_name = $params['display_name'];
+    $link_uri = $params['link_uri'];
+    $text_message = $params['text_message'];
+    // Flex Message JSON structure with a button
+    return [
+        'type' => 'flex',
+        'altText' => $text_message,
+        'contents' => [
+            'type' => 'bubble',
+            'body' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'Hello, '.$display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ],
+                ],
+            ],
+            'footer' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => [
+                    [
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $link_uri, // Replace with your desired URI
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+}
+
+/*
+function get_keyword_matched($search_query) {
+
+    if (strpos($search_query, '註冊') !== false) return -1;
+    if (strpos($search_query, '登入') !== false) return -1;
+    if (strpos($search_query, '登錄') !== false) return -1;
+    if (strpos($search_query, 'login') !== false) return -1;
+    if (strpos($search_query, 'Login') !== false) return -1;
+
+    $current_user_id = get_current_user_id();
+    $site_id = get_user_meta($current_user_id, 'site_id', true);
+    $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+    if (!is_array($user_doc_ids)) $user_doc_ids = array();
+    
+    // WP_Query arguments
+        $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'todo_status',
+                'compare' => 'NOT EXISTS',
+            ),
+        ),
+    );
+
+    // Add meta query for searching across all meta keys
+    $document_meta_keys = get_post_type_meta_keys('document');
+    $meta_query_all_keys = array('relation' => 'OR');
+    foreach ($document_meta_keys as $meta_key) {
+        $meta_query_all_keys[] = array(
+            'key'     => $meta_key,
+            'value'   => $search_query,
+            'compare' => 'LIKE',
+        );
+    }
+    
+    $args['meta_query'][] = $meta_query_all_keys;
+
+    // Instantiate new WP_Query
+    $query = new WP_Query( $args );
+    
+    // Check if there are any posts that match the query
+    if ( $query->have_posts() ) return $query;
+
+    return false;
+}
 
 /*
 function proceed_to_registration_login($line_user_id, $display_name) {
