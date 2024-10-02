@@ -287,7 +287,8 @@ function init_webhook_events() {
                 switch ($message['type']) {
                     case 'text':
                         $todo_class = new to_do_list();
-                        $query = $todo_class->retrieve_start_job_data(0, $message['text']);
+                        //$query = $todo_class->retrieve_start_job_data(0, $message['text']);
+                        $query = $todo_class->retrieve_start_job_data(0);
                         //$query = get_keyword_matched($message['text']);
                         if ( $query->have_posts() ) {
                             $body_contents = array();
