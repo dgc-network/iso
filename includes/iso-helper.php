@@ -221,17 +221,8 @@ function init_webhook_events() {
                                 ]);
                             } else {
                                 if ( $query->have_posts() ) {
-                                    $link_uri = home_url() . '/to-do-list/?_select_todo=start-job&_search=' . urlencode($message['text']);
-                                    ?>
-                                    <script type="text/javascript">
-                                        window.location.replace("<?php echo $link_uri; ?>");
-                                    </script>
-                                    <?php
-
                                     $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
                                     $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                                    ?><script>window.location.replace($link_uri);</script><?php
-
                                     $params = [
                                         'display_name' => $display_name,
                                         'link_uri' => $link_uri,
@@ -247,8 +238,6 @@ function init_webhook_events() {
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
-
-                            //$response = $open_ai_api->generate_openai_proposal($message['text']);
                             $line_bot_api->replyMessage([
                                 'replyToken' => $event['replyToken'],
                                 'messages' => [
@@ -321,6 +310,118 @@ function user_is_not_logged_in() {
     $line_login_api = new line_login_api();
     $line_login_api->display_line_login_button();
 }
+
+function get_users_by_site_id($site_id) {
+    global $wpdb;
+    // Query to find user IDs with the matching site_id
+    $user_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "
+            SELECT user_id 
+            FROM $wpdb->usermeta 
+            WHERE meta_key = 'site_id' 
+            AND meta_value = %s
+            ",
+            $site_id
+        )
+    );
+    return $user_ids;
+}
+
+function is_site_not_found($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    // Get the site_id meta for the user
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    
+    // Check if site_id does not exist or is empty
+    if (empty($site_id)) {
+        return true;
+    }
+    return false;
+}
+
+function get_NDA_assignment($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    $site_id = get_user_meta($user_id, 'site_id', true);            
+    ?>
+    <div class="ui-widget" id="result-container">
+        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+        <div>
+            <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+            <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
+                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                <?php
+                    $site_args = array(
+                        'post_type'      => 'site-profile',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);    
+                    foreach ($sites as $site) {
+                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
+                    }
+                ?>
+            </select>
+            <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+            <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
+        </div>
+        <div>
+            <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
+            <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
+            <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
+            <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
+        </div>
+        <div id="site-content">
+            <!-- The site content will be displayed here -->
+        </div>
+        <div style="display:flex;">
+            <?php echo __( '日期：', 'your-text-domain' );?>
+            <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
+        </div>
+        <hr>
+        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+    </div>
+    <?php
+}
+
+function set_NDA_assignment() {
+    $response = array();
+    if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
+        $user_id = intval($_POST['_user_id']);        
+        $site_id = intval($_POST['_site_id']);        
+        update_user_meta( $user_id, 'site_id', $site_id);
+        update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
+        update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
+    }
+    wp_send_json($response);
+}
+add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
+add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
+
+function get_site_profile_content() {
+    // Check if the site_id is passed
+    if(isset($_POST['site_id'])) {
+        $site_id = intval($_POST['site_id']);
+
+        // Retrieve the post content
+        $post = get_post($site_id);
+
+        if($post && $post->post_type == 'site-profile') {
+            wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
+        } else {
+            wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
+        }
+    } else {
+        wp_send_json_error(array('message' => 'No site ID provided.'));
+    }
+}
+add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
+add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
+
 /*
 function proceed_to_registration_login($line_user_id, $display_name) {
     // Using Line User ID to register and login into the system
@@ -584,114 +685,3 @@ function wp_login_submit() {
 add_action('wp_ajax_wp_login_submit', 'wp_login_submit');
 add_action('wp_ajax_nopriv_wp_login_submit', 'wp_login_submit');
 */
-function get_users_by_site_id($site_id) {
-    global $wpdb;
-    // Query to find user IDs with the matching site_id
-    $user_ids = $wpdb->get_col(
-        $wpdb->prepare(
-            "
-            SELECT user_id 
-            FROM $wpdb->usermeta 
-            WHERE meta_key = 'site_id' 
-            AND meta_value = %s
-            ",
-            $site_id
-        )
-    );
-    return $user_ids;
-}
-
-function is_site_not_found($user_id=false) {
-    if (empty($user_id)) $user_id=get_current_user_id();
-    $user = get_userdata($user_id);
-    // Get the site_id meta for the user
-    $site_id = get_user_meta($user_id, 'site_id', true);
-    
-    // Check if site_id does not exist or is empty
-    if (empty($site_id)) {
-        return true;
-    }
-    return false;
-}
-
-function get_NDA_assignment($user_id=false) {
-    if (empty($user_id)) $user_id=get_current_user_id();
-    $user = get_userdata($user_id);
-    $site_id = get_user_meta($user_id, 'site_id', true);            
-    ?>
-    <div class="ui-widget" id="result-container">
-        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
-        <div>
-            <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
-            <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
-                <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                <?php
-                    $site_args = array(
-                        'post_type'      => 'site-profile',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
-                    }
-                ?>
-            </select>
-            <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
-            <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
-        </div>
-        <div>
-            <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
-            <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-            <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
-            <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
-            <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
-        </div>
-        <div id="site-content">
-            <!-- The site content will be displayed here -->
-        </div>
-        <div style="display:flex;">
-            <?php echo __( '日期：', 'your-text-domain' );?>
-            <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
-        </div>
-        <hr>
-        <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-        <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-    </div>
-    <?php
-}
-
-function set_NDA_assignment() {
-    $response = array();
-    if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
-        $user_id = intval($_POST['_user_id']);        
-        $site_id = intval($_POST['_site_id']);        
-        update_user_meta( $user_id, 'site_id', $site_id);
-        update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
-        update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
-        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
-    }
-    wp_send_json($response);
-}
-add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
-add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
-
-function get_site_profile_content() {
-    // Check if the site_id is passed
-    if(isset($_POST['site_id'])) {
-        $site_id = intval($_POST['site_id']);
-
-        // Retrieve the post content
-        $post = get_post($site_id);
-
-        if($post && $post->post_type == 'site-profile') {
-            wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
-        } else {
-            wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
-        }
-    } else {
-        wp_send_json_error(array('message' => 'No site ID provided.'));
-    }
-}
-add_action( 'wp_ajax_get_site_profile_content', 'get_site_profile_content' );
-add_action( 'wp_ajax_nopriv_get_site_profile_content', 'get_site_profile_content' );
-
