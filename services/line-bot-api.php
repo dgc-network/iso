@@ -94,9 +94,9 @@ if (!class_exists('line_bot_api')) {
 
         // Flex message
         function set_bubble_message($params) {
-            $display_name = $params['display_name'];
-            $link_uri = $params['link_uri'];
-            $text_message = $params['text_message'];
+            //$display_name = $params['display_name'];
+            //$link_uri = $params['link_uri'];
+            //$text_message = $params['text_message'];
         
             //$header_contents = $params['header_contents'];
             //$body_contents = $params['body_contents'];
