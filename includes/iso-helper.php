@@ -145,6 +145,60 @@ function set_flex_message($params) {
     ];
 }
 
+function set_flex_message_enhance($params) {
+    $display_name = $params['display_name'];
+    $link_uri = $params['link_uri'];
+    $text_message = $params['text_message'];
+    $body_contents = array(
+        array(
+            'type' => 'text',
+            'text' => 'Hello, '.$display_name,
+            'size' => 'lg',
+            'weight' => 'bold',    
+        ),
+        array(
+            'type' => 'text',
+            'text' => $text_message,
+            'wrap' => true,    
+        ),
+    );
+
+    $body_contents = array(
+        array(
+            'type' => 'button',
+            'action' => [
+                'type' => 'uri',
+                'label' => 'Click me!',
+                'uri' => $link_uri, // Replace with your desired URI
+            ],
+        )
+    );
+
+    // Flex Message JSON structure with a button
+    return [
+        'type' => 'flex',
+        //'altText' => $text_message,
+        'contents' => [
+            'type' => 'bubble',
+            'header' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => $header_contents,
+            ],
+            'body' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => $body_contents,
+            ],
+            'footer' => [
+                'type' => 'box',
+                'layout' => 'vertical',
+                'contents' => $footer_contents,
+            ],
+        ],
+    ];
+}
+
 function init_webhook_events() {
     $line_bot_api = new line_bot_api();
     $open_ai_api = new open_ai_api();
@@ -229,6 +283,7 @@ function init_webhook_events() {
                                         'text_message' => $text_message,
                                     ];
                                     $flexMessage = set_flex_message($params);
+                                    $flexMessage = set_flex_message_enhance($params);
                                     $line_bot_api->replyMessage([
                                         'replyToken' => $event['replyToken'],
                                         'messages' => [$flexMessage],
