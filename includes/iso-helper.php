@@ -149,6 +149,7 @@ function set_flex_message_enhance($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
     $text_message = $params['text_message'];
+    $header_contents = array();
     $body_contents = array(
         array(
             'type' => 'text',
