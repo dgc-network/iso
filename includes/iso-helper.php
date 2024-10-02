@@ -252,12 +252,51 @@ function init_webhook_events() {
                         $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }
                 }
+/*                
                 $params = [
                     'display_name' => $display_name,
                     'link_uri' => $url,
                     'text_message' => $text_message,
                 ];
                 $flexMessage = set_flex_message($params);
+*/
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => 'Click me!',
+                            'uri' => $url,
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message([
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                ]);
+                // Send the Flex Message via LINE API
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
@@ -280,7 +319,7 @@ function init_webhook_events() {
                         $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
                         if ( $query->have_posts() ) {
                             $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $text_message = __( '您可以點擊下方列示，直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => $text_message,
@@ -389,7 +428,7 @@ function set_flex_message($params) {
         ],
     ];
 }
-
+/*
 function set_bubble_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
@@ -437,7 +476,7 @@ function set_bubble_message($params) {
             ),
         );
     }
-*/
+
     // Initial bubble message structure
     $bubble_message = array(
         'type' => 'flex',
@@ -484,7 +523,7 @@ function get_keyword_matched($search_query) {
     if (strpos($search_query, '登錄') !== false) return -1;
     if (strpos($search_query, 'login') !== false) return -1;
     if (strpos($search_query, 'Login') !== false) return -1;
-*/
+
     $current_user_id = get_current_user_id();
     $site_id = get_user_meta($current_user_id, 'site_id', true);
     $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -502,7 +541,7 @@ function get_keyword_matched($search_query) {
                 'value'   => $site_id,
                 'compare' => '=',
             ),
-*/            
+
             array(
                 'key'     => 'is_doc_report',
                 'value'   => 1,
@@ -513,7 +552,7 @@ function get_keyword_matched($search_query) {
                 'key'     => 'todo_status',
                 'compare' => 'NOT EXISTS',
             ),
-*/            
+
         ),
     );
 

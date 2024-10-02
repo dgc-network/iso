@@ -850,13 +850,12 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
 
-                $params = array(
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
                     'footer_contents' => $footer_contents,
-                );
-                // Generate the Flex Message
-                $flexMessage = $line_bot_api->set_bubble_message($params);
+                ]);
                 // Send the Flex Message via LINE API
                 $line_bot_api->pushMessage([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
@@ -910,13 +909,12 @@ if (!class_exists('to_do_list')) {
                             ),
                         );
         
-                        $params = array(
+                        // Generate the Flex Message
+                        $flexMessage = $line_bot_api->set_bubble_message([
                             'header_contents' => $header_contents,
                             'body_contents' => $body_contents,
                             'footer_contents' => $footer_contents,
-                        );
-                        // Generate the Flex Message
-                        $flexMessage = $line_bot_api->set_bubble_message($params);
+                        ]);
                         // Send the Flex Message via LINE API        
                         $line_bot_api->pushMessage([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
@@ -967,13 +965,12 @@ if (!class_exists('to_do_list')) {
                             ),
                         );
         
-                        $params = array(
+                        // Generate the Flex Message
+                        $flexMessage = $line_bot_api->set_bubble_message([
                             'header_contents' => $header_contents,
                             'body_contents' => $body_contents,
                             'footer_contents' => $footer_contents,
-                        );
-                        // Generate the Flex Message
-                        $flexMessage = $line_bot_api->set_bubble_message($params);
+                        ]);
                         // Send the Flex Message via LINE API        
                         $line_bot_api->pushMessage([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
@@ -1056,13 +1053,12 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
 
-                $params = array(
+                // Generate the Flex Message
+                $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
                     'footer_contents' => $footer_contents,
-                );
-                // Generate the Flex Message
-                $flexMessage = $line_bot_api->set_bubble_message($params);
+                ]);
                 // Send the Flex Message via LINE API
                 $line_bot_api->pushMessage([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),

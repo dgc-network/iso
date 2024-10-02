@@ -240,13 +240,12 @@ if (!class_exists('iot_messages')) {
                 ),
             );
 
-            $params = array(
+            // Generate the Flex Message
+            $flexMessage = $line_bot_api->set_bubble_message([
                 'header_contents' => $header_contents,
                 'body_contents' => $body_contents,
                 'footer_contents' => $footer_contents,
-            );
-            // Generate the Flex Message
-            $flexMessage = $line_bot_api->set_bubble_message($params);
+            ]);
             // Send the message via the LINE API
             $line_bot_api = new line_bot_api();
             $line_bot_api->pushMessage([
