@@ -383,7 +383,7 @@ function init_webhook_events() {
 }
 add_action( 'parse_request', 'init_webhook_events' );
 
-
+/*
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
