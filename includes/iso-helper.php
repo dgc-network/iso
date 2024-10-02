@@ -176,16 +176,25 @@ function set_flex_message_enhance($params) {
     );
 
     // Flex Message JSON structure with a button
+    $bubble_message = array(
+        'type' => 'flex',
+        //'altText' => $text_message,
+        'contents' => [
+            'type' => 'bubble',
+        ]
+    );
+    if ($header_contents) {
+        $bubble_message['contents']['header'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $header_contents,
+        );
+    }
     return [
         'type' => 'flex',
         //'altText' => $text_message,
         'contents' => [
             'type' => 'bubble',
-            'header' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => $header_contents,
-            ],
             'body' => [
                 'type' => 'box',
                 'layout' => 'vertical',
