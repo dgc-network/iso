@@ -325,7 +325,7 @@ function init_webhook_events() {
                             } 
                             // Reset post data after custom loop
                             wp_reset_postdata();
-                        
+/*                        
                             $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
                             $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
                         
@@ -335,69 +335,19 @@ function init_webhook_events() {
                                 'text_message' => $text_message,
                                 'body_contents' => $body_contents, // Include body contents in params
                             );
-                        
+*/                        
                             // Generate the Flex Message
                             $flexMessage = $line_bot_api->set_bubble_message([
-                                'display_name' => $display_name,
-                                'link_uri' => $link_uri,
-                                'text_message' => $text_message,
+                                //'display_name' => $display_name,
+                                //'link_uri' => $link_uri,
+                                //'text_message' => $text_message,
                                 'body_contents' => $body_contents, // Include body contents in params
                             ]);
-                        
                             // Send the Flex Message via LINE API
                             $line_bot_api->replyMessage(array(
                                 'replyToken' => $event['replyToken'],
                                 'messages' => array($flexMessage),
                             ));
-                        //}
-/*                        
-                        if ($query) {
-                            if ($query==-1) {
-                                $text_message = 'You are not logged in yet. Please click the button below to go to the Login/Registration system.';
-                                $text_message = __( '您尚未登入系統！請點擊下方按鍵登入或註冊本系統。', 'your-text-domain' );
-                                // Encode the Chinese characters for inclusion in the URL
-                                $link_uri = home_url().'/display-profiles/?_id='.$line_user_id.'&_name='.urlencode($display_name);
-
-                                $params = [
-                                    'display_name' => $display_name,
-                                    'link_uri' => $link_uri,
-                                    'text_message' => $text_message,
-                                ];
-
-                                $flexMessage = set_flex_message($params);
-
-                                $line_bot_api->replyMessage([
-                                    'replyToken' => $event['replyToken'],
-                                    'messages' => [$flexMessage],
-                                ]);
-                            } else {
-                                if ( $query->have_posts() ) {
-                                    $body_contents = array();
-                                    foreach ($query as $post) {
-                                        $body_content = array(
-                                            'type' => 'text',
-                                            'text' => get_the_title($post->ID),
-                                            'wrap' => true,                            
-                                        );
-                                        $body_contents[] = $body_content;
-                                    } 
-                                    $text_message = __( '您可以點擊下方按鍵執行『', 'your-text-domain' ).$message['text'].__( '』相關作業。', 'your-text-domain' );
-                                    $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_search='.urlencode($message['text']);
-                                    $params = [
-                                        'display_name' => $display_name,
-                                        'link_uri' => $link_uri,
-                                        'text_message' => $text_message,
-                                        'body_contents' => $body_contents,
-                                    ];
-                                    //$flexMessage = set_flex_message($params);
-                                    $flexMessage = set_bubble_message($params);
-                                    $line_bot_api->replyMessage([
-                                        'replyToken' => $event['replyToken'],
-                                        'messages' => [$flexMessage],
-                                    ]);
-                                }
-                            }
-*/                                
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);

@@ -23,16 +23,11 @@ if (!class_exists('line_bot_api')) {
     class line_bot_api {
         private $channel_id;
         private $channel_access_token;
-        //public $channel_access_token;
 
         public function __construct() {
             $this->channel_id = get_option('line_bot_channel_id');
             $this->channel_access_token = get_option('line_bot_token_option');
             add_action( 'admin_init', array( $this, 'line_bot_register_settings' ) );
-            //add_action( 'init', array( $this, 'handle_line_callback' ) );
-            //add_action( 'wp', array( $this, 'check_otp_form' ) );
-            //add_action('template_redirect', array( $this, 'line_user_login'));
-            //add_action('wp_footer', array( $this, 'check_login_status'));                
         }
 
         function line_bot_register_settings() {
@@ -94,14 +89,6 @@ if (!class_exists('line_bot_api')) {
 
         // Flex message
         function set_bubble_message($params) {
-            //$display_name = $params['display_name'];
-            //$link_uri = $params['link_uri'];
-            //$text_message = $params['text_message'];
-        
-            //$header_contents = $params['header_contents'];
-            //$body_contents = $params['body_contents'];
-            //$footer_contents = $params['footer_contents'];
-
             // Initial bubble message structure
             $bubble_message = array(
                 'type' => 'flex',
@@ -111,7 +98,7 @@ if (!class_exists('line_bot_api')) {
                     'type' => 'bubble',
                 ),
             );
-        
+
             // Add header contents if not empty
             $header_contents = isset($params['header_contents']) ? $params['header_contents'] : array();
             if (is_array($header_contents) && !empty($header_contents)) {
@@ -121,7 +108,7 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $header_contents,
                 );
             }
-        
+
             // Add body contents if not empty
             $body_contents = isset($params['body_contents']) ? $params['body_contents'] : array();
             if (is_array($body_contents) && !empty($body_contents)) {
@@ -131,7 +118,7 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $body_contents,
                 );
             }
-        
+
             // Add footer contents if not empty
             $footer_contents = isset($params['footer_contents']) ? $params['footer_contents'] : array();
             if (is_array($footer_contents) && !empty($footer_contents)) {
@@ -141,54 +128,10 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $footer_contents,
                 );
             }
-        
+
             return $bubble_message;
         }
-        
-/*        
-        function set_bubble_message($params) {
-            // Initial bubble message structure
-            $bubble_message = array(
-                'type' => 'flex',
-                //'altText' => isset($params['text_message']) ? $params['text_message'] : '', // Uncomment if you want to include an altText
-                'contents' => array(
-                    'type' => 'bubble',
-                ),
-            );
-        
-            // Add header contents if they exist and are not empty
-            $header_contents = isset($params['header_contents']) ? $params['header_contents'] : array();
-            if (is_array($header_contents) && !empty($header_contents)) {
-                $bubble_message['contents']['header'] = array(
-                    'type' => 'box',
-                    'layout' => 'vertical',
-                    'contents' => $header_contents,
-                );
-            }
-        
-            // Add body contents if they exist and are not empty
-            $body_contents = isset($params['body_contents']) ? $params['body_contents'] : array();
-            if (is_array($body_contents) && !empty($body_contents)) {
-                $bubble_message['contents']['body'] = array(
-                    'type' => 'box',
-                    'layout' => 'vertical',
-                    'contents' => $body_contents,
-                );
-            }
-        
-            // Add footer contents if they exist and are not empty
-            $footer_contents = isset($params['footer_contents']) ? $params['footer_contents'] : array();
-            if (is_array($footer_contents) && !empty($footer_contents)) {
-                $bubble_message['contents']['footer'] = array(
-                    'type' => 'box',
-                    'layout' => 'vertical',
-                    'contents' => $footer_contents,
-                );
-            }
-        
-            return $bubble_message;
-        }
-*/
+
         // line-bot-api
         public function broadcastMessage($message) {
             $header = array(
@@ -208,7 +151,7 @@ if (!class_exists('line_bot_api')) {
                 error_log('Request failed: ' . $response);
             }
         }
-    
+
         public function replyMessage($message) {
             $header = array(
                 'Content-Type: application/json',
@@ -227,7 +170,7 @@ if (!class_exists('line_bot_api')) {
                 error_log('Request failed: ' . $response);
             }
         }
-    
+
         public function pushMessage($message) {
             $header = array(
                 'Content-Type: application/json',
@@ -246,7 +189,7 @@ if (!class_exists('line_bot_api')) {
                 error_log('Request failed: ' . $response);
             }
         }
-    
+
         public function getProfile($userId) {
             $header = array(
                 'Content-Type: application/json',
@@ -267,7 +210,7 @@ if (!class_exists('line_bot_api')) {
             $response = json_decode($response, true);
             return $response;
         }
-    
+
         /**
          * @param string $groupId
          * @return object
