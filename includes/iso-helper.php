@@ -151,16 +151,17 @@ function set_bubble_message($params) {
     $text_message = $params['text_message'];
 
     // Header contents can be modified as needed or left empty if not used
-    $header_contents = array();
-
-    // Body contents with text and message details
-    $body_contents = array(
+    $header_contents = array(
         array(
             'type' => 'text',
             'text' => 'Hello, ' . $display_name,
             'size' => 'lg',
             'weight' => 'bold',
         ),
+    );
+
+    // Body contents with text and message details
+    $body_contents = array(
         array(
             'type' => 'text',
             'text' => $text_message,
