@@ -183,30 +183,28 @@ function set_bubble_message($params) {
             'type' => 'bubble',
         ]
     );
-    if ($header_contents) {
+    if (is_array($header_contents) && !empty($header_contents)) {
         $bubble_message['contents']['header'] = array(
             'type' => 'box',
             'layout' => 'vertical',
             'contents' => $header_contents,
         );
     }
-    return [
-        'type' => 'flex',
-        'altText' => $text_message,
-        'contents' => [
-            'type' => 'bubble',
-            'body' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => $body_contents,
-            ],
-            'footer' => [
-                'type' => 'box',
-                'layout' => 'vertical',
-                'contents' => $footer_contents,
-            ],
-        ],
-    ];
+    if (is_array($body_contents) && !empty($body_contents)) {
+        $bubble_message['contents']['body'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $body_contents,
+        );
+    }
+    if (is_array($footer_contents) && !empty($footer_contents)) {
+        $bubble_message['contents']['footer'] = array(
+            'type' => 'box',
+            'layout' => 'vertical',
+            'contents' => $footer_contents,
+        );
+    }
+    return $bubble_message;
 }
 
 function init_webhook_events() {
