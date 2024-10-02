@@ -102,7 +102,7 @@ if (!class_exists('line_bot_api')) {
                     'type' => 'bubble',
                 ),
             );
-        
+
             // Add header contents if not empty
             $header_contents = $params['header_contents'];
             if (is_array($header_contents) && !empty($header_contents)) {
@@ -112,7 +112,7 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $header_contents,
                 );
             }
-        
+
             // Add body contents if not empty
             $body_contents = $params['body_contents'];
             if (is_array($body_contents) && !empty($body_contents)) {
@@ -122,7 +122,7 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $body_contents,
                 );
             }
-        
+
             // Add footer contents if not empty
             $footer_contents = $params['footer_contents'];
             if (is_array($footer_contents) && !empty($footer_contents)) {
@@ -132,7 +132,7 @@ if (!class_exists('line_bot_api')) {
                     'contents' => $footer_contents,
                 );
             }
-        
+
             return $bubble_message;
         }
 
