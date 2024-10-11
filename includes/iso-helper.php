@@ -383,6 +383,68 @@ function init_webhook_events() {
 }
 add_action( 'parse_request', 'init_webhook_events' );
 
+// Convert the bubble message to email-friendly HTML and send it
+function send_bubble_message_email($params, $to_email, $subject = 'New Message') {
+    // Generate the bubble message array structure
+    $bubble_message = set_bubble_message($params);
+
+    // Convert bubble message array to HTML for email content
+    $html_message = '<div style="border:1px solid #eaeaea; padding: 20px; max-width: 600px;">';
+
+    // Check if header exists and add it to the HTML
+    if (isset($bubble_message['contents']['header'])) {
+        $html_message .= '<div style="background-color: #f4f4f4; padding: 15px; border-bottom: 1px solid #eaeaea;">';
+        foreach ($bubble_message['contents']['header']['contents'] as $header_item) {
+            $html_message .= '<p style="margin: 0; padding: 5px 0; font-size: 16px;">' . esc_html($header_item['text']) . '</p>';
+        }
+        $html_message .= '</div>';
+    }
+
+    // Check if body exists and add it to the HTML
+    if (isset($bubble_message['contents']['body'])) {
+        $html_message .= '<div style="padding: 15px;">';
+        foreach ($bubble_message['contents']['body']['contents'] as $body_item) {
+            $html_message .= '<p style="margin: 0; padding: 5px 0; font-size: 14px;">' . esc_html($body_item['text']) . '</p>';
+        }
+        $html_message .= '</div>';
+    }
+
+    // Check if footer exists and add it to the HTML
+    if (isset($bubble_message['contents']['footer'])) {
+        $html_message .= '<div style="background-color: #f4f4f4; padding: 15px; border-top: 1px solid #eaeaea;">';
+        foreach ($bubble_message['contents']['footer']['contents'] as $footer_item) {
+            $html_message .= '<p style="margin: 0; padding: 5px 0; font-size: 12px; color: #999;">' . esc_html($footer_item['text']) . '</p>';
+        }
+        $html_message .= '</div>';
+    }
+
+    $html_message .= '</div>'; // End of message container
+
+    // Set the headers for HTML email
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    // Use the WordPress wp_mail function to send the email
+    wp_mail($to_email, $subject, $html_message, $headers);
+}
+/*
+// Example usage
+$params = array(
+    'header_contents' => array(
+        array('type' => 'text', 'text' => 'Welcome to Our Service!'),
+    ),
+    'body_contents' => array(
+        array('type' => 'text', 'text' => 'Thank you for signing up. Here are the details of your account:'),
+        array('type' => 'text', 'text' => 'Username: johndoe'),
+        array('type' => 'text', 'text' => 'Email: johndoe@example.com'),
+    ),
+    'footer_contents' => array(
+        array('type' => 'text', 'text' => 'If you have any questions, feel free to reply to this email.'),
+    ),
+);
+
+// Call the function to send the bubble message email
+send_bubble_message_email($params, 'user@example.com', 'Welcome to Our Service');
+
 /*
 function set_flex_message($params) {
     $display_name = $params['display_name'];
