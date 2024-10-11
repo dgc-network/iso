@@ -104,7 +104,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-                if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list($paged=1);
+                if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list(0);
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
