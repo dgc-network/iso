@@ -519,7 +519,7 @@ if (!class_exists('display_profiles')) {
                         <?php        
                         $users = get_users(); // Initialize with all users
                         // If the current user is not an administrator, filter by site_id
-                        if (!current_user_can('administrator') && $paged==1) {
+                        if (!current_user_can('administrator') && $paged!=0) {
                             $meta_query_args = array(
                                 array(
                                     'key'     => 'site_id',
