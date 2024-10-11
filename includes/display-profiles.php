@@ -104,6 +104,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
+                if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list($paged=1);
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
@@ -502,10 +503,10 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function display_site_user_list() {
+        function display_site_user_list($paged=1) {
+            ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            ob_start();
             ?>
                 <fieldset style="margin-top:5px;">
                     <table class="ui-widget" style="width:100%;">
@@ -518,7 +519,7 @@ if (!class_exists('display_profiles')) {
                         <?php        
                         $users = get_users(); // Initialize with all users
                         // If the current user is not an administrator, filter by site_id
-                        //if (!current_user_can('administrator')) {
+                        if (!current_user_can('administrator') || !$paged) {
                             $meta_query_args = array(
                                 array(
                                     'key'     => 'site_id',
@@ -527,7 +528,7 @@ if (!class_exists('display_profiles')) {
                                 ),
                             );
                             $users = get_users(array('meta_query' => $meta_query_args));
-                        //}
+                        }
                         // Loop through the users
                         foreach ($users as $user) {
                             $user_site = get_user_meta($user->ID, 'site_id', true);
@@ -545,7 +546,9 @@ if (!class_exists('display_profiles')) {
                         ?>
                         </tbody>
                     </table>
+<?php /*                    
                     <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+*/?>                    
                 </fieldset>
                 <?php $this->display_new_user_dialog();?>
                 <div id="site-user-dialog" title="User dialog"></div>
