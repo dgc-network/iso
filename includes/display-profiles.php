@@ -118,53 +118,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='subform') echo $items_class->display_subform_list();
 
-                if ($_GET['_select_profile']=='business-central') {
-                    // Example usage
-                    $current_user_id = get_current_user_id();
-                    $site_id = get_user_meta($current_user_id, 'site_id', true);
-                    $_SESSION['original_url'] = get_current_page_url();
-
-                    $params = array(
-                        //'company' => 'CRONUS USA, Inc.',
-                        'company' => 'dg',
-                        //'service' => 'Chart_of_Accounts',
-                        'service' => 'Customers',
-                        //'post_type' => 'POST',
-                        //'post_type' => 'PATCH',
-                        //'post_type' => 'DELETE',
-                        'etag_data' => array( // Include any data you need to send with the GET/PATCH/DELETE request
-                            //'Name' => (string) get_post_time('U', true, $site_id),
-                            //'No' => (string) time(),
-                            //'Name' => 'New customer',
-                            'No' => '1716883625',
-                            //'Name' => '新客戶',
-                            //'Display_Name' => get_the_title($site_id),
-                            //'Balance' => 0,
-                        ),
-                        'body_data' => array( // Include any data you need to send with the POST request
-                            //'Name' => (string) get_post_time('U', true, $site_id),
-                            'No' => (string) time(),
-                            //'Name' => 'New customer',
-                            //'No' => '1716883625',
-                            'Name' => '新客戶',
-                            //'Display_Name' => get_the_title($site_id),
-                            //'Balance' => 0,
-                        ),
-                    );    
-                    redirect_to_authorization_url($params);
-                }
-
-                // Check if the result is ready and retrieve it
-                if (isset($_GET['oauth_result_ready']) && $_GET['oauth_result_ready'] == '1') {
-                    $oauth_callback_result = get_transient('oauth_callback_result');
-                    if (!empty($oauth_callback_result)) {
-                        echo '<pre>';
-                        print_r($oauth_callback_result);
-                        echo '</pre>';
-                        delete_transient('oauth_callback_result'); // Clean up the transient
-                    }
-                }
-
                 echo '</div>';
             }
         }
@@ -565,7 +518,7 @@ if (!class_exists('display_profiles')) {
                         <?php        
                         $users = get_users(); // Initialize with all users
                         // If the current user is not an administrator, filter by site_id
-                        if (!current_user_can('administrator')) {
+                        //if (!current_user_can('administrator')) {
                             $meta_query_args = array(
                                 array(
                                     'key'     => 'site_id',
@@ -574,7 +527,7 @@ if (!class_exists('display_profiles')) {
                                 ),
                             );
                             $users = get_users(array('meta_query' => $meta_query_args));
-                        }
+                        //}
                         // Loop through the users
                         foreach ($users as $user) {
                             $user_site = get_user_meta($user->ID, 'site_id', true);
