@@ -290,8 +290,7 @@ if (!class_exists('embedded')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
             $args = array(
-                //'post_type'      => 'embedded',
-                'post_type'      => 'subform',
+                'post_type'      => 'embedded',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => array(
