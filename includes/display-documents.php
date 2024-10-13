@@ -1113,6 +1113,7 @@ if (!class_exists('display_documents')) {
                                 endwhile;
                                 wp_reset_postdata();
                             endif;
+                            update_post_meta($post_id, $field_id, $embedded_id);
                         }
 /*
                         if ($field_type=='_embedded') {
@@ -1667,48 +1668,91 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
-                        case ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select'):
-                            $items_class = new embedded();
-                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
-                            <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
-                            <div id="sub-item-list-from">
-                                <?php
-                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                if ($inner_query->have_posts()) :
-                                    while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        if ($report_id) {
-                                            $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
-                                        } elseif ($prev_report_id) {
-                                            $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
-                                        } else {
-                                            $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                        }
-                                        $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
-                                    endwhile;
-                                    wp_reset_postdata();
-                                endif;
+                        case ($field_type=='_embedded'||$field_type=='_planning'):
+                            if ($default_value) {
+                                $items_class = new embedded();
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                                 ?>
-                            </div>
-                            <?php
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
+                                <div id="sub-item-list-from">
+                                    <?php
+                                    $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                                    if ($inner_query->have_posts()) :
+                                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                                            if ($report_id) {
+                                                $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                            } elseif ($prev_report_id) {
+                                                $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                            } else {
+                                                $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                            }
+                                            $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
+                                    ?>
+                                </div>
+                                <?php
+                            } else {
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                }
+                                ?>
+                                <div id="sub-item-list-from">
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                </div>
+                                <?php
+                            }
                             break;
 
                         case ($field_type=='_select'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
-                            <?php
+                            if ($default_value) {
+                                $items_class = new embedded();
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
+                                <?php
+                            } else {
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                }
+                                ?>
+                                <div id="sub-item-list-from">
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                </div>
+                                <?php
+                            }
                             break;
 
                         case ($field_type=='_item_list'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <div id="sub-report-list">
-                                <?php if ($report_id) echo $this->display_sub_report_list($embedded_id, $report_id);?>
-                                <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
-                            </div>
-                            <?php
+                            if ($default_value) {
+                                $items_class = new embedded();
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <div id="sub-report-list">
+                                    <?php if ($report_id) echo $this->display_sub_report_list($embedded_id, $report_id);?>
+                                    <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
+                                </div>
+                                <?php
+                            } else {
+                                if ($report_id) {
+                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                }
+                                ?>
+                                <div id="sub-item-list-from">
+                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                </div>
+                                <?php
+                            }
                             break;
 /*
                         case ($field_type=='_embedded'):
