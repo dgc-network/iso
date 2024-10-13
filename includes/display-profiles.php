@@ -106,6 +106,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list(0);
 
+                if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
+
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
@@ -123,6 +125,16 @@ if (!class_exists('display_profiles')) {
             }
         }
 
+        function migrate_subform_to_embedded() {
+            global $wpdb;
+            $wpdb->update(
+                $wpdb->posts,
+                array( 'post_type' => 'embedded' ),
+                array( 'post_type' => 'subform' )
+            );
+        }
+        //add_action( 'init', 'migrate_subform_to_embedded' );
+        
         // my-profile scripts
         function display_my_profile() {
             ob_start();
