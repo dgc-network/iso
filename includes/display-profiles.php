@@ -108,6 +108,7 @@ if (!class_exists('display_profiles')) {
 
                 if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
                 if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
+                if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
