@@ -107,6 +107,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list(0);
 
                 if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
+                if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
@@ -134,6 +135,37 @@ if (!class_exists('display_profiles')) {
             );
         }
         //add_action( 'init', 'migrate_subform_to_embedded' );
+
+        function migrate_subform_code_to_embedded_code() {
+            // Query all posts of post type "embedded"
+            $args = array(
+                'post_type'      => 'embedded',
+                'posts_per_page' => -1, // Retrieve all posts
+                'post_status'    => 'any',
+                'meta_key'       => 'subform_code', // Only query posts with 'subform_code'
+            );
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the old 'subform_code' meta value
+                    $old_meta_value = get_post_meta(get_the_ID(), 'subform_code', true);
+        
+                    if ($old_meta_value) {
+                        // Update the meta to use 'embedded_code' instead
+                        update_post_meta(get_the_ID(), 'embedded_code', $old_meta_value);
+        
+                        // Optionally, delete the old 'subform_code' meta to avoid duplication
+                        delete_post_meta(get_the_ID(), 'subform_code');
+                    }
+                }
+                wp_reset_postdata();
+            }
+        }
+        //add_action('init', 'migrate_subform_code_to_embedded_code');
+        
         
         // my-profile scripts
         function display_my_profile() {
