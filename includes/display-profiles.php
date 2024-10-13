@@ -166,6 +166,34 @@ if (!class_exists('display_profiles')) {
         }
         //add_action('init', 'migrate_subform_code_to_embedded_code');
         
+        function migrate_subform_id_to_embedded_id() {
+            // Query all posts of post type "embedded"
+            $args = array(
+                'post_type'      => 'order-item',
+                'posts_per_page' => -1, // Retrieve all posts
+                'post_status'    => 'any',
+                'meta_key'       => 'subform_id', // Only query posts with 'subform_code'
+            );
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Get the old 'subform_code' meta value
+                    $old_meta_value = get_post_meta(get_the_ID(), 'subform_id', true);
+        
+                    if ($old_meta_value) {
+                        // Update the meta to use 'embedded_code' instead
+                        update_post_meta(get_the_ID(), 'embedded_id', $old_meta_value);
+        
+                        // Optionally, delete the old 'subform_code' meta to avoid duplication
+                        delete_post_meta(get_the_ID(), 'subform_id');
+                    }
+                }
+                wp_reset_postdata();
+            }
+        }
         
         // my-profile scripts
         function display_my_profile() {
