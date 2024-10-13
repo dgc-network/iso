@@ -1103,6 +1103,7 @@ if (!class_exists('display_documents')) {
                         $field_id = get_the_ID();
 
                         if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                            $items_class = new embedded();
                             $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                             $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                             if ($inner_query->have_posts()) :
@@ -1667,6 +1668,7 @@ if (!class_exists('display_documents')) {
 
                     switch (true) {
                         case ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select'):
+                            $items_class = new embedded();
                             $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
@@ -1987,6 +1989,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($report_id, $field_id, $field_value);
 
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                $items_class = new embedded();
                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                 $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($inner_query->have_posts()) :
@@ -2090,6 +2093,7 @@ if (!class_exists('display_documents')) {
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                        $items_class = new embedded();
                         $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                         $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                         if ($inner_query->have_posts()) :
