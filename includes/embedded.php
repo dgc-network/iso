@@ -318,9 +318,11 @@ if (!class_exists('embedded')) {
                         )                        
                     ),
                 ),
+/*                
                 'meta_key'       => 'embedded_code', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
+*/                
             );
         
             if ($paged == 0) {
