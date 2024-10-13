@@ -6,7 +6,7 @@ require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
 require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
-require_once plugin_dir_path( __FILE__ ) . 'subforms.php';
+require_once plugin_dir_path( __FILE__ ) . 'embedded.php';
 
 function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
@@ -62,8 +62,8 @@ function display_iso_category_contains($atts) {
 
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        $subform = get_post_meta(get_the_ID(), 'subform', true);
-        $start_ai_url = '/display-documents/?_statement=' . $subform;
+        $embedded = get_post_meta(get_the_ID(), 'embedded', true);
+        $start_ai_url = '/display-documents/?_statement=' . $embedded;
         ?>
         <div class="iso-category-content">
             <?php the_content(); ?>
@@ -72,7 +72,7 @@ function display_iso_category_contains($atts) {
                     <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
                 </div>
                 <div class="wp-block-button">
-                    <?php if ($subform) {?>
+                    <?php if ($embedded) {?>
                     <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>
                     <?php }?>
                 </div>

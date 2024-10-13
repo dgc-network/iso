@@ -682,7 +682,7 @@ if (!class_exists('to_do_list')) {
             // Try to!! Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
             if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
-            if ($prev_report_id) $select_one = get_post_meta($prev_report_id, '_select_one', true);
+            if ($prev_report_id) $select = get_post_meta($prev_report_id, '_select', true);
 
             if ($sub_item_ids) {
                 if (is_array($sub_item_ids)) {
@@ -694,7 +694,7 @@ if (!class_exists('to_do_list')) {
             } else {
                 if (!is_array($sub_item_ids)) {
                     if ($embedded) $params['_embedded'] = $embedded;
-                    if ($select_one) $params['_select_one'] = $select_one;
+                    if ($select) $params['_select'] = $select;
                     $this->create_new_todo_for_next_job($params);
                 }
             }
@@ -711,7 +711,7 @@ if (!class_exists('to_do_list')) {
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
             $sub_item_id = isset($args['sub_item_id']) ? $args['sub_item_id'] : 0;
             $embedded = isset($args['_embedded']) ? $args['_embedded'] : 0;
-            $select_one = isset($args['_select_one']) ? $args['_select_one'] : 0;
+            $select = isset($args['_select']) ? $args['_select'] : 0;
 
             // Create a new To-do for next_job
             $new_post = array(
@@ -732,7 +732,7 @@ if (!class_exists('to_do_list')) {
 
             if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
             if ($embedded) update_post_meta($new_todo_id, '_embedded', $embedded );
-            if ($select_one) update_post_meta($new_todo_id, '_select_one', $select_one );
+            if ($select) update_post_meta($new_todo_id, '_select', $select );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );

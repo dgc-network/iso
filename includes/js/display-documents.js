@@ -740,14 +740,14 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_subform') {
-                        $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_id + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                    if (value.field_type === '_embedded') {
+                        $.each(response.embedded_fields, function(index, inner_value) {
+                            const embedded_field = value.field_id + inner_value.sub_item_id;
+                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
+                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[subform_field] = $(subform_field_tag).val();
+                                ajaxData[embedded_field] = $(embedded_field_tag).val();
                             }
                         });
                     }
@@ -782,14 +782,14 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_subform') {
-                        $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_id + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                    if (value.field_type === '_embedded') {
+                        $.each(response.embedded_fields, function(index, inner_value) {
+                            const embedded_field = value.field_id + inner_value.sub_item_id;
+                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
+                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[subform_field] = $(subform_field_tag).val();
+                                ajaxData[embedded_field] = $(embedded_field_tag).val();
                             }
                         });
                     }
@@ -842,7 +842,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_sub_report_dialog_data',
                     '_report_id': $("#report-id").val(),
-                    '_subform_id': $("#subform-id").val(),
+                    '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (set_response) {
                     $("#sub-report-list").html(set_response.html_contain);
@@ -863,7 +863,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'get_sub_report_dialog_data',
                     '_sub_report_id': sub_report_id,
-                    '_subform_id': $("#subform-id").val(),
+                    '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (get_response) {
                     $("#sub-report-dialog").html(get_response.html_contain);
@@ -875,8 +875,8 @@ jQuery(document).ready(function($) {
                                 };
                                 ajaxData['_sub_report_id'] = sub_report_id;
                                 ajaxData['_report_id'] = $("#report-id").val();
-                                ajaxData['_subform_id'] = $("#subform-id").val();
-                                field_id = $("#subform-id").val();
+                                ajaxData['_embedded_id'] = $("#embedded-id").val();
+                                field_id = $("#embedded-id").val();
                                 $.each(get_response.sub_report_fields, function(index, inner_value) {
                                     const sub_report_field = field_id + inner_value.sub_item_id;
                                     const sub_report_field_tag = '#' + field_id + inner_value.sub_item_id;
@@ -912,7 +912,7 @@ jQuery(document).ready(function($) {
                                             'action': 'del_sub_report_dialog_data',
                                             '_sub_report_id': sub_report_id,
                                             '_report_id': $("#report-id").val(),
-                                            '_subform_id': $("#subform-id").val(),
+                                            '_embedded_id': $("#embedded-id").val(),
                                         },
                                         success: function (del_response) {
                                             $("#sub-report-dialog").dialog('close');
@@ -956,14 +956,14 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_subform') {
-                        $.each(response.subform_fields, function(index, inner_value) {
-                            const subform_field = value.field_id + inner_value.sub_item_id;
-                            const subform_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                    if (value.field_type === '_embedded') {
+                        $.each(response.embedded_fields, function(index, inner_value) {
+                            const embedded_field = value.field_id + inner_value.sub_item_id;
+                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[subform_field] = $(subform_field_tag).is(":checked") ? 1 : 0;
+                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                             } else {
-                                ajaxData[subform_field] = $(subform_field_tag).val();
+                                ajaxData[embedded_field] = $(embedded_field_tag).val();
                             }
                         });
                     }

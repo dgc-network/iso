@@ -82,8 +82,8 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
-                    $subform_id = sanitize_text_field($_GET['_statement']);
-                    $iso_category_id = get_post_meta($subform_id, 'iso_category', true);
+                    $embedded_id = sanitize_text_field($_GET['_statement']);
+                    $iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
                     $iso_category_title = get_the_title($iso_category_id);
                     $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
                     ?>
@@ -98,7 +98,7 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
                         <fieldset>
-                            <?php echo $this->display_sub_item_contains($subform_id);?>
+                            <?php echo $this->display_sub_item_contains($embedded_id);?>
                         </fieldset>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
@@ -183,7 +183,7 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            $items_class = new subforms();
+            $items_class = new embedded();
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -331,7 +331,7 @@ if (!class_exists('display_documents')) {
             ob_start();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            $items_class = new subforms();
+            $items_class = new embedded();
             $profiles_class = new display_profiles();
 
             $job_title = get_the_title($doc_id);
@@ -741,7 +741,7 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
-                                        } elseif ($field_type=='_subform') {
+                                        } elseif ($field_type=='_embedded') {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_audit') {
                                             $clause_no = get_post_meta($field_value, 'clause_no', true);
@@ -1055,7 +1055,7 @@ if (!class_exists('display_documents')) {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['subform_fields'] = $this->get_subform_keys($doc_id);
+                    $response['embedded_fields'] = $this->get_embedded_keys($doc_id);
                 }
             }
             wp_send_json($response);
@@ -1102,17 +1102,29 @@ if (!class_exists('display_documents')) {
                         update_post_meta($post_id, get_the_ID(), $default_value);
                         $field_id = get_the_ID();
 
-                        if ($field_type=='_subform') {
-                            $items_class = new subforms();
+                        if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                    update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                        }
+/*
+                        if ($field_type=='_embedded') {
+                            $items_class = new embedded();
                             $parts = explode('=', $default_value);
-                            $subform_key = $parts[0]; // _embedded, _planning, _select_one
-                            $subform_value = $parts[1]; // 1724993477
+                            $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
+                            $embedded_value = $parts[1]; // 1724993477
 
-                            if ($subform_value) {
-                                $subform_id = $items_class->get_subform_post_id_by_code($subform_value);
+                            if ($embedded_value) {
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
 
-                                if ($subform_key=='_embedded'||$subform_key=='_planning'||$subform_key=='_select_one') {
-                                    $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
+                                    $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
                                             $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
@@ -1122,13 +1134,14 @@ if (!class_exists('display_documents')) {
                                     endif;
                                 }
 
-                                if ($subform_key=='_embedded'||$subform_key=='_planning') {
-                                    update_post_meta($post_id, $field_id, $subform_id);
+                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
+                                    update_post_meta($post_id, $field_id, $embedded_id);
                                 }
 
                             }
 
                         }
+*/                        
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1223,18 +1236,18 @@ if (!class_exists('display_documents')) {
         }
 
         // sub-report
-        function display_sub_report_list($subform_id=false, $report_id=false) {
+        function display_sub_report_list($embedded_id=false, $report_id=false) {
             ob_start();
-            $items_class = new subforms();
+            $items_class = new embedded();
             ?>
-            <input type="hidden" id="subform-id" value="<?php echo esc_attr($subform_id);?>">
+            <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>">
             <fieldset>
             <table style="width:100%;">
                 <thead>
                 <tr>
                 <th>#</th>
                 <?php                
-                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_title = get_the_title();
@@ -1255,11 +1268,11 @@ if (!class_exists('display_documents')) {
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
                         $sub_report_id = get_the_id();
                         ?><tr id="edit-sub-report-<?php the_ID();?>"><td style="text-align:center;"></td><?php
-                        $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                        $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
-                                $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
+                                $field_value = get_post_meta($sub_report_id, $embedded_id.get_the_ID(), true);
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 if ($field_type=='_product') {
                                     $product_code = get_post_meta($field_value, 'product_code', true);
@@ -1300,7 +1313,7 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function display_sub_report_dialog($sub_report_id=false, $subform_id=false) {
+        function display_sub_report_dialog($sub_report_id=false, $embedded_id=false) {
             ob_start();
             $report_id = get_post_meta($sub_report_id, 'report_id', true);
             ?>
@@ -1308,15 +1321,15 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                $items_class = new subforms();
-                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                $items_class = new embedded();
+                $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
-                        <label for="<?php echo esc_attr($subform_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
+                        <label for="<?php echo esc_attr($embedded_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
                         <?php
                         if ($sub_report_id) {
-                            $field_value = get_post_meta($sub_report_id, $subform_id.get_the_ID(), true);
+                            $field_value = get_post_meta($sub_report_id, $embedded_id.get_the_ID(), true);
                         } else {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
@@ -1324,11 +1337,11 @@ if (!class_exists('display_documents')) {
                         if ($field_type=='_product') {
                             $cards_class = new erp_cards();
                             ?>
-                            <select id="<?php echo esc_attr($subform_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
                             <?php
                         } else {
                             ?>
-                            <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($subform_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                            <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($embedded_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                             <?php    
                         }
                     endwhile;
@@ -1342,25 +1355,25 @@ if (!class_exists('display_documents')) {
 
         function get_sub_report_dialog_data() {
             $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
-            $subform_id = sanitize_text_field($_POST['_subform_id']);
-            $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id, $subform_id));
-            $response['sub_report_fields'] = $this->get_sub_report_keys($subform_id);
+            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
+            $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id, $embedded_id));
+            $response['sub_report_fields'] = $this->get_sub_report_keys($embedded_id);
             wp_send_json($response);
         }
 
         function set_sub_report_dialog_data() {
             $report_id = sanitize_text_field($_POST['_report_id']);
-            $subform_id = sanitize_text_field($_POST['_subform_id']);
+            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
             if( isset($_POST['_sub_report_id']) ) {
                 // Update the post
                 $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
-                $items_class = new subforms();
-                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                $items_class = new embedded();
+                $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_id = $subform_id.get_the_id();
-                        $field_value = $_POST[$subform_id.get_the_id()];
-                        update_post_meta($sub_report_id, $subform_id.get_the_id(), $field_value);
+                        //$field_id = $embedded_id.get_the_id();
+                        $field_value = $_POST[$embedded_id.get_the_id()];
+                        update_post_meta($sub_report_id, $embedded_id.get_the_id(), $field_value);
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1376,15 +1389,15 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'report_id', $report_id);
 
             }
-            $response = array('html_contain' => $this->display_sub_report_list($subform_id, $report_id));
+            $response = array('html_contain' => $this->display_sub_report_list($embedded_id, $report_id));
             wp_send_json($response);
         }
 
         function del_sub_report_dialog_data() {
             wp_delete_post($_POST['_sub_report_id'], true);
-            $subform_id = sanitize_text_field($_POST['_subform_id']);
+            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
             $report_id = sanitize_text_field($_POST['_report_id']);
-            $response = array('html_contain' => $this->display_sub_report_list($subform_id, $report_id));
+            $response = array('html_contain' => $this->display_sub_report_list($embedded_id, $report_id));
             wp_send_json($response);
         }
 
@@ -1509,7 +1522,9 @@ if (!class_exists('display_documents')) {
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-                    <option value="_subform" <?php echo ($field_type=='_subform') ? 'selected' : ''?>><?php echo __( '_subform', 'your-text-domain' );?></option>
+                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
+                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
+                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1651,28 +1666,71 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
-                        case ($field_type=='_subform'):
-                            $items_class = new subforms();
+                        case ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select'):
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
+                            <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
+                            <div id="sub-item-list-from">
+                                <?php
+                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        if ($report_id) {
+                                            $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                        } elseif ($prev_report_id) {
+                                            $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                        } else {
+                                            $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                        }
+                                        $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                                ?>
+                            </div>
+                            <?php
+                            break;
+
+                        case ($field_type=='_select'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
+                            <?php
+                            break;
+
+                        case ($field_type=='_item_list'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <div id="sub-report-list">
+                                <?php if ($report_id) echo $this->display_sub_report_list($embedded_id, $report_id);?>
+                                <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
+                            </div>
+                            <?php
+                            break;
+/*
+                        case ($field_type=='_embedded'):
+                            $items_class = new embedded();
                             if ($todo_id) {
                                 $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-                                $embedded_default_value = get_post_meta($todo_id, '_embedded', true);
+                                $embedded_backup_default_value = get_post_meta($todo_id, '_embedded_backup', true);
                                 $select_default_value = get_post_meta($todo_id, '_select_one', true);
                             }
-                            if ($embedded_default_value) $parts = explode('=', $embedded_default_value);
+                            if ($embedded_backup_default_value) $parts = explode('=', $embedded_backup_default_value);
                             elseif ($select_default_value) $parts = explode('=', $select_default_value);
                             else $parts = explode('=', $default_value);
-                            $subform_key = $parts[0]; // _embedded, _planning, _select_one
-                            $subform_value = $parts[1]; // 1724993477
+                            $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
+                            $embedded_value = $parts[1]; // 1724993477
 
-                            if ($subform_value) {
-                                $subform_id = $items_class->get_subform_post_id_by_code($subform_value);
-                                if ($subform_key=='_embedded'||$subform_key=='_planning') {
+                            if ($embedded_value) {
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
+                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
                                     ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($subform_id));?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($subform_id);?>" />
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
+                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
                                     <div id="sub-item-list-from">
                                         <?php
-                                        $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+                                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                                         if ($inner_query->have_posts()) :
                                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                                 if ($report_id) {
@@ -1690,18 +1748,18 @@ if (!class_exists('display_documents')) {
                                     </div>
                                     <?php
                                 }
-                                if ($subform_key=='_select_one') {
+                                if ($embedded_key=='_select_one') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $subform_id);?></select>
+                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
                                     <?php
                                 }
-                                if ($subform_key=='_item_list') {
+                                if ($embedded_key=='_item_list') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <div id="sub-report-list">
-                                        <?php if ($report_id) echo $this->display_sub_report_list($subform_id, $report_id);?>
-                                        <?php if ($prev_report_id) echo $this->display_sub_report_list($subform_id, $prev_report_id);?>
+                                        <?php if ($report_id) echo $this->display_sub_report_list($embedded_id, $report_id);?>
+                                        <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
                                     </div>
                                     <?php
                                 }
@@ -1720,7 +1778,7 @@ if (!class_exists('display_documents')) {
 
                             }
                             break;
-
+*/
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1928,16 +1986,45 @@ if (!class_exists('display_documents')) {
 
             update_post_meta($report_id, $field_id, $field_value);
 
-            if ($field_type=='_subform') {
-                $items_class = new subforms();
-                $parts = explode('=', $default_value);
-                $subform_key = $parts[0]; // _embedded, _planning, _select_one
-                $subform_value = $parts[1]; // 1724993477
+            if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                if ($inner_query->have_posts()) :
+                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                        $field_value = $_POST[$field_id.get_the_ID()];
+                        update_post_meta($report_id, $field_id.get_the_ID(), $field_value);
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
 
-                if ($subform_value) {
-                    $subform_id = $items_class->get_subform_post_id_by_code($subform_value);
-                    if ($subform_key=='_embedded'||$subform_key=='_planning'||$subform_key=='_select_one') {
-                        $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+                if ($embedded_key=='_embedded'||$embedded_key=='_planning') {
+                    update_post_meta($report_id, $field_id, $embedded_id);
+                }
+
+                if ($embedded_key=='_embedded') {
+                    update_post_meta($report_id, '_embedded', $default_value);
+                }
+
+                if ($embedded_key=='_planning') {
+                    $sub_item_ids = $this->get_sub_item_ids($embedded_id);
+                    update_post_meta($report_id, '_planning', $sub_item_ids);
+                }
+
+                if ($embedded_key=='_select') {
+                    update_post_meta($report_id, '_select', $default_value);
+                }
+            }
+/*
+            if ($field_type=='_embedded') {
+                $items_class = new embedded();
+                $parts = explode('=', $default_value);
+                $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
+                $embedded_value = $parts[1]; // 1724993477
+
+                if ($embedded_value) {
+                    $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
+                    if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
+                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $field_value = $_POST[$field_id.get_the_ID()];
@@ -1946,35 +2033,36 @@ if (!class_exists('display_documents')) {
                             wp_reset_postdata();
                         endif;
 
-                        if ($subform_key=='_embedded'||$subform_key=='_planning') {
-                            update_post_meta($report_id, $field_id, $subform_id);
+                        if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
+                            update_post_meta($report_id, $field_id, $embedded_id);
                         }
 
-                        if ($subform_key=='_planning') {
-                            $sub_item_ids = $this->get_sub_item_ids($subform_id);
+                        if ($embedded_key=='_planning') {
+                            $sub_item_ids = $this->get_sub_item_ids($embedded_id);
                             update_post_meta($report_id, '_planning', $sub_item_ids);
                         }
 
-                        if ($subform_key=='_embedded') {
-                            update_post_meta($report_id, '_embedded', $default_value);
+                        if ($embedded_key=='_embedded_backup') {
+                            update_post_meta($report_id, '_embedded_backup', $default_value);
                         }
 
-                        if ($subform_key=='_select_one') {
+                        if ($embedded_key=='_select_one') {
                             update_post_meta($report_id, '_select_one', $default_value);
                         }
                     }
                 }
             }
+*/                
         }
         
-        function get_sub_item_ids($subform_id=false) {
+        function get_sub_item_ids($embedded_id=false) {
             $args = array(
                 'post_type'  => 'sub-item',
                 'posts_per_page' => -1,
                 'meta_query' => array(
                     array(
-                        'key'   => 'subform_id',
-                        'value' => $subform_id,
+                        'key'   => 'embedded_id',
+                        'value' => $embedded_id,
                         'compare' => '='
                     ),
                     array(
@@ -1992,7 +2080,7 @@ if (!class_exists('display_documents')) {
             return $post_ids;
         }
 
-        function get_subform_keys($doc_id=false) {
+        function get_embedded_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();
@@ -2000,17 +2088,33 @@ if (!class_exists('display_documents')) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                
-                    if ($field_type=='_subform') {
-                        $items_class = new subforms();
-                        $parts = explode('=', $default_value);
-                        $subform_key = $parts[0]; // _embedded, _planning, _select_one
-                        $subform_value = $parts[1]; // 1724993477
 
-                        if ($subform_value) {
-                            $subform_id = $items_class->get_subform_post_id_by_code($subform_value);
-                            if ($subform_key=='_embedded'||$subform_key=='_planning'||$subform_key=='_select_one') {
-                                $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+                    if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                        $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $_list = array();
+                                $_list["sub_item_id"] = get_the_ID();
+                                $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                array_push($_array, $_list);
+            
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+
+                    }
+/*
+                    if ($field_type=='_embedded') {
+                        $items_class = new embedded();
+                        $parts = explode('=', $default_value);
+                        $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
+                        $embedded_value = $parts[1]; // 1724993477
+
+                        if ($embedded_value) {
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
+                            if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
+                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $_list = array();
@@ -2024,16 +2128,17 @@ if (!class_exists('display_documents')) {
                             }
                         }
                     }
+*/                        
                 endwhile;
                 wp_reset_postdata();
             }    
             return $_array;
         }
 
-        function get_sub_report_keys($subform_id=false) {
+        function get_sub_report_keys($embedded_id=false) {
             $_array = array();
-            $items_class = new subforms();
-            $inner_query = $items_class->retrieve_sub_item_list_data($subform_id);
+            $items_class = new embedded();
+            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $_list = array();
@@ -2120,13 +2225,13 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
 
-        function display_sub_item_contains($subform_id){
-            $items_class = new subforms();
+        function display_sub_item_contains($embedded_id){
+            $items_class = new embedded();
             if (is_site_admin()) {
-                $query = $items_class->retrieve_sub_item_list_data($subform_id);
+                $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $items_class->get_sub_item_contains(get_the_ID(), $subform_id);
+                        $items_class->get_sub_item_contains(get_the_ID(), $embedded_id);
                     endwhile;
                     wp_reset_postdata();
                 endif;

@@ -114,9 +114,9 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // subform scripts
-    activate_subform_list_data()
-    function activate_subform_list_data(){
+    // embedded scripts
+    activate_embedded_list_data()
+    function activate_embedded_list_data(){
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -131,17 +131,17 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
         });
 
-        $("#new-subform").on("click", function() {
+        $("#new-embedded").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_subform_dialog_data',
+                    'action': 'set_embedded_dialog_data',
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
-                    activate_subform_list_data();
+                    activate_embedded_list_data();
                 },
                 error: function(error){
                     console.error(error);
@@ -150,37 +150,37 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('[id^="edit-subform-"]').on("click", function () {
-            const subform_id = this.id.substring(13);
+        $('[id^="edit-embedded-"]').on("click", function () {
+            const embedded_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_subform_dialog_data',
-                    '_subform_id': subform_id,
+                    'action': 'get_embedded_dialog_data',
+                    '_embedded_id': embedded_id,
                 },
                 success: function (response) {
-                    $("#subform-dialog").html(response.html_contain);
+                    $("#embedded-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#subform-dialog").dialog("option", "buttons", {
+                        $("#embedded-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'set_subform_dialog_data',
-                                        '_subform_id': subform_id,
-                                        '_subform_title': $("#subform-title").val(),
-                                        '_subform_code': $("#subform-code").val(),
+                                        'action': 'set_embedded_dialog_data',
+                                        '_embedded_id': embedded_id,
+                                        '_embedded_title': $("#embedded-title").val(),
+                                        '_embedded_code': $("#embedded-code").val(),
                                         '_iso_category': $("#iso-category").val(),
                                         '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
-                                        $("#subform-dialog").dialog('close');
+                                        $("#embedded-dialog").dialog('close');
                                         $("#result-container").html(response.html_contain);
-                                        activate_subform_list_data();
+                                        activate_embedded_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -195,13 +195,13 @@ jQuery(document).ready(function($) {
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_subform_dialog_data',
-                                            '_subform_id': subform_id,
+                                            'action': 'del_embedded_dialog_data',
+                                            '_embedded_id': embedded_id,
                                         },
                                         success: function (response) {
-                                            $("#subform-dialog").dialog('close');
+                                            $("#embedded-dialog").dialog('close');
                                             $("#result-container").html(response.html_contain);
-                                            activate_subform_list_data();
+                                            activate_embedded_list_data();
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -216,16 +216,16 @@ jQuery(document).ready(function($) {
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'duplicate_subform_dialog_data',
-                                        '_subform_id': subform_id,
-                                        '_subform_title': $("#subform-title").val(),
-                                        '_subform_code': $("#subform-code").val(),
+                                        'action': 'duplicate_embedded_dialog_data',
+                                        '_embedded_id': embedded_id,
+                                        '_embedded_title': $("#embedded-title").val(),
+                                        '_embedded_code': $("#embedded-code").val(),
                                         '_iso_category': $("#iso-category").val(),
                                     },
                                     success: function (response) {
-                                        $("#subform-dialog").dialog('close');
+                                        $("#embedded-dialog").dialog('close');
                                         $("#result-container").html(response.html_contain);
-                                        activate_subform_list_data();
+                                        activate_embedded_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -235,8 +235,8 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    $("#subform-dialog").dialog('open');
-                    activate_sub_item_list_data(subform_id);
+                    $("#embedded-dialog").dialog('open');
+                    activate_sub_item_list_data(embedded_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -245,7 +245,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#subform-dialog").dialog({
+        $("#embedded-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -254,7 +254,7 @@ jQuery(document).ready(function($) {
     }
 
     // sub-item scripts
-    function activate_sub_item_list_data(subform_id){
+    function activate_sub_item_list_data(embedded_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -262,11 +262,11 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'set_sub_item_dialog_data',
-                    '_subform_id': subform_id,
+                    '_embedded_id': embedded_id,
                 },
                 success: function (response) {
                     $("#sub-item-list").html(response.html_contain);
-                    activate_sub_item_list_data(subform_id);
+                    activate_sub_item_list_data(embedded_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -329,8 +329,8 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_sub_item_dialog_data',
-                            //'_subform_id': subform_id,
-                            '_subform_id': $("#subform-id").val(),
+                            //'_embedded_id': embedded_id,
+                            '_embedded_id': $("#embedded-id").val(),
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
                             '_sub_item_type': $("#sub-item-type").val(),
@@ -340,7 +340,7 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             $("#sub-item-dialog").dialog('close');
                             $("#sub-item-list").html(response.html_contain);
-                            activate_sub_item_list_data(subform_id)
+                            activate_sub_item_list_data(embedded_id)
                         },
                         error: function (error) {
                             console.error(error);
@@ -356,14 +356,14 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_sub_item_dialog_data',
-                                //'_subform_id': subform_id,
-                                '_subform_id': $("#subform-id").val(),
+                                //'_embedded_id': embedded_id,
+                                '_embedded_id': $("#embedded-id").val(),
                                 '_sub_item_id': $("#sub-item-id").val(),
                             },
                             success: function (response) {
                                 $("#sub-item-dialog").dialog('close');
                                 $("#sub-item-list").html(response.html_contain);
-                                activate_sub_item_list_data(subform_id)
+                                activate_sub_item_list_data(embedded_id)
                             },
                             error: function (error) {
                                 console.error(error);
@@ -451,7 +451,7 @@ jQuery(document).ready(function($) {
                             '_category_content': $("#category-content").val(),
                             '_category_url': $("#category-url").val(),
                             '_parent_category': $("#parent-category").val(),
-                            '_subform': $("#subform").val(),
+                            '_embedded': $("#embedded").val(),
                         },
                         success: function (response) {
                             $("#iso-category-dialog").dialog('close');
