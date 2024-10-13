@@ -170,7 +170,7 @@ if (!class_exists('display_profiles')) {
         function migrate_subform_id_to_embedded_id() {
             // Query all posts of post type "embedded"
             $args = array(
-                'post_type'      => 'order-item',
+                'post_type'      => 'sub-item',
                 'posts_per_page' => -1, // Retrieve all posts
                 'post_status'    => 'any',
                 'meta_key'       => 'subform_id', // Only query posts with 'subform_code'
