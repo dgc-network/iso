@@ -8,7 +8,7 @@ if (!class_exists('embedded')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_embedded_scripts' ) );
-            //add_action( 'init', array( $this, 'register_embedded_post_type' ) );
+            add_action( 'init', array( $this, 'register_embedded_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
