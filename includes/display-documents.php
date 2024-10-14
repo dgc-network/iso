@@ -1102,17 +1102,19 @@ if (!class_exists('display_documents')) {
                         $field_id = get_the_ID();
 
                         if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                            $items_class = new embedded();
-                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                            if ($inner_query->have_posts()) :
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                    update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-                            update_post_meta($post_id, $field_id, $embedded_id);
+                            if ($default_value) {
+                                $items_class = new embedded();
+                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                        update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                                update_post_meta($post_id, $field_id, $embedded_id);    
+                            }
                         }
 /*
                         if ($field_type=='_embedded') {
@@ -1372,7 +1374,6 @@ if (!class_exists('display_documents')) {
                 $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_id = $embedded_id.get_the_id();
                         $field_value = $_POST[$embedded_id.get_the_id()];
                         update_post_meta($sub_report_id, $embedded_id.get_the_id(), $field_value);
                     endwhile;
@@ -1981,12 +1982,12 @@ if (!class_exists('display_documents')) {
         }
 
         function update_doc_field_contains($report_id=false, $field_id=false) {
-            // standard field-name
+            // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $field_value = $_POST[$field_id];
 
-            // additional field-name
+            // special field-type
             if ($field_type=='_employees'){
                 $employee_ids = get_post_meta($report_id, '_employees', true);
                 // Ensure $employee_ids is an array, or initialize it as an empty array
@@ -2144,20 +2145,21 @@ if (!class_exists('display_documents')) {
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                        $items_class = new embedded();
-                        $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $_list = array();
-                                $_list["sub_item_id"] = get_the_ID();
-                                $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                array_push($_array, $_list);
-            
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-
+                        if ($default_value) {
+                            $items_class = new embedded();
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $_list = array();
+                                    $_list["sub_item_id"] = get_the_ID();
+                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                    array_push($_array, $_list);
+                
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;    
+                        }
                     }
 /*
                     if ($field_type=='_embedded') {
