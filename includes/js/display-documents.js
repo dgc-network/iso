@@ -338,9 +338,9 @@ jQuery(document).ready(function($) {
                     $('#result-container').html(response.html_contain);
                     activate_published_document_data(doc_id);
                 },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.error('AJAX request failed:', errorThrown);
-                    alert('AJAX request failed. Please try again.');
+                error: function(error){
+                    console.error(error);
+                    alert(error);
                 }
             });
         });
@@ -762,9 +762,9 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     get_doc_report_list_data($("#doc-id").val());
                 },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.error('AJAX request failed:', errorThrown);
-                    //alert('AJAX request failed. Please try again.');
+                error: function(error){
+                    console.error(error);
+                    alert(error);
                 }
             });
         });
@@ -804,9 +804,9 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     get_doc_report_list_data($("#doc-id").val());
                 },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.error('AJAX request failed:', errorThrown);
-                    alert('AJAX request failed. Please try again.');
+                error: function(error){
+                    console.error(error);
+                    alert(error);
                 }
             });
         });
