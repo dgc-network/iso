@@ -488,7 +488,7 @@ if (!class_exists('embedded')) {
 
         function select_embedded_options($selected_option=0) {
             $query = $this->retrieve_embedded_data(0);
-            $options = '<option value="">Select sub form</option>';
+            $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $embedded_code = get_post_meta(get_the_ID(), 'embedded_code', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
