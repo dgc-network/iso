@@ -98,7 +98,7 @@ if (!class_exists('display_documents')) {
                         <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                         <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
                         <fieldset>
-                            <?php echo $this->display_sub_item_contains($embedded_id);?>
+                            <?php echo $this->display_sub_item_for_statement($embedded_id);?>
                         </fieldset>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
@@ -740,11 +740,11 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="checkbox" '.$is_checked.' />';
                                         } elseif ($field_type=='radio') {
                                             echo '<input type="radio" '.$is_checked.' />';
-                                        } elseif ($field_type=='_embedded') {
+                                        } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                                             echo esc_html(get_the_title($field_value));
-                                        } elseif ($field_type=='_audit') {
-                                            $clause_no = get_post_meta($field_value, 'clause_no', true);
-                                            echo esc_html(get_the_title($field_value).' '.$clause_no);
+                                        //} elseif ($field_type=='_audit') {
+                                        //    $clause_no = get_post_meta($field_value, 'clause_no', true);
+                                        //    echo esc_html(get_the_title($field_value).' '.$clause_no);
                                         } elseif ($field_type=='_document') {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
                                             $doc_number = get_post_meta($field_value, 'doc_number', true);
@@ -1054,7 +1054,7 @@ if (!class_exists('display_documents')) {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['embedded_fields'] = $this->get_embedded_keys($doc_id);
+                    $response['embedded_fields'] = $this->get_embedded_field_keys($doc_id);
                 }
             }
             wp_send_json($response);
@@ -1681,13 +1681,13 @@ if (!class_exists('display_documents')) {
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
                                             if ($report_id) {
-                                                $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                                $sub_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
                                             } elseif ($prev_report_id) {
-                                                $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                                $sub_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
                                             } else {
-                                                $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                                $sub_item_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                                             }
-                                            $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
+                                            $items_class->get_sub_item_contains($field_id, get_the_ID(), $sub_item_value);
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;
@@ -1698,13 +1698,13 @@ if (!class_exists('display_documents')) {
                                 if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
 
                                 if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
                                 }
                                 ?>
                                 <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
                                 </div>
                                 <?php
                             }
@@ -1722,13 +1722,13 @@ if (!class_exists('display_documents')) {
                                 if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
 
                                 if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
                                 }
                                 ?>
                                 <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
                                 </div>
                                 <?php
                             }
@@ -1749,13 +1749,13 @@ if (!class_exists('display_documents')) {
                                 if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
 
                                 if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
                                 } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
                                 }
                                 ?>
                                 <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
+                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
                                 </div>
                                 <?php
                             }
@@ -2041,19 +2041,20 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new embedded();
-                    $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                    $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                    //$embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                    //$inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                    $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
                     if ($inner_query->have_posts()) :
                         while ($inner_query->have_posts()) : $inner_query->the_post();
-                            $field_value = $_POST[$field_id.get_the_ID()];
-                            update_post_meta($report_id, $field_id.get_the_ID(), $field_value);
+                            $sub_item_value = $_POST[$field_id.get_the_ID()];
+                            update_post_meta($report_id, $field_id.get_the_ID(), $sub_item_value);
                         endwhile;
                         wp_reset_postdata();
                     endif;
     
-                    if ($field_type=='_embedded'||$field_type=='_planning') {
-                        update_post_meta($report_id, $field_id, $embedded_id);
-                    }
+                    //if ($field_type=='_embedded'||$field_type=='_planning') {
+                    //    update_post_meta($report_id, $field_id, $embedded_id);
+                    //}
     
                     if ($field_type=='_embedded') {
                         update_post_meta($report_id, '_embedded', $default_value);
@@ -2135,7 +2136,7 @@ if (!class_exists('display_documents')) {
             return $post_ids;
         }
 
-        function get_embedded_keys($doc_id=false) {
+        function get_embedded_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();
@@ -2152,10 +2153,10 @@ if (!class_exists('display_documents')) {
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $_list = array();
+                                    $_list["embedded_id"] = $embedded_id;
                                     $_list["sub_item_id"] = get_the_ID();
                                     $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
                                     array_push($_array, $_list);
-                
                                 endwhile;
                                 wp_reset_postdata();
                             endif;    
@@ -2282,13 +2283,13 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
 
-        function display_sub_item_contains($embedded_id){
+        function display_sub_item_for_statement($embedded_id){
             $items_class = new embedded();
             if (is_site_admin()) {
                 $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $items_class->get_sub_item_contains(get_the_ID(), $embedded_id);
+                        $items_class->get_sub_item_contains($embedded_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 endif;

@@ -728,7 +728,7 @@ if (!class_exists('embedded')) {
             return $options;
         }
 
-        function get_sub_item_contains($sub_item_id=false, $field_id=false, $field_value=false) {
+        function get_sub_item_contains($field_id=false, $sub_item_id=false, $sub_item_value=false) {
             $sub_item_title = get_the_title($sub_item_id);
             $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
@@ -744,27 +744,27 @@ if (!class_exists('embedded')) {
                     <?php    
                 }
             } elseif ($sub_item_type=='checkbox') {
-                $is_checked = ($field_value==1) ? 'checked' : '';
+                $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>
                 <input type="checkbox" id="<?php echo esc_attr($field_id.$sub_item_id);?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
                 <?php
             } elseif ($sub_item_type=='textarea') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <textarea id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($field_value);?></textarea>
+                <textarea id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($sub_item_value);?></textarea>
                 <?php
             } elseif ($sub_item_type=='text') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="text" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='number') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="number" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($field_value);?>"  class="number ui-widget-content ui-corner-all" />
+                <input type="number" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='radio') {
-                $is_checked = ($field_value==1) ? 'checked' : '';
+                $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>
                 <input type="radio" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_title.' '.$sub_item_code?><br>
                 <?php
@@ -819,7 +819,7 @@ if (!class_exists('embedded')) {
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $this->get_sub_item_contains(get_the_ID(), $field_id);
+                        $this->get_sub_item_contains($field_id, get_the_ID());
                     endwhile;
                     wp_reset_postdata();
                 endif;

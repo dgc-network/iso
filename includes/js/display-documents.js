@@ -740,7 +740,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_embedded') {
+                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                         $.each(response.embedded_fields, function(index, inner_value) {
                             const embedded_field = value.field_id + inner_value.sub_item_id;
                             const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
@@ -782,7 +782,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_embedded') {
+                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                         $.each(response.embedded_fields, function(index, inner_value) {
                             const embedded_field = value.field_id + inner_value.sub_item_id;
                             const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
@@ -956,7 +956,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_embedded') {
+                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                         $.each(response.embedded_fields, function(index, inner_value) {
                             const embedded_field = value.field_id + inner_value.sub_item_id;
                             const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
