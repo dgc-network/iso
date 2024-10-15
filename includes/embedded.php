@@ -734,6 +734,11 @@ if (!class_exists('embedded')) {
             $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
             $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
             if ($sub_item_type=='heading') {
+                $sub_item_default = ($sub_item_default) ? $sub_item_default : 'b';
+                ?>
+                <div><<?php echo esc_html($sub_item_default);?>><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></<?php echo esc_html($sub_item_default);?>></div>
+                <?php
+/*
                 if ($sub_item_default) {
                     ?>
                     <?php echo $sub_item_title.' '.$sub_item_code?><br>
@@ -743,6 +748,7 @@ if (!class_exists('embedded')) {
                     <b><?php echo $sub_item_title.' '.$sub_item_code?></b><br>
                     <?php    
                 }
+*/                    
             } elseif ($sub_item_type=='checkbox') {
                 $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>

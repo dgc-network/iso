@@ -1241,7 +1241,6 @@ if (!class_exists('display_documents')) {
         // sub-report
         function display_sub_report_list($embedded_id=false, $report_id=false) {
             ob_start();
-            $items_class = new embedded();
             ?>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>">
             <fieldset>
@@ -1250,6 +1249,7 @@ if (!class_exists('display_documents')) {
                 <tr>
                 <th>#</th>
                 <?php                
+                $items_class = new embedded();
                 $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -1642,6 +1642,8 @@ if (!class_exists('display_documents')) {
         }
 
         function get_doc_field_contains($args) {
+            $items_class = new embedded();
+            $cards_class = new erp_cards();
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
@@ -1668,7 +1670,70 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
-                        case ($field_type=='_embedded'||$field_type=='_planning'):
+                        case ($field_type=='_embedded'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($field_value));?></label>
+                            <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
+                            <div id="embedded-subform">
+                                <?php
+                                $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        if ($report_id) {
+                                            $sub_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                        } elseif ($prev_report_id) {
+                                            $sub_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                        } else {
+                                            $sub_item_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                        }
+                                        $items_class->get_sub_item_contains($field_id, get_the_ID(), $sub_item_value);
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                                ?>
+                            </div>
+                            <?php
+                            break;
+
+                        case ($field_type=='_planning'):
+                            if ($todo_id) {
+                                $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
+                                if ($report_id) {
+                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
+                                } elseif ($prev_report_id) {
+                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
+                                }
+                                ?>
+                                <div id="embedded-subform">
+                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
+                                </div>
+                                <?php
+                            } else {
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($field_value));?></label>
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
+                                <div id="embedded-subform">
+                                    <?php
+                                    $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
+                                    if ($inner_query->have_posts()) :
+                                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                                            if ($report_id) {
+                                                $sub_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                            } elseif ($prev_report_id) {
+                                                $sub_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                            } else {
+                                                $sub_item_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                            }
+                                            $items_class->get_sub_item_contains($field_id, get_the_ID(), $sub_item_value);
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
+                                    ?>
+                                </div>
+                                <?php    
+                            }
+                            break;
+/*
                             if ($default_value) {
                                 $items_class = new embedded();
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
@@ -1708,16 +1773,17 @@ if (!class_exists('display_documents')) {
                                 </div>
                                 <?php
                             }
-                            break;
 
+                            break;
+*/
                         case ($field_type=='_select'):
                             if ($default_value) {
-                                $items_class = new embedded();
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
                                 <?php
+/*                                
                             } else {
                                 if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
 
@@ -1731,12 +1797,12 @@ if (!class_exists('display_documents')) {
                                     <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
                                 </div>
                                 <?php
+*/                                
                             }
                             break;
 
                         case ($field_type=='_item_list'):
                             if ($default_value) {
-                                $items_class = new embedded();
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1745,6 +1811,7 @@ if (!class_exists('display_documents')) {
                                     <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
                                 </div>
                                 <?php
+/*                                
                             } else {
                                 if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
 
@@ -1758,6 +1825,7 @@ if (!class_exists('display_documents')) {
                                     <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
                                 </div>
                                 <?php
+*/                                
                             }
                             break;
 /*
@@ -1839,7 +1907,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_customer'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
@@ -1847,7 +1915,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_vendor'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
@@ -1855,7 +1923,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_product'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
@@ -1863,7 +1931,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_equipment'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
@@ -1871,7 +1939,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_instrument'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
@@ -1879,7 +1947,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_department'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
@@ -1887,7 +1955,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_employees'):
-                            $cards_class = new erp_cards();
+                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>
