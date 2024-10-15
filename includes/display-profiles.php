@@ -110,6 +110,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
                 if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
 */
+                if ($_GET['_select_profile']=='migrate_subform_meta_to_embedded_meta') echo $this->migrate_subform_meta_to_embedded_meta();
+                
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
