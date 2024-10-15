@@ -35,8 +35,8 @@ if (!class_exists('embedded')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
-            add_action( 'wp_ajax_nopriv_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
+            //add_action( 'wp_ajax_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
+            //add_action( 'wp_ajax_nopriv_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
             
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
@@ -775,7 +775,7 @@ if (!class_exists('embedded')) {
             }
 
         }
-
+/*
         function get_doc_field_id_by_meta($doc_id, $field_type) {
             // Set up the query arguments
             $args = array(
@@ -807,7 +807,7 @@ if (!class_exists('embedded')) {
                 return false; // No post found
             }
         }
-
+/*
         function select_sub_items_from_embedded() {
             ob_start();
             $response = array();
@@ -828,7 +828,7 @@ if (!class_exists('embedded')) {
             $response['html_contain'] = ob_get_clean();
             wp_send_json($response);
         }
-
+*/
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(

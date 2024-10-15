@@ -25,7 +25,7 @@ if (!class_exists('iot_messages')) {
             wp_enqueue_script('leaflet-script', "https://unpkg.com/leaflet/dist/leaflet.js");
             wp_enqueue_style('leaflet-style', "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
 
-            wp_enqueue_script('iot-messages', plugins_url('iot-messages.js', __FILE__), array('jquery'), time());
+            wp_enqueue_script('iot-messages', plugins_url('js/iot-messages.js', __FILE__), array('jquery'), time());
             wp_localize_script('iot-messages', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('iot-messages-nonce'), // Generate nonce
