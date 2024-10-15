@@ -785,8 +785,6 @@ jQuery(document).ready(function($) {
                     if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                         $.each(response.embedded_fields, function(index, inner_value) {
                             const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
-                            console.log(value.field_id, inner_value.sub_item_id);
-                            console.log(embedded_field);
                             const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
                             if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
                                 ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
