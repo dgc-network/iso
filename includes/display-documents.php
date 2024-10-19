@@ -73,8 +73,10 @@ if (!class_exists('display_documents')) {
             ));                
         }
 
-        function display_statement_contain($embedded_id=false) {
-            $iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
+        //function display_statement_contain($embedded_id=false) {
+        function display_statement_contain($iso_category_id=false) {
+            //$iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
+            $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
             $iso_category_title = get_the_title($iso_category_id);
             $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
             ?>

@@ -65,6 +65,7 @@ function display_iso_category_contains($atts) {
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
         $embedded = get_post_meta(get_the_ID(), 'embedded', true);
         $start_ai_url = '/display-documents/?_statement=' . $embedded;
+        $start_ai_url = '/display-documents/?_statement=' . get_the_ID();
         ?>
         <div class="iso-category-content">
             <?php the_content(); ?>
