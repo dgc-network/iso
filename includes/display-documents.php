@@ -73,6 +73,48 @@ if (!class_exists('display_documents')) {
             ));                
         }
 
+        function get_document_by_iso_category($iso_category_id) {
+            // Step 1: Get the ID from the 'doc-category' post type where 'iso_category' meta = $iso_category_id
+            $doc_category_query = new WP_Query(array(
+                'post_type'  => 'doc-category',
+                'meta_query' => array(
+                    array(
+                        'key'     => 'iso_category',
+                        'value'   => $iso_category_id,
+                        'compare' => '='
+                    ),
+                ),
+                'posts_per_page' => 1, // Limit to 1 post for efficiency
+            ));
+        
+            // Check if we found a post in 'doc-category'
+            if ($doc_category_query->have_posts()) {
+                $doc_category_query->the_post();
+                $doc_category_id = get_the_ID(); // Retrieve the ID of the 'doc-category' post
+                wp_reset_postdata(); // Reset post data after query
+        
+                // Step 2: Use the retrieved doc-category ID to query the 'document' post type
+                $document_query = new WP_Query(array(
+                    'post_type'  => 'document',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'doc_category',
+                            'value'   => $doc_category_id,
+                            'compare' => '='
+                        ),
+                    ),
+                    'posts_per_page' => -1, // Retrieve all matching posts
+                ));
+        
+                // Return the query object
+                return $document_query;
+        
+            } else {
+                // If no 'doc-category' post is found, return null or an empty WP_Query
+                return new WP_Query(); // Empty query object
+            }
+        }
+
         function display_statement_content_page($iso_category_id=false, $paged=1) {
             if (is_site_admin()) {
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
@@ -103,7 +145,8 @@ if (!class_exists('display_documents')) {
     
                         } else {
                             echo __( 'Please check the below to copy documents from iso-helper.com', 'your-text-domain' );
-                            $query = $this->retrieve_document_list_data(0);
+                            //$query = $this->retrieve_document_list_data(0);
+                            $query = $this->get_document_by_iso_category($iso_category_id)
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);

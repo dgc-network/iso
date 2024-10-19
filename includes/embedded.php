@@ -738,17 +738,6 @@ if (!class_exists('embedded')) {
                 ?>
                 <div><<?php echo esc_html($sub_item_default);?>><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></<?php echo esc_html($sub_item_default);?>></div>
                 <?php
-/*
-                if ($sub_item_default) {
-                    ?>
-                    <?php echo $sub_item_title.' '.$sub_item_code?><br>
-                    <?php    
-                } else {
-                    ?>
-                    <b><?php echo $sub_item_title.' '.$sub_item_code?></b><br>
-                    <?php    
-                }
-*/                    
             } elseif ($sub_item_type=='checkbox') {
                 $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>
@@ -781,60 +770,7 @@ if (!class_exists('embedded')) {
             }
 
         }
-/*
-        function get_doc_field_id_by_meta($doc_id, $field_type) {
-            // Set up the query arguments
-            $args = array(
-                'post_type'  => 'doc-field',
-                'meta_query' => array(
-                    'relation' => 'AND', // Both conditions must be true
-                    array(
-                        'key'     => 'doc_id',
-                        'value'   => $doc_id,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'     => 'field_type',
-                        'value'   => $field_type,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids', // Only return the post ID
-                'posts_per_page' => 1 // Limit to one result
-            );
-        
-            // Perform the query
-            $query = new WP_Query($args);
-        
-            // Check if a post was found and return the ID
-            if ($query->have_posts()) {
-                return $query->posts[0]; // Return the first (and only) result
-            } else {
-                return false; // No post found
-            }
-        }
-/*
-        function select_sub_items_from_embedded() {
-            ob_start();
-            $response = array();
-            $report_id = sanitize_text_field($_POST['_report_id']);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $field_id = $this->get_doc_field_id_by_meta($doc_id, '_embedded');
-            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            if ($embedded_id) {
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $this->get_sub_item_contains($field_id, get_the_ID());
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-    
-            }
-            $response['html_contain'] = ob_get_clean();
-            wp_send_json($response);
-        }
-*/
+
         // iso-category
         function register_iso_category_post_type() {
             $labels = array(
