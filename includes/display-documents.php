@@ -146,7 +146,7 @@ if (!class_exists('display_documents')) {
                         } else {
                             echo __( 'Please check the below to copy documents from iso-helper.com', 'your-text-domain' );
                             //$query = $this->retrieve_document_list_data(0);
-                            $query = $this->get_document_by_iso_category($iso_category_id)
+                            $query = $this->get_document_by_iso_category($iso_category_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
