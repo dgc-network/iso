@@ -21,6 +21,9 @@ jQuery(document).ready(function($) {
     })
 
     $("#statement-next-step").on("click", function () {
+    })
+
+    $("#statement-next-step-backup").on("click", function () {
         iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
         // Initialize an empty array to store the key-value pairs
