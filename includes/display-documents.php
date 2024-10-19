@@ -103,21 +103,31 @@ if (!class_exists('display_documents')) {
                             wp_reset_postdata();
                         endif;
 
+                    } else {
+                        $query = $this->retrieve_document_list_data($embedded_id);
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                            ?>
+                            <div>
+                                <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
+                            </div>
+                            <?php
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+
                     }
-                    //echo $this->display_sub_item_for_statement($embedded_id);
-        
                     ?>
                 </fieldset>
-                <div>
-                    <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
-                </div>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <?php if ($paged==1) {?>
                     <div>
                         <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
                     </div>
                     <div style="text-align: right">
                         <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
                     </div>
+                    <?php }?>
                 </div>
             </div>
             <?php
