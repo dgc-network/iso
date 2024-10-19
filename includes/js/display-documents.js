@@ -18,12 +18,12 @@ jQuery(document).ready(function($) {
 
     $("#statement-page2-prev-step").on("click", function () {
         iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-profiles/?_statement='+iso_category_id+'&_paged=1');
+        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
     })
 
     $("#statement-page1-next-step").on("click", function () {
         iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-profiles/?_statement='+iso_category_id+'&_paged=2');
+        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
     })
 
     $("#statement-next-step-backup").on("click", function () {
