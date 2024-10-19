@@ -100,6 +100,9 @@ if (!class_exists('display_documents')) {
                         <fieldset>
                             <?php echo $this->display_sub_item_for_statement($embedded_id);?>
                         </fieldset>
+                        <div>
+                            <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
+                        </div>
                         <div style="display:flex; justify-content:space-between; margin:5px;">
                             <div>
                                 <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
