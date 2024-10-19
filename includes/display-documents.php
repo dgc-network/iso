@@ -151,10 +151,13 @@ if (!class_exists('display_documents')) {
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
                     //echo '<div class="ui-widget" id="result-container">';
-                    //$iso_category_id = sanitize_text_field($_GET['_statement']);
-                    //$paged = sanitize_text_field($_GET['_paged']);
-                    //echo $this->display_statement_content_page($iso_category_id, $paged);
-                    echo $this->display_statement_content_page(sanitize_text_field($_GET['_statement']));
+                    $iso_category_id = sanitize_text_field($_GET['_statement']);
+                    $paged = 1;
+                    if (isset($_GET['_paged'])) {
+                        $paged = sanitize_text_field($_GET['_paged']);
+                    }
+                    echo $this->display_statement_content_page($iso_category_id, $paged);
+                    //echo $this->display_statement_content_page(sanitize_text_field($_GET['_statement']));
                     //echo '</div>';
 
                 }
