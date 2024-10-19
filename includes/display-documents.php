@@ -122,12 +122,16 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <?php if ($paged==1) {?>
                     <div>
-                        <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                        <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
                     </div>
+                    <?php } else {?>
+                        <div>
+                        <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
+                    </div>
+                    <?php }?>
                     <div style="text-align: right">
                         <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
                     </div>
-                    <?php }?>
                 </div>
             </div>
             <?php
@@ -135,55 +139,6 @@ if (!class_exists('display_documents')) {
             } else {
                 echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
             }
-        }
-
-        function display_statement_content_page2($iso_category_id=false) {
-            //$iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
-            $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
-            $iso_category_title = get_the_title($iso_category_id);
-            $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
-            ?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <?php echo display_iso_helper_logo();?>
-                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
-                    </div>
-                </div>
-                <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
-                <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
-                <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                <fieldset>
-                    <?php 
-                    //echo $this->display_sub_item_for_statement($embedded_id);
-
-                    if (is_site_admin()) {
-                        $items_class = new embedded();
-                        $query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                        if ($query->have_posts()) :
-                            while ($query->have_posts()) : $query->the_post();
-                                $items_class->get_sub_item_contains($embedded_id, get_the_ID());
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    } else {
-                        echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
-                    }
-        
-                    ?>
-                </fieldset>
-                <div>
-                    <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div>
-                        <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
-                    </div>
-                    <div style="text-align: right">
-                        <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-                    </div>
-                </div>
-            <?php
-
         }
 
         // Shortcode to display
@@ -196,10 +151,10 @@ if (!class_exists('display_documents')) {
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
                     //echo '<div class="ui-widget" id="result-container">';
-                    $iso_category_id = sanitize_text_field($_GET['_statement']);
-                    $paged = sanitize_text_field($_GET['_paged']);
-                    echo $this->display_statement_content_page($iso_category_id, $paged);
-                    //echo $this->display_statement_content_page(sanitize_text_field($_GET['_statement']));
+                    //$iso_category_id = sanitize_text_field($_GET['_statement']);
+                    //$paged = sanitize_text_field($_GET['_paged']);
+                    //echo $this->display_statement_content_page($iso_category_id, $paged);
+                    echo $this->display_statement_content_page(sanitize_text_field($_GET['_statement']));
                     //echo '</div>';
 
                 }
