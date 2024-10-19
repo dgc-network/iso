@@ -71,7 +71,41 @@ if (!class_exists('display_documents')) {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('display-documents-nonce'), // Generate nonce
             ));                
-        }        
+        }
+
+        function display_statement_contain($embedded_id=false) {
+            $iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
+            $iso_category_title = get_the_title($iso_category_id);
+            $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
+            ?>
+            <div class="ui-widget" id="result-container">
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php echo display_iso_helper_logo();?>
+                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
+                    </div>
+                </div>
+                <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
+                <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
+                <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
+                <fieldset>
+                    <?php echo $this->display_sub_item_for_statement($embedded_id);?>
+                </fieldset>
+                <div>
+                    <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                    </div>
+                    <div style="text-align: right">
+                        <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                    </div>
+                </div>
+            </div>
+            <?php
+
+        }
 
         // Shortcode to display
         function display_documents() {
@@ -82,37 +116,33 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_statement_contain(sanitize_text_field($_GET['_statement']));
+                    echo '</div>';
+
                     $embedded_id = sanitize_text_field($_GET['_statement']);
-                    $iso_category_id = get_post_meta($embedded_id, 'iso_category', true);
-                    $iso_category_title = get_the_title($iso_category_id);
-                    $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
-                    ?>
-                    <div class="ui-widget" id="result-container">
-                        <div style="display:flex; justify-content:space-between; margin:5px;">
-                            <div>
-                                <?php echo display_iso_helper_logo();?>
-                                <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
-                            </div>
-                        </div>
-                        <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
-                        <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
-                        <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                        <fieldset>
-                            <?php echo $this->display_sub_item_for_statement($embedded_id);?>
-                        </fieldset>
-                        <div>
-                            <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin:5px;">
-                            <div>
-                                <button id="statement-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
-                            </div>
-                            <div style="text-align: right">
-                                <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
+                }
+
+                // Display document dialog if doc_id is existed
+                if (isset($_GET['_doc_id'])) {
+                    //$doc_id = sanitize_text_field($_GET['_doc_id']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_document_dialog(sanitize_text_field($_GET['_doc_id']));
+                    echo '</div>';
+                }
+
+                if (isset($_GET['_doc_report'])) {
+                    //$doc_id = sanitize_text_field($_GET['_doc_report']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_doc_report_list(sanitize_text_field($_GET['_doc_report']));
+                    echo '</div>';
+                }
+
+                if (isset($_GET['_doc_frame'])) {
+                    //$doc_id = sanitize_text_field($_GET['_doc_frame']);
+                    echo '<div class="ui-widget" id="result-container">';
+                    echo $this->display_doc_frame_contain(sanitize_text_field($_GET['_doc_frame']));
+                    echo '</div>';
                 }
 
                 // Get shared document if shared doc ID is existed
@@ -120,34 +150,12 @@ if (!class_exists('display_documents')) {
                     $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
                     $this->get_shared_document($doc_id);
                 }
-            
-                // Display document details if doc_id is existed
-                if (isset($_GET['_doc_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_doc_id']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_document_dialog($doc_id);
-                    echo '</div>';
-                }
-            
-                if (isset($_GET['_doc_report'])) {
-                    $doc_id = sanitize_text_field($_GET['_doc_report']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_doc_report_list($doc_id);
-                    echo '</div>';
-                }
-
-                if (isset($_GET['_doc_frame'])) {
-                    $doc_id = sanitize_text_field($_GET['_doc_frame']);
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_doc_frame_contain($doc_id);
-                    echo '</div>';
-                }
 
                 // Display document list if no specific document IDs are existed
                 if (!isset($_GET['_doc_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_statement'])) {
                     echo $this->display_document_list();
                 }
-            
+
             }
         }
 
