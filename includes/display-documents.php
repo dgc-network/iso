@@ -121,13 +121,13 @@ if (!class_exists('display_documents')) {
                 </fieldset>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <?php if ($paged==1) {?>
-                    <div>
-                        <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
-                    </div>
+                        <div>
+                            <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                        </div>
                     <?php } else {?>
                         <div>
-                        <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
-                    </div>
+                            <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
+                        </div>
                     <?php }?>
                     <div style="text-align: right">
                         <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
