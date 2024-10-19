@@ -87,6 +87,12 @@ if (!class_exists('display_documents')) {
             $doc_category_query = new WP_Query(array(
                 'post_type'  => 'doc-category',
                 'meta_query' => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    ),
                     array(
                         'key'     => 'iso_category',
                         'value'   => $iso_category_id,
@@ -106,12 +112,6 @@ if (!class_exists('display_documents')) {
                 $document_query = new WP_Query(array(
                     'post_type'  => 'document',
                     'meta_query' => array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => 'site_id',
-                            'value'   => $site_id,
-                            'compare' => '='
-                        ),
                         array(
                             'key'     => 'doc_category',
                             'value'   => $doc_category_ids,
