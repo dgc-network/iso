@@ -2463,11 +2463,13 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
+                    /*
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
                         'compare' => '='
                     ),
+                    */
                     array(
                         //'key'     => 'parent_category',
                         'key'     => 'iso_category',
