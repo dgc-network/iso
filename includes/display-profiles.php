@@ -104,13 +104,12 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-                if ($_GET['_select_profile']=='site-user') echo $this->display_site_user_list(0);
-/*
-                if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
-                if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
-                if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
-*/
-                if ($_GET['_select_profile']=='migrate_subform_meta_to_embedded_meta') echo $this->migrate_subform_meta_to_embedded_meta();
+                if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
+
+                //if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
+                //if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
+                //if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
+                //if ($_GET['_select_profile']=='migrate_subform_meta_to_embedded_meta') echo $this->migrate_subform_meta_to_embedded_meta();
                 
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
