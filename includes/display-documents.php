@@ -91,7 +91,23 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                 <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
                 <fieldset>
-                    <?php echo $this->display_sub_item_for_statement($embedded_id);?>
+                    <?php 
+                    //echo $this->display_sub_item_for_statement($embedded_id);
+
+                    if (is_site_admin()) {
+                        $items_class = new embedded();
+                        $query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                        if ($query->have_posts()) :
+                            while ($query->have_posts()) : $query->the_post();
+                                $items_class->get_sub_item_contains($embedded_id, get_the_ID());
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    } else {
+                        echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
+                    }
+        
+                    ?>
                 </fieldset>
                 <div>
                     <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo __( 'Copy documents from iso-helper?', 'your-text-domain' );?>
