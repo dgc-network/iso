@@ -104,7 +104,7 @@ if (!class_exists('display_documents')) {
                         endif;
 
                     } else {
-                        $query = $this->retrieve_document_list_data($embedded_id);
+                        $query = $this->retrieve_document_list_data(0);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                             ?>
