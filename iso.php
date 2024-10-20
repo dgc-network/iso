@@ -40,11 +40,11 @@ function admin_enqueue_scripts_and_styles() {
     $version = '1.0.0.'.time(); // Update this version number when you make changes
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui-js', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), '1.13.2', true);
-    wp_enqueue_style('admin-enqueue-css', plugins_url('/assets/css/admin-enqueue.css', __DIR__), '', $version);
+    //wp_enqueue_style('admin-enqueue-css', plugins_url('/assets/css/admin-enqueue.css', __DIR__), '', $version);
     //wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', $version);
     //wp_enqueue_script('admin-enqueue-js', plugins_url('/assets/js/admin-enqueue.js', __DIR__), array('jquery', 'jquery-ui-js'), $version, true);
     //wp_enqueue_style('wp-enqueue-css', plugins_url('assets/css/wp-enqueue.css', __FILE__), '', time());
-    //wp_enqueue_style('admin-enqueue-css', plugins_url('assets/css/admin-enqueue.css', __FILE__), '', time());
+    wp_enqueue_style('admin-enqueue-css', plugins_url('assets/css/admin-enqueue.css', __FILE__), '', time());
     wp_enqueue_script('admin-enqueue-js', plugins_url('assets/js/admin-enqueue.js', __FILE__), array('jquery'), time());
     wp_localize_script('admin-enqueue-js', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php'),
