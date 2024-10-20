@@ -181,7 +181,7 @@ if (!class_exists('display_documents')) {
                                     $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                     ?>
                                     <div>
-                                        <input type="checkbox" class="copy-document-class" id="copy-documents-<?php the_ID();?>" checked ><?php echo $doc_title.'('.$doc_number.')';?>
+                                        <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked ><?php echo $doc_title.'('.$doc_number.')';?>
                                     </div>
                                     <?php
                                 endwhile;
