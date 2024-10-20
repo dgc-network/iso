@@ -385,7 +385,10 @@ if (!class_exists('embedded')) {
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
-                    <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> <?php echo __( 'Is privated', 'your-text-domain' );?><br>
+                    <div>
+                    <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> 
+                    <label for="is-privated"><?php echo __( 'Is privated', 'your-text-domain' );?></label>
+                    </div>
                 <?php }?>
             </fieldset>
             <?php
@@ -753,12 +756,12 @@ if (!class_exists('embedded')) {
             } elseif ($sub_item_type=='text') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="text" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all sub-item-class" />
                 <?php
             } elseif ($sub_item_type=='number') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="number" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all" />
+                <input type="number" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all sub-item-class" />
                 <?php
             } elseif ($sub_item_type=='radio') {
                 $is_checked = ($sub_item_value==1) ? 'checked' : '';

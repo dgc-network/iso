@@ -649,11 +649,8 @@ if (!class_exists('display_profiles')) {
                         ?>
                         </tbody>
                     </table>
-<?php /*                    
-                    <div id="new-site-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-*/?>                    
                 </fieldset>
-                <?php $this->display_new_user_dialog();?>
+                <?php //$this->display_new_user_dialog();?>
                 <div id="site-user-dialog" title="User dialog"></div>
             <?php
             return ob_get_clean();
@@ -722,8 +719,10 @@ if (!class_exists('display_profiles')) {
                     }
                     ?>
                     </select>
+                    <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
+                    </div>
                     <?php
                 } else {
                     $site_ids = get_user_meta($user_id, 'site_admin_ids', true);
@@ -736,8 +735,10 @@ if (!class_exists('display_profiles')) {
                         echo '</select>';
                     }
                     ?>
+                    <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> disabled />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label><br>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
+                    </div>
                     <?php
                 }
                 ?>

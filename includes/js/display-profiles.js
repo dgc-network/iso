@@ -350,11 +350,11 @@ jQuery(document).ready(function($) {
                 }
             });            
         });            
-
+/*
         $("#new-site-user").on("click", function() {
             $("#new-user-dialog").dialog('open');
         });
-
+*/
         $('[id^="edit-site-user-"]').on("click", function () {
             const user_id = this.id.substring(15);
             $.ajax({

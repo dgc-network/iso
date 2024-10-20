@@ -337,16 +337,7 @@ if (!class_exists('erp_cards')) {
                 );
                 $posts = get_posts($args); // get_posts returns an array
                 $post_content = get_post_field('post_content', $posts[0]->ID);
-/*        
-                // Ensure there's a post returned
-                if (!empty($posts)) {
-                    $site_id = $posts[0]->ID; // Retrieve the ID of the first post
-                } else {
-                    return new WP_Query(); // Return an empty query if no 'site-profile' found
-                }
-                $post = get_posts($args);
-                $post_content = get_post_field('post_content', $post->ID);
-*/
+
                 $post_content = get_post_field('post_content', $posts[0]->ID);
     
                 $new_post = array(
@@ -675,10 +666,7 @@ if (!class_exists('erp_cards')) {
                 );
                 $posts = get_posts($args); // get_posts returns an array
                 $post_content = get_post_field('post_content', $posts[0]->ID);
-/*
-                $post = get_posts($args);
-                $post_content = get_post_field('post_content', $post->ID);
-*/
+
                 $new_post = array(
                     'post_title'    => 'New vendor',
                     'post_content'  => $post_content,

@@ -92,32 +92,10 @@ jQuery(document).ready(function($) {
         // Count the number of checked elements by getting the length of the array
         const countDuplicatedIds = duplicated_ids.length;
         console.log('Number of checked elements:', countDuplicatedIds);
-/*        
-        // Initialize an empty array to store the key-value pairs
-        const duplicated_ids = [];
-        // Select all elements with the specified class and iterate over them
-        $('.copy-document-class').each(function() {
-            // Use the 'id' attribute as the key
-            const key = $(this).attr('id');
-            let value;
-            // Check if the element is a checkbox or radio button
-            if ($(this).is(':checkbox') || $(this).is(':radio')) {
-                // Set the value to 1 if checked, otherwise set it to 0
-                value = $(this).is(':checked') ? 1 : 0;
-                if (value==1) {
-                    // Add the key-value pair to the array
-                    //keyValuePairs.push({ [key]: value });
-                    duplicated_ids.push(key);
-                }
-            }
-        });
-        // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
-        console.log(duplicated_ids);
-*/
+
         iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
-        //if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
-        if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" copies of "+ iso_category_title+" document?")) {
+        if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" new copies from "+ iso_category_title)) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,

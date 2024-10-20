@@ -126,7 +126,7 @@ if (!class_exists('open_ai_api')) {
         
             return $responseContent;
         }
-
+/*
         function enter_your_prompt() {
             if (isset($_POST['submit'])) {
                 // Get the prompt from the form
@@ -409,6 +409,7 @@ if (!class_exists('open_ai_api')) {
         
             return $responseContent . '<br>' . $error_messages;
         }
+*/            
     }
     $open_ai_api = new open_ai_api();
 }

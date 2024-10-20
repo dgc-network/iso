@@ -201,14 +201,14 @@ if (!class_exists('line_login_api')) {
                  "&state=" . urlencode($state) .
                  "&scope=profile";
             ?>
-            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
-                <a href="<?php echo $line_auth_url;?>">    
-                    <img src="https://s3.ap-southeast-1.amazonaws.com/app-assets.easystore.co/apps/154/icon.png" alt="LINE Login">
-                </a><br>
-                <p style="text-align: center;">
-                    <?php echo __( 'You are not logged in.', 'your-text-domain' );?><br>
-                    <?php echo __( 'Please click the above button to log in.', 'your-text-domain' );?><br>
-                </p>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+                <div>
+                    <a href="<?php echo esc_url($line_auth_url); ?>">
+                        <img src="https://s3.ap-southeast-1.amazonaws.com/app-assets.easystore.co/apps/154/icon.png" alt="LINE Login" style="max-width: 100px;">
+                    </a>
+                </div>
+                <div><?php echo esc_html__( 'You are not logged in.', 'your-text-domain' ); ?></div>
+                <div><?php echo esc_html__( 'Please click the above button to log in.', 'your-text-domain' ); ?></div>
             </div>
             <?php            
         }

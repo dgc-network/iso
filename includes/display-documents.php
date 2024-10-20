@@ -73,150 +73,6 @@ if (!class_exists('display_documents')) {
             ));                
         }
 
-        function get_document_by_iso_category($iso_category_id) {
-            // Step 1: Get the 'site-profile' post with the title 'iso-helper.com'
-            $args = array(
-                'post_type'   => 'site-profile',
-                'post_status' => 'publish', // Only look for published pages
-                'title'       => 'iso-helper.com',
-                'numberposts' => 1,         // Limit the number of results to one
-            );            
-            
-            $posts = get_posts($args); // get_posts returns an array
-        
-            // Ensure there's a post returned
-            if (!empty($posts)) {
-                $site_id = $posts[0]->ID; // Retrieve the ID of the first post
-            } else {
-                return new WP_Query(); // Return an empty query if no 'site-profile' found
-            }
-        
-            // Step 2: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id and 'site_id' = $site_id
-            $doc_category_query = new WP_Query(array(
-                'post_type'  => 'doc-category',
-                'meta_query' => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category_id,
-                        'compare' => '='
-                    ),
-                ),
-                'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
-                'fields' => 'ids', // Retrieve only the post IDs for efficiency
-            ));
-        
-            // Step 3: Check if we found posts in 'doc-category'
-            if ($doc_category_query->have_posts()) {
-                $doc_category_ids = $doc_category_query->posts; // Get all IDs of 'doc-category' posts
-                wp_reset_postdata(); // Reset post data after query
-        
-                // Step 4: Use the retrieved doc-category IDs to query the 'document' post type
-                $document_query = new WP_Query(array(
-                    'post_type'  => 'document',
-                    'meta_query' => array(
-                        array(
-                            'key'     => 'doc_category',
-                            'value'   => $doc_category_ids,
-                            'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
-                        ),
-                    ),
-                    'posts_per_page' => -1, // Retrieve all matching posts
-                    'meta_key' => 'doc_number', // Sort by 'doc_number' meta field
-                    'orderby'  => 'meta_value', // Order by meta value
-                    'order'    => 'ASC', // Sort in ascending order
-                ));
-        
-                // Return the query object
-                return $document_query;
-        
-            } else {
-                // If no 'doc-category' posts are found, return an empty WP_Query
-                return new WP_Query(); // Empty query object
-            }
-        }
-
-        function display_statement_content_page($iso_category_id=false, $paged=1) {
-            if (is_site_admin()) {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
-                $iso_category_title = get_the_title($iso_category_id);
-                $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
-                ?>
-                <div class="ui-widget" id="result-container">
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div>
-                            <?php echo display_iso_helper_logo();?>
-                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
-                        </div>
-                    </div>
-                    <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
-                    <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
-                    <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                    <fieldset>
-                        <?php
-                        if ($paged==1) {
-                            $items_class = new embedded();
-                            $query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                            if ($query->have_posts()) :
-                                while ($query->have_posts()) : $query->the_post();
-                                    $sub_item_value = get_post_meta($site_id, $embedded_id.get_the_ID(), true);
-                                    $items_class->get_sub_item_contains($embedded_id, get_the_ID(), $sub_item_value);
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-    
-                        } else {
-                            echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
-                            $query = $this->get_document_by_iso_category($iso_category_id);
-                            if ($query->have_posts()) :
-                                while ($query->have_posts()) : $query->the_post();
-                                    $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                    $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                    ?>
-                                    <div>
-                                        <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
-                                    </div>
-                                    <?php
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-    
-                        }
-                        ?>
-                    </fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <?php if ($paged==1) {?>
-                            <div>
-                                <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
-                            </div>
-                            <div style="text-align: right">
-                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-                            </div>
-                        <?php } else {?>
-                            <div>
-                                <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
-                            </div>
-                            <div style="text-align: right">
-                                <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
-                            </div>
-                        <?php }?>
-                    </div>
-                </div>
-                <?php
-    
-            } else {
-                echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
-            }
-        }
-
         // Shortcode to display
         function display_documents() {
             // Check if the user is logged in
@@ -226,35 +82,28 @@ if (!class_exists('display_documents')) {
 
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
-                    //echo '<div class="ui-widget" id="result-container">';
                     $iso_category_id = sanitize_text_field($_GET['_statement']);
                     $paged = 1;
                     if (isset($_GET['_paged'])) {
                         $paged = sanitize_text_field($_GET['_paged']);
                     }
-                    echo $this->display_statement_content_page($iso_category_id, $paged);
-                    //echo $this->display_statement_content_page(sanitize_text_field($_GET['_statement']));
-                    //echo '</div>';
-
+                    echo $this->display_iso_statement_content($iso_category_id, $paged);
                 }
 
                 // Display document dialog if doc_id is existed
                 if (isset($_GET['_doc_id'])) {
-                    //$doc_id = sanitize_text_field($_GET['_doc_id']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_document_dialog(sanitize_text_field($_GET['_doc_id']));
                     echo '</div>';
                 }
 
                 if (isset($_GET['_doc_report'])) {
-                    //$doc_id = sanitize_text_field($_GET['_doc_report']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_doc_report_list(sanitize_text_field($_GET['_doc_report']));
                     echo '</div>';
                 }
 
                 if (isset($_GET['_doc_frame'])) {
-                    //$doc_id = sanitize_text_field($_GET['_doc_frame']);
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_doc_frame_contain(sanitize_text_field($_GET['_doc_frame']));
                     echo '</div>';
@@ -868,9 +717,6 @@ if (!class_exists('display_documents')) {
                                             echo '<input type="radio" '.$is_checked.' />';
                                         } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                                             echo esc_html(get_the_title($field_value));
-                                        //} elseif ($field_type=='_audit') {
-                                        //    $clause_no = get_post_meta($field_value, 'clause_no', true);
-                                        //    echo esc_html(get_the_title($field_value).' '.$clause_no);
                                         } elseif ($field_type=='_document') {
                                             $doc_title = get_post_meta($field_value, 'doc_title', true);
                                             $doc_number = get_post_meta($field_value, 'doc_number', true);
@@ -914,7 +760,6 @@ if (!class_exists('display_documents')) {
                                                 echo implode(', ', $user_names);
                                             } else {
                                                 // Handle the case where $field_value is not an array
-                                                //echo 'Selected value is not an array: ';
                                                 // Get user data
                                                 $user = get_userdata($field_value);
                                                 // Check if the user data is retrieved successfully
@@ -1242,35 +1087,6 @@ if (!class_exists('display_documents')) {
                                 update_post_meta($post_id, $field_id, $embedded_id);    
                             }
                         }
-/*
-                        if ($field_type=='_embedded') {
-                            $items_class = new embedded();
-                            $parts = explode('=', $default_value);
-                            $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
-                            $embedded_value = $parts[1]; // 1724993477
-
-                            if ($embedded_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
-
-                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
-                                    $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                    if ($inner_query->have_posts()) :
-                                        while ($inner_query->have_posts()) : $inner_query->the_post();
-                                            $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                            update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
-                                        endwhile;
-                                        wp_reset_postdata();
-                                    endif;
-                                }
-
-                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
-                                    update_post_meta($post_id, $field_id, $embedded_id);
-                                }
-
-                            }
-
-                        }
-*/                        
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1859,49 +1675,6 @@ if (!class_exists('display_documents')) {
                                 <?php    
                             }
                             break;
-/*
-                            if ($default_value) {
-                                $items_class = new embedded();
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                                ?>
-                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
-                                <div id="embedded-subform">
-                                    <?php
-                                    $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                    if ($inner_query->have_posts()) :
-                                        while ($inner_query->have_posts()) : $inner_query->the_post();
-                                            if ($report_id) {
-                                                $sub_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
-                                            } elseif ($prev_report_id) {
-                                                $sub_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
-                                            } else {
-                                                $sub_item_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                            }
-                                            $items_class->get_sub_item_contains($field_id, get_the_ID(), $sub_item_value);
-                                        endwhile;
-                                        wp_reset_postdata();
-                                    endif;
-                                    ?>
-                                </div>
-                                <?php
-                            } else {
-                                if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-
-                                if ($report_id) {
-                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
-                                } elseif ($prev_report_id) {
-                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
-                                }
-                                ?>
-                                <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
-                                </div>
-                                <?php
-                            }
-
-                            break;
-*/
                         case ($field_type=='_select'):
                             if ($default_value) {
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
@@ -1909,21 +1682,6 @@ if (!class_exists('display_documents')) {
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
                                 <?php
-/*                                
-                            } else {
-                                if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-
-                                if ($report_id) {
-                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
-                                } elseif ($prev_report_id) {
-                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
-                                }
-                                ?>
-                                <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
-                                </div>
-                                <?php
-*/                                
                             }
                             break;
 
@@ -1937,94 +1695,9 @@ if (!class_exists('display_documents')) {
                                     <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
                                 </div>
                                 <?php
-/*                                
-                            } else {
-                                if ($todo_id) $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-
-                                if ($report_id) {
-                                    $sub_item_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
-                                } elseif ($prev_report_id) {
-                                    $sub_item_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
-                                }
-                                ?>
-                                <div id="embedded-subform">
-                                    <?php $items_class->get_sub_item_contains($field_id, $sub_item_id, $sub_item_value);?>
-                                </div>
-                                <?php
-*/                                
                             }
                             break;
-/*
-                        case ($field_type=='_embedded'):
-                            $items_class = new embedded();
-                            if ($todo_id) {
-                                $sub_item_id = get_post_meta($todo_id, 'sub_item_id', true);
-                                $embedded_backup_default_value = get_post_meta($todo_id, '_embedded_backup', true);
-                                $select_default_value = get_post_meta($todo_id, '_select_one', true);
-                            }
-                            if ($embedded_backup_default_value) $parts = explode('=', $embedded_backup_default_value);
-                            elseif ($select_default_value) $parts = explode('=', $select_default_value);
-                            else $parts = explode('=', $default_value);
-                            $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
-                            $embedded_value = $parts[1]; // 1724993477
 
-                            if ($embedded_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
-                                if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
-                                    <div id="sub-item-list-from">
-                                        <?php
-                                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                        if ($inner_query->have_posts()) :
-                                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                                if ($report_id) {
-                                                    $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
-                                                } elseif ($prev_report_id) {
-                                                    $field_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
-                                                } else {
-                                                    $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                                }
-                                                $items_class->get_sub_item_contains(get_the_ID(), $field_id, $field_value);
-                                            endwhile;
-                                            wp_reset_postdata();
-                                        endif;
-                                        ?>
-                                    </div>
-                                    <?php
-                                }
-                                if ($embedded_key=='_select_one') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
-                                    <?php
-                                }
-                                if ($embedded_key=='_item_list') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <div id="sub-report-list">
-                                        <?php if ($report_id) echo $this->display_sub_report_list($embedded_id, $report_id);?>
-                                        <?php if ($prev_report_id) echo $this->display_sub_report_list($embedded_id, $prev_report_id);?>
-                                    </div>
-                                    <?php
-                                }
-                            } else {
-
-                                if ($report_id) {
-                                    $field_value = get_post_meta($report_id, $field_id.$sub_item_id, true);
-                                } elseif ($prev_report_id) {
-                                    $field_value = get_post_meta($prev_report_id, $field_id.$sub_item_id, true);
-                                }
-                                ?>
-                                <div id="sub-item-list-from">
-                                    <?php $items_class->get_sub_item_contains($sub_item_id, $field_id, $field_value);?>
-                                </div>
-                                <?php    
-
-                            }
-                            break;
-*/
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -2129,30 +1802,38 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='checkbox'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
+                            <div>
                             <input type="checkbox" id="<?php echo esc_attr($field_id);?>" <?php echo $is_checked;?> />
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label><br>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            </div>
                             <?php
                             break;
 
                         case ($field_type=='radio'):
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
+                            <div>
                             <input type="radio" id="<?php echo esc_attr($field_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> />
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label><br>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            </div>
                             <?php
                             break;
 
                         case ($field_type=='date'):
                             ?>
+                            <div>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="date" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
+                            <input type="date" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" />
+                            </div>
                             <?php
                             break;
 
                         case ($field_type=='time'):
                             ?>
+                            <div>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="time" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" /><br>
+                            <input type="time" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="ui-widget-content ui-corner-all" />
+                            </div>
                             <?php
                             break;
 
@@ -2235,8 +1916,6 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new embedded();
-                    //$embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                    //$inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                     $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
                     if ($inner_query->have_posts()) :
                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -2245,11 +1924,7 @@ if (!class_exists('display_documents')) {
                         endwhile;
                         wp_reset_postdata();
                     endif;
-    
-                    //if ($field_type=='_embedded'||$field_type=='_planning') {
-                    //    update_post_meta($report_id, $field_id, $embedded_id);
-                    //}
-    
+
                     if ($field_type=='_embedded') {
                         update_post_meta($report_id, '_embedded', $default_value);
                     }
@@ -2264,45 +1939,6 @@ if (!class_exists('display_documents')) {
                     }    
                 }
             }
-/*
-            if ($field_type=='_embedded') {
-                $items_class = new embedded();
-                $parts = explode('=', $default_value);
-                $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
-                $embedded_value = $parts[1]; // 1724993477
-
-                if ($embedded_value) {
-                    $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
-                    if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
-                        $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $field_value = $_POST[$field_id.get_the_ID()];
-                                update_post_meta($report_id, $field_id.get_the_ID(), $field_value);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-
-                        if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning') {
-                            update_post_meta($report_id, $field_id, $embedded_id);
-                        }
-
-                        if ($embedded_key=='_planning') {
-                            $sub_item_ids = $this->get_sub_item_ids($embedded_id);
-                            update_post_meta($report_id, '_planning', $sub_item_ids);
-                        }
-
-                        if ($embedded_key=='_embedded_backup') {
-                            update_post_meta($report_id, '_embedded_backup', $default_value);
-                        }
-
-                        if ($embedded_key=='_select_one') {
-                            update_post_meta($report_id, '_select_one', $default_value);
-                        }
-                    }
-                }
-            }
-*/                
         }
         
         function get_sub_item_ids($embedded_id=false) {
@@ -2356,31 +1992,6 @@ if (!class_exists('display_documents')) {
                             endif;    
                         }
                     }
-/*
-                    if ($field_type=='_embedded') {
-                        $items_class = new embedded();
-                        $parts = explode('=', $default_value);
-                        $embedded_key = $parts[0]; // _embedded_backup, _planning, _select_one
-                        $embedded_value = $parts[1]; // 1724993477
-
-                        if ($embedded_value) {
-                            $embedded_id = $items_class->get_embedded_post_id_by_code($embedded_value);
-                            if ($embedded_key=='_embedded_backup'||$embedded_key=='_planning'||$embedded_key=='_select_one') {
-                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                if ($inner_query->have_posts()) :
-                                    while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        $_list = array();
-                                        $_list["sub_item_id"] = get_the_ID();
-                                        $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                        array_push($_array, $_list);
-                    
-                                    endwhile;
-                                    wp_reset_postdata();
-                                endif;
-                            }
-                        }
-                    }
-*/                        
                 endwhile;
                 wp_reset_postdata();
             }    
@@ -2434,11 +2045,7 @@ if (!class_exists('display_documents')) {
             } else {
                 return new WP_Query(); // Return an empty query if no 'site-profile' found
             }
-        
-/*
-            $post = get_posts($args);
-            $site_id = $post->ID;
-*/
+
             // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
             $doc_category_args = array(
                 'post_type'      => 'doc-category',
@@ -2485,18 +2092,147 @@ if (!class_exists('display_documents')) {
             return $total_posts;
         }
 
-        function display_sub_item_for_statement($embedded_id){
-            $items_class = new embedded();
-            if (is_site_admin()) {
-                $query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $items_class->get_sub_item_contains($embedded_id, get_the_ID());
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
+        function get_document_by_iso_category($iso_category_id) {
+            // Step 1: Get the 'site-profile' post with the title 'iso-helper.com'
+            $args = array(
+                'post_type'   => 'site-profile',
+                'post_status' => 'publish', // Only look for published pages
+                'title'       => 'iso-helper.com',
+                'numberposts' => 1,         // Limit the number of results to one
+            );            
+            
+            $posts = get_posts($args); // get_posts returns an array
+        
+            // Ensure there's a post returned
+            if (!empty($posts)) {
+                $site_id = $posts[0]->ID; // Retrieve the ID of the first post
             } else {
-                return 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
+                return new WP_Query(); // Return an empty query if no 'site-profile' found
+            }
+        
+            // Step 2: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id and 'site_id' = $site_id
+            $doc_category_query = new WP_Query(array(
+                'post_type'  => 'doc-category',
+                'meta_query' => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'iso_category',
+                        'value'   => $iso_category_id,
+                        'compare' => '='
+                    ),
+                ),
+                'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
+                'fields' => 'ids', // Retrieve only the post IDs for efficiency
+            ));
+        
+            // Step 3: Check if we found posts in 'doc-category'
+            if ($doc_category_query->have_posts()) {
+                $doc_category_ids = $doc_category_query->posts; // Get all IDs of 'doc-category' posts
+                wp_reset_postdata(); // Reset post data after query
+        
+                // Step 4: Use the retrieved doc-category IDs to query the 'document' post type
+                $document_query = new WP_Query(array(
+                    'post_type'  => 'document',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'doc_category',
+                            'value'   => $doc_category_ids,
+                            'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
+                        ),
+                    ),
+                    'posts_per_page' => -1, // Retrieve all matching posts
+                    'meta_key' => 'doc_number', // Sort by 'doc_number' meta field
+                    'orderby'  => 'meta_value', // Order by meta value
+                    'order'    => 'ASC', // Sort in ascending order
+                ));
+        
+                // Return the query object
+                return $document_query;
+        
+            } else {
+                // If no 'doc-category' posts are found, return an empty WP_Query
+                return new WP_Query(); // Empty query object
+            }
+        }
+
+        function display_iso_statement_content($iso_category_id=false, $paged=1) {
+            if (is_site_admin()) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
+                $iso_category_title = get_the_title($iso_category_id);
+                $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
+                ?>
+                <div class="ui-widget" id="result-container">
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div>
+                            <?php echo display_iso_helper_logo();?>
+                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
+                        </div>
+                    </div>
+                    <input type="hidden" id="count-doc-by-category" value="<?php echo esc_attr($get_doc_count_by_category);?>" />
+                    <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
+                    <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
+                    <fieldset>
+                        <?php
+                        if ($paged==1) {
+                            $items_class = new embedded();
+                            $query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            if ($query->have_posts()) :
+                                while ($query->have_posts()) : $query->the_post();
+                                    $sub_item_value = get_post_meta($site_id, $embedded_id.get_the_ID(), true);
+                                    $items_class->get_sub_item_contains($embedded_id, get_the_ID(), $sub_item_value);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+    
+                        } else {
+                            echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
+                            $query = $this->get_document_by_iso_category($iso_category_id);
+                            if ($query->have_posts()) :
+                                while ($query->have_posts()) : $query->the_post();
+                                    $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                    $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                                    ?>
+                                    <div>
+                                        <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
+                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                    </div>
+                                    <?php
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+    
+                        }
+                        ?>
+                    </fieldset>
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <?php if ($paged==1) {?>
+                            <div>
+                                <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                            </div>
+                            <div style="text-align: right">
+                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                            </div>
+                        <?php } else {?>
+                            <div>
+                                <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
+                            </div>
+                            <div style="text-align: right">
+                                <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
+                            </div>
+                        <?php }?>
+                    </div>
+                </div>
+                <?php
+    
+            } else {
+                echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
             }
         }
 
