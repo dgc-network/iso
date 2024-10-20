@@ -49,9 +49,8 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response)
-                //window.location.replace('/display-profiles/');
                 iso_category_id = $("#iso-category-id").val();
-                window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
+                //window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
 
             },
             error: function(error){
@@ -111,9 +110,9 @@ jQuery(document).ready(function($) {
                 }
             });        
         } else {
+            iso_category_id = $("#iso-category-id").val();
+            window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
         }
-        iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
     })
 
     $("#select-category").on( "change", function() {
