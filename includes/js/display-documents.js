@@ -128,7 +128,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    //window.location.replace('/display-profiles/');
+                    window.location.replace('/display-profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
@@ -419,7 +419,7 @@ jQuery(document).ready(function($) {
     function activate_published_document_data(doc_id){
         $("#share-document").on("click", function() {
             var homeAddress = window.location.origin;
-            var textToCopy = homeAddress + "/display-documents/?_get_shared_doc_id=" + doc_id;
+            var textToCopy = homeAddress + "/display-documents/?_duplicate_document=" + doc_id;
             // Copy the text to clipboard
             copyToClipboard(textToCopy);
             // Show the custom alert message

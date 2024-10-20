@@ -247,9 +247,9 @@ function init_webhook_events() {
                     // Parse the query string
                     parse_str($parsed_url['query'], $query_params);
                     // Check if the 'doc_id' parameter exists in the query parameters
-                    if (isset($query_params['_get_shared_doc_id'])) {
+                    if (isset($query_params['_duplicate_document'])) {
                         // Retrieve the value of the 'doc_id' parameter
-                        $doc_id = $query_params['_get_shared_doc_id'];
+                        $doc_id = $query_params['_duplicate_document'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
                         $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }

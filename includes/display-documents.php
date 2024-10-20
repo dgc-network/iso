@@ -260,9 +260,9 @@ if (!class_exists('display_documents')) {
                 }
 
                 // Get shared document if shared doc ID is existed
-                if (isset($_GET['_get_shared_doc_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_get_shared_doc_id']);
-                    $this->get_shared_document($doc_id);
+                if (isset($_GET['_duplicate_document'])) {
+                    $doc_id = sanitize_text_field($_GET['_duplicate_document']);
+                    $this->duplicate_shared_document($doc_id);
                 }
 
                 // Display document list if no specific document IDs are existed
@@ -2523,9 +2523,9 @@ if (!class_exists('display_documents')) {
                 $response = array('success' => true, 'data' => $processedKeyValuePairs);
             } else {
                 if (isset($_POST['_duplicated_ids'])) {
-                    $duplicated_ids = sanitize_text_field($_POST['_duplicated_ids']);
+                    $duplicated_ids = $_POST['_duplicated_ids'];
                     foreach ($duplicated_ids as $duplicated_id) {
-                        $this->get_shared_document($duplicated_id);
+                        $this->duplicate_shared_document($duplicated_id);
                     }
                     $response = array('success' => true, 'data' => $duplicated_ids);
                 }
@@ -2533,7 +2533,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function get_shared_document($doc_id){
+        function duplicate_shared_document($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $job_number = get_post_meta($doc_id, 'job_number', true);
