@@ -741,27 +741,27 @@ if (!class_exists('embedded')) {
             } elseif ($sub_item_type=='checkbox') {
                 $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>
-                <input type="checkbox" class="your-class-name" id="<?php echo esc_attr($field_id.$sub_item_id);?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
+                <input type="checkbox" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?><br>
                 <?php
             } elseif ($sub_item_type=='textarea') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <textarea class="your-class-name" id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($sub_item_value);?></textarea>
+                <textarea class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($sub_item_value);?></textarea>
                 <?php
             } elseif ($sub_item_type=='text') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="text" class="your-class-name" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='number') {
                 ?>
                 <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="number" class="your-class-name" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all" />
+                <input type="number" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all" />
                 <?php
             } elseif ($sub_item_type=='radio') {
                 $is_checked = ($sub_item_value==1) ? 'checked' : '';
                 ?>
-                <input type="radio" class="your-class-name" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_title.' '.$sub_item_code?><br>
+                <input type="radio" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_title.' '.$sub_item_code?><br>
                 <?php
             } else {
                 ?>

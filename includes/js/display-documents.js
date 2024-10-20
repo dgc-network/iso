@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
         // Initialize an empty array to store the key-value pairs
         const keyValuePairs = [];
         // Select all elements with the specified class and iterate over them
-        $('.your-class-name').each(function() {
+        $('.sub-item-class').each(function() {
             // Get the key from the data attribute
             const key = $(this).data('key');
             let value;
@@ -37,13 +37,14 @@ jQuery(document).ready(function($) {
         });
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
+
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
                 'action': 'set_iso_document_statement',
-                '_iso_category_id': $("#iso-category-id").val(),
+                //'_iso_category_id': $("#iso-category-id").val(),
                 _keyValuePairs : keyValuePairs,
             },
             success: function (response) {
@@ -58,7 +59,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
     })
 
     $("#statement-page2-prev-step").on("click", function () {
@@ -66,24 +66,40 @@ jQuery(document).ready(function($) {
         window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
     })
 
-    $("#proceed-statement").on("click", function () {
-        iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
-    })
-
-    $("#statement-next-step-backup").on("click", function () {
+    $("#proceed-copy-statement").on("click", function () {
         iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
         if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
+            // Initialize an empty array to store the key-value pairs
+            const keyValuePairs = [];
+            // Select all elements with the specified class and iterate over them
+            $('.copy-document-class').each(function() {
+                // Get the key from the data attribute
+                const key = $(this).data('key');
+                let value;
+                // Check if the element is a checkbox or radio button
+                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                    // Set the value to 1 if checked, otherwise set it to 0
+                    value = $(this).is(':checked') ? 1 : 0;
+                    if (value==1) {
+                        // Add the key-value pair to the array
+                        keyValuePairs.push({ [key]: value });
+                    }
+                }
+            });
+            // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
+            console.log(keyValuePairs);
+    
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'set_iso_document_statement',
-                    '_iso_category_id': $("#iso-category-id").val(),
-                    '_is_duplicated': true,
-                    _keyValuePairs : keyValuePairs,
+                    //'_iso_category_id': $("#iso-category-id").val(),
+                    //'_is_duplicated': true,
+                    //_keyValuePairs : keyValuePairs,
+                    _duplicated_ids : keyValuePairs,
                 },
                 success: function (response) {
                     console.log(response)
@@ -96,8 +112,10 @@ jQuery(document).ready(function($) {
             });        
         } else {
         }
-    });
-    
+        iso_category_id = $("#iso-category-id").val();
+        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
+    })
+
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');

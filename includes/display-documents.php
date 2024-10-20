@@ -143,6 +143,8 @@ if (!class_exists('display_documents')) {
 
         function display_statement_content_page($iso_category_id=false, $paged=1) {
             if (is_site_admin()) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
                 $get_doc_count_by_category = $this->get_doc_count_by_category($iso_category_id);
@@ -164,13 +166,14 @@ if (!class_exists('display_documents')) {
                             $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
-                                    $items_class->get_sub_item_contains($embedded_id, get_the_ID());
+                                    $sub_item_value = get_post_meta($site_id, get_the_ID(), true);
+                                    $items_class->get_sub_item_contains($embedded_id, get_the_ID(), $sub_item_value);
                                 endwhile;
                                 wp_reset_postdata();
                             endif;
     
                         } else {
-                            echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );
+                            echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
                             $query = $this->get_document_by_iso_category($iso_category_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
@@ -178,7 +181,7 @@ if (!class_exists('display_documents')) {
                                     $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                     ?>
                                     <div>
-                                        <input type="checkbox" id="copy-documents-<?php the_ID();?>" checked ><?php echo $doc_title.'('.$doc_number.')';?>
+                                        <input type="checkbox" class="copy-document-class" id="copy-documents-<?php the_ID();?>" checked ><?php echo $doc_title.'('.$doc_number.')';?>
                                     </div>
                                     <?php
                                 endwhile;
@@ -201,7 +204,7 @@ if (!class_exists('display_documents')) {
                                 <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
                             </div>
                             <div style="text-align: right">
-                                <button id="proceed-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
+                                <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
                             </div>
                         <?php }?>
                     </div>
@@ -2489,57 +2492,32 @@ if (!class_exists('display_documents')) {
         function set_iso_document_statement() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
-            if (isset($_POST['_iso_category_id'])) {
-                $iso_category = sanitize_text_field($_POST['_iso_category_id']);
-                $is_duplicated = sanitize_text_field($_POST['_is_duplicated']);
-                if ($is_duplicated) {
-                    $args = array(
-                        'post_type'      => 'document',
-                        'posts_per_page' => -1,
-                        'meta_query'     => array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'doc_category',
-                                'value'   => $doc_category,
-                                'compare' => '=',
-                            ),
-                        ),
-                    );
-
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $this->get_shared_document(get_the_ID());
-                        endwhile;
-                        wp_reset_postdata();
-                        $response = array('success' => true);
-                    endif;
-    
-                }
-
+            if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $keyValuePairs = $_POST['_keyValuePairs'];
+                $processedKeyValuePairs = [];
 
-                if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
-                    $keyValuePairs = $_POST['_keyValuePairs'];
-                    $processedKeyValuePairs = [];
-
-                    foreach ($keyValuePairs as $pair) {
-                        foreach ($pair as $field_key => $field_value) {
-                            // Sanitize the key and value
-                            $field_key = sanitize_text_field($field_key);
-                            $field_value = sanitize_text_field($field_value);
-                            // Update post meta
-                            update_post_meta($site_id, $field_key, $field_value);
-                            // Add the sanitized pair to the processed array
-                            $processedKeyValuePairs[$field_key] = $field_value;
-                        }
+                foreach ($keyValuePairs as $pair) {
+                    foreach ($pair as $field_key => $field_value) {
+                        // Sanitize the key and value
+                        $field_key = sanitize_text_field($field_key);
+                        $field_value = sanitize_text_field($field_value);
+                        // Update post meta
+                        update_post_meta($site_id, $field_key, $field_value);
+                        // Add the sanitized pair to the processed array
+                        $processedKeyValuePairs[$field_key] = $field_value;
                     }
-                    // Prepare the response
-                    $response = array('success' => true, 'data' => $processedKeyValuePairs);
-                } else {
-                    // Handle the error case
-                    $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
+                }
+                // Prepare the response
+                $response = array('success' => true, 'data' => $processedKeyValuePairs);
+            } else {
+                if (isset($_POST['_duplicated_ids'])) {
+                    $duplicated_ids = sanitize_text_field($_POST['_duplicated_ids']);
+                    foreach ($duplicated_ids as $duplicated_id) {
+                        $this->get_shared_document($duplicated_id);
+                    }
+                    $response = array('success' => true, 'data' => $duplicated_ids);
                 }
             }
             wp_send_json($response);
