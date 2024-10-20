@@ -22,7 +22,8 @@ jQuery(document).ready(function($) {
         // Select all elements with the specified class and iterate over them
         $('.sub-item-class').each(function() {
             // Get the key from the data attribute
-            const key = $(this).data('key');
+            //const key = $(this).data('key');
+            const key = $(this).attr('id');
             let value;
             // Check if the element is a checkbox or radio button
             if ($(this).is(':checkbox') || $(this).is(':radio')) {
