@@ -140,109 +140,7 @@ if (!class_exists('display_documents')) {
                 return new WP_Query(); // Empty query object
             }
         }
-/*        
-        function get_document_by_iso_category($iso_category_id) {
-            $args = array(
-                'post_type'   => 'site-profile',
-                'post_status' => 'publish', // Only look for published pages
-                'title'       => 'iso-helper.com',
-                'numberposts' => 1,         // Limit the number of results to one
-            );            
-            $post = get_posts($args);
-            $site_id = $post->ID;
 
-            // Step 1: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id
-            $doc_category_query = new WP_Query(array(
-                'post_type'  => 'doc-category',
-                'meta_query' => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category_id,
-                        'compare' => '='
-                    ),
-                ),
-                'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
-                'fields' => 'ids', // Retrieve only the post IDs for efficiency
-            ));
-        
-            // Check if we found posts in 'doc-category'
-            if ($doc_category_query->have_posts()) {
-                $doc_category_ids = $doc_category_query->posts; // Get all IDs of 'doc-category' posts
-                wp_reset_postdata(); // Reset post data after query
-        
-                // Step 2: Use the retrieved doc-category IDs to query the 'document' post type
-                $document_query = new WP_Query(array(
-                    'post_type'  => 'document',
-                    'meta_query' => array(
-                        array(
-                            'key'     => 'doc_category',
-                            'value'   => $doc_category_ids,
-                            'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
-                        ),
-                    ),
-                    'posts_per_page' => -1, // Retrieve all matching posts
-                    'meta_key' => 'doc_number', // Sort by 'doc_number' meta field
-                    'orderby'  => 'meta_value', // Order by meta value
-                    'order'    => 'ASC', // Sort in ascending order
-                ));
-        
-                // Return the query object
-                return $document_query;
-        
-            } else {
-                // If no 'doc-category' posts are found, return an empty WP_Query
-                return new WP_Query(); // Empty query object
-            }
-        }
-/*        
-        function get_document_by_iso_category($iso_category_id) {
-            // Step 1: Get the ID from the 'doc-category' post type where 'iso_category' meta = $iso_category_id
-            $doc_category_query = new WP_Query(array(
-                'post_type'  => 'doc-category',
-                'meta_query' => array(
-                    array(
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category_id,
-                        'compare' => '='
-                    ),
-                ),
-                'posts_per_page' => 1, // Limit to 1 post for efficiency
-            ));
-        
-            // Check if we found a post in 'doc-category'
-            if ($doc_category_query->have_posts()) {
-                $doc_category_query->the_post();
-                $doc_category_id = get_the_ID(); // Retrieve the ID of the 'doc-category' post
-                wp_reset_postdata(); // Reset post data after query
-        
-                // Step 2: Use the retrieved doc-category ID to query the 'document' post type
-                $document_query = new WP_Query(array(
-                    'post_type'  => 'document',
-                    'meta_query' => array(
-                        array(
-                            'key'     => 'doc_category',
-                            'value'   => $doc_category_id,
-                            'compare' => '='
-                        ),
-                    ),
-                    'posts_per_page' => -1, // Retrieve all matching posts
-                ));
-        
-                // Return the query object
-                return $document_query;
-        
-            } else {
-                // If no 'doc-category' post is found, return null or an empty WP_Query
-                return new WP_Query(); // Empty query object
-            }
-        }
-*/
         function display_statement_content_page($iso_category_id=false, $paged=1) {
             if (is_site_admin()) {
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
@@ -272,8 +170,7 @@ if (!class_exists('display_documents')) {
                             endif;
     
                         } else {
-                            echo __( 'Please check the below to copy documents from iso-helper.com', 'your-text-domain' );
-                            //$query = $this->retrieve_document_list_data(0);
+                            echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );
                             $query = $this->get_document_by_iso_category($iso_category_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
@@ -281,7 +178,7 @@ if (!class_exists('display_documents')) {
                                     $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                                     ?>
                                     <div>
-                                        <input type="checkbox" id="copy-documents-from-iso-helper"><?php echo $doc_title.'('.$doc_number.')';?>
+                                        <input type="checkbox" id="copy-documents-<?php the_ID();?>" checked ><?php echo $doc_title.'('.$doc_number.')';?>
                                     </div>
                                     <?php
                                 endwhile;
@@ -296,14 +193,17 @@ if (!class_exists('display_documents')) {
                             <div>
                                 <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
                             </div>
+                            <div style="text-align: right">
+                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                            </div>
                         <?php } else {?>
                             <div>
                                 <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
                             </div>
+                            <div style="text-align: right">
+                                <button id="proceed-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
+                            </div>
                         <?php }?>
-                        <div style="text-align: right">
-                            <button id="statement-prev-step" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
-                        </div>
                     </div>
                 </div>
                 <?php
@@ -2609,7 +2509,7 @@ if (!class_exists('display_documents')) {
                     $query = new WP_Query($args);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                        $this->get_shared_document(get_the_ID());
+                            $this->get_shared_document(get_the_ID());
                         endwhile;
                         wp_reset_postdata();
                         $response = array('success' => true);

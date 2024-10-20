@@ -12,23 +12,11 @@ jQuery(document).ready(function($) {
         textarea.remove();
     }
     
-    $("#apply-site-admin").on("click", function () {
+    $("#exit-statement").on("click", function () {
         window.location.replace('/');
     })
 
-    $("#statement-page2-prev-step").on("click", function () {
-        iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
-    })
-
     $("#statement-page1-next-step").on("click", function () {
-        iso_category_id = $("#iso-category-id").val();
-        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
-    })
-
-    $("#statement-next-step-backup").on("click", function () {
-        iso_category_title = $("#iso-category-title").val();
-        get_doc_count_by_category = $("#count-doc-by-category").val();
         // Initialize an empty array to store the key-value pairs
         const keyValuePairs = [];
         // Select all elements with the specified class and iterate over them
@@ -49,6 +37,43 @@ jQuery(document).ready(function($) {
         });
         // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
         console.log(keyValuePairs);
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_iso_document_statement',
+                '_iso_category_id': $("#iso-category-id").val(),
+                _keyValuePairs : keyValuePairs,
+            },
+            success: function (response) {
+                console.log(response)
+                //window.location.replace('/display-profiles/');
+                iso_category_id = $("#iso-category-id").val();
+                window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
+
+            },
+            error: function(error){
+                console.error(error); 
+                alert(error);
+            }
+        });
+
+    })
+
+    $("#statement-page2-prev-step").on("click", function () {
+        iso_category_id = $("#iso-category-id").val();
+        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
+    })
+
+    $("#proceed-statement").on("click", function () {
+        iso_category_id = $("#iso-category-id").val();
+        window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
+    })
+
+    $("#statement-next-step-backup").on("click", function () {
+        iso_category_title = $("#iso-category-title").val();
+        get_doc_count_by_category = $("#count-doc-by-category").val();
         if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
             $.ajax({
                 type: 'POST',
@@ -70,24 +95,6 @@ jQuery(document).ready(function($) {
                 }
             });        
         } else {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_iso_document_statement',
-                    '_iso_category_id': $("#iso-category-id").val(),
-                    _keyValuePairs : keyValuePairs,
-                },
-                success: function (response) {
-                    console.log(response)
-                    window.location.replace('/display-profiles/');
-                },
-                error: function(error){
-                    console.error(error);                    
-                    alert(error);
-                }
-            });        
         }
     });
     
