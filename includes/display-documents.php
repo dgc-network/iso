@@ -166,7 +166,7 @@ if (!class_exists('display_documents')) {
                             $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
-                                    $sub_item_value = get_post_meta($site_id, get_the_ID(), true);
+                                    $sub_item_value = get_post_meta($site_id, $embedded_id.get_the_ID(), true);
                                     $items_class->get_sub_item_contains($embedded_id, get_the_ID(), $sub_item_value);
                                 endwhile;
                                 wp_reset_postdata();
