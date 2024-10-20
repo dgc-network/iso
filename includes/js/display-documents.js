@@ -21,8 +21,7 @@ jQuery(document).ready(function($) {
         const keyValuePairs = [];
         // Select all elements with the specified class and iterate over them
         $('.sub-item-class').each(function() {
-            // Get the key from the data attribute
-            //const key = $(this).data('key');
+            // Use the 'id' attribute as the key
             const key = $(this).attr('id');
             let value;
             // Check if the element is a checkbox or radio button
@@ -45,13 +44,12 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_iso_document_statement',
-                //'_iso_category_id': $("#iso-category-id").val(),
                 _keyValuePairs : keyValuePairs,
             },
             success: function (response) {
                 console.log(response)
                 iso_category_id = $("#iso-category-id").val();
-                //window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
+                window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
 
             },
             error: function(error){
@@ -71,11 +69,11 @@ jQuery(document).ready(function($) {
         get_doc_count_by_category = $("#count-doc-by-category").val();
         if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
             // Initialize an empty array to store the key-value pairs
-            const keyValuePairs = [];
+            const duplicated_ids = [];
             // Select all elements with the specified class and iterate over them
             $('.copy-document-class').each(function() {
-                // Get the key from the data attribute
-                const key = $(this).data('key');
+                // Use the 'id' attribute as the key
+                const key = $(this).attr('id');
                 let value;
                 // Check if the element is a checkbox or radio button
                 if ($(this).is(':checkbox') || $(this).is(':radio')) {
@@ -83,12 +81,13 @@ jQuery(document).ready(function($) {
                     value = $(this).is(':checked') ? 1 : 0;
                     if (value==1) {
                         // Add the key-value pair to the array
-                        keyValuePairs.push({ [key]: value });
+                        //keyValuePairs.push({ [key]: value });
+                        duplicated_ids.push(key);
                     }
                 }
             });
             // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
-            console.log(keyValuePairs);
+            console.log(duplicated_ids);
     
             $.ajax({
                 type: 'POST',
@@ -99,7 +98,7 @@ jQuery(document).ready(function($) {
                     //'_iso_category_id': $("#iso-category-id").val(),
                     //'_is_duplicated': true,
                     //_keyValuePairs : keyValuePairs,
-                    _duplicated_ids : keyValuePairs,
+                    _duplicated_ids : duplicated_ids,
                 },
                 success: function (response) {
                     console.log(response)

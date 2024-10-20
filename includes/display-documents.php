@@ -2424,10 +2424,20 @@ if (!class_exists('display_documents')) {
                 'post_status' => 'publish', // Only look for published pages
                 'title'       => 'iso-helper.com',
                 'numberposts' => 1,         // Limit the number of results to one
-            );            
+            );
+            $posts = get_posts($args); // get_posts returns an array
+        
+            // Ensure there's a post returned
+            if (!empty($posts)) {
+                $site_id = $posts[0]->ID; // Retrieve the ID of the first post
+            } else {
+                return new WP_Query(); // Return an empty query if no 'site-profile' found
+            }
+        
+/*
             $post = get_posts($args);
             $site_id = $post->ID;
-
+*/
             // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
             $doc_category_args = array(
                 'post_type'      => 'doc-category',
