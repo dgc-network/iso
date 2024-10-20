@@ -65,44 +65,70 @@ jQuery(document).ready(function($) {
     })
 
     $("#proceed-copy-statement").on("click", function () {
+        // Initialize an empty array to store the IDs of selected (checked) elements
+        const duplicated_ids = [];
+
+        // Select all elements with the specified class and iterate over them
+        $('.copy-document-class').each(function() {
+            // Get the 'id' attribute of the current element
+            const key = $(this).attr('id');
+            let value;
+        
+            // Check if the element is a checkbox or radio button
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                // Set the value to 1 if the checkbox/radio is checked, otherwise set it to 0
+                value = $(this).is(':checked') ? 1 : 0;
+        
+                // If the element is checked, add the 'id' to the duplicated_ids array
+                if (value == 1) {
+                    duplicated_ids.push(key);  // Store the ID of checked elements
+                }
+            }
+        });
+        
+        // Now, duplicated_ids contains the IDs of all checked elements with the specified class
+        console.log(duplicated_ids);
+        
+        // Count the number of checked elements by getting the length of the array
+        const countDuplicatedIds = duplicated_ids.length;
+        console.log('Number of checked elements:', countDuplicatedIds);
+/*        
+        // Initialize an empty array to store the key-value pairs
+        const duplicated_ids = [];
+        // Select all elements with the specified class and iterate over them
+        $('.copy-document-class').each(function() {
+            // Use the 'id' attribute as the key
+            const key = $(this).attr('id');
+            let value;
+            // Check if the element is a checkbox or radio button
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                // Set the value to 1 if checked, otherwise set it to 0
+                value = $(this).is(':checked') ? 1 : 0;
+                if (value==1) {
+                    // Add the key-value pair to the array
+                    //keyValuePairs.push({ [key]: value });
+                    duplicated_ids.push(key);
+                }
+            }
+        });
+        // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
+        console.log(duplicated_ids);
+*/
         iso_category_title = $("#iso-category-title").val();
         get_doc_count_by_category = $("#count-doc-by-category").val();
-        if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
-            // Initialize an empty array to store the key-value pairs
-            const duplicated_ids = [];
-            // Select all elements with the specified class and iterate over them
-            $('.copy-document-class').each(function() {
-                // Use the 'id' attribute as the key
-                const key = $(this).attr('id');
-                let value;
-                // Check if the element is a checkbox or radio button
-                if ($(this).is(':checkbox') || $(this).is(':radio')) {
-                    // Set the value to 1 if checked, otherwise set it to 0
-                    value = $(this).is(':checked') ? 1 : 0;
-                    if (value==1) {
-                        // Add the key-value pair to the array
-                        //keyValuePairs.push({ [key]: value });
-                        duplicated_ids.push(key);
-                    }
-                }
-            });
-            // Now, keyValuePairs contains the key-value pairs of all elements with the specified class
-            console.log(duplicated_ids);
-    
+        //if (window.confirm("Are you sure you want to copy "+get_doc_count_by_category+" "+ iso_category_title+" new documents?")) {
+        if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" copies of "+ iso_category_title+" document?")) {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'set_iso_document_statement',
-                    //'_iso_category_id': $("#iso-category-id").val(),
-                    //'_is_duplicated': true,
-                    //_keyValuePairs : keyValuePairs,
                     _duplicated_ids : duplicated_ids,
                 },
                 success: function (response) {
                     console.log(response)
-                    window.location.replace('/display-profiles/');
+                    //window.location.replace('/display-profiles/');
                 },
                 error: function(error){
                     console.error(error);                    
