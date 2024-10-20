@@ -2471,8 +2471,8 @@ if (!class_exists('display_documents')) {
                     ),
                     */
                     array(
-                        'key'     => 'parent_category',
-                        //'key'     => 'iso_category',
+                        //'key'     => 'parent_category',
+                        'key'     => 'iso_category',
                         'value'   => $iso_category_id,
                         'compare' => '='
                     ),
