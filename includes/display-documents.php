@@ -74,6 +74,74 @@ if (!class_exists('display_documents')) {
         }
 
         function get_document_by_iso_category($iso_category_id) {
+            // Step 1: Get the 'site-profile' post with the title 'iso-helper.com'
+            $args = array(
+                'post_type'   => 'site-profile',
+                'post_status' => 'publish', // Only look for published pages
+                'title'       => 'iso-helper.com',
+                'numberposts' => 1,         // Limit the number of results to one
+            );            
+            
+            $posts = get_posts($args); // get_posts returns an array
+        
+            // Ensure there's a post returned
+            if (!empty($posts)) {
+                $site_id = $posts[0]->ID; // Retrieve the ID of the first post
+            } else {
+                return new WP_Query(); // Return an empty query if no 'site-profile' found
+            }
+        
+            // Step 2: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id and 'site_id' = $site_id
+            $doc_category_query = new WP_Query(array(
+                'post_type'  => 'doc-category',
+                'meta_query' => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'iso_category',
+                        'value'   => $iso_category_id,
+                        'compare' => '='
+                    ),
+                ),
+                'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
+                'fields' => 'ids', // Retrieve only the post IDs for efficiency
+            ));
+        
+            // Step 3: Check if we found posts in 'doc-category'
+            if ($doc_category_query->have_posts()) {
+                $doc_category_ids = $doc_category_query->posts; // Get all IDs of 'doc-category' posts
+                wp_reset_postdata(); // Reset post data after query
+        
+                // Step 4: Use the retrieved doc-category IDs to query the 'document' post type
+                $document_query = new WP_Query(array(
+                    'post_type'  => 'document',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'doc_category',
+                            'value'   => $doc_category_ids,
+                            'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
+                        ),
+                    ),
+                    'posts_per_page' => -1, // Retrieve all matching posts
+                    'meta_key' => 'doc_number', // Sort by 'doc_number' meta field
+                    'orderby'  => 'meta_value', // Order by meta value
+                    'order'    => 'ASC', // Sort in ascending order
+                ));
+        
+                // Return the query object
+                return $document_query;
+        
+            } else {
+                // If no 'doc-category' posts are found, return an empty WP_Query
+                return new WP_Query(); // Empty query object
+            }
+        }
+/*        
+        function get_document_by_iso_category($iso_category_id) {
             $args = array(
                 'post_type'   => 'site-profile',
                 'post_status' => 'publish', // Only look for published pages
@@ -93,13 +161,11 @@ if (!class_exists('display_documents')) {
                         'value'   => $site_id,
                         'compare' => '='
                     ),
-                    /*
                     array(
                         'key'     => 'iso_category',
                         'value'   => $iso_category_id,
                         'compare' => '='
                     ),
-                    */
                 ),
                 'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
                 'fields' => 'ids', // Retrieve only the post IDs for efficiency
