@@ -134,10 +134,56 @@ if (!class_exists('iot_messages')) {
             }
         }
 
+        function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
+            $args = array(
+                'post_type'      => 'doc-field',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'field_type',
+                        'value'   => $field_type,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'field_value',
+                        'value'   => $field_value,
+                        'compare' => '='
+                    )
+                ),
+                'fields' => 'ids' // Only return post IDs
+            );
+            $query = new WP_Query($args);
+
+            // Initialize an array to accumulate post IDs
+            $accumulated_post_ids = array();
+            if ($query->have_posts()) {
+                foreach ($query->posts as $field_id) {
+                    $args = array(
+                        'post_type'  => 'doc-report',  // Specify the post type
+                        'meta_query' => array(
+                            array(
+                                'key'     => $field_id,     // The meta key you want to search by
+                                'value'   => $field_value,    // The value of the meta key you are looking for
+                                'compare' => '=',             // Optional, default is '=', can be omitted
+                            ),
+                        ),
+                        'fields' => 'ids', // Retrieve only the IDs of the posts
+                    );
+                    // Retrieve the post IDs
+                    $post_ids = get_posts($args);
+                    // Merge the retrieved post IDs with the accumulated array
+                    $accumulated_post_ids = array_merge($accumulated_post_ids, $post_ids);
+                }
+            }
+            // Return the accumulated post IDs
+            return $accumulated_post_ids;
+        }
+
         function create_exception_notification_events($instrument_id=false, $iot_sensor=false, $sensor_value=false) {
             $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
-            $documents_class = new display_documents();
-            $query = $documents_class->get_doc_reports_by_doc_field('_instrument', $instrument_id);
+            //$documents_class = new display_documents();
+            $query = $this->get_doc_reports_by_doc_field('_instrument', $instrument_id);
 
             if ($query->have_posts()) {
                 foreach ($query->posts as $report_id) {
@@ -275,8 +321,6 @@ if (!class_exists('iot_messages')) {
         function display_iot_message_list() {
             ob_start();
             $profiles_class = new display_profiles();
-            //$is_site_admin = $profiles_class->is_site_admin();
-            //if (current_user_can('administrator')) $is_site_admin = true;
             $todo_class = new to_do_list();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata($current_user_id);

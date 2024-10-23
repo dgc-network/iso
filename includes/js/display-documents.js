@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
         console.log('Number of checked elements:', countDuplicatedIds);
 
         iso_category_title = $("#iso-category-title").val();
-        get_doc_count_by_category = $("#count-doc-by-category").val();
+        //get_iso_helper_doc_counts_by_iso_category = $("#iso-doc-counts").val();
         if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" new copies from "+ iso_category_title)) {
             $.ajax({
                 type: 'POST',

@@ -1404,7 +1404,7 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to perform this action.';
             }
         }
-
+/*
         function list_all_scheduled_events() {
             if (current_user_can('administrator')) {
                 // Get all scheduled events
@@ -1438,9 +1438,9 @@ if (!class_exists('to_do_list')) {
                 echo 'You do not have enough permission to display this.';
             }
         }
-
+*/
         public function process_authorized_action_posts_daily() {
-            // process the todo-list first
+            // process the todo-list
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => -1,
