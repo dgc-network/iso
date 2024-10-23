@@ -8,7 +8,7 @@ if (!class_exists('embedded')) {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_embedded_scripts' ) );
-            add_action( 'init', array( $this, 'register_embedded_post_type' ) );
+            //add_action( 'init', array( $this, 'register_embedded_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -35,9 +35,6 @@ if (!class_exists('embedded')) {
             add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
 
-            //add_action( 'wp_ajax_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
-            //add_action( 'wp_ajax_nopriv_select_sub_items_from_embedded', array( $this, 'select_sub_items_from_embedded' ) );
-            
             add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
             add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
 
@@ -775,7 +772,80 @@ if (!class_exists('embedded')) {
                 <div><?php echo $sub_item_title.' '.$sub_item_code?></div>
                 <?php
             }
+        }
 
+        function get_sub_item_ids($embedded_id=false) {
+            $args = array(
+                'post_type'  => 'sub-item',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key'   => 'embedded_id',
+                        'value' => $embedded_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'   => 'sub_item_type',
+                        'value' => 'heading',
+                        'compare' => '!='
+                    )
+                ),
+                'fields' => 'ids' // Only retrieve the post IDs
+            );        
+            $query = new WP_Query($args);        
+            // Retrieve the post IDs
+            $post_ids = $query->posts;        
+            wp_reset_postdata();        
+            return $post_ids;
+        }
+
+        function get_embedded_field_keys($doc_id=false) {
+            if ($doc_id) $params = array('doc_id' => $doc_id);
+            $query = $this->retrieve_doc_field_data($params);
+            $_array = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) : $query->the_post();
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+
+                    if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                        if ($default_value) {
+                            $items_class = new embedded();
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $_list = array();
+                                    $_list["embedded_id"] = $embedded_id;
+                                    $_list["sub_item_id"] = get_the_ID();
+                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                    array_push($_array, $_list);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;    
+                        }
+                    }
+                endwhile;
+                wp_reset_postdata();
+            }    
+            return $_array;
+        }
+
+        function get_sub_report_keys($embedded_id=false) {
+            $_array = array();
+            $items_class = new embedded();
+            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+            if ($inner_query->have_posts()) :
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $_list = array();
+                    $_list["sub_item_id"] = get_the_ID();
+                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                    array_push($_array, $_list);
+
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return $_array;
         }
 
         // iso-category

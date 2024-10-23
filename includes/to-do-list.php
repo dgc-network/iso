@@ -1109,9 +1109,6 @@ if (!class_exists('to_do_list')) {
         
         // signature_record
         function display_signature_record() {
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -1166,21 +1163,17 @@ if (!class_exists('to_do_list')) {
                             $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
         
-                            //if ($current_site==$site_id) { // Aditional condition to filter the data
-                                $user_data = get_userdata( $submit_user );
-                                ?>
-                                <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
-                                    <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                    <?php //if(!$doc) {;?>
-                                    <td><?php echo esc_html($doc_title);?></td>
-                                    <?php //};?>
-                                    <td style="text-align:center;"><?php esc_html(the_title());?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                                    <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
-                                    <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                                </tr>
-                                <?php
-                            //}
+                            $user_data = get_userdata( $submit_user );
+                            ?>
+                            <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
+                                <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                                <td><?php echo esc_html($doc_title);?></td>
+                                <td style="text-align:center;"><?php esc_html(the_title());?></td>
+                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                                <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                            </tr>
+                            <?php
                         endwhile;
                         wp_reset_postdata();
                     endif;

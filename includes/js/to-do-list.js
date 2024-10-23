@@ -40,6 +40,26 @@ jQuery(document).ready(function($) {
         });
     });            
 
+    $('[id^="view-todo-"]').on("click", function () {
+        const todo_id = this.id.substring(10);
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: todo_id,
+            },
+            success: function (response) {
+                $('#result-container').html(response.html_contain);
+                activate_todo_dialog_data(response.doc_fields);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    });            
+
     function activate_todo_dialog_data(doc_fields){
         $('[id^="todo-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(19);
@@ -105,7 +125,7 @@ jQuery(document).ready(function($) {
 
     function activate_start_job_dialog_data(doc_fields){
         $('[id^="start-job-dialog-button-"]').on("click", function () {
-            const action_id = this.id.substring(18);
+            const action_id = this.id.substring(24);
             const ajaxData = {
                 'action': 'set_start_job_dialog_data',
             };
