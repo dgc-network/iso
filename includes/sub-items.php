@@ -7,7 +7,7 @@ if (!class_exists('sub_items')) {
     class sub_items {
         // Class constructor
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_embedded_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
             //add_action( 'init', array( $this, 'register_embedded_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
@@ -53,14 +53,14 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
         }
 
-        function enqueue_embedded_scripts() {
+        function enqueue_sub_items_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-            wp_enqueue_script('embedded', plugins_url('js/embedded.js', __FILE__), array('jquery'), time());
-            wp_localize_script('embedded', 'ajax_object', array(
+            wp_enqueue_script('sub-items', plugins_url('js/sub-items.js', __FILE__), array('jquery'), time());
+            wp_localize_script('sub-items', 'ajax_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('embedded-nonce'), // Generate nonce
+                'nonce'    => wp_create_nonce('sub-items-nonce'), // Generate nonce
             ));                
         }
 
@@ -653,7 +653,7 @@ if (!class_exists('sub_items')) {
             return $post_ids;
         }
 
-        function get_embedded_field_keys($doc_id=false) {
+        function get_sub_item_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $query = $this->retrieve_doc_field_data($params);
             $_array = array();
@@ -664,7 +664,6 @@ if (!class_exists('sub_items')) {
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
-                            //$items_class = new sub_items();
                             $embedded_id = $this->get_embedded_post_id_by_code($default_value);
                             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
                             if ($inner_query->have_posts()) :
@@ -687,7 +686,6 @@ if (!class_exists('sub_items')) {
 
         function get_sub_report_keys($embedded_id=false) {
             $_array = array();
-            //$items_class = new sub_items();
             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -713,11 +711,9 @@ if (!class_exists('sub_items')) {
                 <tr>
                 <th>#</th>
                 <?php                
-                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $sub_item_title = get_the_title();
                         ?>
                         <th><?php the_title();?></th>
                         <?php
@@ -733,13 +729,12 @@ if (!class_exists('sub_items')) {
                 $sub_report_query = $this->retrieve_sub_report_list_data($report_id);
                 if ($sub_report_query->have_posts()) :
                     while ($sub_report_query->have_posts()) : $sub_report_query->the_post();
-                        $sub_report_id = get_the_id();
                         ?><tr id="edit-sub-report-<?php the_ID();?>"><td style="text-align:center;"></td><?php
                         $query = $this->retrieve_sub_item_list_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
-                                $field_value = get_post_meta($sub_report_id, $embedded_id.get_the_ID(), true);
+                                $field_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                $field_value = get_post_meta(get_the_ID(), $embedded_id.get_the_ID(), true);
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 if ($field_type=='_product') {
                                     $product_code = get_post_meta($field_value, 'product_code', true);
@@ -788,7 +783,6 @@ if (!class_exists('sub_items')) {
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -824,7 +818,6 @@ if (!class_exists('sub_items')) {
             $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
             $embedded_id = sanitize_text_field($_POST['_embedded_id']);
             $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id, $embedded_id));
-            //$items_class = new sub_items();
             $response['sub_report_fields'] = $this->get_sub_report_keys($embedded_id);
             wp_send_json($response);
         }
@@ -835,7 +828,6 @@ if (!class_exists('sub_items')) {
             if( isset($_POST['_sub_report_id']) ) {
                 // Update the post
                 $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
-                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();

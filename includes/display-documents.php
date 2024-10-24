@@ -1017,7 +1017,7 @@ if (!class_exists('display_documents')) {
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
                     $items_class = new sub_items();
-                    $response['embedded_fields'] = $items_class->get_embedded_field_keys($doc_id);
+                    $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
                 }
             }
             wp_send_json($response);
