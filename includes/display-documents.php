@@ -150,7 +150,7 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            $items_class = new embedded();
+            $items_class = new sub_items();
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -297,7 +297,7 @@ if (!class_exists('display_documents')) {
             ob_start();
             $todo_class = new to_do_list();
             $cards_class = new erp_cards();
-            $items_class = new embedded();
+            $items_class = new sub_items();
             $profiles_class = new display_profiles();
 
             $job_title = get_the_title($doc_id);
@@ -1016,7 +1016,7 @@ if (!class_exists('display_documents')) {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $items_class = new embedded();
+                    $items_class = new sub_items();
                     $response['embedded_fields'] = $items_class->get_embedded_field_keys($doc_id);
                 }
             }
@@ -1066,7 +1066,7 @@ if (!class_exists('display_documents')) {
 
                         if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                             if ($default_value) {
-                                $items_class = new embedded();
+                                $items_class = new sub_items();
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
                                 $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
                                 if ($inner_query->have_posts()) :
@@ -1411,7 +1411,7 @@ if (!class_exists('display_documents')) {
         }
 
         function get_doc_field_contains($args) {
-            $items_class = new embedded();
+            $items_class = new sub_items();
             $cards_class = new erp_cards();
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
@@ -1742,7 +1742,7 @@ if (!class_exists('display_documents')) {
 
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
-                    $items_class = new embedded();
+                    $items_class = new sub_items();
                     $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
                     if ($inner_query->have_posts()) :
                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1933,7 +1933,7 @@ if (!class_exists('display_documents')) {
                     <fieldset>
                         <?php
                         if ($paged==1) {
-                            $items_class = new embedded();
+                            $items_class = new sub_items();
                             $query = $items_class->retrieve_sub_item_list_data($embedded_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();

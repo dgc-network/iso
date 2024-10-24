@@ -119,7 +119,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
                 if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
 
-                $items_class = new embedded();
+                $items_class = new sub_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='embedded') echo $items_class->display_embedded_list();

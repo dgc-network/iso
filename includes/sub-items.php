@@ -3,8 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if (!class_exists('embedded')) {
-    class embedded {
+if (!class_exists('sub_items')) {
+    class sub_items {
         // Class constructor
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_embedded_scripts' ) );
@@ -664,7 +664,7 @@ if (!class_exists('embedded')) {
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
-                            //$items_class = new embedded();
+                            //$items_class = new sub_items();
                             $embedded_id = $this->get_embedded_post_id_by_code($default_value);
                             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
                             if ($inner_query->have_posts()) :
@@ -687,7 +687,7 @@ if (!class_exists('embedded')) {
 
         function get_sub_report_keys($embedded_id=false) {
             $_array = array();
-            //$items_class = new embedded();
+            //$items_class = new sub_items();
             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -713,7 +713,7 @@ if (!class_exists('embedded')) {
                 <tr>
                 <th>#</th>
                 <?php                
-                //$items_class = new embedded();
+                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -788,7 +788,7 @@ if (!class_exists('embedded')) {
                 <input type="hidden" id="sub-report-id" value="<?php echo esc_attr($sub_report_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                //$items_class = new embedded();
+                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -824,7 +824,7 @@ if (!class_exists('embedded')) {
             $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
             $embedded_id = sanitize_text_field($_POST['_embedded_id']);
             $response = array('html_contain' => $this->display_sub_report_dialog($sub_report_id, $embedded_id));
-            //$items_class = new embedded();
+            //$items_class = new sub_items();
             $response['sub_report_fields'] = $this->get_sub_report_keys($embedded_id);
             wp_send_json($response);
         }
@@ -835,7 +835,7 @@ if (!class_exists('embedded')) {
             if( isset($_POST['_sub_report_id']) ) {
                 // Update the post
                 $sub_report_id = sanitize_text_field($_POST['_sub_report_id']);
-                //$items_class = new embedded();
+                //$items_class = new sub_items();
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -1221,5 +1221,5 @@ if (!class_exists('embedded')) {
             return null;
         }
     }
-    $items_class = new embedded();
+    $items_class = new sub_items();
 }

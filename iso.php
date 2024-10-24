@@ -47,7 +47,7 @@ function admin_enqueue_scripts_and_styles() {
         'nonce' => wp_create_nonce('iso_documents_nonce'), // Generate nonce
     ));
 }
-add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
+//add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
 
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
