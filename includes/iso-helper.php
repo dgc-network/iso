@@ -64,7 +64,7 @@ function display_iso_category_contains($atts) {
     while ($query->have_posts()) : $query->the_post();
         $category_url = get_post_meta(get_the_ID(), 'category_url', true);
         $embedded = get_post_meta(get_the_ID(), 'embedded', true);
-        $start_ai_url = '/display-documents/?_statement=' . $embedded;
+        //$start_ai_url = '/display-documents/?_statement=' . $embedded;
         $start_ai_url = '/display-documents/?_statement=' . get_the_ID();
         ?>
         <div class="iso-category-content">
@@ -108,24 +108,7 @@ function user_is_not_logged_in() {
     $line_login_api->display_line_login_button();
 }
 
-function get_users_by_site_id($site_id) {
-    global $wpdb;
-    // Query to find user IDs with the matching site_id
-    $user_ids = $wpdb->get_col(
-        $wpdb->prepare(
-            "
-            SELECT user_id 
-            FROM $wpdb->usermeta 
-            WHERE meta_key = 'site_id' 
-            AND meta_value = %s
-            ",
-            $site_id
-        )
-    );
-    return $user_ids;
-}
-
-function is_site_not_found($user_id=false) {
+function is_site_not_configured($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $user = get_userdata($user_id);
     // Get the site_id meta for the user
@@ -254,14 +237,7 @@ function init_webhook_events() {
                         $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
                     }
                 }
-/*                
-                $params = [
-                    'display_name' => $display_name,
-                    'link_uri' => $url,
-                    'text_message' => $text_message,
-                ];
-                $flexMessage = set_flex_message($params);
-*/
+
                 $header_contents = array(
                     array(
                         'type' => 'text',
@@ -448,6 +424,23 @@ $params = array(
 send_bubble_message_email($params, 'user@example.com', 'Welcome to Our Service');
 
 /*
+function get_users_by_site_id($site_id) {
+    global $wpdb;
+    // Query to find user IDs with the matching site_id
+    $user_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "
+            SELECT user_id 
+            FROM $wpdb->usermeta 
+            WHERE meta_key = 'site_id' 
+            AND meta_value = %s
+            ",
+            $site_id
+        )
+    );
+    return $user_ids;
+}
+
 function set_flex_message($params) {
     $display_name = $params['display_name'];
     $link_uri = $params['link_uri'];
