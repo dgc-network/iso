@@ -581,7 +581,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
-        function update_start_job_dialog_data($action_id=false, $user_id=false, $default=false) {
+        function update_start_job_dialog_data($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -604,7 +604,7 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $default);
+                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default);
                 endwhile;
                 wp_reset_postdata();
             }            
