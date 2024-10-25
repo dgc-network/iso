@@ -404,17 +404,17 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? '授權中' : '';
+            $is_authorized = $this->is_action_authorized($action_id) ? '「已授權」' : '「準備授權」';
             $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
-                <h4><?php echo '「'.get_the_title($doc_id).'」工作，'.'「'.get_the_title($action_id).'」動作 '.$is_authorized;?></h4>
+                <h4><?php echo '「'.get_the_title($doc_id).'」工作，'.'「'.get_the_title($action_id).'」動作'.$is_authorized;?></h4>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                 <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($frequence_report_setting);?></select>
-                <div id="frquence-start-time-div" style="display:none;">
+                <div id="frquence-report-start-time-div" style="display:none;">
                     <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
                     <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
                     <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
@@ -476,7 +476,33 @@ if (!class_exists('display_profiles')) {
                     wp_reset_postdata();
                 endif;
 
-                $response = array('success' => true);
+                // frequence_report_setting
+                $frequence_report_setting = sanitize_text_field($_POST['_frequence_report_setting']);
+                update_post_meta($action_id, 'frequence_report_setting', $frequence_report_setting);
+                // Get the timezone offset from WordPress settings
+                $timezone_offset = get_option('gmt_offset');
+                // Convert the timezone offset to seconds
+                $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
+                $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
+                $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
+                $frequence_report_start = strtotime($frequence_report_start_date.' '.$frequence_report_start_time);
+                update_post_meta($action_id, 'frequence_report_start_time', $frequence_report_start - $offset_seconds);
+                $params = array(
+                    'interval' => $frequence_report_setting,
+                    'start_time' => $frequence_report_start - $offset_seconds,
+                    //'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
+                    //'doc_id' => $doc_id,
+                    'action_id' => $action_id,
+                );            
+                $todo_class = new to_do_list();
+                if ($frequence_report_setting) {
+                    $hook_name=$todo_class->schedule_post_event_callback($params);
+                } else {
+                    $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
+                    $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
+                }
+
+                $response = array('success' => true, 'action_authorized_ids' => $action_authorized_ids);
             }
             wp_send_json($response);
         }

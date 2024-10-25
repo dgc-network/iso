@@ -86,6 +86,18 @@ jQuery(document).ready(function($) {
 */            
         });
 
+        if ($("#frequence-report-setting").val()) {
+            $("#frquence-report-start-time-div").show();
+        }
+
+        $("#frequence-report-setting").on("change", function () {
+            if ($(this).val()) {
+                $("#frquence-report-start-time-div").show();
+            } else {
+                $("#frquence-report-start-time-div").hide();
+            }
+        });
+
         $('[id^="edit-my-job-"]').on("click", function () {
             const doc_id = this.id.substring(12);
             $.ajax({
@@ -114,10 +126,14 @@ jQuery(document).ready(function($) {
                                         'action': 'set_my_job_action_dialog_data',
                                         _action_id: $("#action-id").val(),
                                         _is_action_authorized: $("#is-action-authorized").val(),
+                                        _frequence_report_setting: $("#frequence-report-setting").val(),
+                                        _frequence_report_start_date: $("#frequence-report-start-date").val(),
+                                        _frequence_report_start_time: $("#frequence-report-start-time").val(),
+                                        _prev_start_time: $("#prev-start-time").val(),
                                     },
                                     success: function (response) {
                                         console.log(response);
-                                        window.location.replace(window.location.href);
+                                        //window.location.replace(window.location.href);
                                     },
                                     error: function (error) {
                                         console.error(error);

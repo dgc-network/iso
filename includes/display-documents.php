@@ -480,7 +480,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
                 update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-
+/*
                 $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
                 update_post_meta($doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);
                 // Get the timezone offset from WordPress settings
@@ -499,6 +499,7 @@ if (!class_exists('display_documents')) {
                 );            
                 $todo_class = new to_do_list();
                 if ($doc_report_frequence_setting) $hook_name=$todo_class->schedule_post_event_callback($params);
+*/                
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
