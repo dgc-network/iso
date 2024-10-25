@@ -104,6 +104,32 @@ jQuery(document).ready(function($) {
                         width: 390,
                         modal: true,
                         autoOpen: false,
+                        buttons: {
+                            "Authorize": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_my_job_action_dialog_data',
+                                        _action_id: action_id,
+                                        _is_action_authorized: !isChecked ? 1 : 0,
+                                    },
+                                    success: function (response) {
+                                        console.log(response);
+                                        window.location.replace(window.location.href);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Cancel": function () {
+                                $("#my-job-action-dialog").dialog('close');
+                            },
+                        }
+            
                     });
 
                     $('[id^="edit-my-job-action-"]').on("click", function () {
