@@ -1696,7 +1696,8 @@ if (!class_exists('display_documents')) {
             } else {
                 $field_value = $_POST[$field_id];
             }
-            echo "<script>console.log('Field Value for $field_id: " . addslashes($field_value) . "');</script>";
+            // Log $field_value for debugging
+            error_log("Field Value for $field_id: " . print_r($field_value, true));
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
