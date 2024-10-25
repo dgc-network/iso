@@ -133,7 +133,7 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         console.log(response);
-                                        //window.location.replace(window.location.href);
+                                        window.location.replace(window.location.href);
                                     },
                                     error: function (error) {
                                         console.error(error);

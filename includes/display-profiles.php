@@ -501,7 +501,22 @@ if (!class_exists('display_profiles')) {
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
                     //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
-                    wp_clear_scheduled_hook($prev_hook_name);
+                    //wp_clear_scheduled_hook($prev_hook_name);
+                    // Get the list of all scheduled cron events
+                    $cron_jobs = get_option('cron');
+
+                    // Loop through each scheduled event
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if (isset($scheduled_hooks[$prev_hook_name])) {
+                                foreach ($scheduled_hooks[$prev_hook_name] as $event) {
+                                    // Unschedule the event based on timestamp and hook name
+                                    wp_unschedule_event($timestamp, $prev_hook_name, $event['args']);
+                                }
+                            }
+                        }
+                    }
+                    
                 }
 
                 $response = array(
