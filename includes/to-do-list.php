@@ -127,7 +127,7 @@ if (!class_exists('to_do_list')) {
             $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
             $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
             ?>
-            <label for="site_id"> doc_id: </label>
+            <label for="site_id"> site_id: </label>
             <input type="text" id="site_id" name="site_id" value="<?php echo $site_id;?>" style="width:100%" >
             <label for="doc_id"> doc_id: </label>
             <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
@@ -347,7 +347,6 @@ if (!class_exists('to_do_list')) {
         
         function set_todo_dialog_data() {
             if( isset($_POST['_action_id']) ) {
-                // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $this->update_todo_dialog_data($action_id);
             }
@@ -527,7 +526,6 @@ if (!class_exists('to_do_list')) {
         
         function set_start_job_dialog_data() {
             if( isset($_POST['_action_id']) ) {
-                // action button is clicked
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $this->update_start_job_dialog_data($action_id);
             }
@@ -627,8 +625,9 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'submit_action', $action_id );
             update_post_meta($new_todo_id, 'submit_time', time() );
 
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
+            $site_id = get_user_meta($user_id, 'site_id', true);
             update_post_meta($new_todo_id, 'site_id', $site_id );
 
             // set next todo and actions
