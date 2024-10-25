@@ -1382,7 +1382,8 @@ if (!class_exists('to_do_list')) {
 
             //if (current_user_can('administrator')) {
                 // Get all scheduled events
-                $cron_array = _get_cron_array();
+                //$cron_array = _get_cron_array();
+                $cron_array = get_option('cron');
         
                 // Check if there are any scheduled events
                 if (empty($cron_array)) {
@@ -1396,7 +1397,7 @@ if (!class_exists('to_do_list')) {
                         if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) {
                             foreach ($events as $event) {
                                 // Unschedule the event
-                                //wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                wp_unschedule_event($timestamp, $hook_name, $event['args']);
                             }
                         }
                     }
