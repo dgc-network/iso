@@ -539,6 +539,7 @@ if (!class_exists('to_do_list')) {
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $todo_title = get_the_title($doc_id);
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
 
@@ -546,6 +547,7 @@ if (!class_exists('to_do_list')) {
                 // 是審核、核准之類的工作，不需要新增一個doc-report
                 // Add a new doc-report
                 $new_post = array(
+                    'post_title'    => $todo_title,
                     'post_status'   => 'publish',
                     'post_author'   => $user_id,
                     'post_type'     => 'doc-report',
@@ -587,9 +589,11 @@ if (!class_exists('to_do_list')) {
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $todo_title = get_the_title($doc_id);
 
             // set current doc-report
             $new_post = array(
+                'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'doc-report',
@@ -611,7 +615,6 @@ if (!class_exists('to_do_list')) {
             }            
 
             // Add a new todo
-            $todo_title = get_the_title($doc_id);
             $new_post = array(
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
