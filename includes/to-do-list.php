@@ -1378,9 +1378,9 @@ if (!class_exists('to_do_list')) {
         }
             
         function remove_iso_helper_scheduled_events($remove_name='iso_') {
-            return;
+            //return;
 
-            if (current_user_can('administrator')) {
+            //if (current_user_can('administrator')) {
                 // Get all scheduled events
                 $cron_array = _get_cron_array();
         
@@ -1396,16 +1396,16 @@ if (!class_exists('to_do_list')) {
                         if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) {
                             foreach ($events as $event) {
                                 // Unschedule the event
-                                wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                //wp_unschedule_event($timestamp, $hook_name, $event['args']);
                             }
                         }
                     }
                 }
         
                 echo 'Removed all scheduled events with hook names starting with '.$remove_name;
-            } else {
-                echo 'You do not have enough permission to perform this action.';
-            }
+            //} else {
+            //    echo 'You do not have enough permission to perform this action.';
+           // }
         }
 /*
         function list_all_scheduled_events() {
