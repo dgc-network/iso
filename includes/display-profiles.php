@@ -444,10 +444,10 @@ if (!class_exists('display_profiles')) {
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
         
                 // Check the condition and update 'action_authorized_ids' accordingly
-                if ($is_action_authorized && !$authorize_exists) {
+                if (!$is_action_authorized && !$authorize_exists) {
                     // Add $user_id to 'action_authorized_ids'
                     $action_authorized_ids[] = $user_id;
-                } elseif (!$is_action_authorized && $authorize_exists) {
+                } elseif ($is_action_authorized && $authorize_exists) {
                     // Remove $user_id from 'action_authorized_ids'
                     $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                 }
