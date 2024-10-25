@@ -401,10 +401,13 @@ if (!class_exists('display_profiles')) {
         function display_my_job_action_dialog($action_id=false) {
             ob_start();
             $todo_class = new to_do_list();
+            $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
+                <h4><?php echo get_the_title($doc_id).'「'.get_the_title($action_id).'」授權';?></h4>
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                 <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($frequence_report_setting);?></select>
                 <div id="frquence-start-time-div" style="display:none;">
