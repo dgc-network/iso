@@ -99,6 +99,7 @@ jQuery(document).ready(function($) {
                     $("#my-job-action-list").dialog('open');
 
                     $('[id^="edit-my-job-action-"]').on("click", function () {
+                        $("#my-job-action-list").dialog('close');
                         const action_id = this.id.substring(19);
                         $.ajax({
                             type: 'POST',
