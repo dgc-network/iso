@@ -13,12 +13,17 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
+
             add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
-            add_action( 'wp_ajax_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
-            add_action( 'wp_ajax_nopriv_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
+
             add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
+
+            add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
 
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
@@ -440,7 +445,7 @@ if (!class_exists('display_profiles')) {
             }
         }
 
-        function set_action_authorized_data() {
+        function set_my_job_action_dialog_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
             if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {

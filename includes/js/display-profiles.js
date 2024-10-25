@@ -138,7 +138,7 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_action_authorized_data',
+                                    'action': 'set_my_job_action_dialog_data',
                                     _action_id: action_id,
                                     _is_action_authorized: !isChecked ? 1 : 0,
                                 },
