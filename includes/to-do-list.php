@@ -1368,7 +1368,7 @@ if (!class_exists('to_do_list')) {
             //$this->update_next_todo_and_actions($params);
             $action_id = $params['action_id'];
             $user_id = $params['user_id'];
-            $this->update_start_job_dialog_data($action_id, $user_id);
+            $this->update_start_job_dialog_data($action_id, $user_id, true);
         }
         
         // Method to schedule the event and add the action
