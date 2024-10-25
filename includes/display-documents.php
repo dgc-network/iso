@@ -443,7 +443,8 @@ if (!class_exists('display_documents')) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                 $cards_class = new erp_cards();
-
+                $profiles_class = new display_profiles();
+                
                 if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
                 else { // General Users in site
                     if ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
@@ -999,6 +1000,7 @@ if (!class_exists('display_documents')) {
             $response = array();
             if (isset($_POST['_report_id'])) {
                 $cards_class = new erp_cards();
+                $profiles_class = new display_profiles();
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 $_document = get_post_meta($report_id, '_document', true);

@@ -272,10 +272,10 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-            ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
-            ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
-            ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
-            ajaxData['_prev_start_time'] = $("#prev-start-time").val();
+            //ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
+            //ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
+            //ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
+            //ajaxData['_prev_start_time'] = $("#prev-start-time").val();
 
             $.ajax({
                 type: 'POST',
