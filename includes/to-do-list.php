@@ -589,11 +589,11 @@ if (!class_exists('to_do_list')) {
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            $todo_title = get_the_title($doc_id);
+            //$todo_title = get_the_title($doc_id);
 
-            // set current doc-report
+            // Add a new doc-report for current action
             $new_post = array(
-                'post_title'    => $todo_title,
+                'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'doc-report',
@@ -602,6 +602,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
 
+            // Update the doc-field meta for new doc-report
             $params = array(
                 'doc_id'     => $doc_id,
             );                
@@ -614,9 +615,9 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             }            
 
-            // Add a new todo
+            // Add a new todo for current action
             $new_post = array(
-                'post_title'    => $todo_title,
+                'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'todo',
