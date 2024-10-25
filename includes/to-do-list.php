@@ -533,7 +533,7 @@ if (!class_exists('to_do_list')) {
         }
         
         // to-do-list misc
-        function update_todo_dialog_data($action_id=false, $user_id=false) {
+        function update_todo_dialog_data($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -562,7 +562,7 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID());
+                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default);
                 endwhile;
                 wp_reset_postdata();
             }            
@@ -1506,7 +1506,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->update_todo_dialog_data($action_id, $user_id);
+                                    $this->update_todo_dialog_data($action_id, $user_id, true);
                                 }
                             }
                         endwhile;

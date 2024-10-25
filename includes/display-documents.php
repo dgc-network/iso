@@ -1690,10 +1690,11 @@ if (!class_exists('display_documents')) {
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
-                $field_value = $default_value;
+                $field_value = $this->get_field_default_value($field_id);
             } else {
                 $field_value = $_POST[$field_id];
             }
+            update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
             if ($field_type=='_employees'){
@@ -1739,13 +1740,11 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department'){
                 update_post_meta($report_id, '_department', $field_value);
             }
-
+/*
             if ($field_type=='_department' && $default_value=='_audited'){
                 update_post_meta($report_id, '_audited_department', $field_value);
             }
-
-            update_post_meta($report_id, $field_id, $field_value);
-
+*/
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new sub_items();
