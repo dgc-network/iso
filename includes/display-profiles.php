@@ -501,7 +501,7 @@ if (!class_exists('display_profiles')) {
                     $todo_class->schedule_post_event_callback($params);
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
-                    //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
+                    $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
                 }
 
                 $response = array(
@@ -510,6 +510,7 @@ if (!class_exists('display_profiles')) {
                     'is_action_authorized' => $is_action_authorized,
                     'authoriz_exists' => $authorize_exists,
                     'action_authorized_ids' => $action_authorized_ids,
+                    'prev_hook_name' => $prev_hook_name,
                 );
             }
             wp_send_json($response);

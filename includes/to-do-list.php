@@ -1378,6 +1378,8 @@ if (!class_exists('to_do_list')) {
         }
             
         function remove_iso_helper_scheduled_events($remove_name='iso_') {
+            return;
+
             if (current_user_can('administrator')) {
                 // Get all scheduled events
                 $cron_array = _get_cron_array();
