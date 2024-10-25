@@ -86,12 +86,6 @@ jQuery(document).ready(function($) {
 */            
         });
 
-        $("#my-job-action-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-        });
-
         $('[id^="edit-my-job-"]').on("click", function () {
             const doc_id = this.id.substring(12);
             $.ajax({
@@ -105,6 +99,12 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#my-job-action-list").html(response.html_contain);
                     $("#my-job-action-list").dialog('open');
+
+                    $("#my-job-action-dialog").dialog({
+                        width: 390,
+                        modal: true,
+                        autoOpen: false,
+                    });
 
                     $('[id^="edit-my-job-action-"]').on("click", function () {
                         $("#my-job-action-list").dialog('close');
