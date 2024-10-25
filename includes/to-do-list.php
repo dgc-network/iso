@@ -640,9 +640,9 @@ if (!class_exists('to_do_list')) {
         
         function update_next_todo_and_actions($args = array()) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 1. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From update_todo_by_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-            // 3. From schedule_event_callback($params), create a next_todo based on the $args['doc_id']
+            // 3. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 4. From schedule_event_callback($params), create a next_todo based on the $args['doc_id']
 
             $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -1365,7 +1365,8 @@ if (!class_exists('to_do_list')) {
 
         // Method for the callback function
         public function schedule_event_callback($params) {
-            $this->update_next_todo_and_actions($params);
+            //$this->update_next_todo_and_actions($params);
+            $this->update_start_job_dialog_data($action_id);
         }
         
         // Method to schedule the event and add the action
@@ -1470,7 +1471,6 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    //$this->update_start_job_dialog_data($action_id, $user_id);
                                     $this->update_todo_dialog_data($action_id, $user_id);
                                 }
                             }

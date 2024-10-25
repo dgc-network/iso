@@ -400,7 +400,7 @@ if (!class_exists('display_documents')) {
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
 
-                    <div id="doc-report-div1" style="display:none;">            
+                    <div id="doc-report-div1" style="display:none;">
                         <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                         <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
                         <div id="frquence-start-time-div" style="display:none;">

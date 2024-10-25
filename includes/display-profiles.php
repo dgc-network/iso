@@ -17,8 +17,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
             add_action( 'wp_ajax_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
             add_action( 'wp_ajax_nopriv_set_action_authorized_data', array( $this, 'set_action_authorized_data' ) );
-            add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
 
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
@@ -333,7 +333,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function display_my_job_action_dialog($doc_id=false) {
+        function display_my_job_action_list($doc_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -366,7 +366,7 @@ if (!class_exists('display_profiles')) {
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
-                        <tr id="check-action-authorize-<?php the_ID();?>">
+                        <tr id="edit-my-job-action-<?php the_ID();?>">
                             <td style="text-align:center;"><input type="radio" name="is_action_authorized" id="is-action-authorized-<?php the_ID();?>" <?php echo $is_checked;?> /></td>
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
@@ -380,15 +380,39 @@ if (!class_exists('display_profiles')) {
                 ?>
                 </tbody>
             </table>
+            <div id="my-job-action-dialog" title="Action authorization"></div>
             </fieldset>
             </div>
             <?php
             return ob_get_clean();
         }
 
-        function get_my_job_action_dialog_data() {
+        function get_my_job_action_list_data() {
             $doc_id = sanitize_text_field($_POST['_doc_id']);
-            $response = array('html_contain' => $this->display_my_job_action_dialog($doc_id));
+            $response = array('html_contain' => $this->display_my_job_action_list($doc_id));
+            wp_send_json($response);
+        }
+
+        function display_my_job_action_dialog($action_id=false) {
+            ob_start();
+            ?>
+            <div>
+                <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                <div id="frquence-start-time-div" style="display:none;">
+                    <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
+                    <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                </div>
+            </div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_my_job_action_dialog_data() {
+            $action_id = sanitize_text_field($_POST['_action_id']);
+            $response = array('html_contain' => $this->display_my_job_action_dialog($action_id));
             wp_send_json($response);
         }
 

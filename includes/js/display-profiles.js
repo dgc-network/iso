@@ -91,17 +91,43 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_my_job_action_dialog_data',
+                    'action': 'get_my_job_action_list_data',
                     '_doc_id': doc_id,
                 },
                 success: function (response) {
                     $("#my-job-action-list").html(response.html_contain);
                     $("#my-job-action-list").dialog('open');
 
-                    $('[id^="check-action-authorize-"]').on("click", function () {
-                        const action_id = this.id.substring(23);
-                        const radioButton = $("#is-action-authorized-" + action_id);
+                    $('[id^="edit-my-job-action-"]').on("click", function () {
+                        const action_id = this.id.substring(19);
+                        $.ajax({
+                            type: 'POST',
+                            url: ajax_object.ajax_url,
+                            dataType: "json",
+                            data: {
+                                'action': 'get_my_job_action_dialog_data',
+                                '_action_id': action_id,
+                            },
+                            success: function (response) {
+                                $("#my-job-action-dialog").html(response.html_contain);
+                                $("#my-job-action-dialog").dialog('open');
+        
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                alert(error);
+                            }
+                        });
+                        
 
+
+
+    
+
+
+
+/*
+                        const radioButton = $("#is-action-authorized-" + action_id);
                         if (window.confirm("Are you sure you want to change this setting?")) {
                             // Toggle the radio button state
                             const isChecked = radioButton.is(":checked");
@@ -125,6 +151,7 @@ jQuery(document).ready(function($) {
                                 }
                             });
                         }
+*/                        
                     });
                 },
                 error: function (error) {
@@ -132,6 +159,12 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+        });
+
+        $("#my-job-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
         });
 
         $('[id^="edit-my-notification-"]').on("click", function () {
