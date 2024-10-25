@@ -1009,14 +1009,14 @@ if (!class_exists('display_documents')) {
                 if ($_document && $todo_status==-1 && !$is_admin) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
                     if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($_document);
-                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
-                    elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
-                    elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
-                    elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
-                    elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
-                    elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
-                    elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
-                    else $response['html_contain'] = $this->display_doc_frame_contain($_document);
+                    //elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                    //elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
+                    //elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
+                    //elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
+                    //elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
+                    //elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
+                    //elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
+                    //else $response['html_contain'] = $this->display_doc_frame_contain($_document);
                 } else {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
