@@ -399,7 +399,7 @@ if (!class_exists('display_documents')) {
                         <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
-
+<?php /*
                     <div id="doc-report-div1" style="display:none;">
                         <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                         <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($doc_report_frequence_setting);?></select>
@@ -410,6 +410,7 @@ if (!class_exists('display_documents')) {
                             <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
                         </div>
                     </div>
+*/?>
                 </div>
                 <?php
                     // transaction data vs card key/value
