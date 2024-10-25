@@ -500,6 +500,7 @@ if (!class_exists('display_profiles')) {
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
                     //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
+                    wp_clear_scheduled_hook($prev_hook_name);
                 }
 
                 $response = array(

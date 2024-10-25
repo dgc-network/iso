@@ -24,11 +24,11 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
             // Schedule the cron job if it's not already scheduled
-            if (!wp_next_scheduled('daily_action_process_event')) {
-                wp_schedule_event(time(), 'daily', 'daily_action_process_event');
+            if (!wp_next_scheduled('iso_helper_daily_action_process_event')) {
+                wp_schedule_event(time(), 'daily', 'iso_helper_daily_action_process_event');
             }    
             // Hook the function to the scheduled cron job
-            add_action( 'daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
+            add_action( 'iso_helper_daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
             add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
             add_action( 'init', array( $this, 'schedule_event_and_action' ) );
         }
@@ -541,10 +541,10 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
 
-            if (empty($without_doc_number)) {
+            if (empty($without_doc_number)) { 
+                // 是審核、核准之類的工作，不需要新增一個doc-report
                 // Add a new doc-report
                 $new_post = array(
-                    //'post_title'    => 'New doc-report',
                     'post_status'   => 'publish',
                     'post_author'   => $user_id,
                     'post_type'     => 'doc-report',
@@ -581,7 +581,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
-        function update_start_job_dialog_data($action_id=false, $user_id=false) {
+        function update_start_job_dialog_data($action_id=false, $user_id=false, $default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -589,7 +589,6 @@ if (!class_exists('to_do_list')) {
 
             // set current doc-report
             $new_post = array(
-                //'post_title'    => 'New doc-report',
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
                 'post_type'     => 'doc-report',
@@ -605,7 +604,7 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($new_report_id, get_the_ID());
+                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $default);
                 endwhile;
                 wp_reset_postdata();
             }            

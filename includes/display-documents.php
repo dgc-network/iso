@@ -1684,11 +1684,15 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function update_doc_field_contains($report_id=false, $field_id=false) {
+        function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
-            $field_value = $_POST[$field_id];
+            if ($is_default) {
+                $field_value = $default_value;
+            } else {
+                $field_value = $_POST[$field_id];
+            }
 
             // special field-type
             if ($field_type=='_employees'){
