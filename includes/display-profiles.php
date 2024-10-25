@@ -438,7 +438,7 @@ if (!class_exists('display_profiles')) {
                 $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
-                if ($is_action_authorized=='') $is_action_authorized=false;
+                //if ($is_action_authorized=='') $is_action_authorized=false;
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
@@ -488,22 +488,22 @@ if (!class_exists('display_profiles')) {
                 $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
                 $frequence_report_start = strtotime($frequence_report_start_date.' '.$frequence_report_start_time);
                 update_post_meta($action_id, 'frequence_report_start_time', $frequence_report_start - $offset_seconds);
-                $params = array(
-                    'interval' => $frequence_report_setting,
-                    'start_time' => $frequence_report_start - $offset_seconds,
-                    //'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
-                    //'doc_id' => $doc_id,
-                    'action_id' => $action_id,
-                );
-/*                
+
                 $todo_class = new to_do_list();
                 if ($frequence_report_setting) {
-                    $hook_name=$todo_class->schedule_post_event_callback($params);
+                    $params = array(
+                        'interval' => $frequence_report_setting,
+                        'start_time' => $frequence_report_start - $offset_seconds,
+                        //'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
+                        //'doc_id' => $doc_id,
+                        'action_id' => $action_id,
+                    );
+                    $todo_class->schedule_post_event_callback($params);
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
                     $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
                 }
-*/
+
                 $response = array(
                     'success' => true, 
                     'action_id' => $action_id,
