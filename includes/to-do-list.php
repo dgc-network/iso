@@ -1286,6 +1286,7 @@ if (!class_exists('to_do_list')) {
         function schedule_post_event_callback($args) {
             $interval = $args['interval'];
             $start_time = $args['start_time'];
+            //$action_id = $args['action_id'];
             $prev_start_time = isset($args['prev_start_time']) ? $args['prev_start_time'] : null;
         
             // Clear the previous scheduled event if it exists
@@ -1366,7 +1367,9 @@ if (!class_exists('to_do_list')) {
         // Method for the callback function
         public function schedule_event_callback($params) {
             //$this->update_next_todo_and_actions($params);
-            $this->update_start_job_dialog_data($action_id);
+            $action_id = $params['action_id'];
+            $user_id = $params['user_id'];
+            $this->update_start_job_dialog_data($action_id, $user_id);
         }
         
         // Method to schedule the event and add the action
@@ -1387,26 +1390,6 @@ if (!class_exists('to_do_list')) {
                 return;
             }
 
-            // Loop through the scheduled events
-            foreach ($cron_array as $timestamp => $cron) {
-                // Check if $cron is an array
-                if (is_array($cron)) {
-                    foreach ($cron as $hook_name => $events) {
-                        // Check if $events is an array
-                        if (is_array($events) && !empty($hook_name) && strpos($hook_name, $remove_name) === 0) {
-                            foreach ($events as $event) {
-                                // Unschedule the event with or without arguments
-                                if (isset($event['args'])) {
-                                    wp_unschedule_event($timestamp, $hook_name, $event['args']);
-                                } else {
-                                    wp_unschedule_event($timestamp, $hook_name);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-/*            
             // Loop through the scheduled events            
             foreach ($cron_array as $timestamp => $cron) {
                 foreach ($cron as $hook_name => $events) {
@@ -1419,7 +1402,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
             }
-*/        
+
             echo 'Removed all scheduled events with hook names starting with "' . esc_html($remove_name) . '".';
             return;
 

@@ -493,14 +493,13 @@ if (!class_exists('display_profiles')) {
                     $params = array(
                         'interval' => $frequence_report_setting,
                         'start_time' => $frequence_report_start - $offset_seconds,
-                        //'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
-                        //'doc_id' => $doc_id,
                         'action_id' => $action_id,
+                        'user_id' => $user_id,
                     );
                     $todo_class->schedule_post_event_callback($params);
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
-                    $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
+                    //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
                 }
 
                 $response = array(
