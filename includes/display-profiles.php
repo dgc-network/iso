@@ -438,6 +438,7 @@ if (!class_exists('display_profiles')) {
                 $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
+                if ($is_action_authorized=='') $is_action_authorized=false;
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
