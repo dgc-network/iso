@@ -12,7 +12,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
             //add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
-            //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
+            add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
             add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
