@@ -489,8 +489,9 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($action_id, 'frequence_report_start_time', $frequence_report_start - $offset_seconds);
 
                 $todo_class = new to_do_list();
-                if ($frequence_report_setting) {
-                    $params = array(
+                //if ($frequence_report_setting) {
+                if (!$is_action_authorized && !$authorize_exists) {
+                        $params = array(
                         'interval' => $frequence_report_setting,
                         'start_time' => $frequence_report_start - $offset_seconds,
                         'action_id' => $action_id,
