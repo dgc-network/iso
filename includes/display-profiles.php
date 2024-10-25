@@ -409,7 +409,8 @@ if (!class_exists('display_profiles')) {
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
-                <h4><?php echo '「'.get_the_title($doc_id).'」工作，'.'「'.get_the_title($action_id).'」動作'.$is_authorized;?></h4>
+                <h4><?php echo '「'.get_the_title($doc_id).'」工作，'.'「'.get_the_title($action_id).'」動作 '.$is_authorized;?></h4>
+                <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
                 <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($frequence_report_setting);?></select>
@@ -428,30 +429,6 @@ if (!class_exists('display_profiles')) {
             $action_id = sanitize_text_field($_POST['_action_id']);
             $response = array('html_contain' => $this->display_my_job_action_dialog($action_id));
             wp_send_json($response);
-        }
-
-        function is_doc_authorized($doc_id=false) {
-            $query = $this->retrieve_doc_action_list_data($doc_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    if ($this->is_action_authorized(get_the_ID())) return true;
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return false;
-        }
-
-        function is_action_authorized($action_id=false, $user_id=false) {
-            if (!$action_id) return false;
-            if (!$user_id) $user_id = get_current_user_id();
-            $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
-            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
-
-            if ($user_id) {
-                return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;    
-            } else {
-                return $action_authorized_ids;
-            }
         }
 
         function set_my_job_action_dialog_data() {
@@ -502,6 +479,30 @@ if (!class_exists('display_profiles')) {
                 $response = array('success' => true);
             }
             wp_send_json($response);
+        }
+
+        function is_doc_authorized($doc_id=false) {
+            $query = $this->retrieve_doc_action_list_data($doc_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    if ($this->is_action_authorized(get_the_ID())) return true;
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return false;
+        }
+
+        function is_action_authorized($action_id=false, $user_id=false) {
+            if (!$action_id) return false;
+            if (!$user_id) $user_id = get_current_user_id();
+            $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+
+            if ($user_id) {
+                return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;    
+            } else {
+                return $action_authorized_ids;
+            }
         }
 
         function set_my_profile_data() {

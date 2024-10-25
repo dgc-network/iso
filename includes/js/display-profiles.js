@@ -112,8 +112,8 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: {
                                         'action': 'set_my_job_action_dialog_data',
-                                        _action_id: action_id,
-                                        _is_action_authorized: !isChecked ? 1 : 0,
+                                        _action_id: $("#action-id").val(),
+                                        _is_action_authorized: $("#is-action-authorized").val(),
                                     },
                                     success: function (response) {
                                         console.log(response);
