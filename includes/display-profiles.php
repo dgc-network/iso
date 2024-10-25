@@ -501,7 +501,7 @@ if (!class_exists('display_profiles')) {
                     $todo_class->schedule_post_event_callback($params);
                 } else {
                     $prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
-                    $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
+                    //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
                 }
 
                 $response = array(
