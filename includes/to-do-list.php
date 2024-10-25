@@ -1389,17 +1389,37 @@ if (!class_exists('to_do_list')) {
 
             // Loop through the scheduled events
             foreach ($cron_array as $timestamp => $cron) {
+                // Check if $cron is an array
+                if (is_array($cron)) {
+                    foreach ($cron as $hook_name => $events) {
+                        // Check if $events is an array
+                        if (is_array($events) && !empty($hook_name) && strpos($hook_name, $remove_name) === 0) {
+                            foreach ($events as $event) {
+                                // Unschedule the event with or without arguments
+                                if (isset($event['args'])) {
+                                    wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                } else {
+                                    wp_unschedule_event($timestamp, $hook_name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+/*            
+            // Loop through the scheduled events            
+            foreach ($cron_array as $timestamp => $cron) {
                 foreach ($cron as $hook_name => $events) {
                     // Check if the hook name starts with the specified prefix
                     if (!empty($hook_name) && strpos($hook_name, $remove_name) === 0) {
                         foreach ($events as $event) {
                             // Unschedule the event
-                            //wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                            wp_unschedule_event($timestamp, $hook_name, $event['args']);
                         }
                     }
                 }
             }
-        
+*/        
             echo 'Removed all scheduled events with hook names starting with "' . esc_html($remove_name) . '".';
             return;
 
