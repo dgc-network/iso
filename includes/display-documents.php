@@ -1018,10 +1018,10 @@ if (!class_exists('display_documents')) {
                     //elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
                     //else $response['html_contain'] = $this->display_doc_frame_contain($_document);
                 } else {
-                    $response['html_contain'] = $this->display_doc_report_dialog($report_id);
+                    //$response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
+                    //$response['doc_fields'] = $this->get_doc_field_keys($doc_id);
+                    //$response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
                 }
             }
             wp_send_json($response);
