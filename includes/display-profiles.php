@@ -400,15 +400,18 @@ if (!class_exists('display_profiles')) {
 
         function display_my_job_action_dialog($action_id=false) {
             ob_start();
+            $todo_class = new to_do_list();
+            $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
+            $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
-                <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_doc_report_frequence_setting_option($doc_report_frequence_setting);?></select>
+                <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($frequence_report_setting);?></select>
                 <div id="frquence-start-time-div" style="display:none;">
-                    <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                    <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-                    <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
-                    <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
+                    <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                    <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
+                    <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
                 </div>
             </div>
             <?php

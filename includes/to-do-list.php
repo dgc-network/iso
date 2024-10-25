@@ -1264,7 +1264,7 @@ if (!class_exists('to_do_list')) {
         }
 
         // doc-report frequence setting
-        function select_doc_report_frequence_setting_option($selected_option = false) {
+        function select_frequence_report_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
             $selected = ($selected_option === "yearly") ? 'selected' : '';
             $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
