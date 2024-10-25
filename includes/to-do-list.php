@@ -119,17 +119,20 @@ if (!class_exists('to_do_list')) {
         }
         
         function todo_settings_content($post) {
+            $site_id = esc_attr(get_post_meta($post->ID, 'site_id', true));
             $doc_id = esc_attr(get_post_meta($post->ID, 'doc_id', true));
-            $report_id = esc_attr(get_post_meta($post->ID, 'report_id', true));
+            $prev_report_id = esc_attr(get_post_meta($post->ID, 'prev_report_id', true));
             $todo_due = esc_attr(get_post_meta($post->ID, 'todo_due', true));
             $submit_user = esc_attr(get_post_meta($post->ID, 'submit_user', true));
             $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
             $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
             ?>
+            <label for="site_id"> doc_id: </label>
+            <input type="text" id="site_id" name="site_id" value="<?php echo $site_id;?>" style="width:100%" >
             <label for="doc_id"> doc_id: </label>
             <input type="text" id="doc_id" name="doc_id" value="<?php echo $doc_id;?>" style="width:100%" >
-            <label for="report_id"> report_id: </label>
-            <input type="text" id="report_id" name="report_id" value="<?php echo $report_id;?>" style="width:100%" >
+            <label for="prev_report_id"> prev_report_id: </label>
+            <input type="text" id="prev_report_id" name="prev_report_id" value="<?php echo $prev_report_id;?>" style="width:100%" >
             <label for="todo_due"> todo_due: </label>
             <input type="text" id="todo_due" name="todo_due" value="<?php echo $todo_due;?>" style="width:100%" >
             <label for="submit_user"> submit_user: </label>
@@ -1127,8 +1130,8 @@ if (!class_exists('to_do_list')) {
         
         function get_signature_record_list($report_id=false) {
             ob_start();
-            $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true);
+            //$current_user_id = get_current_user_id();
+            //$current_site = get_user_meta($current_user_id, 'site_id', true);
             ?>
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
@@ -1210,7 +1213,7 @@ if (!class_exists('to_do_list')) {
             return $x;
         }
         
-        function retrieve_signature_record_data($paged = 1, $report_id = false) {
+        function retrieve_signature_record_data($paged=1, $report_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
         
