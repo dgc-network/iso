@@ -404,7 +404,7 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? '「已授權」' : '「準備授權」';
+            $is_authorized = $this->is_action_authorized($action_id) ? '已授權' : '準備授權';
             $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
@@ -503,7 +503,13 @@ if (!class_exists('display_profiles')) {
                     $todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
                 }
 */
-                $response = array('success' => true, 'action_authorized_ids' => $action_authorized_ids);
+                $response = array(
+                    'success' => true, 
+                    'action_id' => $action_id,
+                    'is_action_authorized' => $is_action_authorized,
+                    'authoriz_exists' => $authorize_exists,
+                    'action_authorized_ids' => $action_authorized_ids,
+                );
             }
             wp_send_json($response);
         }
