@@ -655,7 +655,8 @@ if (!class_exists('sub_items')) {
 
         function get_sub_item_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
-            $query = $this->retrieve_doc_field_data($params);
+            $documents_class = new display_documents();
+            $query = $documents_class->retrieve_doc_field_data($params);
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
