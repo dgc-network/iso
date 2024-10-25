@@ -1386,7 +1386,7 @@ if (!class_exists('to_do_list')) {
                 echo 'No scheduled events found.';
                 return;
             }
-/*        
+
             // Loop through the scheduled events
             foreach ($cron_array as $timestamp => $cron) {
                 foreach ($cron as $hook_name => $events) {
@@ -1394,7 +1394,7 @@ if (!class_exists('to_do_list')) {
                     if (!empty($hook_name) && strpos($hook_name, $remove_name) === 0) {
                         foreach ($events as $event) {
                             // Unschedule the event
-                            wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                            //wp_unschedule_event($timestamp, $hook_name, $event['args']);
                         }
                     }
                 }
@@ -1402,7 +1402,7 @@ if (!class_exists('to_do_list')) {
         
             echo 'Removed all scheduled events with hook names starting with "' . esc_html($remove_name) . '".';
             return;
-*/
+
         }
 /*        
         function remove_iso_helper_scheduled_events($remove_name='iso_') {
