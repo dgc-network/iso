@@ -1401,6 +1401,7 @@ if (!class_exists('to_do_list')) {
             }
         
             echo 'Removed all scheduled events with hook names starting with "' . esc_html($remove_name) . '".';
+            return;
         }
 /*        
         function remove_iso_helper_scheduled_events($remove_name='iso_') {
