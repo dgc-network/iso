@@ -1410,6 +1410,7 @@ if (!class_exists('display_documents')) {
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
                 $default_value = get_current_user_id(); // Set default value to an array with the current user ID
+                $default_value = array($default_value);
             }
             return $default_value;
         }
