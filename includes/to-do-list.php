@@ -601,6 +601,9 @@ if (!class_exists('to_do_list')) {
             $new_report_id = wp_insert_post($new_post);
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
+            error_log("is_default: " . print_r($is_default, true));
+            error_log("action_id: " . print_r($action_id, true));
+            error_log("doc_id: " . print_r($doc_id, true));
 
             // Update the doc-field meta for new doc-report
             $params = array(
@@ -608,7 +611,6 @@ if (!class_exists('to_do_list')) {
             );                
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data($params);
-            //error_log("doc-report Meta for $new_report_id: " . print_r($query, true));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default);
