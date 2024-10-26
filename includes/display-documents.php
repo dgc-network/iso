@@ -1537,7 +1537,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_customer'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
@@ -1545,7 +1544,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_vendor'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
@@ -1553,7 +1551,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_product'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
@@ -1561,7 +1558,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_equipment'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
@@ -1569,7 +1565,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_instrument'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
@@ -1577,7 +1572,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_department'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
@@ -1585,7 +1579,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_employees'):
-                            //$cards_class = new erp_cards();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php if ($default_value=='me') {?>

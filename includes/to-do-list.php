@@ -732,8 +732,8 @@ if (!class_exists('to_do_list')) {
             
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
 
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$current_user_id = get_current_user_id();
+            $site_id = get_user_meta($user_id, 'site_id', true);
             update_post_meta($new_todo_id, 'site_id', $site_id );
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
