@@ -1693,11 +1693,11 @@ if (!class_exists('display_documents')) {
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id);
+                error_log("Field value for default: " . print_r($field_value, true));
             } else {
                 $field_value = $_POST[$field_id];
+                error_log("Field value from POST: " . print_r($field_value, true));
             }
-            // Log $field_value for debugging
-            error_log("Field Value for $field_id: " . print_r($field_value, true));
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
