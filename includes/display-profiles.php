@@ -404,7 +404,7 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? '已授權' : '準備授權';
+            $is_authorized = $this->is_action_authorized($action_id) ? '取消已授權' : '準備授權';
             $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
