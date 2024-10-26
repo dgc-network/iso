@@ -491,8 +491,8 @@ if (!class_exists('display_profiles')) {
 
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Frequency Report Setting
-                    $frequence_report_setting = sanitize_text_field($_POST['_frequence_report_setting']);
-                    update_post_meta($action_id, 'frequence_report_setting', $frequence_report_setting);
+                    $interval = sanitize_text_field($_POST['_frequence_report_setting']);
+                    update_post_meta($action_id, 'frequence_report_setting', $interval);
                     
                     //$params = array(
                     $args = array(
@@ -505,7 +505,7 @@ if (!class_exists('display_profiles')) {
                     //$args = $params;
                     //$interval = $args['interval'];
                     //$start_time = $args['start_time'];
-                    $interval = $frequence_report_setting;
+                    //$interval = $frequence_report_setting;
                     //$start_time = $start_frequence_report;
                 
                     // Schedule the event based on the selected interval
