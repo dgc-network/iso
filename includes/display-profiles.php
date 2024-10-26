@@ -535,6 +535,12 @@ if (!class_exists('display_profiles')) {
                     update_option('schedule_event_hook_name', $hook_name);
                     return $hook_name;
                 
+
+                } else {
+                    // Directly clear the scheduled event with the hook name and args
+                    wp_clear_scheduled_hook($hook_name, array('action_id' => $action_id, 'user_id' => $user_id));
+                }
+/*
                 } else {
                     // Fetch all cron jobs and unschedule events with the previous hook name and start time
                     $cron_jobs = _get_cron_array(); // Internal function to fetch cron jobs
