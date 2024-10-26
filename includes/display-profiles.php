@@ -494,21 +494,11 @@ if (!class_exists('display_profiles')) {
                     $interval = sanitize_text_field($_POST['_frequence_report_setting']);
                     update_post_meta($action_id, 'frequence_report_setting', $interval);
                     
-                    //$params = array(
                     $args = array(
-                        //'interval' => $frequence_report_setting,
-                        //'start_time' => $start_frequence_report,
                         'action_id' => $action_id,
                         'user_id' => $user_id,
                     );
                 
-                    //$args = $params;
-                    //$interval = $args['interval'];
-                    //$start_time = $args['start_time'];
-                    //$interval = $frequence_report_setting;
-                    //$start_time = $start_frequence_report;
-                
-                    // Schedule the event based on the selected interval
                     switch ($interval) {
                         case 'twice_daily':
                             wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
@@ -543,11 +533,6 @@ if (!class_exists('display_profiles')) {
                     return $hook_name;
                 
                 } else {
-                    //$prev_hook_name = 'iso_helper_post_event';
-                    //$prev_start_time = intval($_POST['_prev_start_time']) - $offset_seconds;
-                    //$prev_start_time = intval($_POST['_prev_start_time']);
-                    //$prev_start_time = $start_time;
-                
                     // Fetch all cron jobs and unschedule events with the previous hook name and start time
                     $cron_jobs = _get_cron_array(); // Internal function to fetch cron jobs
                     if ($cron_jobs) {
@@ -561,107 +546,14 @@ if (!class_exists('display_profiles')) {
                         }
                     }
                 }
-                
-/*
-                $todo_class = new to_do_list();
-                //if ($frequence_report_setting) {
-                if (!$is_action_authorized && !$authorize_exists) {
 
-                    // frequence_report_setting
-                    $frequence_report_setting = sanitize_text_field($_POST['_frequence_report_setting']);
-                    update_post_meta($action_id, 'frequence_report_setting', $frequence_report_setting);
-                    // Get the timezone offset from WordPress settings
-                    $timezone_offset = get_option('gmt_offset');
-                    // Convert the timezone offset to seconds
-                    $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
-                    $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
-                    $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
-                    $frequence_report_start = strtotime($frequence_report_start_date.' '.$frequence_report_start_time);
-                    update_post_meta($action_id, 'frequence_report_start_time', $frequence_report_start - $offset_seconds);
-
-                    $params = array(
-                        'interval' => $frequence_report_setting,
-                        'start_time' => $frequence_report_start - $offset_seconds,
-                        'action_id' => $action_id,
-                        'user_id' => $user_id,
-                    );
-                    //$todo_class->schedule_post_event_callback($params);
-
-                    $hook_name = 'iso_helper_post_event';
-                    $args = $params;
-                    $interval = $args['interval'];
-                    $start_time = $args['start_time'];        
-
-                    // Schedule the event based on the selected interval
-                    switch ($interval) {
-                        case 'twice_daily':
-                            wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-                            break;
-                        case 'daily':
-                            wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-                            break;
-                        case 'weekly':
-                            wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-                            break;
-                        case 'biweekly':
-                            // Calculate interval for every 2 weeks (14 days)
-                            wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
-                            break;
-                        case 'monthly':
-                            // Use a custom interval for monthly scheduling
-                            wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-                            break;
-                        case 'bimonthly':
-                            // Calculate timestamp for next occurrence (every 2 months)
-                            wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
-                            break;
-                        case 'half-yearly':
-                            // Calculate timestamp for next occurrence (every 6 months)
-                            wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
-                            break;
-                        case 'yearly':
-                            // Use a custom interval for yearly scheduling
-                            wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-                            break;
-                        default:
-                            // Handle invalid interval
-                            return new WP_Error('invalid_interval', 'The specified interval is invalid.');
-                    }
-        
-                    // Store the hook name in options (outside switch statement)
-                    update_option('schedule_event_hook_name', $hook_name);
-                
-                    // Return the hook name for later use
-                    return $hook_name;
-        
-                } else {
-                    //$prev_hook_name = 'iso_helper_post_event_' . sanitize_text_field($_POST['_prev_start_time']);
-                    //$todo_class->remove_iso_helper_scheduled_events($prev_hook_name);    
-                    //wp_clear_scheduled_hook($prev_hook_name);
-                    $prev_hook_name = 'iso_helper_post_event';
-                    // Get the list of all scheduled cron events
-                    $cron_jobs = get_option('cron');
-
-                    // Loop through each scheduled event
-                    if ($cron_jobs) {
-                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
-                            if (isset($scheduled_hooks[$prev_hook_name])) {
-                                foreach ($scheduled_hooks[$prev_hook_name] as $event) {
-                                    // Unschedule the event based on timestamp and hook name
-                                    wp_unschedule_event($timestamp, $prev_hook_name, $event['args']);
-                                }
-                            }
-                        }
-                    }                    
-                }
-*/
                 $response = array(
                     'success' => true, 
                     'action_id' => $action_id,
                     'is_action_authorized' => $is_action_authorized,
                     'authoriz_exists' => $authorize_exists,
                     'action_authorized_ids' => $action_authorized_ids,
-                    'prev_hook_name' => $prev_hook_name,
+                    //'prev_hook_name' => $prev_hook_name,
                 );
             }
             wp_send_json($response);
