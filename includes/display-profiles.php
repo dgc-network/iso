@@ -488,16 +488,15 @@ if (!class_exists('display_profiles')) {
                 
                 $todo_class = new to_do_list();
                 $hook_name = 'iso_helper_post_event';
-                
+                $args = array(
+                    'action_id' => $action_id,
+                    'user_id' => $user_id,
+                );
+
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Frequency Report Setting
                     $interval = sanitize_text_field($_POST['_frequence_report_setting']);
                     update_post_meta($action_id, 'frequence_report_setting', $interval);
-                
-                    $args = array(
-                        'action_id' => $action_id,
-                        'user_id' => $user_id,
-                    );
                 
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
@@ -537,8 +536,22 @@ if (!class_exists('display_profiles')) {
                 
 
                 } else {
+                    $cron_jobs = _get_cron_array(); // Fetch all cron jobs
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if (isset($scheduled_hooks[$hook_name])) {
+                                foreach ($scheduled_hooks[$hook_name] as $event) {
+                                    // Check if event args match the specified args
+                                    if (isset($event['args'][0]) && $event['args'][0] == $args) {
+                                        wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     // Directly clear the scheduled event with the hook name and args
-                    wp_clear_scheduled_hook($hook_name, array('action_id' => $action_id, 'user_id' => $user_id));
+                    //wp_clear_scheduled_hook($hook_name, array('action_id' => $action_id, 'user_id' => $user_id));
                 }
 /*
                 } else {
