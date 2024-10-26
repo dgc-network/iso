@@ -608,6 +608,7 @@ if (!class_exists('to_do_list')) {
             );                
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data($params);
+            error_log("doc-report Meta for $new_report_id: " . print_r($query, true));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default);
