@@ -1698,6 +1698,8 @@ if (!class_exists('display_documents')) {
                 $field_value = $_POST[$field_id];
                 error_log("Field value from POST: " . print_r($field_value, true));
             }
+            error_log("report_id: " . print_r($report_id, true));
+            error_log("field_id: " . print_r($field_id, true));
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
