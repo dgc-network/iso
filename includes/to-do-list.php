@@ -613,7 +613,7 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default);
+                    $documents_class->update_doc_field_contains($new_report_id, get_the_ID(), $is_default);
                 endwhile;
                 wp_reset_postdata();
             }            
