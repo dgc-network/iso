@@ -1301,7 +1301,8 @@ if (!class_exists('to_do_list')) {
                 $this->remove_iso_helper_scheduled_events($prev_hook_name);
             }
         
-            $hook_name = 'iso_helper_post_event_' . $start_time;
+            //$hook_name = 'iso_helper_post_event_' . $start_time;
+            $hook_name = 'iso_helper_post_event';
 
             // Schedule the event based on the selected interval
             switch ($interval) {
