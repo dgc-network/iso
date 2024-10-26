@@ -485,6 +485,82 @@ if (!class_exists('display_profiles')) {
                 $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
                 $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
                 update_post_meta($action_id, 'frequence_report_start_time', $start_time);
+                
+                $todo_class = new to_do_list();
+                $hook_name = 'iso_helper_post_event';
+                
+                if (!$is_action_authorized && !$authorize_exists) {
+                    // Frequency Report Setting
+                    $interval = sanitize_text_field($_POST['_frequence_report_setting']);
+                    update_post_meta($action_id, 'frequence_report_setting', $interval);
+                
+                    $args = array(
+                        'action_id' => $action_id,
+                        'user_id' => $user_id,
+                    );
+                
+                    // Check if an event with the same hook and args is already scheduled
+                    if (!wp_next_scheduled($hook_name, array($args))) {
+                        switch ($interval) {
+                            case 'twice_daily':
+                                wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                                break;
+                            case 'daily':
+                                wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                                break;
+                            case 'weekly':
+                                wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                                break;
+                            case 'biweekly':
+                                wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                                break;
+                            case 'monthly':
+                                wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                                break;
+                            case 'bimonthly':
+                                wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
+                                break;
+                            case 'half-yearly':
+                                wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
+                                break;
+                            case 'yearly':
+                                wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                                break;
+                            default:
+                                return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+                        }
+                    }
+                
+                    // Store the hook name in options for later use
+                    update_option('schedule_event_hook_name', $hook_name);
+                    return $hook_name;
+                
+                } else {
+                    // Fetch all cron jobs and unschedule events with the previous hook name and start time
+                    $cron_jobs = _get_cron_array(); // Internal function to fetch cron jobs
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if ($timestamp == $start_time && isset($scheduled_hooks[$hook_name])) {
+                                foreach ($scheduled_hooks[$hook_name] as $event) {
+                                    // Unschedule the event if the arguments match
+                                    if ($event['args'] === array($args)) {
+                                        wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+/*                
+                // Get the timezone offset from WordPress settings
+                $timezone_offset = get_option('gmt_offset');
+                $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
+                
+                // Calculate and save start time
+                $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
+                $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
+                $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
+                update_post_meta($action_id, 'frequence_report_start_time', $start_time);
             
                 $todo_class = new to_do_list();
                 $hook_name = 'iso_helper_post_event';
@@ -546,7 +622,7 @@ if (!class_exists('display_profiles')) {
                         }
                     }
                 }
-
+*/
                 $response = array(
                     'success' => true, 
                     'action_id' => $action_id,
