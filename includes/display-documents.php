@@ -1730,9 +1730,9 @@ if (!class_exists('display_documents')) {
                     $employee_ids = array();
                 }
                 // Ensure $field_value is an array, or wrap it in an array
-                if (!is_array($field_value)) {
-                    $field_value = array($field_value);
-                }
+                //if (!is_array($field_value)) {
+                //    $field_value = array($field_value);
+                //}
                 if ($default_value=='me'){
                     $current_user_id = get_current_user_id();
                     // Check if the $current_user_id is not already in the $employee_ids array
@@ -1741,7 +1741,7 @@ if (!class_exists('display_documents')) {
                         //$employee_ids[] = $current_user_id;
                         $employee_ids = array($current_user_id);
                     }
-                    $field_value = $current_user_id;
+                    //$field_value = $current_user_id;
                 } else {
                     // Loop through each value in $field_value to check and add to $employee_ids
                     foreach ($field_value as $value) {
