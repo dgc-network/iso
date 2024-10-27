@@ -293,17 +293,17 @@ if (!class_exists('to_do_list')) {
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <fieldset>
             <?php
-            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            $params = array(
-                'is_todo'         => true,
-                'todo_id'         => $todo_id,
-                'doc_id'          => $doc_id,
-                'prev_report_id'  => $prev_report_id,
-            );                
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                $params = array(
+                    'is_todo'         => true,
+                    'todo_id'         => $todo_id,
+                    'doc_id'          => $doc_id,
+                    'prev_report_id'  => $prev_report_id,
+                );
 
-            $documents_class = new display_documents();
-            $documents_class->get_doc_field_contains($params);
+                $documents_class = new display_documents();
+                $documents_class->get_doc_field_contains($params);
             ?>
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">

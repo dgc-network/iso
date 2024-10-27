@@ -1453,7 +1453,7 @@ if (!class_exists('display_documents')) {
                             <?php } else {
                                 // Handle the case where $field_value is not an array
                                 // Get user data
-                                $user = get_userdata($field_value);
+                                $user = get_userdata(intval($field_value));
                                 // Check if the user data is retrieved successfully
                                 if ($user) {
                                     // Add the user's display name to the array
