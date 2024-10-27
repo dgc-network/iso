@@ -1444,6 +1444,31 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
+                        case ($field_type=='_employees'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <?php if ($default_value=='me') {?>
+                                <?php $user=get_userdata(intval($field_value));?>
+                                <?php 
+                                    error_log("is_todo: " . print_r($is_todo, true));
+                                    error_log("field_value: " . print_r($field_value, true));
+                                ?>
+
+<?php /*
+                                <?php if ($is_todo) {?>
+                                    <?php $user=get_userdata(intval($field_value));?>
+                                <?php } else {?>
+                                    <?php $user=get_userdata(get_current_user_id());?>
+                                <?php }?>
+*/?>                                
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($user->ID);?>" />
+                                <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
+                            <?php } else {?>
+                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                            <?php }?>
+                            <?php
+                            break;
+
                         case ($field_type=='_embedded'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($field_value));?></label>
@@ -1580,27 +1605,6 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
 
-                        case ($field_type=='_employees'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <?php if ($default_value=='me') {?>
-                                <?php if ($is_todo) {?>
-                                    <?php $user=get_userdata((int)$field_value);?>
-                                    <?php 
-                                    error_log("is_todo: " . print_r($is_todo, true));
-                                    error_log("field_value: " . print_r($field_value, true));
-                                    ?>
-                                <?php } else {?>
-                                    <?php $user=get_userdata(get_current_user_id());?>
-                                <?php }?>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($user->ID);?>" />
-                                <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
-                            <?php } else {?>
-                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
-                            <?php }?>
-                            <?php
-                            break;
-
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
@@ -1717,7 +1721,8 @@ if (!class_exists('display_documents')) {
                     // Check if the $current_user_id is not already in the $employee_ids array
                     if (!in_array($current_user_id, $employee_ids)) {
                         // Add the value to the $employee_ids array
-                        $employee_ids[] = $current_user_id;
+                        //$employee_ids[] = $current_user_id;
+                        $employee_ids = array($current_user_id);
                     }
                 } else {
                     // Loop through each value in $field_value to check and add to $employee_ids
