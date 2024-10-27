@@ -1447,6 +1447,24 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employees'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <?php 
+                            if (is_array($field_value)) {?>
+                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                            <?php } else {
+                                // Handle the case where $field_value is not an array
+                                // Get user data
+                                $user = get_userdata($field_value);
+                                // Check if the user data is retrieved successfully
+                                if ($user) {
+                                    // Add the user's display name to the array
+                                    echo esc_html($user->display_name);
+                                } else {
+                                    // Optionally handle the case where user data is not found
+                                    echo 'User not found for ID: ' . esc_html($field_value);
+                                }
+                            }
+                            ?>
+<?php /*
                             <?php if ($default_value=='me') {?>
                                 <?php $user=get_userdata(intval($field_value));?>
                                 <?php 
@@ -1454,18 +1472,17 @@ if (!class_exists('display_documents')) {
                                     error_log("field_value: " . print_r($field_value, true));
                                 ?>
 
-<?php /*
                                 <?php if ($is_todo) {?>
                                     <?php $user=get_userdata(intval($field_value));?>
                                 <?php } else {?>
                                     <?php $user=get_userdata(get_current_user_id());?>
                                 <?php }?>
-*/?>                                
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($user->ID);?>" />
                                 <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
                             <?php } else {?>
                                 <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
                             <?php }?>
+*/?>                                
                             <?php
                             break;
 
