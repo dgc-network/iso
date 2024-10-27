@@ -534,6 +534,7 @@ if (!class_exists('display_profiles')) {
                     //return $hook_name;
                 } else {
                     delete_post_meta($action_id, 'frequence_report_setting');
+                    delete_post_meta($action_id, 'frequence_report_start_time');
                     $cron_jobs = _get_cron_array(); // Fetch all cron jobs
                     if ($cron_jobs) {
                         foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
