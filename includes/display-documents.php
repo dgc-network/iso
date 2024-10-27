@@ -1410,7 +1410,7 @@ if (!class_exists('display_documents')) {
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
                 $default_value = get_current_user_id(); // Set default value to an array with the current user ID
-                $default_value = array($default_value);
+                //$default_value = array($default_value);
             }
             return $default_value;
         }
@@ -1507,6 +1507,7 @@ if (!class_exists('display_documents')) {
                                 <?php    
                             }
                             break;
+
                         case ($field_type=='_select'):
                             if ($default_value) {
                                 $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
@@ -1585,6 +1586,10 @@ if (!class_exists('display_documents')) {
                             <?php if ($default_value=='me') {?>
                                 <?php if ($is_todo) {?>
                                     <?php $user=get_userdata((int)$field_value);?>
+                                    <?php 
+                                    error_log("is_todo: " . print_r($is_todo, true));
+                                    error_log("field_value: " . print_r($field_value, true));
+                                    ?>
                                 <?php } else {?>
                                     <?php $user=get_userdata(get_current_user_id());?>
                                 <?php }?>
