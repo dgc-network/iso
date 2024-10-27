@@ -1438,16 +1438,16 @@ if (!class_exists('display_documents')) {
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
-                        error_log("report_id: " . print_r($report_id, true));
-                        error_log("field_value: " . print_r($field_value, true));
+                        //error_log("report_id: " . print_r($report_id, true));
+                        //error_log("field_value: " . print_r($field_value, true));
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
-                        error_log("prev_report_id: " . print_r($prev_report_id, true));
-                        error_log("field_value: " . print_r($field_value, true));
+                        //error_log("prev_report_id: " . print_r($prev_report_id, true));
+                        //error_log("field_value: " . print_r($field_value, true));
                     } else {
                         $field_value = $this->get_field_default_value($field_id);
-                        error_log("get_default: " . print_r($field_id, true));
-                        error_log("field_value: " . print_r($field_value, true));
+                        //error_log("get_default: " . print_r($field_id, true));
+                        //error_log("field_value: " . print_r($field_value, true));
                     }
 
                     switch (true) {
@@ -1471,25 +1471,6 @@ if (!class_exists('display_documents')) {
                                 }
                             }
                             ?>
-<?php /*
-                            <?php if ($default_value=='me') {?>
-                                <?php $user=get_userdata(intval($field_value));?>
-                                <?php 
-                                    error_log("is_todo: " . print_r($is_todo, true));
-                                    error_log("field_value: " . print_r($field_value, true));
-                                ?>
-
-                                <?php if ($is_todo) {?>
-                                    <?php $user=get_userdata(intval($field_value));?>
-                                <?php } else {?>
-                                    <?php $user=get_userdata(get_current_user_id());?>
-                                <?php }?>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($user->ID);?>" />
-                                <input type="text" value="<?php echo esc_html($user->display_name);?>" disabled class="text ui-widget-content ui-corner-all" />
-                            <?php } else {?>
-                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
-                            <?php }?>
-*/?>                                
                             <?php
                             break;
 
@@ -1720,7 +1701,7 @@ if (!class_exists('display_documents')) {
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id, $user_id);
-                error_log("Field value for default: " . print_r($field_value, true));
+                //error_log("Field value for default: " . print_r($field_value, true));
             } else {
                 $field_value = $_POST[$field_id];
                 //error_log("Field value from POST: " . print_r($field_value, true));
