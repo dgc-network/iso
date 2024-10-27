@@ -1740,6 +1740,7 @@ if (!class_exists('display_documents')) {
                         // Add the value to the $employee_ids array
                         //$employee_ids[] = $current_user_id;
                         $employee_ids = array($current_user_id);
+                        $field_value = $current_user_id;
                     }
                 } else {
                     // Loop through each value in $field_value to check and add to $employee_ids
