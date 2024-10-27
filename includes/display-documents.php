@@ -1394,13 +1394,15 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function get_field_default_value($field_id = false) {
+        function get_field_default_value($field_id=false, $user_id=false) {
             // Ensure $field_id is provided
             if (!$field_id) {
                 return false; // Return false or handle the error as needed
             }
             // Get the current user ID
-            $current_user_id = get_current_user_id();
+            if (!$user_id) {
+                $user_id = get_current_user_id();
+            }
             // Get and sanitize the field name and default value
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
             // Check if the default value should be 'today'
@@ -1409,8 +1411,7 @@ if (!class_exists('display_documents')) {
             }
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
-                $default_value = get_current_user_id(); // Set default value to an array with the current user ID
-                //$default_value = array($default_value);
+                $default_value = $user_id; // Set default value to an array with the current user ID
             }
             return $default_value;
         }
@@ -1713,12 +1714,12 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false) {
+        function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
-                $field_value = $this->get_field_default_value($field_id);
+                $field_value = $this->get_field_default_value($field_id, $user_id);
                 error_log("Field value for default: " . print_r($field_value, true));
             } else {
                 $field_value = $_POST[$field_id];

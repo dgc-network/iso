@@ -582,7 +582,8 @@ if (!class_exists('display_profiles')) {
             if ($user_id) {
                 return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;    
             } else {
-                return $action_authorized_ids;
+                //return $action_authorized_ids;
+                return false;
             }
         }
 
