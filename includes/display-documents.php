@@ -1437,10 +1437,16 @@ if (!class_exists('display_documents')) {
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
+                        error_log("report_id: " . print_r($report_id, true));
+                        error_log("field_value: " . print_r($field_value, true));
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
+                        error_log("prev_report_id: " . print_r($prev_report_id, true));
+                        error_log("field_value: " . print_r($field_value, true));
                     } else {
                         $field_value = $this->get_field_default_value($field_id);
+                        error_log("get_default: " . print_r($field_id, true));
+                        error_log("field_value: " . print_r($field_value, true));
                     }
 
                     switch (true) {
