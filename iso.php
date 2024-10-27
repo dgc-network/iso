@@ -5,7 +5,7 @@
  * Description: The leading documents management plugin for iso system by shortcode
  * Author: dgc.network
  * Author URI: https://dgc.network/
- * Version: 1.0.5
+ * Version: 1.0.6
  * Requires at least: 6.0
  * Tested up to: 6.5.3
  *
