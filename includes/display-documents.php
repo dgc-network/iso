@@ -1719,7 +1719,7 @@ if (!class_exists('display_documents')) {
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id);
-                //error_log("Field value for default: " . print_r($field_value, true));
+                error_log("Field value for default: " . print_r($field_value, true));
             } else {
                 $field_value = $_POST[$field_id];
                 //error_log("Field value from POST: " . print_r($field_value, true));
