@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
                         modal: true,
                         autoOpen: false,
                         buttons: {
-                            "Change": function () {
+                            "Action": function () {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
