@@ -935,14 +935,7 @@ if (!class_exists('to_do_list')) {
                 if (is_array($user_ids)) {
                     foreach ($user_ids as $user_id) {
                         $user = get_userdata($user_id);
-/*                        
-                        $params = [
-                            'display_name' => $user->display_name,
-                            'link_uri' => $link_uri,
-                            'text_message' => $text_message,
-                        ];        
-                        $flexMessage = set_flex_message($params);
-*/
+
                         $header_contents = array(
                             array(
                                 'type' => 'text',
@@ -1000,7 +993,6 @@ if (!class_exists('to_do_list')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            //if ($is_doc_report) $doc_title .= '(電子表單)';
             $doc_title .= '('.$doc_number.')';
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
             $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
@@ -1023,14 +1015,7 @@ if (!class_exists('to_do_list')) {
             $query = new WP_User_Query($args);
             $users = $query->get_results();
             foreach ($users as $user) {
-/*                
-                $params = [
-                    'display_name' => $user->display_name,
-                    'link_uri' => $link_uri,
-                    'text_message' => $text_message,
-                ];        
-                $flexMessage = set_flex_message($params);
-*/
+
                 $header_contents = array(
                     array(
                         'type' => 'text',
@@ -1136,8 +1121,6 @@ if (!class_exists('to_do_list')) {
         
         function get_signature_record_list($report_id=false) {
             ob_start();
-            //$current_user_id = get_current_user_id();
-            //$current_site = get_user_meta($current_user_id, 'site_id', true);
             ?>
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
@@ -1290,64 +1273,6 @@ if (!class_exists('to_do_list')) {
             $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
             return $options;
         }
-        
-        function schedule_post_event_callback($args) {
-            $interval = $args['interval'];
-            $start_time = $args['start_time'];
-            //$action_id = $args['action_id'];
-            $prev_start_time = isset($args['prev_start_time']) ? $args['prev_start_time'] : null;
-        
-            // Clear the previous scheduled event if it exists
-            if ($prev_start_time) {
-                $prev_hook_name = 'iso_helper_post_event_' . $prev_start_time;
-                $this->remove_iso_helper_scheduled_events($prev_hook_name);
-            }
-        
-            //$hook_name = 'iso_helper_post_event_' . $start_time;
-            $hook_name = 'iso_helper_post_event';
-
-            // Schedule the event based on the selected interval
-            switch ($interval) {
-                case 'twice_daily':
-                    wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
-                    break;
-                case 'daily':
-                    wp_schedule_event($start_time, 'daily', $hook_name, array($args));
-                    break;
-                case 'weekly':
-                    wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
-                    break;
-                case 'biweekly':
-                    // Calculate interval for every 2 weeks (14 days)
-                    wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
-                    break;
-                case 'monthly':
-                    // Use a custom interval for monthly scheduling
-                    wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
-                    break;
-                case 'bimonthly':
-                    // Calculate timestamp for next occurrence (every 2 months)
-                    wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
-                    break;
-                case 'half-yearly':
-                    // Calculate timestamp for next occurrence (every 6 months)
-                    wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
-                    break;
-                case 'yearly':
-                    // Use a custom interval for yearly scheduling
-                    wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
-                    break;
-                default:
-                    // Handle invalid interval
-                    return new WP_Error('invalid_interval', 'The specified interval is invalid.');
-            }
-
-            // Store the hook name in options (outside switch statement)
-            update_option('schedule_event_hook_name', $hook_name);
-        
-            // Return the hook name for later use
-            return $hook_name;
-        }
 
         function iso_helper_cron_schedules($schedules) {
             $schedules['biweekly'] = array(
@@ -1388,101 +1313,7 @@ if (!class_exists('to_do_list')) {
             // Add the action with the dynamic hook name
             add_action($hook_name, array($this, 'schedule_event_callback'));
         }
-            
-        function remove_iso_helper_scheduled_events($remove_name = 'iso_') {
-            // Get all scheduled events from the cron array
-            $cron_array = get_option('cron');
-        
-            // Check if there are any scheduled events
-            if (empty($cron_array)) {
-                echo 'No scheduled events found.';
-                return;
-            }
 
-            // Loop through the scheduled events            
-            foreach ($cron_array as $timestamp => $cron) {
-                foreach ($cron as $hook_name => $events) {
-                    // Check if the hook name starts with the specified prefix
-                    if (!empty($hook_name) && strpos($hook_name, $remove_name) === 0) {
-                        foreach ($events as $event) {
-                            // Unschedule the event
-                            wp_unschedule_event($timestamp, $hook_name, $event['args']);
-                        }
-                    }
-                }
-            }
-
-            echo 'Removed all scheduled events with hook names starting with "' . esc_html($remove_name) . '".';
-            return;
-
-        }
-/*        
-        function remove_iso_helper_scheduled_events($remove_name='iso_') {
-            //return;
-
-            //if (current_user_can('administrator')) {
-                // Get all scheduled events
-                //$cron_array = _get_cron_array();
-                $cron_array = get_option('cron');
-        
-                // Check if there are any scheduled events
-                if (empty($cron_array)) {
-                    echo 'No scheduled events found.';
-                    return;
-                }
-        
-                // Loop through the scheduled events
-                foreach ($cron_array as $timestamp => $cron) {
-                    foreach ($cron as $hook_name => $events) {
-                        if (empty($hook_name) || strpos($hook_name, $remove_name) === 0) {
-                            foreach ($events as $event) {
-                                // Unschedule the event
-                                wp_unschedule_event($timestamp, $hook_name, $event['args']);
-                            }
-                        }
-                    }
-                }
-        
-                echo 'Removed all scheduled events with hook names starting with '.$remove_name;
-            //} else {
-            //    echo 'You do not have enough permission to perform this action.';
-           // }
-        }
-/*
-        function list_all_scheduled_events() {
-            if (current_user_can('administrator')) {
-                // Get all scheduled events
-                $cron_array = _get_cron_array();
-        
-                // Check if there are any scheduled events
-                if (empty($cron_array)) {
-                    echo 'No scheduled events found.';
-                    return;
-                }
-        
-                echo '<h3>Scheduled Events</h3>';
-                echo '<table border="1" cellpadding="10" cellspacing="0">';
-                echo '<tr><th>Hook Name</th><th>Next Run (UTC)</th><th>Arguments</th></tr>';
-        
-                // Loop through the scheduled events
-                foreach ($cron_array as $timestamp => $cron) {
-                    foreach ($cron as $hook_name => $events) {
-                        foreach ($events as $event) {
-                            echo '<tr>';
-                            echo '<td>' . esc_html($hook_name) . '</td>';
-                            echo '<td>' . date('Y-m-d H:i:s', $timestamp) . '</td>';
-                            echo '<td>' . json_encode($event['args']) . '</td>';
-                            echo '</tr>';
-                        }
-                    }
-                }
-        
-                echo '</table>';
-            } else {
-                echo 'You do not have enough permission to display this.';
-            }
-        }
-*/
         public function process_authorized_action_posts_daily() {
             // process the todo-list
             $args = array(
