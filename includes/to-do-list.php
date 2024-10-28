@@ -23,6 +23,8 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
+            add_action( 'init', array( $this, 'schedule_event_and_action' ) );
+
             // Schedule the cron job if it's not already scheduled
             if (!wp_next_scheduled('iso_helper_daily_action_process_event')) {
                 wp_schedule_event(time(), 'daily', 'iso_helper_daily_action_process_event');
@@ -818,14 +820,6 @@ if (!class_exists('to_do_list')) {
             $query = new WP_User_Query($args);
             $users = $query->get_results();
             foreach ($users as $user) {
-/*                
-                $params = [
-                    'display_name' => $user->display_name,
-                    'link_uri' => $link_uri,
-                    'text_message' => $text_message,
-                ];        
-                $flexMessage = set_flex_message($params);
-*/
                 $header_contents = array(
                     array(
                         'type' => 'text',
@@ -876,15 +870,6 @@ if (!class_exists('to_do_list')) {
                 $user_ids = get_post_meta($department_id, 'user_ids', true);
                 if (is_array($user_ids)) {
                     foreach ($user_ids as $user_id) {
-/*                        
-                        $user = get_userdata($user_id);
-                        $params = [
-                            'display_name' => $user->display_name,
-                            'link_uri' => $link_uri,
-                            'text_message' => $text_message,
-                        ];        
-                        $flexMessage = set_flex_message($params);
-*/
                         $header_contents = array(
                             array(
                                 'type' => 'text',
@@ -1253,26 +1238,36 @@ if (!class_exists('to_do_list')) {
         }
 
         // doc-report frequence setting
-/*        
-        function select_frequence_report_setting_option($selected_option = false) {
-            $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
-            $selected = ($selected_option === "yearly") ? 'selected' : '';
-            $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "half_yearly") ? 'selected' : '';
-            $options .= '<option value="half_yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "bimonthly") ? 'selected' : '';
-            $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "weekly") ? 'selected' : '';
-            $options .= '<option value="monthly" '.$selected.'>' . __( '每月', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "weekly") ? 'selected' : '';
-            $options .= '<option value="biweekly" '.$selected.'>' . __( '每二週', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "biweekly") ? 'selected' : '';
-            $options .= '<option value="weekly" '.$selected.'>' . __( '每週', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "daily") ? 'selected' : '';
-            $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
-            return $options;
+        // Method for the callback function
+        function schedule_event_callback($params) {
+            $action_id = $params['action_id'];
+            $user_id = $params['user_id'];
+            //$todo_class = new to_do_list();
+            $this->update_start_job_dialog_data($action_id, $user_id, true);
         }
-*/
+        
+        function weekday_event_callback($args) {
+            // Check if today is a weekday (1 = Monday, 5 = Friday)
+            $day_of_week = date('N');
+            
+            if ($day_of_week >= 1 && $day_of_week <= 5) {
+                // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
+                $action_id = $args['action_id'];
+                $user_id = $args['user_id'];
+                //$todo_class = new to_do_list();
+                $this->update_start_job_dialog_data($action_id, $user_id, true);
+            }
+        }
+        
+        // Method to schedule the event and add the action
+        function schedule_event_and_action() {
+            // Retrieve the hook name from options
+            $hook_name = get_option('schedule_event_hook_name');
+            // Add the action with the dynamic hook name
+            add_action($hook_name, array($this, 'schedule_event_callback'));
+            add_action('weekday_daily_post_event', array($this, 'weekday_event_callback'));
+        }
+
         public function process_authorized_action_posts_daily() {
             // process the todo-list
             $args = array(

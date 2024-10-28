@@ -509,38 +509,5 @@ function remove_weekday_event() {
     }
 }
 
-// Method for the callback function
-//public function schedule_event_callback($params) {
-function schedule_event_callback($params) {
-    $action_id = $params['action_id'];
-    $user_id = $params['user_id'];
-    $todo_class = new to_do_list();
-    $todo_class->update_start_job_dialog_data($action_id, $user_id, true);
-}
-
-function weekday_event_action($args) {
-    // Check if today is a weekday (1 = Monday, 5 = Friday)
-    $day_of_week = date('N');
-    
-    if ($day_of_week >= 1 && $day_of_week <= 5) {
-        // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
-        $action_id = $args['action_id'];
-        $user_id = $args['user_id'];
-        $todo_class = new to_do_list();
-        $todo_class->update_start_job_dialog_data($action_id, $user_id, true);
-    }
-}
-
-// Method to schedule the event and add the action
-//public function schedule_event_and_action() {
-function schedule_event_and_action() {
-    // Retrieve the hook name from options
-    $hook_name = get_option('schedule_event_hook_name');
-    // Add the action with the dynamic hook name
-    add_action($hook_name, 'schedule_event_callback');
-    add_action($hook_name, 'weekday_event_action');
-}
-add_action( 'init', 'schedule_event_and_action' );
-
 
 

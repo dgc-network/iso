@@ -486,8 +486,9 @@ if (!class_exists('display_profiles')) {
                 $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
                 update_post_meta($action_id, 'frequence_report_start_time', $start_time);
                 
-                $todo_class = new to_do_list();
+                //$todo_class = new to_do_list();
                 $hook_name = 'iso_helper_post_event';
+                $interval = sanitize_text_field($_POST['_frequence_report_setting']);
                 $args = array(
                     'action_id' => $action_id,
                     'user_id' => $user_id,
@@ -495,7 +496,6 @@ if (!class_exists('display_profiles')) {
 
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Frequency Report Setting
-                    $interval = sanitize_text_field($_POST['_frequence_report_setting']);
                     update_post_meta($action_id, 'frequence_report_setting', $interval);
 
                     // Check if an event with the same hook and args is already scheduled
@@ -508,6 +508,7 @@ if (!class_exists('display_profiles')) {
                                 wp_schedule_event($start_time, 'twicedaily', $hook_name, array($args));
                                 break;
                             case 'weekday_daily':
+                                $hook_name = 'weekday_daily_post_event';
                                 wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));
                                 break;
                             case 'daily':
@@ -537,10 +538,13 @@ if (!class_exists('display_profiles')) {
                     }
                     // Store the hook name in options for later use
                     update_option('schedule_event_hook_name', $hook_name);
-                    //return $hook_name;
+
                 } else {
                     delete_post_meta($action_id, 'frequence_report_setting');
                     delete_post_meta($action_id, 'frequence_report_start_time');
+                    if ($interval=='weekday_daily') {
+                        $hook_name = 'weekday_daily_post_event';
+                    }
                     $cron_jobs = _get_cron_array(); // Fetch all cron jobs
                     if ($cron_jobs) {
                         foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
@@ -562,31 +566,11 @@ if (!class_exists('display_profiles')) {
                     'is_action_authorized' => $is_action_authorized,
                     'authoriz_exists' => $authorize_exists,
                     'action_authorized_ids' => $action_authorized_ids,
-                    //'prev_hook_name' => $prev_hook_name,
                 );
             }
             wp_send_json($response);
         }
-/*
-        function schedule_weekday_event() {
-            if (!wp_next_scheduled('my_weekday_event')) {
-                // Schedule event with the weekday-only custom interval
-                wp_schedule_event(time(), 'weekday_daily', 'my_weekday_event');
-            }
-        }
-        add_action('wp', 'schedule_weekday_event');
-        
-        function my_weekday_event_action() {
-            // Check if today is a weekday (1 for Monday, 5 for Friday)
-            $day_of_week = date('N'); // N: Day of the week (1 = Monday, 7 = Sunday)
-            
-            if ($day_of_week >= 1 && $day_of_week <= 5) {
-                // Your event code here, will only run Monday through Friday
-                // For example: send_email_reminder(), update_daily_task(), etc.
-            }
-        }
-        add_action('my_weekday_event', 'my_weekday_event_action');
-*/                
+
         function is_doc_authorized($doc_id=false) {
             $query = $this->retrieve_doc_action_list_data($doc_id);
             if ($query->have_posts()) :
@@ -607,8 +591,7 @@ if (!class_exists('display_profiles')) {
             if ($user_id) {
                 return in_array($user_id, $action_authorized_ids) ? $action_authorized_ids : false;    
             } else {
-                //return $action_authorized_ids;
-                return false;
+                return $action_authorized_ids;
             }
         }
 
