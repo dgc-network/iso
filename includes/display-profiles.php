@@ -501,8 +501,11 @@ if (!class_exists('display_profiles')) {
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
                         switch ($interval) {
-                            case 'twice_daily':
-                                wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
+                            case 'hourly':
+                                wp_schedule_event($start_time, 'hourly', $hook_name, array($args));
+                                break;
+                            case 'twicedaily':
+                                wp_schedule_event($start_time, 'twicedaily', $hook_name, array($args));
                                 break;
                             case 'weekday_daily':
                                 wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));

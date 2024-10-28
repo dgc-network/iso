@@ -428,15 +428,16 @@ function select_cron_schedules_option($selected_option = false) {
     $options = '<option value="">' . __('None', 'your-text-domain') . '</option>';
     
     $intervals = [
-        'yearly' => __('每年', 'your-text-domain'),
-        'half_yearly' => __('每半年', 'your-text-domain'),
-        'bimonthly' => __('每二月', 'your-text-domain'),
-        'monthly' => __('每月', 'your-text-domain'),
-        'biweekly' => __('每二週', 'your-text-domain'),
-        'weekly' => __('每週', 'your-text-domain'),
-        'daily' => __('每日', 'your-text-domain'),
+        'hourly' => __('每小時', 'your-text-domain'),
+        'twicedaily' => __('每12小時', 'your-text-domain'),
         'weekday_daily' => __('週間每日', 'your-text-domain'),
-        'twice_daily' => __('每日二次', 'your-text-domain'),
+        'daily' => __('每日', 'your-text-domain'),
+        'weekly' => __('每週', 'your-text-domain'),
+        'biweekly' => __('每二週', 'your-text-domain'),
+        'monthly' => __('每月', 'your-text-domain'),
+        'bimonthly' => __('每二月', 'your-text-domain'),
+        'half_yearly' => __('每半年', 'your-text-domain'),
+        'yearly' => __('每年', 'your-text-domain'),
     ];
 
     foreach ($intervals as $value => $label) {
