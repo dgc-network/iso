@@ -29,7 +29,6 @@ if (!class_exists('to_do_list')) {
             }    
             // Hook the function to the scheduled cron job
             add_action( 'iso_helper_daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
-            add_action( 'init', array( $this, 'schedule_event_and_action' ) );
         }
 
         function enqueue_to_do_list_scripts() {
@@ -1274,22 +1273,6 @@ if (!class_exists('to_do_list')) {
             return $options;
         }
 */
-        // Method for the callback function
-        public function schedule_event_callback($params) {
-            //$this->update_next_todo_and_actions($params);
-            $action_id = $params['action_id'];
-            $user_id = $params['user_id'];
-            $this->update_start_job_dialog_data($action_id, $user_id, true);
-        }
-        
-        // Method to schedule the event and add the action
-        public function schedule_event_and_action() {
-            // Retrieve the hook name from options
-            $hook_name = get_option('schedule_event_hook_name');
-            // Add the action with the dynamic hook name
-            add_action($hook_name, array($this, 'schedule_event_callback'));
-        }
-
         public function process_authorized_action_posts_daily() {
             // process the todo-list
             $args = array(
