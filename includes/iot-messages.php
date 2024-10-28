@@ -11,12 +11,10 @@ if (!class_exists('iot_messages')) {
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
 
-            add_filter('cron_schedules', array( $this, 'custom_cron_schedules'));
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
-            register_deactivation_hook(__FILE__, array( $this, 'custom_cron_deactivation'));
         }
 
         function enqueue_iot_message_scripts() {
@@ -299,23 +297,6 @@ if (!class_exists('iot_messages')) {
                 'messages' => [$flexMessage],
             ]);
         }
-
-        function custom_cron_schedules($schedules) {
-            if (!isset($schedules['every_five_minutes'])) {
-                $schedules['every_five_minutes'] = array(
-                    'interval' => 300, // 300 seconds = 5 minutes
-                    'display' => __('Every Five Minutes')
-                );
-            }
-            return $schedules;
-        }
-
-        function custom_cron_deactivation() {
-            $timestamp = wp_next_scheduled('five_minutes_action_process_event');
-            if ($timestamp) {
-                wp_unschedule_event($timestamp, 'five_minutes_action_process_event');
-            }
-        }        
 
         // iot message
         function display_iot_message_list() {

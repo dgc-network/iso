@@ -423,3 +423,89 @@ $params = array(
 // Call the function to send the bubble message email
 send_bubble_message_email($params, 'user@example.com', 'Welcome to Our Service');
 */
+
+function select_cron_schedules_option($selected_option = false) {
+    $options = '<option value="">' . __('None', 'your-text-domain') . '</option>';
+    
+    $intervals = [
+        'yearly' => __('每年', 'your-text-domain'),
+        'half_yearly' => __('每半年', 'your-text-domain'),
+        'bimonthly' => __('每二月', 'your-text-domain'),
+        'monthly' => __('每月', 'your-text-domain'),
+        'biweekly' => __('每二週', 'your-text-domain'),
+        'weekly' => __('每週', 'your-text-domain'),
+        'daily' => __('每日', 'your-text-domain'),
+        'weekday_daily' => __('週間每日', 'your-text-domain'),
+        'twice_daily' => __('每日二次', 'your-text-domain'),
+    ];
+
+    foreach ($intervals as $value => $label) {
+        $selected = ($selected_option === $value) ? 'selected' : '';
+        $options .= '<option value="' . $value . '" ' . $selected . '>' . $label . '</option>';
+    }
+
+    return $options;
+}
+
+function add_weekday_only_cron_schedule($schedules) {
+    // Add a custom schedule for weekdays (every 24 hours, skipping weekends)
+    $schedules['weekday_daily'] = array(
+        'interval' => 86400, // 24 hours in seconds
+        'display'  => __('Once Daily on Weekdays Only'),
+    );
+    return $schedules;
+}
+add_filter('cron_schedules', 'add_weekday_only_cron_schedule');
+
+function iso_helper_cron_schedules($schedules) {
+    $schedules['biweekly'] = array(
+        'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
+        'display'  => __('Every Two Weeks'),
+    );
+    $schedules['monthly'] = array(
+        'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
+        'display'  => __('Monthly'),
+    );
+    $schedules['bimonthly'] = array(
+        'interval' => 60.5 * DAY_IN_SECONDS, // Approximate monthly interval
+        'display'  => __('Every Two Months'),
+    );
+    $schedules['half_yearly'] = array(
+        'interval' => 182.5 * DAY_IN_SECONDS, // Approximate half-year interval
+        'display'  => __('Every Six Months'),
+    );
+    $schedules['yearly'] = array(
+        'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
+        'display'  => __('Yearly'),
+    );
+    return $schedules;
+}
+add_filter( 'cron_schedules', 'iso_helper_cron_schedules' );
+
+function every_five_minutes_cron_schedules($schedules) {
+    if (!isset($schedules['every_five_minutes'])) {
+        $schedules['every_five_minutes'] = array(
+            'interval' => 300, // 300 seconds = 5 minutes
+            'display' => __('Every Five Minutes')
+        );
+    }
+    return $schedules;
+}
+add_filter('cron_schedules', 'every_five_minutes_cron_schedules');
+
+function every_five_minutes_cron_deactivation() {
+    $timestamp = wp_next_scheduled('five_minutes_action_process_event');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'five_minutes_action_process_event');
+    }
+}
+register_deactivation_hook(__FILE__, 'every_five_minutes_cron_deactivation');
+
+function remove_weekday_event() {
+    $timestamp = wp_next_scheduled('my_weekday_event');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'my_weekday_event');
+    }
+}
+
+

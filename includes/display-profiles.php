@@ -413,7 +413,7 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($frequence_report_setting);?></select>
+                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
                 <div id="frquence-report-start-time-div">
                     <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
                     <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
@@ -504,6 +504,9 @@ if (!class_exists('display_profiles')) {
                             case 'twice_daily':
                                 wp_schedule_event($start_time, 'twice_daily', $hook_name, array($args));
                                 break;
+                            case 'weekday_daily':
+                                wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));
+                                break;
                             case 'daily':
                                 wp_schedule_event($start_time, 'daily', $hook_name, array($args));
                                 break;
@@ -519,7 +522,7 @@ if (!class_exists('display_profiles')) {
                             case 'bimonthly':
                                 wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
                                 break;
-                            case 'half-yearly':
+                            case 'half_yearly':
                                 wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
                                 break;
                             case 'yearly':
@@ -561,7 +564,26 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+/*
+        function schedule_weekday_event() {
+            if (!wp_next_scheduled('my_weekday_event')) {
+                // Schedule event with the weekday-only custom interval
+                wp_schedule_event(time(), 'weekday_daily', 'my_weekday_event');
+            }
+        }
+        add_action('wp', 'schedule_weekday_event');
+        
+        function my_weekday_event_action() {
+            // Check if today is a weekday (1 for Monday, 5 for Friday)
+            $day_of_week = date('N'); // N: Day of the week (1 = Monday, 7 = Sunday)
+            
+            if ($day_of_week >= 1 && $day_of_week <= 5) {
+                // Your event code here, will only run Monday through Friday
+                // For example: send_email_reminder(), update_daily_task(), etc.
+            }
+        }
+        add_action('my_weekday_event', 'my_weekday_event_action');
+*/                
         function is_doc_authorized($doc_id=false) {
             $query = $this->retrieve_doc_action_list_data($doc_id);
             if ($query->have_posts()) :

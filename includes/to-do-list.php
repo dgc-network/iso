@@ -29,7 +29,6 @@ if (!class_exists('to_do_list')) {
             }    
             // Hook the function to the scheduled cron job
             add_action( 'iso_helper_daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
-            add_filter( 'cron_schedules', array( $this, 'iso_helper_cron_schedules' ) );
             add_action( 'init', array( $this, 'schedule_event_and_action' ) );
         }
 
@@ -650,7 +649,7 @@ if (!class_exists('to_do_list')) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From update_todo_by_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 4. From schedule_event_callback($params), create a next_todo based on the $args['doc_id']
+            // 4. From schedule_event_callback($params), create a update_start_job_dialog_data() the go item 3
 
             $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -1255,12 +1254,13 @@ if (!class_exists('to_do_list')) {
         }
 
         // doc-report frequence setting
+/*        
         function select_frequence_report_setting_option($selected_option = false) {
             $options = '<option value="">'.__( 'None', 'your-text-domain' ).'</option>';
             $selected = ($selected_option === "yearly") ? 'selected' : '';
             $options .= '<option value="yearly" '.$selected.'>' . __( '每年', 'your-text-domain' ) . '</option>';
-            $selected = ($selected_option === "half-yearly") ? 'selected' : '';
-            $options .= '<option value="half-yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
+            $selected = ($selected_option === "half_yearly") ? 'selected' : '';
+            $options .= '<option value="half_yearly" '.$selected.'>' . __( '每半年', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "bimonthly") ? 'selected' : '';
             $options .= '<option value="bimonthly" '.$selected.'>' . __( '每二月', 'your-text-domain' ) . '</option>';
             $selected = ($selected_option === "weekly") ? 'selected' : '';
@@ -1273,31 +1273,7 @@ if (!class_exists('to_do_list')) {
             $options .= '<option value="daily" '.$selected.'>' . __( '每日', 'your-text-domain' ) . '</option>';
             return $options;
         }
-
-        function iso_helper_cron_schedules($schedules) {
-            $schedules['biweekly'] = array(
-                'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
-                'display'  => __('Every Two Weeks'),
-            );
-            $schedules['monthly'] = array(
-                'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
-                'display'  => __('Monthly'),
-            );
-            $schedules['bimonthly'] = array(
-                'interval' => 60.5 * DAY_IN_SECONDS, // Approximate monthly interval
-                'display'  => __('Every Two Months'),
-            );
-            $schedules['half_yearly'] = array(
-                'interval' => 182.5 * DAY_IN_SECONDS, // Approximate half-year interval
-                'display'  => __('Every Six Months'),
-            );
-            $schedules['yearly'] = array(
-                'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
-                'display'  => __('Yearly'),
-            );
-            return $schedules;
-        }
-
+*/
         // Method for the callback function
         public function schedule_event_callback($params) {
             //$this->update_next_todo_and_actions($params);
