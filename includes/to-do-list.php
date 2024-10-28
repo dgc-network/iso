@@ -1264,8 +1264,11 @@ if (!class_exists('to_do_list')) {
             // Retrieve the hook name from options
             $hook_name = get_option('schedule_event_hook_name');
             // Add the action with the dynamic hook name
-            add_action($hook_name, array($this, 'schedule_event_callback'));
-            add_action('weekday_daily_post_event', array($this, 'weekday_event_callback'));
+            if ($hook_name=='weekday_daily_post_event') {
+                add_action($hook_name, array($this, 'weekday_event_callback'));
+            } else {
+                add_action($hook_name, array($this, 'schedule_event_callback'));
+            }
         }
 
         public function process_authorized_action_posts_daily() {
