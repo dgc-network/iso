@@ -509,5 +509,38 @@ function remove_weekday_event() {
     }
 }
 
+// Enqueue jQuery
+function enqueue_export_scripts() {
+    // Enqueue jQuery if not already loaded
+    wp_enqueue_script('jquery');
+
+    // Enqueue the TableToExcel library from the CDN
+    wp_enqueue_script(
+        'table-to-excel',
+        'https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js',
+        array(),
+        null,
+        true
+    );
+
+    // Enqueue a custom script to handle the export functionality
+    wp_add_inline_script(
+        'table-to-excel',
+        "
+        jQuery(document).ready(function($) {
+            $('#btnExport').click(function() {
+                let table = document.getElementsByTagName('table');
+                TableToExcel.convert(table[0], {
+                    name: 'UserManagement.xlsx',
+                    sheet: {
+                        name: 'Usermanagement'
+                    }
+                });
+            });
+        });
+        "
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
 
