@@ -951,15 +951,19 @@ if (!class_exists('display_documents')) {
                 $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                        if ($profiles_class->is_user_doc($doc_id)) {
+                            echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                        }
                     endwhile;
                     wp_reset_postdata();
                 }
                 ?>
                 </div>
                 <div style="text-align:right; display:flex;">
+                <?php if ($profiles_class->is_user_doc($doc_id)) {?>
                     <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                <?php }?>                    
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
