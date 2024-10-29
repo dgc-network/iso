@@ -625,7 +625,6 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>

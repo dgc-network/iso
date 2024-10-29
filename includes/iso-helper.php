@@ -522,7 +522,7 @@ function enqueue_export_scripts() {
         null,
         true
     );
-
+/*
     // Enqueue a custom script to handle the export functionality
     wp_add_inline_script(
         'table-to-excel',
@@ -540,6 +540,7 @@ function enqueue_export_scripts() {
         });
         "
     );
+*/
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
