@@ -447,7 +447,9 @@ if (!class_exists('display_documents')) {
                 
                 if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
                 else { // General Users in site
-                    if ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                    if ($is_doc_report==0) $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                    elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($doc_id);
+                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
                     elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
                     elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
                     elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
