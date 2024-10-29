@@ -610,14 +610,17 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <?php
                 $this->get_doc_report_native_list($doc_id, $search_doc_report);
-                ?>            
+                $profiles_class = new display_profiles();
+                ?>
+                <?php if ($profiles_class->is_user_doc($doc_id)) {?>
                 <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
                 <div class="pagination">
                     <?php
                     // Display pagination links
-                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    //if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    //echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    //if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
             </fieldset>
@@ -627,7 +630,9 @@ if (!class_exists('display_documents')) {
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php if ($profiles_class->is_user_doc($doc_id)) {?>
+                        <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php }?>
                 </div>
             </div>
         
@@ -750,7 +755,6 @@ if (!class_exists('display_documents')) {
                                                     echo 'User not found for ID: ' . esc_html($field_value);
                                                 }
                                             }
-                                            //echo var_dump($field_value);
                                         } else {
                                             echo esc_html($field_value);
                                         }
@@ -1301,8 +1305,10 @@ if (!class_exists('display_documents')) {
                     <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
                     <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
                 </select>
+<?php /*                
                 <input type="checkbox" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : '';?> />
                 <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
+*/?>                
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1427,16 +1433,10 @@ if (!class_exists('display_documents')) {
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
-                        //error_log("report_id: " . print_r($report_id, true));
-                        //error_log("field_value: " . print_r($field_value, true));
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
-                        //error_log("prev_report_id: " . print_r($prev_report_id, true));
-                        //error_log("field_value: " . print_r($field_value, true));
                     } else {
                         $field_value = $this->get_field_default_value($field_id);
-                        //error_log("get_default: " . print_r($field_id, true));
-                        //error_log("field_value: " . print_r($field_value, true));
                     }
 
                     switch (true) {
@@ -1695,8 +1695,6 @@ if (!class_exists('display_documents')) {
                 $field_value = $_POST[$field_id];
                 //error_log("Field value from POST: " . print_r($field_value, true));
             }
-            //error_log("report_id: " . print_r($report_id, true));
-            //error_log("field_id: " . print_r($field_id, true));
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
@@ -1706,19 +1704,14 @@ if (!class_exists('display_documents')) {
                 if (!is_array($employee_ids)) {
                     $employee_ids = array();
                 }
-                // Ensure $field_value is an array, or wrap it in an array
-                //if (!is_array($field_value)) {
-                //    $field_value = array($field_value);
-                //}
+
                 if ($default_value=='me'){
                     $current_user_id = get_current_user_id();
                     // Check if the $current_user_id is not already in the $employee_ids array
                     if (!in_array($current_user_id, $employee_ids)) {
                         // Add the value to the $employee_ids array
-                        //$employee_ids[] = $current_user_id;
                         $employee_ids = array($current_user_id);
                     }
-                    //$field_value = $current_user_id;
                 } else {
                     // Loop through each value in $field_value to check and add to $employee_ids
                     foreach ($field_value as $value) {
@@ -1735,7 +1728,6 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_document'){
                 update_post_meta($report_id, '_document', $field_value);
             }
-
             if ($field_type=='_max_value'){
                 update_post_meta($report_id, '_max_value', $field_value);
             }
@@ -1745,11 +1737,7 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_department'){
                 update_post_meta($report_id, '_department', $field_value);
             }
-/*
-            if ($field_type=='_department' && $default_value=='_audited'){
-                update_post_meta($report_id, '_audited_department', $field_value);
-            }
-*/
+
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new sub_items();
@@ -1765,12 +1753,12 @@ if (!class_exists('display_documents')) {
                     if ($field_type=='_embedded') {
                         update_post_meta($report_id, '_embedded', $default_value);
                     }
-    
+
                     if ($field_type=='_planning') {
                         $sub_item_ids = $items_class->get_sub_item_ids($embedded_id);
                         update_post_meta($report_id, '_planning', $sub_item_ids);
                     }
-    
+
                     if ($field_type=='_select') {
                         update_post_meta($report_id, '_select', $default_value);
                     }    
@@ -1792,69 +1780,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();
             return $options;
         }
-/*
-        function get_iso_helper_doc_counts_by_iso_category($iso_category_id=false) {
-            $args = array(
-                'post_type'   => 'site-profile',
-                'post_status' => 'publish', // Only look for published pages
-                'title'       => 'iso-helper.com',
-                'numberposts' => 1,         // Limit the number of results to one
-            );
-            $posts = get_posts($args); // get_posts returns an array
-        
-            // Ensure there's a post returned
-            if (!empty($posts)) {
-                $site_id = $posts[0]->ID; // Retrieve the ID of the first post
-            } else {
-                return new WP_Query(); // Return an empty query if no 'site-profile' found
-            }
 
-            // Retrieve the ID(s) of the "doc-category" post(s) that match the criteria
-            $doc_category_args = array(
-                'post_type'      => 'doc-category',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '='
-                    ),
-                    array(
-                        //'key'     => 'parent_category',
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category_id,
-                        'compare' => '='
-                    ),
-                ),
-                'fields' => 'ids', // Only get post IDs
-            );
-            $doc_category_query = new WP_Query($doc_category_args);
-            $doc_category_ids = $doc_category_query->posts;
-
-            // If no "doc-category" posts are found, return 0
-            if (empty($doc_category_ids)) {
-                return 0;
-            }
-
-            // Retrieve the "document" posts that have "doc_category" meta matching the retrieved IDs
-            $document_args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'doc_category',
-                        'value'   => $doc_category_ids,
-                        'compare' => 'IN',
-                    ),
-                ),
-            );
-            $document_query = new WP_Query($document_args);
-            $total_posts = $document_query->found_posts;
-
-            return $total_posts;
-        }
-*/
         function get_iso_helper_documents_by_iso_category($iso_category_id) {
             // Step 1: Get the 'site-profile' post with the title 'iso-helper.com'
             $args = array(
@@ -1863,7 +1789,6 @@ if (!class_exists('display_documents')) {
                 'title'       => 'iso-helper.com',
                 'numberposts' => 1,         // Limit the number of results to one
             );            
-            
             $posts = get_posts($args); // get_posts returns an array
         
             // Ensure there's a post returned
@@ -1872,7 +1797,7 @@ if (!class_exists('display_documents')) {
             } else {
                 return new WP_Query(); // Return an empty query if no 'site-profile' found
             }
-        
+
             // Step 2: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id and 'site_id' = $site_id
             $doc_category_query = new WP_Query(array(
                 'post_type'  => 'doc-category',
@@ -1892,12 +1817,12 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
                 'fields' => 'ids', // Retrieve only the post IDs for efficiency
             ));
-        
+
             // Step 3: Check if we found posts in 'doc-category'
             if ($doc_category_query->have_posts()) {
                 $doc_category_ids = $doc_category_query->posts; // Get all IDs of 'doc-category' posts
                 wp_reset_postdata(); // Reset post data after query
-        
+
                 // Step 4: Use the retrieved doc-category IDs to query the 'document' post type
                 $document_query = new WP_Query(array(
                     'post_type'  => 'document',
@@ -1913,10 +1838,10 @@ if (!class_exists('display_documents')) {
                     'orderby'  => 'meta_value', // Order by meta value
                     'order'    => 'ASC', // Sort in ascending order
                 ));
-        
+
                 // Return the query object
                 return $document_query;
-        
+
             } else {
                 // If no 'doc-category' posts are found, return an empty WP_Query
                 return new WP_Query(); // Empty query object
@@ -2156,31 +2081,6 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-
-/*        
-        function get_doc_field_ids_by_type_and_value($field_type=false, $field_value=false) {
-            $args = array(
-                'post_type'  => 'doc-field',
-                'posts_per_page' => -1, // Retrieve all posts
-                'meta_query' => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'   => 'field_type',
-                        'value' => $field_type,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'   => 'field_value',
-                        'value' => $field_value,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' // Only return post IDs
-            );
-            $query = new WP_Query($args);
-            return $query; 
-        }
-*/            
     }
     $documents_class = new display_documents();
 }
