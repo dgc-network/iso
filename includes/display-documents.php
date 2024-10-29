@@ -687,9 +687,11 @@ if (!class_exists('display_documents')) {
                                         $is_checked = ($field_value==1) ? 'checked' : '';
                                         echo '<td style="text-align:'.$listing_style.';">';
                                         if ($field_type=='checkbox') {
-                                            echo '<input type="checkbox" '.$is_checked.' />';
+                                            //echo '<input type="checkbox" '.$is_checked.' />';
+                                            if ($field_value==1) echo 'V';
                                         } elseif ($field_type=='radio') {
-                                            echo '<input type="radio" '.$is_checked.' />';
+                                            //echo '<input type="radio" '.$is_checked.' />';
+                                            if ($field_value==1) echo 'V';
                                         } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                                             echo esc_html(get_the_title($field_value));
                                         } elseif ($field_type=='_document') {
