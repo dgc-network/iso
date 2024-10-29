@@ -960,11 +960,11 @@ if (!class_exists('display_documents')) {
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right;">
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
-                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
                 <?php
