@@ -272,10 +272,6 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
-            //ajaxData['_doc_report_frequence_setting'] = $("#doc-report-frequence-setting").val();
-            //ajaxData['_doc_report_frequence_start_date'] = $("#doc-report-frequence-start-date").val();
-            //ajaxData['_doc_report_frequence_start_time'] = $("#doc-report-frequence-start-time").val();
-            //ajaxData['_prev_start_time'] = $("#prev-start-time").val();
 
             $.ajax({
                 type: 'POST',
@@ -417,6 +413,16 @@ jQuery(document).ready(function($) {
 
         $("#signature-record").on("click", function () {
             $("#signature-record-div").toggle()
+        });
+
+        $("#export-to-excel").on("click", function () {
+            let table = document.getElementsByTagName('table');
+            TableToExcel.convert(table[0], {
+                name: 'UserManagement.xlsx',
+                sheet: {
+                    name: 'Usermanagement'
+                }
+            });
         });
 
         $("#doc-frame-exit").on("click", function () {

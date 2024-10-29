@@ -475,33 +475,12 @@ if (!class_exists('display_documents')) {
                 if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);
                 else update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_doc_number']));
                 update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
-
                 update_post_meta($doc_id, 'doc_number', sanitize_text_field($_POST['_doc_number']));
                 update_post_meta($doc_id, 'doc_title', sanitize_text_field($_POST['_doc_title']));
                 update_post_meta($doc_id, 'doc_revision', sanitize_text_field($_POST['_doc_revision']));
                 update_post_meta($doc_id, 'doc_category', sanitize_text_field($_POST['_doc_category']));
                 update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', sanitize_text_field($_POST['_is_doc_report']));
-/*
-                $doc_report_frequence_setting = sanitize_text_field($_POST['_doc_report_frequence_setting']);
-                update_post_meta($doc_id, 'doc_report_frequence_setting', $doc_report_frequence_setting);
-                // Get the timezone offset from WordPress settings
-                $timezone_offset = get_option('gmt_offset');
-                // Convert the timezone offset to seconds
-                $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
-                $doc_report_frequence_start_date = sanitize_text_field($_POST['_doc_report_frequence_start_date']);
-                $doc_report_frequence_start_time = sanitize_text_field($_POST['_doc_report_frequence_start_time']);
-                $doc_report_frequence = strtotime($doc_report_frequence_start_date.' '.$doc_report_frequence_start_time);
-                update_post_meta($doc_id, 'doc_report_frequence_start_time', $doc_report_frequence - $offset_seconds);
-                $params = array(
-                    'interval' => $doc_report_frequence_setting,
-                    'start_time' => $doc_report_frequence - $offset_seconds,
-                    'prev_start_time' => sanitize_text_field($_POST['_prev_start_time']),
-                    'doc_id' => $doc_id,
-                );            
-                $todo_class = new to_do_list();
-                if ($doc_report_frequence_setting) $hook_name=$todo_class->schedule_post_event_callback($params);
-*/                
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -517,7 +496,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'doc_number', '-');
                 update_post_meta($post_id, 'doc_revision', 'A');
                 update_post_meta($post_id, 'is_doc_report', 0);
-                update_post_meta($post_id, 'doc_report_frequence_start_time', time());
+                //update_post_meta($post_id, 'doc_report_frequence_start_time', time());
                 $response['html_contain'] = $this->display_document_dialog($post_id);
             }
             wp_send_json($response);
@@ -558,7 +537,7 @@ if (!class_exists('display_documents')) {
                 <div>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
@@ -647,7 +626,7 @@ if (!class_exists('display_documents')) {
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
-                    <button id="btnExport">Export to Excel</button>
+                    <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
         
