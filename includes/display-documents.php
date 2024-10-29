@@ -649,7 +649,9 @@ if (!class_exists('display_documents')) {
                                 $field_title = get_post_meta(get_the_ID(), 'field_title', true);
                                 echo '<th>'.esc_html($field_title).'</th>';
                             endwhile;
-                            echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                            if (current_user_can('administrator')) {
+                                echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                            }
                             echo '</tr>';
                             wp_reset_postdata();
                         }
@@ -752,11 +754,13 @@ if (!class_exists('display_documents')) {
                                     endwhile;                
                                     wp_reset_postdata();
                                 }
-                                $todo_id = get_post_meta($report_id, 'todo_status', true);
-                                $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                                $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                                $todo_status = ($todo_id==-2) ? '作廢' : $todo_status;
-                                echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                                if (current_user_can('administrator')) {
+                                    $todo_id = get_post_meta($report_id, 'todo_status', true);
+                                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
+                                    $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
+                                    $todo_status = ($todo_id==-2) ? '作廢' : $todo_status;
+                                    echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                                }
                                 echo '</tr>';
                             endwhile;                
                             wp_reset_postdata();
@@ -806,7 +810,9 @@ if (!class_exists('display_documents')) {
                 //'posts_per_page' => get_option('operation_row_counts'),
                 //'paged'          => $paged,
                 'meta_query'     => $meta_query,
-                'orderby'        => array(), // Initialize orderby parameter as an array
+                //'orderby'        => array(), // Initialize orderby parameter as an array
+                'orderby' => 'date',
+                'order' => 'DESC',
             );
                     
             $order_field = ''; // Initialize variable to store the meta key for ordering
@@ -870,7 +876,7 @@ if (!class_exists('display_documents')) {
                 // Reset only the inner loop's data
                 wp_reset_postdata();
             }
-        
+/*        
             $args['orderby'] = array(
                 'index' => 'ASC',
             );
@@ -878,7 +884,7 @@ if (!class_exists('display_documents')) {
             $args['orderby']  = 'meta_value';
             $args['order']    = 'ASC';    
             $args['meta_key'] = $order_field;
-        
+*/        
             $query = new WP_Query($args);
             return $query;
         }
