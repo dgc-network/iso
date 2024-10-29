@@ -1444,7 +1444,9 @@ if (!class_exists('display_documents')) {
                             <?php 
                             if (is_array($field_value)) {?>
                                 <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
-                            <?php } else {
+                            <?php } else {?>
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
+                            <?php
                                 // Handle the case where $field_value is not an array
                                 // Get user data
                                 $user = get_userdata(intval($field_value));
