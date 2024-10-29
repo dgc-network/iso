@@ -1444,12 +1444,10 @@ if (!class_exists('display_documents')) {
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php 
-                            if (is_array($field_value)) {?>
-                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
-                            <?php } else {?>
+                            if ($default_value=='me') {
+                                ?>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
-                            <?php
-                                // Handle the case where $field_value is not an array
+                                <?php
                                 // Get user data
                                 $user = get_userdata(intval($field_value));
                                 // Check if the user data is retrieved successfully
@@ -1460,9 +1458,9 @@ if (!class_exists('display_documents')) {
                                     // Optionally handle the case where user data is not found
                                     echo 'User not found for ID: ' . esc_html($field_value);
                                 }
-                            }
-                            ?>
-                            <?php
+                            } else {?>
+                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                            <?php }
                             break;
 
                         case ($field_type=='_embedded'):
