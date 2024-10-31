@@ -485,7 +485,7 @@ if (!class_exists('sub_items')) {
                 <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="sub-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-item-title" value="<?php echo esc_attr($sub_item_title);?>" class="text ui-widget-content ui-corner-all" />
+                <textarea id="sub-item-title" rows="3" style="width:100%;"><?php echo $sub_item_title;?></textarea>
                 <label for="sub-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="sub-item-type" class="text ui-widget-content ui-corner-all">
                     <option value="heading" <?php echo ($sub_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
