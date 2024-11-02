@@ -313,23 +313,6 @@ function init_webhook_events() {
                                 'wrap' => true,
                             );
                             $body_contents[] = $body_content;
-
-                            $footer_contents = array();
-                            while ( $query->have_posts() ) {
-                                $query->the_post(); // Setup post data
-                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
-                                $footer_content = array(
-                                    'type' => 'button',
-                                    'action' => array(
-                                        'type' => 'uri',
-                                        'label' => $doc_title,
-                                        'uri' => $link_url,
-                                    ),
-                                    'style' => 'primary',
-                                    'margin' => 'sm',
-                                );
-                                $footer_contents[] = $footer_content;
 /*
                                 // Create a body content array for each post
                                 $body_content = array(
@@ -344,6 +327,23 @@ function init_webhook_events() {
                                 );
                                 $body_contents[] = $body_content;
 */                                
+
+                            $footer_contents = array();
+                            while ( $query->have_posts() ) {
+                                $query->the_post(); // Setup post data
+                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
+                                $footer_content = array(
+                                    'type' => 'button',
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => $doc_title,
+                                        'uri' => $link_uri,
+                                    ),
+                                    'style' => 'primary',
+                                    'margin' => 'sm',
+                                );
+                                $footer_contents[] = $footer_content;
                             } 
                             // Reset post data after custom loop
                             wp_reset_postdata();
