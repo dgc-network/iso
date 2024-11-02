@@ -296,6 +296,15 @@ function init_webhook_events() {
                         $todo_class = new to_do_list();
                         $query = $todo_class->retrieve_start_job_data(0, $user_id, $message['text']);
                         if ( $query->have_posts() ) {
+                            $header_contents = array(
+                                array(
+                                    'type' => 'text',
+                                    'text' => 'Hello, ' . $display_name,
+                                    'size' => 'lg',
+                                    'weight' => 'bold',
+                                ),
+                            );
+                        
                             $body_contents = array();
                             $text_message = __( '您可以點擊下方列示，直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
                             $body_content = array(
@@ -305,10 +314,23 @@ function init_webhook_events() {
                             );
                             $body_contents[] = $body_content;
 
+                            $footer_contents = array();
                             while ( $query->have_posts() ) {
                                 $query->the_post(); // Setup post data
                                 $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                                 $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
+                                $footer_content = array(
+                                    'type' => 'button',
+                                    'action' => array(
+                                        'type' => 'uri',
+                                        'label' => $doc_title,
+                                        'uri' => $link_url,
+                                    ),
+                                    'style' => 'primary',
+                                    'margin' => 'sm',
+                                );
+                                $footer_contents[] = $footer_content;
+/*
                                 // Create a body content array for each post
                                 $body_content = array(
                                     'type' => 'text',
@@ -321,13 +343,16 @@ function init_webhook_events() {
                                     ),
                                 );
                                 $body_contents[] = $body_content;
+*/                                
                             } 
                             // Reset post data after custom loop
                             wp_reset_postdata();
 
                             // Generate the Flex Message
                             $flexMessage = $line_bot_api->set_bubble_message([
+                                'header_contents' => $header_contents,
                                 'body_contents' => $body_contents,
+                                'footer_contents' => $footer_contents,
                             ]);
                             // Send the Flex Message via LINE API
                             $line_bot_api->replyMessage(array(
@@ -522,25 +547,6 @@ function enqueue_export_scripts() {
         null,
         true
     );
-/*
-    // Enqueue a custom script to handle the export functionality
-    wp_add_inline_script(
-        'table-to-excel',
-        "
-        jQuery(document).ready(function($) {
-            $('#btnExport').click(function() {
-                let table = document.getElementsByTagName('table');
-                TableToExcel.convert(table[0], {
-                    name: 'UserManagement.xlsx',
-                    sheet: {
-                        name: 'Usermanagement'
-                    }
-                });
-            });
-        });
-        "
-    );
-*/
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
