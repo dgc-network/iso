@@ -246,14 +246,7 @@ if (!class_exists('iot_messages')) {
 
             $user_data = get_userdata($user_id);
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-/*
-            // Prepare the flex message
-            $flexMessage = set_flex_message([
-                'display_name' => $user_data->display_name,
-                'link_uri' => home_url() . '/display-profiles/?_id=' . $user_id,
-                'text_message' => $text_message,
-            ]);
-*/
+
             $header_contents = array(
                 array(
                     'type' => 'text',

@@ -313,20 +313,6 @@ function init_webhook_events() {
                                 'wrap' => true,
                             );
                             $body_contents[] = $body_content;
-/*
-                                // Create a body content array for each post
-                                $body_content = array(
-                                    'type' => 'text',
-                                    'text' => '。 '.$doc_title,  // Get the current post's title
-                                    'wrap' => true,
-                                    'action' => array(
-                                        'type' => 'uri',
-                                        'label' => 'View Post',
-                                        'uri' => $link_uri, // Add a link to the post if needed
-                                    ),
-                                );
-                                $body_contents[] = $body_content;
-*/                                
 
                             $footer_contents = array();
                             while ( $query->have_posts() ) {
