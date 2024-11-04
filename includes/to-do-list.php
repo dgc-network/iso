@@ -987,7 +987,6 @@ if (!class_exists('to_do_list')) {
             $link_uri = home_url().'/display-documents/?_id='.$doc_id;
             if ($report_id) $link_uri = home_url().'/display-documents/?_id='.$report_id;
         
-            $line_bot_api = new line_bot_api();
             $args = array(
                 'meta_query'     => array(
                     array(
@@ -1031,6 +1030,7 @@ if (!class_exists('to_do_list')) {
                 );
 
                 // Generate the Flex Message
+                $line_bot_api = new line_bot_api();
                 $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
