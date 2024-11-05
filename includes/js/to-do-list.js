@@ -2,8 +2,8 @@
 
 jQuery(document).ready(function($) {
 
-    window.onload = function() {
-        console.log("Window onload triggered");
+    //window.onload = function() {
+    //    console.log("Window onload triggered");
     
     //$.addEventListener("DOMContentLoaded", function() {
         console.log("Document is ready");
@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
         // Observe the target node for attribute changes
         observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
     //});
-    };
+    //};
 /*    
     // Select the element to observe
     const targetNode = document.getElementById("get-todo-id");
