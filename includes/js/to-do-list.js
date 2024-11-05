@@ -105,7 +105,15 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: ajaxData,
                 success: function (response) {
-                    window.location.replace(window.location.href);
+                    // Get the current URL
+                    const currentUrl = window.location.href;
+                    // Check if the current URL includes '/to-do-list/?_id='
+                    if (currentUrl.includes('/to-do-list/?_id=')) {
+                        // Redirect to '/to-do-list'
+                        window.location.replace('/to-do-list');
+                    } else {
+                        window.location.replace(window.location.href);
+                    }
                 },
                 error: function(error){
                     console.error(error);
