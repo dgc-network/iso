@@ -754,7 +754,7 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
-                $('#result-container').html(response.html_contain);
+                //$('#result-container').html(response.html_contain);
                 activate_doc_report_list_data(doc_id);
             },
             error: function (error) {
@@ -826,7 +826,7 @@ jQuery(document).ready(function($) {
             console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
         });
 
-        
+
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {
