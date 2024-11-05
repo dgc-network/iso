@@ -1,6 +1,7 @@
 // JavaScript/jQuery
-$(document).ready(function() {
-    // Select the element to observe
+//$(document).ready(function() {
+jQuery(document).ready(function($) {
+        // Select the element to observe
     const targetNode = document.getElementById("get-todo-id");
 
     // Set up the mutation observer to watch for attribute changes
