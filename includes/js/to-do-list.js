@@ -1,9 +1,4 @@
 // To-do list
-$(document).ready(function () {
-    console.log("Document is ready");
-
-});
-
 jQuery(document).ready(function($) {
 
     const targetNode = document.getElementById("get-todo-id");
