@@ -1,7 +1,76 @@
 // To-do list
-
 jQuery(document).ready(function($) {
 
+    const targetNode = document.getElementById("get-todo-id");
+
+    if (!targetNode) {
+        console.error("Target node 'get-todo-id' not found");
+        return;
+    } else {
+        console.log("Target node 'get-todo-id' found");
+    }
+
+    // Set up the mutation observer to watch for attribute changes
+    const observer = new MutationObserver(function(mutationsList) {
+        for (let mutation of mutationsList) {
+            console.log("I am here"); // This should trigger if there are mutations
+
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                console.log("Mutation observer triggered: value changed");
+
+                // AJAX request when value changes
+                $.ajax({
+                    url: ajax_object.ajax_url,
+                    type: 'post',
+                    data: {
+                        action: 'get_todo_dialog_data',
+                        _todo_id: $("#get-todo-id").val(),
+                    },
+                    success: function(response) {
+                        console.log("AJAX success, response received");
+                        $('#result-container').html(response.html_contain);
+                        activate_todo_dialog_data(response.doc_fields);
+                    },
+                    error: function(error) {
+                        console.error("AJAX error:", error);
+                        alert("AJAX error occurred");
+                    }
+                });
+            } else {
+                console.log(`Mutation observed: ${mutation.type}, attribute changed: ${mutation.attributeName}`);
+            }
+        }
+    });
+
+    // Log when observing starts
+    console.log("Starting observation on 'get-todo-id' for value attribute changes");
+
+    // Observe the target node for attribute changes
+    observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
+
+    // Add an input event listener as a backup
+    targetNode.addEventListener('input', function() {
+        console.log("Input event triggered, value changed");
+        // You can call the AJAX request directly if needed
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: targetNode.value, // Use the value directly
+            },
+            success: function(response) {
+                console.log("AJAX success, response received");
+                $('#result-container').html(response.html_contain);
+                activate_todo_dialog_data(response.doc_fields);
+            },
+            error: function(error) {
+                console.error("AJAX error:", error);
+                alert("AJAX error occurred");
+            }
+        });
+    });
+/*
     //window.onload = function() {
     //    console.log("Window onload triggered");
     
