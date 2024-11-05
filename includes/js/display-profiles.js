@@ -64,26 +64,6 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-/*            
-            close: function(event, ui) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'get_my_job_list_data',
-                    },
-                    success: function (response) {
-                        console.log(response);
-                        window.location.replace(window.location.href);
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            },
-*/            
         });
 
         if ($("#frequence-report-setting").val()) {
@@ -169,40 +149,6 @@ jQuery(document).ready(function($) {
                                 alert(error);
                             }
                         });
-                        
-
-
-
-    
-
-
-
-/*
-                        const radioButton = $("#is-action-authorized-" + action_id);
-                        if (window.confirm("Are you sure you want to change this setting?")) {
-                            // Toggle the radio button state
-                            const isChecked = radioButton.is(":checked");
-                            radioButton.prop("checked", !isChecked);
-
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_my_job_action_dialog_data',
-                                    _action_id: action_id,
-                                    _is_action_authorized: !isChecked ? 1 : 0,
-                                },
-                                success: function (response) {
-                                    console.log(response);
-                                },
-                                error: function (error) {
-                                    console.error(error);
-                                    alert(error);
-                                }
-                            });
-                        }
-*/                        
                     });
                 },
                 error: function (error) {
@@ -428,11 +374,7 @@ jQuery(document).ready(function($) {
                 }
             });            
         });            
-/*
-        $("#new-site-user").on("click", function() {
-            $("#new-user-dialog").dialog('open');
-        });
-*/
+
         $('[id^="edit-site-user-"]').on("click", function () {
             const user_id = this.id.substring(15);
             $.ajax({
@@ -881,5 +823,4 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     }
-
 });
