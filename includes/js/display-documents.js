@@ -765,6 +765,68 @@ jQuery(document).ready(function($) {
     }
 
     function activate_doc_report_dialog_data(response){
+
+        const canvas = document.getElementById('signature-pad');
+        const context = canvas.getContext('2d');
+        let isDrawing = false;
+
+        // Set up drawing styles
+        context.strokeStyle = "#000000";
+        context.lineWidth = 2;
+
+        // Mouse Events for drawing
+        $('#signature-pad').mousedown(function(e) {
+            isDrawing = true;
+            context.beginPath();
+            context.moveTo(e.offsetX, e.offsetY);
+        });
+
+        $('#signature-pad').mousemove(function(e) {
+            if (isDrawing) {
+                context.lineTo(e.offsetX, e.offsetY);
+                context.stroke();
+            }
+        });
+
+        $(document).mouseup(function() {
+            isDrawing = false;
+        });
+
+        // Touch Events for mobile devices
+        $('#signature-pad').on('touchstart', function(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const touch = e.touches[0];
+            context.beginPath();
+            context.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+        });
+
+        $('#signature-pad').on('touchmove', function(e) {
+            e.preventDefault();
+            if (isDrawing) {
+                const touch = e.touches[0];
+                context.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+                context.stroke();
+            }
+        });
+
+        $(document).on('touchend', function() {
+            isDrawing = false;
+        });
+
+        // Clear button functionality
+        $('#clear-signature').click(function() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Save button functionality
+        $('#save-signature').click(function() {
+            const dataURL = canvas.toDataURL('image/png');
+            $('#signature-image').attr('src', dataURL).show(); // Show image of signature
+            console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
+        });
+
+        
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
             const ajaxData = {

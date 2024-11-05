@@ -1299,6 +1299,7 @@ if (!class_exists('display_documents')) {
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
+                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1617,6 +1618,17 @@ if (!class_exists('display_documents')) {
                             $field_value = ($field_value) ? $field_value : get_option('default_image_url');
                             echo '<img style="width:100%;" class="image-display" src="'.$field_value.'" />';
                             echo '<textarea class="image-url" id="'.esc_attr($field_id).'" rows="3" style="width:100%; display:none;" >'.esc_html($field_value).'</textarea>';
+                            break;
+
+                        case ($field_type=='canvas'):
+                            ?>
+                            <div>
+                                <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                            </div>
+                            <button id="clear-signature">Clear</button>
+                            <button id="save-signature">Save</button>
+                            <img id="signature-image" style="display:none;" alt="Signature Image" />
+                            <?php
                             break;
 
                         case ($field_type=='heading'):
