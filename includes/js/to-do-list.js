@@ -8,8 +8,25 @@ jQuery(document).ready(function($) {
             return; // Exit if the target node does not exist
         } else {
             console.log("Target node 'get-todo-id' found");
+            $.ajax({
+                url: ajax_object.ajax_url,
+                type: 'post',
+                data: {
+                    action: 'get_todo_dialog_data',
+                    _todo_id: targetNode.value,
+                },
+                success: function(response) {
+                    $('#result-container').html(response.html_contain);
+                    activate_todo_dialog_data(response.doc_fields);
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
         }
-    
+/*    
         // Log the initial value
         console.log("Initial value:", targetNode.value);
     
