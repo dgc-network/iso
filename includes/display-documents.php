@@ -908,7 +908,7 @@ if (!class_exists('display_documents')) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
                 if ($search_doc_report) {
-                    $result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
+                    //$result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
                 } else {
                     //$result['html_contain'] = $this->display_doc_report_list($doc_id);
                 }
