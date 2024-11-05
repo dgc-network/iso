@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
     
         // Set up a Mutation Observer (if needed)
         const observer = new MutationObserver(function(mutationsList) {
+            console.log("This should trigger if there are mutations");
             mutationsList.forEach(mutation => {
                 console.log("Mutation observed:", mutation);
                 if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
