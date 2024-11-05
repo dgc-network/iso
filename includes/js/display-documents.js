@@ -747,7 +747,7 @@ jQuery(document).ready(function($) {
 
         if (doc_id) ajaxData['_doc_id'] = doc_id;
         if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
-/*
+
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
@@ -762,7 +762,7 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-*/
+
     }
 
     function activate_doc_report_dialog_data(response){

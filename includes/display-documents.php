@@ -155,6 +155,7 @@ if (!class_exists('display_documents')) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
             $items_class = new sub_items();
+            $doc_category = $_GET['_category'];
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -162,7 +163,7 @@ if (!class_exists('display_documents')) {
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <select id="select-category"><?php echo $items_class->select_doc_category_options($_GET['_category']);?></select>
+                        <select id="select-category"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
                     </div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
@@ -909,7 +910,7 @@ if (!class_exists('display_documents')) {
                 if ($search_doc_report) {
                     $result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
                 } else {
-                    $result['html_contain'] = $this->display_doc_report_list($doc_id);
+                    //$result['html_contain'] = $this->display_doc_report_list($doc_id);
                 }
             }
             wp_send_json($result);
