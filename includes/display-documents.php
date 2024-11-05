@@ -1722,11 +1722,13 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='canvas'):
                             ?>
                             <div style="text-align:center;" id="signature-image-div">
+                                <?php if ($field_value) {?>
                                 <img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" />
+                                <?php }?>
                                 <button id="redraw-signature">Redraw</button>
                             </div>
-                            <div style="text-align:center;" id="signature-pad-div">
-                                <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000; width:100%"></canvas>
+                            <div style="text-align:center;" id="signature-pad-div" style="display:none;">
+                                <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
                                 <button id="clear-signature">Clear</button>
                             </div>
                             <?php
