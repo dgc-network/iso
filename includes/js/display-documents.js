@@ -754,8 +754,8 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             data: ajaxData,
             success: function (response) {
-                //$('#result-container').html(response.html_contain);
-                activate_doc_report_list_data(doc_id);
+                $('#result-container').html(response.html_contain);
+                //activate_doc_report_list_data(doc_id);
             },
             error: function (error) {
                 console.error(error);
