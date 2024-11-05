@@ -844,13 +844,13 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
-
+/*
                     if (value.field_type === 'canvas') {
                         const dataURL = canvas.toDataURL('image/png');
                         ajaxData[value.field_id] = dataURL;
                         console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
                     }
-
+*/
                     if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                         $.each(response.sub_item_fields, function(index, inner_value) {
                             const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
