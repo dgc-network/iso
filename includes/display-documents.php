@@ -1124,6 +1124,78 @@ if (!class_exists('display_documents')) {
         }
 */        
         function set_doc_report_dialog_data() {
+            $response = array();
+
+            if (isset($_POST['_report_id'])) {
+                // Update the existing post
+                $report_id = sanitize_text_field($_POST['_report_id']);
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $params = array('doc_id' => $doc_id);
+        
+                $query = $this->retrieve_doc_field_data($params);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $this->update_doc_field_contains($report_id, get_the_ID());
+                    }
+                    wp_reset_postdata();
+                }
+        
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
+        
+                if ($proceed_to_todo == 1) {
+                    $this->update_todo_by_doc_report($action_id, $report_id);
+                }
+            } else {
+                // Create a new post if no report_id is set
+                $current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_status' => 'publish',
+                    'post_author' => $current_user_id,
+                    'post_type' => 'doc-report',
+                );
+                $post_id = wp_insert_post($new_post);
+        
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                update_post_meta($post_id, 'doc_id', $doc_id);
+        
+                $params = array('doc_id' => $doc_id);
+                $query = $this->retrieve_doc_field_data($params);
+        
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $field_id = get_the_ID();
+                        $field_type = get_post_meta($field_id, 'field_type', true);
+                        $default_value = $this->get_field_default_value($field_id);
+        
+                        update_post_meta($post_id, $field_id, $default_value);
+        
+                        if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
+                            $items_class = new sub_items();
+                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+        
+                            if ($inner_query->have_posts()) {
+                                while ($inner_query->have_posts()) {
+                                    $inner_query->the_post();
+                                    $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                    update_post_meta($post_id, $field_id . get_the_ID(), $sub_item_default);
+                                }
+                                wp_reset_postdata();
+                            }
+                            update_post_meta($post_id, $field_id, $embedded_id);
+                        }
+                    }
+                    wp_reset_postdata();
+                }
+            }
+        
+            wp_send_json($response);
+        }
+/*        
+        function set_doc_report_dialog_data() {
             if( isset($_POST['_report_id']) ) {
                 // Update the post
                 $report_id = sanitize_text_field($_POST['_report_id']);
@@ -1185,7 +1257,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-
+*/
         function del_doc_report_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_report_id'], true);
