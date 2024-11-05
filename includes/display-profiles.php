@@ -967,9 +967,9 @@ if (!class_exists('display_profiles')) {
         }
 
         function is_user_doc($doc_id=false, $user_id=false) {
-            if (is_site_admin()) return true;
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();    
+            if (is_site_admin($user_id)) return true;
             // Get the user's doc IDs as an array
             $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
             // If $user_doc_ids is not an array, convert it to an array
