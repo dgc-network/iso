@@ -1,6 +1,47 @@
 // To-do list
+$(document).ready(function () {
+    console.log("Document is ready");
+
+});
+
 jQuery(document).ready(function($) {
 
+    const targetNode = document.getElementById("get-todo-id");
+
+    if (!targetNode) {
+        console.error("Target node 'get-todo-id' not found");
+        return;
+    } else {
+        console.log("Target node 'get-todo-id' found");
+    }
+
+    // Log value on change
+    targetNode.addEventListener('change', function() {
+        console.log("Change event triggered, new value: " + targetNode.value);
+    });
+
+    // Also log input events
+    targetNode.addEventListener('input', function() {
+        console.log("Input event triggered, new value: " + targetNode.value);
+    });
+
+    // Set up the mutation observer
+    const observer = new MutationObserver(function(mutationsList) {
+        for (let mutation of mutationsList) {
+            console.log("I am here"); // This should trigger if there are mutations
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                console.log("Mutation observer triggered: value changed");
+            } else {
+                console.log(`Mutation observed: ${mutation.type}, attribute changed: ${mutation.attributeName}`);
+            }
+        }
+    });
+
+    // Start observing for attribute changes
+    observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
+
+    console.log("Starting observation on 'get-todo-id' for value attribute changes");
+/*
     const targetNode = document.getElementById("get-todo-id");
 
     if (!targetNode) {
