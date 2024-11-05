@@ -73,7 +73,8 @@ if (!class_exists('to_do_list')) {
                         echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
                     } else {
                         echo '<div class="ui-widget" id="result-container">';
-                        echo $this->display_todo_dialog($todo_id);
+                        //echo $this->display_todo_dialog($todo_id);
+                        echo '<input type="hidden" id="get-todo-id" value="'.$todo_id.'" />';
                         echo '</div>';
                     }
                 }
@@ -331,14 +332,14 @@ if (!class_exists('to_do_list')) {
             $result = array();
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
-                $result['html_contain'] = $this->display_todo_dialog($todo_id);
-
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $result['html_contain'] = $this->display_todo_dialog($todo_id);
+/*
                 $post_type = get_post_type( $todo_id );
                 if ( $post_type === 'document' ) {
                     $doc_id = $todo_id;
                 }
-
+*/
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }

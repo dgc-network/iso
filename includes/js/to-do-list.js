@@ -1,6 +1,25 @@
 // To-do list
 jQuery(document).ready(function($) {
 
+    $("#get-todo-id").on("change", function() {
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: $("#get-todo-id").val(),
+            },
+            success: function (response) {
+                $('#result-container').html(response.html_contain);
+                activate_todo_dialog_data(response.doc_fields);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    })
+
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
         var queryParams = [];    
