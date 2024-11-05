@@ -1,24 +1,39 @@
+// JavaScript/jQuery
+$(document).ready(function() {
+    // Select the element to observe
+    const targetNode = document.getElementById("get-todo-id");
+
+    // Set up the mutation observer to watch for attribute changes
+    const observer = new MutationObserver(function(mutationsList) {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                // AJAX request when value changes
+                $.ajax({
+                    url: ajax_object.ajax_url,
+                    type: 'post',
+                    data: {
+                        action: 'get_todo_dialog_data',
+                        _todo_id: $("#get-todo-id").val(),
+                    },
+                    success: function(response) {
+                        $('#result-container').html(response.html_contain);
+                        activate_todo_dialog_data(response.doc_fields);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        }
+    });
+
+    // Start observing the target element for attribute changes
+    observer.observe(targetNode, { attributes: true });
+});
+
 // To-do list
 jQuery(document).ready(function($) {
-
-    $("#get-todo-id").on("change", function() {
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: $("#get-todo-id").val(),
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    })
 
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
