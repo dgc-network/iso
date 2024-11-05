@@ -1687,7 +1687,7 @@ if (!class_exists('display_documents')) {
                             ?>
                             <div style="text-align:center;" id="signature-image-div">
                                 <?php if ($field_value) {?>
-                                    <img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" />
+                                    <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
                                 <?php }?>
                                 <button id="redraw-signature">Redraw</button>
                             </div>
