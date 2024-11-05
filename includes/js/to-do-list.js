@@ -5,6 +5,56 @@ jQuery(document).ready(function($) {
     const targetNode = document.getElementById("get-todo-id");
 
     if (targetNode) {
+        console.log("Target node found:", targetNode);
+    
+        // Set up the mutation observer to watch for attribute changes
+        const observer = new MutationObserver(function(mutationsList) {
+            console.log("Mutation observer triggered");
+    
+            for (let mutation of mutationsList) {
+                console.log("Mutation detected:", mutation);
+    
+                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                    console.log("Value attribute changed on target node");
+    
+                    // AJAX request when value changes
+                    const todoId = $(targetNode).attr("value");
+                    console.log("Sending AJAX request with _todo_id:", todoId);
+    
+                    $.ajax({
+                        url: ajax_object.ajax_url,
+                        type: 'post',
+                        data: {
+                            action: 'get_todo_dialog_data',
+                            _todo_id: todoId,
+                        },
+                        success: function(response) {
+                            console.log("AJAX request successful:", response);
+    
+                            $('#result-container').html(response.html_contain);
+                            activate_todo_dialog_data(response.doc_fields);
+                        },
+                        error: function(error) {
+                            console.error("AJAX request failed:", error);
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                }
+            }
+        });
+    
+        // Observe the target node for attribute changes
+        observer.observe(targetNode, { attributes: true });
+        console.log("Observer started on target node:", targetNode);
+    } else {
+        console.error("Element with ID 'get-todo-id' not found.");
+    }
+    
+/*
+    // Select the element to observe
+    const targetNode = document.getElementById("get-todo-id");
+
+    if (targetNode) {
         // Set up the mutation observer to watch for attribute changes
         const observer = new MutationObserver(function(mutationsList) {
             for (let mutation of mutationsList) {
