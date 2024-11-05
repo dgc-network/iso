@@ -2,7 +2,7 @@
 
 jQuery(document).ready(function($) {
 
-    document.addEventListener("DOMContentLoaded", function() {
+    $.addEventListener("DOMContentLoaded", function() {
         console.log("Document is ready");
     
         // Select the element to observe
