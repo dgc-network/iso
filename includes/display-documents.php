@@ -928,21 +928,7 @@ if (!class_exists('display_documents')) {
         
             wp_send_json($result);
         }
-/*        
-        function get_doc_report_list_data() {
-            $result = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
-                if ($search_doc_report) {
-                    $result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
-                } else {
-                    $result['html_contain'] = $this->display_doc_report_list($doc_id);
-                }
-            }
-            wp_send_json($result);
-        }
-*/
+
         function display_doc_report_dialog($report_id=false) {
             ob_start();
             $todo_status = get_post_meta($report_id, 'todo_status', true);
@@ -1091,38 +1077,7 @@ if (!class_exists('display_documents')) {
             // Return JSON response
             wp_send_json($response);
         }
-/*        
-        function get_doc_report_dialog_data() {
-            $response = array();
-            if (isset($_POST['_report_id'])) {
-                $items_class = new sub_items();
-                $cards_class = new erp_cards();
-                $profiles_class = new display_profiles();
-                $report_id = sanitize_text_field($_POST['_report_id']);
-                $todo_status = get_post_meta($report_id, 'todo_status', true);
-                $_document = get_post_meta($report_id, '_document', true);
-                $is_admin = sanitize_text_field($_POST['_is_admin']);
-                if ($_document && $todo_status==-1 && !$is_admin) {
-                    $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
-                    if ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list($_document);
-                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
-                    elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
-                    elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
-                    elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
-                    elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
-                    elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
-                    elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
-                    else $response['html_contain'] = $this->display_doc_frame_contain($_document);
-                } else {
-                    $response['html_contain'] = $this->display_doc_report_dialog($report_id);
-                    $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
-                    $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
-                }
-            }
-            wp_send_json($response);
-        }
-*/        
+
         function set_doc_report_dialog_data() {
             $response = array();
 
@@ -1141,7 +1096,7 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }
         
-                $action_id = sanitize_text_field($_POST['_action_id']);
+                $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
                 if ($proceed_to_todo == 1) {
@@ -1194,70 +1149,7 @@ if (!class_exists('display_documents')) {
         
             wp_send_json($response);
         }
-/*        
-        function set_doc_report_dialog_data() {
-            if( isset($_POST['_report_id']) ) {
-                // Update the post
-                $report_id = sanitize_text_field($_POST['_report_id']);
-                $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = $this->retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $this->update_doc_field_contains($report_id, get_the_ID());
-                    endwhile;
-                    wp_reset_postdata();
-                }
-                $action_id = sanitize_text_field($_POST['_action_id']);
-                $proceed_to_todo = sanitize_text_field($_POST['_proceed_to_todo']);
-                if ($proceed_to_todo==1) $this->update_todo_by_doc_report($action_id, $report_id);
-            } else {
-                // Create the post
-                $current_user_id = get_current_user_id();
-                $new_post = array(
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                    'post_type'     => 'doc-report',
-                );    
-                $post_id = wp_insert_post($new_post);
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                update_post_meta($post_id, 'doc_id', $doc_id);
 
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = $this->retrieve_doc_field_data($params);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = $this->get_field_default_value(get_the_ID());
-                        update_post_meta($post_id, get_the_ID(), $default_value);
-                        $field_id = get_the_ID();
-
-                        if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                            if ($default_value) {
-                                $items_class = new sub_items();
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
-                                $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                                if ($inner_query->have_posts()) :
-                                    while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        $default_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                                        update_post_meta($post_id, $field_id.get_the_ID(), $default_value);
-                                    endwhile;
-                                    wp_reset_postdata();
-                                endif;
-                                update_post_meta($post_id, $field_id, $embedded_id);    
-                            }
-                        }
-                    endwhile;
-                    wp_reset_postdata();
-                }
-            }
-            wp_send_json($response);
-        }
-*/
         function del_doc_report_dialog_data() {
             $response = array();
             wp_delete_post($_POST['_report_id'], true);
