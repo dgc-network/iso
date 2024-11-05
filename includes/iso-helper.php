@@ -133,6 +133,7 @@ function get_NDA_assignment($user_id=false) {
             <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
+/*                
                     $site_args = array(
                         'post_type'      => 'site-profile',
                         'posts_per_page' => -1,
@@ -141,6 +142,31 @@ function get_NDA_assignment($user_id=false) {
                     foreach ($sites as $site) {
                         echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
                     }
+*/
+                    $site_args = array(
+                        'post_type'      => 'site-profile',
+                        'posts_per_page' => -1,
+                    );
+                    $sites = get_posts($site_args);
+                    
+                    // Check if "site-profile" posts are empty
+                    if (empty($sites)) {
+                        // Insert a new "site-profile" post with the title "iso-helper.com"
+                        $new_site_id = wp_insert_post(array(
+                            'post_title'  => 'iso-helper.com',
+                            'post_type'   => 'site-profile',
+                            'post_status' => 'publish',
+                        ));
+                    
+                        // Retrieve the updated list of "site-profile" posts
+                        $sites = get_posts($site_args);
+                    }
+                    
+                    // Display the options in a dropdown
+                    foreach ($sites as $site) {
+                        echo '<option value="' . esc_attr($site->ID) . '">' . esc_html($site->post_title) . '</option>';
+                    }
+                    
                 ?>
             </select>
             <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
