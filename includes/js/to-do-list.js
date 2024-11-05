@@ -1,337 +1,28 @@
 // To-do list
 jQuery(document).ready(function($) {
 
-        // Check if the target node exists
-        const targetNode = document.getElementById("get-todo-id");
-        if (!targetNode) {
-            console.error("Target node 'get-todo-id' not found");
-            return; // Exit if the target node does not exist
-        } else {
-            console.log("Target node 'get-todo-id' found");
-            $.ajax({
-                url: ajax_object.ajax_url,
-                type: 'post',
-                data: {
-                    action: 'get_todo_dialog_data',
-                    _todo_id: targetNode.value,
-                },
-                success: function(response) {
-                    $('#result-container').html(response.html_contain);
-                    activate_todo_dialog_data(response.doc_fields);
-                },
-                error: function(error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-
-        }
-/*    
-        // Log the initial value
-        console.log("Initial value:", targetNode.value);
-    
-        // Set up a Mutation Observer (if needed)
-        const observer = new MutationObserver(function(mutationsList) {
-            console.log("This should trigger if there are mutations");
-            mutationsList.forEach(mutation => {
-                console.log("Mutation observed:", mutation);
-                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                    console.log("Mutation observer triggered: value changed to:", targetNode.value);
-                }
-            });
-        });
-        
-        observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
-        console.log("Started observing for attribute changes on 'get-todo-id'");
-    
-        // Add event listeners and log success
-        targetNode.addEventListener('change', function() {
-            console.log("Change event triggered, new value: " + targetNode.value);
-        });
-        
-        targetNode.addEventListener('input', function() {
-            console.log("Input event triggered, new value: " + targetNode.value);
-        });
-    
-        console.log("Event listeners added for change and input events.");
-/*    
+    // Check if the target node exists
     const targetNode = document.getElementById("get-todo-id");
-
-    if (!targetNode) {
-        console.error("Target node 'get-todo-id' not found");
-        return;
-    } else {
+    if (targetNode) {
         console.log("Target node 'get-todo-id' found");
-    }
-
-    // Log value on change
-    targetNode.addEventListener('change', function() {
-        console.log("Change event triggered, new value: " + targetNode.value);
-    });
-
-    // Also log input events
-    targetNode.addEventListener('input', function() {
-        console.log("Input event triggered, new value: " + targetNode.value);
-    });
-
-    // Set up the mutation observer
-    const observer = new MutationObserver(function(mutationsList) {
-        for (let mutation of mutationsList) {
-            console.log("I am here"); // This should trigger if there are mutations
-            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                console.log("Mutation observer triggered: value changed");
-            } else {
-                console.log(`Mutation observed: ${mutation.type}, attribute changed: ${mutation.attributeName}`);
-            }
-        }
-    });
-
-    // Start observing for attribute changes
-    observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
-
-    console.log("Starting observation on 'get-todo-id' for value attribute changes");
-/*
-    const targetNode = document.getElementById("get-todo-id");
-
-    if (!targetNode) {
-        console.error("Target node 'get-todo-id' not found");
-        return;
-    } else {
-        console.log("Target node 'get-todo-id' found");
-    }
-
-    // Set up the mutation observer to watch for attribute changes
-    const observer = new MutationObserver(function(mutationsList) {
-        for (let mutation of mutationsList) {
-            console.log("This should trigger if there are mutations"); // This should trigger if there are mutations
-
-            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                console.log("Mutation observer triggered: value changed");
-
-                // AJAX request when value changes
-                $.ajax({
-                    url: ajax_object.ajax_url,
-                    type: 'post',
-                    data: {
-                        action: 'get_todo_dialog_data',
-                        _todo_id: $("#get-todo-id").val(),
-                    },
-                    success: function(response) {
-                        console.log("AJAX success, response received");
-                        $('#result-container').html(response.html_contain);
-                        activate_todo_dialog_data(response.doc_fields);
-                    },
-                    error: function(error) {
-                        console.error("AJAX error:", error);
-                        alert("AJAX error occurred");
-                    }
-                });
-            } else {
-                console.log(`Mutation observed: ${mutation.type}, attribute changed: ${mutation.attributeName}`);
-            }
-        }
-    });
-
-    // Log when observing starts
-    console.log("Starting observation on 'get-todo-id' for value attribute changes");
-
-    // Observe the target node for attribute changes
-    observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
-
-    // Add an input event listener as a backup
-    targetNode.addEventListener('input', function() {
-        console.log("Input event triggered, value changed");
-        // You can call the AJAX request directly if needed
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
             data: {
                 action: 'get_todo_dialog_data',
-                _todo_id: targetNode.value, // Use the value directly
+                _todo_id: targetNode.value,
             },
             success: function(response) {
-                console.log("AJAX success, response received");
                 $('#result-container').html(response.html_contain);
                 activate_todo_dialog_data(response.doc_fields);
             },
             error: function(error) {
-                console.error("AJAX error:", error);
-                alert("AJAX error occurred");
+                console.error(error);
+                alert(error);
             }
         });
-    });
-/*
-    //window.onload = function() {
-    //    console.log("Window onload triggered");
-    
-    //$.addEventListener("DOMContentLoaded", function() {
-        //console.log("Document is ready");
-    
-        // Select the element to observe
-        const targetNode = document.getElementById("get-todo-id");
-    
-        if (!targetNode) {
-            console.error("Target node 'get-todo-id' not found");
-            return;
-        } else {
-            console.log("Target node 'get-todo-id' found");
-        }
-    
-        // Set up the mutation observer to watch for attribute changes
-        const observer = new MutationObserver(function(mutationsList) {
-            for (let mutation of mutationsList) {
-                console.log("I am here");
-                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                    console.log("Mutation observer triggered: value changed");
-                    
-                    // AJAX request when value changes
-                    $.ajax({
-                        url: ajax_object.ajax_url,
-                        type: 'post',
-                        data: {
-                            action: 'get_todo_dialog_data',
-                            _todo_id: $("#get-todo-id").val(),
-                        },
-                        success: function(response) {
-                            console.log("AJAX success, response received");
-                            $('#result-container').html(response.html_contain);
-                            activate_todo_dialog_data(response.doc_fields);
-                        },
-                        error: function(error) {
-                            console.error("AJAX error:", error);
-                            alert("AJAX error occurred");
-                        }
-                    });
-                } else {
-                    console.log(`Mutation observed: ${mutation.type}, attribute changed: ${mutation.attributeName}`);
-                }
-            }
-        });
-    
-        // Log when observing starts
-        console.log("Starting observation on 'get-todo-id' for value attribute changes");
-    
-        // Observe the target node for attribute changes
-        observer.observe(targetNode, { attributes: true, attributeFilter: ['value'] });
-    //});
-    //};
-/*    
-    // Select the element to observe
-    const targetNode = document.getElementById("get-todo-id");
-
-    if (targetNode) {
-        console.log("Target node found:", targetNode);
-    
-        // Set up the mutation observer to watch for attribute changes
-        const observer = new MutationObserver(function(mutationsList) {
-            console.log("Mutation observer triggered");
-    
-            for (let mutation of mutationsList) {
-                console.log("Mutation detected:", mutation);
-    
-                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                    console.log("Value attribute changed on target node");
-    
-                    // AJAX request when value changes
-                    const todoId = $(targetNode).attr("value");
-                    console.log("Sending AJAX request with _todo_id:", todoId);
-    
-                    $.ajax({
-                        url: ajax_object.ajax_url,
-                        type: 'post',
-                        data: {
-                            action: 'get_todo_dialog_data',
-                            _todo_id: todoId,
-                        },
-                        success: function(response) {
-                            console.log("AJAX request successful:", response);
-    
-                            $('#result-container').html(response.html_contain);
-                            activate_todo_dialog_data(response.doc_fields);
-                        },
-                        error: function(error) {
-                            console.error("AJAX request failed:", error);
-                            alert('An error occurred. Please try again.');
-                        }
-                    });
-                }
-            }
-        });
-    
-        // Observe the target node for attribute changes
-        observer.observe(targetNode, { attributes: true });
-        console.log("Observer started on target node:", targetNode);
-    } else {
-        console.error("Element with ID 'get-todo-id' not found.");
     }
-    
-/*
-    // Select the element to observe
-    const targetNode = document.getElementById("get-todo-id");
 
-    if (targetNode) {
-        // Set up the mutation observer to watch for attribute changes
-        const observer = new MutationObserver(function(mutationsList) {
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                    // AJAX request when value changes
-                    $.ajax({
-                        url: ajax_object.ajax_url,
-                        type: 'post',
-                        data: {
-                            action: 'get_todo_dialog_data',
-                            _todo_id: $(targetNode).attr("value"),
-                        },
-                        success: function(response) {
-                            $('#result-container').html(response.html_contain);
-                            activate_todo_dialog_data(response.doc_fields);
-                        },
-                        error: function(error) {
-                            console.error(error);
-                            alert('An error occurred. Please try again.');
-                        }
-                    });
-                }
-            }
-        });
-    
-        // Observe the target node for attribute changes
-        observer.observe(targetNode, { attributes: true });
-    } else {
-        console.error("Element with ID 'get-todo-id' not found.");
-    }
-/*    
-    // Select the element to observe
-    const targetNode = document.getElementById("get-todo-id");
-
-    // Set up the mutation observer to watch for attribute changes
-    const observer = new MutationObserver(function(mutationsList) {
-        for (let mutation of mutationsList) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                // AJAX request when value changes
-                $.ajax({
-                    url: ajax_object.ajax_url,
-                    type: 'post',
-                    data: {
-                        action: 'get_todo_dialog_data',
-                        _todo_id: $("#get-todo-id").val(),
-                    },
-                    success: function(response) {
-                        $('#result-container').html(response.html_contain);
-                        activate_todo_dialog_data(response.doc_fields);
-                    },
-                    error: function(error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        }
-    });
-
-    // Start observing the target element for attribute changes
-    observer.observe(targetNode, { attributes: true });
-*/
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
         var queryParams = [];    
@@ -424,7 +115,8 @@ jQuery(document).ready(function($) {
         });
 
         $("#todo-dialog-exit").on("click", function () {
-            window.location.replace(window.location.href);
+            //window.location.replace(window.location.href);
+            window.location.replace('/to-do-list');
         });
     }
 
