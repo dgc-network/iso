@@ -1722,7 +1722,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='canvas'):
                             ?>
                             <div>
-                                <canvas id="signature-pad" width="100%" height="200" style="border:1px solid #000;"></canvas>
+                                <canvas id="signature-pad" height="200" style="border:1px solid #000; width:100%"></canvas>
                             </div>
                             <button id="clear-signature">Clear</button>
                             <button id="save-signature">Save</button>
