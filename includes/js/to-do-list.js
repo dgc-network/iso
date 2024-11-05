@@ -1,7 +1,12 @@
 // JavaScript/jQuery
 //$(document).ready(function() {
 jQuery(document).ready(function($) {
-        // Select the element to observe
+});
+
+// To-do list
+jQuery(document).ready(function($) {
+
+    // Select the element to observe
     const targetNode = document.getElementById("get-todo-id");
 
     // Set up the mutation observer to watch for attribute changes
@@ -31,10 +36,6 @@ jQuery(document).ready(function($) {
 
     // Start observing the target element for attribute changes
     observer.observe(targetNode, { attributes: true });
-});
-
-// To-do list
-jQuery(document).ready(function($) {
 
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
