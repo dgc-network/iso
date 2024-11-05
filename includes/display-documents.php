@@ -901,10 +901,36 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query;
         }
-        
+
         function get_doc_report_list_data() {
             $result = array();
-/*
+        
+            // Check if _doc_id is set and not empty
+            if (!empty($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                
+                // Optional search filter for doc report
+                $search_doc_report = isset($_POST['_search_doc_report']) ? sanitize_text_field($_POST['_search_doc_report']) : '';
+        
+                // Ensure display_doc_report_list method exists
+                if (method_exists($this, 'display_doc_report_list')) {
+                    if ($search_doc_report) {
+                        $result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
+                    } else {
+                        $result['html_contain'] = $this->display_doc_report_list($doc_id);
+                    }
+                } else {
+                    $result['error'] = 'The method display_doc_report_list is not available.';
+                }
+            } else {
+                $result['error'] = 'Document ID is missing.';
+            }
+        
+            wp_send_json($result);
+        }
+/*        
+        function get_doc_report_list_data() {
+            $result = array();
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $search_doc_report = sanitize_text_field($_POST['_search_doc_report']);
@@ -914,10 +940,9 @@ if (!class_exists('display_documents')) {
                     $result['html_contain'] = $this->display_doc_report_list($doc_id);
                 }
             }
-*/
             wp_send_json($result);
         }
-        
+*/
         function display_doc_report_dialog($report_id=false) {
             ob_start();
             $todo_status = get_post_meta($report_id, 'todo_status', true);
