@@ -66,33 +66,32 @@ if (!class_exists('to_do_list')) {
 
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
-                    $submit_user = get_post_meta($todo_id, 'submit_user', true);
-                    $user = get_userdata($submit_user);
-                    $submit_time = get_post_meta($todo_id, 'submit_time', true);
-                    if ($submit_time) {
-                        echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
+                    $todo_id = intval($todo_id); // Sanitize the ID just in case
+
+                    // Check if the post exists and is of post type "todo"
+                    $todo_post = get_post($todo_id);
+
+                    if ($todo_post && $todo_post->post_type === 'todo') {
+                        $submit_user = get_post_meta($todo_id, 'submit_user', true);
+                        $user = get_userdata($submit_user);
+                        $submit_time = get_post_meta($todo_id, 'submit_time', true);
+                        if ($submit_time) {
+                            echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
+                        } else {
+                            echo '<div class="ui-widget" id="result-container">';
+                            echo '<input type="hidden" id="get-todo-id" value="'.$todo_id.'" />';
+                            echo '</div>';
+                        }
+
+                        // $todo_id is a valid ID of a "todo" post type
+                        //echo 'This is a valid "todo" post.';
                     } else {
-                        echo '<div class="ui-widget" id="result-container">';
-                        echo '<input type="hidden" id="get-todo-id" value="'.$todo_id.'" />';
-                        echo '</div>';
+                        // $todo_id is not a valid "todo" post type ID
+                        echo 'This ID does not match a "todo" post.';
                     }
+                    
                 }
-/*                
-                if (isset($_GET['_id'])) {
-                    $todo_id = sanitize_text_field($_GET['_id']);
-                    $submit_user = get_post_meta($todo_id, 'submit_user', true);
-                    $user = get_userdata($submit_user);
-                    $submit_time = get_post_meta($todo_id, 'submit_time', true);
-                    if ($submit_time) {
-                        echo 'Todo #'.$todo_id.' has been submitted by '.$user->display_name.' on '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);
-                    } else {
-                        echo '<div class="ui-widget" id="result-container">';
-                        //echo $this->display_todo_dialog($todo_id);
-                        echo '<input type="hidden" id="get-todo-id" value="'.$todo_id.'" />';
-                        echo '</div>';
-                    }
-                }
-*/
+
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
                 if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
                 if ($_GET['_select_todo']=='start-job') {
