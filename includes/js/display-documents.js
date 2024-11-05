@@ -824,6 +824,7 @@ jQuery(document).ready(function($) {
         $('#save-signature').click(function() {
             const dataURL = canvas.toDataURL('image/png');
             $('#signature-image').attr('src', dataURL).show(); // Show image of signature
+            $('#signature-pad').hide();
             console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
         });
 
