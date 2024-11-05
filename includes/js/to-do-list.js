@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
     // Set up the mutation observer to watch for attribute changes
     const observer = new MutationObserver(function(mutationsList) {
         for (let mutation of mutationsList) {
-            console.log("I am here"); // This should trigger if there are mutations
+            console.log("This should trigger if there are mutations"); // This should trigger if there are mutations
 
             if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
                 console.log("Mutation observer triggered: value changed");
