@@ -6,7 +6,7 @@ jQuery(document).ready(function($) {
     //    console.log("Window onload triggered");
     
     //$.addEventListener("DOMContentLoaded", function() {
-        console.log("Document is ready");
+        //console.log("Document is ready");
     
         // Select the element to observe
         const targetNode = document.getElementById("get-todo-id");
@@ -21,6 +21,7 @@ jQuery(document).ready(function($) {
         // Set up the mutation observer to watch for attribute changes
         const observer = new MutationObserver(function(mutationsList) {
             for (let mutation of mutationsList) {
+                console.log("I am here");
                 if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
                     console.log("Mutation observer triggered: value changed");
                     
