@@ -1027,6 +1027,73 @@ if (!class_exists('display_documents')) {
         
         function get_doc_report_dialog_data() {
             $response = array();
+        
+            // Check if the required POST data is present
+            if (isset($_POST['_report_id'])) {
+                // Initialize classes
+                $items_class = new sub_items();
+                $cards_class = new erp_cards();
+                $profiles_class = new display_profiles();
+        
+                // Sanitize POST inputs
+                $report_id = sanitize_text_field($_POST['_report_id']);
+                $is_admin = isset($_POST['_is_admin']) ? sanitize_text_field($_POST['_is_admin']) : false;
+        
+                // Retrieve meta data for report
+                $todo_status = get_post_meta($report_id, 'todo_status', true);
+                $_document = get_post_meta($report_id, '_document', true);
+        
+                // Determine content based on document type and status
+                if ($_document && $todo_status == -1 && !$is_admin) {
+                    $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
+        
+                    // Switch structure for handling various document types
+                    switch ($is_doc_report) {
+                        case 1:
+                            $response['html_contain'] = $this->display_doc_report_list($_document);
+                            break;
+                        case 'document-card':
+                            $response['html_contain'] = $this->display_document_list();
+                            break;
+                        case 'customer-card':
+                            $response['html_contain'] = $cards_class->display_customer_card_list();
+                            break;
+                        case 'vendor-card':
+                            $response['html_contain'] = $cards_class->display_vendor_card_list();
+                            break;
+                        case 'product-card':
+                            $response['html_contain'] = $cards_class->display_product_card_list();
+                            break;
+                        case 'equipment-card':
+                            $response['html_contain'] = $cards_class->display_equipment_card_list();
+                            break;
+                        case 'instrument-card':
+                            $response['html_contain'] = $cards_class->display_instrument_card_list();
+                            break;
+                        case 'employee-card':
+                            $response['html_contain'] = $profiles_class->display_site_user_list();
+                            break;
+                        default:
+                            $response['html_contain'] = $this->display_doc_frame_contain($_document);
+                            break;
+                    }
+                } else {
+                    // Default response when conditions are not met
+                    $response['html_contain'] = $this->display_doc_report_dialog($report_id);
+        
+                    // Add additional document and sub-item fields
+                    $doc_id = get_post_meta($report_id, 'doc_id', true);
+                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
+                    $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
+                }
+            }
+        
+            // Return JSON response
+            wp_send_json($response);
+        }
+/*        
+        function get_doc_report_dialog_data() {
+            $response = array();
             if (isset($_POST['_report_id'])) {
                 $items_class = new sub_items();
                 $cards_class = new erp_cards();
@@ -1055,7 +1122,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+*/        
         function set_doc_report_dialog_data() {
             if( isset($_POST['_report_id']) ) {
                 // Update the post
