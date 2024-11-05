@@ -1,11 +1,41 @@
-// JavaScript/jQuery
-//$(document).ready(function() {
-jQuery(document).ready(function($) {
-});
-
 // To-do list
 jQuery(document).ready(function($) {
 
+    // Select the element to observe
+    const targetNode = document.getElementById("get-todo-id");
+
+    if (targetNode) {
+        // Set up the mutation observer to watch for attribute changes
+        const observer = new MutationObserver(function(mutationsList) {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                    // AJAX request when value changes
+                    $.ajax({
+                        url: ajax_object.ajax_url,
+                        type: 'post',
+                        data: {
+                            action: 'get_todo_dialog_data',
+                            _todo_id: $(targetNode).attr("value"),
+                        },
+                        success: function(response) {
+                            $('#result-container').html(response.html_contain);
+                            activate_todo_dialog_data(response.doc_fields);
+                        },
+                        error: function(error) {
+                            console.error(error);
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                }
+            }
+        });
+    
+        // Observe the target node for attribute changes
+        observer.observe(targetNode, { attributes: true });
+    } else {
+        console.error("Element with ID 'get-todo-id' not found.");
+    }
+/*    
     // Select the element to observe
     const targetNode = document.getElementById("get-todo-id");
 
@@ -36,7 +66,7 @@ jQuery(document).ready(function($) {
 
     // Start observing the target element for attribute changes
     observer.observe(targetNode, { attributes: true });
-
+*/
     $("#select-todo").on("change", function() {
         // Initialize an empty array to store query parameters
         var queryParams = [];    
