@@ -115,8 +115,15 @@ jQuery(document).ready(function($) {
         });
 
         $("#todo-dialog-exit").on("click", function () {
-            //window.location.replace(window.location.href);
-            window.location.replace('/to-do-list');
+            // Get the current URL
+            const currentUrl = window.location.href;
+            // Check if the current URL includes '/to-do-list/?_id='
+            if (currentUrl.includes('/to-do-list/?_id=')) {
+                // Redirect to '/to-do-list'
+                window.location.replace('/to-do-list');
+            } else {
+                window.location.replace(window.location.href);
+            }
         });
     }
 
