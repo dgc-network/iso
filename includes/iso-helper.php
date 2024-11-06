@@ -563,3 +563,36 @@ function enqueue_export_scripts() {
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
 
+function delete_documents_after_date() {
+    // Define the date after which posts should be deleted
+    $date_after = '2024-09-12 23:59:59';
+
+    // Query to find "document" posts created after the specified date
+    $args = array(
+        'post_type'      => 'document',
+        'date_query'     => array(
+            array(
+                'after'     => $date_after,
+                'inclusive' => false,
+            ),
+        ),
+        'posts_per_page' => -1, // Retrieve all matching posts
+        'fields'         => 'ids' // Retrieve only post IDs
+    );
+
+    // Fetch the posts
+    $documents = get_posts($args);
+
+    // Check if any posts were found and delete each one
+    if (!empty($documents)) {
+        foreach ($documents as $document_id) {
+            wp_delete_post($document_id, true); // true to force delete
+        }
+        echo count($documents) . " document(s) deleted.";
+    } else {
+        echo "No documents found for deletion.";
+    }
+}
+
+// Hook to run this function, for example, on the admin_init action
+add_action('admin_init', 'delete_documents_after_date');
