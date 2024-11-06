@@ -15,7 +15,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             add_action( 'init', array( $this, 'register_document_post_type' ) );
-            //add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
+            add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
@@ -130,7 +130,7 @@ if (!class_exists('display_documents')) {
             );
             register_post_type( 'document', $args );
         }
-/*        
+
         function add_document_settings_metabox() {
             add_meta_box(
                 'document_settings_id',
@@ -149,7 +149,7 @@ if (!class_exists('display_documents')) {
             <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
             <?php
         }
-*/        
+
         function display_document_list() {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
