@@ -2036,7 +2036,7 @@ if (!class_exists('display_documents')) {
                 if (isset($_POST['_duplicated_ids'])) {
                     $duplicated_ids = $_POST['_duplicated_ids'];
                     foreach ($duplicated_ids as $duplicated_id) {
-                        if ($this->check_site_id_for_duplicated_document($duplicated_id)) {
+                        if ($this->is_current_site_iso_helper()) {
                             if (current_user_can('administrator')) {
                                 $this->duplicate_shared_document($duplicated_id);
                             }
@@ -2051,26 +2051,11 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function check_site_id_for_duplicated_document($duplicated_id) {
-            // Retrieve the "site_id" meta for the specified "document" post
-            $site_id = get_post_meta($duplicated_id, 'site_id', true);
-        
-            // Check if the "site_id" exists and is valid
-            if (empty($site_id)) {
-                return "No site_id found for document ID: $duplicated_id";
-            }
-        
+        function is_current_site_iso_helper() {
             // Query the "site-profile" post type to find a post with the title "iso-helper.com" and matching "site_id"
             $args = array(
                 'post_type'      => 'site-profile',
                 'title'          => 'iso-helper.com',
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '='
-                    )
-                ),
                 'posts_per_page' => 1,
                 'fields'         => 'ids' // Only fetch the post ID
             );
@@ -2086,11 +2071,7 @@ if (!class_exists('display_documents')) {
                 return false;
             }
         }
-        
-        // Usage example
-        //$duplicated_id = 123; // Replace 123 with the actual ID of the duplicated document
-        //echo check_site_id_for_duplicated_document($duplicated_id);
-        
+
         function duplicate_shared_document($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
