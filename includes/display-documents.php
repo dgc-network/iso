@@ -2036,7 +2036,7 @@ if (!class_exists('display_documents')) {
                 if (isset($_POST['_duplicated_ids'])) {
                     $duplicated_ids = $_POST['_duplicated_ids'];
                     foreach ($duplicated_ids as $duplicated_id) {
-                        if ($this->is_current_site_iso_helper()) {
+                        if ($this->current_site_is_iso_helper()) {
                             if (current_user_can('administrator')) {
                                 $this->duplicate_shared_document($duplicated_id);
                             }
@@ -2051,8 +2051,8 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
         
-        function is_current_site_iso_helper() {
-            // Query the "site-profile" post type to find a post with the title "iso-helper.com" and matching "site_id"
+        function current_site_is_iso_helper() {
+            // Query the "site-profile" post type to find a post with the title "iso-helper.com"
             $args = array(
                 'post_type'      => 'site-profile',
                 'title'          => 'iso-helper.com',
