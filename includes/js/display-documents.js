@@ -50,7 +50,6 @@ jQuery(document).ready(function($) {
                 console.log(response)
                 iso_category_id = $("#iso-category-id").val();
                 window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
-
             },
             error: function(error){
                 console.error(error); 
@@ -94,8 +93,22 @@ jQuery(document).ready(function($) {
         console.log('Number of checked elements:', countDuplicatedIds);
 
         iso_category_title = $("#iso-category-title").val();
-        //get_iso_helper_doc_counts_by_iso_category = $("#iso-doc-counts").val();
+
         if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" new copies from "+ iso_category_title)) {
+            // Show the custom alert message
+            var alertBox = $("<div class='custom-alert'>Data processing...</div>");
+            $("body").append(alertBox);
+
+            // Center the alert box
+            alertBox.css({
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            });
+
+            alertBox.fadeIn(500);
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -112,7 +125,12 @@ jQuery(document).ready(function($) {
                     console.error(error);                    
                     alert(error);
                 }
-            });        
+            });
+
+            alertBox.fadeOut(500, function() {
+                $(this).remove();
+            });
+
         } else {
             iso_category_id = $("#iso-category-id").val();
             window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
@@ -148,7 +166,6 @@ jQuery(document).ready(function($) {
                 'action': 'set_document_dialog_data',
             },
             success: function (response) {
-                //window.location.replace(window.location.href);
                 $('#result-container').html(response.html_contain);
                 activate_document_dialog_data($("#doc-id").val());
             },
