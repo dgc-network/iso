@@ -119,16 +119,15 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response)
-                    window.location.replace('/display-profiles/');
+                    window.location.replace('/display-documents/');
+                    alertBox.fadeOut(500, function() {
+                        $(this).remove();
+                    });
                 },
                 error: function(error){
                     console.error(error);                    
                     alert(error);
                 }
-            });
-
-            alertBox.fadeOut(500, function() {
-                $(this).remove();
             });
 
         } else {

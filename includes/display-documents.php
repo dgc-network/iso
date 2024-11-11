@@ -1685,6 +1685,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='canvas'):
                             ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <div style="text-align:center;" id="signature-image-div">
                                 <?php if ($field_value) {?>
                                     <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
