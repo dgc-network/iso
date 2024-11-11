@@ -165,6 +165,78 @@ jQuery(document).ready(function($) {
         const canvas = document.getElementById('signature-pad');
         const context = canvas.getContext('2d');
         let isDrawing = false;
+        
+        // Adjust canvas dimensions if needed
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        // Set up drawing styles
+        context.strokeStyle = "#000000";
+        context.lineWidth = 2;
+        
+        // Helper function to get touch coordinates relative to the canvas
+        function getTouchPos(canvas, touchEvent) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: touchEvent.touches[0].clientX - rect.left,
+                y: touchEvent.touches[0].clientY - rect.top
+            };
+        }
+        
+        // Mouse Events for drawing (Desktop)
+        $('#signature-pad').mousedown(function(e) {
+            isDrawing = true;
+            context.beginPath();
+            context.moveTo(e.offsetX, e.offsetY);
+        });
+        
+        $('#signature-pad').mousemove(function(e) {
+            if (isDrawing) {
+                context.lineTo(e.offsetX, e.offsetY);
+                context.stroke();
+            }
+        });
+        
+        $(document).mouseup(function() {
+            isDrawing = false;
+        });
+        
+        // Touch Events for drawing (Mobile)
+        $('#signature-pad').on('touchstart', function(e) {
+            e.preventDefault(); // Prevent scrolling
+            isDrawing = true;
+            const pos = getTouchPos(canvas, e);
+            context.beginPath();
+            context.moveTo(pos.x, pos.y);
+        });
+        
+        $('#signature-pad').on('touchmove', function(e) {
+            e.preventDefault(); // Prevent scrolling
+            if (isDrawing) {
+                const pos = getTouchPos(canvas, e);
+                context.lineTo(pos.x, pos.y);
+                context.stroke();
+            }
+        });
+        
+        $(document).on('touchend', function() {
+            isDrawing = false;
+        });
+        
+        // Clear button functionality
+        $('#clear-signature').click(function() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        // Redraw button functionality
+        $('#redraw-signature').click(function() {
+            $('#signature-pad-div').show();
+            $('#signature-image-div').hide();
+        });
+/*        
+        const canvas = document.getElementById('signature-pad');
+        const context = canvas.getContext('2d');
+        let isDrawing = false;
 
         // Set up drawing styles
         context.strokeStyle = "#000000";
@@ -220,7 +292,7 @@ jQuery(document).ready(function($) {
             $('#signature-pad-div').show();
             $('#signature-image-div').hide();
         });
-
+*/
 
         $('[id^="start-job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(24);
