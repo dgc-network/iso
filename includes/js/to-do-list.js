@@ -163,6 +163,8 @@ jQuery(document).ready(function($) {
 
     function activate_start_job_dialog_data(doc_fields){
         const canvas = document.getElementById('signature-pad');
+        canvas.width = window.innerWidth;
+
         const context = canvas.getContext('2d');
         let isDrawing = false;
         

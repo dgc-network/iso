@@ -1686,17 +1686,17 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='canvas'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <div style="text-align:center;" id="signature-image-div">
+                            <div id="signature-image-div">
                                 <?php if ($field_value) {?>
                                     <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
                                 <?php }?>
-                                <button id="redraw-signature">Redraw</button>
+                                <button id="redraw-signature" style="margin:3px;">Redraw</button>
                             </div>
-                            <div style="text-align:center; display:none;" id="signature-pad-div">
+                            <div style="display:none;" id="signature-pad-div">
                                 <div>
                                     <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
                                 </div>
-                                <button id="clear-signature">Clear</button>
+                                <button id="clear-signature" style="margin:3px;">Clear</button>
                             </div>
                             <?php
                             break;
