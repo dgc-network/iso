@@ -840,8 +840,6 @@ jQuery(document).ready(function($) {
         $('#redraw-signature').click(function() {
             $('#signature-pad-div').show();
             $('#signature-image-div').hide();
-
-            //$('#signature-image').attr('src', dataURL).show(); // Show image of signature
         });
 
 
