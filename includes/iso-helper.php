@@ -597,3 +597,42 @@ function delete_documents_after_date() {
 // Hook to run this function, for example, on the admin_init action
 add_action('admin_init', 'delete_documents_after_date');
 */
+
+function remove_doc_category_meta() {
+    // Define the date to compare
+    $cutoff_date = '2024-09-11';
+
+    // Query documents created after the cutoff date
+    $args = array(
+        'post_type'      => 'document',
+        'posts_per_page' => -1,
+        'date_query'     => array(
+            array(
+                'after' => $cutoff_date,
+                'inclusive' => false,
+            ),
+        ),
+        'meta_query' => array(
+            array(
+                'key'     => 'doc_category',
+                'compare' => 'EXISTS',
+            ),
+        ),
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $post_id = get_the_ID();
+
+            // Delete the 'doc_category' meta field
+            delete_post_meta($post_id, 'doc_category');
+        }
+        wp_reset_postdata();
+    }
+}
+
+// Run the function (for example, via a hook)
+add_action('init', 'remove_doc_category_meta');
