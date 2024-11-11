@@ -1975,7 +1975,7 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <div>
                                         <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')'.get_the_ID();?></label>
                                     </div>
                                     <?php
                                 endwhile;
