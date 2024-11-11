@@ -1972,10 +1972,11 @@ if (!class_exists('display_documents')) {
                                 while ($query->have_posts()) : $query->the_post();
                                     $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                                     $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                                    $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
                                     ?>
                                     <div>
                                         <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')'.get_the_ID();?></label>
+                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')'.get_the_ID().get_the_title($doc_category);?></label>
                                     </div>
                                     <?php
                                 endwhile;
