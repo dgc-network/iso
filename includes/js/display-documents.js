@@ -784,7 +784,7 @@ jQuery(document).ready(function($) {
     function activate_doc_report_dialog_data(response){
 
         const canvas = document.getElementById('signature-pad');
-        canvas.width = window.innerWidth-5;
+        canvas.width = window.innerWidth-10;
 
         const context = canvas.getContext('2d');
         let isDrawing = false;
@@ -838,25 +838,7 @@ jQuery(document).ready(function($) {
                 context.stroke();
             }
         }, { passive: false });
-/*
-        // Touch Events for mobile devices
-        $('#signature-pad').on('touchstart', function(e) {
-            e.preventDefault();
-            isDrawing = true;
-            const touch = e.touches[0];
-            context.beginPath();
-            context.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
-        });
 
-        $('#signature-pad').on('touchmove', function(e) {
-            e.preventDefault();
-            if (isDrawing) {
-                const touch = e.touches[0];
-                context.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
-                context.stroke();
-            }
-        });
-*/
         $(document).on('touchend', function() {
             isDrawing = false;
         });
