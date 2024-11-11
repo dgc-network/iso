@@ -163,7 +163,7 @@ jQuery(document).ready(function($) {
 
     function activate_start_job_dialog_data(doc_fields){
         const canvas = document.getElementById('signature-pad');
-        canvas.width = window.innerWidth;
+        canvas.width = window.innerWidth-10;
 
         const context = canvas.getContext('2d');
         let isDrawing = false;
@@ -171,15 +171,6 @@ jQuery(document).ready(function($) {
         // Set up drawing styles
         context.strokeStyle = "#000000";
         context.lineWidth = 2;
-        
-        // Helper function to get touch coordinates relative to the canvas
-        function getTouchPos(canvas, touchEvent) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: touchEvent.touches[0].clientX - rect.left,
-                y: touchEvent.touches[0].clientY - rect.top
-            };
-        }
         
         // Mouse Events for drawing (Desktop)
         $('#signature-pad').mousedown(function(e) {
@@ -207,7 +198,7 @@ jQuery(document).ready(function($) {
                 y: touch.clientY - rect.top
             };
         };
-        
+
         // Touch start event
         canvas.addEventListener('touchstart', function(e) {
             e.preventDefault();
