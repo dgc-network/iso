@@ -168,10 +168,6 @@ jQuery(document).ready(function($) {
         const context = canvas.getContext('2d');
         let isDrawing = false;
         
-        // Adjust canvas dimensions if needed
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        
         // Set up drawing styles
         context.strokeStyle = "#000000";
         context.lineWidth = 2;
@@ -203,6 +199,39 @@ jQuery(document).ready(function($) {
             isDrawing = false;
         });
         
+        // Get canvas offset for touch position calculations
+        const getCanvasPosition = (touch) => {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+        };
+        
+        // Touch start event
+        canvas.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const touchPosition = getCanvasPosition(e.touches[0]);
+            context.beginPath();
+            context.moveTo(touchPosition.x, touchPosition.y);
+        }, { passive: false });
+        
+        // Touch move event
+        canvas.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (isDrawing) {
+                const touchPosition = getCanvasPosition(e.touches[0]);
+                context.lineTo(touchPosition.x, touchPosition.y);
+                context.stroke();
+            }
+        }, { passive: false });
+/*        
+        // Touch end event
+        canvas.addEventListener('touchend', function() {
+            isDrawing = false;
+        }, { passive: false });
+        
         // Touch Events for drawing (Mobile)
         $('#signature-pad').on('touchstart', function(e) {
             e.preventDefault(); // Prevent scrolling
@@ -220,7 +249,7 @@ jQuery(document).ready(function($) {
                 context.stroke();
             }
         });
-        
+*/        
         $(document).on('touchend', function() {
             isDrawing = false;
         });
