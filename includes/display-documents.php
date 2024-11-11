@@ -1912,43 +1912,6 @@ if (!class_exists('display_documents')) {
 
                 // Step 4: Use the retrieved doc-category IDs to query the 'document' post type
                 $document_query = new WP_Query(array(
-                        'post_type'  => 'document',
-                        'meta_query' => array(
-                            'relation' => 'AND', // Combine multiple conditions
-                            array(
-                                'key'     => 'doc_category',
-                                'value'   => $doc_category_ids,
-                                'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
-                            ),
-                            array(
-                                    'key'     => 'doc_category',
-                                    'compare' => 'EXISTS' // Exclude if 'doc_category' does not exist
-                            ),
-                        ),
-                        'posts_per_page' => -1, // Retrieve all matching posts
-                        'meta_key'       => 'doc_number', // Sort by 'doc_number' meta field
-                        'orderby'        => 'meta_value', // Order by meta value
-                        'order'          => 'ASC', // Sort in ascending order
-/*                    
-                        'post_type'  => 'document',
-                        'meta_query' => array(
-                            'relation' => 'AND', // Combine multiple conditions
-                            array(
-                                'key'     => 'doc_category',
-                                'value'   => $doc_category_ids,
-                                'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
-                            ),
-                            array(
-                                'key'     => 'doc_category',
-                                'value'   => '', // Exclude empty 'doc_category' values
-                                'compare' => '!=' // Ensure 'doc_category' is not an empty string
-                            ),
-                        ),
-                        'posts_per_page' => -1, // Retrieve all matching posts
-                        'meta_key'       => 'doc_number', // Sort by 'doc_number' meta field
-                        'orderby'        => 'meta_value', // Order by meta value
-                        'order'          => 'ASC', // Sort in ascending order
-/*                    
                     'post_type'  => 'document',
                     'meta_query' => array(
                         array(
@@ -1961,7 +1924,6 @@ if (!class_exists('display_documents')) {
                     'meta_key' => 'doc_number', // Sort by 'doc_number' meta field
                     'orderby'  => 'meta_value', // Order by meta value
                     'order'    => 'ASC', // Sort in ascending order
-*/                    
                 ));
 
                 // Return the query object
@@ -2119,7 +2081,7 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             // Create the post
@@ -2137,7 +2099,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
             update_post_meta($post_id, 'doc_revision', $doc_revision);
-            update_post_meta($post_id, 'doc_category', $doc_category);
+            //update_post_meta($post_id, 'doc_category', $doc_category);
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
