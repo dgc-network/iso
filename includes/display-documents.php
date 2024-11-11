@@ -1921,6 +1921,32 @@ if (!class_exists('display_documents')) {
                                 'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
                             ),
                             array(
+                                'relation' => 'OR',
+                                array(
+                                    'key'     => 'doc_category',
+                                    'value'   => '', // Exclude empty 'doc_category' values
+                                    'compare' => '!=' // Ensure 'doc_category' is not empty
+                                ),
+                                array(
+                                    'key'     => 'doc_category',
+                                    'compare' => 'NOT EXISTS' // Exclude if 'doc_category' does not exist
+                                ),
+                            ),
+                        ),
+                        'posts_per_page' => -1, // Retrieve all matching posts
+                        'meta_key'       => 'doc_number', // Sort by 'doc_number' meta field
+                        'orderby'        => 'meta_value', // Order by meta value
+                        'order'          => 'ASC', // Sort in ascending order
+/*                    
+                        'post_type'  => 'document',
+                        'meta_query' => array(
+                            'relation' => 'AND', // Combine multiple conditions
+                            array(
+                                'key'     => 'doc_category',
+                                'value'   => $doc_category_ids,
+                                'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
+                            ),
+                            array(
                                 'key'     => 'doc_category',
                                 'value'   => '', // Exclude empty 'doc_category' values
                                 'compare' => '!=' // Ensure 'doc_category' is not an empty string
