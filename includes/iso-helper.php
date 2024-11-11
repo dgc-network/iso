@@ -597,7 +597,7 @@ function delete_documents_after_date() {
 // Hook to run this function, for example, on the admin_init action
 add_action('admin_init', 'delete_documents_after_date');
 */
-
+/*
 function remove_doc_category_meta() {
     // Define the date to compare
     $cutoff_date = '2024-09-11';
@@ -636,3 +636,4 @@ function remove_doc_category_meta() {
 
 // Run the function (for example, via a hook)
 add_action('init', 'remove_doc_category_meta');
+*/

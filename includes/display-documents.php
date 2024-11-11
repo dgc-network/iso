@@ -1941,7 +1941,6 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
-                //$iso_doc_counts = $this->get_iso_helper_doc_counts_by_iso_category($iso_category_id);
                 ?>
                 <div class="ui-widget" id="result-container">
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1977,7 +1976,7 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <div>
                                         <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')'.get_the_ID().get_the_title($site_id).'('.$site_id.')';?></label>
+                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
                                     </div>
                                     <?php
                                 endwhile;
