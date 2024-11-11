@@ -784,6 +784,9 @@ jQuery(document).ready(function($) {
     function activate_doc_report_dialog_data(response){
 
         const canvas = document.getElementById('signature-pad');
+        const container = document.getElementById('signature-pad-div');
+        canvas.width = container.offsetWidth;
+        
         const context = canvas.getContext('2d');
         let isDrawing = false;
 
