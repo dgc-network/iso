@@ -1921,16 +1921,8 @@ if (!class_exists('display_documents')) {
                                 'compare' => 'IN' // Match any of the retrieved 'doc_category' IDs
                             ),
                             array(
-                                'relation' => 'OR',
-                                array(
                                     'key'     => 'doc_category',
-                                    'value'   => '', // Exclude empty 'doc_category' values
-                                    'compare' => '!=' // Ensure 'doc_category' is not empty
-                                ),
-                                array(
-                                    'key'     => 'doc_category',
-                                    'compare' => 'NOT EXISTS' // Exclude if 'doc_category' does not exist
-                                ),
+                                    'compare' => 'EXISTS' // Exclude if 'doc_category' does not exist
                             ),
                         ),
                         'posts_per_page' => -1, // Retrieve all matching posts
