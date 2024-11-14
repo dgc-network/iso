@@ -70,6 +70,7 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'get_todo_dialog_data',
                 _todo_id: todo_id,
+                _mode: 'view_mode',
             },
             success: function (response) {
                 $('#result-container').html(response.html_contain);
@@ -233,7 +234,7 @@ jQuery(document).ready(function($) {
             $('#signature-image-div').hide();
         });
 
-        
+
         $('[id^="start-job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(24);
             const ajaxData = {

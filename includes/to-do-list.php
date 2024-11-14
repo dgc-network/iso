@@ -300,7 +300,7 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
 
-        function display_todo_dialog($todo_id) {
+        function display_todo_dialog($todo_id=false, $_mode=false) {
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -323,12 +323,14 @@ if (!class_exists('to_do_list')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php
-                    $query = $this->retrieve_todo_action_list_data($todo_id);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) : $query->the_post();
-                            echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-                        endwhile;
-                        wp_reset_postdata();
+                    if ($_mode==false) {
+                        $query = $this->retrieve_todo_action_list_data($todo_id);
+                        if ($query->have_posts()) {
+                            while ($query->have_posts()) : $query->the_post();
+                                echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                            endwhile;
+                            wp_reset_postdata();
+                        }    
                     }
                     ?>
                 </div>
@@ -346,13 +348,10 @@ if (!class_exists('to_do_list')) {
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                $result['html_contain'] = $this->display_todo_dialog($todo_id);
-/*
-                $post_type = get_post_type( $todo_id );
-                if ( $post_type === 'document' ) {
-                    $doc_id = $todo_id;
+                if (isset($_POST['_mode'])) {
+                    $_mode = sanitize_text_field($_POST['_mode']);
                 }
-*/
+                $result['html_contain'] = $this->display_todo_dialog($todo_id, $_mode);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }
