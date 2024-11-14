@@ -637,3 +637,28 @@ function remove_doc_category_meta() {
 // Run the function (for example, via a hook)
 add_action('init', 'remove_doc_category_meta');
 */
+function delete_specific_documents() {
+    $args = array(
+        'post_type'  => 'document',
+        'meta_query' => array(
+            array(
+                'key'     => 'doc_number',
+                'value'   => 'OH-01-01',
+                'compare' => '='
+            ),
+        ),
+        'posts_per_page' => -1, // Retrieve all matching posts
+        'fields' => 'ids' // Only get post IDs for deletion
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        foreach ($query->posts as $post_id) {
+            wp_delete_post($post_id, true); // Delete the post permanently
+        }
+    }
+}
+
+// Run the function to delete the posts
+delete_specific_documents();
