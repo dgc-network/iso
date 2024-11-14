@@ -300,7 +300,7 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
 
-        function display_todo_dialog($todo_id=false, $_mode=false) {
+        function display_todo_dialog($todo_id=false, $view_mode=false) {
             ob_start();
             ?>
             <?php echo display_iso_helper_logo();?>
@@ -323,7 +323,7 @@ if (!class_exists('to_do_list')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php
-                    if ($_mode==false) {
+                    if ($view_mode==false) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
