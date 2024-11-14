@@ -661,4 +661,4 @@ function delete_specific_documents() {
 }
 
 // Run the function to delete the posts
-delete_specific_documents();
+add_action('init', 'delete_specific_documents');
