@@ -109,7 +109,7 @@ if (!class_exists('display_documents')) {
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_duplicate_document'])) {
                     $doc_id = sanitize_text_field($_GET['_duplicate_document']);
-                    $this->duplicate_shared_document($doc_id);
+                    $this->generate_draft_document($doc_id);
                 }
 
                 // Display document list if no specific document IDs are existed
@@ -2040,11 +2040,11 @@ if (!class_exists('display_documents')) {
                     foreach ($duplicated_ids as $duplicated_id) {
                         if ($this->current_site_is_iso_helper()) {
                             if (current_user_can('administrator')) {
-                                $this->duplicate_shared_document($duplicated_id);
+                                $this->generate_draft_document($duplicated_id);
                             }
                         }
                         else {
-                            $this->duplicate_shared_document($duplicated_id);
+                            $this->generate_draft_document($duplicated_id);
                         }
                     }
                     $response = array('success' => true, 'data' => $duplicated_ids);
@@ -2074,13 +2074,13 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function duplicate_shared_document($doc_id=false){
+        function generate_draft_document($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             //$doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -2098,7 +2098,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'job_number', $job_number);
             update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
-            update_post_meta($post_id, 'doc_revision', $doc_revision);
+            update_post_meta($post_id, 'doc_revision', 'draft');
             //update_post_meta($post_id, 'doc_category', $doc_category);
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
