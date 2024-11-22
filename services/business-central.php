@@ -337,7 +337,7 @@ function handle_oauth_callback() {
         exit;
     }
 }
-
+/*
 function handle_oauth_callback_07() {
     if (isset($_GET['code'])) {
         $code = sanitize_text_field($_GET['code']);
@@ -461,7 +461,7 @@ function handle_oauth_callback_07() {
         exit;
     }
 }
-
+*/
 function get_current_page_url() {
     $url = 'http';
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
