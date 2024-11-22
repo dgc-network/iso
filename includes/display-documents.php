@@ -1729,7 +1729,7 @@ if (!class_exists('display_documents')) {
                             $is_checked = ($field_value==1) ? 'checked' : '';
                             ?>
                             <div>
-                            <input type="radio" id="<?php echo esc_attr($field_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> />
+                            <input type="radio" id="<?php echo esc_attr($field_id);?>" name="<?php echo esc_attr(substr(time(), 0, 5));?>" <?php echo $is_checked;?> />
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             </div>
                             <?php
