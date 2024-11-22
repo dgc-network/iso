@@ -635,6 +635,14 @@ if (!class_exists('display_documents')) {
                     <?php if ($profiles_class->is_user_doc($doc_id)) {?>
                         <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
                     <?php }?>
+                    <style>
+                    /* Hide button on mobile devices */
+                    @media screen and (max-width: 768px) {
+                        #export-to-excel {
+                            display: none;
+                        }
+                    }
+                    </style>
                 </div>
             </div>
         
