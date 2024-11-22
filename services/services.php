@@ -124,7 +124,7 @@ function operation_wallet_address_callback() {
 
 function add_custom_permalink_rule() {
     add_rewrite_rule(
-        '^oauth-callback/?$', // Match the custom page slug
+        '^oauth/?$', // Match the custom page slug
         'index.php?custom_page=1', // Redirect to a query variable
         'top'
     );
