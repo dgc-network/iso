@@ -122,3 +122,43 @@ function operation_wallet_address_callback() {
     echo '<input type="text" name="operation_wallet_address" style="width:100%;" value="' . esc_attr($value) . '" />';
 }
 
+function add_custom_permalink_rule() {
+    add_rewrite_rule(
+        '^custom-page/?$', // Match the custom page slug
+        'index.php?custom_page=1', // Redirect to a query variable
+        'top'
+    );
+}
+add_action('init', 'add_custom_permalink_rule');
+
+function register_custom_query_vars($vars) {
+    $vars[] = 'custom_page'; // Add the custom query variable
+    return $vars;
+}
+add_filter('query_vars', 'register_custom_query_vars');
+
+function load_custom_template($template) {
+    if (get_query_var('custom_page')) {
+        // Check for a specific template file in your theme
+        $custom_template = locate_template('custom-page-template.php');
+        if ($custom_template) {
+            return $custom_template; // Use your theme's custom template file
+        } else {
+            // Fallback: Output content programmatically
+            header('Content-Type: text/html; charset=' . get_option('blog_charset'));
+            echo '<!DOCTYPE html>';
+            echo '<html>';
+            echo '<head>';
+            echo '<title>Custom Page</title>';
+            echo '</head>';
+            echo '<body>';
+            echo '<h1>Welcome to the Custom Page!</h1>';
+            echo '<p>This is dynamically generated content.</p>';
+            echo '</body>';
+            echo '</html>';
+            exit; // Prevent WordPress from continuing to load
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'load_custom_template');
