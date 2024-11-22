@@ -461,7 +461,7 @@ function handle_oauth_callback_07() {
         exit;
     }
 }
-*/
+
 function get_current_page_url() {
     $url = 'http';
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
@@ -478,4 +478,4 @@ function get_current_page_url() {
     $path = isset($parsed_url['path']) ? $parsed_url['path'] : '';
     return $url .= $_SERVER['HTTP_HOST'].$path;
 }
-
+*/

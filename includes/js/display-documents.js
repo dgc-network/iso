@@ -343,7 +343,7 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("#system-report-preview").on("click", function () {
+        $("#system-report-preview, #system-report-preview1").on("click", function () {
             if ($("#is-doc-report").val()=='document-card') {
                 window.location.replace('/display-document/');
             }
@@ -367,11 +367,11 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("#doc-report-preview").on("click", function () {
+        $("#doc-report-preview, #doc-report-preview1").on("click", function () {
             get_doc_report_list_data(doc_id);
         });
 
-        $("#doc-frame-preview").on("click", function () {
+        $("#doc-frame-preview, #doc-frame-preview1").on("click", function () {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,

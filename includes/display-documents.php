@@ -342,12 +342,18 @@ if (!class_exists('display_documents')) {
                 <div id="doc-frame-div">
                     <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                     <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="doc-frame-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                    <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                 </div>
 
                 <div id="system-report-div" style="display:none;">
                     <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
                     <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="system-report-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                    <?php }?>
                     <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
                         <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
                         <option value="document-card" <?php echo ($is_doc_report=="document-card") ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
@@ -363,6 +369,9 @@ if (!class_exists('display_documents')) {
                 <div id="doc-report-div" style="display:none;">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="doc-report-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                    <?php }?>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                     <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
                 
@@ -404,18 +413,6 @@ if (!class_exists('display_documents')) {
                         <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
-<?php /*
-                    <div id="doc-report-div1" style="display:none;">
-                        <label for="doc-report-frequence-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
-                        <select id="doc-report-frequence-setting" class="text ui-widget-content ui-corner-all"><?php echo $todo_class->select_frequence_report_setting_option($doc_report_frequence_setting);?></select>
-                        <div id="frquence-start-time-div" style="display:none;">
-                            <label for="doc-report-frequence-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
-                            <input type="date" id="doc-report-frequence-start-date" value="<?php echo wp_date('Y-m-d', $doc_report_frequence_start_time);?>" />
-                            <input type="time" id="doc-report-frequence-start-time" value="<?php echo wp_date('H:i', $doc_report_frequence_start_time);?>" />
-                            <input type="hidden" id="prev-start-time" value="<?php echo $doc_report_frequence_start_time;?>" />
-                        </div>
-                    </div>
-*/?>
                 </div>
                 <?php
                     // transaction data vs card key/value
