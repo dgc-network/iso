@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 //require_once plugin_dir_path( __FILE__ ) . 'iot-messages.php';
-require_once plugin_dir_path( __FILE__ ) . 'business-central.php';
+//require_once plugin_dir_path( __FILE__ ) . 'business-central.php';
 require_once plugin_dir_path( __FILE__ ) . 'line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'open-ai-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'line-login-api.php';
@@ -124,7 +124,7 @@ function operation_wallet_address_callback() {
 
 function add_custom_permalink_rule() {
     add_rewrite_rule(
-        '^landing-page/?$', // Match the custom page slug
+        '^oauth-callback/?$', // Match the custom page slug
         'index.php?custom_page=1', // Redirect to a query variable
         'top'
     );
