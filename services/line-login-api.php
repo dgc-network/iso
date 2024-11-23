@@ -40,7 +40,7 @@ if (!class_exists('line_login_api')) {
                 array( $this, 'line_login_section_settings_callback' ),
                 'web-service-settings'
             );
-
+/*
             // Register fields for Line login section
             add_settings_field(
                 'line_login_redirect_uri',
@@ -50,7 +50,7 @@ if (!class_exists('line_login_api')) {
                 'line-login-section-settings'
             );
             register_setting('web-service-settings', 'line_login_redirect_uri');
-
+*/
             add_settings_field(
                 'line_login_client_id',
                 'Line login client id',
@@ -109,7 +109,8 @@ if (!class_exists('line_login_api')) {
                     'body' => array(
                         'grant_type'    => 'authorization_code',
                         'code'          => $code,
-                        'redirect_uri'  => get_option('line_login_redirect_uri'),
+                        //'redirect_uri'  => get_option('line_login_redirect_uri'),
+                        'redirect_uri'  => home_url('/oauth-callback'),
                         'client_id'     => get_option('line_login_client_id'),
                         'client_secret' => get_option('line_login_client_secret'),
                     ),
@@ -197,7 +198,7 @@ if (!class_exists('line_login_api')) {
             $state = bin2hex(random_bytes(16)); // Generate a random string
             set_transient('line_login_state', $state, 3600); // Save it for 1 hour
             $line_auth_url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=" . urlencode(get_option('line_login_client_id')) .
-                 "&redirect_uri=" . urlencode(get_option('line_login_redirect_uri')) .
+                 "&redirect_uri=" . urlencode(home_url('/oauth-callback')) .
                  "&state=" . urlencode($state) .
                  "&scope=profile";
             ?>
