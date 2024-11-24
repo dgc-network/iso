@@ -1469,8 +1469,15 @@ if (!class_exists('display_profiles')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
+                    'relation' => 'AND',
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                    array(
+                        'key'   => 'is_doc_report',
+                        'value' => '1',
+                    ),
                 ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'job_number',
