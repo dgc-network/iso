@@ -588,6 +588,7 @@ jQuery(document).ready(function($) {
                                         '_job_title': $("#job-title").val(),
                                         '_job_content': $("#job-content").val(),
                                         '_department_id': $("#department-id").val(),
+                                        '_is_summary_job': $("#is-summary-job").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#site-job-dialog").dialog('close');

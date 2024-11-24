@@ -1160,6 +1160,7 @@ if (!class_exists('display_profiles')) {
             $job_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
+            $is_checked = ($is_summary_job==1) ? 'checked' : '';
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
@@ -1175,6 +1176,8 @@ if (!class_exists('display_profiles')) {
                 <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
                 <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
+                <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />
+                <label for="is-summary-job"><?php echo __( 'Is summary job', 'your-text-domain' );?></label>
             <?php
             return ob_get_clean();
         }
@@ -1199,6 +1202,7 @@ if (!class_exists('display_profiles')) {
                 wp_update_post( $data );
                 update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
                 update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
+                update_post_meta($doc_id, 'is_summary_job', sanitize_text_field($_POST['_is_summary_job']));
 
                 // Sanitize the input from POST request
                 $job_number = sanitize_text_field($_POST['_job_number']);
