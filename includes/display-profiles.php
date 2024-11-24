@@ -1160,6 +1160,7 @@ if (!class_exists('display_profiles')) {
             $job_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
+            $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
             $is_checked = ($is_summary_job==1) ? 'checked' : '';
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
