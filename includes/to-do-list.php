@@ -588,10 +588,8 @@ if (!class_exists('to_do_list')) {
             //$without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
             $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
 
-            // 如果是審核、核准之類的工作，就不需要新增一個doc-report了
+            // 如果是審核、核准、彙整之類的工作，就不需要新增一個doc-report了
             if ($is_doc_report==1) {
-            //}
-            //if (empty($without_doc_number)) { 
                 // Add a new doc-report
                 $new_post = array(
                     'post_type'     => 'doc-report',
@@ -601,14 +599,15 @@ if (!class_exists('to_do_list')) {
                 );    
                 $prev_report_id = wp_insert_post($new_post);    
             }
-            update_post_meta($prev_report_id, 'doc_id', $doc_id);
-            update_post_meta($prev_report_id, 'todo_status', $next_job);
 
             if (!empty($summary_todos) && is_array($summary_todos)) {
                 foreach ($todo_in_summary as $todo_id) {
                     $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                     update_post_meta($report_id, 'todo_status', $next_job);
                 }
+            } else {
+                update_post_meta($prev_report_id, 'doc_id', $doc_id);
+                update_post_meta($prev_report_id, 'todo_status', $next_job);    
             }
 
             // Update the post meta
@@ -635,9 +634,10 @@ if (!class_exists('to_do_list')) {
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
-                'prev_report_id' => $prev_report_id,
+                //'prev_report_id' => $prev_report_id,
                 'prev_todo_id' => $todo_id,
-            );        
+            );
+            if (empty($summary_todos)) $params['prev_report_id'] = $prev_report_id;
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
@@ -647,6 +647,7 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
+            $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
 
             // Add a new doc-report for current action
             $new_post = array(
@@ -692,9 +693,10 @@ if (!class_exists('to_do_list')) {
             $params = array(
                 'user_id' => $user_id,
                 'action_id' => $action_id,
-                'prev_report_id' => $new_report_id,
+                //'prev_report_id' => $new_report_id,
                 'prev_todo_id' => $new_todo_id,
             );
+            if (empty($is_summary_job)) $params['prev_report_id'] = $prev_report_id;
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
@@ -728,18 +730,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0)   $todo_title = get_the_title($next_job);
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
-/*        
-            $params = array(
-                'action_id' => $action_id,
-                'prev_report_id' => $prev_report_id,
-                'todo_title' => $todo_title,
-                'user_id' => $user_id,
-                'doc_id' => $doc_id,
-                'next_job' => $next_job,
-                'next_leadtime' => $next_leadtime,
-            );
-*/
-            //$params = $args;
+
             $params['todo_title'] = $todo_title;
             $params['user_id'] = $user_id;
             $params['doc_id'] = $doc_id;
@@ -815,17 +806,17 @@ if (!class_exists('to_do_list')) {
             }
         }
 
-        function create_new_todo_for_next_job($args = array()) {
-            $todo_title = isset($args['todo_title']) ? $args['todo_title'] : 0;
-            $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
-            $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
-            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-            $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-            $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
-            $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
-            $sub_item_id = isset($args['sub_item_id']) ? $args['sub_item_id'] : 0;
-            $embedded = isset($args['_embedded']) ? $args['_embedded'] : 0;
-            $select = isset($args['_select']) ? $args['_select'] : 0;
+        function create_new_todo_for_next_job($params = array()) {
+            $todo_title = isset($params['todo_title']) ? $params['todo_title'] : 0;
+            $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
+            $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+            $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
+            $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
+            $sub_item_id = isset($params['sub_item_id']) ? $params['sub_item_id'] : 0;
+            $embedded = isset($params['_embedded']) ? $params['_embedded'] : 0;
+            $select = isset($params['_select']) ? $params['_select'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
 
             // Create a new To-do for next_job
@@ -857,7 +848,7 @@ if (!class_exists('to_do_list')) {
                 // Try to!! Figure out the summary-job Step 2
                 if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
                 if ($is_summary_job) {
-                    $prev_todo_id = isset($args['prev_todo_id']) ? $args['prev_todo_id'] : 0;
+                    $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
                     update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
