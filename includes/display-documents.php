@@ -1244,7 +1244,7 @@ if (!class_exists('display_documents')) {
                                     //    'doc_id'     => $doc_id,
                                     //    'key_value_pair' => $key_value_pair,
                                     //);
-                                    echo $this->get_doc_report_contain_list($params);
+                                    $this->get_doc_report_contain_list($params);
                                     echo '</fieldset>';    
                                 }        
                             }

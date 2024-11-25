@@ -1231,7 +1231,8 @@ if (!class_exists('to_do_list')) {
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                            $next_job = get_post_meta($submit_action, 'next_job', true);
+                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                            if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
                             $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
         
