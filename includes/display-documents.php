@@ -830,7 +830,7 @@ if (!class_exists('display_documents')) {
                     'value' => -1,
                 );
             }
-
+/*
             if (!empty($params['todo_id'])) {
                 $todo_id = $params['todo_id'];
                 $meta_query[] = array(
@@ -838,7 +838,7 @@ if (!class_exists('display_documents')) {
                     'value' => $todo_id,
                 );
             }
-
+*/
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => -1,
