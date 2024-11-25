@@ -140,6 +140,7 @@ if (!class_exists('to_do_list')) {
             $submit_user = esc_attr(get_post_meta($post->ID, 'submit_user', true));
             $submit_action = esc_attr(get_post_meta($post->ID, 'submit_action', true));
             $submit_time = esc_attr(get_post_meta($post->ID, 'submit_time', true));
+            $next_job = esc_attr(get_post_meta($post->ID, 'next_job', true));
             ?>
             <label for="site_id"> site_id: </label>
             <input type="text" id="site_id" name="site_id" value="<?php echo $site_id;?>" style="width:100%" >
@@ -155,6 +156,8 @@ if (!class_exists('to_do_list')) {
             <input type="text" id="submit_action" name="submit_action" value="<?php echo $submit_action;?>" style="width:100%" >
             <label for="submit_time"> submit_time: </label>
             <input type="text" id="submit_time" name="submit_time" value="<?php echo $submit_time;?>" style="width:100%" >
+            <label for="next_job"> next_job: </label>
+            <input type="text" id="next_job" name="next_job" value="<?php echo $next_job;?>" style="width:100%" >
             <?php
         }
         
@@ -684,16 +687,16 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
-        function update_next_todo_and_actions($args = array()) {
+        function update_next_todo_and_actions($params = array()) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From update_todo_by_doc_report(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 4. From schedule_event_callback($params), create a update_start_job_dialog_data() the go item 3
 
-            $user_id = isset($args['user_id']) ? $args['user_id'] : get_current_user_id();
+            $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
-            $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
-            $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
+            $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+            $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
 
             // Find the next_job, next_leadtime, and 
@@ -703,15 +706,15 @@ if (!class_exists('to_do_list')) {
                 if (empty($next_leadtime)) $next_leadtime=86400;
             } else {
                 // update_todo_by_doc_report() and frquence doc_report
-                $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
+                $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
                 if ($next_job==0) { // frquence doc_report                    
-                    $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
+                    $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
                     $next_job = $doc_id;
                 }
                 $next_leadtime = 86400;
             }
         
-            if ($next_job>0) $todo_title = get_the_title($next_job);
+            if ($next_job>0)   $todo_title = get_the_title($next_job);
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
             if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
 /*        
@@ -725,7 +728,7 @@ if (!class_exists('to_do_list')) {
                 'next_leadtime' => $next_leadtime,
             );
 */
-            $params = $args;
+            //$params = $args;
             $params['todo_title'] = $todo_title;
             $params['user_id'] = $user_id;
             $params['doc_id'] = $doc_id;
@@ -736,7 +739,7 @@ if (!class_exists('to_do_list')) {
             // Try to!! Figure out the summary-job Step 1
             if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
             if ($is_summary_job) {
-                $prev_todo_id = isset($args['prev_todo_id']) ? $args['prev_todo_id'] : 0;
+                $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
                 $summary_todos = get_post_meta($next_job, 'summary_todos', true);
 
                 if (!empty($summary_todos) && is_array($summary_todos)) {
@@ -772,10 +775,12 @@ if (!class_exists('to_do_list')) {
                     } else {
                         //echo "No posts match the meta query conditions.";
                         if (!$is_updated) $this->create_new_todo_for_next_job($params);
-                        $is_updated = true;
                     }
                     wp_reset_postdata(); // Reset query
+                } else {
+                    if (!$is_updated) $this->create_new_todo_for_next_job($params);
                 }
+                $is_updated = true;
             }
 
             // Try to!! Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
@@ -842,9 +847,8 @@ if (!class_exists('to_do_list')) {
                 if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
                 if ($is_summary_job) {
                     $prev_todo_id = isset($args['prev_todo_id']) ? $args['prev_todo_id'] : 0;
-                    //$todo_in_summary = get_post_meta($next_job, 'todo_in_summary', true);
-                    $todo_in_summary[] = $prev_todo_id;
-                    update_post_meta($new_todo_id, 'todo_in_summary', $todo_in_summary);
+                    update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
+                    update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
             }
 
