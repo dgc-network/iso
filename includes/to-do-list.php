@@ -736,7 +736,7 @@ if (!class_exists('to_do_list')) {
             $params['next_leadtime'] = $next_leadtime;
 
             $is_updated = false;
-            // Try to!! Figure out the summary-job Step 1
+            // Figure out the summary-job Step 1
             if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
             if ($is_summary_job) {
                 $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
@@ -783,7 +783,7 @@ if (!class_exists('to_do_list')) {
                 $is_updated = true;
             }
 
-            // Try to!! Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
+            // Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
             if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
             if ($prev_report_id) $select = get_post_meta($prev_report_id, '_select', true);
