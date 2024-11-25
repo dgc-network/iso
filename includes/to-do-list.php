@@ -302,6 +302,7 @@ if (!class_exists('to_do_list')) {
 
         function display_todo_dialog($todo_id=false, $view_mode=false) {
             ob_start();
+            $documents_class = new display_documents();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
@@ -310,6 +311,13 @@ if (!class_exists('to_do_list')) {
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Try to!! Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
+                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    $params = array(
+                        'doc_id'     => $doc_id,
+                        'todo_id'    => $todo_id,
+                    );
+                    $documents_class->get_doc_report_contain_list($params);
+/*
                     ?>
                     <table>
                         <tr>
@@ -317,7 +325,6 @@ if (!class_exists('to_do_list')) {
                         </tr>
                     <?php
                     foreach ($todo_in_summary as $todo_id) {
-                        $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                         ?>
                         <tr>
                             <td>todo_in_summary</td>
@@ -327,6 +334,7 @@ if (!class_exists('to_do_list')) {
                     ?>
                     </table>
                     <?php
+*/                    
                 } else {
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
@@ -336,7 +344,6 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
-                    $documents_class = new display_documents();
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -573,7 +580,6 @@ if (!class_exists('to_do_list')) {
             $next_job = get_post_meta($action_id, 'next_job', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            //$todo_title = get_the_title($doc_id);
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
 
@@ -581,15 +587,16 @@ if (!class_exists('to_do_list')) {
             if (empty($without_doc_number)) { 
                 // Add a new doc-report
                 $new_post = array(
+                    'post_type'     => 'doc-report',
                     'post_title'    => get_the_title($doc_id),
                     'post_status'   => 'publish',
                     'post_author'   => $user_id,
-                    'post_type'     => 'doc-report',
                 );    
                 $prev_report_id = wp_insert_post($new_post);    
             }
             update_post_meta($prev_report_id, 'doc_id', $doc_id);
             update_post_meta($prev_report_id, 'todo_status', $next_job);
+
             // Update the post meta
             $params = array(
                 'doc_id'     => $doc_id,
@@ -608,6 +615,7 @@ if (!class_exists('to_do_list')) {
             update_post_meta($todo_id, 'submit_user', $user_id );
             update_post_meta($todo_id, 'submit_action', $action_id );
             update_post_meta($todo_id, 'submit_time', time() );
+            update_post_meta($todo_id, 'next_job', $next_job );
 
             // set next todo and actions
             $params = array(
@@ -622,8 +630,9 @@ if (!class_exists('to_do_list')) {
         function update_start_job_dialog_data($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
-            $next_job = get_post_meta($action_id, 'next_job', true);
+            $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $next_job = get_post_meta($action_id, 'next_job', true);
 
             // Add a new doc-report for current action
             $new_post = array(
@@ -651,19 +660,19 @@ if (!class_exists('to_do_list')) {
 
             // Add a new todo for current action
             $new_post = array(
+                'post_type'     => 'todo',
                 'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
-                'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
+            update_post_meta($new_todo_id, 'site_id', $site_id );
             update_post_meta($new_todo_id, 'doc_id', $doc_id);
             update_post_meta($new_todo_id, 'prev_report_id', $new_report_id);
             update_post_meta($new_todo_id, 'submit_user', $user_id );
             update_post_meta($new_todo_id, 'submit_action', $action_id );
             update_post_meta($new_todo_id, 'submit_time', time() );
-            $site_id = get_user_meta($user_id, 'site_id', true);
-            update_post_meta($new_todo_id, 'site_id', $site_id );
+            update_post_meta($new_todo_id, 'next_job', $next_job );
 
             // set next todo and actions
             $params = array(
@@ -755,7 +764,6 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) {
                             $query->the_post();
-                            //echo "Post ID " . get_the_ID() . " matches the meta query conditions.<br>";
                             // Perform actions for each matching post
                             $todo_in_summary = get_post_meta(get_the_ID(), 'todo_in_summary', true);
                             $todo_in_summary[] = $prev_todo_id;
@@ -766,7 +774,6 @@ if (!class_exists('to_do_list')) {
                         if (!$is_updated) $this->create_new_todo_for_next_job($params);
                         $is_updated = true;
                     }
-                
                     wp_reset_postdata(); // Reset query
                 }
             }
@@ -790,7 +797,6 @@ if (!class_exists('to_do_list')) {
                     if (!$is_updated) $this->create_new_todo_for_next_job($params);
                 }
             }
-
         }
 
         function create_new_todo_for_next_job($args = array()) {
@@ -799,24 +805,23 @@ if (!class_exists('to_do_list')) {
             $action_id = isset($args['action_id']) ? $args['action_id'] : 0;
             $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
             $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-            //$prev_todo_id = isset($args['prev_todo_id']) ? $args['prev_todo_id'] : 0;
             $next_job = isset($args['next_job']) ? $args['next_job'] : 0;
             $next_leadtime = isset($args['next_leadtime']) ? $args['next_leadtime'] : 0;
             $sub_item_id = isset($args['sub_item_id']) ? $args['sub_item_id'] : 0;
             $embedded = isset($args['_embedded']) ? $args['_embedded'] : 0;
             $select = isset($args['_select']) ? $args['_select'] : 0;
+            $site_id = get_user_meta($user_id, 'site_id', true);
 
             // Create a new To-do for next_job
             $new_post = array(
+                'post_type'     => 'todo',
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
-                'post_type'     => 'todo',
             );    
             $new_todo_id = wp_insert_post($new_post);
             
             update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
-            $site_id = get_user_meta($user_id, 'site_id', true);
             update_post_meta($new_todo_id, 'site_id', $site_id );
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
@@ -847,6 +852,7 @@ if (!class_exists('to_do_list')) {
                 update_post_meta($new_todo_id, 'submit_user', $user_id);
                 update_post_meta($new_todo_id, 'submit_action', $action_id);
                 update_post_meta($new_todo_id, 'submit_time', time());
+                update_post_meta($new_todo_id, 'next_job', $next_job);
                 if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
                 // Notice the persons in site
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
@@ -859,11 +865,11 @@ if (!class_exists('to_do_list')) {
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $new_post = array(
+                            'post_type'     => 'action',
                             'post_title'    => get_the_title(),
                             'post_content'  => get_the_content(),
                             'post_status'   => 'publish',
                             'post_author'   => $user_id,
-                            'post_type'     => 'action',
                         );    
                         $new_action_id = wp_insert_post($new_post);
                         $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
