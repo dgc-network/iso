@@ -1226,7 +1226,7 @@ if (!class_exists('display_profiles')) {
                 $new_doc_id = wp_insert_post($new_post);
                 update_post_meta($new_doc_id, 'site_id', $site_id);
                 update_post_meta($new_doc_id, 'job_number', '-');
-                update_post_meta($new_doc_id, 'is_doc_report', '1');
+                //update_post_meta($new_doc_id, 'is_doc_report', -1);
                 // new action
                 $new_post = array(
                     'post_title'    => 'OK',

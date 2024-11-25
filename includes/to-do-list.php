@@ -271,7 +271,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-
+/*
                 if (!empty($user_doc_ids)) {
                     $meta_query[] = array(
                         'key'     => 'without_doc_number',
@@ -279,7 +279,7 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-
+*/
                 // If $meta_query has more than just the relation, add it to $args
                 if (count($meta_query) > 1) {
                     $args['meta_query'][] = $meta_query;
@@ -581,14 +581,17 @@ if (!class_exists('to_do_list')) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
+            $is_doc_report = get_post_meta($next_job, 'is_doc_report', true);
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
+            //$without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
             $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
 
             // 如果是審核、核准之類的工作，就不需要新增一個doc-report了
-            if (empty($without_doc_number)) { 
+            if ($is_doc_report==1) {
+            //}
+            //if (empty($without_doc_number)) { 
                 // Add a new doc-report
                 $new_post = array(
                     'post_type'     => 'doc-report',
@@ -849,7 +852,7 @@ if (!class_exists('to_do_list')) {
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
                     update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                    update_post_meta($new_todo_id, 'without_doc_number', $next_job );
+                    //update_post_meta($new_todo_id, 'without_doc_number', $next_job );
                 }
                 // Try to!! Figure out the summary-job Step 2
                 if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
