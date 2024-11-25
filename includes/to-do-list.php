@@ -585,6 +585,7 @@ if (!class_exists('to_do_list')) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
             $without_doc_number = get_post_meta($todo_id, 'without_doc_number', true);
+            $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
 
             // 如果是審核、核准之類的工作，就不需要新增一個doc-report了
             if (empty($without_doc_number)) { 
@@ -599,6 +600,13 @@ if (!class_exists('to_do_list')) {
             }
             update_post_meta($prev_report_id, 'doc_id', $doc_id);
             update_post_meta($prev_report_id, 'todo_status', $next_job);
+
+            if (!empty($summary_todos) && is_array($summary_todos)) {
+                foreach ($todo_in_summary as $todo_id) {
+                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    update_post_meta($report_id, 'todo_status', $next_job);
+                }
+            }
 
             // Update the post meta
             $params = array(
