@@ -316,8 +316,8 @@ if (!class_exists('to_do_list')) {
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $params = array(
-                        'doc_id'     => $doc_id,
-                        'todo_id'    => $todo_id,
+                        'doc_id'           => $doc_id,
+                        'todo_in_summary'  => $todo_in_summary,
                     );
                     $documents_class->get_doc_report_contain_list($params);
 /*

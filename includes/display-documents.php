@@ -782,10 +782,10 @@ if (!class_exists('display_documents')) {
                                     wp_reset_postdata();
                                 }
                                 if (current_user_can('administrator')) {
-                                    $todo_id = get_post_meta($report_id, 'todo_status', true);
-                                    $todo_status = ($todo_id) ? get_the_title($todo_id) : 'Draft';
-                                    $todo_status = ($todo_id==-1) ? '發行' : $todo_status;
-                                    $todo_status = ($todo_id==-2) ? '作廢' : $todo_status;
+                                    $next_job = get_post_meta($report_id, 'todo_status', true);
+                                    $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
+                                    $todo_status = ($next_job==-1) ? '發行' : $todo_status;
+                                    $todo_status = ($next_job==-2) ? '作廢' : $todo_status;
                                     echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                                 }
                                 echo '</tr>';
@@ -830,15 +830,7 @@ if (!class_exists('display_documents')) {
                     'value' => -1,
                 );
             }
-/*
-            if (!empty($params['todo_id'])) {
-                $todo_id = $params['todo_id'];
-                $meta_query[] = array(
-                    'key'   => 'todo_status',
-                    'value' => $todo_id,
-                );
-            }
-*/
+
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => -1,
@@ -848,12 +840,22 @@ if (!class_exists('display_documents')) {
                 'orderby' => 'date',
                 'order' => 'DESC',
             );
-                    
+
+            if (!empty($params['todo_in_summary'])) {
+                $todo_in_summary = $params['todo_in_summary'];
+                $report_ids = array();
+                foreach ($todo_in_summary as $todo_id) {
+                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    $report_ids[] = $report_id;
+                }
+                $args['post__in'] = $report_ids;
+            }
+
+/*                    
             $order_field = ''; // Initialize variable to store the meta key for ordering
             $order_field_value = ''; // Initialize variable to store the order direction
-        
+*/        
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
-        
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
@@ -888,7 +890,7 @@ if (!class_exists('display_documents')) {
                             }
                         }    
                     }
-
+/*
                     // Check if the order_field_value is valid
                     $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
                     if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
@@ -896,7 +898,7 @@ if (!class_exists('display_documents')) {
                         $args['orderby'][get_the_id()] = $order_field_value;
                         $order_field = get_the_ID(); // Assign the field_id if order_field_value is valid
                     }
-        
+*/        
                     if (!empty($params['search_doc_report'])) {
                         $search_doc_report = $params['search_doc_report'];
                         $args['meta_query'][1][] = array( // Append to the OR relation
