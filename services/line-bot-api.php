@@ -116,6 +116,7 @@ if (!class_exists('line_bot_api')) {
                     'layout' => 'vertical',
                     'contents' => $body_contents,
                 );
+                $bubble_message['altText'] = var_dump($body_contents);
             }
 
             // Add footer contents if not empty

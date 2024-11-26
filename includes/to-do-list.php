@@ -916,8 +916,8 @@ if (!class_exists('to_do_list')) {
             //$doc_title .= '('.$doc_number.')';
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
-            $text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
-            $text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
+            //$text_message='You are in '.$todo_title.' position. You have to sign off the '.$doc_title.' before '.$due_date.'.';
+            //$text_message = '你在「'.$todo_title.'」的職務有一份文件「'.$doc_title.'」需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
             $text_message = '你在「'.$todo_title.'」的職務有一份文件需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
             $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
         
@@ -956,7 +956,7 @@ if (!class_exists('to_do_list')) {
                         'type' => 'button',
                         'action' => array(
                             'type' => 'uri',
-                            'label' => $doc_title,
+                            'label' => $todo_title,
                             'uri' => $link_uri, // Use the desired URI
                         ),
                         'style' => 'primary',
