@@ -637,7 +637,11 @@ if (!class_exists('to_do_list')) {
                 //'prev_report_id' => $prev_report_id,
                 'prev_todo_id' => $todo_id,
             );
-            if (empty($summary_todos)) $params['prev_report_id'] = $prev_report_id;
+            if (!empty($summary_todos) && is_array($summary_todos)) {
+                $params['doc_id'] = $doc_id;
+            } else {
+                $params['prev_report_id'] = $prev_report_id;
+            }
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
@@ -696,7 +700,11 @@ if (!class_exists('to_do_list')) {
                 //'prev_report_id' => $new_report_id,
                 'prev_todo_id' => $new_todo_id,
             );
-            if (empty($is_summary_job)) $params['prev_report_id'] = $new_report_id;
+            if ($is_summary_job) {
+                $params['doc_id'] = $doc_id;
+            } else {
+                $params['prev_report_id'] = $new_report_id;
+            }
             if ($next_job>0) $this->update_next_todo_and_actions($params);
         }
         
