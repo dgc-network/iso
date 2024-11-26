@@ -153,7 +153,7 @@ jQuery(document).ready(function($) {
                     }
                     //activate_doc_report_dialog_data(response);
                     //activate_published_document_data(doc_id);
-                    $("#doc-report-exit").on("click", function () {
+                    $("#doc-report-dialog-exit").on("click", function () {
                         window.location.replace(window.location.href);
                     });
                 },
