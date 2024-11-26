@@ -1174,21 +1174,14 @@ if (!class_exists('display_documents')) {
                             // Ensure the doc ID is unique
                             if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
-                                //$documents_class = new display_documents();
                                 $params = array(
                                     'doc_id'         => $doc_id,
                                     'key_value_pair' => $key_value_pair,
                                 );
-                                //$doc_report = $documents_class->retrieve_doc_report_list_data($params);
                                 $doc_report = $this->retrieve_doc_report_list_data($params);
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
-                                    //echo $documents_class->get_doc_report_contain_list($doc_id, false, $key_value_pair);
-                                    //$params = array(
-                                    //    'doc_id'     => $doc_id,
-                                    //    'key_value_pair' => $key_value_pair,
-                                    //);
                                     $this->get_doc_report_contain_list($params);
                                     echo '</fieldset>';    
                                 }        
@@ -1336,10 +1329,6 @@ if (!class_exists('display_documents')) {
                     <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
                     <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
                 </select>
-<?php /*                
-                <input type="checkbox" id="order-field" <?php echo ($order_field=='ASC') ? 'checked' : '';?> />
-                <label for="order-field"><?php echo __( '索引鍵', 'your-text-domain' );?></label>
-*/?>                
             </fieldset>
             <?php
             return ob_get_clean();
@@ -2060,6 +2049,9 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'doc_revision', 'draft');
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
+
+            $todo_class = new to_do_list();
+            $todo_class->create_new_todo_and_go_next(false, false, $post_id);
 
             // Create the Action list for $post_id
             $profiles_class = new display_profiles();
