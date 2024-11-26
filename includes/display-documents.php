@@ -685,12 +685,6 @@ if (!class_exists('display_documents')) {
                     <tbody>
                         <?php
                         $paged = max(1, get_query_var('paged')); // Get the current page number
-                        //$params = array(
-                        //    'doc_id'     => $doc_id,
-                        //    'paged'     => $paged,
-                        //    'search_doc_report' => $search_doc_report,
-                        //    'key_value_pair' => $key_value_pair,
-                        //);                
                         $params['paged'] = $paged;
                         $query = $this->retrieve_doc_report_list_data($params);
                         $total_posts = $query->found_posts;
@@ -700,10 +694,6 @@ if (!class_exists('display_documents')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $report_id = get_the_ID();
                                 echo '<tr id="edit-doc-report-'.$report_id.'">';
-                                //$params = array(
-                                //    'doc_id'     => $doc_id,
-                                //    'is_listing'  => true,
-                                //);                
                                 $inner_query = $this->retrieve_doc_field_data($params);
                                 if ($inner_query->have_posts()) {
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
