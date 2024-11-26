@@ -1092,9 +1092,9 @@ if (!class_exists('display_documents')) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $params = array('doc_id' => $doc_id);
+                //$params = array('doc_id' => $doc_id);
         
-                $query = $this->retrieve_doc_field_data($params);
+                $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
                         $query->the_post();
@@ -1122,8 +1122,8 @@ if (!class_exists('display_documents')) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 update_post_meta($post_id, 'doc_id', $doc_id);
         
-                $params = array('doc_id' => $doc_id);
-                $query = $this->retrieve_doc_field_data($params);
+                //$params = array('doc_id' => $doc_id);
+                $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
         
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
@@ -2193,6 +2193,7 @@ if (!class_exists('display_documents')) {
             $params = array(
                 'next_job' => $next_job,
                 'prev_report_id' => $report_id,
+                'prev_todo_id' => $todo_id,
             );        
             $todo_class = new to_do_list();
             if ($next_job>0) $todo_class->update_next_todo_and_actions($params);
