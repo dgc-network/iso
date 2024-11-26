@@ -651,21 +651,21 @@ if (!class_exists('to_do_list')) {
 
             // Add a new doc-report for current action
             $new_post = array(
+                'post_type'     => 'doc-report',
                 'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
-                'post_type'     => 'doc-report',
             );    
             $new_report_id = wp_insert_post($new_post);
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
 
             // Update the doc-field meta for new doc-report
-            $params = array(
-                'doc_id'     => $doc_id,
-            );                
+            //$params = array(
+            //    'doc_id'     => $doc_id,
+            //);                
             $documents_class = new display_documents();
-            $query = $documents_class->retrieve_doc_field_data($params);
+            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $documents_class->update_doc_field_contains($new_report_id, get_the_ID(), $is_default, $user_id);
@@ -710,22 +710,24 @@ if (!class_exists('to_do_list')) {
             $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
-            $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
 
-            // Find the next_job, next_leadtime, and 
+            // Find the doc_id
+            if ($prev_report_id) {
+                $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
+            } else {
+                $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            }
+
+            // Find the next_job, next_leadtime
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-                if (empty($next_leadtime)) $next_leadtime=86400;
             } else {
                 // update_todo_by_doc_report() and frquence doc_report
                 $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
-                if ($next_job==0) { // frquence doc_report                    
-                    $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-                    $next_job = $doc_id;
-                }
-                $next_leadtime = 86400;
+                if ($next_job==0) $next_job = $doc_id; // frquence doc_report                    
             }
+            if (empty($next_leadtime)) $next_leadtime=86400;
         
             if ($next_job>0)   $todo_title = get_the_title($next_job);
             if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
