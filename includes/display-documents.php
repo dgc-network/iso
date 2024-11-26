@@ -2,11 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-/*
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-*/
+
 if (!class_exists('display_documents')) {
     class display_documents {
         // Class constructor
@@ -416,10 +412,7 @@ if (!class_exists('display_documents')) {
                 </div>
                 <?php
                     // transaction data vs card key/value
-                    $key_value_pair = array(
-                        '_document'   => $doc_id,
-                    );
-                    $this->get_transactions_by_key_value_pair($key_value_pair);
+                    $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
                 ?>
 
                 <hr>
@@ -500,7 +493,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'doc_number', '-');
                 update_post_meta($post_id, 'doc_revision', 'A');
                 update_post_meta($post_id, 'is_doc_report', 0);
-                //update_post_meta($post_id, 'doc_report_frequence_start_time', time());
                 $response['html_contain'] = $this->display_document_dialog($post_id);
             }
             wp_send_json($response);
@@ -573,7 +565,6 @@ if (!class_exists('display_documents')) {
             register_post_type( 'doc-report', $args );
         }
 
-        //function display_doc_report_list($doc_id=false, $search_doc_report=false) {
         function display_doc_report_list($params) {
             ob_start();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
@@ -651,21 +642,16 @@ if (!class_exists('display_documents')) {
                     </style>
                 </div>
             </div>
-        
+
             <?php
             return ob_get_clean();
         }
 
-        //function get_doc_report_contain_list($doc_id=false, $search_doc_report=false, $key_value_pair=array()) {
         function get_doc_report_contain_list($params) {
             ?>
                 <table style="width:100%;">
                     <thead>
                         <?php
-                        //$params = array(
-                        //    'doc_id'     => $doc_id,
-                        //    'is_listing' => true,
-                        //);
                         $params['is_listing'] = true;
                         $query = $this->retrieve_doc_field_data($params);
                         if ($query->have_posts()) {
@@ -841,10 +827,6 @@ if (!class_exists('display_documents')) {
                 $args['post__in'] = $report_ids;
             }
 
-/*                    
-            $order_field = ''; // Initialize variable to store the meta key for ordering
-            $order_field_value = ''; // Initialize variable to store the order direction
-*/        
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -880,15 +862,7 @@ if (!class_exists('display_documents')) {
                             }
                         }    
                     }
-/*
-                    // Check if the order_field_value is valid
-                    $order_field_value = get_post_meta(get_the_ID(), 'order_field', true);
-                    if ($order_field_value === 'ASC' || $order_field_value === 'DESC') {
-                        // Add the field_id and order_field_value to orderby array
-                        $args['orderby'][get_the_id()] = $order_field_value;
-                        $order_field = get_the_ID(); // Assign the field_id if order_field_value is valid
-                    }
-*/        
+
                     if (!empty($params['search_doc_report'])) {
                         $search_doc_report = $params['search_doc_report'];
                         $args['meta_query'][1][] = array( // Append to the OR relation
@@ -907,7 +881,6 @@ if (!class_exists('display_documents')) {
 
         function get_doc_report_list_data() {
             $result = array();
-        
             // Check if _doc_id is set and not empty
             if (!empty($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
@@ -918,18 +891,6 @@ if (!class_exists('display_documents')) {
                     'search_doc_report' => $search_doc_report,
                 );
                 $result['html_contain'] = $this->display_doc_report_list($params);
-/*
-                // Ensure display_doc_report_list method exists
-                if (method_exists($this, 'display_doc_report_list')) {
-                    if ($search_doc_report) {
-                        $result['html_contain'] = $this->display_doc_report_list($doc_id, $search_doc_report);
-                    } else {
-                        $result['html_contain'] = $this->display_doc_report_list($doc_id);
-                    }
-                } else {
-                    $result['error'] = 'The method display_doc_report_list is not available.';
-                }
-*/
             } else {
                 $result['error'] = 'Document ID is missing.';
             }
@@ -1020,26 +981,24 @@ if (!class_exists('display_documents')) {
         
         function get_doc_report_dialog_data() {
             $response = array();
-        
             // Check if the required POST data is present
             if (isset($_POST['_report_id'])) {
                 // Initialize classes
                 $items_class = new sub_items();
                 $cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
-        
+
                 // Sanitize POST inputs
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $is_admin = isset($_POST['_is_admin']) ? sanitize_text_field($_POST['_is_admin']) : false;
-        
+
                 // Retrieve meta data for report
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 $_document = get_post_meta($report_id, '_document', true);
-        
+
                 // Determine content based on document type and status
                 if ($_document && $todo_status == -1 && !$is_admin) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
-        
                     // Switch structure for handling various document types
                     switch ($is_doc_report) {
                         case 1:
@@ -1073,14 +1032,12 @@ if (!class_exists('display_documents')) {
                 } else {
                     // Default response when conditions are not met
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
-        
                     // Add additional document and sub-item fields
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
                     $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
                 }
             }
-        
             // Return JSON response
             wp_send_json($response);
         }
@@ -1092,8 +1049,7 @@ if (!class_exists('display_documents')) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                //$params = array('doc_id' => $doc_id);
-        
+
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
@@ -1102,38 +1058,36 @@ if (!class_exists('display_documents')) {
                     }
                     wp_reset_postdata();
                 }
-        
+
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
                 if ($proceed_to_todo == 1) {
-                    $this->update_todo_by_doc_report($action_id, $report_id);
+                    $todo_class = new to_do_list();
+                    $todo_class->create_new_todo_and_go_next($action_id, $report_id);
                 }
             } else {
                 // Create a new post if no report_id is set
                 $current_user_id = get_current_user_id();
                 $new_post = array(
+                    'post_type' => 'doc-report',
                     'post_status' => 'publish',
                     'post_author' => $current_user_id,
-                    'post_type' => 'doc-report',
                 );
                 $post_id = wp_insert_post($new_post);
         
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 update_post_meta($post_id, 'doc_id', $doc_id);
         
-                //$params = array('doc_id' => $doc_id);
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
-        
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
                         $query->the_post();
                         $field_id = get_the_ID();
                         $field_type = get_post_meta($field_id, 'field_type', true);
                         $default_value = $this->get_field_default_value($field_id);
-        
                         update_post_meta($post_id, $field_id, $default_value);
-        
+
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
                             $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
@@ -1153,7 +1107,6 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }
             }
-        
             wp_send_json($response);
         }
 
@@ -2088,17 +2041,15 @@ if (!class_exists('display_documents')) {
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             // Create the post
             $new_post = array(
+                'post_type'     => 'document',
                 'post_title'    => get_the_title($doc_id),
                 'post_content'  => get_post_field('post_content', $doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
-                'post_type'     => 'document',
             );    
             $post_id = wp_insert_post($new_post);
 
@@ -2107,7 +2058,6 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
             update_post_meta($post_id, 'doc_revision', 'draft');
-            //update_post_meta($post_id, 'doc_category', $doc_category);
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
@@ -2134,10 +2084,7 @@ if (!class_exists('display_documents')) {
             }
 
             if ($is_doc_report==1){
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = $this->retrieve_doc_field_data($params);
+                $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_title = get_post_meta(get_the_ID(), 'field_title', true);
@@ -2163,42 +2110,6 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        function update_todo_by_doc_report($action_id=false, $report_id=false) {
-            // Create the new To-do
-            //$current_user_id = get_current_user_id();
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $next_job = get_post_meta($action_id, 'next_job', true);
-            //$todo_title = get_the_title($doc_id);
-            $new_post = array(
-                'post_type'     => 'todo',
-                'post_title'    => get_the_title($doc_id),
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-            );    
-            $todo_id = wp_insert_post($new_post);    
-
-            update_post_meta($todo_id, 'site_id', $site_id );
-            update_post_meta($todo_id, 'doc_id', $doc_id);
-            update_post_meta($todo_id, 'prev_report_id', $report_id);
-            update_post_meta($todo_id, 'submit_user', $current_user_id);
-            update_post_meta($todo_id, 'submit_action', $action_id);
-            update_post_meta($todo_id, 'submit_time', time());
-            update_post_meta($todo_id, 'next_job', $next_job);
-
-            update_post_meta($report_id, 'todo_status', $next_job);
-
-            // set next todo and actions
-            $params = array(
-                'next_job' => $next_job,
-                'prev_report_id' => $report_id,
-                'prev_todo_id' => $todo_id,
-            );        
-            $todo_class = new to_do_list();
-            if ($next_job>0) $todo_class->update_next_todo_and_actions($params);
-        }
-
         function reset_doc_report_todo_status() {
             $response = array();
             if( isset($_POST['_report_id']) ) {
