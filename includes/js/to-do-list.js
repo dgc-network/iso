@@ -275,6 +275,10 @@ jQuery(document).ready(function($) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                } else if (value.field_type === 'canvas') {
+                    const dataURL = canvas.toDataURL('image/png');
+                    ajaxData[value.field_id] = dataURL;
+                    console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
                 }
