@@ -1004,7 +1004,6 @@ if (!class_exists('display_documents')) {
         
         function get_doc_report_dialog_data() {
             $response = array();
-            // Check if the required POST data is present
             if (isset($_POST['_report_id'])) {
                 // Initialize classes
                 $items_class = new sub_items();
@@ -1026,8 +1025,8 @@ if (!class_exists('display_documents')) {
                     // Switch structure for handling various document types
                     switch ($is_doc_report) {
                         case 1:
-                            //$response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
-                            $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
+                            $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
+                            //$response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
                             break;
                         case 'document-card':
                             $response['html_contain'] = $this->display_document_list();
@@ -1051,8 +1050,8 @@ if (!class_exists('display_documents')) {
                             $response['html_contain'] = $profiles_class->display_site_user_list();
                             break;
                         default:
-                            //$response['html_contain'] = $this->display_doc_frame_contain($_document);
-                            $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
+                            $response['html_contain'] = $this->display_doc_frame_contain($_document);
+                            //$response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                             break;
                     }
                 } else {
@@ -1757,10 +1756,12 @@ if (!class_exists('display_documents')) {
 
                         default:
                             if ($is_system_doc) {
+                                /*
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value);?></select>
-                                <?php    
+                                <?php
+                                */
                             } else {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
