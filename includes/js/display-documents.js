@@ -213,9 +213,10 @@ jQuery(document).ready(function($) {
 
         //if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
         if ($('#is-doc-report').val()!=1) {
-            $("#system-report-div").show();
+            //$("#system-report-div").show();
             $("#mermaid-div").hide();
-            $("#doc-frame-div").hide();
+            //$("#doc-frame-div").hide();
+            $("#doc-frame-div").show();
         }    
 
         $("#doc-frame-label").on("click", function () {

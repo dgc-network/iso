@@ -479,6 +479,7 @@ if (!class_exists('display_documents')) {
                 $job_title = (isset($_POST['_job_title'])) ? sanitize_text_field($_POST['_job_title']) : '';
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
+                $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $job_title,
@@ -494,6 +495,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
+                update_post_meta($doc_id, 'system_doc', $system_doc);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
